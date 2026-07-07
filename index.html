@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>델타스킬 | AI 기반 수능 수학 등급 상승 경로 서비스</title>
+  <meta name="description" content="델타스킬은 학생의 현재 실력에서 목표 등급까지 필요한 최소 핵심 능력을 진단하고, 가장 효율적인 수학 등급 상승 경로를 제시합니다." />
+  <meta property="og:title" content="델타스킬 | 수학 등급 상승 경로 서비스" />
+  <meta property="og:description" content="AI가 강사를 대체하는 것이 아니라, 강사의 판단 노하우를 구조화하여 학생에게 최적의 학습 경로를 제시합니다." />
+  <meta property="og:type" content="website" />
+  <style>
+    :root {
+      --bg: #f7f8fb;
+      --ink: #111827;
+      --muted: #64748b;
+      --line: #e5e7eb;
+      --card: #ffffff;
+      --primary: #2563eb;
+      --primary-dark: #1e3a8a;
+      --accent: #00b3a4;
+      --soft: #eef5ff;
+      --shadow: 0 24px 80px rgba(15, 23, 42, 0.10);
+      --radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", "Apple SD Gothic Neo", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(37, 99, 235, 0.14), transparent 32rem),
+        radial-gradient(circle at top right, rgba(0, 179, 164, 0.12), transparent 30rem),
+        var(--bg);
+      line-height: 1.65;
+      letter-spacing: -0.03em;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .wrap {
+      width: min(1120px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(247, 248, 251, 0.86);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.75);
+    }
+
+    .nav {
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 850;
+      font-size: 20px;
+      letter-spacing: -0.04em;
+    }
+
+    .logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-weight: 900;
+      box-shadow: 0 12px 30px rgba(37, 99, 235, 0.25);
+    }
+
+    .menu {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      color: #334155;
+      font-size: 15px;
+      font-weight: 650;
+    }
+
+    .menu a:hover { color: var(--primary); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0 20px;
+      border-radius: 999px;
+      background: var(--ink);
+      color: #fff;
+      font-weight: 800;
+      box-shadow: 0 14px 36px rgba(15, 23, 42, 0.18);
+      transition: transform .2s ease, box-shadow .2s ease;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 48px rgba(15, 23, 42, 0.24);
+    }
+
+    .btn.alt {
+      background: #fff;
+      color: var(--ink);
+      border: 1px solid var(--line);
+      box-shadow: none;
+    }
+
+    .hero {
+      padding: 96px 0 72px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.03fr .97fr;
+      gap: 54px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(37, 99, 235, 0.10);
+      color: var(--primary-dark);
+      font-weight: 850;
+      font-size: 14px;
+      margin-bottom: 22px;
+    }
+
+    .eyebrow span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: inline-block;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(44px, 6vw, 72px);
+      line-height: 1.04;
+      letter-spacing: -0.075em;
+    }
+
+    .grad {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .lead {
+      margin: 26px 0 34px;
+      font-size: clamp(18px, 2.2vw, 22px);
+      color: #475569;
+      word-break: keep-all;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .hero-note {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .dashboard {
+      background: rgba(255,255,255,.82);
+      border: 1px solid rgba(226,232,240,.8);
+      border-radius: 32px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dashboard::before {
+      content: "";
+      position: absolute;
+      inset: -80px -80px auto auto;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: rgba(0, 179, 164, 0.12);
+    }
+
+    .dash-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      position: relative;
+    }
+
+    .pill {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 999px;
+      padding: 7px 12px;
+      font-size: 13px;
+      font-weight: 750;
+      color: #475569;
+    }
+
+    .score-card {
+      background: linear-gradient(145deg, #111827, #1e3a8a);
+      color: #fff;
+      border-radius: 26px;
+      padding: 26px;
+      margin-bottom: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .score-card small { color: rgba(255,255,255,.72); font-weight: 700; }
+
+    .score {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      margin-top: 10px;
+      gap: 18px;
+    }
+
+    .score strong {
+      font-size: 52px;
+      line-height: 1;
+      letter-spacing: -0.06em;
+    }
+
+    .score em {
+      font-style: normal;
+      padding: 7px 11px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.16);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .roadmap {
+      display: grid;
+      gap: 12px;
+      position: relative;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 12px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 15px 16px;
+    }
+
+    .num {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      background: var(--soft);
+      color: var(--primary);
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+    }
+
+    .step strong { display: block; font-size: 15px; }
+    .step span { display: block; font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+    .tag {
+      font-size: 12px;
+      color: #0f766e;
+      background: rgba(20,184,166,.11);
+      border-radius: 999px;
+      padding: 6px 9px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    section { padding: 82px 0; }
+
+    .section-head {
+      max-width: 760px;
+      margin-bottom: 34px;
+    }
+
+    .kicker {
+      color: var(--primary);
+      font-weight: 900;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: clamp(32px, 4vw, 48px);
+      line-height: 1.18;
+      letter-spacing: -0.065em;
+    }
+
+    .sub {
+      margin: 16px 0 0;
+      color: #64748b;
+      font-size: 18px;
+      word-break: keep-all;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .card {
+      background: rgba(255,255,255,.86);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 26px;
+      box-shadow: 0 14px 38px rgba(15, 23, 42, 0.045);
+    }
+
+    .icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      background: var(--soft);
+      display: grid;
+      place-items: center;
+      font-size: 24px;
+      margin-bottom: 18px;
+    }
+
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 21px;
+      letter-spacing: -0.05em;
+    }
+
+    .card p {
+      margin: 0;
+      color: #64748b;
+      word-break: keep-all;
+    }
+
+    .process {
+      background: #fff;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .process-grid {
+      display: grid;
+      grid-template-columns: 0.92fr 1.08fr;
+      gap: 46px;
+      align-items: start;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 14px;
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      gap: 16px;
+      padding: 20px;
+      border-radius: 22px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+    }
+
+    .timeline-no {
+      width: 48px;
+      height: 48px;
+      border-radius: 17px;
+      background: #111827;
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+    }
+
+    .timeline-item h3 {
+      margin: 0 0 6px;
+      font-size: 20px;
+    }
+
+    .timeline-item p {
+      margin: 0;
+      color: #64748b;
+    }
+
+    .quote {
+      padding: 34px;
+      border-radius: 30px;
+      background: linear-gradient(135deg, rgba(37,99,235,.10), rgba(0,179,164,.10));
+      border: 1px solid rgba(37,99,235,.16);
+    }
+
+    .quote strong {
+      font-size: clamp(24px, 3vw, 36px);
+      line-height: 1.22;
+      letter-spacing: -0.06em;
+      display: block;
+      margin-bottom: 18px;
+    }
+
+    .quote p {
+      color: #475569;
+      margin: 0;
+      font-size: 17px;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .target {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 20px;
+      border-radius: 22px;
+      background: #fff;
+      border: 1px solid var(--line);
+    }
+
+    .check {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: rgba(0,179,164,.14);
+      color: #0f766e;
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      flex: 0 0 auto;
+      margin-top: 2px;
+    }
+
+    .target strong { display:block; margin-bottom: 4px; }
+    .target span { color: #64748b; font-size: 15px; }
+
+    .cta {
+      padding: 86px 0 96px;
+    }
+
+    .cta-box {
+      background: linear-gradient(145deg, #111827, #1e3a8a);
+      color: #fff;
+      border-radius: 34px;
+      padding: 46px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 30px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .cta-box::after {
+      content: "";
+      position: absolute;
+      right: -120px;
+      bottom: -120px;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: rgba(0,179,164,.28);
+    }
+
+    .cta-box h2, .cta-box p, .cta-box a { position: relative; z-index: 1; }
+    .cta-box p { color: rgba(255,255,255,.75); margin: 16px 0 0; font-size: 18px; }
+
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 34px 0;
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    .footer-grid {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 900px) {
+      .hero-grid, .process-grid, .split, .cta-box {
+        grid-template-columns: 1fr;
+      }
+      .cards {
+        grid-template-columns: 1fr;
+      }
+      .menu {
+        display: none;
+      }
+      .hero {
+        padding-top: 62px;
+      }
+      .cta-box {
+        padding: 34px 26px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .wrap { width: min(100% - 28px, 1120px); }
+      .hero-actions { align-items: stretch; }
+      .btn { width: 100%; }
+      .score { align-items: flex-start; flex-direction: column; }
+      .step { grid-template-columns: auto 1fr; }
+      .tag { grid-column: 2; justify-self: start; }
+      section { padding: 62px 0; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap nav">
+      <a href="#" class="brand" aria-label="델타스킬 홈">
+        <span class="logo">ΔS</span>
+        <span>델타스킬</span>
+      </a>
+      <nav class="menu" aria-label="주요 메뉴">
+        <a href="#problem">문제</a>
+        <a href="#solution">솔루션</a>
+        <a href="#process">진단 방식</a>
+        <a href="#contact">문의</a>
+      </nav>
+      <a class="btn" href="mailto:contact@deltaskill.co.kr">도입 문의</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <div class="eyebrow"><span></span> AI 기반 수능 수학 등급 상승 경로 서비스</div>
+          <h1>
+            수학 4등급을<br />
+            <span class="grad">2등급으로 만드는</span><br />
+            델타 스킬
+          </h1>
+          <p class="lead">
+            델타스킬은 학생의 현재 실력에서 목표 등급까지 올라가기 위해
+            반드시 익혀야 하는 최소 핵심 능력을 찾아내고, 가장 효율적인 학습 순서를 제시합니다.
+          </p>
+          <div class="hero-actions">
+            <a class="btn" href="#contact">서비스 문의하기</a>
+            <a class="btn alt" href="#solution">솔루션 보기</a>
+          </div>
+          <p class="hero-note">
+            진단을 넘어, 학생별 목표 등급에 맞춘 “등급 상승 경로”를 설계합니다.
+          </p>
+        </div>
+
+        <div class="dashboard" aria-label="델타스킬 진단 대시보드 예시">
+          <div class="dash-top">
+            <span class="pill">Delta Skill Diagnosis</span>
+            <span class="pill">목표 2등급</span>
+          </div>
+          <div class="score-card">
+            <small>현재 학습 상태</small>
+            <div class="score">
+              <strong>4 → 2</strong>
+              <em>최소 경로 추천</em>
+            </div>
+          </div>
+          <div class="roadmap">
+            <div class="step">
+              <div class="num">1</div>
+              <div>
+                <strong>풀이 과정 진단</strong>
+                <span>정답 여부가 아니라 풀이 흐름과 막힘 지점을 분석</span>
+              </div>
+              <div class="tag">진단</div>
+            </div>
+            <div class="step">
+              <div class="num">2</div>
+              <div>
+                <strong>결손 개념 추적</strong>
+                <span>선수개념 관계를 따라 상류 결손을 특정</span>
+              </div>
+              <div class="tag">분석</div>
+            </div>
+            <div class="step">
+              <div class="num">3</div>
+              <div>
+                <strong>등급 상승 경로 제시</strong>
+                <span>목표 등급까지 가장 먼저 해야 할 학습을 추천</span>
+              </div>
+              <div class="tag">처방</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="problem">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="kicker">WHY DELTA SKILL</div>
+          <h2>대부분의 학생은 “무엇을 더 해야 하는지”가 아니라 “무엇부터 해야 하는지”를 모릅니다.</h2>
+          <p class="sub">
+            같은 4등급이라도 학생마다 막히는 지점은 다릅니다. 델타스킬은 단순 오답 목록이 아니라,
+            목표 등급까지 이어지는 우선순위 학습 경로를 제공합니다.
+          </p>
+        </div>
+
+        <div class="cards">
+          <article class="card">
+            <div class="icon">🎯</div>
+            <h3>목표 등급 중심</h3>
+            <p>현재 점수에서 목표 등급까지 필요한 핵심 능력을 역산하여 학습 우선순위를 정합니다.</p>
+          </article>
+          <article class="card">
+            <div class="icon">🧭</div>
+            <h3>최소 경로 처방</h3>
+            <p>모든 단원을 다시 하는 방식이 아니라, 성적 상승에 가장 영향이 큰 구간부터 공략합니다.</p>
+          </article>
+          <article class="card">
+            <div class="icon">📈</div>
+            <h3>처방-성과 데이터 축적</h3>
+            <p>진단, 처방, 학습 결과를 연결해 더 정밀한 등급 상승 전략으로 고도화합니다.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="solution" class="process">
+      <div class="wrap process-grid">
+        <div class="quote">
+          <strong>AI가 강사를 대체하는 사업이 아닙니다.</strong>
+          <p>
+            델타스킬은 실력 있는 강사의 판단 노하우를 AI 시스템으로 구조화하여,
+            더 많은 학생에게 일관된 진단과 처방을 제공하는 서비스입니다.
+          </p>
+        </div>
+
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-no">01</div>
+            <div>
+              <h3>학생의 현재 위치를 진단</h3>
+              <p>문항 풀이 결과와 풀이 과정 데이터를 바탕으로 현재 등급대의 병목을 파악합니다.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-no">02</div>
+            <div>
+              <h3>등급대별 우선순위 매트릭스 적용</h3>
+              <p>목표 등급 달성에 필요한 유형, 개념, 풀이 습관의 우선순위를 계산합니다.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-no">03</div>
+            <div>
+              <h3>개인별 학습 경로 제공</h3>
+              <p>학생이 지금 가장 먼저 해결해야 할 델타 스킬을 제시하고 학습 순서를 설계합니다.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="process">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="kicker">FOR STUDENTS & EDUCATION PARTNERS</div>
+          <h2>독학재수학원, 관리형 독서실, 수학학원에 필요한 AI 학습 코치</h2>
+          <p class="sub">
+            학생에게는 “오늘 무엇을 해야 하는지”를, 교육기관에는 “누가 어디서 막히는지”를 보여줍니다.
+          </p>
+        </div>
+
+        <div class="split">
+          <div class="target">
+            <div class="check">✓</div>
+            <div>
+              <strong>학생·학부모</strong>
+              <span>막연한 문제풀이가 아니라 목표 등급까지의 구체적 학습 로드맵을 확인합니다.</span>
+            </div>
+          </div>
+          <div class="target">
+            <div class="check">✓</div>
+            <div>
+              <strong>학원·교육기관</strong>
+              <span>학생별 취약점과 우선 지도 포인트를 빠르게 파악해 관리 효율을 높입니다.</span>
+            </div>
+          </div>
+          <div class="target">
+            <div class="check">✓</div>
+            <div>
+              <strong>강사진</strong>
+              <span>숙련 강사의 판단 기준을 데이터화하여 상담, 처방, 커리큘럼 설계에 활용합니다.</span>
+            </div>
+          </div>
+          <div class="target">
+            <div class="check">✓</div>
+            <div>
+              <strong>파트너</strong>
+              <span>진단 리포트, 등급 상승 경로, 학습 관리 시스템을 결합한 서비스 도입이 가능합니다.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="cta">
+      <div class="wrap">
+        <div class="cta-box">
+          <div>
+            <h2>델타스킬과 함께<br />수학 성적 상승 경로를 설계하세요.</h2>
+            <p>
+              서비스 제휴, 학원 도입, 투자·사업 협력 문의를 환영합니다.
+            </p>
+          </div>
+          <a class="btn" href="mailto:contact@deltaskill.co.kr">contact@deltaskill.co.kr</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-grid">
+      <div>© 2026 주식회사 델타스킬. All rights reserved.</div>
+      <div>deltaskill.co.kr · AI Math Learning Path Service</div>
+    </div>
+  </footer>
+</body>
+</html>
