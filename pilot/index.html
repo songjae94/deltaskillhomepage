@@ -143,7 +143,7 @@ async function saveAll(res){
  if(CONFIG.url&&CONFIG.key){
    /* select 권한 없이도 동작하도록 ID를 클라이언트에서 생성 (return=minimal) */
    const ids=LS.get("ds_ids")||{};const sid=ids[S.phone]||uid();ids[S.phone]=sid;LS.set("ds_ids",ids);S.studentId=sid;
-   await sbPost("students",{id:sid,phone:S.phone,name:S.profile.name,academy:S.profile.academy,grade:S.profile.grade,subject:S.profile.subject,consent:true},true);
+   try{await sbPost("students",{id:sid,phone:S.phone,name:S.profile.name,academy:S.profile.academy,grade:S.profile.grade,subject:S.profile.subject,consent:true});}catch(e){if(!(""+e).includes("409"))throw e;/*409=이미 가입된 기기 → 정상*/}
    const subId=uid();
    await sbPost("submissions",{id:subId,student_id:sid,exam_code:EXAM.code,attempt_no:S.attempt,score:res.score});
    await sbPost("responses",res.responses.map(x=>({...x,submission_id:subId})));
