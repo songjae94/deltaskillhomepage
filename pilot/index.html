@@ -76,20 +76,22 @@ function login(){el("screen").innerHTML=`<div class="pad"><div class="h">델타�
    else{S.screen="signup";}render();window.scrollTo(0,0);};}
 
 /* ---------- 가입 + 동의 ---------- */
-function signup(){const p=S.profile||{name:"",academy:"",grade:"",subject:""};S._p=p;S._consent=S._consent||false;
+function signup(){const p=S.profile||{name:"",academy:"",grade:"",subject:""};S._p=p;S._consent=S._consent||false;S._consent2=S._consent2||false;
  el("screen").innerHTML=`<div class="pad"><div class="h">가입 (최초 1회)</div><div class="desc">다음 주부터 같은 번호로 접속하면 이어서 기록돼요.</div>
  <div class="field"><label>이름</label><input class="txt" id="nm" placeholder="이름" value="${esc(p.name)}"></div>
  <div class="field"><label>학원명</label><input class="txt" id="ac" placeholder="예: OO독학재수학원 일산" value="${esc(p.academy)}"></div>
  <div class="field"><label>구분</label><div class="seg"><button data-g="재수생" class="${p.grade==='재수생'?'on':''}">재수생(N수)</button><button data-g="고3" class="${p.grade==='고3'?'on':''}">고3</button></div></div>
  <div class="field"><label>수학 선택과목</label><div class="seg"><button data-s="미적분" class="${p.subject==='미적분'?'on':''}">미적분</button><button data-s="확통" class="${p.subject==='확통'?'on':''}">확률과통계</button></div></div>
  <div class="field"><label>개인정보 수집·이용 동의 (만 19세 이상 본인 동의)</label>
-   <div class="legalbox">델타스킬(가칭)은 수학 학습 진단 서비스 제공을 위해 아래 정보를 수집·이용합니다.<br>• 수집 항목: 이름, 휴대폰번호, 학원명, 학년, 선택과목, 모의고사 문항별 응답·정오·자가진단 데이터<br>• 이용 목적: 개인 맞춤 학습 진단·처방·경로 제공, 서비스 개선<br>• 보유 기간: 수집일로부터 서비스 종료 시 또는 동의 철회 시까지<br>• 동의를 거부할 수 있으나, 거부 시 진단 서비스 이용이 제한됩니다.<br>• 본인은 만 19세 이상이며 위 내용에 동의합니다.</div>
-   <label class="consent ${S._consent?'on':''}" id="cs"><input type="checkbox" id="ck" ${S._consent?'checked':''}><span class="ct"><b>[필수]</b> 만 19세 이상이며 개인정보 수집·이용에 동의합니다.</span></label></div>
+   <div class="legalbox">(주)델타스킬은 수학 학습 진단 서비스 제공을 위해 아래와 같이 개인정보를 수집·이용합니다.<br><b>[필수] 수집·이용</b><br>• 수집 항목: 이름, 휴대폰번호, 학원명, 학년, 선택과목, 모의고사 문항별 응답·정오·자가진단 데이터<br>• 이용 목적: 개인 맞춤 학습 진단·처방·학습 경로 제공, 서비스 개선<br>• 개인정보는 (주)델타스킬이 직접 관리하며, 본인 동의 없이 제3자에게 제공하지 않습니다<br>• 보유 기간: 서비스 종료 또는 동의 철회 시까지 (철회 문의: contact@deltaskill.co.kr)<br>• 동의를 거부할 수 있으나, 거부 시 진단 서비스 이용이 제한됩니다.<br><b>[선택] 홍보 활용</b><br>• 학습 결과(점수·등급 변화 등)를 개인을 알아볼 수 없도록 익명 처리하여 서비스 소개·홍보(홈페이지, SNS, 소개 자료 등)에 활용합니다.<br>• 선택 동의를 거부해도 서비스 이용에 불이익이 없습니다.</div>
+   <label class="consent ${S._consent?'on':''}" id="cs"><input type="checkbox" id="ck" ${S._consent?'checked':''}><span class="ct"><b>[필수]</b> 만 19세 이상이며 개인정보 수집·이용에 동의합니다.</span></label>
+   <label class="consent ${S._consent2?'on':''}" id="cs2"><input type="checkbox" id="ck2" ${S._consent2?'checked':''}><span class="ct"><b>[선택]</b> 익명 처리된 학습 결과의 홍보 활용에 동의합니다.</span></label></div>
  </div>`;
  el("nm").oninput=e=>p.name=e.target.value;el("ac").oninput=e=>p.academy=e.target.value;
  document.querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>{p.grade=b.dataset.g;render();});
  document.querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>{p.subject=b.dataset.s;render();});
  el("ck").onchange=e=>{S._consent=e.target.checked;el("cs").classList.toggle("on",e.target.checked);el("done").disabled=!ok();};
+ el("ck2").onchange=e=>{S._consent2=e.target.checked;el("cs2").classList.toggle("on",e.target.checked);};
  S.profile=p;
  function ok(){return p.name&&p.academy&&p.grade&&p.subject&&S._consent;}
  el("nm").addEventListener("input",()=>{el("done").disabled=!ok();});
@@ -143,7 +145,7 @@ async function saveAll(res){
  if(CONFIG.url&&CONFIG.key){
    /* select 권한 없이도 동작하도록 ID를 클라이언트에서 생성 (return=minimal) */
    const ids=LS.get("ds_ids")||{};const sid=ids[S.phone]||uid();ids[S.phone]=sid;LS.set("ds_ids",ids);S.studentId=sid;
-   try{await sbPost("students",{id:sid,phone:S.phone,name:S.profile.name,academy:S.profile.academy,grade:S.profile.grade,subject:S.profile.subject,consent:true});}catch(e){if(!(""+e).includes("409"))throw e;/*409=이미 가입된 기기 → 정상*/}
+   try{await sbPost("students",{id:sid,phone:S.phone,name:S.profile.name,academy:S.profile.academy,grade:S.profile.grade,subject:S.profile.subject,consent:true,consent_marketing:S._consent2===true});}catch(e){if(!(""+e).includes("409"))throw e;/*409=이미 가입된 기기 → 정상*/}
    const subId=uid();
    await sbPost("submissions",{id:subId,student_id:sid,exam_code:EXAM.code,attempt_no:S.attempt,score:res.score});
    await sbPost("responses",res.responses.map(x=>({...x,submission_id:subId})));
