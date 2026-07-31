@@ -79,7 +79,7 @@ function items(){const D=EXAM.data;return D.gong.concat(S.profile&&S.profile.sub
 function graded(q){const a=S.ans[q.no];if(a==null||a==="")return null;return(""+a)===(""+q.ans)?"o":"x";}
 function answeredCount(){return items().filter(q=>S.ans[q.no]!=null&&S.ans[q.no]!=="").length;}
 function setProg(){el("pbar").style.width=(["login","signup","exam"].includes(S.screen)?0:S.screen==="result"?100:S.screen==="quiz"?answeredCount()/30*100:8)+"%";}
-function render(){setProg();el("subttl").textContent=(["login","signup","exam"].includes(S.screen)?"수학 등급 진단 · 파일럿":EXAM.title+" · 파일럿")+(S.profile&&!["login","signup","exam"].includes(S.screen)?` · ${S.profile.subject}`:"");({login:login,signup:signup,exam:examSelect,intro:intro,quiz:quiz,result:result}[S.screen])();}
+function render(){setProg();el("subttl").textContent=(["login","signup","exam"].includes(S.screen)?"수학 등급 진단 · 파일럿":EXAM.title+" · 파일럿")+(S.profile&&!["login","signup","exam"].includes(S.screen)?` · ${S.profile.subject}`:"");({login:login,signup:signup,exam:examSelect,intro:intro,quiz:quiz,result:result}[S.screen])();syncHist();}
 
 /* ---------- 로그인 ---------- */
 function login(){el("screen").innerHTML=`<div class="pad"><div class="h">델타스킬 수학 진단</div>
@@ -137,7 +137,7 @@ function examSelect(){
   if(e.ex!=null){const ex=EXAMS[e.ex];return `<button class="q" style="width:100%;text-align:left;cursor:pointer" data-ex="${e.ex}"><div class="qh" style="margin-bottom:2px"><span style="font-size:18px">📝</span><span style="font-weight:800;font-size:15.5px">${ex.title}</span></div><div style="font-size:12px;color:var(--mut)">${ex.desc}</div></button>`;}
   return `<div class="q" style="width:100%;opacity:.55"><div class="qh" style="margin-bottom:2px"><span style="font-size:18px">🔒</span><span style="font-weight:800;font-size:15.5px;color:var(--mut)">${e.title}</span></div><div style="font-size:12px;color:var(--mut)">${e.note||"준비 중 — 곧 열려요"}</div></div>`;
  }).join("")+`</div>`;
- document.querySelectorAll("[data-back]").forEach(b=>b.onclick=()=>{S.catSel=null;render();window.scrollTo(0,0);});
+ document.querySelectorAll("[data-back]").forEach(b=>b.onclick=()=>{if(HB){history.back();}else{S.catSel=null;render();window.scrollTo(0,0);}});
  document.querySelectorAll("[data-ex]").forEach(b=>b.onclick=()=>{EXAM=EXAMS[+b.dataset.ex];S.attempt=((LS.get("ds_subs")||[]).filter(x=>x.phone===S.phone&&x.exam===EXAM.code).length)+1;S.screen="intro";render();window.scrollTo(0,0);});
  el("fab").innerHTML="";}
 
@@ -234,5 +234,22 @@ function result(){const its=items();const done=its.filter(q=>graded(q)!=null);co
   <div class="note">파일럿 · deltaskill.co.kr</div></div>`;
  const pv=el("pv");if(pv)pv.onclick=()=>{S.previewPath=true;result();window.scrollTo(0,el("screen").scrollHeight);};
  el("fab").innerHTML=`<button class="btn ghost" id="home">완료 · 처음으로</button>`;el("home").onclick=()=>{S={screen:"login",phone:"",profile:null,studentId:null,catSel:null,ans:{},reason:{},conf:{},memo:{},step:{},photo:{},previewPath:false,attempt:1,saveMode:null};render();window.scrollTo(0,0);};}
+/* ---------- 브라우저 뒤로가기: 앱 내 화면 이동으로 처리 ---------- */
+let HB=false;
+function backable(){return S.screen==="signup"||S.screen==="quiz"||S.screen==="intro"||S.screen==="result"||(S.screen==="exam"&&S.catSel!=null);}
+function goBack(){
+ if(S.screen==="signup"){S.screen="login";return true;}
+ if(S.screen==="quiz"){S.screen="intro";return true;}
+ if(S.screen==="intro"){S.screen="exam";return true;}
+ if(S.screen==="result"){S.ans={};S.reason={};S.conf={};S.memo={};S.step={};S.photo={};S.previewPath=false;S.saveMode=null;S.screen="exam";return true;}
+ if(S.screen==="exam"&&S.catSel!=null){S.catSel=null;return true;}
+ return false;}
+function syncHist(){if(backable()&&!HB){try{history.pushState({ds:1},"");HB=true;}catch(e){}}}
+window.addEventListener("popstate",e=>{
+ if(e.state&&e.state.ds===1){HB=true;return;}
+ HB=false;
+ if(goBack()){render();window.scrollTo(0,0);}
+});
+try{history.replaceState({ds:0},"");}catch(e){}
 render();
 </script></body></html>
