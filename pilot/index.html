@@ -61,7 +61,7 @@ const el=id=>document.getElementById(id);
 const esc=s=>(""+(s??"")).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
 const uid=()=>(crypto.randomUUID?crypto.randomUUID():Date.now()+"-"+Math.random().toString(16).slice(2));
 const LS={get:k=>JSON.parse(localStorage.getItem(k)||"null"),set:(k,v)=>localStorage.setItem(k,JSON.stringify(v))};
-let S={screen:"login",phone:"",profile:null,studentId:null,ans:{},reason:{},conf:{},memo:{},step:{},previewPath:false,attempt:1,saveMode:null};
+let S={screen:"login",phone:"",profile:null,studentId:null,ans:{},reason:{},conf:{},memo:{},step:{},photo:{},previewPath:false,attempt:1,saveMode:null};
 function items(){const D=EXAM.data;return D.gong.concat(S.profile&&S.profile.subject==="미적분"?D.mi:D.hw);}
 function graded(q){const a=S.ans[q.no];if(a==null||a==="")return null;return(""+a)===(""+q.ans)?"o":"x";}
 function answeredCount(){return items().filter(q=>S.ans[q.no]!=null&&S.ans[q.no]!=="").length;}
@@ -87,7 +87,7 @@ function signup(){const p=S.profile||{name:"",academy:"",grade:"",subject:""};S.
  <div class="field"><label>구분</label><div class="seg"><button data-g="재수생" class="${p.grade==='재수생'?'on':''}">재수생(N수)</button><button data-g="고3" class="${p.grade==='고3'?'on':''}">고3</button></div></div>
  <div class="field"><label>수학 선택과목</label><div class="seg"><button data-s="미적분" class="${p.subject==='미적분'?'on':''}">미적분</button><button data-s="확통" class="${p.subject==='확통'?'on':''}">확률과통계</button></div></div>
  <div class="field"><label>개인정보 수집·이용 동의 (만 19세 이상 본인 동의)</label>
-   <div class="legalbox">(주)델타스킬은 수학 학습 진단 서비스 제공을 위해 아래와 같이 개인정보를 수집·이용합니다.<br><b>[필수] 수집·이용</b><br>• 수집 항목: 이름, 휴대폰번호, 학원명, 학년, 선택과목, 모의고사 문항별 응답·정오·자가진단 데이터<br>• 이용 목적: 개인 맞춤 학습 진단·처방·학습 경로 제공, 서비스 개선<br>• 개인정보는 (주)델타스킬이 직접 관리하며, 본인 동의 없이 제3자에게 제공하지 않습니다<br>• 보유 기간: 서비스 종료 또는 동의 철회 시까지 (철회 문의: contact@deltaskill.co.kr)<br>• 동의를 거부할 수 있으나, 거부 시 진단 서비스 이용이 제한됩니다.<br><b>[선택] 홍보 활용</b><br>• 학습 결과(점수·등급 변화 등)를 개인을 알아볼 수 없도록 익명 처리하여 서비스 소개·홍보(홈페이지, SNS, 소개 자료 등)에 활용합니다.<br>• 선택 동의를 거부해도 서비스 이용에 불이익이 없습니다.</div>
+   <div class="legalbox">(주)델타스킬은 수학 학습 진단 서비스 제공을 위해 아래와 같이 개인정보를 수집·이용합니다.<br><b>[필수] 수집·이용</b><br>• 수집 항목: 이름, 휴대폰번호, 학원명, 학년, 선택과목, 모의고사 문항별 응답·정오·자가진단 데이터, 풀이 사진(선택 첨부 시 · 처방 분석 목적, 관리자만 열람)<br>• 이용 목적: 개인 맞춤 학습 진단·처방·학습 경로 제공, 서비스 개선<br>• 개인정보는 (주)델타스킬이 직접 관리하며, 본인 동의 없이 제3자에게 제공하지 않습니다<br>• 보유 기간: 서비스 종료 또는 동의 철회 시까지 (철회 문의: contact@deltaskill.co.kr)<br>• 동의를 거부할 수 있으나, 거부 시 진단 서비스 이용이 제한됩니다.<br><b>[선택] 홍보 활용</b><br>• 학습 결과(점수·등급 변화 등)를 개인을 알아볼 수 없도록 익명 처리하여 서비스 소개·홍보(홈페이지, SNS, 소개 자료 등)에 활용합니다.<br>• 선택 동의를 거부해도 서비스 이용에 불이익이 없습니다.</div>
    <label class="consent ${S._consent?'on':''}" id="cs"><input type="checkbox" id="ck" ${S._consent?'checked':''}><span class="ct"><b>[필수]</b> 만 19세 이상이며 개인정보 수집·이용에 동의합니다.</span></label>
    <label class="consent ${S._consent2?'on':''}" id="cs2"><input type="checkbox" id="ck2" ${S._consent2?'checked':''}><span class="ct"><b>[선택]</b> 익명 처리된 학습 결과의 홍보 활용에 동의합니다.</span></label></div>
  </div>`;
@@ -127,12 +127,14 @@ function intro(){el("screen").innerHTML=`<div class="pad"><div class="h">${esc(S
 function card(q){const g=graded(q);
  let ansUI=q.fmt==="c"?`<div class="chips">`+CHIP.map(c=>`<button class="chip ${S.ans[q.no]===c?'on':''}" data-a="${c}">${c}</button>`).join("")+`</div>`:`<input class="numin" inputmode="numeric" placeholder="답 입력" value="${S.ans[q.no]??''}" data-num="1">`;
  let badge=g?`<span class="badge ${g}">${g==='o'?'정답':'오답'}</span>`:"";
- let diag=(S.ans[q.no]!=null&&S.ans[q.no]!=="")?`<div class="diag">${g==='x'?`${q.steps?`<div class="dlab">어디까지 갔나요?</div><div class="rchips" style="margin-bottom:9px">`+["손도 못 댐"].concat(q.steps.map((s,i)=>(i+1)+". "+s)).concat(["다 풀었는데 답 틀림"]).map(s=>`<span class="rchip ${S.step[q.no]===s?'on':''}" data-st="${esc(s)}">${s}</span>`).join("")+`</div>`:""}<div class="dlab">${q.steps?'막힌 이유는?':'왜 틀렸나요?'} (한 번 탭)</div><div class="rchips">`+REASONS.map(r=>`<span class="rchip ${S.reason[q.no]===r?'on':''}" data-r="${r}">${r}</span>`).join("")+`</div><input class="memo" placeholder="막힌 지점 한 줄 (선택)" value="${esc(S.memo[q.no])}" data-memo="1">`:`<div class="dlab">확신도</div><div class="rchips">`+["확신함","애매함","찍음"].map(r=>`<span class="rchip ${S.conf[q.no]===r?'on':''}" data-c="${r}">${r}</span>`).join("")+`</div>`}</div>`:"";
+ let diag=(S.ans[q.no]!=null&&S.ans[q.no]!=="")?`<div class="diag">${g==='x'?`${q.steps?`<div class="dlab">어디까지 갔나요?</div><div class="rchips" style="margin-bottom:9px">`+["손도 못 댐"].concat(q.steps.map((s,i)=>(i+1)+". "+s)).concat(["다 풀었는데 답 틀림"]).map(s=>`<span class="rchip ${S.step[q.no]===s?'on':''}" data-st="${esc(s)}">${s}</span>`).join("")+`</div>`:""}<div class="dlab">${q.steps?'막힌 이유는?':'왜 틀렸나요?'} (한 번 탭)</div><div class="rchips">`+REASONS.map(r=>`<span class="rchip ${S.reason[q.no]===r?'on':''}" data-r="${r}">${r}</span>`).join("")+`</div><input class="memo" placeholder="막힌 지점 한 줄 (선택)" value="${esc(S.memo[q.no])}" data-memo="1"><div style="margin-top:8px">${S.photo[q.no]?`<span class="rchip on" data-phx="1">📷 풀이 사진 첨부됨 ✓ · 탭하면 제거</span>`:`<span class="rchip" data-ph="1">📷 내 풀이 사진 첨부 (선택)</span>`}</div>`:`<div class="dlab">확신도</div><div class="rchips">`+["확신함","애매함","찍음"].map(r=>`<span class="rchip ${S.conf[q.no]===r?'on':''}" data-c="${r}">${r}</span>`).join("")+`</div>`}</div>`:"";
  const d=document.createElement("div");d.className="q";d.innerHTML=`<div class="qh"><span class="qno">${q.no}</span><span class="qmeta"><b>${q.unit}</b> · ${q.topic} · ${q.jum}점 · ${q.fmt==='c'?'객관식':'단답'}</span>${badge}</div>${ansUI}${diag}`;
  d.querySelectorAll(".chip").forEach(b=>b.onclick=()=>{S.ans[q.no]=b.dataset.a;refresh();});
  const num=d.querySelector("[data-num]");if(num){num.oninput=e=>{S.ans[q.no]=e.target.value.trim();};num.onblur=()=>refresh();}
  d.querySelectorAll("[data-r]").forEach(c=>c.onclick=()=>{S.reason[q.no]=c.dataset.r;refresh();});
  d.querySelectorAll("[data-st]").forEach(c=>c.onclick=()=>{S.step[q.no]=c.dataset.st;refresh();});
+ const ph=d.querySelector("[data-ph]");if(ph)ph.onclick=()=>pickPhoto(q);
+ const phx=d.querySelector("[data-phx]");if(phx)phx.onclick=()=>{delete S.photo[q.no];refresh();};
  d.querySelectorAll("[data-c]").forEach(c=>c.onclick=()=>{S.conf[q.no]=c.dataset.c;refresh();});
  const m=d.querySelector("[data-memo]");if(m)m.oninput=e=>S.memo[q.no]=e.target.value;return d;}
 function refresh(){const y=window.scrollY;quiz();window.scrollTo(0,y);setProg();updFab();}
@@ -143,6 +145,17 @@ function quiz(){const wrap=document.createElement("div");wrap.className="pad";
  const g2=document.createElement("div");(S.profile.subject==="미적분"?EXAM.data.mi:EXAM.data.hw).forEach(q=>g2.appendChild(card(q)));wrap.appendChild(g2);
  el("screen").innerHTML="";el("screen").appendChild(wrap);updFab();}
 function updFab(){const n=answeredCount();el("fab").innerHTML=`<button class="btn" id="sub" ${n>=1?"":"disabled"}>제출하고 진단 보기 (${n}/30)</button>`;if(n>=1)el("sub").onclick=submitDiag;}
+
+async function pickPhoto(q){const inp=document.createElement("input");inp.type="file";inp.accept="image/*";
+ inp.onchange=async e=>{const f=e.target.files&&e.target.files[0];if(!f)return;
+  try{const img=await createImageBitmap(f);const MAX=1280;const sc=Math.min(1,MAX/Math.max(img.width,img.height));
+   const c=document.createElement("canvas");c.width=Math.round(img.width*sc);c.height=Math.round(img.height*sc);
+   c.getContext("2d").drawImage(img,0,0,c.width,c.height);
+   const blob=await new Promise(r=>c.toBlob(r,"image/jpeg",0.72));
+   S.photo[q.no]=blob||f;}
+  catch(err){if(f.size<2097152)S.photo[q.no]=f;else{alert("사진 용량이 너무 커요. 밝은 곳에서 다시 찍어주세요.");return;}}
+  refresh();};
+ inp.click();}
 
 async function submitDiag(){el("sub").disabled=true;el("sub").textContent="저장 중...";
  const res=buildResult();let mode="demo";
@@ -162,6 +175,12 @@ async function saveAll(res){
    try{await sbPost("students",{id:sid,phone:S.phone,name:S.profile.name,academy:S.profile.academy,grade:S.profile.grade,subject:S.profile.subject,consent:true,consent_marketing:S._consent2===true});}catch(e){if(!(""+e).includes("409"))throw e;/*409=이미 가입된 기기 → 정상*/}
    const subId=uid();
    await sbPost("submissions",{id:subId,student_id:sid,exam_code:EXAM.code,attempt_no:S.attempt,score:res.score});
+   /* 풀이 사진 업로드 (실패해도 제출은 유지) */
+   const okPhotos=new Set();
+   for(const no of Object.keys(S.photo||{})){
+     try{const r=await fetch(`${CONFIG.url}/storage/v1/object/solutions/${subId}/${no}.jpg`,{method:"POST",headers:{apikey:CONFIG.key,Authorization:"Bearer "+CONFIG.key,"Content-Type":"image/jpeg"},body:S.photo[no]});if(r.ok)okPhotos.add(+no);}catch(e){}
+   }
+   res.responses.forEach(x=>{if(okPhotos.has(x.item_no))x.photo_path=subId+"/"+x.item_no+".jpg";});
    await sbPost("responses",res.responses.map(x=>({...x,submission_id:subId})));
    const subs=LS.get("ds_subs")||[];subs.push({phone:S.phone,exam:EXAM.code,attempt:S.attempt,score:res.score,mode:"server"});LS.set("ds_subs",subs);
    return "server";
@@ -188,6 +207,6 @@ function result(){const its=items();const done=its.filter(q=>graded(q)!=null);co
   <div class="seclabel">🗺️ 나의 학습 경로</div>${pathSec}
   <div class="note">파일럿 · deltaskill.co.kr</div></div>`;
  const pv=el("pv");if(pv)pv.onclick=()=>{S.previewPath=true;result();window.scrollTo(0,el("screen").scrollHeight);};
- el("fab").innerHTML=`<button class="btn ghost" id="home">완료 · 처음으로</button>`;el("home").onclick=()=>{S={screen:"login",phone:"",profile:null,studentId:null,ans:{},reason:{},conf:{},memo:{},step:{},previewPath:false,attempt:1,saveMode:null};render();window.scrollTo(0,0);};}
+ el("fab").innerHTML=`<button class="btn ghost" id="home">완료 · 처음으로</button>`;el("home").onclick=()=>{S={screen:"login",phone:"",profile:null,studentId:null,ans:{},reason:{},conf:{},memo:{},step:{},photo:{},previewPath:false,attempt:1,saveMode:null};render();window.scrollTo(0,0);};}
 render();
 </script></body></html>
