@@ -99,10 +99,10 @@ function signup(){const p=S.profile||{name:"",academy:"",grade:"",subject:""};S.
  <div class="field"><label>학원 선택</label><div class="acg">${ACADEMIES.map(a=>`<button data-ac="${a}" class="${S._acMode!=='etc'&&p.academy===a?'on':''}">${a}</button>`).join("")}<button data-ac="__etc" class="full ${S._acMode==='etc'?'on':''}">기타 (직접 입력)</button></div>${S._acMode==='etc'?`<input class="txt" id="ac" placeholder="학원명을 직접 입력하세요" value="${esc(p.academy)}" style="margin-top:8px">`:``}</div>
  <div class="field"><label>구분</label><div class="seg"><button data-g="재수생" class="${p.grade==='재수생'?'on':''}">재수생(N수)</button><button data-g="고3" class="${p.grade==='고3'?'on':''}">고3</button></div></div>
  <div class="field"><label>수학 선택과목</label><div class="seg"><button data-s="미적분" class="${p.subject==='미적분'?'on':''}">미적분</button><button data-s="확통" class="${p.subject==='확통'?'on':''}">확률과통계</button></div></div>
- <div class="field"><label>개인정보 수집·이용 동의 (만 19세 이상 본인 동의)</label>
-   <div class="legalbox">(주)델타스킬은 수학 학습 진단 서비스 제공을 위해 아래와 같이 개인정보를 수집·이용합니다.<br><b>[필수] 수집·이용</b><br>• 수집 항목: 이름, 휴대폰번호, 학원명, 학년, 선택과목, 모의고사 문항별 응답·정오·자가진단 데이터, 풀이 사진(선택 첨부 시 · 처방 분석 목적, 관리자만 열람)<br>• 이용 목적: 개인 맞춤 학습 진단·처방·학습 경로 제공, 서비스 개선<br>• 개인정보는 (주)델타스킬이 직접 관리하며, 본인 동의 없이 제3자에게 제공하지 않습니다<br>• 보유 기간: 서비스 종료 또는 동의 철회 시까지 (철회 문의: contact@deltaskill.co.kr)<br>• 동의를 거부할 수 있으나, 거부 시 진단 서비스 이용이 제한됩니다.<br><b>[선택] 홍보 활용</b><br>• 학습 결과(점수·등급 변화 등)를 개인을 알아볼 수 없도록 익명 처리하여 서비스 소개·홍보(홈페이지, SNS, 소개 자료 등)에 활용합니다.<br>• 선택 동의를 거부해도 서비스 이용에 불이익이 없습니다.</div>
-   <label class="consent ${S._consent?'on':''}" id="cs"><input type="checkbox" id="ck" ${S._consent?'checked':''}><span class="ct"><b>[필수]</b> 만 19세 이상이며 개인정보 수집·이용에 동의합니다.</span></label>
-   <label class="consent ${S._consent2?'on':''}" id="cs2"><input type="checkbox" id="ck2" ${S._consent2?'checked':''}><span class="ct"><b>[선택]</b> 익명 처리된 학습 결과의 홍보 활용에 동의합니다.</span></label></div>
+ <div class="field"><label>개인정보 수집·이용 동의 (만 14세 이상 본인 동의)</label>
+   <div class="legalbox"><b>개인정보처리자</b> 델타스킬 (대표 송재형) · 문의 admin@deltaskill.co.kr<br>델타스킬은 수학 학습 진단 서비스 제공을 위해 아래와 같이 개인정보를 수집·이용합니다.<br><b>[필수] 수집·이용</b><br>• 수집 항목: 이름, 휴대폰번호, 학원명, 학년, 선택과목, 모의고사 문항별 응답·정오·자가진단 데이터, 풀이 사진(선택 첨부 시 · 처방 분석 목적, 관리자만 열람)<br>• 이용 목적: 개인 맞춤 학습 진단·처방·학습 경로 제공, 서비스 개선<br>• 개인정보는 델타스킬이 직접 관리하며, 본인 동의 없이 제3자에게 제공하지 않습니다<br>• 보유 기간: 서비스 종료 또는 동의 철회 시까지 (철회 문의: admin@deltaskill.co.kr)<br>• 법인 설립에 따른 이전: 현재 설립을 진행 중인 (주)델타스킬로 사업이 승계될 예정이며, 이 경우 수집된 개인정보도 함께 이전됩니다. 이전 전에 이전 사실·이전받는 자·이전을 원하지 않으실 때의 조치 방법을 별도로 알려 드립니다.<br>• 동의를 거부할 수 있으나, 거부 시 진단 서비스 이용이 제한됩니다.<br><b>[선택] 복습 알림 수신</b><br>• 진단 결과에 따라 다시 봐야 할 문제를 카카오톡 또는 문자로 알려 드립니다.<br>• 알림에는 시험명·문항 번호·단원만 포함되며, <b>점수·등급은 포함되지 않습니다.</b><br>• 동의하지 않으셔도 진단 서비스는 그대로 이용하실 수 있고, 알림은 언제든지 끄실 수 있습니다.<br><b>[선택] 홍보 활용</b><br>• 학습 결과(점수·등급 변화 등)를 개인을 알아볼 수 없도록 익명 처리하여 서비스 소개·홍보(홈페이지, SNS, 소개 자료 등)에 활용합니다.<br>• 선택 동의를 거부해도 서비스 이용에 불이익이 없습니다.</div>
+   <label class="consent ${S._consent?'on':''}" id="cs"><input type="checkbox" id="ck" ${S._consent?'checked':''}><span class="ct"><b>[필수]</b> 만 14세 이상이며 개인정보 수집·이용에 동의합니다.</span></label>
+   <label class="consent ${S._consent3?'on':''}" id="cs3"><input type="checkbox" id="ck3" ${S._consent3?'checked':''}><span class="ct"><b>[선택]</b> 복습 알림(카카오톡·문자) 수신에 동의합니다.</span></label><label class="consent ${S._consent2?'on':''}" id="cs2"><input type="checkbox" id="ck2" ${S._consent2?'checked':''}><span class="ct"><b>[선택]</b> 익명 처리된 학습 결과의 홍보 활용에 동의합니다.</span></label></div>
  </div>`;
  el("nm").oninput=e=>p.name=e.target.value;
  if(el("ac"))el("ac").oninput=e=>{p.academy=e.target.value;S._acEtc=e.target.value;el("done").disabled=!ok();};
@@ -111,6 +111,7 @@ function signup(){const p=S.profile||{name:"",academy:"",grade:"",subject:""};S.
  document.querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>{p.subject=b.dataset.s;render();});
  el("ck").onchange=e=>{S._consent=e.target.checked;el("cs").classList.toggle("on",e.target.checked);el("done").disabled=!ok();};
  el("ck2").onchange=e=>{S._consent2=e.target.checked;el("cs2").classList.toggle("on",e.target.checked);};
+ el("ck3").onchange=e=>{S._consent3=e.target.checked;el("cs3").classList.toggle("on",e.target.checked);};
  S.profile=p;
  function ok(){return p.name&&p.academy&&p.grade&&p.subject&&S._consent;}
  el("nm").addEventListener("input",()=>{el("done").disabled=!ok();});
@@ -198,7 +199,7 @@ async function saveAll(res){
  if(CONFIG.url&&CONFIG.key){
    /* select 권한 없이도 동작하도록 ID를 클라이언트에서 생성 (return=minimal) */
    const ids=LS.get("ds_ids")||{};const sid=ids[S.phone]||uid();ids[S.phone]=sid;LS.set("ds_ids",ids);S.studentId=sid;
-   try{await sbPost("students",{id:sid,phone:S.phone,name:S.profile.name,academy:S.profile.academy,grade:S.profile.grade,subject:S.profile.subject,consent:true,consent_marketing:S._consent2===true});}catch(e){if(!(""+e).includes("409"))throw e;/*409=이미 가입된 기기 → 정상*/}
+   try{await sbPost("students",{id:sid,phone:S.phone,name:S.profile.name,academy:S.profile.academy,grade:S.profile.grade,subject:S.profile.subject,consent:true,consent_marketing:S._consent2===true,consent_notify:S._consent3===true});}catch(e){if(!(""+e).includes("409"))throw e;/*409=이미 가입된 기기 → 정상*/}
    const subId=uid();
    await sbPost("submissions",{id:subId,student_id:sid,exam_code:EXAM.code,attempt_no:S.attempt,score:res.score});
    /* 풀이 사진 업로드 (실패해도 제출은 유지) */
@@ -206,7 +207,7 @@ async function saveAll(res){
    for(const no of Object.keys(S.photo||{})){
      try{const r=await fetch(`${CONFIG.url}/storage/v1/object/solutions/${subId}/${no}.jpg`,{method:"POST",headers:{apikey:CONFIG.key,Authorization:"Bearer "+CONFIG.key,"Content-Type":"image/jpeg"},body:S.photo[no]});if(r.ok)okPhotos.add(+no);}catch(e){}
    }
-   res.responses.forEach(x=>{if(okPhotos.has(x.item_no))x.photo_path=subId+"/"+x.item_no+".jpg";});
+   res.responses.forEach(x=>{x.photo_path=okPhotos.has(x.item_no)?subId+"/"+x.item_no+".jpg":null;});
    await sbPost("responses",res.responses.map(x=>({...x,submission_id:subId})));
    const subs=LS.get("ds_subs")||[];subs.push({phone:S.phone,exam:EXAM.code,attempt:S.attempt,score:res.score,mode:"server"});LS.set("ds_subs",subs);
    return "server";
