@@ -131,7 +131,7 @@ function examSelect(){
  <div class="desc">${c.desc} — 회차를 선택하세요.</div>`+
  c.exams.map((e,j)=>{
   if(e.ex!=null){const ex=EXAMS[e.ex];return `<button class="q" style="width:100%;text-align:left;cursor:pointer" data-ex="${e.ex}"><div class="qh" style="margin-bottom:2px"><span style="font-size:18px">📝</span><span style="font-weight:800;font-size:15.5px">${ex.title}</span></div><div style="font-size:12px;color:var(--mut)">${ex.desc}</div></button>`;}
-  return `<div class="q" style="width:100%;opacity:.55"><div class="qh" style="margin-bottom:2px"><span style="font-size:18px">🔒</span><span style="font-weight:800;font-size:15.5px;color:var(--mut)">${e.title}</span></div><div style="font-size:12px;color:var(--mut)">${e.note||"준비 중 — 곸 열려요"}</div></div>`;
+  return `<div class="q" style="width:100%;opacity:.55"><div class="qh" style="margin-bottom:2px"><span style="font-size:18px">🔒</span><span style="font-weight:800;font-size:15.5px;color:var(--mut)">${e.title}</span></div><div style="font-size:12px;color:var(--mut)">${e.note||"준비 중 — 곧 열려요"}</div></div>`;
  }).join("")+`</div>`;
  document.querySelectorAll("[data-back]").forEach(b=>b.onclick=()=>{S.catSel=null;render();window.scrollTo(0,0);});
  document.querySelectorAll("[data-ex]").forEach(b=>b.onclick=()=>{EXAM=EXAMS[+b.dataset.ex];S.attempt=((LS.get("ds_subs")||[]).filter(x=>x.phone===S.phone&&x.exam===EXAM.code).length)+1;S.screen="intro";render();window.scrollTo(0,0);});
