@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+
+# 검색엔진 크롤러 개별 허용
+User-agent: Yeti
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Daumoa
+Allow: /
+
+Sitemap: https://www.deltaskill.co.kr/sitemap.xml
