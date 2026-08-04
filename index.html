@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>델타스킬 | 수능 수학 진단 — 4등급에서 2등급까지의 최소 학습 경로</title>
-<meta name="description" content="수능 수학 3~4등급 고3·N수생을 위한 AI 진단. 문항별로 어디까지 갔고 어디서 막혔는지를 분석해 목표 등급까지 가장 먼저 해야 할 학습 순서를 알려줍니다. 약 5분이면 끝납니다." />
+<title>델타스킬 | AI 오답노트 — 틀린 문제만 입력하면, 복습할 문제까지</title>
+<meta name="description" content="고3·N수생 AI 오답노트. 틀린 문항만 입력하면 AI가 어디서 막혔는지 분석해 오늘 복습할 문제와 다시 볼 시점까지 정해 드립니다. 약 5분이면 끝납니다." />
 <meta name="author" content="델타스킬" />
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
 <link rel="canonical" href="https://www.deltaskill.co.kr/" />
@@ -22,14 +22,14 @@
 <meta property="og:site_name" content="델타스킬 DeltaSkill" />
 <meta property="og:locale" content="ko_KR" />
 <meta property="og:url" content="https://www.deltaskill.co.kr/" />
-<meta property="og:title" content="델타스킬 | 수능 수학 진단 — 4등급에서 2등급까지의 최소 학습 경로" />
-<meta property="og:description" content="수능 수학 3~4등급 고3·N수생을 위한 AI 진단. 문항별로 어디까지 갔고 어디서 막혔는지를 분석해 목표 등급까지 가장 먼저 해야 할 학습 순서를 알려줍니다. 약 5분이면 끝납니다." />
+<meta property="og:title" content="델타스킬 — 수학 4등급을 2등급으로 | AI 오답노트" />
+<meta property="og:description" content="모의고사를 문항 단위로 분석해 등급을 가르는 문항을 찾고, 오늘 풀 문제까지 정해 드립니다." />
 <meta property="og:image" content="https://www.deltaskill.co.kr/og-image.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="델타스킬 | 수능 수학 진단 — 4등급에서 2등급까지의 최소 학습 경로" />
-<meta name="twitter:description" content="수능 수학 3~4등급 고3·N수생을 위한 AI 진단. 문항별로 어디까지 갔고 어디서 막혔는지를 분석해 목표 등급까지 가장 먼저 해야 할 학습 순서를 알려줍니다. 약 5분이면 끝납니다." />
+<meta name="twitter:title" content="델타스킬 | AI 오답노트 — 4등급에서 2등급까지의 최소 학습 경로" />
+<meta name="twitter:description" content="수능 수학 3~4등급 고3·N수생을 위한 AI 오답노트. 틀린 문항만 입력하면 어디서 막혔는지를 AI가 분석해 복습할 문제와 다시 볼 시점을 정해 줍니다. 약 5분이면 끝납니다." />
 <meta name="twitter:image" content="https://www.deltaskill.co.kr/og-image.png" />
 
 <script type="application/ld+json">
@@ -52,7 +52,7 @@
       "logo": "https://www.deltaskill.co.kr/logo-192.png",
       "image": "https://www.deltaskill.co.kr/og-image.png",
       "email": "hello@deltaskill.co.kr",
-      "description": "델타스킬은 수능 수학 성적 향상을 목표로, 학생의 풀이 과정을 진단해 결손 개념을 찾아내고 목표 등급까지의 최소 학습 경로를 제시하는 AI 교육 서비스입니다.",
+      "description": "델타스킬은 학생이 틀린 문항만 입력하면 AI가 막힌 지점과 결손 개념을 분석해 복습할 문제와 다시 볼 시점을 정해 주는 AI 오답노트 서비스입니다.",
       "areaServed": {
         "@type": "Country",
         "name": "대한민국"
@@ -61,7 +61,7 @@
         "수능 수학",
         "수학 성적 향상",
         "수학 등급 상승",
-        "학습 진단",
+        "AI 오답노트",
         "오답 분석",
         "독학재수학원"
       ]
@@ -82,42 +82,10 @@
       "mainEntity": [
         {
           "@type": "Question",
-          "name": "한 번 틀린 문제는 어떻게 관리되나요?",
+          "name": "오답노트 작성은 얼마나 걸리나요?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "따로 오답노트를 만들 필요가 없습니다. 틀린 문항은 잊을 만한 간격으로 다시 찾아옵니다. 3일 뒤, 1주 뒤, 3주 뒤 순으로 물어보고, 다시 풀 수 있게 되면 간격이 늘어납니다. 그때 본인이 어디까지 갔었는지, 왜 막혔다고 적었는지도 함께 보여드립니다."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "진단이 끝나면 무엇을 받나요?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "우선순위가 매겨진 학습 처방을 받습니다. 어느 단원의 어떤 유형을 몇 문항 풀어야 하는지, 예상 소요 시간과 회복 가능한 배점까지 함께 나옵니다. 지금 손대지 않아도 되는 구간도 표시해 드립니다."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "공부법을 따로 찾아봐야 하나요?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "그러실 필요 없습니다. 무엇을 어떤 순서로 풀지는 진단 결과가 정해 줍니다. 학생은 정해진 순서대로 공부하기만 하면 됩니다. 회차를 입력할수록 처방은 더 정확해집니다."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "진단은 얼마나 걸리나요?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "약 5분입니다. 시험지를 보면서 문항별로 정답을 입력하고, 틀린 문항만 어디서 막혔는지 단계를 골라주면 됩니다. 대부분 탭 한 번으로 끝납니다."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "어떤 등급대가 대상인가요?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "4등급에서 2등급, 3등급에서 2등급, 2등급에서 1등급까지 모두 다룹니다. 등급대에 따라 병목이 되는 구간이 달라서, 진단 결과도 그에 맞춰 다르게 나옵니다."
+            "text": "약 5분입니다. 손으로 베껴 쓰는 오답노트가 아닙니다. 시험지를 보면서 문항별로 정답을 입력하고, 틀린 문항만 어디서 막혔는지 단계를 골라주면 됩니다. 대부분 탭 한 번으로 끝납니다."
           }
         },
         {
@@ -130,10 +98,74 @@
         },
         {
           "@type": "Question",
+          "name": "다 쓰고 나면 무엇을 받나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "입력을 마치면 바로 화면에서 확인합니다. 지금 실력의 예상 등급과, 한 등급 위로 올라가려면 어떤 단원의 어떤 문항부터 잡아야 하는지가 우선순위 순으로 나옵니다. 예상 소요 시간과 회복 가능한 배점, 그리고 지금은 손대지 않아도 되는 구간까지 함께 표시해 드립니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "어떤 등급대가 대상인가요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "4등급에서 2등급, 3등급에서 2등급, 2등급에서 1등급까지 모두 다룹니다. 등급대에 따라 병목이 되는 구간이 달라서, AI 분석 결과도 그에 맞춰 다르게 나옵니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "AI가 정확히 무엇을 하나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "세 가지입니다. 첫째, 39개 시험 2,340문항의 실측 데이터 위에 본인의 정오 기록을 얹어 지금 등급과 다음 등급을 가르는 문항을 찾아냅니다. 둘째, 그 문항에서 본인이 몇 단계까지 갔는지를 보고 막힌 지점의 상류 결손을 역추적합니다. 셋째, 그 결손을 오늘 풀 문제와 다시 볼 시점으로 바꿔 놓습니다. 문제를 대신 풀어 주거나 해설을 생성하지는 않습니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "공부법을 따로 찾아봐야 하나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "그러실 필요 없습니다. 무엇을 어떤 순서로 풀지는 AI 분석 결과가 정해 줍니다. 학생은 정해진 순서대로 공부하기만 하면 됩니다. 회차를 입력할수록 처방은 더 정확해집니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "예상 등급은 얼마나 정확한가요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "문항별 실측 정답률과 실제 공개 등급컷에 맞춰 계산합니다. 6월 모의평가 기준으로 모델이 재현한 등급컷과 평가원 공개 등급컷의 차이는 확률과 통계 0.9점, 미적분 1.1점입니다. 다만 정답률의 출처가 채점 서비스 참여자 표본이라 전국 평균보다 높게 잡히는 경향이 있어, 그 편차를 보정한 값을 보여드립니다. 참고용 추정치이지 확정 등급이 아닙니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "한 번 틀린 문제는 어떻게 관리되나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "따로 오답노트를 만들 필요가 없습니다. 틀린 문항은 오답 타임캡슐에 담겨 잊을 만한 간격으로 다시 찾아옵니다. 3일 뒤, 1주 뒤, 3주 뒤 순으로 물어보고, 다시 풀 수 있게 되면 간격이 늘어납니다. 그때 본인이 어디까지 갔었는지, 왜 막혔다고 적었는지도 함께 보여드립니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "올린 풀이 사진은 어떻게 되나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "본인 계정에만 보관되고, 다시 꺼내 보는 것도 본인뿐입니다. 다른 학생에게 공유하거나 교재·홍보물에 쓰지 않습니다. 오답 타임캡슐이 그 문항을 다시 물어볼 때 “그때 이렇게 쓰셨습니다”라며 본인의 풀이를 되돌려 드리는 용도입니다. 언제든 사진 단위로 삭제할 수 있고, 삭제하면 복구되지 않습니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "모의고사 문제를 앱에서 볼 수 있나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "문항 원문은 제공하지 않습니다. 기출 문항의 저작권은 평가원과 시·도교육청에 있고, 문제지는 공식 경로로만 배포됩니다. 델타스킬은 시험 회차와 문항 번호, 단원, 공식 출제의도, 그리고 본인이 남긴 기록을 관리합니다. 다시 풀어야 할 때는 어떤 시험 몇 번인지와 공식 자료 위치를 함께 안내해 드립니다."
+          }
+        },
+        {
+          "@type": "Question",
           "name": "어떤 시험을 입력할 수 있나요?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "3·5·6·7월 학력평가와 모의평가를 비롯해 학원 자체 모의고사까지 회차를 골라 입력합니다. 지난 회차도 소급해서 넣을 수 있고, 회차가 쌓일수록 진단이 정밀해집니다."
+            "text": "2021년 이후의 평가원 모의평가·수능과 3·4·5·7·10월 교육청 학력평가를 회차별로 고를 수 있고, 학원 자체 모의고사도 넣을 수 있습니다. 지난 회차를 소급해서 넣어도 되며, 회차가 쌓일수록 분석이 정밀해집니다."
           }
         },
         {
@@ -149,15 +181,7 @@
           "name": "입력한 정보는 어떻게 관리되나요?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "이름과 휴대폰번호, 문항별 응답은 델타스킬이 직접 관리하며 본인 동의 없이 제3자에게 제공하지 않습니다. 진단 결과를 홍보에 활용하는 것은 별도 선택 동의 항목이며, 동의하지 않아도 진단 이용에는 아무 제한이 없습니다."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "결과는 언제 볼 수 있나요?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "입력을 마치면 바로 화면에서 확인합니다. 어떤 단원에서 배점을 잃고 있는지, 목표 등급까지 무엇부터 해야 하는지가 정리되어 나옵니다."
+            "text": "이름과 휴대폰번호, 문항별 응답, 올린 풀이 사진은 델타스킬이 직접 관리하며 본인 동의 없이 제3자에게 제공하지 않습니다. 분석 결과를 홍보에 활용하는 것은 별도 선택 동의 항목이며, 동의하지 않아도 이용에는 아무 제한이 없습니다."
           }
         }
       ]
@@ -348,13 +372,19 @@ footer{padding:44px 0 60px;font-size:12.5px;color:var(--txt3);line-height:1.9}
 <style>
 .pilotbar{position:relative;z-index:110;background:linear-gradient(90deg,rgba(90,162,255,.14),rgba(90,162,255,.06));
   border-bottom:1px solid rgba(90,162,255,.22)}
-.pilotbar a{display:flex;align-items:center;justify-content:center;gap:10px;min-height:42px;padding:9px 20px;
-  font-size:13.5px;color:#dbe9ff;letter-spacing:-.01em;text-align:center;flex-wrap:wrap}
+.pilotbar{display:flex}
+.pilotbar a{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:9px 14px;
+  font-size:13px;color:#dbe9ff;letter-spacing:-.01em;text-align:center;flex-wrap:wrap}
+.pilotbar a+a{border-left:1px solid rgba(186,215,247,.16)}
+.pilotbar .org .go{color:#c9d8ef}
+@media(max-width:720px){.pilotbar{flex-direction:column}.pilotbar a+a{border-left:0;border-top:1px solid rgba(186,215,247,.16)}}
 .pilotbar b{font-weight:600;color:#fff}
 .pilotbar .go{display:inline-flex;align-items:center;gap:4px;color:var(--acc2);font-weight:600}
 .pilotbar .go .ch{transition:transform .25s var(--ease)}
 .pilotbar a:hover .ch{transform:translateX(3px)}
 .faq{margin-top:44px;display:flex;flex-direction:column;gap:10px}
+.faqg{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--txt3);margin:24px 0 2px;padding-left:2px}
+.faq>.faqg:first-child{margin-top:0}
 .qa{padding:0;overflow:hidden}
 .qa summary{list-style:none;cursor:pointer;padding:22px 26px;display:flex;align-items:center;justify-content:space-between;gap:16px;
   font-size:15.5px;font-weight:500;color:#fff;letter-spacing:-.02em}
@@ -402,6 +432,49 @@ footer{padding:44px 0 60px;font-size:12.5px;color:var(--txt3);line-height:1.9}
 .tabwrap{margin-top:clamp(38px,5vw,54px);display:flex;justify-content:center}
 .node i.gap{width:auto;min-width:56px;padding:0 12px;border-radius:999px;font-size:13px;
   background:rgba(186,214,247,.06);border-style:dashed;color:var(--acc2)}
+.qlead{font-size:14px;color:var(--txt2);margin:22px 0 12px;text-align:left}
+.qlead b{color:#fff;font-weight:600}
+.extabs{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:14px}
+.exg{display:flex;gap:4px;background:rgba(186,214,247,.05);border:1px solid var(--line);border-radius:999px;padding:3px}
+.exg button{border:0;background:transparent;color:var(--txt3);font-size:12px;padding:6px 12px;border-radius:999px;
+  cursor:pointer;font-family:inherit;letter-spacing:-.01em;transition:background .2s,color .2s;white-space:nowrap}
+.exg button:hover{color:#fff}
+.exg button[aria-selected="true"]{background:rgba(90,162,255,.18);color:#fff;box-shadow:inset 0 0 0 1px rgba(90,162,255,.3)}
+.rvsteps{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.rvsteps .st{display:flex;align-items:center;gap:10px;font-size:13px}
+.rvsteps .st i{flex:none;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;
+  font-style:normal;font-size:10.5px;font-weight:700;border:1px solid var(--line);color:var(--txt3)}
+.rvsteps .st span{color:var(--txt2)}
+.rvsteps .st em{font-style:normal;font-size:11px;margin-left:auto;white-space:nowrap}
+.rvsteps .st.done i{background:rgba(63,166,101,.18);border-color:rgba(63,166,101,.45);color:#8fdcae}
+.rvsteps .st.done em{color:rgba(143,220,174,.75)}
+.rvsteps .st.stuck i{background:rgba(255,143,116,.16);border-color:rgba(255,143,116,.5);color:#ffb39e}
+.rvsteps .st.stuck span{color:#fff;font-weight:500}
+.rvsteps .st.stuck em{color:var(--warn);font-weight:600}
+.rvsteps .st.todo{opacity:.45}
+.qmat{display:flex;flex-direction:column;gap:5px}
+.qrow{display:flex;align-items:center;gap:9px;transition:opacity .25s}
+.qrow s{flex:none;width:44px;text-decoration:none;font-size:11.5px;color:var(--txt3);text-align:right}
+.qrow em{flex:none;width:38px;font-style:normal;font-size:11.5px;color:var(--txt2);text-align:right;font-weight:600}
+.qcells{display:flex;gap:2.5px;flex:1;min-width:0}
+.qcells .qc{flex:1;min-width:0;text-align:center;font-style:normal;font-size:9px;font-weight:600;
+  padding:6px 0;border-radius:4px;transition:box-shadow .25s,opacity .25s}
+.qc.ok{background:rgba(63,166,101,.20);border:1px solid rgba(63,166,101,.34);color:rgba(150,225,178,.75)}
+.qc.no{background:rgba(217,83,79,.22);border:1px solid rgba(217,83,79,.4);color:rgba(255,170,165,.85)}
+.qc.ring{box-shadow:0 0 0 1.6px #fff,0 0 14px rgba(255,255,255,.18);position:relative;z-index:1}
+.qmat[data-dim="1"] .qrow{opacity:.38}
+.qmat[data-dim="1"] .qrow.on{opacity:1}
+.qlegend{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:13px;font-size:11.5px;color:var(--txt3)}
+.qlegend .sw{width:11px;height:11px;border-radius:3px;display:inline-block;margin-right:6px;vertical-align:-1.5px}
+.qlegend .sw.ok{background:rgba(63,166,101,.45);border:1px solid rgba(63,166,101,.6)}
+.qlegend .sw.no{background:rgba(217,83,79,.45);border:1px solid rgba(217,83,79,.6)}
+.qlegend .sw.ring{background:transparent;border:1.6px solid #fff;border-radius:4px}
+@media(max-width:700px){
+  .qcells .qc{font-size:0;padding:6px 0;border-radius:2.5px}
+  .qrow s{width:34px;font-size:10.5px}.qrow em{width:32px;font-size:10.5px}
+}
+.qdesc{font-size:12.5px;color:var(--txt3);margin:12px 0 0;text-align:left}
+.qdesc b{color:#7fd1a0;font-weight:600}
 h1 .num{display:inline-block;min-width:.72em;text-align:center;transition:opacity .28s var(--ease),transform .28s var(--ease)}
 h1.swap .num{opacity:0;transform:translateY(-6px)}
 @media(prefers-reduced-motion:reduce){h1 .num{transition:none}}
@@ -439,6 +512,17 @@ h1.swap .num{opacity:0;transform:translateY(-6px)}
 .rvq b{display:block;font-size:16.5px;font-weight:500;color:#fff;letter-spacing:-.025em;line-height:1.4}
 .rvmeta{font-size:12.5px;color:var(--txt3);margin-top:6px}
 .rvnote{margin-top:18px;padding:16px 18px;border-radius:14px;background:rgba(186,214,247,.04);border:1px solid var(--line)}
+.rvph{margin-top:12px;display:flex;gap:14px;align-items:flex-start}
+.rvph .sh{flex:none;width:132px;aspect-ratio:400/667;border-radius:10px;overflow:hidden;border:1px solid var(--line);
+  background:#f4f1ea;position:relative;box-shadow:0 8px 22px rgba(0,0,0,.36)}
+.rvph .sh img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block}
+.rvph .sh:after{content:"";position:absolute;inset:0;border-radius:10px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.05)}
+.rvph .shcap{position:absolute;left:0;right:0;bottom:0;padding:14px 8px 5px;font-size:9.5px;color:#fff;
+  background:linear-gradient(180deg,rgba(20,16,10,0),rgba(20,16,10,.72));text-align:center;letter-spacing:.02em}
+.rvph .tx{min-width:0}
+.rvph .tx b{display:block;font-size:12.5px;color:#fff;font-weight:500;margin-bottom:4px}
+.rvph .tx p{margin:0;font-size:12px;line-height:1.75;color:var(--txt3)}
+@media(max-width:520px){.rvph .sh{width:112px}}
 .rvlab{font-size:11.5px;color:var(--acc2);letter-spacing:.02em;margin-bottom:10px}
 .rvrow{display:flex;gap:12px;font-size:13px;line-height:2}
 .rvrow span{flex:none;width:62px;color:var(--txt3)}
@@ -456,13 +540,14 @@ h1.swap .num{opacity:0;transform:translateY(-6px)}
 </head>
 <body>
 <div class="pilotbar">
-  <a href="/pilot/"><span>📍 <b>파일럿 참여 학생</b>이신가요? QR 없이 여기서 바로 입력할 수 있습니다</span><span class="go">진단 시작 <span class="ch">&rsaquo;</span></span></a>
+  <a href="/pilot/"><span>📍 <b>파일럿 참여 학생</b>이신가요?</span><span class="go">오답노트 바로 쓰기 <span class="ch">&rsaquo;</span></span></a>
+  <a class="org" href="/partners/"><span>🏫 <b>학원·독서실 운영자</b>이신가요?</span><span class="go">기관 도입 안내 <span class="ch">&rsaquo;</span></span></a>
 </div>
 <header id="hd">
   <div class="wrap nav">
     <a href="/" class="brand"><img src="/logo-dark-192.png" alt="델타스킬 로고" width="24" height="24" /><span>델타스킬</span></a>
-    <nav class="menu" aria-label="주요 메뉴"><a href="/#how">진단 방식</a><a href="/#rx">학습 처방</a><a href="/#review">복습</a><a href="/#data">데이터</a><a href="/#faq">자주 묻는 질문</a><a href="/partners/">교육기관</a></nav>
-    <a href="/pilot/" class="btn pri">수학 진단</a>
+    <nav class="menu" aria-label="주요 메뉴"><a href="/#how">작성 방법</a><a href="/#rx">학습 처방</a><a href="/#review">AI 오답노트</a><a href="/#data">데이터</a><a href="/report/2027-06/">모의고사 분석</a><a href="/#faq">자주 묻는 질문</a><a href="/partners/">교육기관</a></nav>
+    <a href="/pilot/" class="btn pri">AI 오답노트</a>
   </div>
 </header>
 
@@ -470,13 +555,13 @@ h1.swap .num{opacity:0;transform:translateY(-6px)}
 
 <section class="hero">
   <div class="wrap">
-    <p class="eyebrow rv">고3 &middot; N수생 수학 진단</p>
+    <p class="eyebrow rv">고3 &middot; N수생 AI 오답노트</p>
     <h1 class="rv d1" id="h1">수학 <span class="num" id="nFrom">4</span>등급을,<br /><span class="dim"><span class="num" id="nTo">2</span>등급으로.</span></h1>
-    <p class="lead rv d2">수학 공부법, 더 이상 고민하지 마세요.<br /><b style="color:#fff;font-weight:500">오늘 어떤 단원의 어떤 문제를 풀지</b>까지 정해 드립니다.</p>
+    <p class="lead rv d2">해설을 듣고 이해했는데, 왜 다음 시험에 또 틀릴까요?<br /><b style="color:#fff;font-weight:500">틀린 문제만 입력하세요.</b> 어디서 막혔는지 AI가 분석해서, 오늘 복습할 문제까지 정해 드립니다.</p>
     <div class="btns rv d3">
-      <a href="/pilot/" class="btn pri" style="height:46px;padding:0 26px;font-size:15.5px">수학 진단 시작하기</a>
+      <a href="/pilot/" class="btn pri" style="height:46px;padding:0 26px;font-size:15.5px">AI 오답노트 시작하기</a>
     </div>
-    <p class="tiny rv d3" style="margin-top:14px">시험지만 있으면 약 5분 &middot; 회원가입 없이 휴대폰번호로 시작</p>
+    <p class="tiny rv d3" style="margin-top:14px">시험지만 있으면 약 5분 &middot; 풀이는 사진으로 첨부 &middot; 회원가입 없이 시작</p>
 
     <div class="tabwrap rv d4">
       <div class="tabs" role="tablist" aria-label="등급 경로 선택">
@@ -486,26 +571,69 @@ h1.swap .num{opacity:0;transform:translateY(-6px)}
       </div>
     </div>
 
-    <div class="heroart rv d4" style="margin-top:22px">
+    <div class="extabs rv d4" role="tablist" aria-label="시험 선택">
+      <div class="exg" id="exG"><button data-e="6월" aria-selected="true">6월 모평</button><button data-e="7월" aria-selected="false">7월 학평</button><button data-e="3월" aria-selected="false">3월 학평</button><button data-e="5월" aria-selected="false">5월 학평</button></div>
+      <div class="exg" id="exS"><button data-s="확통" aria-selected="true">확률과 통계</button><button data-s="미적분" aria-selected="false">미적분</button></div>
+    </div>
+
+    <div class="heroart rv d4" style="margin-top:16px">
       <div class="card ob gt">
-        <div class="cardhd"><b>진단 결과 &middot; 학습 경로</b><span class="chip">예시 화면</span></div>
+        <div class="cardhd"><b>AI 분석 결과 &middot; 학습 경로</b><span class="chip" id="exChip">6월 모평 · 확률과 통계 · 공개 등급컷</span></div>
         <div class="route">
           <div class="node on"><i id="rFrom">4</i><s>현재</s></div>
-          <div class="node"><i class="gap" id="rGap">+28점</i><s>회복 구간</s></div>
+          <div class="node"><i class="gap" id="rGap">+18점</i><s>회복 구간</s></div>
           <div class="node goal"><i id="rTo">2</i><s>목표</s></div>
         </div>
-        <div class="bars" id="bars">
-          <div class="bar"><u>지수·로그</u><span><i data-w="86%"></i></span><em>86%</em></div>
-          <div class="bar"><u>삼각함수</u><span><i data-w="71%"></i></span><em>71%</em></div>
-          <div class="bar warn"><u>수열</u><span><i data-w="38%"></i></span><em>38%</em></div>
-          <div class="bar warn"><u>미분</u><span><i data-w="24%"></i></span><em>24%</em></div>
-          <div class="bar"><u>적분</u><span><i data-w="63%"></i></span><em>63%</em></div>
+        <p class="qlead" id="qlead">4등급과 2등급을 가른 문항은 <b>딱 5개</b>였습니다</p>
+        <div class="qmat" id="qmat" data-dim="1">
+        <div class="qrow" data-g="1"><s>1등급</s><div class="qcells"><i class="qc ok" data-n="1">1</i><i class="qc ok" data-n="2">2</i><i class="qc ok" data-n="3">3</i><i class="qc ok" data-n="4">4</i><i class="qc ok" data-n="5">5</i><i class="qc ok" data-n="6">6</i><i class="qc ok" data-n="7">7</i><i class="qc ok" data-n="8">8</i><i class="qc ok" data-n="9">9</i><i class="qc ok" data-n="10">10</i><i class="qc ok" data-n="11">11</i><i class="qc ok" data-n="12">12</i><i class="qc ok" data-n="13">13</i><i class="qc ok" data-n="14">14</i><i class="qc ok" data-n="15">15</i><i class="qc ok" data-n="16">16</i><i class="qc ok" data-n="17">17</i><i class="qc ok" data-n="18">18</i><i class="qc ok" data-n="19">19</i><i class="qc ok" data-n="20">20</i><i class="qc ok" data-n="21">21</i><i class="qc no" data-n="22">22</i><i class="qc ok" data-n="23">23</i><i class="qc ok" data-n="24">24</i><i class="qc ok" data-n="25">25</i><i class="qc ok" data-n="26">26</i><i class="qc ok" data-n="27">27</i><i class="qc ok" data-n="28">28</i><i class="qc ok" data-n="29">29</i><i class="qc no" data-n="30">30</i></div><em>92점</em></div>
+        <div class="qrow on" data-g="2"><s>2등급</s><div class="qcells"><i class="qc ok" data-n="1">1</i><i class="qc ok" data-n="2">2</i><i class="qc ok" data-n="3">3</i><i class="qc ok" data-n="4">4</i><i class="qc ok" data-n="5">5</i><i class="qc ok" data-n="6">6</i><i class="qc ok" data-n="7">7</i><i class="qc ok" data-n="8">8</i><i class="qc ok" data-n="9">9</i><i class="qc ok" data-n="10">10</i><i class="qc ok" data-n="11">11</i><i class="qc ok" data-n="12">12</i><i class="qc ok ring" data-n="13">13</i><i class="qc ok ring" data-n="14">14</i><i class="qc ok ring" data-n="15">15</i><i class="qc ok" data-n="16">16</i><i class="qc ok" data-n="17">17</i><i class="qc ok" data-n="18">18</i><i class="qc ok" data-n="19">19</i><i class="qc ok ring" data-n="20">20</i><i class="qc no" data-n="21">21</i><i class="qc no" data-n="22">22</i><i class="qc ok" data-n="23">23</i><i class="qc ok" data-n="24">24</i><i class="qc ok" data-n="25">25</i><i class="qc ok" data-n="26">26</i><i class="qc ok" data-n="27">27</i><i class="qc ok ring" data-n="28">28</i><i class="qc no" data-n="29">29</i><i class="qc no" data-n="30">30</i></div><em>83점</em></div>
+        <div class="qrow" data-g="3"><s>3등급</s><div class="qcells"><i class="qc ok" data-n="1">1</i><i class="qc ok" data-n="2">2</i><i class="qc ok" data-n="3">3</i><i class="qc ok" data-n="4">4</i><i class="qc ok" data-n="5">5</i><i class="qc ok" data-n="6">6</i><i class="qc ok" data-n="7">7</i><i class="qc ok" data-n="8">8</i><i class="qc ok" data-n="9">9</i><i class="qc ok" data-n="10">10</i><i class="qc ok" data-n="11">11</i><i class="qc ok" data-n="12">12</i><i class="qc ok" data-n="13">13</i><i class="qc ok" data-n="14">14</i><i class="qc no" data-n="15">15</i><i class="qc ok" data-n="16">16</i><i class="qc ok" data-n="17">17</i><i class="qc ok" data-n="18">18</i><i class="qc ok" data-n="19">19</i><i class="qc ok" data-n="20">20</i><i class="qc no" data-n="21">21</i><i class="qc no" data-n="22">22</i><i class="qc ok" data-n="23">23</i><i class="qc ok" data-n="24">24</i><i class="qc ok" data-n="25">25</i><i class="qc ok" data-n="26">26</i><i class="qc ok" data-n="27">27</i><i class="qc no" data-n="28">28</i><i class="qc no" data-n="29">29</i><i class="qc no" data-n="30">30</i></div><em>76점</em></div>
+        <div class="qrow on" data-g="4"><s>4등급</s><div class="qcells"><i class="qc ok" data-n="1">1</i><i class="qc ok" data-n="2">2</i><i class="qc ok" data-n="3">3</i><i class="qc ok" data-n="4">4</i><i class="qc ok" data-n="5">5</i><i class="qc ok" data-n="6">6</i><i class="qc ok" data-n="7">7</i><i class="qc ok" data-n="8">8</i><i class="qc ok" data-n="9">9</i><i class="qc ok" data-n="10">10</i><i class="qc ok" data-n="11">11</i><i class="qc ok" data-n="12">12</i><i class="qc no ring" data-n="13">13</i><i class="qc no ring" data-n="14">14</i><i class="qc no ring" data-n="15">15</i><i class="qc ok" data-n="16">16</i><i class="qc ok" data-n="17">17</i><i class="qc ok" data-n="18">18</i><i class="qc ok" data-n="19">19</i><i class="qc no ring" data-n="20">20</i><i class="qc no" data-n="21">21</i><i class="qc no" data-n="22">22</i><i class="qc ok" data-n="23">23</i><i class="qc ok" data-n="24">24</i><i class="qc ok" data-n="25">25</i><i class="qc ok" data-n="26">26</i><i class="qc ok" data-n="27">27</i><i class="qc no ring" data-n="28">28</i><i class="qc no" data-n="29">29</i><i class="qc no" data-n="30">30</i></div><em>65점</em></div>
+        <div class="qrow" data-g="5"><s>5등급</s><div class="qcells"><i class="qc ok" data-n="1">1</i><i class="qc ok" data-n="2">2</i><i class="qc ok" data-n="3">3</i><i class="qc ok" data-n="4">4</i><i class="qc ok" data-n="5">5</i><i class="qc ok" data-n="6">6</i><i class="qc ok" data-n="7">7</i><i class="qc ok" data-n="8">8</i><i class="qc ok" data-n="9">9</i><i class="qc ok" data-n="10">10</i><i class="qc no" data-n="11">11</i><i class="qc no" data-n="12">12</i><i class="qc no" data-n="13">13</i><i class="qc no" data-n="14">14</i><i class="qc no" data-n="15">15</i><i class="qc ok" data-n="16">16</i><i class="qc ok" data-n="17">17</i><i class="qc ok" data-n="18">18</i><i class="qc no" data-n="19">19</i><i class="qc no" data-n="20">20</i><i class="qc no" data-n="21">21</i><i class="qc no" data-n="22">22</i><i class="qc ok" data-n="23">23</i><i class="qc ok" data-n="24">24</i><i class="qc ok" data-n="25">25</i><i class="qc no" data-n="26">26</i><i class="qc ok" data-n="27">27</i><i class="qc no" data-n="28">28</i><i class="qc no" data-n="29">29</i><i class="qc no" data-n="30">30</i></div><em>52점</em></div>
         </div>
-        <p class="tiny" style="margin:18px 0 0">가장 먼저 해결할 구간 &mdash; <span style="color:var(--warn)" id="tip">미분 &middot; 접선의 방정식</span></p>
+        <div class="qlegend">
+          <span><i class="sw ok"></i>그 등급이 확보하는 문항</span>
+          <span><i class="sw no"></i>놓치는 문항</span>
+          <span><i class="sw ring"></i>등급을 가르는 문항</span>
+          <span>오른쪽 숫자 = 등급컷(원점수)</span>
+        </div>
+        <p class="qdesc" id="qdesc"><span class="qnums">13 &middot; 14 &middot; 15 &middot; 20 &middot; 28번</span> &mdash; 적분·삼각함수·지수로그·경우의 수. 2등급까지 필요한 <b>18점</b>이 여기서 나옵니다</p>
+        </div>
+        <p class="tiny" style="margin:18px 0 0">가장 먼저 해결할 구간 &mdash; <span style="color:var(--warn)" id="tip">적분 &middot; 두 곡선 사이의 넓이(13번)</span></p>
       </div>
     </div>
   </div>
 </section>
+
+<hr class="hr" />
+
+<section id="how">
+  <div class="wrap">
+    <div class="narrow center" style="width:100%">
+      <p class="eyebrow rv">어떻게 쓰나</p>
+      <h2 class="rv d1">오답노트만 쓰면,<br /><span class="dim">나머지는 AI가 합니다.</span></h2>
+    </div>
+    <div class="steps">
+      <div class="step ob gt rv"><em>01</em><div><h3>틀린 문제만 입력</h3>
+        <p>시험지를 보며 문항별 정답을 입력하고, 틀린 문항만 &ldquo;어디까지 갔는지&rdquo;를 고릅니다.
+           손으로 푼 풀이는 <b style="color:#fff;font-weight:500">사진으로 찍어 올리면</b> 됩니다. 약 5분, 대부분 탭 한 번입니다.</p></div></div>
+      <div class="step ob gt rv d1"><em>02</em><div><h3>AI가 진짜 원인을 역추적</h3>
+        <p>틀린 문항이 아니라 막힌 자리를 봅니다. 적분에서 멈춘 이유가 사실은 그래프 해석에 있는
+           경우처럼, 상류의 결손을 찾아냅니다.</p></div></div>
+      <div class="step ob gt rv d2"><em>03</em><div><h3>복습할 문제가 정해짐</h3>
+        <p>&ldquo;적분을 복습하세요&rdquo;가 아니라 어떤 유형을 몇 문항, 어떤 순서로.
+           목표 등급까지 회복 배점이 큰 구간부터 정해 드립니다.</p></div></div>
+      <div class="step ob gt rv d3"><em>04</em><div><h3>잊을 때쯤 다시 물어봄</h3>
+        <p>한 번 틀린 문항은 오답 타임캡슐에 담겨 3일·1주·3주 뒤에 다시 찾아옵니다.
+           노트를 따로 만들 필요도, 다시 펴 볼 시점을 기억할 필요도 없습니다.</p></div></div>
+    </div>
+    <p class="tiny rv d4 center" style="margin:26px auto 0;max-width:640px">
+      6월 모의평가 기준, 4등급과 2등급의 거리는 18점 &mdash; 30문항이 아니라 5문항이었습니다.<br />
+      델타스킬은 <b style="color:#fff;font-weight:500">당신의 그 5문항</b>부터 정합니다.</p>
+  </div>
+</section>
+
 
 <hr class="hr" />
 
@@ -516,32 +644,19 @@ h1.swap .num{opacity:0;transform:translateY(-6px)}
       어떤 학생은 개념이 비어 있고, 어떤 학생은 알면서 시간이 모자라고,
       어떤 학생은 세 번째 줄까지 갔다가 늘 같은 자리에서 멈춥니다.
     </p>
-    <p class="lead rv d2" style="margin-top:14px">그런데 대부분의 처방은 똑같습니다. &ldquo;문제를 더 풀어라.&rdquo;</p>
+    <p class="lead rv d2" style="margin-top:14px">
+      실제로 6월 모의평가 28번은 오답이 ②·④·⑤에 29~30%씩 갈렸습니다.<br />
+      같은 문항을 틀린 학생들이, 서로 다른 자리에서 멈춘 겁니다.
+    </p>
+    <p class="lead rv d3" style="margin-top:14px">
+      &ldquo;문제를 더 풀어라&rdquo;라는 뻔한 처방으로는 여기에 답할 수 없습니다.<br />
+      델타스킬은 <b style="color:#fff;font-weight:500">공부해야 할 포인트</b>를 짚어드리고,
+      <b style="color:#fff;font-weight:500">복습해야 할 주제와 문제</b>까지 정해서 안내합니다.
+    </p>
   </div>
 </section>
 
-<hr class="hr" />
 
-<section id="how">
-  <div class="wrap">
-    <div class="narrow center" style="width:100%">
-      <p class="eyebrow rv">진단 방식</p>
-      <h2 class="rv d1">정답 여부가 아니라,<br /><span class="dim">어디서 멈췄는지를 봅니다.</span></h2>
-    </div>
-    <div class="steps">
-      <div class="step ob gt rv"><em>01</em><div><h3>시험지를 보며 정답 입력</h3>
-        <p>응시한 모의고사를 고르고 문항별 답을 입력합니다. 채점은 자동으로 됩니다.
-           틀린 문항만 &ldquo;어디까지 갔는지&rdquo;를 단계에서 고르면 되고, 대부분 탭 한 번으로 끝납니다.</p></div></div>
-      <div class="step ob gt rv d1"><em>02</em><div><h3>막힌 지점에서 원인을 거슬러 올라감</h3>
-        <p>식은 세웠는데 계산에서 무너진 것과, 접근 자체가 떠오르지 않은 것은 완전히 다른 문제입니다.
-           미분에서 막힌 이유가 사실은 함수의 극한에 있는 경우처럼 상류의 진짜 원인을 찾습니다.</p></div></div>
-      <div class="step ob gt rv d2"><em>03</em><div><h3>오늘 무엇부터 할지 받기</h3>
-        <p>모든 단원을 다시 하지 않습니다. 목표 등급까지 배점 회복 효과가 가장 큰 구간부터
-           순서를 정해 제시합니다. 4등급에서 2등급으로 갈 때와 2등급에서 1등급으로 갈 때는
-           공략해야 할 구간이 완전히 다릅니다.</p></div></div>
-    </div>
-  </div>
-</section>
 
 
 <hr class="hr" />
@@ -550,52 +665,53 @@ h1.swap .num{opacity:0;transform:translateY(-6px)}
   <div class="wrap">
     <div class="narrow center" style="width:100%">
       <p class="eyebrow rv">처방</p>
-      <h2 class="rv d1">진단으로 끝나지 않습니다.<br /><span class="dim">오늘 할 일이 정해집니다.</span></h2>
+      <h2 class="rv d1">노트를 쓰는 걸로 끝나지 않습니다.<br /><span class="dim">오늘 할 일이 정해집니다.</span></h2>
       <p class="lead rv d2">
-        &ldquo;수열이 약하다&rdquo;까지는 누구나 말할 수 있습니다. 델타스킬은 거기서 한 단계 더 들어가
+        &ldquo;적분이 약하다&rdquo;까지는 누구나 말할 수 있습니다. 델타스킬은 거기서 한 단계 더 들어가
         <b style="color:#fff;font-weight:500">어느 단원의 어떤 유형을, 몇 문항, 어떤 순서로</b> 풀어야 하는지를 지정합니다.
       </p>
     </div>
 
     <div class="rx ob gt rv d3">
-      <div class="rephd"><b>오늘의 학습 처방</b><span class="chip">예시 화면</span></div>
+      <div class="rephd"><b>오늘의 학습 처방</b><span class="chip">예시 &middot; 6월 모평 4→2등급 기준</span></div>
       <ol class="rxlist">
         <li class="top">
           <div class="rxno">1순위</div>
-          <div class="rxbody"><b>미적분 &middot; 접선의 방정식</b>
-            <div class="rxrow"><span>개념 점검</span><em>미분계수의 기하적 의미 &middot; 2개</em></div>
-            <div class="rxrow"><span>유형 연습</span><em>곡선 밖의 점에서 그은 접선 &middot; 6문항</em></div>
+          <div class="rxbody"><b>수학Ⅱ &middot; 정적분과 넓이</b>
+            <div class="rxrow"><span>개념 점검</span><em>교점 구하고 위-아래 판별 &middot; 2개</em></div>
+            <div class="rxrow"><span>유형 연습</span><em>두 곡선 사이의 넓이 &middot; 6문항</em></div>
             <div class="rxrow"><span>예상 소요</span><em>40분</em></div>
-          </div>
-          <div class="rxpt">+12점</div>
-        </li>
-        <li>
-          <div class="rxno">2순위</div>
-          <div class="rxbody"><b>수학Ⅰ &middot; 수열의 귀납적 정의</b>
-            <div class="rxrow"><span>개념 점검</span><em>경우 나눔이 필요한 점화식 &middot; 1개</em></div>
-            <div class="rxrow"><span>유형 연습</span><em>홀짝 분기 추적 &middot; 4문항</em></div>
-            <div class="rxrow"><span>예상 소요</span><em>30분</em></div>
           </div>
           <div class="rxpt">+8점</div>
         </li>
         <li>
+          <div class="rxno">2순위</div>
+          <div class="rxbody"><b>수학Ⅰ &middot; 삼각함수</b>
+            <div class="rxrow"><span>개념 점검</span><em>그래프의 주기와 대칭 &middot; 1개</em></div>
+            <div class="rxrow"><span>유형 연습</span><em>그래프로 삼각방정식 해 구하기 &middot; 4문항</em></div>
+            <div class="rxrow"><span>예상 소요</span><em>30분</em></div>
+          </div>
+          <div class="rxpt">+4점</div>
+        </li>
+        <li>
           <div class="rxno">3순위</div>
-          <div class="rxbody"><b>수학Ⅱ &middot; 정적분과 넓이</b>
-            <div class="rxrow"><span>유형 연습</span><em>교점 구한 뒤 위-아래 판별 &middot; 5문항</em></div>
+          <div class="rxbody"><b>수학Ⅰ &middot; 지수함수와 로그함수</b>
+            <div class="rxrow"><span>유형 연습</span><em>그래프 추론(빈칸 채우기형) &middot; 5문항</em></div>
             <div class="rxrow"><span>예상 소요</span><em>25분</em></div>
           </div>
           <div class="rxpt">+4점</div>
         </li>
         <li>
           <div class="rxno">보류</div>
-          <div class="rxbody"><b>확률과 통계 &middot; 21 &middot; 22번</b>
-            <div class="rxrow"><span>이유</span><em>네 회차 정답률 1~5% &middot; 지금 투입 대비 회복 효과 낮음</em></div>
+          <div class="rxbody"><b>22 &middot; 30번 (최고난도)</b>
+            <div class="rxrow"><span>이유</span><em>네 회차 연속 정답률 7% 미만 &middot; 지금 투입 대비 회복 효과 낮음</em></div>
           </div>
           <div class="rxpt" style="color:var(--txt3)">후순위</div>
         </li>
       </ol>
       <p class="tiny" style="margin:16px 0 0">
-        무엇을 <b style="color:#fff;font-weight:500">하지 않아도 되는지</b>까지 알려드립니다.
+        위 예시는 6월 모의평가에서 4등급과 2등급을 가른 문항(13&middot;14&middot;15&middot;20번)을 처방으로 옮긴 것입니다.
+        무엇을 <b style="color:#fff;font-weight:500">하지 않아도 되는지</b>까지 알려드립니다 &mdash;
         남은 기간이 짧을수록 버릴 것을 정하는 일이 더 중요합니다.
       </p>
     </div>
@@ -608,7 +724,7 @@ h1.swap .num{opacity:0;transform:translateY(-6px)}
 <section id="review">
   <div class="wrap">
     <div class="narrow center" style="width:100%">
-      <p class="eyebrow rv">복습</p>
+      <p class="eyebrow rv">AI 오답노트</p>
       <h2 class="rv d1">&ldquo;3월 모의고사 21번,<br /><span class="dim">기억나세요?&rdquo;</span></h2>
       <p class="lead rv d2">
         시험이 끝나면 오답노트를 만들겠다고 마음먹습니다. 그런데 두 달 뒤에는
@@ -617,19 +733,31 @@ h1.swap .num{opacity:0;transform:translateY(-6px)}
     </div>
 
     <div class="rvc ob gt rv d3">
-      <div class="rephd" style="margin-bottom:16px"><b>복습 알림</b><span class="chip">예시 화면</span></div>
+      <div class="rephd" style="margin-bottom:16px"><b>오답 타임캡슐</b><span class="chip">예시 화면</span></div>
       <div class="rvq">
         <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 12a8.5 8.5 0 1 1-2.5-6"/><path d="M20.5 4.5V10H15"/></svg></div>
         <div>
           <b>3월 학력평가 21번, 기억나세요?</b>
-          <div class="rvmeta">82일 전 &middot; 수학Ⅱ &middot; 정적분과 넓이 &middot; 4점</div>
+          <div class="rvmeta">82일 전 &middot; 수학Ⅱ &middot; 적분 &middot; 4점 &middot; 정답률 17%</div>
         </div>
       </div>
       <div class="rvnote">
-        <div class="rvlab">그때 본인이 이렇게 기록했어요</div>
-        <div class="rvrow"><span>어디까지</span><em>2단계 &mdash; 식은 세웠지만 그다음이 안 떠오름</em></div>
-        <div class="rvrow"><span>틀린 이유</span><em>접근 자체가 생각나지 않음</em></div>
+        <div class="rvlab">그때 본인이 남긴 기록 &mdash; 이 문항의 풀이 단계 기준</div>
+        <div class="rvsteps">
+          <div class="st done"><i>1</i><span>정적분 조건을 식으로 정리</span><em>통과</em></div>
+          <div class="st done"><i>2</i><span>f(x)를 미정계수로 설정</span><em>통과</em></div>
+          <div class="st stuck"><i>3</i><span>계수를 정하는 연립 세우기</span><em>여기서 멈춤</em></div>
+          <div class="st todo"><i>4</i><span>조건 대입해 함숫값 계산</span><em>미도달</em></div>
+        </div>
+        <div class="rvrow" style="margin-top:12px"><span>틀린 이유</span><em>발상 부족 &mdash; 계산 실수 아님</em></div>
         <div class="rvrow"><span>확신도</span><em>낮음</em></div>
+        <div class="rvph">
+          <div class="sh"><img src="data:image/jpeg;base64,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" alt="학생이 직접 푼 3월 학력평가 21번 오답노트 — 손으로 쓴 풀이와 빨간펜 교정" loading="lazy" width="440" height="822" /><span class="shcap">내가 올린 풀이</span></div><div class="tx">
+            <b>그때 올린 내 풀이 &middot; 82일 전</b>
+            <p>그때 직접 푼 풀이가 빨간펜 자국까지 그대로 남아 있습니다.
+               말로 적기 어려운 오답은 사진 한 장이면 되고, 다시 물어볼 때 그 사진을 같이 보여드립니다.</p>
+          </div>
+        </div>
       </div>
       <div class="rvask">지금은 풀 수 있나요?</div>
       <div class="rvbtns">
@@ -658,24 +786,24 @@ h1.swap .num{opacity:0;transform:translateY(-6px)}
   <div class="wrap">
     <div class="narrow center" style="width:100%">
       <p class="eyebrow rv">알 수 있는 것</p>
-      <h2 class="rv d1">진단 한 번으로<br /><span class="dim">끝나지 않습니다.</span></h2>
+      <h2 class="rv d1">한 번 쓰고<br /><span class="dim">끝나지 않습니다.</span></h2>
     </div>
     <div class="bento">
       <div class="bx ob gt w3 rv">
         <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.2" y="5" width="17.6" height="15.5" rx="2.6"/><path d="M3.2 9.6h17.6M8 3.2v3.4M16 3.2v3.4"/><path d="m9 14.6 2.1 2.1 4-4.2"/></svg></div>
-        <h3>매주 쌓이는 내 기록</h3><p>회차를 입력할수록 어떤 유형에서 반복해 무너지는지가 드러납니다. 기록은 사라지지 않고 복습 알림으로 다시 찾아옵니다.</p></div>
+        <h3>매주 쌓이는 내 기록</h3><p>회차를 입력할수록 어떤 유형에서 반복해 무너지는지가 드러납니다. 기록은 사라지지 않고 오답 타임캡슐에 담겨 다시 찾아옵니다.</p></div>
       <div class="bx ob gt w3 rv d1">
         <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3.2 8.4 4.3L12 11.8 3.6 7.5z"/><path d="m3.6 12 8.4 4.3 8.4-4.3"/><path d="m3.6 16.4 8.4 4.3 8.4-4.3"/></svg></div>
-        <h3>지난 회차도 소급 입력</h3><p>3&middot;5&middot;6&middot;7월 학력평가와 모의평가, 학원 자체 모의고사까지 골라서 넣을 수 있습니다.</p></div>
+        <h3>지난 회차도 소급 입력</h3><p>2021년 이후 평가원 모의평가&middot;수능과 교육청 학력평가, 학원 자체 모의고사까지 골라서 넣을 수 있습니다.</p></div>
       <div class="bx ob gt w2 rv">
         <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M8.5 7 10 4.5h4L15.5 7"/><circle cx="12" cy="13.5" r="3.2"/></svg></div>
-        <h3>풀이 사진 첨부</h3><p>말로 설명하기 어려운 오답은 풀이를 찍어 올리면 됩니다.</p></div>
+        <h3>내 풀이를 사진으로</h3><p>말로 적기 어려운 오답은 <b style="color:#fff;font-weight:500">노트를 찍어 올리면</b> 됩니다. 그 사진은 오답 타임캡슐이 같은 문항을 다시 물어볼 때 함께 나옵니다 &mdash; 두 달 전 내 글씨를 보면 무엇을 몰랐는지 바로 떠오릅니다. 본인만 볼 수 있게 보관되고 언제든 지울 수 있습니다.</p></div>
       <div class="bx ob gt w2 rv d1">
         <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16"/><rect x="5.5" y="11" width="3.4" height="6" rx="1"/><rect x="10.3" y="7" width="3.4" height="10" rx="1"/><rect x="15.1" y="13" width="3.4" height="4" rx="1"/></svg></div>
-        <h3>남들도 틀렸는지 확인</h3><p>같은 문항의 전체 정답률과 대조해 &ldquo;나만 틀린 문제&rdquo;를 가려냅니다.</p></div>
+        <h3>남들도 틀렸는지 확인</h3><p>전체 정답률뿐 아니라 <b style="color:#fff;font-weight:500">어떤 오답을 골랐는지</b>까지 대조합니다. 모두가 걸린 함정인지, 나만 틀린 문제인지 갈라집니다.</p></div>
       <div class="bx ob gt w2 rv d2">
         <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.6"/><circle cx="12" cy="12" r="1.1" fill="currentColor" stroke="none"/></svg></div>
-        <h3>목표 등급 역산</h3><p>목표에서 거꾸로 계산해 몇 점을 어디서 회복해야 하는지 알려줍니다.</p></div>
+        <h3>목표 등급 역산</h3><p>공개 등급컷 기준으로 거꾸로 계산해, 몇 점을 어디서 회복해야 하는지 알려줍니다.</p></div>
     </div>
   </div>
 </section>
@@ -687,20 +815,26 @@ h1.swap .num{opacity:0;transform:translateY(-6px)}
     <div class="narrow center" style="width:100%">
       <p class="eyebrow rv">근거</p>
       <h2 class="rv d1">감이 아니라, <span class="dim">기록으로.</span></h2>
-      <p class="lead rv d2">델타스킬은 실제 모의고사 응시 기록을 문항 단위로 분석합니다.<br />아래는 지금까지 축적한 익명 집계 데이터입니다.</p>
+      <p class="lead rv d2">2021년 3월부터 2026년 7월까지, 5년간의 평가원 모의평가·수능과 교육청 학력평가를 <b style="color:#fff;font-weight:500">회차당 30문항 전부</b> 실측했습니다.<br />앞의 모든 주장은 아래 데이터에서 나왔습니다.</p>
     </div>
     <div class="stats">
-      <div class="stat ob gt rv"><b>841</b><s>분석한 응시 기록</s></div>
-      <div class="stat ob gt rv d1"><b>5</b><s>분석 대상 시험 회차</s></div>
-      <div class="stat ob gt rv d2"><b>238</b><s>정답률을 추적한 문항</s></div>
-      <div class="stat ob gt rv d3"><b>9</b><s>반복 결손이 확인된 문항</s></div>
+      <div class="stat ob gt rv"><b>39</b><s>분석한 시험 (2021~2026)</s></div>
+      <div class="stat ob gt rv d1"><b>2,340</b><s>실측 정답률을 확보한 문항</s></div>
+      <div class="stat ob gt rv d2"><b>8</b><s>회당 등급이 갈리는 문항 수</s></div>
+      <div class="stat ob gt rv d3"><b>30점</b><s>그 문항들의 배점 합</s></div>
     </div>
-    <p class="tiny rv d4 center" style="margin:28px auto 0;max-width:680px">
-      예를 들어 확률과 통계 21번은 네 회차 연속 정답률이 5%를 넘지 못했습니다.
-      반대로 13~15번과 20번 구간은 회차마다 정답률이 크게 흔들립니다.
-      &ldquo;누구나 틀리는 문제&rdquo;와 &ldquo;나만 틀리는 문제&rdquo;는 완전히 다른 처방이 필요합니다.
-    </p>
-    <p class="tiny rv d4 center" style="margin-top:12px;opacity:.65">* 학생 개인정보를 포함하지 않은 익명 집계 기준입니다.</p>
+    <p class="tiny rv d4 center" style="margin:28px auto 0;max-width:740px">
+      100점을 정답률로 세 덩어리로 갈라 보면 그림이 분명해집니다.
+      정답률 70%가 넘는 <b style="color:#fff;font-weight:500">평균 54점</b>은 3~4등급도 대부분 맞힙니다.
+      정답률 30%가 안 되는 <b style="color:#fff;font-weight:500">평균 17점</b>은 2등급이 목표라면 지금 손댈 자리가 아닙니다.
+      실제로 등급이 갈리는 건 남은 <b style="color:#fff;font-weight:500">평균 30점 · 8문항</b>이고, 그 자리는 5년 내내 거의 고정입니다 &mdash;
+      10~15번, 19·20번, 27~29번. 특히 14·15·20·21·22·29·30번은 <b style="color:#fff;font-weight:500">39개 시험 전부</b>에서 정답률 하위 15위 안에 들었습니다.
+      그런데 같은 8문항이어도 본인이 놓치는 자리는 사람마다 다릅니다. 13번은 오답의 44%가 한 선택지로 몰리는 반면 28번은 세 갈래로 흩어집니다 &mdash;
+      전자는 해설로 잡히지만, 후자는 한 사람씩 따로 봐야 합니다.</p>
+    <div class="center rv d4" style="margin-top:22px">
+      <a href="/report/2027-06/" class="btn">6월 모의평가 전체 분석 보기 <span aria-hidden="true">&rsaquo;</span></a>
+    </div>
+    <p class="tiny rv d4 center" style="margin-top:14px;opacity:.65">* 문항·배점·단원·출제의도는 평가원 공개 자료, 정답률과 선택지별 반응률은 EBSi·메가스터디 공개 채점 자료 기준입니다.</p>
   </div>
 </section>
 
@@ -713,16 +847,28 @@ h1.swap .num{opacity:0;transform:translateY(-6px)}
       <h2 class="rv d1">시작하기 전에<br /><span class="dim">궁금한 것들.</span></h2>
     </div>
     <div class="faq rv d2">
-      <details class="qa ob"><summary>진단은 얼마나 걸리나요?</summary><p class="a">약 5분입니다. 시험지를 보면서 문항별로 정답을 입력하고, 틀린 문항만 어디서 막혔는지 단계를 골라주면 됩니다. 대부분 탭 한 번으로 끝납니다.</p></details>
-      <details class="qa ob"><summary>진단이 끝나면 무엇을 받나요?</summary><p class="a">우선순위가 매겨진 학습 처방을 받습니다. 어느 단원의 어떤 유형을 몇 문항 풀어야 하는지, 예상 소요 시간과 회복 가능한 배점까지 함께 나옵니다. 지금 손대지 않아도 되는 구간도 표시해 드립니다.</p></details>
-      <details class="qa ob"><summary>공부법을 따로 찾아봐야 하나요?</summary><p class="a">그러실 필요 없습니다. 무엇을 어떤 순서로 풀지는 진단 결과가 정해 줍니다. 학생은 정해진 순서대로 공부하기만 하면 됩니다. 회차를 입력할수록 처방은 더 정확해집니다.</p></details>
-      <details class="qa ob"><summary>한 번 틀린 문제는 어떻게 관리되나요?</summary><p class="a">따로 오답노트를 만들 필요가 없습니다. 틀린 문항은 잊을 만한 간격으로 다시 찾아옵니다. 3일 뒤, 1주 뒤, 3주 뒤 순으로 물어보고, 다시 풀 수 있게 되면 간격이 늘어납니다. 그때 본인이 어디까지 갔었는지, 왜 막혔다고 적었는지도 함께 보여드립니다.</p></details>
-      <details class="qa ob"><summary>어떤 등급대가 대상인가요?</summary><p class="a">4등급에서 2등급, 3등급에서 2등급, 2등급에서 1등급까지 모두 다룹니다. 등급대에 따라 병목이 되는 구간이 달라서, 진단 결과도 그에 맞춰 다르게 나옵니다.</p></details>
+      <p class="faqg">오답노트 작성</p>
+      <details class="qa ob"><summary>오답노트 작성은 얼마나 걸리나요?</summary><p class="a">약 5분입니다. 손으로 베껴 쓰는 오답노트가 아닙니다. 시험지를 보면서 문항별로 정답을 입력하고, 틀린 문항만 어디서 막혔는지 단계를 골라주면 됩니다. 대부분 탭 한 번으로 끝납니다.</p></details>
       <details class="qa ob"><summary>무엇을 준비해야 하나요?</summary><p class="a">본인이 응시한 모의고사 시험지와 답만 있으면 됩니다. 채점 전이어도 괜찮습니다. 앱에서 정답을 알려주며 자동으로 채점됩니다.</p></details>
-      <details class="qa ob"><summary>어떤 시험을 입력할 수 있나요?</summary><p class="a">3·5·6·7월 학력평가와 모의평가를 비롯해 학원 자체 모의고사까지 회차를 골라 입력합니다. 지난 회차도 소급해서 넣을 수 있고, 회차가 쌓일수록 진단이 정밀해집니다.</p></details>
+      <details class="qa ob"><summary>다 쓰고 나면 무엇을 받나요?</summary><p class="a">입력을 마치면 바로 화면에서 확인합니다. 지금 실력의 예상 등급과, 한 등급 위로 올라가려면 어떤 단원의 어떤 문항부터 잡아야 하는지가 우선순위 순으로 나옵니다. 예상 소요 시간과 회복 가능한 배점, 그리고 지금은 손대지 않아도 되는 구간까지 함께 표시해 드립니다.</p></details>
+      <details class="qa ob"><summary>어떤 등급대가 대상인가요?</summary><p class="a">4등급에서 2등급, 3등급에서 2등급, 2등급에서 1등급까지 모두 다룹니다. 등급대에 따라 병목이 되는 구간이 달라서, AI 분석 결과도 그에 맞춰 다르게 나옵니다.</p></details>
+
+      <p class="faqg">AI가 하는 일</p>
+      <details class="qa ob"><summary>AI가 정확히 무엇을 하나요?</summary><p class="a">세 가지입니다. 첫째, 39개 시험 2,340문항의 실측 데이터 위에 본인의 정오 기록을 얹어 <b style="color:#fff;font-weight:500">지금 등급과 다음 등급을 가르는 문항</b>을 찾아냅니다. 둘째, 그 문항에서 본인이 몇 단계까지 갔는지를 보고 <b style="color:#fff;font-weight:500">막힌 지점의 상류 결손</b>을 역추적합니다. 셋째, 그 결손을 오늘 풀 문제와 다시 볼 시점으로 바꿔 놓습니다. 문제를 대신 풀어 주거나 해설을 생성하지는 않습니다.</p></details>
+      <details class="qa ob"><summary>공부법을 따로 찾아봐야 하나요?</summary><p class="a">그러실 필요 없습니다. 무엇을 어떤 순서로 풀지는 AI 분석 결과가 정해 줍니다. 학생은 정해진 순서대로 공부하기만 하면 됩니다. 회차를 입력할수록 처방은 더 정확해집니다.</p></details>
+      <details class="qa ob"><summary>예상 등급은 얼마나 정확한가요?</summary><p class="a">문항별 실측 정답률과 실제 공개 등급컷에 맞춰 계산합니다. 6월 모의평가 기준으로 모델이 재현한 등급컷과 평가원 공개 등급컷의 차이는 확률과 통계 0.9점, 미적분 1.1점입니다. 다만 정답률의 출처가 채점 서비스 참여자 표본이라 전국 평균보다 높게 잡히는 경향이 있어, 그 편차를 보정한 값을 보여드립니다. 참고용 추정치이지 확정 등급이 아닙니다.</p></details>
+
+      <p class="faqg">오답 타임캡슐</p>
+      <details class="qa ob"><summary>한 번 틀린 문제는 어떻게 관리되나요?</summary><p class="a">따로 오답노트를 만들 필요가 없습니다. 틀린 문항은 <b style="color:#fff;font-weight:500">오답 타임캡슐</b>에 담겨 잊을 만한 간격으로 다시 찾아옵니다. 3일 뒤, 1주 뒤, 3주 뒤 순으로 물어보고, 다시 풀 수 있게 되면 간격이 늘어납니다. 그때 본인이 어디까지 갔었는지, 왜 막혔다고 적었는지도 함께 보여드립니다.</p></details>
+      <details class="qa ob"><summary>올린 풀이 사진은 어떻게 되나요?</summary><p class="a">본인 계정에만 보관되고, 다시 꺼내 보는 것도 본인뿐입니다. 다른 학생에게 공유하거나 교재·홍보물에 쓰지 않습니다. 오답 타임캡슐이 그 문항을 다시 물어볼 때 &ldquo;그때 이렇게 쓰셨습니다&rdquo;라며 본인의 풀이를 되돌려 드리는 용도입니다. 언제든 사진 단위로 삭제할 수 있고, 삭제하면 복구되지 않습니다.</p></details>
+
+      <p class="faqg">시험 자료</p>
+      <details class="qa ob"><summary>모의고사 문제를 앱에서 볼 수 있나요?</summary><p class="a">문항 원문은 제공하지 않습니다. 기출 문항의 저작권은 평가원과 시·도교육청에 있고, 문제지는 공식 경로로만 배포됩니다. 델타스킬은 시험 회차와 문항 번호, 단원, 공식 출제의도, 그리고 본인이 남긴 기록을 관리합니다. 다시 풀어야 할 때는 어떤 시험 몇 번인지와 공식 자료 위치를 함께 안내해 드립니다.</p></details>
+      <details class="qa ob"><summary>어떤 시험을 입력할 수 있나요?</summary><p class="a">2021년 이후의 평가원 모의평가·수능과 3·4·5·7·10월 교육청 학력평가를 회차별로 고를 수 있고, 학원 자체 모의고사도 넣을 수 있습니다. 지난 회차를 소급해서 넣어도 되며, 회차가 쌓일수록 분석이 정밀해집니다.</p></details>
+
+      <p class="faqg">이용과 개인정보</p>
       <details class="qa ob"><summary>비용이 드나요?</summary><p class="a">파일럿 기간에는 참여 학생에게 비용이 없습니다. 학원을 통해 안내받은 학생은 안내받은 방법 그대로 이용하시면 됩니다.</p></details>
-      <details class="qa ob"><summary>입력한 정보는 어떻게 관리되나요?</summary><p class="a">이름과 휴대폰번호, 문항별 응답은 델타스킬이 직접 관리하며 본인 동의 없이 제3자에게 제공하지 않습니다. 진단 결과를 홍보에 활용하는 것은 별도 선택 동의 항목이며, 동의하지 않아도 진단 이용에는 아무 제한이 없습니다.</p></details>
-      <details class="qa ob"><summary>결과는 언제 볼 수 있나요?</summary><p class="a">입력을 마치면 바로 화면에서 확인합니다. 어떤 단원에서 배점을 잃고 있는지, 목표 등급까지 무엇부터 해야 하는지가 정리되어 나옵니다.</p></details>
+      <details class="qa ob"><summary>입력한 정보는 어떻게 관리되나요?</summary><p class="a">이름과 휴대폰번호, 문항별 응답, 올린 풀이 사진은 델타스킬이 직접 관리하며 본인 동의 없이 제3자에게 제공하지 않습니다. 분석 결과를 홍보에 활용하는 것은 별도 선택 동의 항목이며, 동의하지 않아도 이용에는 아무 제한이 없습니다.</p></details>
     </div>
   </div>
 </section>
@@ -731,11 +877,12 @@ h1.swap .num{opacity:0;transform:translateY(-6px)}
 
 <section class="center">
   <div class="narrow">
-    <h2 class="rv">지금 실력에서 목표 등급까지,<br /><span class="dim">가장 짧은 길.</span></h2>
-    <p class="lead rv d1">시험지만 준비하면 약 5분이면 끝납니다.</p>
+    <h2 class="rv">가장 최근에 본 모의고사,<br /><span class="dim">오답노트 쓰셨나요.</span></h2>
+    <p class="lead rv d1">시험지만 꺼내면 5분입니다. 다 쓰고 나면<br />예상 등급과 오늘 풀 문제가 같이 나옵니다.</p>
     <div class="btns rv d2" style="margin-top:28px">
-      <a href="/pilot/" class="btn pri" style="height:46px;padding:0 26px;font-size:15.5px">수학 진단 시작하기</a>
+      <a href="/pilot/" class="btn pri" style="height:46px;padding:0 26px;font-size:15.5px">AI 오답노트 시작하기</a>
     </div>
+    <p class="tiny rv d2" style="margin-top:14px">파일럿 기간 참여 학생 무료 &middot; 회원가입 없이 휴대폰번호로 시작</p>
   </div>
 </section>
 
@@ -764,8 +911,8 @@ h1.swap .num{opacity:0;transform:translateY(-6px)}
         <div><a href="mailto:hello@deltaskill.co.kr" style="color:inherit;text-decoration:none">hello@deltaskill.co.kr</a></div>
       </div>
       <div class="flinks">
-        <a href="/#how">진단 방식</a><a href="/#rx">학습 처방</a><a href="/#review">복습</a><a href="/#data">데이터</a>
-        <a href="/#faq">자주 묻는 질문</a><a href="/partners/">교육기관 도입</a><a href="/pilot/">수학 진단</a><a href="/terms/">이용약관</a><a href="/privacy/">개인정보처리방침</a>
+        <a href="/#how">작성 방법</a><a href="/#rx">학습 처방</a><a href="/#review">AI 오답노트</a><a href="/#data">데이터</a>
+        <a href="/#faq">자주 묻는 질문</a><a href="/partners/">교육기관 도입</a><a href="/pilot/">AI 오답노트</a><a href="/terms/">이용약관</a><a href="/privacy/">개인정보처리방침</a>
       </div>
     </div>
     <div class="fbar">
@@ -782,11 +929,13 @@ h1.swap .num{opacity:0;transform:translateY(-6px)}
   var sc=function(){hd.classList.toggle('stuck',window.scrollY>4)};sc();
   window.addEventListener('scroll',sc,{passive:true});
 
-  var PATHS=[{"k": "4-2", "from": 4, "to": 2, "gap": 28, "bars": [["지수·로그", 86, 0], ["삼각함수", 71, 0], ["수열", 38, 1], ["미분", 24, 1], ["적분", 63, 0]], "tip": "미분 · 접선의 방정식"}, {"k": "3-2", "from": 3, "to": 2, "gap": 14, "bars": [["지수·로그", 92, 0], ["삼각함수", 84, 0], ["수열", 61, 1], ["미분", 48, 1], ["적분", 72, 0]], "tip": "수열 · 귀납적 정의"}, {"k": "2-1", "from": 2, "to": 1, "gap": 11, "bars": [["지수·로그", 96, 0], ["삼각함수", 91, 0], ["수열", 83, 0], ["미분", 74, 1], ["적분", 88, 0]], "tip": "미분 · 그래프 추론(21·22번)"}];
+  var EXDATA=[{"ex": "6월", "sub": "확통", "label": "6월 모평 · 확률과 통계", "cutSrc": "공개 등급컷", "cuts": {"1": 92, "2": 83, "3": 76, "4": 65, "5": 52}, "red": {"1": [22, 30], "2": [21, 22, 29, 30], "3": [15, 21, 22, 28, 29, 30], "4": [13, 14, 15, 20, 21, 22, 28, 29, 30], "5": [11, 12, 13, 14, 15, 19, 20, 21, 22, 26, 28, 29, 30]}, "paths": [{"k": "4-2", "from": 4, "to": 2, "gap": 18, "hot": [13, 14, 15, 20, 28], "lead": "4등급과 2등급을 가른 문항은 <b>5개</b>였습니다", "desc": "<span class=\"qnums\">13 &middot; 14 &middot; 15 &middot; 20 &middot; 28번</span> &mdash; 적분·삼각함수·지수·로그함수·경우의 수. 2등급까지 필요한 <b>18점</b>이 여기서 나옵니다", "tip": "적분 &middot; 13번부터"}, {"k": "3-2", "from": 3, "to": 2, "gap": 7, "hot": [15, 28], "lead": "3등급과 2등급을 가른 문항은 <b>2개</b>였습니다", "desc": "<span class=\"qnums\">15 &middot; 28번</span> &mdash; 적분·경우의 수. 2등급까지 필요한 <b>7점</b>이 여기서 나옵니다", "tip": "적분 &middot; 15번부터"}, {"k": "2-1", "from": 2, "to": 1, "gap": 9, "hot": [21, 29], "lead": "2등급과 1등급을 가른 문항은 <b>2개</b>였습니다", "desc": "<span class=\"qnums\">21 &middot; 29번</span> &mdash; 극한·연속·확률. 1등급까지 필요한 9점 중 <b>8점</b>이 여기입니다", "tip": "극한·연속 &middot; 21번부터"}]}, {"ex": "6월", "sub": "미적분", "label": "6월 모평 · 미적분", "cutSrc": "공개 등급컷", "cuts": {"1": 87, "2": 77, "3": 71, "4": 61, "5": 51}, "red": {"1": [21, 22, 30], "2": [15, 21, 22, 28, 29, 30], "3": [14, 15, 21, 22, 28, 29, 30], "4": [11, 13, 14, 15, 20, 21, 22, 28, 29, 30], "5": [11, 12, 13, 14, 15, 19, 20, 21, 22, 27, 28, 29, 30]}, "paths": [{"k": "4-2", "from": 4, "to": 2, "gap": 16, "hot": [11, 13, 14, 20], "lead": "4등급과 2등급을 가른 문항은 <b>4개</b>였습니다", "desc": "<span class=\"qnums\">11 &middot; 13 &middot; 14 &middot; 20번</span> &mdash; 극한·연속·적분·삼각함수·지수·로그함수. 2등급까지 필요한 <b>16점</b>이 여기서 나옵니다", "tip": "극한·연속 &middot; 11번부터"}, {"k": "3-2", "from": 3, "to": 2, "gap": 6, "hot": [14], "lead": "3등급과 2등급을 가른 문항은 <b>1개</b>였습니다", "desc": "<span class=\"qnums\">14번</span> &mdash; 삼각함수. 2등급까지 필요한 6점 중 <b>4점</b>이 여기입니다", "tip": "삼각함수 &middot; 14번부터"}, {"k": "2-1", "from": 2, "to": 1, "gap": 10, "hot": [15, 28, 29], "lead": "2등급과 1등급을 가른 문항은 <b>3개</b>였습니다", "desc": "<span class=\"qnums\">15 &middot; 28 &middot; 29번</span> &mdash; 적분·미분법·수열의 극한. 1등급까지 필요한 <b>10점</b>이 여기서 나옵니다", "tip": "적분 &middot; 15번부터"}]}, {"ex": "7월", "sub": "확통", "label": "7월 학평 · 확률과 통계", "cutSrc": "추정 등급컷", "cuts": {"1": 87, "2": 79, "3": 70, "4": 58, "5": 45}, "red": {"1": [21, 22, 30], "2": [15, 21, 22, 29, 30], "3": [11, 15, 20, 21, 22, 28, 29, 30], "4": [11, 14, 15, 18, 19, 20, 21, 22, 28, 29, 30], "5": [10, 11, 12, 13, 14, 15, 18, 19, 20, 21, 22, 27, 28, 29, 30]}, "paths": [{"k": "4-2", "from": 4, "to": 2, "gap": 21, "hot": [11, 14, 18, 19, 20, 28], "lead": "4등급과 2등급을 가른 문항은 <b>6개</b>였습니다", "desc": "<span class=\"qnums\">11 &middot; 14 &middot; 18 &middot; 19 &middot; 20 &middot; 28번</span> &mdash; 적분·삼각함수·지수·로그함수·미분·수열·경우의 수. 2등급까지 필요한 <b>21점</b>이 여기서 나옵니다", "tip": "적분 &middot; 11번부터"}, {"k": "3-2", "from": 3, "to": 2, "gap": 9, "hot": [11, 20, 28], "lead": "3등급과 2등급을 가른 문항은 <b>3개</b>였습니다", "desc": "<span class=\"qnums\">11 &middot; 20 &middot; 28번</span> &mdash; 적분·수열·경우의 수. 2등급까지 필요한 <b>9점</b>이 여기서 나옵니다", "tip": "적분 &middot; 11번부터"}, {"k": "2-1", "from": 2, "to": 1, "gap": 8, "hot": [15, 29], "lead": "2등급과 1등급을 가른 문항은 <b>2개</b>였습니다", "desc": "<span class=\"qnums\">15 &middot; 29번</span> &mdash; 미분·통계. 1등급까지 필요한 <b>8점</b>이 여기서 나옵니다", "tip": "미분 &middot; 15번부터"}]}, {"ex": "7월", "sub": "미적분", "label": "7월 학평 · 미적분", "cutSrc": "추정 등급컷", "cuts": {"1": 80, "2": 72, "3": 63, "4": 53, "5": 42}, "red": {"1": [15, 21, 22, 28, 30], "2": [15, 20, 21, 22, 28, 29, 30], "3": [11, 14, 15, 20, 21, 22, 28, 29, 30], "4": [11, 13, 14, 15, 18, 19, 20, 21, 22, 28, 29, 30], "5": [10, 11, 12, 13, 14, 15, 18, 19, 20, 21, 22, 26, 28, 29, 30]}, "paths": [{"k": "4-2", "from": 4, "to": 2, "gap": 19, "hot": [11, 13, 14, 18, 19], "lead": "4등급과 2등급을 가른 문항은 <b>5개</b>였습니다", "desc": "<span class=\"qnums\">11 &middot; 13 &middot; 14 &middot; 18 &middot; 19번</span> &mdash; 적분·삼각함수·지수·로그함수·미분. 2등급까지 필요한 19점 중 <b>18점</b>이 여기입니다", "tip": "적분 &middot; 11번부터"}, {"k": "3-2", "from": 3, "to": 2, "gap": 9, "hot": [11, 14], "lead": "3등급과 2등급을 가른 문항은 <b>2개</b>였습니다", "desc": "<span class=\"qnums\">11 &middot; 14번</span> &mdash; 적분·삼각함수. 2등급까지 필요한 9점 중 <b>8점</b>이 여기입니다", "tip": "적분 &middot; 11번부터"}, {"k": "2-1", "from": 2, "to": 1, "gap": 8, "hot": [20, 29], "lead": "2등급과 1등급을 가른 문항은 <b>2개</b>였습니다", "desc": "<span class=\"qnums\">20 &middot; 29번</span> &mdash; 수열·수열의 극한. 1등급까지 필요한 <b>8점</b>이 여기서 나옵니다", "tip": "수열 &middot; 20번부터"}]}, {"ex": "3월", "sub": "확통", "label": "3월 학평 · 확률과 통계", "cutSrc": "추정 등급컷", "cuts": {"1": 90, "2": 82, "3": 72, "4": 61, "5": 47}, "red": {"1": [21, 22, 30], "2": [20, 21, 22, 29, 30], "3": [15, 20, 21, 22, 28, 29, 30], "4": [11, 14, 15, 20, 21, 22, 27, 28, 29, 30], "5": [11, 12, 13, 14, 15, 18, 20, 21, 22, 26, 27, 28, 29, 30]}, "paths": [{"k": "4-2", "from": 4, "to": 2, "gap": 21, "hot": [11, 14, 15, 27, 28], "lead": "4등급과 2등급을 가른 문항은 <b>5개</b>였습니다", "desc": "<span class=\"qnums\">11 &middot; 14 &middot; 15 &middot; 27 &middot; 28번</span> &mdash; 적분·삼각함수·미분·경우의 수. 2등급까지 필요한 21점 중 <b>19점</b>이 여기입니다", "tip": "적분 &middot; 11번부터"}, {"k": "3-2", "from": 3, "to": 2, "gap": 10, "hot": [15, 28], "lead": "3등급과 2등급을 가른 문항은 <b>2개</b>였습니다", "desc": "<span class=\"qnums\">15 &middot; 28번</span> &mdash; 미분·경우의 수. 2등급까지 필요한 10점 중 <b>8점</b>이 여기입니다", "tip": "미분 &middot; 15번부터"}, {"k": "2-1", "from": 2, "to": 1, "gap": 8, "hot": [20, 29], "lead": "2등급과 1등급을 가른 문항은 <b>2개</b>였습니다", "desc": "<span class=\"qnums\">20 &middot; 29번</span> &mdash; 수열·경우의 수. 1등급까지 필요한 <b>8점</b>이 여기서 나옵니다", "tip": "수열 &middot; 20번부터"}]}, {"ex": "3월", "sub": "미적분", "label": "3월 학평 · 미적분", "cutSrc": "추정 등급컷", "cuts": {"1": 83, "2": 74, "3": 65, "4": 55, "5": 44}, "red": {"1": [21, 22, 29, 30], "2": [15, 20, 21, 22, 28, 29, 30], "3": [11, 14, 15, 20, 21, 22, 28, 29, 30], "4": [11, 12, 14, 15, 18, 20, 21, 22, 27, 28, 29, 30], "5": [8, 10, 11, 12, 13, 14, 15, 18, 20, 21, 22, 27, 28, 29, 30]}, "paths": [{"k": "4-2", "from": 4, "to": 2, "gap": 19, "hot": [11, 12, 14, 18, 27], "lead": "4등급과 2등급을 가른 문항은 <b>5개</b>였습니다", "desc": "<span class=\"qnums\">11 &middot; 12 &middot; 14 &middot; 18 &middot; 27번</span> &mdash; 적분·수열·삼각함수·수열의 극한. 2등급까지 필요한 19점 중 <b>18점</b>이 여기입니다", "tip": "적분 &middot; 11번부터"}, {"k": "3-2", "from": 3, "to": 2, "gap": 9, "hot": [11, 14], "lead": "3등급과 2등급을 가른 문항은 <b>2개</b>였습니다", "desc": "<span class=\"qnums\">11 &middot; 14번</span> &mdash; 적분·삼각함수. 2등급까지 필요한 9점 중 <b>8점</b>이 여기입니다", "tip": "적분 &middot; 11번부터"}, {"k": "2-1", "from": 2, "to": 1, "gap": 9, "hot": [15, 20, 28], "lead": "2등급과 1등급을 가른 문항은 <b>3개</b>였습니다", "desc": "<span class=\"qnums\">15 &middot; 20 &middot; 28번</span> &mdash; 미분·수열·수열의 극한. 1등급까지 필요한 <b>9점</b>이 여기서 나옵니다", "tip": "미분 &middot; 15번부터"}]}, {"ex": "5월", "sub": "확통", "label": "5월 학평 · 확률과 통계", "cutSrc": "추정 등급컷", "cuts": {"1": 88, "2": 80, "3": 70, "4": 58, "5": 44}, "red": {"1": [21, 22, 30], "2": [15, 21, 22, 29, 30], "3": [13, 15, 20, 21, 22, 28, 29, 30], "4": [13, 14, 15, 20, 21, 22, 26, 27, 28, 29, 30], "5": [7, 11, 13, 14, 15, 17, 19, 20, 21, 22, 26, 27, 28, 29, 30]}, "paths": [{"k": "4-2", "from": 4, "to": 2, "gap": 22, "hot": [13, 14, 20, 26, 27, 28], "lead": "4등급과 2등급을 가른 문항은 <b>6개</b>였습니다", "desc": "<span class=\"qnums\">13 &middot; 14 &middot; 20 &middot; 26 &middot; 27 &middot; 28번</span> &mdash; 미분·삼각함수·수열·경우의 수·확률. 2등급까지 필요한 <b>22점</b>이 여기서 나옵니다", "tip": "미분 &middot; 13번부터"}, {"k": "3-2", "from": 3, "to": 2, "gap": 10, "hot": [13, 20, 28], "lead": "3등급과 2등급을 가른 문항은 <b>3개</b>였습니다", "desc": "<span class=\"qnums\">13 &middot; 20 &middot; 28번</span> &mdash; 미분·수열·확률. 2등급까지 필요한 <b>10점</b>이 여기서 나옵니다", "tip": "미분 &middot; 13번부터"}, {"k": "2-1", "from": 2, "to": 1, "gap": 8, "hot": [15, 29], "lead": "2등급과 1등급을 가른 문항은 <b>2개</b>였습니다", "desc": "<span class=\"qnums\">15 &middot; 29번</span> &mdash; 적분·경우의 수. 1등급까지 필요한 <b>8점</b>이 여기서 나옵니다", "tip": "적분 &middot; 15번부터"}]}, {"ex": "5월", "sub": "미적분", "label": "5월 학평 · 미적분", "cutSrc": "추정 등급컷", "cuts": {"1": 82, "2": 73, "3": 64, "4": 54, "5": 42}, "red": {"1": [15, 21, 22, 29, 30], "2": [15, 20, 21, 22, 28, 29, 30], "3": [13, 14, 15, 20, 21, 22, 28, 29, 30], "4": [7, 13, 14, 15, 17, 19, 20, 21, 22, 28, 29, 30], "5": [7, 10, 11, 12, 13, 14, 15, 16, 17, 19, 20, 21, 22, 28, 29, 30]}, "paths": [{"k": "4-2", "from": 4, "to": 2, "gap": 19, "hot": [7, 13, 14, 17, 19], "lead": "4등급과 2등급을 가른 문항은 <b>5개</b>였습니다", "desc": "<span class=\"qnums\">7 &middot; 13 &middot; 14 &middot; 17 &middot; 19번</span> &mdash; 적분·미분·삼각함수·수열. 2등급까지 필요한 19점 중 <b>17점</b>이 여기입니다", "tip": "적분 &middot; 7번부터"}, {"k": "3-2", "from": 3, "to": 2, "gap": 9, "hot": [13, 14], "lead": "3등급과 2등급을 가른 문항은 <b>2개</b>였습니다", "desc": "<span class=\"qnums\">13 &middot; 14번</span> &mdash; 미분·삼각함수. 2등급까지 필요한 9점 중 <b>8점</b>이 여기입니다", "tip": "미분 &middot; 13번부터"}, {"k": "2-1", "from": 2, "to": 1, "gap": 9, "hot": [20, 28], "lead": "2등급과 1등급을 가른 문항은 <b>2개</b>였습니다", "desc": "<span class=\"qnums\">20 &middot; 28번</span> &mdash; 수열·수열의 극한. 1등급까지 필요한 9점 중 <b>8점</b>이 여기입니다", "tip": "수열 &middot; 20번부터"}]}];
+  var curEx=0;
+  var PATHS=[{"k":"4-2","from":4,"to":2,"gap":18,"hot":[13,14,15,20,28], "lead":"4등급과 2등급을 가른 문항은 <b>딱 5개</b>였습니다", "desc":"<span class=\"qnums\">13 &middot; 14 &middot; 15 &middot; 20 &middot; 28번</span> &mdash; 적분·삼각함수·지수로그·경우의 수. 2등급까지 필요한 <b>18점</b>이 여기서 나옵니다", "tip":"적분 &middot; 두 곡선 사이의 넓이(13번)"},{"k":"3-2","from":3,"to":2,"gap":7,"hot":[15,28], "lead":"3등급과 2등급을 가른 문항은 <b>2개</b>였습니다", "desc":"<span class=\"qnums\">15 &middot; 28번</span> &mdash; 적분·경우의 수. 2등급까지 필요한 <b>7점</b>이 이 둘에서 나옵니다", "tip":"적분 &middot; 정적분 사이의 관계(15번)"},{"k":"2-1","from":2,"to":1,"gap":9,"hot":[21,29], "lead":"2등급과 1등급을 가른 문항은 <b>2개</b>였습니다", "desc":"<span class=\"qnums\">21 &middot; 29번</span> &mdash; 극한·연속, 확률. 필요한 9점 중 <b>8점</b>이 여기. 최고난도(22·30번)는 그다음입니다", "tip":"극한·연속 &middot; 새로 정의된 함수의 연속(21번)"}];
   var tabs=[].slice.call(document.querySelectorAll('.tabs button'));
   var h1=document.getElementById('h1'), nF=document.getElementById('nFrom'), nT=document.getElementById('nTo');
   var rF=document.getElementById('rFrom'), rG=document.getElementById('rGap'), rT=document.getElementById('rTo');
-  var barsEl=document.getElementById('bars'), tip=document.getElementById('tip');
+  var tip=document.getElementById('tip');
   var cur=0, timer=null, shown=false;
   var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -797,20 +946,45 @@ h1.swap .num{opacity:0;transform:translateY(-6px)}
       nF.textContent=p.from; nT.textContent=p.to;
       rF.textContent=p.from; rT.textContent=p.to; rG.textContent='+'+p.gap+'점';
       tip.innerHTML=p.tip;
-      var rows=barsEl.children;
-      for(var k=0;k<rows.length;k++){
-        var b=p.bars[k];
-        rows[k].className='bar'+(b[2]?' warn':'');
-        rows[k].children[0].textContent=b[0];
-        rows[k].children[2].textContent=b[1]+'%';
-        var fill=rows[k].children[1].firstElementChild;
-        fill.dataset.w=b[1]+'%';
-        if(shown) fill.style.width=b[1]+'%';
-      }
+      document.getElementById('qlead').innerHTML=p.lead;
+      document.getElementById('qdesc').innerHTML=p.desc;
+      var mat=document.getElementById('qmat');
+      mat.dataset.dim='1';
+      var rows=mat.querySelectorAll('.qrow');
+      rows.forEach(function(r){r.classList.toggle('on', r.dataset.g==String(p.from)||r.dataset.g==String(p.to));});
+      mat.querySelectorAll('.qc.ring').forEach(function(c){c.classList.remove('ring');});
+      rows.forEach(function(r){
+        if(r.dataset.g!=String(p.from)&&r.dataset.g!=String(p.to))return;
+        p.hot.forEach(function(n){var c=r.querySelector('[data-n="'+n+'"]');if(c)c.classList.add('ring');});
+      });
     };
     if(animate&&!reduce){h1.classList.add('swap');setTimeout(function(){set();h1.classList.remove('swap')},280);}
     else set();
   }
+  
+  function applyExam(idx,keepTab){
+    curEx=idx; var c=EXDATA[idx];
+    PATHS=c.paths;
+    document.getElementById('exChip').textContent=c.label+' · '+c.cutSrc;
+    document.querySelectorAll('#exG button').forEach(function(b){b.setAttribute('aria-selected', b.dataset.e===c.ex?'true':'false')});
+    document.querySelectorAll('#exS button').forEach(function(b){b.setAttribute('aria-selected', b.dataset.s===c.sub?'true':'false')});
+    var mat=document.getElementById('qmat');
+    mat.querySelectorAll('.qrow').forEach(function(rw){
+      var g=rw.dataset.g, red=c.red[g]||[];
+      rw.querySelector('em').textContent=(c.cuts[g])+'점';
+      rw.querySelectorAll('.qc').forEach(function(cell){
+        var n=+cell.dataset.n;
+        cell.className='qc '+(red.indexOf(n)>=0?'no':'ok');
+      });
+    });
+    paint(keepTab?cur:0,false);
+  }
+  function findEx(ex,sub){for(var i=0;i<EXDATA.length;i++){if(EXDATA[i].ex===ex&&EXDATA[i].sub===sub)return i;}return 0;}
+  document.querySelectorAll('#exG button').forEach(function(b){b.onclick=function(){stopCycle();applyExam(findEx(b.dataset.e,EXDATA[curEx].sub),true);};});
+  document.querySelectorAll('#exS button').forEach(function(b){b.onclick=function(){stopCycle();applyExam(findEx(EXDATA[curEx].ex,b.dataset.s),true);};});
+  var exTimer=setInterval(function(){applyExam((curEx+1)%EXDATA.length,true);},7000);
+  function stopCycle(){if(exTimer){clearInterval(exTimer);exTimer=null;} if(timer){clearInterval(timer);timer=null;}}
+
   function cycle(){timer=setInterval(function(){paint((cur+1)%PATHS.length,true)},4200)}
   function stop(){if(timer){clearInterval(timer);timer=null}}
   tabs.forEach(function(b,i){b.addEventListener('click',function(){stop();paint(i,true)})});
