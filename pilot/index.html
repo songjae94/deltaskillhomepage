@@ -71,7 +71,7 @@ const CATS=[
  {name:"대성학원",desc:"더프리미엄 모의고사",exams:[{soon:1,title:"더프리미엄 3월"},{soon:1,title:"더프리미엄 4월"},{soon:1,title:"더프리미엄 5월"},{soon:1,title:"더프리미엄 6월"},{soon:1,title:"더프리미엄 7월"}]},
  {name:"모의고사 직접입력",desc:"내가 본 다른 모의고사 기록",custom:true,exams:[]}
 ];
-const ACADEMIES=["신촌메가스터디","일산메가스터디","청솔학원","종로학원","시대인재","메가스터디 러셀"];
+const ACADEMIES=["메가스터디","시대인재","대성학원","청솔학원","종로학원"];
 const REASONS=["개념 모름","계산 실수","접근 안 떠오름","시간 부족","아는데 실수","안 배움"];
 const CHIP=["①","②","③","④","⑤"];
 const REASONFIX={"개념 모름":"개념 강의·개념서로 이해 → 기초 유형 5문항","계산 실수":"같은 유형 계산 드릴 10문항(속도·정확도)","접근 안 떠오름":"유형별 대표문항 풀이법 정리 → 유사 3문항","시간 부족":"타임어택 세트(문항당 목표시간)","아는데 실수":"오답 검토 루틴 체크리스트","안 배움":"해당 단원 진도 보강 강의"};
@@ -103,7 +103,7 @@ function login(){el("screen").innerHTML=`<div class="pad"><div class="h">델타�
 function signup(){const p=S.profile||{name:"",academy:"",grade:"",subject:""};S._p=p;S._consent=S._consent||false;S._consent2=S._consent2||false;
  el("screen").innerHTML=`<div class="pad"><div class="h">가입 (최초 1회)</div><div class="desc">다음 주부터 같은 번호로 접속하면 이어서 기록돼요.</div>
  <div class="field"><label>이름</label><input class="txt" id="nm" placeholder="이름" value="${esc(p.name)}"></div>
- <div class="field"><label>학원 선택</label><div class="acg">${ACADEMIES.map(a=>`<button data-ac="${a}" class="${S._acMode!=='etc'&&p.academy===a?'on':''}">${a}</button>`).join("")}<button data-ac="__etc" class="full ${S._acMode==='etc'?'on':''}">기타 (직접 입력)</button></div>${S._acMode==='etc'?`<input class="txt" id="ac" placeholder="학원명을 직접 입력하세요" value="${esc(p.academy)}" style="margin-top:8px">`:``}</div>
+ <div class="field"><label>학원 선택</label><div class="acg">${ACADEMIES.map(a=>`<button data-ac="${a}" class="${S._acMode!=='etc'&&p.academy===a?'on':''}">${a}</button>`).join("")}<button data-ac="__etc" class="full ${S._acMode==='etc'?'on':''}">기타 (직접 입력)</button><button data-ac="비재원생" class="full ${S._acMode!=='etc'&&p.academy==='비재원생'?'on':''}">비재원생</button></div>${S._acMode==='etc'?`<input class="txt" id="ac" placeholder="학원명을 직접 입력하세요" value="${esc(p.academy)}" style="margin-top:8px">`:``}</div>
  <div class="field"><label>구분</label><div class="seg"><button data-g="재수생" class="${p.grade==='재수생'?'on':''}">재수생(N수)</button><button data-g="고3" class="${p.grade==='고3'?'on':''}">고3</button></div></div>
  <div class="field"><label>수학 선택과목</label><div class="seg"><button data-s="미적분" class="${p.subject==='미적분'?'on':''}">미적분</button><button data-s="확통" class="${p.subject==='확통'?'on':''}">확률과통계</button></div></div>
  <div class="field"><label>복구용 숫자 4자리 (PIN)</label><input class="txt" id="pin" inputmode="numeric" maxlength="4" pattern="\\d{4}" autocomplete="off" placeholder="예: 7391" value="${S._pin||''}"><div style="font-size:11.5px;color:var(--mut2);margin-top:6px;line-height:1.5">기기를 바꾸거나 앱을 지웠을 때 내 오답노트를 다시 찾기 위한 번호예요. <b>0000·1234처럼 쉬운 번호는 쓸 수 없어요.</b></div></div>
