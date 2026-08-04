@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <meta name="theme-color" content="#05060f">
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-<title>델타스킬 · 수학 진단</title>
+<title>델타스킬 · AI 오답노트</title>
 <style>
 :root{--bg:#05060f;--panel:rgba(255,255,255,.028);--panel2:rgba(255,255,255,.05);--line:rgba(186,215,247,.12);--line2:rgba(186,215,247,.22);--ink:#fff;--mut:rgba(209,228,250,.62);--mut2:rgba(209,228,250,.40);--brand:#5aa2ff;--brand2:#a8cbff;--ok:#5fd39a;--no:#ff8f74;--amber:#ffb27a;--r:20px;--ease:cubic-bezier(.16,1,.3,1)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -43,7 +43,7 @@ input.txt{width:100%;padding:14px 15px;border:1.5px solid rgba(90,162,255,.42);b
 .saved{display:flex;gap:10px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:13px 14px;font-size:12.5px;color:var(--mut);margin-bottom:16px}.saved:before{content:"";flex:none;width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 9px 1px rgba(95,211,154,.6)}.saved.demo:before{background:var(--amber);box-shadow:0 0 9px 1px rgba(255,178,122,.5)}
 .note{font-size:11.5px;color:var(--mut2);text-align:center;margin-top:18px}.center{text-align:center;padding:44px 20px;color:var(--mut)}
 body.qlight{--bg:#f5f7fb;--panel:#fff;--panel2:#eef2f8;--line:rgba(23,43,77,.13);--line2:rgba(23,43,77,.22);--ink:#0c1322;--mut:rgba(16,28,50,.82);--mut2:rgba(16,28,50,.62);--ok:#0f9d58;--no:#e0533a;--amber:#b9761b;color-scheme:light}body.qlight .top{background:rgba(245,247,251,.82)}body.qlight .prog{background:rgba(23,43,77,.10)}body.qlight .app:before{background:radial-gradient(58% 60% at 50% 0,rgba(90,162,255,.10),transparent 72%)}body.qlight .chip.on{color:#1c4fa0;background:rgba(90,162,255,.15);border-color:rgba(90,162,255,.5);box-shadow:inset 0 0 0 1px rgba(90,162,255,.22)}body.qlight .rchip{background:var(--panel2)}body.qlight .memo{background:var(--panel2)}body.qlight .numin:-webkit-autofill{-webkit-box-shadow:0 0 0 1000px #eef2f8 inset}</style></head><body><div class="app">
-<div class="top"><div class="brand">델타<span>스킬</span></div><div class="sub" id="subttl">수학 등급 진단 · 파일럿</div><div class="prog"><i id="pbar"></i></div></div>
+<div class="top"><div class="brand">델타<span>스킬</span></div><div class="sub" id="subttl">AI 오답노트 · 파일럿</div><div class="prog"><i id="pbar"></i></div></div>
 <div id="screen"></div><div class="fab" id="fab"></div></div>
 <script>
 /* ===== 서버 연결 설정: Supabase 프로젝트 만들면 아래 두 값만 채우면 실제 서버 저장됨 (비우면 데모=브라우저 저장) ===== */
@@ -90,11 +90,11 @@ function items(){const D=EXAM.data;return D.gong.concat(S.profile&&S.profile.sub
 function graded(q){const a=S.ans[q.no];if(a==null||a==="")return null;return(""+a)===(""+q.ans)?"o":"x";}
 function answeredCount(){return items().filter(q=>S.ans[q.no]!=null&&S.ans[q.no]!=="").length;}
 function setProg(){el("pbar").style.width=(["login","signup","exam","custom"].includes(S.screen)?0:["result","cdone"].includes(S.screen)?100:S.screen==="quiz"?answeredCount()/30*100:8)+"%";}
-function render(){setProg();document.body.classList.toggle('qlight',S.screen==='quiz');const custS=["custom","cdone"].includes(S.screen);el("subttl").textContent=(["login","signup","exam"].includes(S.screen)?"수학 등급 진단 · 파일럿":custS?"모의고사 직접입력 · 파일럿":EXAM.title+" · 파일럿")+(S.profile&&!["login","signup","exam","custom","cdone"].includes(S.screen)?` · ${S.profile.subject}`:"");({login:login,signup:signup,exam:examSelect,intro:intro,quiz:quiz,result:result,custom:customForm,cdone:customResult}[S.screen])();syncHist();}
+function render(){setProg();document.body.classList.toggle('qlight',S.screen==='quiz');const custS=["custom","cdone"].includes(S.screen);el("subttl").textContent=(["login","signup","exam"].includes(S.screen)?"AI 오답노트 · 파일럿":custS?"모의고사 직접입력 · 파일럿":EXAM.title+" · 파일럿")+(S.profile&&!["login","signup","exam","custom","cdone"].includes(S.screen)?` · ${S.profile.subject}`:"");({login:login,signup:signup,exam:examSelect,intro:intro,quiz:quiz,result:result,custom:customForm,cdone:customResult}[S.screen])();syncHist();}
 
 /* ---------- 로그인 ---------- */
-function login(){el("screen").innerHTML=`<div class="pad"><div class="h">델타스킬 수학 진단</div>
- <div class="desc">모의고사 본 뒤 5분 자가진단으로, 나에게 맞는 학습 처방과 등급 상승 경로를 받아요. 휴대폰 번호로 시작하세요.</div>
+function login(){el("screen").innerHTML=`<div class="pad"><div class="h">AI 오답노트 작성</div>
+ <div class="desc">모의고사 본 뒤 5분 오답노트 체크로, 나에게 맞는 학습 처방과 등급 상승 경로를 받아요. 휴대폰 번호로 시작하세요.</div>
  <div class="field"><label>휴대폰 번호</label><input class="txt" id="ph" inputmode="numeric" placeholder="01000000000" value="${S.phone}"></div></div>`;
  el("ph").oninput=e=>S.phone=e.target.value.replace(/[^0-9]/g,"");
  el("fab").innerHTML=`<button class="btn" id="go">시작하기</button>`;
@@ -130,7 +130,7 @@ function signup(){const p=S.profile||{name:"",academy:"",grade:"",subject:""};S.
  function ok(){return p.name&&p.academy&&p.grade&&p.subject&&S._consent&&validPin();}
  el("nm").addEventListener("input",()=>{el("done").disabled=!ok();});
  /* 학원은 버튼 선택 — 직접입력 모드에서만 ac 입력창 존재 (oninput에서 처리) */
- el("fab").innerHTML=`<button class="btn" id="done" ${ok()?"":"disabled"}>가입 완료 · 진단 시작</button>`;
+ el("fab").innerHTML=`<button class="btn" id="done" ${ok()?"":"disabled"}>가입 완료 · 오답노트 시작</button>`;
  el("done").onclick=()=>{if(!ok())return;
    const all=LS.get("ds_students")||{};S.studentId=S.studentId||("stu_"+S.phone);
    all[S.phone]={id:S.studentId,phone:S.phone,profile:p,consent_at:new Date().toISOString()};LS.set("ds_students",all);
@@ -158,11 +158,11 @@ function examSelect(){
 
 /* ---------- 진단 인트로 ---------- */
 function intro(){el("screen").innerHTML=`<div class="pad"><div class="h">${esc(S.profile.name)}님, 반가워요</div>
- <div class="desc">${EXAM.title} 자가진단이에요 (${S.attempt}회차). 답을 입력하면 자동 채점되고, <b>틀린 이유</b>를 한 번씩 탭하면 나에게 맞는 처방이 나와요.</div>
+ <div class="desc">${EXAM.title} 오답노트예요 (${S.attempt}회차). 답을 입력하면 자동 채점되고, <b>틀린 이유</b>를 한 번씩 탭하면 나에게 맞는 처방이 나와요.</div>
  <div class="bar"><div class="pl"><span class="ic">📝</span><div>공통 22문항 + <b>${S.profile.subject}</b> 8문항</div></div>
  <div class="pl"><span class="ic">⏱️</span><div>약 5분 · 대부분 탭 한 번</div></div>
  <div class="pl"><span class="ic">🎯</span><div>끝나면 영역별 정답률 + 이번 주 처방을 바로 확인</div></div></div></div>`;
- el("fab").innerHTML=`<button class="btn" id="st">진단 시작</button>`;el("st").onclick=()=>{S.screen="quiz";render();window.scrollTo(0,0);};}
+ el("fab").innerHTML=`<button class="btn" id="st">오답노트 시작</button>`;el("st").onclick=()=>{S.screen="quiz";render();window.scrollTo(0,0);};}
 
 /* ---------- 진단 ---------- */
 function card(q){const g=graded(q);
@@ -185,7 +185,7 @@ function quiz(){const wrap=document.createElement("div");wrap.className="pad";
  wrap.insertAdjacentHTML("beforeend",`<div class="sechd">선택과목 · ${S.profile.subject} (23–30)</div>`);
  const g2=document.createElement("div");(S.profile.subject==="미적분"?EXAM.data.mi:EXAM.data.hw).forEach(q=>g2.appendChild(card(q)));wrap.appendChild(g2);
  el("screen").innerHTML="";el("screen").appendChild(wrap);updFab();}
-function updFab(){const n=answeredCount();el("fab").innerHTML=`<button class="btn" id="sub" ${n>=1?"":"disabled"}>제출하고 진단 보기 (${n}/30)</button>`;if(n>=1)el("sub").onclick=submitDiag;}
+function updFab(){const n=answeredCount();el("fab").innerHTML=`<button class="btn" id="sub" ${n>=1?"":"disabled"}>제출하고 결과 보기 (${n}/30)</button>`;if(n>=1)el("sub").onclick=submitDiag;}
 
 async function pickPhoto(q){const inp=document.createElement("input");inp.type="file";inp.accept="image/*";
  inp.onchange=async e=>{const f=e.target.files&&e.target.files[0];if(!f)return;
@@ -248,7 +248,7 @@ function result(){const its=items();const done=its.filter(q=>graded(q)!=null);co
  const presc=weak.map(([u,v])=>{const tr=Object.entries(v.reasons).sort((a,b)=>b[1]-a[1])[0];const rl=tr?tr[0]:null;const fix=rl?REASONFIX[rl]:"유형별 대표문항으로 감 잡기";const b=BANK[u]||{type:u,gichul:[]};return `<div class="presc"><div class="pu">${u}<span class="pw">${v.wrong.length}문항 틀림</span></div>${rl?`<div class="pr">주 원인: <b>${rl}</b></div>`:''}<div class="pl"><span class="ic">🎯</span><div><b>유형 학습</b> · ${b.type}<br>→ ${fix}</div></div><div class="pl"><span class="ic">🔁</span><div><b>이번 시험 다시 풀 문제</b><br>${EXAM.title} ${v.wrong.map(n=>n+'번').join(', ')}</div></div><div class="pl"><span class="ic">📚</span><div><b>기출 복습</b><br>${b.gichul.join(' / ')}</div></div>${b.up?`<div class="pl up"><span class="ic">⬆️</span><div><b>먼저 볼 것(상류 결손)</b><br>${b.up}</div></div>`:''}</div>`;}).join("")||`<div class="presc"><div class="pl"><span class="ic">🎉</span><div>틀린 문항이 거의 없어요! 유지 학습으로 충분해요.</div></div></div>`;
  const savedUI=S.saveMode==="server"?`<div class="saved">델타스킬 서버에 저장됐어요 · 매주 쌓여 학습 경로가 됩니다</div>`:(S.saveMode&&S.saveMode.startsWith("error")?`<div class="saved demo">서버 저장 실패(${S.saveMode}) — 브라우저에 임시 저장됨. 관리자에게 문의</div>`:`<div class="saved demo">저장 완료(데모=브라우저) · 서버 키를 넣으면 델타스킬 DB로 저장됩니다</div>`);
  const pathSec=S.previewPath?pathUnlocked(weak):pathLocked();
- el("screen").innerHTML=`<div class="pad">${savedUI}<div class="h">${esc(S.profile.name)}님 진단 결과</div><div class="desc">${EXAM.title} · ${S.profile.subject} · ${S.attempt}회차</div>
+ el("screen").innerHTML=`<div class="pad">${savedUI}<div class="h">${esc(S.profile.name)}님 오답노트 결과</div><div class="desc">${EXAM.title} · ${S.profile.subject} · ${S.attempt}회차</div>
   <div class="kpirow"><div class="kpi"><div class="v">${score}<span style="font-size:14px;color:var(--mut2)">점</span></div><div class="l">자기채점 원점수 (100)</div></div><div class="kpi"><div class="v">${correct.length}<span style="font-size:14px;color:var(--mut2)">/${done.length}</span></div><div class="l">맞은 문항</div></div></div>
   <div class="bar"><h4>영역별 정답률</h4>${areaRows}</div>
   <div class="seclabel">이번 주 나의 처방</div>${presc}
