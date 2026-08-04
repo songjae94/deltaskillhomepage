@@ -105,7 +105,7 @@ function login(){el("screen").innerHTML=`<div class="pad"><div class="h">AI 오�
 
 /* ---------- 가입 + 동의 ---------- */
 function signup(){const p=S.profile||{name:"",academy:"",grade:"",subject:""};S._p=p;S._consent=S._consent||false;S._consent2=S._consent2||false;
- el("screen").innerHTML=`<div class="pad"><div class="h">가입 (최초 1회)</div><div class="desc">다음 주부터 같은 번호로 접속하면 이어서 기록돼요.</div>
+ el("screen").innerHTML=`<div class="pad"><div class="h">시작 정보 입력</div><div class="desc">다음 주부터 같은 번호로 접속하면 이어서 기록돼요.</div>
  <div class="field"><label>이름</label><input class="txt" id="nm" placeholder="이름" value="${esc(p.name)}"></div>
  <div class="field"><label>학원 선택</label><div class="acg">${ACADEMIES.map(a=>`<button data-ac="${a}" class="${S._acMode!=='etc'&&p.academy===a?'on':''}">${a}</button>`).join("")}<button data-ac="__etc" class="full ${S._acMode==='etc'?'on':''}">기타 (직접 입력)</button><button data-ac="비재원생" class="full ${S._acMode!=='etc'&&p.academy==='비재원생'?'on':''}">비재원생</button></div>${S._acMode==='etc'?`<input class="txt" id="ac" placeholder="학원명을 직접 입력하세요" value="${esc(p.academy)}" style="margin-top:8px">`:``}</div>
  <div class="field"><label>구분</label><div class="seg"><button data-g="재수생" class="${p.grade==='재수생'?'on':''}">재수생(N수)</button><button data-g="고3" class="${p.grade==='고3'?'on':''}">고3</button></div></div>
@@ -130,7 +130,7 @@ function signup(){const p=S.profile||{name:"",academy:"",grade:"",subject:""};S.
  function ok(){return p.name&&p.academy&&p.grade&&p.subject&&S._consent&&validPin();}
  el("nm").addEventListener("input",()=>{el("done").disabled=!ok();});
  /* 학원은 버튼 선택 — 직접입력 모드에서만 ac 입력창 존재 (oninput에서 처리) */
- el("fab").innerHTML=`<button class="btn" id="done" ${ok()?"":"disabled"}>가입 완료 · 오답노트 시작</button>`;
+ el("fab").innerHTML=`<button class="btn" id="done" ${ok()?"":"disabled"}>입력 완료 · 오답노트 시작</button>`;
  el("done").onclick=()=>{if(!ok())return;
    const all=LS.get("ds_students")||{};S.studentId=S.studentId||("stu_"+S.phone);
    all[S.phone]={id:S.studentId,phone:S.phone,profile:p,consent_at:new Date().toISOString()};LS.set("ds_students",all);
