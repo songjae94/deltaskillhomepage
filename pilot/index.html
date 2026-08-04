@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <meta name="theme-color" content="#05060f">
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-<title>수학 진단 시작 | 델타스킬 — 5분 자가진단</title><meta name="description" content="모의고사 본 뒤 5분 자가진단으로 어디서 막혔는지 분석하고, 목표 등급까지 무엇부터 할지 학습 처방을 받아요. 휴대폰 번호로 바로 시작."><meta name="robots" content="noindex, follow"><link rel="canonical" href="https://www.deltaskill.co.kr/pilot/"><link rel="icon" href="/favicon-32.png" sizes="32x32"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta property="og:type" content="website"><meta property="og:title" content="델타스킬 수학 진단 — 5분 자가진단"><meta property="og:description" content="모의고사 본 뒤 5분이면, 어디서 막혔는지와 등급 상승 경로를 받아요."><meta property="og:image" content="https://www.deltaskill.co.kr/og-image.png"><meta property="og:url" content="https://www.deltaskill.co.kr/pilot/"><meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<title>델타스킬 · 수학 진단</title>
 <style>
 :root{--bg:#05060f;--panel:rgba(255,255,255,.028);--panel2:rgba(255,255,255,.05);--line:rgba(186,215,247,.12);--line2:rgba(186,215,247,.22);--ink:#fff;--mut:rgba(209,228,250,.62);--mut2:rgba(209,228,250,.40);--brand:#5aa2ff;--brand2:#a8cbff;--ok:#5fd39a;--no:#ff8f74;--amber:#ffb27a;--r:20px;--ease:cubic-bezier(.16,1,.3,1)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -42,12 +42,14 @@ input.txt{width:100%;padding:14px 15px;border:1.5px solid rgba(90,162,255,.42);b
 .step{display:flex;gap:12px;align-items:flex-start;padding:13px 0;border-bottom:1px solid var(--line)}.step:last-child{border:none}.stepn{width:26px;height:26px;border-radius:50%;background:rgba(90,162,255,.16);border:1px solid rgba(90,162,255,.5);color:var(--brand2);font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}.step .st{font-size:13.5px;color:var(--ink)}.step .st b{font-weight:700}.step .stt{font-size:11.5px;color:var(--mut2);margin-top:2px}
 .saved{display:flex;gap:10px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:13px 14px;font-size:12.5px;color:var(--mut);margin-bottom:16px}.saved:before{content:"";flex:none;width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 9px 1px rgba(95,211,154,.6)}.saved.demo:before{background:var(--amber);box-shadow:0 0 9px 1px rgba(255,178,122,.5)}
 .note{font-size:11.5px;color:var(--mut2);text-align:center;margin-top:18px}.center{text-align:center;padding:44px 20px;color:var(--mut)}
-body.qlight{--bg:#f5f7fb;--panel:#fff;--panel2:#eef2f8;--line:rgba(23,43,77,.13);--line2:rgba(23,43,77,.22);--ink:#0c1322;--mut:rgba(16,28,50,.82);--mut2:rgba(16,28,50,.62);--ok:#0f9d58;--no:#e0533a;--amber:#b9761b;color-scheme:light}body.qlight .top{background:rgba(245,247,251,.82)}body.qlight .prog{background:rgba(23,43,77,.10)}body.qlight .app:before{background:radial-gradient(58% 60% at 50% 0,rgba(90,162,255,.10),transparent 72%)}body.qlight .chip.on{color:#1c4fa0;background:rgba(90,162,255,.15);border-color:rgba(90,162,255,.5);box-shadow:inset 0 0 0 1px rgba(90,162,255,.22)}body.qlight .rchip{background:var(--panel2)}body.qlight .memo{background:var(--panel2)}body.qlight .numin:-webkit-autofill{-webkit-box-shadow:0 0 0 1000px #eef2f8 inset}.lgfoot{margin-top:28px;font-size:12px;color:var(--mut2);line-height:2.1;text-align:center}.lgfoot a{color:var(--mut2);text-decoration:none}.lgfoot a:hover{color:var(--brand)}</style></head><body><div class="app">
+body.qlight{--bg:#f5f7fb;--panel:#fff;--panel2:#eef2f8;--line:rgba(23,43,77,.13);--line2:rgba(23,43,77,.22);--ink:#0c1322;--mut:rgba(16,28,50,.82);--mut2:rgba(16,28,50,.62);--ok:#0f9d58;--no:#e0533a;--amber:#b9761b;color-scheme:light}body.qlight .top{background:rgba(245,247,251,.82)}body.qlight .prog{background:rgba(23,43,77,.10)}body.qlight .app:before{background:radial-gradient(58% 60% at 50% 0,rgba(90,162,255,.10),transparent 72%)}body.qlight .chip.on{color:#1c4fa0;background:rgba(90,162,255,.15);border-color:rgba(90,162,255,.5);box-shadow:inset 0 0 0 1px rgba(90,162,255,.22)}body.qlight .rchip{background:var(--panel2)}body.qlight .memo{background:var(--panel2)}body.qlight .numin:-webkit-autofill{-webkit-box-shadow:0 0 0 1000px #eef2f8 inset}</style></head><body><div class="app">
 <div class="top"><div class="brand">델타<span>스킬</span></div><div class="sub" id="subttl">수학 등급 진단 · 파일럿</div><div class="prog"><i id="pbar"></i></div></div>
 <div id="screen"></div><div class="fab" id="fab"></div></div>
 <script>
 /* ===== 서버 연결 설정: Supabase 프로젝트 만들면 아래 두 값만 채우면 실제 서버 저장됨 (비우면 데모=브라우저 저장) ===== */
-const CONFIG={ url:"https://cvlrphtupjmaefahodgz.supabase.co", key:"sb_publishable_uVuFC7vXLDYCfJbFA7BlfA_j1xGS00u" };
+const CONFIG={ api:"https://cvlrphtupjmaefahodgz.supabase.co/functions/v1/api" };
+const TK={get:()=>localStorage.getItem("ds_tk")||"",set:t=>localStorage.setItem("ds_tk",t),has:()=>!!localStorage.getItem("ds_tk"),clear:()=>localStorage.removeItem("ds_tk")};
+async function api(path,opt){opt=opt||{};const method=opt.method||"GET";const auth=opt.auth!==false;const h={"Content-Type":"application/json"};if(auth){const t=TK.get();if(!t)throw new Error("no_token");h["Authorization"]="Bearer "+t;}const r=await fetch(CONFIG.api+path,{method,headers:h,body:opt.body?JSON.stringify(opt.body):undefined});let j=null;try{j=await r.json();}catch(_){}if(r.status===401&&auth)TK.clear();if(!r.ok||!j||j.ok===false)throw new Error((j&&j.error)||("HTTP "+r.status));return j;}
 /* 시험 목록은 DATA 아래 EXAMS 배열에서 관리 — 새 시험 추가 시 객체 하나 추가 */
 const DATA={"gong": [{"no": 1, "jum": 2, "fmt": "c", "area": "수학Ⅰ", "unit": "지수함수와 로그함수", "topic": "지수법칙", "ans": "②"}, {"no": 2, "jum": 2, "fmt": "c", "area": "수학Ⅱ", "unit": "다항함수의 미분법", "topic": "미분계수", "ans": "⑤"}, {"no": 3, "jum": 3, "fmt": "c", "area": "수학Ⅰ", "unit": "삼각함수", "topic": "삼각함수 관계", "ans": "①"}, {"no": 4, "jum": 3, "fmt": "c", "area": "수학Ⅱ", "unit": "함수의 극한과 연속", "topic": "그래프로 극한", "ans": "①"}, {"no": 5, "jum": 3, "fmt": "c", "area": "수학Ⅱ", "unit": "다항함수의 적분법", "topic": "대칭성·정적분", "ans": "③"}, {"no": 6, "jum": 3, "fmt": "c", "area": "수학Ⅰ", "unit": "수열", "topic": "등비수열 관계", "ans": "②"}, {"no": 7, "jum": 3, "fmt": "c", "area": "수학Ⅱ", "unit": "다항함수의 미분법", "topic": "극값·실근 개수", "ans": "④", "steps": ["도함수 구함", "극값 조건으로 식 세움", "그래프 개형·실근 개수 판단"]}, {"no": 8, "jum": 3, "fmt": "c", "area": "수학Ⅰ", "unit": "지수함수와 로그함수", "topic": "로그 성질·밑변환", "ans": "③"}, {"no": 9, "jum": 4, "fmt": "c", "area": "수학Ⅱ", "unit": "다항함수의 적분법", "topic": "속도→거리", "ans": "⑤", "steps": ["속도·거리 관계(적분) 설정", "구간 나눠 식 세움", "적분 계산"]}, {"no": 10, "jum": 4, "fmt": "c", "area": "수학Ⅰ", "unit": "삼각함수", "topic": "사인·코사인법칙", "ans": "④"}, {"no": 11, "jum": 4, "fmt": "c", "area": "수학Ⅱ", "unit": "함수의 극한과 연속", "topic": "연속성·삼차함수", "ans": "①", "steps": ["연속 조건을 식으로 옮김", "미지수 관계식 도출", "케이스 정리·계산"]}, {"no": 12, "jum": 4, "fmt": "c", "area": "수학Ⅰ", "unit": "수열", "topic": "Sn·일반항·합", "ans": "③", "steps": ["Sn→an 관계 적용", "일반항 구함", "조건에 맞는 합 계산"]}, {"no": 13, "jum": 4, "fmt": "c", "area": "수학Ⅱ", "unit": "다항함수의 미분법", "topic": "접선·교점", "ans": "⑤", "steps": ["접선 방정식 세움", "교점 조건으로 방정식 구성", "해 구하고 판별"]}, {"no": 14, "jum": 4, "fmt": "c", "area": "수학Ⅰ", "unit": "삼각함수", "topic": "사인·탄젠트 그래프", "ans": "⑤", "steps": ["그래프 개형·주기 파악", "교점 조건 해석", "값 계산"]}, {"no": 15, "jum": 4, "fmt": "c", "area": "수학Ⅱ", "unit": "다항함수의 적분법", "topic": "정적분 정의함수", "ans": "②", "steps": ["정적분 함수 구조 해석", "f(x) 성질 도출", "값 계산"]}, {"no": 16, "jum": 3, "fmt": "s", "area": "수학Ⅰ", "unit": "지수함수와 로그함수", "topic": "로그 진수 방정식", "ans": 9}, {"no": 17, "jum": 3, "fmt": "s", "area": "수학Ⅱ", "unit": "다항함수의 미분법", "topic": "곱의 미분법", "ans": 13}, {"no": 18, "jum": 3, "fmt": "s", "area": "수학Ⅰ", "unit": "수열", "topic": "시그마 성질", "ans": 3}, {"no": 19, "jum": 3, "fmt": "s", "area": "수학Ⅱ", "unit": "다항함수의 적분법", "topic": "부정적분", "ans": 20}, {"no": 20, "jum": 4, "fmt": "s", "area": "수학Ⅰ", "unit": "지수함수와 로그함수", "topic": "지수 그래프·방정식", "ans": 243, "steps": ["그래프 조건 해석", "방정식 구성", "지수 계산"]}, {"no": 21, "jum": 4, "fmt": "s", "area": "수학Ⅱ", "unit": "함수의 극한과 연속", "topic": "극한 존재조건·삼차함수", "ans": 45, "steps": ["극한 존재 조건 해석", "미지수 관계식 세움", "인수분해·약분 후 계산"]}, {"no": 22, "jum": 4, "fmt": "s", "area": "수학Ⅰ", "unit": "수열", "topic": "귀납적 정의", "ans": 165, "steps": ["규칙 파악(항 나열)", "패턴·주기 발견", "목표 항 계산"]}], "mi": [{"no": 23, "jum": 2, "fmt": "c", "area": "미적분(선택)", "unit": "미분법", "topic": "삼각함수의 극한", "ans": "⑤"}, {"no": 24, "jum": 3, "fmt": "c", "area": "미적분(선택)", "unit": "적분법", "topic": "유리함수 정적분", "ans": "③"}, {"no": 25, "jum": 3, "fmt": "c", "area": "미적분(선택)", "unit": "수열의 극한", "topic": "극한 대소·성질", "ans": "④"}, {"no": 26, "jum": 3, "fmt": "c", "area": "미적분(선택)", "unit": "적분법", "topic": "입체도형 부피", "ans": "①"}, {"no": 27, "jum": 3, "fmt": "c", "area": "미적분(선택)", "unit": "미분법", "topic": "음함수 미분·덧셈정리", "ans": "①"}, {"no": 28, "jum": 4, "fmt": "c", "area": "미적분(선택)", "unit": "미분법", "topic": "도함수·역함수 그래프", "ans": "②", "steps": ["역함수 미분 관계 설정", "그래프 조건 해석", "값 계산"]}, {"no": 29, "jum": 4, "fmt": "s", "area": "미적분(선택)", "unit": "수열의 극한", "topic": "급수·등비급수", "ans": 296, "steps": ["급수 구조 파악", "수렴조건·합 공식 적용", "계산 마무리"]}, {"no": 30, "jum": 4, "fmt": "s", "area": "미적분(선택)", "unit": "적분법", "topic": "최댓값·치환적분", "ans": 145, "steps": ["최댓값 조건 분석", "치환 설정", "적분 계산"]}], "hw": [{"no": 23, "jum": 2, "fmt": "c", "area": "확률과통계", "unit": "경우의 수", "topic": "이항정리 계수", "ans": "②"}, {"no": 24, "jum": 3, "fmt": "c", "area": "확률과통계", "unit": "확률", "topic": "조건부확률·덧셈정리", "ans": "③"}, {"no": 25, "jum": 3, "fmt": "c", "area": "확률과통계", "unit": "확률", "topic": "여사건 확률", "ans": "③"}, {"no": 26, "jum": 3, "fmt": "c", "area": "확률과통계", "unit": "통계", "topic": "모평균 신뢰구간", "ans": "①"}, {"no": 27, "jum": 3, "fmt": "c", "area": "확률과통계", "unit": "경우의 수", "topic": "경우의 수", "ans": "⑤"}, {"no": 28, "jum": 4, "fmt": "c", "area": "확률과통계", "unit": "확률", "topic": "확률·경우 분류", "ans": "④", "steps": ["사건 정의·조건 해석", "경우 분류 체계 세움", "확률 계산"]}, {"no": 29, "jum": 4, "fmt": "s", "area": "확률과통계", "unit": "통계", "topic": "정규분포·추정", "ans": 910, "steps": ["분포·조건 정리", "표준화·공식 적용", "계산"]}, {"no": 30, "jum": 4, "fmt": "s", "area": "확률과통계", "unit": "경우의 수", "topic": "경우의 수 심화", "ans": 306, "steps": ["조건 구조 파악", "분류 기준 세움", "각 경우 세기·합산"]}]};
 const EXAMS=[{code:"OMEGA_8",title:"OMEGA 8회",desc:"공통 22문항 + 선택 8문항 · 자기채점 약 5분",data:DATA},
@@ -90,7 +92,7 @@ function render(){setProg();document.body.classList.toggle('qlight',S.screen==='
 /* ---------- 로그인 ---------- */
 function login(){el("screen").innerHTML=`<div class="pad"><div class="h">델타스킬 수학 진단</div>
  <div class="desc">모의고사 본 뒤 5분 자가진단으로, 나에게 맞는 학습 처방과 등급 상승 경로를 받아요. 휴대폰 번호로 시작하세요.</div>
- <div class="field"><label>휴대폰 번호</label><input class="txt" id="ph" inputmode="numeric" placeholder="01000000000" value="${S.phone}"></div><div class="lgfoot"><a href="/">델타스킬 홈</a> · <a href="/partners/">교육기관 도입</a> · <a href="/terms/">이용약관</a> · <a href="/privacy/">개인정보처리방침</a></div></div>`;
+ <div class="field"><label>휴대폰 번호</label><input class="txt" id="ph" inputmode="numeric" placeholder="01000000000" value="${S.phone}"></div></div>`;
  el("ph").oninput=e=>S.phone=e.target.value.replace(/[^0-9]/g,"");
  el("fab").innerHTML=`<button class="btn" id="go">시작하기</button>`;
  el("go").onclick=()=>{if(S.phone.length<10){alert("휴대폰 번호를 정확히 입력하세요");return;}
@@ -105,12 +107,14 @@ function signup(){const p=S.profile||{name:"",academy:"",grade:"",subject:""};S.
  <div class="field"><label>학원 선택</label><div class="acg">${ACADEMIES.map(a=>`<button data-ac="${a}" class="${S._acMode!=='etc'&&p.academy===a?'on':''}">${a}</button>`).join("")}<button data-ac="__etc" class="full ${S._acMode==='etc'?'on':''}">기타 (직접 입력)</button></div>${S._acMode==='etc'?`<input class="txt" id="ac" placeholder="학원명을 직접 입력하세요" value="${esc(p.academy)}" style="margin-top:8px">`:``}</div>
  <div class="field"><label>구분</label><div class="seg"><button data-g="재수생" class="${p.grade==='재수생'?'on':''}">재수생(N수)</button><button data-g="고3" class="${p.grade==='고3'?'on':''}">고3</button></div></div>
  <div class="field"><label>수학 선택과목</label><div class="seg"><button data-s="미적분" class="${p.subject==='미적분'?'on':''}">미적분</button><button data-s="확통" class="${p.subject==='확통'?'on':''}">확률과통계</button></div></div>
+ <div class="field"><label>복구용 숫자 4자리 (PIN)</label><input class="txt" id="pin" inputmode="numeric" maxlength="4" pattern="\\d{4}" autocomplete="off" placeholder="예: 7391" value="${S._pin||''}"><div style="font-size:11.5px;color:var(--mut2);margin-top:6px;line-height:1.5">기기를 바꾸거나 앱을 지웠을 때 내 오답노트를 다시 찾기 위한 번호예요. <b>0000·1234처럼 쉬운 번호는 쓸 수 없어요.</b></div></div>
  <div class="field"><label>개인정보 수집·이용 동의 (만 14세 이상 본인 동의)</label>
-   <div class="legalbox"><b>개인정보처리자</b> 델타스킬 (대표 송재형) · 문의 hello@deltaskill.co.kr<br>델타스킬은 수학 학습 진단 서비스 제공을 위해 아래와 같이 개인정보를 수집·이용합니다.<br><b>[필수] 수집·이용</b><br>• 수집 항목: 이름, 휴대폰번호, 학원명, 학년, 선택과목, 모의고사 문항별 응답·정오·자가진단 데이터, 풀이 사진(선택 첨부 시 · 처방 분석 목적, 관리자만 열람)<br>• 이용 목적: 개인 맞춤 학습 진단·처방·학습 경로 제공, 서비스 개선<br>• 개인정보는 델타스킬이 직접 관리하며, 본인 동의 없이 제3자에게 제공하지 않습니다<br>• 보유 기간: 서비스 종료 또는 동의 철회 시까지 (철회 문의: hello@deltaskill.co.kr)<br>• 법인 설립에 따른 이전: 향후 설립 예정인 (주)델타스킬로 사업이 승계될 예정이며, 이 경우 수집된 개인정보도 함께 이전됩니다. 이전 전에 이전 사실·이전받는 자·이전을 원하지 않으실 때의 조치 방법을 별도로 알려 드립니다.<br>• 동의를 거부할 수 있으나, 거부 시 진단 서비스 이용이 제한됩니다.<br><b>[선택] 복습 알림 수신</b><br>• 진단 결과에 따라 다시 봐야 할 문제를 카카오톡 또는 문자로 알려 드립니다.<br>• 알림에는 시험명·문항 번호·단원만 포함되며, <b>점수·등급은 포함되지 않습니다.</b><br>• 동의하지 않으셔도 진단 서비스는 그대로 이용하실 수 있고, 알림은 언제든지 끄실 수 있습니다.<br><b>[선택] 홍보 활용</b><br>• 학습 결과(점수·등급 변화 등)를 개인을 알아볼 수 없도록 익명 처리하여 서비스 소개·홍보(홈페이지, SNS, 소개 자료 등)에 활용합니다.<br>• 선택 동의를 거부해도 서비스 이용에 불이익이 없습니다.</div>
+   <div class="legalbox"><b>개인정보처리자</b> 델타스킬 (대표 송재형) · 문의 hello@deltaskill.co.kr<br>델타스킬은 수학 학습 진단 서비스 제공을 위해 아래와 같이 개인정보를 수집·이용합니다.<br><b>[필수] 수집·이용</b><br>• 수집 항목: 이름, 휴대폰번호, 학원명, 학년, 선택과목, 모의고사 문항별 응답·정오·자가진단 데이터, 풀이 사진(선택 첨부 시 · 처방 분석 목적, 관리자만 열람)<br>• 이용 목적: 개인 맞춤 학습 진단·처방·학습 경로 제공, 서비스 개선<br>• 개인정보는 델타스킬이 직접 관리하며, 본인 동의 없이 제3자에게 제공하지 않습니다<br>• 보유 기간: 서비스 종료 또는 동의 철회 시까지 (철회 문의: hello@deltaskill.co.kr)<br>• 법인 설립에 따른 이전: 현재 설립을 진행 중인 (주)델타스킬로 사업이 승계될 예정이며, 이 경우 수집된 개인정보도 함께 이전됩니다. 이전 전에 이전 사실·이전받는 자·이전을 원하지 않으실 때의 조치 방법을 별도로 알려 드립니다.<br>• 동의를 거부할 수 있으나, 거부 시 진단 서비스 이용이 제한됩니다.<br><b>[선택] 복습 알림 수신</b><br>• 진단 결과에 따라 다시 봐야 할 문제를 카카오톡 또는 문자로 알려 드립니다.<br>• 알림에는 시험명·문항 번호·단원만 포함되며, <b>점수·등급은 포함되지 않습니다.</b><br>• 동의하지 않으셔도 진단 서비스는 그대로 이용하실 수 있고, 알림은 언제든지 끄실 수 있습니다.<br><b>[선택] 홍보 활용</b><br>• 학습 결과(점수·등급 변화 등)를 개인을 알아볼 수 없도록 익명 처리하여 서비스 소개·홍보(홈페이지, SNS, 소개 자료 등)에 활용합니다.<br>• 선택 동의를 거부해도 서비스 이용에 불이익이 없습니다.</div>
    <label class="consent ${S._consent?'on':''}" id="cs"><input type="checkbox" id="ck" ${S._consent?'checked':''}><span class="ct"><b>[필수]</b> 만 14세 이상이며 개인정보 수집·이용에 동의합니다.</span></label>
    <label class="consent ${S._consent3?'on':''}" id="cs3"><input type="checkbox" id="ck3" ${S._consent3?'checked':''}><span class="ct"><b>[선택]</b> 복습 알림(카카오톡·문자) 수신에 동의합니다.</span></label><label class="consent ${S._consent2?'on':''}" id="cs2"><input type="checkbox" id="ck2" ${S._consent2?'checked':''}><span class="ct"><b>[선택]</b> 익명 처리된 학습 결과의 홍보 활용에 동의합니다.</span></label></div>
  </div>`;
  el("nm").oninput=e=>p.name=e.target.value;
+ el("pin").oninput=e=>{S._pin=e.target.value.replace(/[^0-9]/g,"").slice(0,4);e.target.value=S._pin;el("done").disabled=!ok();};
  if(el("ac"))el("ac").oninput=e=>{p.academy=e.target.value;S._acEtc=e.target.value;el("done").disabled=!ok();};
  document.querySelectorAll("[data-ac]").forEach(b=>b.onclick=()=>{if(b.dataset.ac==="__etc"){S._acMode="etc";p.academy=S._acEtc||"";}else{S._acMode="preset";p.academy=b.dataset.ac;}render();});
  document.querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>{p.grade=b.dataset.g;render();});
@@ -119,7 +123,8 @@ function signup(){const p=S.profile||{name:"",academy:"",grade:"",subject:""};S.
  el("ck2").onchange=e=>{S._consent2=e.target.checked;el("cs2").classList.toggle("on",e.target.checked);};
  el("ck3").onchange=e=>{S._consent3=e.target.checked;el("cs3").classList.toggle("on",e.target.checked);};
  S.profile=p;
- function ok(){return p.name&&p.academy&&p.grade&&p.subject&&S._consent;}
+ function validPin(){const v=(S._pin||"");if(!/^\d{4}$/.test(v))return false;if(/^(\d)\1\1\1$/.test(v))return false;if("0123456789".includes(v)||"9876543210".includes(v))return false;return true;}
+ function ok(){return p.name&&p.academy&&p.grade&&p.subject&&S._consent&&validPin();}
  el("nm").addEventListener("input",()=>{el("done").disabled=!ok();});
  /* 학원은 버튼 선택 — 직접입력 모드에서만 ac 입력창 존재 (oninput에서 처리) */
  el("fab").innerHTML=`<button class="btn" id="done" ${ok()?"":"disabled"}>가입 완료 · 진단 시작</button>`;
@@ -200,27 +205,34 @@ function buildResult(){const its=items().filter(q=>graded(q)!=null);
  return {score,total:its.length,correct:correct.length,
    responses:its.map(q=>({item_no:q.no,area:q.area,unit:q.unit,my_answer:""+S.ans[q.no],correct_answer:""+q.ans,result:graded(q),reached_step:S.step[q.no]||null,reason:S.reason[q.no]||null,confidence:S.conf[q.no]||null,memo:S.memo[q.no]||null}))};}
 
-async function sbPost(table,body,upsert){const r=await fetch(`${CONFIG.url}/rest/v1/${table}${upsert?"?on_conflict=id":""}`,{method:"POST",headers:{apikey:CONFIG.key,Authorization:"Bearer "+CONFIG.key,"Content-Type":"application/json",Prefer:"return=minimal"+(upsert?",resolution=merge-duplicates":"")},body:JSON.stringify(body)});if(!r.ok)throw new Error(table+" HTTP "+r.status);}
 async function saveAll(res){
- if(CONFIG.url&&CONFIG.key){
-   /* select 권한 없이도 동작하도록 ID를 클라이언트에서 생성 (return=minimal) */
-   const ids=LS.get("ds_ids")||{};const sid=ids[S.phone]||uid();ids[S.phone]=sid;LS.set("ds_ids",ids);S.studentId=sid;
-   try{await sbPost("students",{id:sid,phone:S.phone,name:S.profile.name,academy:S.profile.academy,grade:S.profile.grade,subject:S.profile.subject,consent:true,consent_marketing:S._consent2===true,consent_notify:S._consent3===true});}catch(e){if(!(""+e).includes("409"))throw e;/*409=이미 가입된 기기 → 정상*/}
-   const subId=uid();
-   await sbPost("submissions",{id:subId,student_id:sid,exam_code:EXAM.code,attempt_no:S.attempt,score:res.score});
-   /* 풀이 사진 업로드 (실패해도 제출은 유지) */
-   const okPhotos=new Set();
-   for(const no of Object.keys(S.photo||{})){
-     try{const r=await fetch(`${CONFIG.url}/storage/v1/object/solutions/${subId}/${no}.jpg`,{method:"POST",headers:{apikey:CONFIG.key,Authorization:"Bearer "+CONFIG.key,"Content-Type":"image/jpeg"},body:S.photo[no]});if(r.ok)okPhotos.add(+no);}catch(e){}
+ const demoSave=()=>{const subs=LS.get("ds_subs")||[];subs.push({phone:S.phone,exam:EXAM.code,attempt:S.attempt,score:res.score,mode:"demo",responses:res.responses});LS.set("ds_subs",subs);};
+ if(!CONFIG.api){demoSave();return "demo";}
+ try{
+   if(!TK.has()){
+     const pin=S._pin||"";
+     if(!/^\d{4}$/.test(pin))throw new Error("need_pin");
+     try{
+       const j=await api("/enroll",{method:"POST",auth:false,body:{phone:S.phone,pin:pin,name:S.profile.name,academy:S.profile.academy,grade:S.profile.grade,subject:S.profile.subject,consent:true,consent_marketing:S._consent2===true,consent_notify:S._consent3===true}});
+       TK.set(j.token);
+     }catch(e){
+       const m=""+(e&&e.message||e);
+       if(/already_enrolled/.test(m)){const j=await api("/login",{method:"POST",auth:false,body:{phone:S.phone,pin:pin}});TK.set(j.token);}
+       else throw e;
+     }
    }
-   res.responses.forEach(x=>{x.photo_path=okPhotos.has(x.item_no)?subId+"/"+x.item_no+".jpg":null;});
-   await sbPost("responses",res.responses.map(x=>({...x,submission_id:subId})));
+   const sub=await api("/submit",{method:"POST",body:{exam_code:EXAM.code,attempt_no:S.attempt,score:res.score,responses:res.responses}});
+   const subId=sub.submission_id;S.studentId=subId;
+   const failed=[];
+   for(const no of Object.keys(S.photo||{})){
+     try{const s=await api("/photo-upload",{method:"POST",body:{submission_id:subId,item_no:+no}});const r=await fetch(s.url,{method:"PUT",headers:{"Content-Type":"image/jpeg","x-upsert":"true"},body:S.photo[no]});if(!r.ok)throw 0;}
+     catch(_){failed.push(+no);}
+   }
+   S._photoFailed=failed;
    const subs=LS.get("ds_subs")||[];subs.push({phone:S.phone,exam:EXAM.code,attempt:S.attempt,score:res.score,mode:"server"});LS.set("ds_subs",subs);
    return "server";
- } else {
-   const subs=LS.get("ds_subs")||[];subs.push({phone:S.phone,exam:EXAM.code,attempt:S.attempt,score:res.score,mode:"demo",responses:res.responses});LS.set("ds_subs",subs);
-   return "demo";
- }}
+ }catch(e){ demoSave(); throw e; }
+}
 
 /* ---------- 결과 ---------- */
 function pathLocked(){const on=Math.min(S.attempt,3);return `<div class="lock"><div class="lg">🗺️</div><h4>학습 경로는 ${3-on>0?`${3-on}회 더 응시하면`:'곧'} 열려요</h4><p>한 번의 시험은 그날 컨디션이 섞여요. 3회가 쌓이면 <b>반복되는 결손</b>만 골라 개인 학습 경로를 만들어드려요.</p><div class="dots">${[0,1,2].map(i=>`<i class="${i<on?'on':''}"></i>`).join("")}</div><div style="font-size:12px;color:var(--mut2);margin-bottom:12px">현재 ${on}/3회</div><button class="btn ghost" id="pv" style="max-width:280px;margin:0 auto">3회 누적됐다고 가정하고 미리보기</button></div>`;}
