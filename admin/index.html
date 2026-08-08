@@ -73,6 +73,30 @@ let CACHE = null;   // students 응답
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const pct = (n, d) => d ? Math.round(100 * n / d) + "%" : "-";
 
+// ── 문항별 요구 스킬 (계류) — 오답 옆에 "이 문항이 쓰는 스킬"을 띄운다.
+//    ITEM_SKILLS[시험코드][트랙][번호] = {uses:[기본 풀이가 쓰는 스킬], anchors:[지름길]}
+//    자동 생성 블록 — 회차 추가 시 admin/exam_item_skills.gen.json 재생성 후 교체.
+/* ITEM_SKILLS:BEGIN */
+const ITEM_SKILLS = {"OMEGA_9":{"공통":{"1":{"uses":["지수법칙과 밑 통일"],"anchors":[]},"2":{"uses":[],"anchors":[]},"3":{"uses":["등비수열 세 얼굴"],"anchors":[]},"4":{"uses":[],"anchors":[]},"5":{"uses":[],"anchors":[]},"6":{"uses":["각 변환은 두 가지만 묻는다","삼각함수 관계식으로 갈아타기"],"anchors":[]},"7":{"uses":["로그의 성질과 진수 조건","지수법칙과 밑 통일"],"anchors":[]},"8":{"uses":[],"anchors":[]},"9":{"uses":[],"anchors":[]},"10":{"uses":["나열할 때 형태를 남긴다","주기를 잡고 n을 쪼개 대입"],"anchors":[]},"11":{"uses":[],"anchors":[]},"12":{"uses":[],"anchors":[]},"13":{"uses":["중근과 삼중근의 구분","조건 맞춤 식 설정 (미정계수 최소화)"],"anchors":["극값의 차 공식 (4al³)"]},"14":{"uses":["원이 나오면 각을 옮긴다","넓이는 두 변과 낀각","세 변과 한 각을 잇는 다리","외접원이 보이면 사인법칙"],"anchors":[]},"15":{"uses":["0인수 차수 맞추기","조건을 인수로 번역하기"],"anchors":[]},"16":{"uses":["로그의 성질과 진수 조건"],"anchors":[]},"17":{"uses":[],"anchors":[]},"18":{"uses":["시그마는 쪼갤 수 있고 상수는 밖으로"],"anchors":[]},"19":{"uses":[],"anchors":[]},"20":{"uses":["등차수열 세 얼굴"],"anchors":[]},"21":{"uses":["누적함수 읽기 F(x)=∫ₐ^x f(t)dt","조건 맞춤 식 설정 (미정계수 최소화)","항상 성립 부등식 → 판별식"],"anchors":[]},"22":{"uses":["주기와 지나는 점으로 미정계수 잡기"],"anchors":[]}},"확통":{"23":{"uses":[],"anchors":[]},"24":{"uses":[],"anchors":[]},"25":{"uses":[],"anchors":[]},"26":{"uses":[],"anchors":[]},"27":{"uses":[],"anchors":[]},"28":{"uses":[],"anchors":[]},"29":{"uses":[],"anchors":[]},"30":{"uses":[],"anchors":[]}},"미적분":{"23":{"uses":[],"anchors":[]},"24":{"uses":["부등식으로 가둬 극한 확정"],"anchors":[]},"25":{"uses":["접한다 = 값·기울기 동시 일치"],"anchors":[]},"26":{"uses":["원의 접선의 성질","직각삼각형의 삼각비","넓이는 두 변과 낀각"],"anchors":[]},"27":{"uses":["접선·법선의 절편 공식"],"anchors":[]},"28":{"uses":[],"anchors":[]},"29":{"uses":["부분분수로 갈라 상쇄시키기","등차수열 세 얼굴"],"anchors":[]},"30":{"uses":["구간 이음 미분가능 조건"],"anchors":[]}},"기하":{"23":{"uses":[],"anchors":[]},"24":{"uses":[],"anchors":[]},"25":{"uses":[],"anchors":[]},"26":{"uses":[],"anchors":[]},"27":{"uses":["피타고라스 정리"],"anchors":[]},"28":{"uses":[],"anchors":[]},"29":{"uses":["원의 접선의 성질"],"anchors":[]},"30":{"uses":["직각삼각형의 삼각비","피타고라스 정리"],"anchors":[]}}}};
+/* ITEM_SKILLS:END */
+// 응답의 area(수학Ⅰ/Ⅱ·미적분(선택)·확률과통계)를 계류 트랙 키로 옮긴다.
+const AREA2TRACK = {"수학Ⅰ":"공통","수학Ⅱ":"공통","공통":"공통","미적분(선택)":"미적분","미적분":"미적분","확률과통계":"확통","확률과 통계":"확통","확통":"확통","기하":"기하"};
+function skillsOf(exam, area, no){
+  const E = ITEM_SKILLS[exam]; if(!E) return null;
+  const n = +no;
+  if(n>=1 && n<=22 && E["공통"] && E["공통"][no]) return E["공통"][no];  // 공통 1~22 번호 유일
+  const tr = AREA2TRACK[area] || area;                                    // 선택 23~30 은 트랙으로 갈림
+  return (E[tr] && E[tr][no]) || null;
+}
+function skillCell(exam, area, no){
+  const s = skillsOf(exam, area, no);
+  if(!s || ((!s.uses || !s.uses.length) && (!s.anchors || !s.anchors.length))) return "<span class='k'>-</span>";
+  let out = "";
+  if(s.anchors && s.anchors.length) out += s.anchors.map(a=>`<b title="지름길(계류) — 기본 풀이보다 빠른 길">⚡ ${esc(a)}</b>`).join("<br>");
+  if(s.uses && s.uses.length){ if(out) out += "<br>"; out += "<span class='k'>" + s.uses.map(esc).join(" · ") + "</span>"; }
+  return out;
+}
+
 async function api(body) {
   if (DEMO) return demoApi(body);
   const r = await fetch(API, { method: "POST", headers: { "Content-Type": "application/json" },
@@ -248,13 +272,14 @@ async function loadDetail(phone) {
         (shaky.length ? ` 애매하게 맞은 ${shaky.length}개도 재점검 후보.` : "") + "</p>";
 
     h += `<h2>오답 문항 (메모는 학생이 쓴 그대로)</h2>
-      <table><tr><th>시험</th><th>번호</th><th>영역</th><th>단원</th><th>내 답→정답</th><th>이유</th><th>도달</th><th>메모</th></tr>`;
+      <table><tr><th>시험</th><th>번호</th><th>영역</th><th>단원</th><th>요구 스킬</th><th>내 답→정답</th><th>이유</th><th>도달</th><th>메모</th></tr>`;
     const list = [...wrong, ...lucky].sort((a, b) =>
       (codeOf[a.submission_id] || "").localeCompare(codeOf[b.submission_id] || "") || (a.item_no - b.item_no));
     for (const r of list) {
       const luck = r.result === "o";
       h += `<tr${luck ? ' class="warn"' : ""}><td>${esc(examName(codeOf[r.submission_id]))}</td>
         <td>${esc(r.item_no)}${luck ? "(찍맞)" : ""}</td><td>${esc(r.area)}</td><td>${esc(r.unit)}</td>
+        <td>${skillCell(codeOf[r.submission_id], r.area, r.item_no)}</td>
         <td>${esc(r.my_answer)}→${esc(r.correct_answer)}</td><td>${esc(r.reason)}</td>
         <td>${esc(r.reached_step)}</td><td>${esc(r.memo)}</td></tr>`;
     }
