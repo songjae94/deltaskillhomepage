@@ -130,6 +130,15 @@ async function loadMain() {
   }
   const cnt = st => st.ids.reduce((a, i) => a + (nSub[i] || 0), 0);
   const noSub = studs.filter(s => cnt(s) === 0).length;
+  const pc = j.photoCounts || {};
+  const photoOf = st => st.ids.reduce((a, i) => a + (pc[i] || 0), 0);
+
+  // 성실도 배지 — 누적 제출 횟수로. 반복·누적이 델타스킬의 핵심이라 그걸 보상한다.
+  const tier = n => n >= 10 ? { m: "👑", t: "마스터", c: "#8a6d00" }
+    : n >= 5 ? { m: "🔥", t: "열공", c: "#c00" }
+    : n >= 3 ? { m: "⭐", t: "성실", c: "#c67" }
+    : n >= 1 ? { m: "🌱", t: "새싹", c: "#690" } : null;
+  const reward = studs.filter(s => cnt(s) >= 3).length;   // 보상 대상(3회 이상)
 
   const scope = j.role === "academy" ? ` — ${esc(j.academy)}` : "";
   document.getElementById("title").textContent = "델타스킬 관리자" + scope;
@@ -139,26 +148,41 @@ async function loadMain() {
     <div class="card"><b>${j.submissions.length}</b>누적 제출</div>
     <div class="card"><b>${last7}</b>이번 주 제출</div>
     <div class="card"><b class="${noSub ? "bad" : ""}">${noSub}</b>가입만 하고 미제출</div>
+    <div class="card"><b style="color:#c00">${reward}</b>보상 대상(3회+)</div>
   </div>
   <div class="row noprint"><input id="q" placeholder="이름·연락처·학원 검색" style="flex:1"
-    oninput="filterRows()"></div>
-  <table id="tbl"><tr><th>이름</th><th>연락처</th><th>소속</th><th>구분</th><th>선택</th><th>가입일</th><th>제출</th></tr>`;
-  for (const s of studs.sort((a, b) => (b.created_at || "").localeCompare(a.created_at || ""))) {
-    h += `<tr class="click" data-t="${esc((s.name || "") + (s.phone || "") + (s.academy || ""))}"
+    oninput="filterRows()">
+    <label class="k"><input type="checkbox" id="onlyReward" onchange="filterRows()"> 보상 대상만</label></div>
+  <table id="tbl"><tr><th>이름</th><th>등급</th><th>연락처</th><th>소속</th><th>구분</th><th>선택</th><th>가입일</th><th>제출</th><th>사진</th></tr>`;
+  for (const s of studs.sort((a, b) => cnt(b) - cnt(a) || (b.created_at || "").localeCompare(a.created_at || ""))) {
+    const n = cnt(s), tg = tier(n), np = photoOf(s);
+    h += `<tr class="click" data-t="${esc((s.name || "") + (s.phone || "") + (s.academy || ""))}" data-n="${n}"
       onclick="loadDetail('${esc(s.phone)}')">
-      <td>${esc(s.name || "-")}</td><td>${esc(s.phone)}</td><td>${esc(s.academy || "-")}</td>
+      <td>${esc(s.name || "-")}</td>
+      <td>${tg ? `<span title="${tg.t} · ${n}회 제출" style="color:${tg.c};font-weight:700">${tg.m} ${tg.t}</span>` : '<span class="k">-</span>'}</td>
+      <td>${esc(s.phone)}</td><td>${esc(s.academy || "-")}</td>
       <td>${esc(s.grade || "-")}</td><td>${esc(s.subject || "-")}</td>
       <td>${esc((s.created_at || "").slice(0, 10))}</td>
-      <td>${cnt(s) || '<span class="bad">0</span>'}</td></tr>`;
+      <td>${n || '<span class="bad">0</span>'}</td>
+      <td>${np ? `📷 ${np}` : '<span class="k">-</span>'}</td></tr>`;
   }
-  h += "</table><p class='k'>학생 줄을 누르면 상담 리포트가 열립니다.</p>";
+  h += `</table><p class='k'>학생 줄을 누르면 상담 리포트가 열립니다. 사진은 리포트 안 '제출 사진'에서 봅니다.</p>
+  <div class="note" style="margin-top:10px">
+    <b>성실도 등급</b> — 누적 제출 횟수 기준: 🌱 새싹(1~2) · ⭐ 성실(3~4) · 🔥 열공(5~9) · 👑 마스터(10+).
+    반복·누적이 델타스킬의 핵심이라 이 지표로 <b>보상 대상(3회 이상)</b>을 가려냅니다.
+    보상 예시(형이 정하기): 3회→개인 델타맵 우선 분석 · 5회→1:1 상담 10분 · 10회→맞춤 문제세트/기프티콘.
+  </div>`;
   document.getElementById("main").innerHTML = h;
   show("main");
 }
 function filterRows() {
   const q = document.getElementById("q").value.trim();
-  for (const tr of document.querySelectorAll("#tbl tr.click"))
-    tr.hidden = q && !(tr.dataset.t || "").includes(q);
+  const onlyR = document.getElementById("onlyReward")?.checked;
+  for (const tr of document.querySelectorAll("#tbl tr.click")) {
+    const okQ = !q || (tr.dataset.t || "").includes(q);
+    const okR = !onlyR || (+tr.dataset.n || 0) >= 3;
+    tr.hidden = !(okQ && okR);
+  }
 }
 
 // ── 상세(상담 리포트) 화면 ─────────────────────────
@@ -301,9 +325,13 @@ function demoApi(body) {
   const submissions = [
     { id: "s1", student_id: "a", exam_code: "OMEGA_8", attempt_no: 1, score: 72, created_at: "2026-07-20" },
     { id: "s2", student_id: "a", exam_code: "OMEGA_9", attempt_no: 1, score: 80, created_at: "2026-08-03" },
+    { id: "s1b", student_id: "a", exam_code: "OMEGA_7", attempt_no: 1, score: 68, created_at: "2026-07-10" },
+    { id: "s1c", student_id: "a", exam_code: "OMEGA_5", attempt_no: 1, score: 60, created_at: "2026-06-28" },
+    { id: "s1d", student_id: "a", exam_code: "OMEGA_6", attempt_no: 1, score: 64, created_at: "2026-07-02" },
     { id: "s3", student_id: "b", exam_code: "OMEGA_9", attempt_no: 1, score: 64, created_at: "2026-08-04" }];
   const names = { OMEGA_8: "OMEGA 8회", OMEGA_9: "OMEGA 9회" };
-  if (body.action === "students") return { ok: 1, role: "owner", academy: null, students, submissions, names };
+  if (body.action === "students") return { ok: 1, role: "owner", academy: null, students, submissions, names,
+    photoCounts: { a: 3, b: 1 } };
   if (body.action === "student") {
     const st = students.filter(s => s.phone === body.phone);
     const subs = submissions.filter(s => s.student_id === st[0].id);
@@ -323,7 +351,7 @@ function demoApi(body) {
     const photos = subs.length ? { [subs[0].id]: [{ no: 13, url: ph }, { no: 21, url: ph }] } : {};
     return { ok: 1, students: st, submissions: subs, responses, names, photos,
       reviews: [{ box: 1, due_at: "2026-08-06" }, { box: 2, due_at: "2026-08-20" }],
-      cohort: { "수학Ⅰ": [300, 420], "수학Ⅱ": [500, 830] } };
+      cohort: { "수핗Ⅰ": [300, 420], "수핧Ⅱ": [500, 830] } };
   }
   return { ok: 1 };
 }
