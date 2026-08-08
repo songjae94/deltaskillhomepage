@@ -166,6 +166,8 @@ async function loadDetail(phone) {
   const j = await api({ action: "student", phone });
   const st = mergeByPhone(j.students)[0];
   const subs = j.submissions, resps = j.responses, cohort = j.cohort || {};
+  const names = j.names || {}, photos = j.photos || {};
+  const examName = c => names[c] || c || "-";   // 이름 있으면 이름, 없으면 코드
   const bySub = {}; for (const r of resps) (bySub[r.submission_id] = bySub[r.submission_id] || []).push(r);
   const codeOf = {}; for (const s of subs) codeOf[s.id] = s.exam_code;
   const wrong = resps.filter(r => r.result === "x");
@@ -184,7 +186,7 @@ async function loadDetail(phone) {
       const rs = bySub[s.id] || [];
       const w = rs.filter(r => r.result === "x").length;
       const lk = rs.filter(r => r.result === "o" && r.confidence === "찍음").length;
-      h += `<tr><td>${esc((s.created_at || "").slice(0, 10))}</td><td>${esc(s.exam_code)}</td>
+      h += `<tr><td>${esc((s.created_at || "").slice(0, 10))}</td><td>${esc(examName(s.exam_code))}</td>
         <td>${esc(s.attempt_no)}</td><td>${esc(s.score)}</td><td>${rs.length}</td>
         <td class="bad">${w}</td><td>${lk}</td></tr>`;
     }
@@ -227,12 +229,27 @@ async function loadDetail(phone) {
       (codeOf[a.submission_id] || "").localeCompare(codeOf[b.submission_id] || "") || (a.item_no - b.item_no));
     for (const r of list) {
       const luck = r.result === "o";
-      h += `<tr${luck ? ' class="warn"' : ""}><td>${esc(codeOf[r.submission_id])}</td>
+      h += `<tr${luck ? ' class="warn"' : ""}><td>${esc(examName(codeOf[r.submission_id]))}</td>
         <td>${esc(r.item_no)}${luck ? "(찍맞)" : ""}</td><td>${esc(r.area)}</td><td>${esc(r.unit)}</td>
         <td>${esc(r.my_answer)}→${esc(r.correct_answer)}</td><td>${esc(r.reason)}</td>
         <td>${esc(r.reached_step)}</td><td>${esc(r.memo)}</td></tr>`;
     }
     h += "</table>";
+  }
+
+  // 제출 사진 (학생이 파일럿 앱에서 올린 풀이·문제 사진)
+  const photoSubs = Object.keys(photos);
+  if (photoSubs.length) {
+    h += "<h2>제출 사진</h2><p class='k'>학생이 올린 풀이·문제 사진입니다. 누르면 원본 크기로 열립니다. (링크는 1시간 뒤 만료 — 새로고침하면 다시 생성)</p>";
+    for (const s of [...subs].reverse()) {
+      const ph = photos[s.id]; if (!ph || !ph.length) continue;
+      h += `<div style="margin:8px 0"><b>${esc(examName(s.exam_code))}</b> <span class="k">(${ph.length}장)</span><br>`;
+      for (const p of ph) {
+        h += `<a href="${esc(p.url)}" target="_blank" rel="noopener" title="${esc(p.no)}번 문항" style="display:inline-block;margin:4px 6px 0 0;text-align:center;font-size:11px;color:#555">
+          <img src="${esc(p.url)}" alt="${esc(p.no)}번" style="width:120px;height:120px;object-fit:cover;border:1px solid #ddd;border-radius:6px;display:block">${esc(p.no)}번</a>`;
+      }
+      h += "</div>";
+    }
   }
 
   if ((j.reviews || []).length) {
@@ -285,7 +302,8 @@ function demoApi(body) {
     { id: "s1", student_id: "a", exam_code: "OMEGA_8", attempt_no: 1, score: 72, created_at: "2026-07-20" },
     { id: "s2", student_id: "a", exam_code: "OMEGA_9", attempt_no: 1, score: 80, created_at: "2026-08-03" },
     { id: "s3", student_id: "b", exam_code: "OMEGA_9", attempt_no: 1, score: 64, created_at: "2026-08-04" }];
-  if (body.action === "students") return { ok: 1, role: "owner", academy: null, students, submissions };
+  const names = { OMEGA_8: "OMEGA 8회", OMEGA_9: "OMEGA 9회" };
+  if (body.action === "students") return { ok: 1, role: "owner", academy: null, students, submissions, names };
   if (body.action === "student") {
     const st = students.filter(s => s.phone === body.phone);
     const subs = submissions.filter(s => s.student_id === st[0].id);
@@ -300,7 +318,10 @@ function demoApi(body) {
       else if (no % 7 === 0) Object.assign(r, { confidence: "애매함" });
       responses.push(r);
     }
-    return { ok: 1, students: st, submissions: subs, responses,
+    const ph = "data:image/svg+xml;utf8," + encodeURIComponent(
+      "<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><rect width='120' height='120' fill='#eee'/><text x='60' y='64' font-size='13' text-anchor='middle' fill='#999'>예시 사진</text></svg>");
+    const photos = subs.length ? { [subs[0].id]: [{ no: 13, url: ph }, { no: 21, url: ph }] } : {};
+    return { ok: 1, students: st, submissions: subs, responses, names, photos,
       reviews: [{ box: 1, due_at: "2026-08-06" }, { box: 2, due_at: "2026-08-20" }],
       cohort: { "수학Ⅰ": [300, 420], "수학Ⅱ": [500, 830] } };
   }
