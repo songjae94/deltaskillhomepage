@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>델타스킬 관리자</title>
+<style>
+:root{--red:#c00}
+*{box-sizing:border-box}
+body{font-family:'Malgun Gothic',Pretendard,sans-serif;margin:0;color:#1a1a1a;line-height:1.55;background:#fafafa}
+.wrap{max-width:920px;margin:0 auto;padding:20px 16px}
+h1{font-size:20px;border-bottom:3px solid var(--red);padding-bottom:8px;margin:6px 0 14px}
+h2{font-size:15px;margin:24px 0 8px;border-left:4px solid var(--red);padding-left:8px}
+table{border-collapse:collapse;width:100%;font-size:13px;margin:6px 0;background:#fff}
+th,td{border:1px solid #ddd;padding:5px 8px;text-align:left}
+th{background:#f6f6f6}
+tr.click{cursor:pointer} tr.click:hover td{background:#fff5f5}
+.k{color:#777;font-size:12px}
+.bad{color:var(--red);font-weight:600}.warn{background:#fff3cd}
+.bar{display:inline-block;height:10px;background:var(--red);vertical-align:middle}
+.gray{display:inline-block;height:10px;background:#bbb;vertical-align:middle}
+.tag{display:inline-block;background:#eee;border-radius:4px;padding:1px 7px;font-size:12px;margin:1px}
+.note{background:#f8f8f8;border:1px solid #e5e5e5;border-radius:6px;padding:10px 12px;font-size:13px}
+.cards{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+.card{background:#fff;border:1px solid #e5e5e5;border-radius:8px;padding:10px 16px;min-width:120px}
+.card b{font-size:20px;display:block}
+button{font:inherit;padding:7px 14px;border:1px solid #ccc;border-radius:6px;background:#fff;cursor:pointer}
+button.p{background:var(--red);border-color:var(--red);color:#fff}
+input{font:inherit;padding:7px 10px;border:1px solid #ccc;border-radius:6px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+#login{max-width:340px;margin:12vh auto;background:#fff;border:1px solid #e5e5e5;border-radius:10px;padding:24px}
+#login input{width:100%;margin:5px 0}
+.err{color:var(--red);font-size:13px;min-height:18px}
+.top{display:flex;justify-content:space-between;align-items:center}
+@media print{.noprint{display:none}body{background:#fff}.wrap{max-width:100%}}
+</style>
+</head>
+<body>
+
+<div id="login" hidden>
+  <h1>델타스킬 관리자</h1>
+  <p class="k">파일럿 관리자 페이지입니다. 계정은 운영자에게 문의하십시오.</p>
+  <input id="lid" placeholder="아이디" autocomplete="username">
+  <input id="lpw" placeholder="비밀번호" type="password" autocomplete="current-password">
+  <div class="err" id="lerr"></div>
+  <button class="p" style="width:100%" onclick="doLogin()">로그인</button>
+</div>
+
+<div id="app" class="wrap" hidden>
+  <div class="top">
+    <h1 id="title">델타스킬 관리자</h1>
+    <div class="noprint row">
+      <button onclick="show('main')" id="backBtn" hidden>← 목록</button>
+      <button onclick="window.print()" id="printBtn" hidden>인쇄 / PDF</button>
+      <button onclick="doLogout()">로그아웃</button>
+    </div>
+  </div>
+  <p class="k">이 화면의 자료는 상담·관리 목적입니다. 화면·출력물을 외부에 공유하지 마십시오 (개인정보 포함).</p>
+  <div id="main"></div>
+  <div id="detail" hidden></div>
+</div>
+
+<script>
+const API = "https://cvlrphtupjmaefahodgz.supabase.co/functions/v1/admin-api";
+const DEMO = new URLSearchParams(location.search).has("demo");
+const TK = {
+  get: () => sessionStorage.getItem("ds_admin_tk"),
+  set: t => sessionStorage.setItem("ds_admin_tk", t),
+  clear: () => sessionStorage.removeItem("ds_admin_tk"),
+};
+let CACHE = null;   // students 응답
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pct = (n, d) => d ? Math.round(100 * n / d) + "%" : "-";
+
+async function api(body) {
+  if (DEMO) return demoApi(body);
+  const r = await fetch(API, { method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ...body, token: TK.get() }) });
+  const j = await r.json().catch(() => null);
+  if (r.status === 401 && body.action !== "login") { TK.clear(); boot(); throw new Error("auth"); }
+  if (!r.ok || !j || j.ok === false) throw new Error((j && j.error) || ("HTTP " + r.status));
+  return j;
+}
+
+// ── 로그인 ─────────────────────────────────────────
+async function doLogin() {
+  document.getElementById("lerr").textContent = "";
+  try {
+    const j = await api({ action: "login",
+      login_id: document.getElementById("lid").value.trim(),
+      pw: document.getElementById("lpw").value });
+    TK.set(j.token); boot();
+  } catch (e) {
+    document.getElementById("lerr").textContent =
+      e.message === "too_many" ? "시도가 너무 잦습니다. 잠시 후 다시." : "아이디 또는 비밀번호가 맞지 않습니다.";
+  }
+}
+async function doLogout() { try { await api({ action: "logout" }); } catch (_) {} TK.clear(); location.reload(); }
+
+// ── 화면 전환 ──────────────────────────────────────
+function show(which) {
+  document.getElementById("main").hidden = which !== "main";
+  document.getElementById("detail").hidden = which !== "detail";
+  document.getElementById("backBtn").hidden = which !== "detail";
+  document.getElementById("printBtn").hidden = which !== "detail";
+  if (which === "main") document.getElementById("title").textContent = "델타스킬 관리자";
+}
+
+// ── 목록 화면 ──────────────────────────────────────
+function mergeByPhone(students) {
+  const by = {};
+  for (const s of students) { (by[s.phone || "?"] = by[s.phone || "?"] || []).push(s); }
+  return Object.values(by).map(rs => {
+    rs.sort((a, b) => (a.created_at || "").localeCompare(b.created_at || ""));
+    return { ...rs[0], ids: rs.map(x => x.id) };
+  });
+}
+
+async function loadMain() {
+  const j = await api({ action: "students" });
+  CACHE = j;
+  const studs = mergeByPhone(j.students);
+  const nSub = {};
+  let last7 = 0;
+  const week = Date.now() - 7 * 864e5;
+  for (const s of j.submissions) {
+    nSub[s.student_id] = (nSub[s.student_id] || 0) + 1;
+    if (new Date(s.created_at) > week) last7++;
+  }
+  const cnt = st => st.ids.reduce((a, i) => a + (nSub[i] || 0), 0);
+  const noSub = studs.filter(s => cnt(s) === 0).length;
+
+  const scope = j.role === "academy" ? ` — ${esc(j.academy)}` : "";
+  document.getElementById("title").textContent = "델타스킬 관리자" + scope;
+
+  let h = `<div class="cards">
+    <div class="card"><b>${studs.length}</b>가입 학생</div>
+    <div class="card"><b>${j.submissions.length}</b>누적 제출</div>
+    <div class="card"><b>${last7}</b>이번 주 제출</div>
+    <div class="card"><b class="${noSub ? "bad" : ""}">${noSub}</b>가입만 하고 미제출</div>
+  </div>
+  <div class="row noprint"><input id="q" placeholder="이름·연락처·학원 검색" style="flex:1"
+    oninput="filterRows()"></div>
+  <table id="tbl"><tr><th>이름</th><th>연락처</th><th>소속</th><th>구분</th><th>선택</th><th>가입일</th><th>제출</th></tr>`;
+  for (const s of studs.sort((a, b) => (b.created_at || "").localeCompare(a.created_at || ""))) {
+    h += `<tr class="click" data-t="${esc((s.name || "") + (s.phone || "") + (s.academy || ""))}"
+      onclick="loadDetail('${esc(s.phone)}')">
+      <td>${esc(s.name || "-")}</td><td>${esc(s.phone)}</td><td>${esc(s.academy || "-")}</td>
+      <td>${esc(s.grade || "-")}</td><td>${esc(s.subject || "-")}</td>
+      <td>${esc((s.created_at || "").slice(0, 10))}</td>
+      <td>${cnt(s) || '<span class="bad">0</span>'}</td></tr>`;
+  }
+  h += "</table><p class='k'>학생 줄을 누르면 상담 리포트가 열립니다.</p>";
+  document.getElementById("main").innerHTML = h;
+  show("main");
+}
+function filterRows() {
+  const q = document.getElementById("q").value.trim();
+  for (const tr of document.querySelectorAll("#tbl tr.click"))
+    tr.hidden = q && !(tr.dataset.t || "").includes(q);
+}
+
+// ── 상세(상담 리포트) 화면 ─────────────────────────
+async function loadDetail(phone) {
+  const j = await api({ action: "student", phone });
+  const st = mergeByPhone(j.students)[0];
+  const subs = j.submissions, resps = j.responses, cohort = j.cohort || {};
+  const bySub = {}; for (const r of resps) (bySub[r.submission_id] = bySub[r.submission_id] || []).push(r);
+  const codeOf = {}; for (const s of subs) codeOf[s.id] = s.exam_code;
+  const wrong = resps.filter(r => r.result === "x");
+  const lucky = resps.filter(r => r.result === "o" && r.confidence === "찍음");
+  const shaky = resps.filter(r => r.result === "o" && r.confidence === "애매함");
+
+  document.getElementById("title").textContent = `상담 리포트 — ${st.name || "(이름없음)"}`;
+  let h = `<h2>기본 정보</h2><table><tr><th>이름</th><th>연락처</th><th>소속</th><th>구분</th><th>선택과목</th><th>가입일</th><th>제출</th></tr>
+    <tr><td>${esc(st.name)}</td><td>${esc(st.phone)}</td><td>${esc(st.academy)}</td><td>${esc(st.grade)}</td>
+    <td>${esc(st.subject)}</td><td>${esc((st.created_at || "").slice(0, 10))}</td><td>${subs.length}</td></tr></table>`;
+
+  h += "<h2>응시 이력</h2>";
+  if (subs.length) {
+    h += "<table><tr><th>응시일</th><th>시험</th><th>회차</th><th>자기채점</th><th>문항</th><th>오답</th><th>찍어서 맞음</th></tr>";
+    for (const s of [...subs].reverse()) {
+      const rs = bySub[s.id] || [];
+      const w = rs.filter(r => r.result === "x").length;
+      const lk = rs.filter(r => r.result === "o" && r.confidence === "찍음").length;
+      h += `<tr><td>${esc((s.created_at || "").slice(0, 10))}</td><td>${esc(s.exam_code)}</td>
+        <td>${esc(s.attempt_no)}</td><td>${esc(s.score)}</td><td>${rs.length}</td>
+        <td class="bad">${w}</td><td>${lk}</td></tr>`;
+    }
+    h += "</table>";
+  } else h += "<p class='note'>제출이 없습니다. 첫 제출 독려가 상담 주제입니다.</p>";
+
+  const mine = {};
+  for (const r of resps) if (r.area) {
+    mine[r.area] = mine[r.area] || [0, 0]; mine[r.area][1]++;
+    if (r.result === "o") mine[r.area][0]++;
+  }
+  if (resps.length) {
+    h += "<h2>영역별 정답률 — 반 평균 대비</h2><table><tr><th>영역</th><th>문항</th><th>본인</th><th></th><th>반 평균</th></tr>";
+    for (const a of Object.keys(mine).sort((x, y) => mine[x][0] / mine[x][1] - mine[y][0] / mine[y][1])) {
+      const [o, t] = mine[a], [co, ct] = cohort[a] || [0, 0];
+      const my = 100 * o / t, cl = ct ? 100 * co / ct : 0;
+      h += `<tr><td>${esc(a)}</td><td>${t}</td><td${ct && my < cl - 10 ? ' class="bad"' : ""}>${pct(o, t)}</td>
+        <td><span class="bar" style="width:${my.toFixed(0)}px"></span><br>
+        <span class="gray" style="width:${cl.toFixed(0)}px"></span></td><td>${pct(co, ct)}</td></tr>`;
+    }
+    h += "</table><p class='k'>빨간 막대 = 본인, 회색 = 반 전체.</p>";
+
+    const cnt = (arr, key) => {
+      const c = {}; for (const r of arr) { const v = r[key]; if (v) c[v] = (c[v] || 0) + 1; }
+      return Object.entries(c).sort((a, b) => b[1] - a[1]);
+    };
+    const cell = pairs => pairs.length ? pairs.map(([k, v]) => `${esc(k)} <b>${v}</b>`).join("<br>") : "<span class='k'>기록 없음</span>";
+    h += `<h2>어디서 왜 막히는가</h2><table><tr><th>틀린 이유 (오답)</th><th>정답의 확신도</th><th>도달 단계 (오답)</th></tr>
+      <tr><td>${cell(cnt(wrong, "reason"))}</td>
+      <td>${cell(cnt(resps.filter(r => r.result === "o"), "confidence"))}</td>
+      <td>${cell(cnt(wrong, "reached_step"))}</td></tr></table>`;
+    if (lucky.length)
+      h += `<p class="note warn">⚠ <b>찍어서 맞은 문항 ${lucky.length}개</b> — 점수에는 있지만 사실상 오답입니다.
+        오답 ${wrong.length}개에 더한 ${wrong.length + lucky.length}개가 실제 학습 대상입니다.` +
+        (shaky.length ? ` 애매하게 맞은 ${shaky.length}개도 재점검 후보.` : "") + "</p>";
+
+    h += `<h2>오답 문항 (메모는 학생이 쓴 그대로)</h2>
+      <table><tr><th>시험</th><th>번호</th><th>영역</th><th>단원</th><th>내 답→정답</th><th>이유</th><th>도달</th><th>메모</th></tr>`;
+    const list = [...wrong, ...lucky].sort((a, b) =>
+      (codeOf[a.submission_id] || "").localeCompare(codeOf[b.submission_id] || "") || (a.item_no - b.item_no));
+    for (const r of list) {
+      const luck = r.result === "o";
+      h += `<tr${luck ? ' class="warn"' : ""}><td>${esc(codeOf[r.submission_id])}</td>
+        <td>${esc(r.item_no)}${luck ? "(찍맞)" : ""}</td><td>${esc(r.area)}</td><td>${esc(r.unit)}</td>
+        <td>${esc(r.my_answer)}→${esc(r.correct_answer)}</td><td>${esc(r.reason)}</td>
+        <td>${esc(r.reached_step)}</td><td>${esc(r.memo)}</td></tr>`;
+    }
+    h += "</table>";
+  }
+
+  if ((j.reviews || []).length) {
+    const box = {}; let due = 0;
+    const today = new Date().toISOString().slice(0, 10);
+    for (const r of j.reviews) { box[r.box] = (box[r.box] || 0) + 1; if ((r.due_at || "9999") <= today) due++; }
+    h += "<h2>복습 현황 (Leitner)</h2><p>" +
+      Object.keys(box).sort().map(k => `<span class="tag">박스${k}: ${box[k]}</span>`).join(" ") +
+      (due ? ` <span class="tag bad">기한 지남 ${due}</span>` : "") + "</p>";
+  }
+
+  const tips = [];
+  if (!subs.length) tips.push("가입 후 미제출 — 첫 제출의 장벽이 무엇인지부터.");
+  if (lucky.length) tips.push(`찍어서 맞은 ${lucky.length}문항을 본인은 '맞은 문제'로 기억하고 있을 것 — 그 착시부터 깨기.`);
+  const rc = {}; for (const r of wrong) if (r.reason) rc[r.reason] = (rc[r.reason] || 0) + 1;
+  const topR = Object.entries(rc).sort((a, b) => b[1] - a[1])[0];
+  if (topR) tips.push(`틀린 이유 최빈 = '${topR[0]}' (${topR[1]}회) — 이 계열을 상담의 중심에.`);
+  const areas = Object.keys(mine);
+  if (areas.length) {
+    const worst = areas.sort((x, y) => mine[x][0] / mine[x][1] - mine[y][0] / mine[y][1])[0];
+    tips.push(`가장 약한 영역 = ${worst} (${pct(...mine[worst])}).`);
+  }
+  if (subs.length >= 2) {
+    const d = (subs[subs.length - 1].score || 0) - (subs[0].score || 0);
+    tips.push(`점수 흐름: 첫 ${subs[0].score}점 → 최근 ${subs[subs.length - 1].score}점 (${d >= 0 ? "+" : ""}${d}).`);
+  }
+  h += "<h2>상담 포인트 (자동 요약)</h2><div class='note'>" + tips.map(t => "· " + esc(t)).join("<br>") + "</div>";
+
+  document.getElementById("detail").innerHTML = h;
+  show("detail");
+}
+
+// ── 시작 ───────────────────────────────────────────
+function boot() {
+  const on = DEMO || !!TK.get();
+  document.getElementById("login").hidden = on;
+  document.getElementById("app").hidden = !on;
+  if (on) loadMain().catch(e => { if (e.message !== "auth") alert("불러오기 실패: " + e.message); });
+}
+document.getElementById("lpw").addEventListener("keydown", e => { if (e.key === "Enter") doLogin(); });
+boot();
+
+// ── 데모 자료 (?demo=1 — 판형 확인용, 서버 호출 없음) ──
+function demoApi(body) {
+  const students = [
+    { id: "a", phone: "010-0000-0001", name: "예시학생", academy: "신촌메가스터디", grade: "고3", subject: "미적분", created_at: "2026-07-01" },
+    { id: "b", phone: "010-0000-0002", name: "김파일럿", academy: "신촌메가스터디", grade: "재수생", subject: "확통", created_at: "2026-07-03" },
+    { id: "c", phone: "010-0000-0003", name: "이가입만", academy: "다른학원", grade: "고3", subject: "미적분", created_at: "2026-08-01" }];
+  const submissions = [
+    { id: "s1", student_id: "a", exam_code: "OMEGA_8", attempt_no: 1, score: 72, created_at: "2026-07-20" },
+    { id: "s2", student_id: "a", exam_code: "OMEGA_9", attempt_no: 1, score: 80, created_at: "2026-08-03" },
+    { id: "s3", student_id: "b", exam_code: "OMEGA_9", attempt_no: 1, score: 64, created_at: "2026-08-04" }];
+  if (body.action === "students") return { ok: 1, role: "owner", academy: null, students, submissions };
+  if (body.action === "student") {
+    const st = students.filter(s => s.phone === body.phone);
+    const subs = submissions.filter(s => s.student_id === st[0].id);
+    const responses = [];
+    for (const s of subs) for (let no = 1; no <= 30; no++) {
+      const r = { submission_id: s.id, item_no: no, area: no % 3 ? "수학Ⅱ" : "수학Ⅰ", unit: no % 2 ? "미분" : "수열",
+        my_answer: "3", correct_answer: "3", result: "o", reason: null, confidence: "확신함", reached_step: null, memo: null };
+      if ([9, 13, 14, 20, 21, 28].includes(no) && s.id !== "s3" || [13, 15, 21].includes(no) && s.id === "s3") {
+        Object.assign(r, { result: "x", my_answer: "5", reason: ["개념을 몰랐다", "계산 실수", "시간이 없었다"][no % 3],
+          reached_step: (no % 4 + 1) + "단계", confidence: null, memo: no === 13 ? "식은 세웠는데 그 다음이 막막했음" : null });
+      } else if ([10, 15].includes(no)) Object.assign(r, { confidence: "찍음" });
+      else if (no % 7 === 0) Object.assign(r, { confidence: "애매함" });
+      responses.push(r);
+    }
+    return { ok: 1, students: st, submissions: subs, responses,
+      reviews: [{ box: 1, due_at: "2026-08-06" }, { box: 2, due_at: "2026-08-20" }],
+      cohort: { "수학Ⅰ": [300, 420], "수학Ⅱ": [500, 830] } };
+  }
+  return { ok: 1 };
+}
+</script>
+</body>
+</html>
