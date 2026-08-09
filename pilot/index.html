@@ -166,7 +166,7 @@ function examSelect(){
   if(e.ex!=null){const ex=EXAMS[e.ex];return `<button class="q" style="width:100%;text-align:left;cursor:pointer" data-ex="${e.ex}"><div class="qh" style="margin-bottom:2px"><span style="font-weight:800;font-size:15.5px">${ex.title}</span><span style="margin-left:auto;color:var(--mut2)">→</span></div><div style="font-size:12px;color:var(--mut)">${ex.desc}</div></button>`;}
   return `<div class="q" style="width:100%;opacity:.55"><div class="qh" style="margin-bottom:2px"><span style="font-weight:800;font-size:15.5px;color:var(--mut)">${e.title}</span><span class="badge" style="margin-left:auto;background:rgba(255,255,255,.06);color:var(--mut2)">준비 중</span></div><div style="font-size:12px;color:var(--mut)">${e.note||"준비 중 — 곧 열려요"}</div></div>`;
  }).join("")+`</div>`;
- document.querySelectorAll("[data-back]").forEach(b=>b.onclick=()=>{if(HB){history.back();}else{S.catSel=null;render();window.scrollTo(0,0);}});
+ document.querySelectorAll("[data-back]").forEach(b=>b.onclick=()=>{history.back();});
  document.querySelectorAll("[data-ex]").forEach(b=>b.onclick=async()=>{EXAM=EXAMS[+b.dataset.ex];await injectSteps();S.attempt=((LS.get("ds_subs")||[]).filter(x=>x.phone===S.phone&&x.exam===EXAM.code).length)+1;S.screen="intro";render();window.scrollTo(0,0);});
  el("fab").innerHTML="";}
 
@@ -313,7 +313,7 @@ function customForm(){
  document.querySelectorAll("[data-w]").forEach(b=>b.onclick=()=>{const n=+b.dataset.w;if(S._cWrong[n]){delete S._cWrong[n];delete S.photo[n];}else S._cWrong[n]=1;cf();});
  document.querySelectorAll("[data-ph]").forEach(b=>b.onclick=()=>pickPhoto({no:+b.dataset.ph}));
  document.querySelectorAll("[data-phx]").forEach(b=>b.onclick=()=>{delete S.photo[+b.dataset.phx];cf();});
- document.querySelectorAll("[data-back]").forEach(b=>b.onclick=()=>{if(HB){history.back();}else{S.screen="exam";S.catSel=null;render();window.scrollTo(0,0);}});
+ document.querySelectorAll("[data-back]").forEach(b=>b.onclick=()=>{history.back();});
  el("fab").innerHTML=`<button class="btn" id="csub">저장하기</button>`;el("csub").onclick=saveCustom;}
 async function saveCustom(){
  const name=(S._cName||"").trim();if(!name){alert("시험 이름을 입력해주세요.");return;}
@@ -337,26 +337,28 @@ function customResult(){
  <div class="bar"><div class="pl"><span class="ic">📌</span><div><b>단원별 약점·예상등급</b>은 프리셋 시험(기출·메가 등)에서 자동으로 나와요. 직접입력은 점수·오답 이력 기록용이에요.</div></div></div>
  <div class="note">파일럿 · deltaskill.co.kr</div></div>`;
  el("fab").innerHTML=`<button class="btn ghost" id="home">완료 · 처음으로</button>`;el("home").onclick=()=>{S={screen:"login",phone:"",profile:null,studentId:null,catSel:null,ans:{},reason:{},conf:{},memo:{},step:{},photo:{},previewPath:false,attempt:1,saveMode:null};render();window.scrollTo(0,0);};}
-/* ---------- 브라우저 뒤로가기: 앱 내 화면 이동으로 처리 ---------- */
-let HB=false;
-function backable(){return S.screen==="signup"||S.screen==="quiz"||S.screen==="intro"||S.screen==="result"||S.screen==="custom"||S.screen==="cdone"||(S.screen==="exam"&&S.catSel!=null);}
-function goBack(){
- if(S.screen==="custom"){S.screen="exam";S.catSel=null;return true;}
- if(S.screen==="cdone"){S.screen="exam";S.catSel=null;return true;}
- if(S.screen==="signup"){S.screen="login";return true;}
- if(S.screen==="quiz"){S.screen="intro";return true;}
- if(S.screen==="intro"){S.screen="exam";return true;}
- if(S.screen==="result"){S.ans={};S.reason={};S.conf={};S.memo={};S.step={};S.photo={};S.previewPath=false;S.saveMode=null;S.screen="exam";return true;}
- if(S.screen==="exam"&&S.catSel!=null){S.catSel=null;return true;}
- return false;}
-function syncHist(){if(backable()&&!HB){try{history.pushState({ds:1},"");HB=true;}catch(e){}}}
-window.addEventListener("popstate",e=>{
- if(e.state&&e.state.ds===1){HB=true;return;}
- HB=false;
- if(goBack()){render();window.scrollTo(0,0);}
+/* ---------- 브라우저 뒤로/앞으로: 화면별 히스토리로 정상 처리 ---------- */
+/* 각 화면 위치를 history에 한 칸씩 쌓아, 보통 사이트처럼 뒤로/앞으로가 한 화면씩 이동한다.
+   (기존 '트랩 1개' 방식은 뒤로가면 앱 위로 튀고 앞으로가기가 안 돼서 교체) */
+let NAVPOP=false;   // popstate(뒤로/앞으로) 복원 중이면 render의 push를 막는다
+function _pos(){return {s:S.screen, c:(S.catSel==null?null:S.catSel), e:(typeof EXAM!=="undefined"&&EXAM)?EXAM.code:null};}
+function _samePos(a,b){return !!a&&!!b&&a.s===b.s&&a.c===b.c&&a.e===b.e;}
+function syncHist(){
+ if(NAVPOP){NAVPOP=false;return;}                     // 뒤로/앞으로로 온 렌더면 새 기록 안 남김
+ var st=history.state, p=_pos();
+ if(st&&st.p&&_samePos(st.p,p))return;                // 위치 그대로면 skip(같은 화면 리렌더)
+ try{history.pushState({p:p},"");}catch(e){}           // 앞으로 진행 → 히스토리 한 칸 쌓기
+}
+window.addEventListener("popstate",function(e){
+ var p=e.state&&e.state.p;
+ if(!p)return;                                         // 시작점보다 앞이면 브라우저가 메인으로 이동
+ NAVPOP=true;
+ S.screen=p.s; S.catSel=p.c;
+ if(p.e){var ex=EXAMS.filter(function(x){return x.code===p.e;})[0]; if(ex)EXAM=ex;}
+ render(); window.scrollTo(0,0);
 });
-try{history.replaceState({ds:0},"");}catch(e){}
 /* /my/ 로그인(또는 이전 방문)에서 저장된 번호가 있으면 로그인 화면을 건너뛴다 — 전화번호 재입력 제거 */
 (function(){var ph=localStorage.getItem("ds_phone");if(!ph)return;S.phone=ph;var st=(LS.get("ds_students")||{})[ph];if(st){S.profile=st.profile;S.studentId=st.id;S.catSel=null;S.screen="exam";}})();
+try{history.replaceState({p:_pos()},"");}catch(e){}     // 초기 위치를 히스토리 시작점으로
 render();
 </script></body></html>
