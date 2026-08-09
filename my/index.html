@@ -102,7 +102,7 @@ async function doLogin(){
   document.getElementById("lerr").textContent="";
   const phone=document.getElementById("phone").value.replace(/[^0-9]/g,""), pw=document.getElementById("pw").value;
   if(phone.length<10){document.getElementById("lerr").textContent="전화번호를 정확히 입력하세요.";return;}
-  try{ const j=await api("/login",{method:"POST",auth:false,body:{phone,pin:pw}}); TK.set(j.token); boot(); }
+  try{ const j=await api("/login",{method:"POST",auth:false,body:{phone,pin:pw}}); TK.set(j.token); localStorage.setItem("ds_phone",phone); boot(); }
   catch(e){ document.getElementById("lerr").textContent = e.message==="invalid"?"전화번호 또는 비밀번호가 맞지 않아요.":e.message==="locked"?"시도가 많아 잠시 잠겼어요. 15분 후 다시.":"로그인에 실패했어요."; }
 }
 
@@ -126,7 +126,7 @@ async function doSignup(){
   if(!consent)return err("필수 동의가 필요해요.");
   try{
     const j=await api("/enroll",{method:"POST",auth:false,body:{phone,pin:pw,name,academy,grade:SG.grade,subject:SG.subject,consent:true,consent_notify:notify}});
-    TK.set(j.token); history.replaceState({},"", "/my/"); boot();
+    TK.set(j.token); localStorage.setItem("ds_phone",phone); history.replaceState({},"", "/my/"); boot();
   }catch(e){ err(e.message==="already_enrolled"?"이미 가입된 번호예요. 로그인해 주세요.":e.message==="weak_pin"?"너무 쉬운 비밀번호예요.":"가입에 실패했어요."); }
 }
 
