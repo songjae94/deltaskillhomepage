@@ -109,6 +109,7 @@ function login(){el("screen").innerHTML=`<div class="pad"><div style="margin-bot
  el("ph").oninput=e=>S.phone=e.target.value.replace(/[^0-9]/g,"");
  el("fab").innerHTML=`<button class="btn" id="go">시작하기</button>`;
  el("go").onclick=()=>{if(S.phone.length<10){alert("휴대폰 번호를 정확히 입력하세요");return;}
+   localStorage.setItem("ds_phone",S.phone);
    const st=(LS.get("ds_students")||{})[S.phone];
    if(st){S.profile=st.profile;S.studentId=st.id;S.catSel=null;S.screen="exam";}
    else{S.screen="signup";}render();window.scrollTo(0,0);};}
@@ -355,5 +356,7 @@ window.addEventListener("popstate",e=>{
  if(goBack()){render();window.scrollTo(0,0);}
 });
 try{history.replaceState({ds:0},"");}catch(e){}
+/* /my/ 로그인(또는 이전 방문)에서 저장된 번호가 있으면 로그인 화면을 건너뛴다 — 전화번호 재입력 제거 */
+(function(){var ph=localStorage.getItem("ds_phone");if(!ph)return;S.phone=ph;var st=(LS.get("ds_students")||{})[ph];if(st){S.profile=st.profile;S.studentId=st.id;S.catSel=null;S.screen="exam";}})();
 render();
 </script></body></html>
