@@ -27,16 +27,16 @@ button{font:inherit;padding:9px 14px;border:1px solid var(--line2);border-radius
 button.p{background:var(--acc);border-color:transparent;color:#04101f;width:100%;font-weight:700}
 button.sm{padding:6px 12px;font-size:13px}
 input,select{font:inherit;padding:10px 12px;border:1px solid var(--line2);border-radius:8px;width:100%;margin:4px 0;background:#0a1020;color:#e8eef7}
-.card2{max-width:380px;margin:6vh auto;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px}
+.card2{max-width:430px;margin:5vh auto;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px 22px}@media(max-width:480px){.card2{margin:10px;max-width:none;padding:20px 16px}}
 .err{color:#ff8a8a;font-size:13px;min-height:18px;margin:4px 0}
 .lnk{color:var(--acc2);font-size:13px;background:none;border:none;padding:6px 0;cursor:pointer;text-decoration:underline}
 .anchor{color:#ffd166;font-weight:600}
 .field{margin:8px 0}.field label{font-size:13px;font-weight:600;display:block;margin-bottom:2px}
-.seg{display:flex;gap:6px}.seg button{flex:1}.seg button.on{background:var(--acc);color:#04101f;border-color:var(--acc)}
+.seg{display:flex;gap:6px}.seg button{flex:1}.seg button.on{background:var(--acc);color:#04101f;border-color:var(--acc)}.acg{display:grid;grid-template-columns:1fr 1fr;gap:6px}.acg button.full{grid-column:1/-1}.acg button.on{background:var(--acc);color:#04101f;border-color:var(--acc)}
 .ph{max-width:120px;border:1px solid var(--line);border-radius:6px;margin:3px}
 .sub{border:1px solid var(--line);border-radius:10px;background:var(--card);padding:10px 12px;margin:6px 0;cursor:pointer}
 .sub:hover{background:rgba(186,214,247,.08)}
-.consent{display:flex;gap:8px;align-items:flex-start;font-size:12.5px;margin:8px 0}
+.consent{display:flex;gap:9px;align-items:flex-start;font-size:12.5px;margin:9px 0;line-height:1.55;color:var(--mut)}.consent input[type=checkbox]{width:16px;height:16px;flex:0 0 16px;margin:2px 0 0;padding:0;accent-color:var(--acc)}.consent b{color:#e8eef7}
 </style>
 </head>
 <body>
@@ -59,7 +59,7 @@ input,select{font:inherit;padding:10px 12px;border:1px solid var(--line2);border
   <h1 style="border:none;font-size:18px;margin:12px 0 4px">회원가입</h1>
   <div class="field"><label>전화번호 (- 없이)</label><input id="s_phone" inputmode="numeric" placeholder="01000000000"></div>
   <div class="field"><label>이름</label><input id="s_name" placeholder="이름"></div>
-  <div class="field"><label>학원 (없으면 '비재원생')</label><input id="s_academy" placeholder="예: 신촌메가스터디 / 비재원생"></div>
+  <div class="field"><label>학원 선택</label><div class="acg" id="s_acg"><button type="button" data-ac="메가스터디">메가스터디</button><button type="button" data-ac="시대인재">시대인재</button><button type="button" data-ac="대성학원">대성학원</button><button type="button" data-ac="청솔학원">청솔학원</button><button type="button" data-ac="종로학원">종로학원</button><button type="button" data-ac="__etc" class="full">기타 (직접 입력)</button><button type="button" data-ac="비재원생" class="full">비재원생</button></div><input id="s_academy" placeholder="학원명을 직접 입력하세요" style="display:none;margin-top:8px"></div>
   <div class="field"><label>구분</label><div class="seg" id="s_grade"><button data-g="재수생">재수생(N수)</button><button data-g="고3">고3</button></div></div>
   <div class="field"><label>수학 선택과목</label><div class="seg" id="s_subject"><button data-s="미적분">미적분</button><button data-s="확통">확률과통계</button></div></div>
   <div class="field"><label>비밀번호 (4자 이상)</label><input id="s_pw" type="password" autocomplete="new-password" placeholder="비밀번호"></div>
@@ -107,19 +107,20 @@ async function doLogin(){
 }
 
 /* ---- 회원가입 ---- */
-let SG={grade:"",subject:""};
+let SG={grade:"",subject:"",academy:""};
+function bindAcg(){document.querySelectorAll("#s_acg button").forEach(b=>b.onclick=()=>{SG.academy=b.dataset.ac;document.querySelectorAll("#s_acg button").forEach(x=>x.classList.remove("on"));b.classList.add("on");document.getElementById("s_academy").style.display=(SG.academy==="__etc")?"block":"none";});}
 function bindSeg(id,key){document.querySelectorAll(`#${id} button`).forEach(b=>b.onclick=()=>{SG[key]=b.dataset.g||b.dataset.s;document.querySelectorAll(`#${id} button`).forEach(x=>x.classList.remove("on"));b.classList.add("on");});}
 async function doSignup(){
   document.getElementById("serr").textContent="";
   const phone=document.getElementById("s_phone").value.replace(/[^0-9]/g,"");
   const name=document.getElementById("s_name").value.trim();
-  const academy=document.getElementById("s_academy").value.trim();
+  const academy=(SG.academy==="__etc")?document.getElementById("s_academy").value.trim():SG.academy;
   const pw=document.getElementById("s_pw").value, pw2=document.getElementById("s_pw2").value;
   const consent=document.getElementById("s_consent").checked, notify=document.getElementById("s_notify").checked;
   const err=m=>{document.getElementById("serr").textContent=m;};
   if(phone.length<10)return err("전화번호를 정확히 입력하세요.");
   if(!name)return err("이름을 입력하세요.");
-  if(!academy)return err("학원(또는 비재원생)을 입력하세요.");
+  if(!academy)return err("학원을 선택하세요 (직접 입력 시 학원명 기재).");
   if(!SG.grade||!SG.subject)return err("구분과 선택과목을 골라주세요.");
   if(pw.length<4)return err("비밀번호는 4자 이상.");
   if(pw!==pw2)return err("비밀번호가 일치하지 않아요.");
@@ -138,7 +139,7 @@ function boot(){
   document.getElementById("login").hidden=has||wantSignup;
   document.getElementById("signup").hidden=has||!wantSignup;
   if(has) load();
-  else if(wantSignup){ bindSeg("s_grade","grade"); bindSeg("s_subject","subject"); }
+  else if(wantSignup){ bindSeg("s_grade","grade"); bindSeg("s_subject","subject");bindAcg(); }
 }
 
 /* ---- 결과 ---- */
