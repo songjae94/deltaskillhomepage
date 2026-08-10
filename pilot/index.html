@@ -43,7 +43,7 @@ input.txt{width:100%;padding:14px 15px;border:1.5px solid rgba(90,162,255,.42);b
 .saved{display:flex;gap:10px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:13px 14px;font-size:12.5px;color:var(--mut);margin-bottom:16px}.saved:before{content:"";flex:none;width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 9px 1px rgba(95,211,154,.6)}.saved.demo:before{background:var(--amber);box-shadow:0 0 9px 1px rgba(255,178,122,.5)}
 .note{font-size:11.5px;color:var(--mut2);text-align:center;margin-top:18px}.center{text-align:center;padding:44px 20px;color:var(--mut)}
 body.qlight{--bg:#f5f7fb;--panel:#fff;--panel2:#eef2f8;--line:rgba(23,43,77,.13);--line2:rgba(23,43,77,.22);--ink:#0c1322;--mut:rgba(16,28,50,.82);--mut2:rgba(16,28,50,.62);--ok:#0f9d58;--no:#e0533a;--amber:#b9761b;color-scheme:light}body.qlight .top{background:rgba(245,247,251,.82)}body.qlight .prog{background:rgba(23,43,77,.10)}body.qlight .app:before{background:radial-gradient(58% 60% at 50% 0,rgba(90,162,255,.10),transparent 72%)}body.qlight .chip.on{color:#1c4fa0;background:rgba(90,162,255,.15);border-color:rgba(90,162,255,.5);box-shadow:inset 0 0 0 1px rgba(90,162,255,.22)}body.qlight .rchip{background:var(--panel2)}body.qlight .memo{background:var(--panel2)}body.qlight .numin:-webkit-autofill{-webkit-box-shadow:0 0 0 1000px #eef2f8 inset}</style></head><body><div class="app">
-<div class="top"><div class="brand">델타<span>스킬</span></div><div class="sub" id="subttl">AI 오답노트 · 파일럿</div><div class="prog"><i id="pbar"></i></div></div>
+<div class="top"><a class="brand" href="/" style="text-decoration:none;color:inherit;cursor:pointer" title="델타스킬 홈으로">델타<span>스킬</span></a><div class="sub" id="subttl">AI 오답노트 · 파일럿</div><div class="prog"><i id="pbar"></i></div></div>
 <div id="screen"></div><div class="fab" id="fab"></div></div>
 <script>
 /* ===== 서버 연결 설정: Supabase 프로젝트 만들면 아래 두 값만 채우면 실제 서버 저장됨 (비우면 데모=브라우저 저장) ===== */
@@ -153,9 +153,10 @@ function signup(){const p=S.profile||{name:"",academy:"",grade:"",subject:""};S.
 /* ---------- 시험 선택 ---------- */
 function examSelect(){
  if(S.catSel==null){
-  el("screen").innerHTML=`<div class="pad"><div style="margin-bottom:8px"><a href="/" style="color:#94a3b8;font-size:13px;text-decoration:none">← 델타스킬 홈</a> · <span class="rchip" onclick="location.href='/my/'" style="cursor:pointer">내 오답노트</span></div><div class="h">어떤 시험인가요?</div>
+  el("screen").innerHTML=`<div class="pad"><div style="margin-bottom:8px"><a href="/" style="color:#94a3b8;font-size:13px;text-decoration:none">← 델타스킬 홈</a> · <span class="rchip" onclick="location.href='/my/'" style="cursor:pointer">내 오답노트</span> · <span class="rchip" data-relogin="1" style="cursor:pointer">다른 번호로 로그인</span></div><div class="h">어떤 시험인가요?</div>
  <div class="desc">응시한 모의고사의 분류를 먼저 선택하세요. 이전에 본 시험도 입력할 수 있어요.</div>`+
   CATS.map((c,i)=>{const n=c.exams.filter(e=>e.ex!=null).length;const sub=c.custom?"내가 본 다른 모의고사를 직접 기록해요":`${c.desc} · 입력 가능 ${n}개${n<c.exams.length?` / 준비 중 ${c.exams.length-n}개`:''}`;return `<button class="q" style="width:100%;text-align:left;cursor:pointer" data-cat="${i}"><div class="qh" style="margin-bottom:2px"><span style="font-weight:800;font-size:15.5px">${c.name}</span><span style="margin-left:auto;color:var(--mut2)">${c.custom?'✏️':'→'}</span></div><div style="font-size:12px;color:var(--mut)">${sub}</div></button>`;}).join("")+`</div>`;
+  const rl=document.querySelector("[data-relogin]");if(rl)rl.onclick=()=>{localStorage.removeItem("ds_phone");S.phone="";S.profile=null;S.screen="login";render();window.scrollTo(0,0);};
   document.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>{const i=+b.dataset.cat;if(CATS[i].custom){S._cName="";S._cDate=(new Date()).toISOString().slice(0,10);S._cSub=S.profile.subject;S._cScore="";S._cWrong={};S.photo={};S.screen="custom";render();window.scrollTo(0,0);return;}S.catSel=i;render();window.scrollTo(0,0);});
   el("fab").innerHTML="";return;
  }
@@ -364,5 +365,10 @@ window.addEventListener("popstate",function(e){
 /* /my/ 로그인(또는 이전 방문)에서 저장된 번호가 있으면 로그인 화면을 건너뛴다 — 전화번호 재입력 제거 */
 (function(){var ph=localStorage.getItem("ds_phone");if(!ph)return;S.phone=ph;var st=(LS.get("ds_students")||{})[ph];if(st){S.profile=st.profile;S.studentId=st.id;S.catSel=null;S.screen="exam";}})();
 try{history.replaceState({p:_pos()},"");}catch(e){}     // 초기 위치를 히스토리 시작점으로
+/* 자동 로그인 — 이 브라우저에 번호·프로필이 저장돼 있으면 시작 화면을 건너뛴다 */
+(function(){try{const ph=localStorage.getItem("ds_phone")||"";if(!ph)return;S.phone=ph;
+ const st=(LS.get("ds_students")||{})[ph];
+ if(st&&st.profile){S.profile=st.profile;S.studentId=st.id;S.catSel=null;S.screen="exam";}
+}catch(_){}})();
 render();
 </script></body></html>
