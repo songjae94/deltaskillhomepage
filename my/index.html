@@ -47,7 +47,7 @@ input,select{font:inherit;padding:10px 12px;border:1px solid var(--line2);border
   <h1 style="border:none;font-size:18px;margin:12px 0 4px">내 오답노트</h1>
   <p class="k" id="lmode">가입한 전화번호와 비밀번호로 로그인하세요.</p>
   <input id="phone" placeholder="전화번호 (- 없이)" inputmode="numeric" autocomplete="username">
-  <input id="pw" placeholder="비밀번호" type="password" autocomplete="current-password">
+  <input id="pw" placeholder="숫자 4자리 비밀번호" type="password" inputmode="numeric" maxlength="4" autocomplete="current-password">
   <div class="err" id="lerr"></div>
   <button class="p" id="loginBtn" onclick="doLogin()">로그인</button>
   <div style="text-align:center;margin-top:10px"><button class="lnk" onclick="location.href='/my/?signup'">처음이신가요? 회원가입</button></div>
@@ -62,8 +62,8 @@ input,select{font:inherit;padding:10px 12px;border:1px solid var(--line2);border
   <div class="field"><label>학원 선택</label><div class="acg" id="s_acg"><button type="button" data-ac="메가스터디">메가스터디</button><button type="button" data-ac="시대인재">시대인재</button><button type="button" data-ac="대성학원">대성학원</button><button type="button" data-ac="청솔학원">청솔학원</button><button type="button" data-ac="종로학원">종로학원</button><button type="button" data-ac="__etc" class="full">기타 (직접 입력)</button><button type="button" data-ac="비재원생" class="full">비재원생</button></div><input id="s_academy" placeholder="학원명을 직접 입력하세요" style="display:none;margin-top:8px"></div>
   <div class="field"><label>구분</label><div class="seg" id="s_grade"><button data-g="재수생">재수생(N수)</button><button data-g="고3">고3</button></div></div>
   <div class="field"><label>수학 선택과목</label><div class="seg" id="s_subject"><button data-s="미적분">미적분</button><button data-s="확통">확률과통계</button></div></div>
-  <div class="field"><label>비밀번호 (4자 이상)</label><input id="s_pw" type="password" autocomplete="new-password" placeholder="비밀번호"></div>
-  <div class="field"><label>비밀번호 확인</label><input id="s_pw2" type="password" autocomplete="new-password" placeholder="다시 입력"></div>
+  <div class="field"><label>비밀번호 (숫자 4자리)</label><input id="s_pw" type="password" inputmode="numeric" maxlength="4" autocomplete="new-password" placeholder="숫자 4자리"></div>
+  <div class="field"><label>비밀번호 확인</label><input id="s_pw2" type="password" inputmode="numeric" maxlength="4" autocomplete="new-password" placeholder="숫자 4자리 다시 입력"></div>
   <label class="consent"><input type="checkbox" id="s_consent"><span><b>[필수]</b> 만 14세 이상이며 <a href="/privacy/" target="_blank">개인정보 수집·이용 및 AI 자동 분석</a>에 동의합니다.</span></label>
   <label class="consent"><input type="checkbox" id="s_notify"><span>[선택] 복습 알림(카카오톡·문자) 수신에 동의합니다.</span></label>
   <div class="err" id="serr"></div>
@@ -122,7 +122,7 @@ async function doSignup(){
   if(!name)return err("이름을 입력하세요.");
   if(!academy)return err("학원을 선택하세요 (직접 입력 시 학원명 기재).");
   if(!SG.grade||!SG.subject)return err("구분과 선택과목을 골라주세요.");
-  if(pw.length<4)return err("비밀번호는 4자 이상.");
+  if(!/^\d{4}$/.test(pw))return err("비밀번호는 숫자 4자리예요.");
   if(pw!==pw2)return err("비밀번호가 일치하지 않아요.");
   if(!consent)return err("필수 동의가 필요해요.");
   try{
