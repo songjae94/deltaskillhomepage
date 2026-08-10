@@ -377,7 +377,7 @@ function demoApi(body) {
     const photos = subs.length ? { [subs[0].id]: [{ no: 13, url: ph }, { no: 21, url: ph }] } : {};
     return { ok: 1, students: st, submissions: subs, responses, names, photos,
       reviews: [{ box: 1, due_at: "2026-08-06" }, { box: 2, due_at: "2026-08-20" }],
-      cohort: { "수핗Ⅰ": [300, 420], "수핧Ⅱ": [500, 830] } };
+      cohort: { "수학Ⅰ": [300, 420], "수학Ⅱ": [500, 830] } };
   }
   return { ok: 1 };
 }

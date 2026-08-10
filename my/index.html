@@ -169,7 +169,7 @@ async function openSub(id, examName){
   if(OPENED[id]){ box.innerHTML=""; OPENED[id]=false; return; }
   box.innerHTML="불러오는 중…"; OPENED[id]=true;
   let j; try{ j=await api("/submission?id="+encodeURIComponent(id)); }catch(e){ box.innerHTML="<span class='bad'>불러오기 실패</span>"; return; }
-  const rs=j.responses||[]; const exam=(rs[0]&&rs[0].exam_code)|| (document.querySelector(`[data-sub="${id}"] b`)?"":"");
+  const rs=j.responses||[];
   // exam_code는 응답에 없을 수 있어 이력에서 가져온다
   const excode=(window.__examOf&&window.__examOf[id])||"";
   const wrong=rs.filter(r=>r.result==="x");
@@ -189,7 +189,7 @@ async function openSub(id, examName){
     if(withPhoto.length){ h+="<div style='margin-top:6px'><b>내 풀이 사진</b><br>"; for(const r of withPhoto){ h+=`<button class="sm" data-photo="${id}|${r.item_no}">${r.item_no}번 사진 보기</button> `; } h+="<div class='photobox'></div></div>"; }
   } else { h+="<span class='k'>이 회차 오답이 없어요.</span>"; }
   box.innerHTML=h;
-  box.querySelectorAll("[data-photo]").forEach(b=>b.onclick=async()=>{const [sub,no]=b.dataset.photo.split("|");try{const p=await api(`/photo?submission_id=${encodeURIComponent(sub)}&item_no=${no}`);box.querySelector(".photobox").innerHTML=`<a href="${p.url}" target="_blank"><img class="ph" src="${p.url}"></a>`;}catch(_){b.textContent="사진 없음";}});
+  box.querySelectorAll("[data-photo]").forEach(b=>b.onclick=async()=>{const [sub,no]=b.dataset.photo.split("|");try{const p=await api(`/photo?submission_id=${encodeURIComponent(sub)}&item_no=${no}`);box.querySelector(".photobox").innerHTML=`<a href="${esc(p.url)}" target="_blank" rel="noopener"><img class="ph" src="${esc(p.url)}"></a>`;}catch(_){b.textContent="사진 없음";}});
 }
 
 boot();
