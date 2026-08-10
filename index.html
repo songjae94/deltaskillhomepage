@@ -257,8 +257,12 @@ header.stuck{border-bottom-color:var(--line)}
 .menu{display:flex;gap:28px;font-size:14px;color:var(--txt2);font-weight:400}
 .menu a{transition:color .2s}.menu a:hover{color:var(--txt)}
 .navbtn{display:none;background:none;border:0;color:var(--txt);cursor:pointer;padding:6px 4px;font-size:22px;line-height:1;align-items:center}
+.nav .btn{white-space:nowrap}
+.mauth{display:none}
 @media(max-width:880px){
   .navbtn{display:inline-flex}
+  #authnav{display:none!important}
+  .menu .mauth{display:block;color:var(--acc)}
   .menu{position:absolute;top:calc(100% + 1px);left:0;right:0;flex-direction:column;gap:0;
     background:rgba(5,6,15,.97);-webkit-backdrop-filter:saturate(180%) blur(16px);backdrop-filter:saturate(180%) blur(16px);
     border-bottom:1px solid var(--line);padding:6px 20px 14px;display:none}
@@ -1028,9 +1032,12 @@ h1.swap .num{opacity:0;transform:translateY(-6px)}
 </script>
 <script>
 /* 로그인 상태에 따라 헤더의 로그인/회원가입 ↔ 내 오답노트/로그아웃 토글 (토큰은 localStorage ds_tk) */
-(function(){var n=document.getElementById("authnav");if(!n)return;
- if(localStorage.getItem("ds_tk")){n.innerHTML='<a href="/my/">내 오답노트</a><a href="#" id="dsout">로그아웃</a>';var o=document.getElementById("dsout");if(o)o.onclick=function(e){e.preventDefault();localStorage.removeItem("ds_tk");location.reload();};}
- else{n.innerHTML='<a href="/my/">로그인</a><a href="/my/?signup">회원가입</a>';}
+(function(){var n=document.getElementById("authnav");var m=document.getElementById("navmenu");
+ var loggedIn=!!localStorage.getItem("ds_tk");
+ var links=loggedIn?[["/my/","내 오답노트",""],["#","로그아웃","dsout"]]:[["/my/","로그인",""],["/my/?signup","회원가입",""]];
+ if(n)n.innerHTML=links.map(function(l){return '<a href="'+l[0]+'"'+(l[2]?' class="'+l[2]+'"':'')+'>'+l[1]+'</a>';}).join("");
+ if(m)links.forEach(function(l){var a=document.createElement("a");a.href=l[0];a.textContent=l[1];a.className="mauth"+(l[2]?" "+l[2]:"");m.appendChild(a);});
+ [].forEach.call(document.querySelectorAll(".dsout"),function(o){o.addEventListener("click",function(e){e.preventDefault();localStorage.removeItem("ds_tk");location.reload();});});
 })();
 </script>
 <script>
