@@ -258,12 +258,14 @@ header.stuck{border-bottom-color:var(--line)}
 .menu a{transition:color .2s}.menu a:hover{color:var(--txt)}
 .navbtn{display:none;background:none;border:0;color:var(--txt);cursor:pointer;padding:6px 4px;font-size:22px;line-height:1;align-items:center}
 .nav .btn{white-space:nowrap}
-.mauthbtn{display:none;white-space:nowrap;align-items:center;height:32px;padding:0 12px;border-radius:999px;border:1px solid var(--line2);background:rgba(186,214,247,.06);color:var(--txt);font-size:13px;font-weight:600;cursor:pointer;text-decoration:none}
+.mauthbtn,.mypagebtn{display:none;white-space:nowrap;align-items:center;height:32px;padding:0 12px;border-radius:999px;border:1px solid var(--line2);background:rgba(186,214,247,.06);color:var(--txt);font-size:13px;font-weight:600;cursor:pointer;text-decoration:none}
 @media(max-width:880px){
-  .nav{gap:10px}
+  .nav{gap:9px}
   .navbtn{display:inline-flex}
   #authnav{display:none!important}
   .mauthbtn{display:inline-flex}
+  .authed .mypagebtn{display:inline-flex}
+  .authed .nav .btn.pri{display:none}
   .nav .btn.pri{padding:0 13px;font-size:13.5px;height:36px}
   .menu{position:absolute;top:calc(100% + 1px);left:0;right:0;flex-direction:column;gap:0;
     background:rgba(5,6,15,.97);-webkit-backdrop-filter:saturate(180%) blur(16px);backdrop-filter:saturate(180%) blur(16px);
@@ -273,9 +275,9 @@ header.stuck{border-bottom-color:var(--line)}
   .menu a:last-child{border-bottom:0}
 }
 @media(max-width:360px){
-  .nav{gap:7px}
+  .nav{gap:6px}
   .nav .btn.pri{padding:0 10px;font-size:12.5px;height:34px}
-  .mauthbtn{padding:0 9px;font-size:12px;height:30px}
+  .mauthbtn,.mypagebtn{padding:0 9px;font-size:12px;height:30px}
 }
 
 /* ── buttons ── */
@@ -569,6 +571,7 @@ h1.swap .num{opacity:0;transform:translateY(-6px)}
     <nav class="menu" id="navmenu" aria-label="주요 메뉴"><a href="/#how">작성 방법</a><a href="/#rx">학습 처방</a><a href="/#review">AI 오답노트</a><a href="/#data">데이터</a><a href="/report/2027-06/">모의고사 분석</a><a href="/#faq">자주 묻는 질문</a><a href="/partners/">교육기관</a></nav>
     <span id="authnav" style="display:inline-flex;gap:10px;align-items:center;margin-right:10px;font-size:14px;font-weight:600"></span>
     <a href="/pilot/" class="btn pri">AI 오답노트</a>
+    <a id="mypage" class="mypagebtn" href="/my/">마이페이지</a>
     <a id="mauth" class="mauthbtn" href="/my/">로그인</a>
     <button class="navbtn" id="navtoggle" type="button" aria-label="메뉴 열기" aria-expanded="false" aria-controls="navmenu">☰</button>
   </div>
@@ -1042,6 +1045,7 @@ h1.swap .num{opacity:0;transform:translateY(-6px)}
 /* 로그인 상태에 따라 헤더의 로그인/회원가입 ↔ 내 오답노트/로그아웃 토글 (토큰은 localStorage ds_tk) */
 (function(){var n=document.getElementById("authnav");
  var loggedIn=!!localStorage.getItem("ds_tk");
+ document.documentElement.classList.toggle("authed",loggedIn);
  var links=loggedIn?[["/my/","내 오답노트",""],["#","로그아웃","dsout"]]:[["/my/","로그인",""],["/my/?signup","회원가입",""]];
  if(n)n.innerHTML=links.map(function(l){return '<a href="'+l[0]+'"'+(l[2]?' class="'+l[2]+'"':'')+'>'+l[1]+'</a>';}).join("");
  var mb=document.getElementById("mauth");
