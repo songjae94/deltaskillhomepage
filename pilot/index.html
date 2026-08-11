@@ -92,18 +92,18 @@ input.txt{width:100%;padding:14px 15px;border:1.5px solid rgba(90,162,255,.42);b
 .hint i.x{background:rgba(240,128,108,.32);border-color:rgba(240,128,108,.62)}
 .hint i.g{background:transparent;border-color:rgba(240,128,108,.85);border-width:2px}
 /* 인트로에서 바로 누르는 선택 카드 (하단 버튼 대신) */
-.pick{display:block;width:100%;text-align:left;background:var(--panel);border:1px solid var(--line2);border-radius:18px;
+.pick{display:block;width:100%;text-align:left;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.34);border-radius:18px;
  padding:17px 44px 17px 18px;margin-bottom:11px;position:relative;font-family:inherit;color:var(--ink);cursor:pointer;
  transition:border-color .18s var(--ease),background .18s var(--ease),transform .1s var(--ease);-webkit-tap-highlight-color:transparent}
-.pick:hover{border-color:var(--brand);background:rgba(90,162,255,.07)}
+.pick:hover,.pick:active{border-color:var(--brand);background:rgba(90,162,255,.09);box-shadow:inset 0 0 0 1px var(--brand)}
+.pick:hover .pa,.pick:active .pa{color:var(--brand)}
+.pick:hover .pt,.pick:active .pt{color:#fff}
 .pick:active{transform:scale(.993)}
 .pick:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
 .pick .pt{display:block;font-size:15.5px;font-weight:800;letter-spacing:-.022em;margin-bottom:4px;color:var(--ink)}
 .pick .pd{display:block;font-size:12.5px;color:var(--mut);line-height:1.6}
-.pick .pa{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:20px;color:var(--brand);font-weight:700;line-height:1}
-.pick.warm{border-color:rgba(240,128,108,.42)}
-.pick.warm .pa{color:var(--amber)}
-.pick.warm:hover{border-color:rgba(240,128,108,.75);background:rgba(240,128,108,.07)}
+.pick .pa{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:20px;color:rgba(255,255,255,.5);font-weight:700;line-height:1;transition:color .18s var(--ease)}
+/* 두 선택지는 대등 — 색으로 위계를 만들지 않는다 */
 .metaline{font-size:12.5px;color:var(--mut2);margin:15px 2px 0;line-height:1.6}
 .metaline b{color:var(--mut)}
 .app.nofab{padding-bottom:30px}
@@ -279,7 +279,7 @@ function intro(){el("screen").innerHTML=`<div class="pad"><div class="h">${esc(S
  <div class="desc">${EXAM.title} (${S.attempt}회차) — 어떻게 시작할지 <b>골라서 눌러 주세요.</b></div>
  <button class="pick" id="st" type="button"><span class="pt">채점부터 하기</span>
    <span class="pd">30문항 답을 입력하면 자동 채점 → 틀린 문항은 그 자리에서 원인까지</span><span class="pa">›</span></button>
- <button class="pick warm" id="stn" type="button"><span class="pt">채점은 했어요 · 오답만 체크</span>
+ <button class="pick" id="stn" type="button"><span class="pt">채점은 했어요 · 오답만 체크</span>
    <span class="pd">틀린 번호만 탭하면 점수가 자동 계산돼요. 답 입력 없이 원인만 정리</span><span class="pa">›</span></button>
  <div class="metaline">공통 22문항 + <b>${esc(S.profile.subject)}</b> 8문항 · 약 5분</div>
  <div id="prevBox"></div></div>`;
