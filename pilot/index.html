@@ -238,7 +238,7 @@ async function pickPhoto(q){const inp=document.createElement("input");inp.type="
 async function submitDiag(){el("sub").disabled=true;el("sub").textContent="저장 중...";
  const res=buildResult();let mode="demo";
  try{ mode=await saveAll(res); }catch(e){ mode="error:"+(e&&e.message||e); }
- S.saveMode=mode;S.screen="result";render();window.scrollTo(0,0);}
+ S.saveMode=mode;noteTry(mode);S.screen="result";render();window.scrollTo(0,0);}
 
 function buildResult(){const its=items().filter(q=>graded(q)!=null);
  const correct=its.filter(q=>graded(q)==="o");const score=correct.reduce((s,q)=>s+q.jum,0);
@@ -250,7 +250,7 @@ function resetApp(){S={screen:"login",phone:"",profile:null,studentId:null,catSe
 function grabSavePin(){const pe=el("savePin");if(pe){const v=pe.value.replace(/[^0-9]/g,"").slice(0,4);if(v)S._pin=v;}}
 function saveStatusUI(){const apiOn=!!CONFIG.api,saved=S.saveMode==="server",failed=apiOn&&S.saveMode&&!saved,needPin=failed&&!TK.has();
  if(saved)return{html:`<div class="saved">✅ 델타스킬 서버에 저장됐어요 · 매주 쌓여 학습 경로가 됩니다${S._updWarn?`<div style="font-size:11.5px;color:var(--mut2);margin-top:4px">(수정 반영은 실패해 새 회차로 저장했어요 · ${esc(S._updWarn)})</div>`:``}</div>`,saved:true};
- if(failed)return{html:`<div class="saved demo" style="border-color:rgba(255,143,116,.6);align-items:flex-start"><div style="flex:1;line-height:1.6">⚠️ <b>${S.savedSubId?"수정 내용이 반영되지 않았어요.":"아직 저장되지 않았어요."}</b> ${S.savedSubId?"아래 <b>저장하기</b>로 다시 시도해 주세요. (중복 회차는 생기지 않아요)":"아래 <b>저장하기</b> 버튼을 눌러 주세요."}${(S.saveMode&&(""+S.saveMode).indexOf("error:")===0)?`<div style="font-size:11.5px;color:var(--mut2);margin-top:4px">사유: ${esc((""+S.saveMode).slice(6))}</div>`:``}${needPin?`<div style="margin-top:8px;font-size:12.5px">저장 확인용 <b>비밀번호(숫자 4자리)</b>를 입력하세요<input class="txt" id="savePin" type="password" inputmode="numeric" maxlength="4" placeholder="숫자 4자리" value="${esc(S._pin||'')}" style="margin-top:6px;width:100%"></div>`:``}</div></div>`,saved:false};
+ if(failed)return{html:`<div class="saved demo" style="border-color:rgba(255,143,116,.6);align-items:flex-start"><div style="flex:1;line-height:1.6">⚠️ <b>${S.savedSubId?"수정 내용이 반영되지 않았어요.":"아직 저장되지 않았어요."}</b> ${S.savedSubId?"아래 <b>저장하기</b>로 다시 시도해 주세요. (중복 회차는 생기지 않아요)":"아래 <b>저장하기</b> 버튼을 눌러 주세요."}${(S.saveMode&&(""+S.saveMode).indexOf("error:")===0)?`<div style="font-size:11.5px;color:var(--mut2);margin-top:4px">사유: ${esc((""+S.saveMode).slice(6))}${S._saveTries?` · ${S._saveTries}번째 시도 실패 ${esc(S._lastTry||"")}`:``}</div>`:``}${needPin?`<div style="margin-top:8px;font-size:12.5px">저장 확인용 <b>비밀번호(숫자 4자리)</b>를 입력하세요<input class="txt" id="savePin" type="password" inputmode="numeric" maxlength="4" placeholder="숫자 4자리" value="${esc(S._pin||'')}" style="margin-top:6px;width:100%"></div>`:``}</div></div>`,saved:false};
  return{html:`<div class="saved demo">저장 완료(데모=브라우저)</div>`,saved:false};}
 function saveFab(saved,onSave,onEdit){
  if(saved){el("fab").innerHTML=`<div style="display:flex;gap:8px"><button class="btn ghost" id="home" style="flex:2">완료 · 처음으로</button><button class="btn ghost" id="editBtn" style="flex:1">수정하기</button></div>`;const hb=el("home");if(hb)hb.onclick=resetApp;const eb2=el("editBtn");if(eb2)eb2.onclick=onEdit;return;}
@@ -258,8 +258,13 @@ function saveFab(saved,onSave,onEdit){
  el("fab").innerHTML=`<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="saveBtn" style="flex:2">저장하기${updFailed?" (덮어쓰기 재시도)":""}</button><button class="btn ghost" id="editBtn" style="flex:1">수정하기</button>${updFailed?`<button class="btn ghost" id="newBtn" style="flex:1 1 100%;font-size:13px">새 회차로 따로 저장</button>`:``}</div>`;
  const sb=el("saveBtn");if(sb)sb.onclick=onSave;const eb=el("editBtn");if(eb)eb.onclick=onEdit;
  const nb=el("newBtn");if(nb)nb.onclick=()=>{S._forceNew=true;onSave();};}
-async function retrySaveDiag(){grabSavePin();const b=el("saveBtn");if(b){b.disabled=true;b.textContent="저장 중...";}let mode="demo";try{mode=await saveAll(buildResult());}catch(e){mode="error:"+(e&&e.message||e);}S.saveMode=mode;result();window.scrollTo(0,0);}
-async function retrySaveCustom(){grabSavePin();await saveCustom();}
+/* 재시도 결과가 눈에 보이도록 시도 횟수·시각을 남긴다 (같은 화면이 다시 그려져 '반응 없음'처럼 보이던 문제) */
+function noteTry(mode){if((""+mode).indexOf("error")===0){S._saveTries=(S._saveTries||0)+1;try{S._lastTry=new Date().toLocaleTimeString("ko-KR",{hour12:false});}catch(_){S._lastTry="";}}else{S._saveTries=0;S._lastTry=null;}}
+async function retrySaveDiag(){grabSavePin();const b=el("saveBtn");if(b){b.disabled=true;b.textContent="저장 중...";}
+ const t0=Date.now();let mode="demo";try{mode=await saveAll(buildResult());}catch(e){mode="error:"+(e&&e.message||e);}
+ const rest=450-(Date.now()-t0);if(rest>0)await new Promise(r=>setTimeout(r,rest));   /* 처리 중임이 보이도록 */
+ S.saveMode=mode;noteTry(mode);result();window.scrollTo(0,0);}
+async function retrySaveCustom(){grabSavePin();const b=el("saveBtn");if(b){b.disabled=true;b.textContent="저장 중...";}await saveCustom();}
 
 async function saveAll(res,examCode){examCode=examCode||EXAM.code;
  const demoSave=()=>{const subs=LS.get("ds_subs")||[];subs.push({phone:S.phone,exam:examCode,attempt:S.attempt,score:res.score,mode:"demo",responses:res.responses});LS.set("ds_subs",subs);};
@@ -389,7 +394,7 @@ async function saveCustom(){
  const responses=[{item_no:0,area:null,unit:null,my_answer:"",correct_answer:"",result:"o",reason:null,confidence:null,memo:`[직접입력] 과목:${subject} · 날짜:${date} · 시험:${name}`}].concat(wrongs.map(w=>({item_no:w,area:null,unit:null,my_answer:"",correct_answer:"",result:"x",reason:null,confidence:null,memo:null})));
  const res={score:sc,total:0,correct:0,responses};
  let mode="demo";try{mode=await saveAll(res,examCode);}catch(e){mode="error:"+(e&&e.message||e);}
- S.saveMode=mode;S._cWrongList=wrongs;S._cSaved={name,date,subject,score:sc};S.screen="cdone";render();window.scrollTo(0,0);}
+ S.saveMode=mode;noteTry(mode);S._cWrongList=wrongs;S._cSaved={name,date,subject,score:sc};S.screen="cdone";render();window.scrollTo(0,0);}
 function customResult(){
  const d=S._cSaved||{};const wrongs=S._cWrongList||[];const np=S.photo?Object.keys(S.photo).length:0;const pf=(S._photoFailed||[]);
  const ss=saveStatusUI();const savedUI=ss.html;
