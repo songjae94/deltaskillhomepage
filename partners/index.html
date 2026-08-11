@@ -314,6 +314,10 @@ footer{padding:44px 0 60px;font-size:12.5px;color:var(--txt3);line-height:1.9}
 .fstep b{display:block;font-size:15.5px;font-weight:500;color:#fff;margin-bottom:8px;letter-spacing:-.02em}
 .fstep p{margin:0;font-size:13.5px;color:var(--txt2);line-height:1.7}
 @media(max-width:900px){.flow{grid-template-columns:repeat(2,1fr)}}
+.demos{grid-template-columns:repeat(3,1fr);margin-top:40px}
+.demos .fstep{transition:border-color .2s,transform .2s}
+.demos .fstep:hover{border-color:rgba(90,162,255,.5);transform:translateY(-2px)}
+@media(max-width:900px){.demos{grid-template-columns:1fr}}
 .rep{max-width:820px;margin:44px auto 0;padding:24px}
 .rephd{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
 .rephd b{font-size:14px;font-weight:500}
@@ -425,6 +429,39 @@ footer{padding:44px 0 60px;font-size:12.5px;color:var(--txt3);line-height:1.9}
         델타스킬은 후자를 먼저 잡습니다.</p>
     </div>
     <p class="tiny rv center" style="margin-top:18px;opacity:.65">* 학생 개인정보와 학원명을 포함하지 않은 익명 집계 기준입니다. 응시 기록 841건은 오메가 5~8회와 7월 전국대비실전모의 5개 시험, 문항별 정답률은 정답률 자료가 제공된 오메가 4개 회차(회차당 46문항) 기준입니다.</p>
+  </div>
+</section>
+
+<hr class="hr" />
+
+<section>
+  <div class="wrap">
+    <div class="narrow center" style="width:100%">
+      <p class="eyebrow rv">관리자 화면</p>
+      <h2 class="rv d1">학생이 입력하면,<br /><span class="dim">집계는 저희가 합니다.</span></h2>
+      <p class="lead rv d2">기관 유형마다 필요한 화면이 다릅니다. 실제 동작하는 데모를 준비했습니다 &mdash;
+        수치와 이름은 모두 가상이지만, 화면과 기능은 실제 그대로입니다.</p>
+    </div>
+    <div class="flow demos">
+      <a class="fstep ob gt rv" href="/pilot2/live/" style="display:block">
+        <em>대규모 단과 · 인강</em><b>수강생 1,000명을 한 화면에</b>
+        <p>5개 지역 분원의 같은 주간 시험을 자동 집계합니다. 지역별 취약 단원 비교, 등급을 가른 결정 문항,
+           미응시자 추적, 학생별 리포트까지 &mdash; 조교의 엑셀 취합이 사라집니다.</p>
+        <p style="color:var(--acc);margin-top:12px">데모 열기 &rsaquo;</p></a>
+      <a class="fstep ob gt rv d1" href="/pilot2/self/" style="display:block">
+        <em>독학재수 · 관리형</em><b>공부량과 진도를 매일</b>
+        <p>순공시간, 푼 문항 수, 과목별 진도율, 계획 이행률이 학생 입력 하나로 모입니다.
+           담임은 전원의 상태를 한 표에서 보고, 다음 주 계획 제안을 승인만 하면 됩니다.</p>
+        <p style="color:var(--acc);margin-top:12px">데모 열기 &rsaquo;</p></a>
+      <a class="fstep ob gt rv d2" href="/pilot2/academy/" style="display:block">
+        <em>일반 수학학원</em><b>반이 달라도 원장은 한눈에</b>
+        <p>반·학년·선생님·진도가 제각각이어도 원장 화면에서 전체가 비교됩니다.
+           반을 누르면 학생까지 내려가고, 선생님 계정은 자기 반만 보이도록 권한이 나뉩니다.</p>
+        <p style="color:var(--acc);margin-top:12px">데모 열기 &rsaquo;</p></a>
+    </div>
+    <p class="tiny rv center" style="margin-top:18px;opacity:.65">
+      * 데모의 기관&middot;강사&middot;학생&middot;수치는 전부 가상입니다. 학생이 사용하는 오답노트 화면은 세 유형 모두
+      <a href="/pilot/">현재 운영 중인 AI 오답노트</a>를 그대로 씁니다.</p>
   </div>
 </section>
 
