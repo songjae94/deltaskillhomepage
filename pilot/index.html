@@ -214,7 +214,7 @@ function quiz(){const wrap=document.createElement("div");wrap.className="pad";
  wrap.insertAdjacentHTML("beforeend",`<div class="sechd">선택과목 · ${S.profile.subject} (23–30)</div>`);
  const g2=document.createElement("div");(S.profile.subject==="미적분"?EXAM.data.mi:EXAM.data.hw).forEach(q=>g2.appendChild(card(q)));wrap.appendChild(g2);
  el("screen").innerHTML="";el("screen").appendChild(wrap);updFab();}
-function updFab(){const n=answeredCount();el("fab").innerHTML=`<button class="btn" id="sub" ${n>=1?"":"disabled"}>제출하고 결과 보기 (${n}/30)</button>`;if(n>=1)el("sub").onclick=submitDiag;}
+function updFab(){const n=answeredCount();el("fab").innerHTML=`<button class="btn" id="sub" ${n>=1?"":"disabled"}>저장하고 결과 보기 (${n}/30)</button>`;if(n>=1)el("sub").onclick=submitDiag;}
 
 async function pickPhoto(q){const inp=document.createElement("input");inp.type="file";inp.accept="image/*";
  inp.onchange=async e=>{const f=e.target.files&&e.target.files[0];if(!f)return;
@@ -237,14 +237,24 @@ function buildResult(){const its=items().filter(q=>graded(q)!=null);
  return {score,total:its.length,correct:correct.length,
    responses:its.map(q=>({item_no:q.no,area:q.area,unit:q.unit,my_answer:""+S.ans[q.no],correct_answer:""+q.ans,result:graded(q),reached_step:S.step[q.no]||null,reason:S.reason[q.no]||null,confidence:S.conf[q.no]||null,memo:S.memo[q.no]||null}))};}
 
+/* ---- 저장 상태 UI · 재저장/수정 (실패해도 입력 유지) ---- */
+function resetApp(){S={screen:"login",phone:"",profile:null,studentId:null,catSel:null,ans:{},reason:{},conf:{},memo:{},step:{},photo:{},previewPath:false,attempt:1,saveMode:null};render();window.scrollTo(0,0);}
+function grabSavePin(){const pe=el("savePin");if(pe){const v=pe.value.replace(/[^0-9]/g,"").slice(0,4);if(v)S._pin=v;}}
+function saveStatusUI(){const apiOn=!!CONFIG.api,saved=S.saveMode==="server",failed=apiOn&&S.saveMode&&!saved,needPin=failed&&!TK.has();
+ if(saved)return{html:`<div class="saved">✅ 델타스킬 서버에 저장됐어요 · 매주 쌓여 학습 경로가 됩니다</div>`,saved:true};
+ if(failed)return{html:`<div class="saved demo" style="border-color:rgba(255,143,116,.6);align-items:flex-start"><div style="flex:1;line-height:1.6">⚠️ <b>아직 저장되지 않았어요.</b> 아래 <b>저장하기</b> 버튼을 눌러 주세요.${needPin?`<div style="margin-top:8px;font-size:12.5px">저장 확인용 <b>비밀번호(숫자 4자리)</b>를 입력하세요<input class="txt" id="savePin" type="password" inputmode="numeric" maxlength="4" placeholder="숫자 4자리" value="${esc(S._pin||'')}" style="margin-top:6px;width:100%"></div>`:``}</div></div>`,saved:false};
+ return{html:`<div class="saved demo">저장 완료(데모=브라우저)</div>`,saved:false};}
+function saveFab(saved,onSave,onEdit){if(saved){el("fab").innerHTML=`<button class="btn ghost" id="home">완료 · 처음으로</button>`;const hb=el("home");if(hb)hb.onclick=resetApp;}else{el("fab").innerHTML=`<div style="display:flex;gap:8px"><button class="btn" id="saveBtn" style="flex:2">저장하기</button><button class="btn ghost" id="editBtn" style="flex:1">수정하기</button></div>`;const sb=el("saveBtn");if(sb)sb.onclick=onSave;const eb=el("editBtn");if(eb)eb.onclick=onEdit;}}
+async function retrySaveDiag(){grabSavePin();const b=el("saveBtn");if(b){b.disabled=true;b.textContent="저장 중...";}let mode="demo";try{mode=await saveAll(buildResult());}catch(e){mode="error:"+(e&&e.message||e);}S.saveMode=mode;result();window.scrollTo(0,0);}
+async function retrySaveCustom(){grabSavePin();await saveCustom();}
+
 async function saveAll(res,examCode){examCode=examCode||EXAM.code;
  const demoSave=()=>{const subs=LS.get("ds_subs")||[];subs.push({phone:S.phone,exam:examCode,attempt:S.attempt,score:res.score,mode:"demo",responses:res.responses});LS.set("ds_subs",subs);};
  if(!CONFIG.api){demoSave();return "demo";}
  try{
    if(TK.has()){const tph=localStorage.getItem("ds_tk_ph");if(tph&&tph!==S.phone)TK.clear();}
    if(!TK.has()){
-     let pin=S._pin||"";
-     if(!/^\d{4}$/.test(pin)){const en=(typeof prompt==="function")?prompt("서버에 저장하려면 비밀번호(숫자 4자리)를 입력하세요"):"";pin=((en||"")+"").replace(/[^0-9]/g,"").slice(0,4);if(/^\d{4}$/.test(pin))S._pin=pin;}
+     const pin=S._pin||"";
      if(!/^\d{4}$/.test(pin))throw new Error("need_pin");
      try{
        const j=await api("/enroll",{method:"POST",auth:false,body:{phone:S.phone,pin:pin,name:S.profile.name,academy:S.profile.academy,grade:S.profile.grade,subject:S.profile.subject,consent:true,consent_marketing:S._consent2===true,consent_notify:S._consent3===true}});
@@ -278,7 +288,7 @@ function result(){const its=items();const done=its.filter(q=>graded(q)!=null);co
  const uinfo={};its.forEach(q=>{const g=graded(q);if(g==null)return;const u=uinfo[q.unit]=uinfo[q.unit]||{n:0,wrong:[],reasons:{}};u.n++;if(g==="x"){u.wrong.push(q.no);const r=S.reason[q.no];if(r)u.reasons[r]=(u.reasons[r]||0)+1;}});
  const weak=Object.entries(uinfo).filter(([k,v])=>v.wrong.length>0).sort((a,b)=>(b[1].wrong.length-a[1].wrong.length)||(ORDER.indexOf(a[0])-ORDER.indexOf(b[0]))).slice(0,3);
  const presc=weak.map(([u,v])=>{const tr=Object.entries(v.reasons).sort((a,b)=>b[1]-a[1])[0];const rl=tr?tr[0]:null;const fix=rl?REASONFIX[rl]:"유형별 대표문항으로 감 잡기";const b=BANK[u]||{type:u,gichul:[]};return `<div class="presc"><div class="pu">${u}<span class="pw">${v.wrong.length}문항 틀림</span></div>${rl?`<div class="pr">주 원인: <b>${rl}</b></div>`:''}<div class="pl"><span class="ic">🎯</span><div><b>유형 학습</b> · ${b.type}<br>→ ${fix}</div></div><div class="pl"><span class="ic">🔁</span><div><b>이번 시험 다시 풀 문제</b><br>${EXAM.title} ${v.wrong.map(n=>n+'번').join(', ')}</div></div><div class="pl"><span class="ic">📚</span><div><b>기출 복습</b><br>${b.gichul.join(' / ')}</div></div>${b.up?`<div class="pl up"><span class="ic">⬆️</span><div><b>먼저 볼 것(상류 결손)</b><br>${b.up}</div></div>`:''}</div>`;}).join("")||`<div class="presc"><div class="pl"><span class="ic">🎉</span><div>틀린 문항이 거의 없어요! 유지 학습으로 충분해요.</div></div></div>`;
- const savedUI=S.saveMode==="server"?`<div class="saved">델타스킬 서버에 저장됐어요 · 매주 쌓여 학습 경로가 됩니다</div>`:(S.saveMode&&S.saveMode.startsWith("error")?`<div class="saved demo">서버 저장 실패(${esc(S.saveMode)}) — 브라우저에 임시 저장됨. 관리자에게 문의</div>`:`<div class="saved demo">저장 완료(데모=브라우저) · 서버 키를 넣으면 델타스킬 DB로 저장됩니다</div>`);
+ const ss=saveStatusUI();const savedUI=ss.html;
  const pinfo={};its.forEach(q=>{const g=graded(q);if(g==null||!q.pat)return;const o=pinfo[q.pat]=pinfo[q.pat]||{n:0,wrong:[]};o.n++;if(g==="x")o.wrong.push(q.no);});
  const pweak=Object.entries(pinfo).filter(([k,v])=>v.wrong.length>0).sort((a,b)=>b[1].wrong.length-a[1].wrong.length).slice(0,2);
  const patSec=pweak.map(([k,v])=>{const b=PATBANK[k];if(!b)return"";return `<div class="presc"><div class="pu">${b.n}<span class="pw">이번 회차 ${v.wrong.length}문항</span></div><div class="pr">핵심 기술: <b>${b.k}</b></div><div class="pl"><span class="ic">🧩</span><div><b>같은 기술을 쓰는 문항 ${b.c}개</b><br>${b.d}</div></div><div class="pl"><span class="ic">🎯</span><div><b>묶어서 연습</b><br>${b.f}</div></div></div>`;}).join("");
@@ -302,7 +312,7 @@ function result(){const its=items();const done=its.filter(q=>graded(q)!=null);co
   <div class="seclabel">나의 학습 경로</div>${pathSec}
   <div class="note">AI 오답노트 · www.deltaskill.co.kr</div></div>`;
  const pv=el("pv");if(pv)pv.onclick=()=>{S.previewPath=true;result();window.scrollTo(0,el("screen").scrollHeight);};
- el("fab").innerHTML=`<button class="btn ghost" id="home">완료 · 처음으로</button>`;el("home").onclick=()=>{S={screen:"login",phone:"",profile:null,studentId:null,catSel:null,ans:{},reason:{},conf:{},memo:{},step:{},photo:{},previewPath:false,attempt:1,saveMode:null};render();window.scrollTo(0,0);};}
+ saveFab(ss.saved,retrySaveDiag,()=>{S.screen="quiz";render();window.scrollTo(0,0);});}
 /* ---------- 모의고사 직접입력 (간단 기록형) ---------- */
 function cf(){const y=window.scrollY;customForm();window.scrollTo(0,y);setProg();}
 function customForm(){
@@ -347,14 +357,14 @@ async function saveCustom(){
  S.saveMode=mode;S._cWrongList=wrongs;S._cSaved={name,date,subject,score:sc};S.screen="cdone";render();window.scrollTo(0,0);}
 function customResult(){
  const d=S._cSaved||{};const wrongs=S._cWrongList||[];const np=S.photo?Object.keys(S.photo).length:0;const pf=(S._photoFailed||[]);
- const savedUI=S.saveMode==="server"?`<div class="saved">델타스킬 서버에 저장됐어요 · 이력이 쌓여 분석에 쓰여요</div>`:(S.saveMode&&(""+S.saveMode).indexOf("error")===0?`<div class="saved demo">서버 저장 실패(${esc(S.saveMode)}) — 브라우저에 임시 저장됨</div>`:`<div class="saved demo">저장 완료(데모=브라우저)</div>`);
+ const ss=saveStatusUI();const savedUI=ss.html;
  el("screen").innerHTML=`<div class="pad">${savedUI}<div class="h">기록 완료</div>
  <div class="desc">${esc(d.name)} · ${esc(d.date)} · ${esc(d.subject)}</div>
  <div class="kpirow"><div class="kpi"><div class="v">${d.score??0}<span style="font-size:14px;color:var(--mut2)">점</span></div><div class="l">원점수 (100)</div></div><div class="kpi"><div class="v">${wrongs.length}<span style="font-size:14px;color:var(--mut2)">문항</span></div><div class="l">틀린 문항</div></div></div>
  ${wrongs.length?`<div class="bar"><h4>다시 풀 문항</h4><div class="rchips">${wrongs.map(n=>`<span class="rchip">${n}번</span>`).join("")}</div>${np?`<div style="font-size:12px;color:var(--mut);margin-top:8px">오답 사진 ${np}장 첨부${pf.length?` · ${pf.length}장 실패`:''}</div>`:''}</div>`:`<div class="bar"><div class="pl"><span class="ic">🎉</span><div>틀린 문항이 없네요! 기록만 저장했어요.</div></div></div>`}
  <div class="bar"><div class="pl"><span class="ic">📌</span><div><b>단원별 약점·예상등급</b>은 프리셋 시험(기출·메가 등)에서 자동으로 나와요. 직접입력은 점수·오답 이력 기록용이에요.</div></div></div>
  <div class="note">AI 오답노트 · www.deltaskill.co.kr</div></div>`;
- el("fab").innerHTML=`<button class="btn ghost" id="home">완료 · 처음으로</button>`;el("home").onclick=()=>{S={screen:"login",phone:"",profile:null,studentId:null,catSel:null,ans:{},reason:{},conf:{},memo:{},step:{},photo:{},previewPath:false,attempt:1,saveMode:null};render();window.scrollTo(0,0);};}
+ saveFab(ss.saved,retrySaveCustom,()=>{S.screen="custom";render();window.scrollTo(0,0);});}
 /* ---------- 브라우저 뒤로/앞으로: 화면별 히스토리로 정상 처리 ---------- */
 /* 각 화면 위치를 history에 한 칸씩 쌓아, 보통 사이트처럼 뒤로/앞으로가 한 화면씩 이동한다.
    (기존 '트랩 1개' 방식은 뒤로가면 앱 위로 튀고 앞으로가기가 안 돼서 교체) */
