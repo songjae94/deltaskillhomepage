@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>파일럿2 데모 · 일반 수학학원 (원장)</title>
+<link rel="icon" href="/favicon-32.png" sizes="32x32">
+<link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+:root{--bg:#05060f;--panel:rgba(255,255,255,.028);--panel2:rgba(255,255,255,.055);--line:rgba(186,215,247,.13);--line2:rgba(186,215,247,.24);
+--ink:#e9eff8;--mut:rgba(209,228,250,.6);--mut2:rgba(209,228,250,.38);--acc:#5aa2ff;--acc2:#a8cbff;--ok:#5fd39a;--warn:#ffb27a;--no:#ff8f74;--r:14px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+font-size:14px;line-height:1.65;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
+.wrap{max-width:960px;margin:0 auto;padding:24px 18px 70px}
+a{color:var(--acc2);text-decoration:none}
+.top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:7px;font-weight:800;font-size:15px;color:#fff}
+.brand img{width:22px;height:22px}
+.demo{font-size:10.5px;font-weight:700;color:var(--warn);border:1px solid rgba(255,178,122,.4);border-radius:999px;padding:2px 9px;margin-left:auto}
+h1{font-size:21px;letter-spacing:-.025em;margin:16px 0 2px;font-weight:800}
+.sub{color:var(--mut2);font-size:12.5px;margin:0 0 14px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}
+@media(max-width:640px){.cards{grid-template-columns:repeat(2,1fr)}}
+.kcard{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
+.kcard b{display:block;font-size:21px;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.kcard span{font-size:11px;color:var(--mut2)}
+h2{font-size:14.5px;margin:22px 0 8px;font-weight:700;border-left:3px solid var(--warn);padding-left:9px}
+.cls{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:760px){.cls{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.cls{grid-template-columns:1fr}}
+.c{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:13px 15px;cursor:pointer;transition:border-color .15s}
+.c:hover{border-color:var(--acc)}
+.c.on{border-color:var(--warn);background:rgba(255,178,122,.05)}
+.c .nm{font-weight:800;font-size:14px}
+.c .t{font-size:11px;color:var(--mut2);margin:1px 0 8px}
+.c .row{display:flex;justify-content:space-between;font-size:11.5px;color:var(--mut);margin:2px 0}
+.c .row b{font-variant-numeric:tabular-nums;color:var(--ink);font-weight:600}
+.c .pr{font-size:11px;color:var(--acc2);border-top:1px solid var(--line);margin-top:8px;padding-top:7px}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+table{width:100%;min-width:600px;border-collapse:collapse;font-size:12.5px}
+th{font-size:10.5px;color:var(--mut2);font-weight:600;text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);background:var(--panel);white-space:nowrap}
+td{padding:8px 12px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+tr:last-child td{border-bottom:0}
+.bar{display:inline-block;width:80px;height:8px;background:rgba(186,214,247,.08);border-radius:99px;overflow:hidden;vertical-align:middle;margin-right:6px}
+.bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#c98a3a,#ffb27a)}
+.pill{display:inline-block;font-size:10px;font-weight:700;border-radius:999px;padding:1px 8px}
+.pill.g1,.pill.g2{color:#04122b;background:var(--acc)}
+.pill.g3{color:#04122b;background:var(--acc2)}
+.pill.g4,.pill.g5{color:#04122b;background:var(--warn)}
+.pill.no{color:var(--no);border:1px solid rgba(255,143,116,.45)}
+.note{border-left:2px solid var(--warn);background:rgba(255,178,122,.06);border-radius:0 10px 10px 0;padding:9px 13px;margin:12px 0;font-size:12.5px;color:var(--mut)}
+.note b{color:var(--ink)}
+.sm{font-size:11px;color:var(--mut2)}
+.btn{display:inline-block;border:1px solid var(--line2);border-radius:8px;color:var(--acc2);font-size:11px;padding:3px 10px;cursor:pointer;background:none;font-family:inherit}
+footer{margin-top:36px;font-size:11.5px;color:var(--mut2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a href="/pilot2/" class="brand"><img src="/logo-dark-192.png" alt="">델타스킬 <span style="color:var(--mut2);font-weight:400;font-size:12px">· 파일럿2</span></a>
+    <span class="demo">데모 · 예시 데이터</span>
+  </div>
+
+  <h1>가온수학학원 · 원장 대시보드</h1>
+  <p class="sub">반마다 선생님도 진도도 다르지만 — 학생 입력 하나로 전체가 한 화면에 모입니다 (8월 2주)</p>
+
+  <div class="cards">
+    <div class="kcard"><b>6</b><span>반</span></div>
+    <div class="kcard"><b>87</b><span>학생</span></div>
+    <div class="kcard"><b>78%</b><span>이번 주 입력률</span></div>
+    <div class="kcard"><b>2,341</b><span>이번 주 입력 문항 (공부량)</span></div>
+  </div>
+
+  <h2>반별 현황 <span class="sm">— 카드를 누르면 학생 목록</span></h2>
+  <div class="cls" id="cls"></div>
+
+  <div class="note" id="insight"></div>
+
+  <h2 id="stuTitle">학생 목록</h2>
+  <div class="tw"><table id="stu"></table></div>
+
+  <div class="note" style="border-color:var(--acc);background:rgba(90,162,255,.06)">
+    <b>권한 분리</b> — 이 화면은 원장 전용입니다. 각 선생님 계정으로 로그인하면 <b>자기 반만</b> 보입니다.
+    학생 개인 리포트(점수 추이·공부 순서·방향)는 행의 「리포트」로 열람합니다.
+  </div>
+
+  <footer>본 데모의 학원·선생님·학생·수치는 전부 가상입니다 · <a href="/pilot2/">← 유형 선택으로</a></footer>
+</div>
+
+<script>
+const CLS=[
+ {k:0,nm:"고3 정규 A",t:"김선생",n:18,take:89,avg:74.1,vol:486,prog:"미적분 · 정적분의 활용",weak:"적분법"},
+ {k:1,nm:"고3 정규 B",t:"이선생",n:16,take:81,avg:69.3,vol:402,prog:"확통 · 조건부확률",weak:"경우의 수"},
+ {k:2,nm:"N수 심화",t:"박선생",n:14,take:93,avg:78.6,vol:511,prog:"실전 모의 체제",weak:"극한과 연속"},
+ {k:3,nm:"고2 심화",t:"김선생",n:15,take:73,avg:71.8,vol:388,prog:"수2 · 도함수의 활용",weak:"미분법"},
+ {k:4,nm:"고2 정규",t:"최선생",n:14,take:64,avg:66.2,vol:301,prog:"수1 · 수열",weak:"수열"},
+ {k:5,nm:"고1 기초",t:"정선생",n:10,take:70,avg:63.5,vol:253,prog:"공통수학 · 이차함수",weak:"이차함수"}
+];
+const STU={
+ 0:[["김○수",92,1],["이○린",84,2],["박○준",76,3],["정○우",null,null]],
+ 1:[["최○아",78,3],["한○서",70,3],["조○민",62,4]],
+ 2:[["윤○지",88,2],["장○혁",81,2],["신○은",74,3]],
+ 3:[["강○호",79,3],["송○연",68,4]],
+ 4:[["임○규",66,4],["오○빈",null,null]],
+ 5:[["서○율",64,4],["문○채",59,5]]
+};
+let SEL=0;
+const $=id=>document.getElementById(id);
+function render(){
+ $("cls").innerHTML=CLS.map(c=>`<div class="c ${c.k===SEL?'on':''}" data-k="${c.k}">
+   <div class="nm">${c.nm}</div><div class="t">${c.t} · ${c.n}명</div>
+   <div class="row"><span>이번 주 입력률</span><b>${c.take}%</b></div>
+   <div class="row"><span>평균 (자기채점)</span><b>${c.avg.toFixed(1)}</b></div>
+   <div class="row"><span>공부량 (입력 문항)</span><b>${c.vol}</b></div>
+   <div class="row"><span>취약 단원</span><b style="color:var(--no)">${c.weak}</b></div>
+   <div class="pr">진도 — ${c.prog}</div></div>`).join("");
+ document.querySelectorAll(".c").forEach(el=>el.onclick=()=>{SEL=+el.dataset.k;render();});
+ const c=CLS[SEL];
+ const low=CLS.slice().sort((a,b)=>a.take-b.take)[0];
+ $("insight").innerHTML=`<b>${low.nm}(${low.t})의 입력률이 ${low.take}%로 가장 낮습니다.</b> 반별 참여도 차이가 곧 데이터 품질 차이 — 담당 선생님께 독려를 권장합니다. 반대로 <b>N수 심화</b>는 93%로 가장 성실합니다.`;
+ $("stuTitle").innerHTML=`학생 목록 <span class="sm">— ${c.nm} (${c.t})</span>`;
+ $("stu").innerHTML=`<tr><th>학생</th><th>이번 주</th><th>최근 자기채점</th><th>예상등급</th><th></th></tr>`+
+  STU[SEL].map(s=>`<tr><td><b>${s[0]}</b></td>
+   <td>${s[1]==null?'<span class="pill no">미입력</span>':'입력'}</td>
+   <td>${s[1]==null?"—":s[1]}</td>
+   <td>${s[2]==null?"—":`<span class="pill g${s[2]}">${s[2]}등급</span>`}</td>
+   <td><span class="btn">리포트</span></td></tr>`).join("")+
+  `<tr><td colspan="5" class="sm" style="color:var(--mut2)">… 외 ${Math.max(0,c.n-STU[SEL].length)}명 (예시 일부만 표시)</td></tr>`;
+}
+render();
+</script>
+</body>
+</html>

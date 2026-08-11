@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>델타스킬 파일럿2 · 기관 유형별 데모</title>
+<link rel="icon" href="/favicon-32.png" sizes="32x32">
+<link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+:root{--bg:#05060f;--panel:rgba(255,255,255,.028);--panel2:rgba(255,255,255,.055);--line:rgba(186,215,247,.13);--line2:rgba(186,215,247,.24);
+--ink:#e9eff8;--mut:rgba(209,228,250,.6);--mut2:rgba(209,228,250,.38);--acc:#5aa2ff;--acc2:#a8cbff;--ok:#5fd39a;--warn:#ffb27a;--r:18px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+font-size:15px;line-height:1.7;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:40px 20px 80px}
+a{color:var(--acc2);text-decoration:none}
+.brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:16px;color:#fff}
+.brand img{width:24px;height:24px}
+.badge{display:inline-block;font-size:11.5px;font-weight:700;color:var(--warn);border:1px solid rgba(255,178,122,.4);border-radius:999px;padding:3px 11px;letter-spacing:.04em}
+h1{font-size:clamp(24px,5vw,32px);letter-spacing:-.03em;line-height:1.28;margin:14px 0 8px;font-weight:800}
+.lead{color:var(--mut);margin:0 0 26px}
+.cards{display:grid;gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:22px;display:block;color:var(--ink);transition:border-color .2s,transform .2s}
+.card:hover{border-color:var(--acc);transform:translateY(-2px)}
+.card .ic{font-size:22px}
+.card h2{font-size:17.5px;margin:6px 0 4px;letter-spacing:-.02em}
+.card p{margin:0 0 10px;font-size:13.5px;color:var(--mut)}
+.card ul{margin:0 0 12px;padding-left:18px;font-size:12.5px;color:var(--mut2)}
+.card li{margin:2px 0}
+.go{display:inline-flex;align-items:center;gap:6px;background:var(--acc);color:#04122b;font-weight:700;font-size:13px;border-radius:999px;padding:7px 16px}
+.tag{display:inline-block;font-size:10.5px;font-weight:700;border-radius:999px;padding:1px 9px;margin-left:8px;vertical-align:2px}
+.tag.a{color:var(--acc2);border:1px solid rgba(90,162,255,.45)}
+.tag.b{color:var(--ok);border:1px solid rgba(95,211,154,.4)}
+.tag.c{color:var(--warn);border:1px solid rgba(255,178,122,.4)}
+footer{margin-top:40px;font-size:12px;color:var(--mut2);line-height:1.8}
+@media(min-width:720px){.cards{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a href="/" class="brand"><img src="/logo-dark-192.png" alt="">델타스킬</a>
+  <div style="margin-top:18px"><span class="badge">파일럿2 데모 · 모든 데이터는 가상의 예시입니다</span></div>
+  <h1>기관 유형에 맞는<br>델타스킬을 미리 봅니다</h1>
+  <p class="lead">세 가지 운영 형태별 관리자 화면 데모입니다. 학생 쪽 오답노트 작성·수정·분석 리포트는 세 버전 모두 동일하게 <a href="/pilot/">현재 파일럿</a>을 그대로 사용합니다.</p>
+
+  <div class="cards">
+    <a class="card" href="/pilot2/live/">
+      <span class="ic">📡</span><span class="tag a">대규모 단과</span>
+      <h2>인강·대형 단과 강사</h2>
+      <p>1,000명을 5개 지역 학원에서 — 같은 수업, 같은 시험, 한 화면 집계.</p>
+      <ul>
+        <li>주간 시험 응시율·평균 자동 집계</li>
+        <li>지역(분원)별 비교 · 취약 단원 차이</li>
+        <li>결정 문항·오답 패턴 즉시 확인</li>
+      </ul>
+      <span class="go">데모 열기 →</span>
+    </a>
+    <a class="card" href="/pilot2/self/">
+      <span class="ic">📚</span><span class="tag b">독학재수</span>
+      <h2>독학재수·관리형 학원</h2>
+      <p>공부량·진도·계획을 학생 입력 하나로 — 담임이 전원을 관리.</p>
+      <ul>
+        <li>순공시간·푼 문항 수 일일 체크</li>
+        <li>과목별 진도율 · 계획 이행률</li>
+        <li>취약 단원 기반 다음 주 계획 제안</li>
+      </ul>
+      <span class="go">데모 열기 →</span>
+    </a>
+    <a class="card" href="/pilot2/academy/">
+      <span class="ic">🏫</span><span class="tag c">동네 학원</span>
+      <h2>일반 수학학원 (원장)</h2>
+      <p>반·학년·선생님이 달라도 — 원장은 한 화면에서 전체를 봅니다.</p>
+      <ul>
+        <li>반별 담당 선생님·진도·평균 한눈에</li>
+        <li>반 비교 → 학생 개인까지 드릴다운</li>
+        <li>선생님은 자기 반만 보는 권한 분리</li>
+      </ul>
+      <span class="go">데모 열기 →</span>
+    </a>
+  </div>
+
+  <footer>
+    본 데모의 기관·강사·학생·수치는 전부 가상입니다. 도입 문의: <a href="mailto:hello@deltaskill.co.kr">hello@deltaskill.co.kr</a> · <a href="/partners/">교육기관 안내</a>
+  </footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>파일럿2 데모 · 인강·대형 단과 강사</title>
+<link rel="icon" href="/favicon-32.png" sizes="32x32">
+<link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+:root{--bg:#05060f;--panel:rgba(255,255,255,.028);--panel2:rgba(255,255,255,.055);--line:rgba(186,215,247,.13);--line2:rgba(186,215,247,.24);
+--ink:#e9eff8;--mut:rgba(209,228,250,.6);--mut2:rgba(209,228,250,.38);--acc:#5aa2ff;--acc2:#a8cbff;--ok:#5fd39a;--warn:#ffb27a;--no:#ff8f74;--r:14px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+font-size:14px;line-height:1.65;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
+.wrap{max-width:960px;margin:0 auto;padding:24px 18px 70px}
+a{color:var(--acc2);text-decoration:none}
+.top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:7px;font-weight:800;font-size:15px;color:#fff}
+.brand img{width:22px;height:22px}
+.demo{font-size:10.5px;font-weight:700;color:var(--warn);border:1px solid rgba(255,178,122,.4);border-radius:999px;padding:2px 9px;margin-left:auto}
+h1{font-size:21px;letter-spacing:-.025em;margin:16px 0 2px;font-weight:800}
+.sub{color:var(--mut2);font-size:12.5px;margin:0 0 14px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
+.tab{border:1px solid var(--line2);border-radius:999px;padding:5px 14px;font-size:12.5px;color:var(--mut);cursor:pointer;background:none;font-family:inherit}
+.tab.on{background:var(--acc);border-color:var(--acc);color:#04122b;font-weight:700}
+.wk{display:flex;gap:6px;margin:4px 0 0}
+.wk button{border:1px solid var(--line);border-radius:8px;background:none;color:var(--mut2);font-size:11.5px;padding:3px 10px;cursor:pointer;font-family:inherit}
+.wk button.on{color:var(--ink);border-color:var(--line2);background:var(--panel2)}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}
+@media(max-width:640px){.cards{grid-template-columns:repeat(2,1fr)}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
+.card b{display:block;font-size:21px;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.card span{font-size:11px;color:var(--mut2)}
+h2{font-size:14.5px;margin:22px 0 8px;font-weight:700;border-left:3px solid var(--acc);padding-left:9px}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+table{width:100%;min-width:560px;border-collapse:collapse;font-size:12.5px}
+th{font-size:10.5px;color:var(--mut2);font-weight:600;text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);background:var(--panel);white-space:nowrap}
+td{padding:8px 12px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+tr:last-child td{border-bottom:0}
+.bar{display:inline-block;width:90px;height:8px;background:rgba(186,214,247,.08);border-radius:99px;overflow:hidden;vertical-align:middle;margin-right:7px}
+.bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#3d7fe0,#7cb6ff)}
+.pill{display:inline-block;font-size:10px;font-weight:700;border-radius:999px;padding:1px 8px}
+.pill.g1,.pill.g2{color:#04122b;background:var(--acc)}
+.pill.g3{color:#04122b;background:var(--acc2)}
+.pill.g4,.pill.g5{color:#04122b;background:var(--warn)}
+.pill.no{color:var(--no);border:1px solid rgba(255,143,116,.45)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-size:11.5px;border:1px solid var(--line2);border-radius:999px;padding:3px 11px;color:var(--mut)}
+.chip.hot{color:var(--no);border-color:rgba(255,143,116,.5)}
+.note{border-left:2px solid var(--acc);background:rgba(90,162,255,.06);border-radius:0 10px 10px 0;padding:9px 13px;margin:10px 0;font-size:12.5px;color:var(--mut)}
+.sm{font-size:11px;color:var(--mut2)}
+.btn{display:inline-block;border:1px solid var(--line2);border-radius:8px;color:var(--acc2);font-size:11px;padding:3px 10px;cursor:pointer;background:none;font-family:inherit}
+footer{margin-top:36px;font-size:11.5px;color:var(--mut2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a href="/pilot2/" class="brand"><img src="/logo-dark-192.png" alt="">델타스킬 <span style="color:var(--mut2);font-weight:400;font-size:12px">· 파일럿2</span></a>
+    <span class="demo">데모 · 예시 데이터</span>
+  </div>
+
+  <h1>김수학 T · 전국 라이브 단과</h1>
+  <p class="sub">수강생 1,000명 · 5개 지역 학원 · 매주 동일 수업·동일 시험 — 학생이 입력하면 자동 집계됩니다</p>
+
+  <div class="wk">
+    <button>7월 5주</button><button>8월 1주</button><button class="on">8월 2주 (이번 주)</button>
+  </div>
+  <div class="tabs" id="tabs"></div>
+
+  <div class="cards" id="kpi"></div>
+
+  <h2>지역(분원)별 비교 <span class="sm">— 같은 시험, 지역별 차이</span></h2>
+  <div class="tw"><table id="regions"></table></div>
+  <div class="note" id="insight"></div>
+
+  <h2>이번 주 취약 단원 <span class="sm" id="scopeName"></span></h2>
+  <div class="chips" id="units"></div>
+
+  <h2>결정 문항 <span class="sm">— 등급을 가른 문항</span></h2>
+  <div class="tw"><table>
+    <tr><th>문항</th><th>단원</th><th>전체 정답률</th><th>비고</th></tr>
+    <tr><td><b>13번</b></td><td>적분법</td><td>41%</td><td class="sm">오답의 62%가 같은 선택지 — 접근법 교정 필요</td></tr>
+    <tr><td><b>15번</b></td><td>삼각함수</td><td>38%</td><td class="sm">평촌·일산에서 유독 낮음 (28%)</td></tr>
+    <tr><td><b>21번</b></td><td>극한과 연속</td><td>33%</td><td class="sm">상위권 변별 문항</td></tr>
+    <tr><td><b>28번</b></td><td>경우의 수</td><td>27%</td><td class="sm">전 지역 공통 취약</td></tr>
+  </table></div>
+
+  <h2>학생 검색 <span class="sm" id="stuScope"></span></h2>
+  <div class="tw"><table id="students"></table></div>
+
+  <h2>자료 배포</h2>
+  <div class="tw"><table>
+    <tr><th>자료</th><th>대상</th><th>상태</th></tr>
+    <tr><td>8월 2주차 주간 테스트 (30문항)</td><td class="sm">5개 학원 전체</td><td><span class="pill" style="color:var(--ok);border:1px solid rgba(95,211,154,.4)">등재 완료 · 오답노트 열림</span></td></tr>
+    <tr><td>8월 3주차 주간 테스트</td><td class="sm">5개 학원 전체</td><td><span class="pill" style="color:var(--warn);border:1px solid rgba(255,178,122,.4)">분석 중 · 목요일 등재 예정</span></td></tr>
+  </table></div>
+
+  <footer>본 데모의 강사·학원·학생·수치는 전부 가상입니다 · <a href="/pilot2/">← 유형 선택으로</a></footer>
+</div>
+
+<script>
+/* ── 가상 데이터 ── */
+const REGIONS=[
+ {k:"all",name:"전체",n:1000},
+ {k:"gn",name:"강남",n:200,take:91,avg:71.3,units:["적분법 ×41","경우의 수 ×33","수열 ×21"]},
+ {k:"md",name:"목동",n:200,take:88,avg:69.8,units:["적분법 ×38","삼각함수 ×30","경우의 수 ×26"]},
+ {k:"pc",name:"평촌",n:200,take:85,avg:66.4,units:["삼각함수 ×47","적분법 ×35","극한과 연속 ×24"]},
+ {k:"is",name:"일산",n:200,take:82,avg:65.9,units:["삼각함수 ×44","경우의 수 ×31","적분법 ×29"]},
+ {k:"dj",name:"대전",n:200,take:89,avg:67.7,units:["적분법 ×36","경우의 수 ×29","미분법 ×22"]}
+];
+const ALL_UNITS=["적분법 ×179","삼각함수 ×158","경우의 수 ×142","극한과 연속 ×88","수열 ×64","미분법 ×61"];
+const STUDENTS=[
+ {n:"김○수",r:"gn",rn:"강남",s:92,g:1},{n:"이○린",r:"gn",rn:"강남",s:84,g:2},
+ {n:"박○준",r:"md",rn:"목동",s:76,g:3},{n:"최○아",r:"md",rn:"목동",s:88,g:2},
+ {n:"정○우",r:"pc",rn:"평촌",s:62,g:4},{n:"한○서",r:"pc",rn:"평촌",s:null,g:null},
+ {n:"조○민",r:"is",rn:"일산",s:58,g:4},{n:"윤○지",r:"is",rn:"일산",s:71,g:3},
+ {n:"장○혁",r:"dj",rn:"대전",s:81,g:2},{n:"신○은",r:"dj",rn:"대전",s:66,g:4}
+];
+let SEL="all";
+const $=id=>document.getElementById(id);
+function pct(x){return x+"%"}
+function render(){
+ const subs=REGIONS.filter(r=>r.k!=="all");
+ const cur=REGIONS.find(r=>r.k===SEL);
+ /* 탭 */
+ $("tabs").innerHTML=REGIONS.map(r=>`<button class="tab ${r.k===SEL?'on':''}" data-k="${r.k}">${r.name} ${r.k==='all'?'1,000':r.n}</button>`).join("");
+ document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{SEL=b.dataset.k;render();});
+ /* KPI */
+ let take,avg,n;
+ if(SEL==="all"){n=1000;take=Math.round(subs.reduce((s,r)=>s+r.take*r.n,0)/1000);avg=(subs.reduce((s,r)=>s+r.avg*r.n,0)/1000).toFixed(1);}
+ else{n=cur.n;take=cur.take;avg=cur.avg.toFixed(1);}
+ const worst=(SEL==="all"?ALL_UNITS:cur.units)[0].split(" ")[0];
+ $("kpi").innerHTML=
+  `<div class="card"><b>${n.toLocaleString()}</b><span>수강생</span></div>`+
+  `<div class="card"><b>${pct(take)}</b><span>이번 주 응시율</span></div>`+
+  `<div class="card"><b>${avg}</b><span>평균 (자기채점)</span></div>`+
+  `<div class="card"><b style="color:var(--no);font-size:16px;line-height:1.9">${worst}</b><span>최다 오답 단원</span></div>`;
+ /* 지역 테이블 */
+ $("regions").innerHTML=`<tr><th>지역</th><th>인원</th><th>응시율</th><th>평균</th><th>최다 오답</th></tr>`+
+  subs.map(r=>`<tr style="${r.k===SEL?'background:rgba(90,162,255,.07)':''}">
+   <td><b>${r.name}</b></td><td>${r.n}</td>
+   <td><span class="bar"><i style="width:${r.take}%"></i></span>${pct(r.take)}</td>
+   <td>${r.avg.toFixed(1)}</td><td class="sm">${r.units[0].split(" ")[0]}</td></tr>`).join("");
+ /* 인사이트 */
+ $("insight").innerHTML=SEL==="pc"||SEL==="is"
+  ?`<b>평촌·일산은 삼각함수가 유독 약합니다.</b> 다른 지역 대비 오답이 1.5배 — 이번 주 보강 클립 배포를 권장.`
+  :`전 지역 공통으로 <b>적분법·경우의 수</b>가 약하고, <b>평촌·일산은 삼각함수</b>가 추가로 낮습니다. 지역별 보강 포인트가 다릅니다.`;
+ /* 단원 칩 */
+ $("scopeName").textContent=SEL==="all"?"— 전체 1,000명 기준":`— ${cur.name} ${cur.n}명 기준`;
+ $("units").innerHTML=(SEL==="all"?ALL_UNITS:cur.units).map((u,i)=>`<span class="chip ${i<2?'hot':''}">${u}</span>`).join("");
+ /* 학생 */
+ const list=STUDENTS.filter(s=>SEL==="all"||s.r===SEL);
+ $("stuScope").textContent=SEL==="all"?"— 전체 (예시 10명 표시)":`— ${cur.name}`;
+ $("students").innerHTML=`<tr><th>학생</th><th>지역</th><th>이번 주</th><th>자기채점</th><th>예상등급</th><th></th></tr>`+
+  list.map(s=>`<tr><td>${s.n}</td><td class="sm">${s.rn}</td>
+   <td>${s.s==null?'<span class="pill no">미응시</span>':'응시'}</td>
+   <td>${s.s==null?"—":s.s}</td>
+   <td>${s.g==null?"—":`<span class="pill g${s.g}">${s.g}등급</span>`}</td>
+   <td><span class="btn">리포트</span></td></tr>`).join("");
+}
+render();
+</script>
+</body>
+</html>

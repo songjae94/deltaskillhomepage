@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>파일럿2 데모 · 독학재수·관리형 학원</title>
+<link rel="icon" href="/favicon-32.png" sizes="32x32">
+<link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+:root{--bg:#05060f;--panel:rgba(255,255,255,.028);--panel2:rgba(255,255,255,.055);--line:rgba(186,215,247,.13);--line2:rgba(186,215,247,.24);
+--ink:#e9eff8;--mut:rgba(209,228,250,.6);--mut2:rgba(209,228,250,.38);--acc:#5aa2ff;--acc2:#a8cbff;--ok:#5fd39a;--warn:#ffb27a;--no:#ff8f74;--r:14px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+font-size:14px;line-height:1.65;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
+.wrap{max-width:960px;margin:0 auto;padding:24px 18px 70px}
+a{color:var(--acc2);text-decoration:none}
+.top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:7px;font-weight:800;font-size:15px;color:#fff}
+.brand img{width:22px;height:22px}
+.demo{font-size:10.5px;font-weight:700;color:var(--warn);border:1px solid rgba(255,178,122,.4);border-radius:999px;padding:2px 9px;margin-left:auto}
+h1{font-size:21px;letter-spacing:-.025em;margin:16px 0 2px;font-weight:800}
+.sub{color:var(--mut2);font-size:12.5px;margin:0 0 14px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}
+@media(max-width:640px){.cards{grid-template-columns:repeat(2,1fr)}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
+.card b{display:block;font-size:21px;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.card span{font-size:11px;color:var(--mut2)}
+h2{font-size:14.5px;margin:22px 0 8px;font-weight:700;border-left:3px solid var(--ok);padding-left:9px}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+table{width:100%;min-width:640px;border-collapse:collapse;font-size:12.5px}
+th{font-size:10.5px;color:var(--mut2);font-weight:600;text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);background:var(--panel);white-space:nowrap}
+td{padding:8px 12px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+tr:last-child td{border-bottom:0}
+tr.sel{background:rgba(95,211,154,.07)}
+tr[data-s]{cursor:pointer}
+tr[data-s]:hover{background:rgba(186,214,247,.05)}
+.bar{display:inline-block;width:74px;height:8px;background:rgba(186,214,247,.08);border-radius:99px;overflow:hidden;vertical-align:middle;margin-right:6px}
+.bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#2f9e6b,#5fd39a)}
+.bar.b i{background:linear-gradient(90deg,#3d7fe0,#7cb6ff)}
+.pill{display:inline-block;font-size:10px;font-weight:700;border-radius:999px;padding:1px 8px}
+.pill.ok{color:var(--ok);border:1px solid rgba(95,211,154,.4)}
+.pill.w{color:var(--warn);border:1px solid rgba(255,178,122,.4)}
+.pill.no{color:var(--no);border:1px solid rgba(255,143,116,.45)}
+.detail{background:var(--panel);border:1px solid var(--line2);border-radius:var(--r);padding:16px 18px;margin-top:12px}
+.dgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:700px){.dgrid{grid-template-columns:1fr}}
+.dlab{font-size:11px;color:var(--mut2);font-weight:700;letter-spacing:.05em;margin-bottom:6px}
+.days{display:flex;gap:5px;align-items:flex-end;height:64px;margin-top:20px}
+.days i{flex:1;background:linear-gradient(180deg,#7cb6ff,#3d7fe0);border-radius:4px 4px 0 0;display:block;position:relative}
+.days i em{position:absolute;top:-16px;left:0;right:0;text-align:center;font-style:normal;font-size:9px;color:var(--mut2)}
+.dayx{display:flex;gap:5px;margin-top:4px}
+.dayx s{flex:1;text-decoration:none;text-align:center;font-size:9.5px;color:var(--mut2)}
+.prog{margin:7px 0}
+.prog .nm{display:flex;justify-content:space-between;font-size:11.5px;margin-bottom:3px}
+.prog .nm b{font-weight:600}
+.prog .tr{height:8px;background:rgba(186,214,247,.08);border-radius:99px;overflow:hidden}
+.prog .tr i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#2f9e6b,#5fd39a)}
+.plan{border-left:2px solid var(--ok);background:rgba(95,211,154,.06);border-radius:0 10px 10px 0;padding:10px 13px;margin:8px 0;font-size:12.5px;color:var(--mut)}
+.plan b{color:var(--ink)}
+.sm{font-size:11px;color:var(--mut2)}
+footer{margin-top:36px;font-size:11.5px;color:var(--mut2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a href="/pilot2/" class="brand"><img src="/logo-dark-192.png" alt="">델타스킬 <span style="color:var(--mut2);font-weight:400;font-size:12px">· 파일럿2</span></a>
+    <span class="demo">데모 · 예시 데이터</span>
+  </div>
+
+  <h1>한빛독학재수학원 · 담임 대시보드</h1>
+  <p class="sub">학생이 매일 공부량·정답을 입력하면 — 진도·공부량·계획 이행이 자동으로 집계됩니다 (8월 2주)</p>
+
+  <div class="cards">
+    <div class="card"><b>36</b><span>재원생</span></div>
+    <div class="card"><b>34</b><span>오늘 입력 완료</span></div>
+    <div class="card"><b>7.2h</b><span>평균 순공시간 (오늘)</span></div>
+    <div class="card"><b>1,284</b><span>이번 주 입력 문항</span></div>
+  </div>
+
+  <h2>학생 현황 <span class="sm">— 행을 누르면 상세</span></h2>
+  <div class="tw"><table id="list"></table></div>
+
+  <div class="detail" id="detail"></div>
+
+  <footer>본 데모의 학원·학생·수치는 전부 가상입니다 · <a href="/pilot2/">← 유형 선택으로</a></footer>
+</div>
+
+<script>
+const STU=[
+ {n:"김○수",today:8.4,week:[7.5,8.2,8.0,8.4,0,0,0],q:212,prog:{수1:92,수2:88,미적:64},plan:94,score:84,st:"ok",
+  weak:"적분법 · 수열의 극한",next:"미적분 정적분 활용 마무리 → 수열의 극한 재점검(오답 6문항 재풀이)"},
+ {n:"이○린",today:6.1,week:[6.8,5.9,7.1,6.1,0,0,0],q:148,prog:{수1:96,수2:90,확통:71},plan:81,score:71,st:"ok",
+  weak:"경우의 수",next:"확통 경우의 수 유형 20문항 · 수2 미분 복습 유지"},
+ {n:"박○준",today:3.2,week:[5.1,4.0,2.8,3.2,0,0,0],q:61,prog:{수1:78,수2:60,미적:35},plan:52,score:58,st:"w",
+  weak:"삼각함수 · 미분법",next:"공부시간 회복이 우선 — 수1 삼각함수 기초 유형부터 하루 30문항"},
+ {n:"최○아",today:9.0,week:[8.8,9.1,8.5,9.0,0,0,0],q:246,prog:{수1:100,수2:97,미적:82},plan:97,score:92,st:"ok",
+  weak:"—",next:"실전 모의 주 2회 체제 전환 · 킬러 문항 훈련"},
+ {n:"정○우",today:0,week:[6.2,5.8,6.0,0,0,0,0],q:0,prog:{수1:85,수2:74,확통:58},plan:38,score:66,st:"no",
+  weak:"수열",next:"오늘 미입력 — 확인 필요. 계획: 확통 순열조합 복습"}
+];
+let SEL=0;
+const $=id=>document.getElementById(id);
+function stPill(s){return s==="ok"?'<span class="pill ok">순항</span>':s==="w"?'<span class="pill w">주의</span>':'<span class="pill no">오늘 미입력</span>';}
+function render(){
+ $("list").innerHTML=`<tr><th>학생</th><th>오늘 순공</th><th>주간 문항</th><th>진도(평균)</th><th>계획 이행</th><th>최근 모의</th><th>상태</th></tr>`+
+  STU.map((s,i)=>{const pv=Object.values(s.prog);const pavg=Math.round(pv.reduce((a,b)=>a+b,0)/pv.length);
+   return `<tr data-s="${i}" class="${i===SEL?'sel':''}">
+   <td><b>${s.n}</b></td><td>${s.today?s.today+"h":"—"}</td><td>${s.q}</td>
+   <td><span class="bar"><i style="width:${pavg}%"></i></span>${pavg}%</td>
+   <td><span class="bar b"><i style="width:${s.plan}%"></i></span>${s.plan}%</td>
+   <td>${s.score}</td><td>${stPill(s.st)}</td></tr>`;}).join("");
+ document.querySelectorAll("[data-s]").forEach(r=>r.onclick=()=>{SEL=+r.dataset.s;render();});
+ const s=STU[SEL];const mx=Math.max.apply(null,s.week.concat([1]));
+ $("detail").innerHTML=`
+  <b style="font-size:15px">${s.n}</b> <span class="sm">· 상세 (담임 열람)</span>
+  <div class="dgrid" style="margin-top:12px">
+    <div>
+      <div class="dlab">주간 순공시간</div>
+      <div class="days">${s.week.map(h=>`<i style="height:${Math.round(h/mx*100)}%"><em>${h||""}</em></i>`).join("")}</div>
+      <div class="dayx"><s>월</s><s>화</s><s>수</s><s>목</s><s>금</s><s>토</s><s>일</s></div>
+      <div class="dlab" style="margin-top:14px">과목별 진도</div>
+      ${Object.entries(s.prog).map(([k,v])=>`<div class="prog"><div class="nm"><b>${k}</b><span>${v}%</span></div><div class="tr"><i style="width:${v}%"></i></div></div>`).join("")}
+    </div>
+    <div>
+      <div class="dlab">오답 분석 (델타스킬 자동)</div>
+      <p style="margin:0 0 4px;font-size:12.5px">취약: <b style="color:var(--no)">${s.weak}</b> <span class="sm">· 최근 모의 ${s.score}점</span></p>
+      <p class="sm" style="margin:0">근거: 이번 주 입력 ${s.q}문항의 오답 단원·원인 집계</p>
+      <div class="dlab" style="margin-top:14px">다음 주 계획 (자동 제안 → 담임 승인)</div>
+      <div class="plan">${s.next}</div>
+      <span class="sm">개인 분석 리포트(점수 추이·공부 순서·방향)는 학생 마이페이지와 동일 화면을 담임이 열람</span>
+    </div>
+  </div>`;
+}
+render();
+</script>
+</body>
+</html>
