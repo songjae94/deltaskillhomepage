@@ -175,7 +175,7 @@ function examSelect(){
  <div class="desc">응시한 모의고사의 분류를 먼저 선택하세요. 이전에 본 시험도 입력할 수 있어요.</div>`+
   CATS.map((c,i)=>{const n=c.exams.filter(e=>e.ex!=null).length;const sub=c.custom?"내가 본 다른 모의고사를 직접 기록해요":`${c.desc} · 입력 가능 ${n}개${n<c.exams.length?` / 준비 중 ${c.exams.length-n}개`:''}`;return `<button class="q" style="width:100%;text-align:left;cursor:pointer" data-cat="${i}"><div class="qh" style="margin-bottom:2px"><span style="font-weight:800;font-size:15.5px">${c.name}</span><span style="margin-left:auto;color:var(--mut2)">${c.custom?'✏️':'→'}</span></div><div style="font-size:12px;color:var(--mut)">${sub}</div></button>`;}).join("")+`</div>`;
   const rl=document.querySelector("[data-relogin]");if(rl)rl.onclick=()=>{localStorage.removeItem("ds_phone");TK.clear();S.phone="";S.profile=null;S._pin="";S._pin2="";S.screen="login";render();window.scrollTo(0,0);};
-  document.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>{const i=+b.dataset.cat;if(CATS[i].custom){S._cName="";S._cDate=(new Date()).toISOString().slice(0,10);S._cSub=S.profile.subject;S._cScore="";S._cWrong={};S.photo={};S.savedSubId=null;S.savedExam=null;S.saveMode=null;S._forceNew=false;S._updWarn=null;S.screen="custom";render();window.scrollTo(0,0);return;}S.catSel=i;render();window.scrollTo(0,0);});
+  document.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>{const i=+b.dataset.cat;if(CATS[i].custom){S._cName="";S._cDate=(new Date()).toISOString().slice(0,10);S._cSub=S.profile.subject;S._cScore="";S._cWrong={};S.photo={};S.savedSubId=null;S.savedExam=null;S.saveMode=null;S._forceNew=false;S._updWarn=null;S._editMode=false;S.screen="custom";render();window.scrollTo(0,0);return;}S.catSel=i;render();window.scrollTo(0,0);});
   el("fab").innerHTML="";return;
  }
  const c=CATS[S.catSel];
@@ -186,7 +186,7 @@ function examSelect(){
   return `<div class="q" style="width:100%;opacity:.55"><div class="qh" style="margin-bottom:2px"><span style="font-weight:800;font-size:15.5px;color:var(--mut)">${e.title}</span><span class="badge" style="margin-left:auto;background:rgba(255,255,255,.06);color:var(--mut2)">준비 중</span></div><div style="font-size:12px;color:var(--mut)">${e.note||"준비 중 — 곧 열려요"}</div></div>`;
  }).join("")+`</div>`;
  document.querySelectorAll("[data-back]").forEach(b=>b.onclick=()=>{history.back();});
- document.querySelectorAll("[data-ex]").forEach(b=>b.onclick=async()=>{EXAM=EXAMS[+b.dataset.ex];await injectSteps();S.attempt=await calcAttempt(EXAM.code);S.savedSubId=null;S.savedExam=null;S.saveMode=null;S._forceNew=false;S._updWarn=null;S.ans={};S.reason={};S.conf={};S.memo={};S.step={};S.photo={};S.screen="intro";render();window.scrollTo(0,0);});
+ document.querySelectorAll("[data-ex]").forEach(b=>b.onclick=async()=>{EXAM=EXAMS[+b.dataset.ex];await injectSteps();S.attempt=await calcAttempt(EXAM.code);S.savedSubId=null;S.savedExam=null;S.saveMode=null;S._forceNew=false;S._updWarn=null;S._editMode=false;S.ans={};S.reason={};S.conf={};S.memo={};S.step={};S.photo={};S.screen="intro";render();window.scrollTo(0,0);});
  el("fab").innerHTML="";}
 
 /* ---------- 진단 인트로 ---------- */
@@ -207,15 +207,13 @@ function intro(){el("screen").innerHTML=`<div class="pad"><div class="h">${esc(S
      <div style="font-size:11.5px;color:var(--mut2);margin-top:6px">불러와 고치면 <b>새 회차가 생기지 않고</b> 그 기록이 갱신돼요.</div></div>`;
    const lp=el("loadPrev");if(lp)lp.onclick=async()=>{lp.disabled=true;lp.textContent="불러오는 중...";
      try{
-       const j=await api("/submission?id="+encodeURIComponent(idOf(prev)));
-       const rs=(j&&j.responses)||[];
-       S.ans={};S.reason={};S.conf={};S.memo={};S.step={};
-       rs.forEach(r=>{const no=r.item_no;if(no==null)return;
-         if(r.my_answer!=null&&r.my_answer!=="")S.ans[no]=r.my_answer;
-         if(r.reason)S.reason[no]=r.reason;if(r.confidence)S.conf[no]=r.confidence;
-         if(r.memo)S.memo[no]=r.memo;if(r.reached_step)S.step[no]=r.reached_step;});
-       S.attempt=+prev.attempt_no||1;S.savedSubId=idOf(prev);S.savedExam=EXAM.code;S.saveMode="server";S._forceNew=false;
+       const n=await loadSubmission(idOf(prev));
+       S.attempt=+prev.attempt_no||1;S.savedSubId=idOf(prev);S.savedExam=EXAM.code;S.saveMode="server";S._forceNew=false;S._updWarn=null;S._editMode=true;
        rememberSubId(EXAM.code,S.attempt,S.savedSubId);
+       if(!n){lp.disabled=false;lp.textContent="그 회차 불러와 수정하기";
+         const w=document.createElement("div");w.style.cssText="font-size:12px;color:var(--no);margin-top:6px";
+         w.textContent="저장된 답안이 없는 회차예요. 답을 입력하면 이 회차에 덮어써져요.";
+         lp.parentNode.appendChild(w);}
        S.screen="quiz";render();window.scrollTo(0,0);
      }catch(e){lp.disabled=false;lp.textContent="불러오기 실패 — 다시 시도";}
    };
@@ -288,6 +286,32 @@ async function resolveSubId(examCode){
  }
  return null;
 }
+/* 저장된 회차의 답·오답이유를 불러와 화면 상태로 복원. 복원한 문항 수를 돌려준다. */
+async function loadSubmission(subId){
+ const j=await api("/submission?id="+encodeURIComponent(subId));
+ const rs=(j&&(j.responses||j.items))||[];
+ S.ans={};S.reason={};S.conf={};S.memo={};S.step={};
+ let n=0;
+ rs.forEach(r=>{const no=r&&r.item_no;if(no==null)return;
+   const a=r.my_answer;
+   if(a!=null&&a!==""){S.ans[no]=a;n++;}
+   if(r.reason)S.reason[no]=r.reason;if(r.confidence)S.conf[no]=r.confidence;
+   if(r.memo)S.memo[no]=r.memo;if(r.reached_step)S.step[no]=r.reached_step;});
+ return n;
+}
+/* 마이페이지 등에서 특정 회차를 지정해 수정 모드로 진입 */
+async function enterEditMode(subId){
+ const items=await histItems(true);if(!items)return "no_history";
+ const rec=items.filter(x=>idOf(x)===subId)[0];if(!rec)return "not_found";
+ const ex=EXAMS.filter(x=>x.code===rec.exam_code)[0];
+ if(!ex)return "custom_exam";   /* 직접입력 회차는 문항 화면이 없다 */
+ EXAM=ex;await injectSteps();
+ const n=await loadSubmission(subId);
+ S.attempt=+rec.attempt_no||1;S.savedSubId=subId;S.savedExam=rec.exam_code;S.saveMode="server";S._forceNew=false;S._updWarn=null;S._editMode=true;
+ rememberSubId(rec.exam_code,S.attempt,subId);
+ S.catSel=null;S.screen="quiz";render();window.scrollTo(0,0);
+ return n>0?"ok":"empty";
+}
 /* 회차 번호는 서버 이력 기준 — 로컬 데모기록으로 세면 저장할 때마다 번호가 부풀어 중복처럼 쌓인다 */
 async function calcAttempt(examCode){
  const items=await histItems(true);
@@ -301,8 +325,12 @@ function saveStatusUI(){const apiOn=!!CONFIG.api,saved=S.saveMode==="server",fai
  if(failed)return{html:`<div class="saved demo" style="border-color:rgba(255,143,116,.6);align-items:flex-start"><div style="flex:1;line-height:1.6">⚠️ <b>${S.savedSubId?"수정 내용이 반영되지 않았어요.":"아직 저장되지 않았어요."}</b> ${S.savedSubId?"아래 <b>저장하기</b>로 다시 시도해 주세요. (중복 회차는 생기지 않아요)":"아래 <b>저장하기</b> 버튼을 눌러 주세요."}${(S.saveMode&&(""+S.saveMode).indexOf("error:")===0)?`<div style="font-size:11.5px;color:var(--mut2);margin-top:4px">사유: ${esc((""+S.saveMode).slice(6))}${S._saveTries?` · ${S._saveTries}번째 시도 실패 ${esc(S._lastTry||"")}`:``}</div>`:``}${needPin?`<div style="margin-top:8px;font-size:12.5px">저장 확인용 <b>비밀번호(숫자 4자리)</b>를 입력하세요<input class="txt" id="savePin" type="password" inputmode="numeric" maxlength="4" placeholder="숫자 4자리" value="${esc(S._pin||'')}" style="margin-top:6px;width:100%"></div>`:``}</div></div>`,saved:false};
  return{html:`<div class="saved demo">저장 완료(데모=브라우저)</div>`,saved:false};}
 function saveFab(saved,onSave,onEdit){
+ if(saved&&S._editMode){/* 수정 모드 저장 완료 — 완료 버튼만 */el("fab").innerHTML=`<button class="btn ghost" id="home">완료 · 처음으로</button>`;const hb0=el("home");if(hb0)hb0.onclick=resetApp;return;}
  if(saved){el("fab").innerHTML=`<div style="display:flex;gap:8px"><button class="btn ghost" id="home" style="flex:2">완료 · 처음으로</button><button class="btn ghost" id="editBtn" style="flex:1">수정하기</button></div>`;const hb=el("home");if(hb)hb.onclick=resetApp;const eb2=el("editBtn");if(eb2)eb2.onclick=onEdit;return;}
  const updFailed=!!S.savedSubId;  /* 이미 저장된 회차의 덮어쓰기가 실패한 상황 */
+ if(S._editMode){ /* 마이페이지·이전회차에서 불러온 수정 모드 — 저장하기만 둔다 */
+   el("fab").innerHTML=`<button class="btn" id="saveBtn">저장하기</button>`;
+   const s1=el("saveBtn");if(s1)s1.onclick=onSave;return;}
  el("fab").innerHTML=`<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="saveBtn" style="flex:2">저장하기${updFailed?" (덮어쓰기 재시도)":""}</button><button class="btn ghost" id="editBtn" style="flex:1">수정하기</button>${updFailed?`<button class="btn ghost" id="newBtn" style="flex:1 1 100%;font-size:13px">새 회차로 따로 저장</button>`:``}</div>`;
  const sb=el("saveBtn");if(sb)sb.onclick=onSave;const eb=el("editBtn");if(eb)eb.onclick=onEdit;
  const nb=el("newBtn");if(nb)nb.onclick=()=>{S._forceNew=true;onSave();};}
@@ -339,6 +367,7 @@ async function saveAll(res,examCode){examCode=examCode||EXAM.code;
    await ensureToken();
    localStorage.setItem("ds_tk_ph",S.phone);
    let subId;
+   if(!res||!res.responses||!res.responses.length)throw new Error("no_answers");  /* 빈 응답은 서버가 거부(bad_payload) */
    /* 메모리·localStorage·서버 이력에서 이 회차의 id를 찾는다 (없으면 새로 만든다) */
    const target=S._forceNew?null:await resolveSubId(examCode);
    if(target){
@@ -494,4 +523,15 @@ render();
  document.addEventListener("keydown",function(e){var t=e.target;if((e.key==="Enter"||e.key===" ")&&t&&t.classList&&t.classList.contains("rchip")&&t.getAttribute("role")==="button"){e.preventDefault();t.click();}});
  stamp();
 })();
+/* 마이페이지에서 '수정하기'로 넘어온 경우: /pilot/?edit=<submission_id> */
+(async function(){try{
+ const m=location.search.match(/[?&]edit=([^&]+)/);if(!m)return;
+ const sid=decodeURIComponent(m[1]);
+ try{history.replaceState({},"","/pilot/");}catch(_){}
+ if(!TK.has()||!S.profile){alert("수정하려면 먼저 로그인해 주세요.");return;}
+ el("screen").innerHTML='<div class="center">저장된 회차를 불러오는 중…</div>';el("fab").innerHTML="";
+ const r=await enterEditMode(sid);
+ if(r==="custom_exam"){alert("직접입력으로 기록한 회차는 문항 화면에서 수정할 수 없어요.");render();}
+ else if(r!=="ok"&&r!=="empty"){alert("회차를 불러오지 못했어요. 다시 시도해 주세요.");render();}
+}catch(e){try{render();}catch(_){}}})();
 </script></body></html>

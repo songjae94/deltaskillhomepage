@@ -188,11 +188,17 @@ async function load(){
   h+=`<button class="p" id="reportBtn" style="margin:4px 0 2px">📊 분석 리포트 받기</button><div id="report"></div>`;
   h+="<h2>제출 이력 <span class='k'>(누르면 오답·요구 스킬)</span></h2>";
   for(const s of subs){
-    h+=`<div class="sub" data-sub="${esc(s.submission_id)}"><b>${esc(examName(s.exam_code))}</b> <span class="k">· ${esc((s.created_at||"").slice(0,10))} · ${esc(s.attempt_no||1)}회차 · 자기채점 ${esc(s.score??"-")}</span>
+    const editable=!!s.exam_code&&String(s.exam_code).indexOf("자유:")!==0;
+    h+=`<div class="sub" data-sub="${esc(s.submission_id)}">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="flex:1;min-width:0"><b>${esc(examName(s.exam_code))}</b> <span class="k">· ${esc((s.created_at||"").slice(0,10))} · ${esc(s.attempt_no||1)}회차 · 자기채점 ${esc(s.score??"-")}</span></div>
+        ${editable?`<button class="sm" data-edit="${esc(s.submission_id)}" style="flex:none">수정하기</button>`:``}
+      </div>
       <div class="det k" id="det_${esc(s.submission_id)}" style="margin-top:6px"></div></div>`;
   }
   body.innerHTML=h;
   document.querySelectorAll("[data-sub]").forEach(el=>el.onclick=()=>openSub(el.dataset.sub, examName));
+  document.querySelectorAll("[data-edit]").forEach(b=>b.onclick=e=>{e.stopPropagation();location.href="/pilot/?edit="+encodeURIComponent(b.dataset.edit);});
   const rb=document.getElementById("reportBtn"); if(rb)rb.onclick=generateReport;
 }
 
