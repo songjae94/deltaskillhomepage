@@ -323,9 +323,17 @@ function resetApp(){S={screen:"login",phone:"",profile:null,studentId:null,catSe
  var ph=localStorage.getItem("ds_phone");if(ph){S.phone=ph;var st=(LS.get("ds_students")||{})[ph];if(st&&st.profile){S.profile=st.profile;S.studentId=st.id;S.catSel=null;S.screen="exam";}}
  render();window.scrollTo(0,0);}
 function grabSavePin(){const pe=el("savePin");if(pe){const v=pe.value.replace(/[^0-9]/g,"").slice(0,4);if(v)S._pin=v;}}
+/* 서버·내부 오류코드를 사람이 읽는 말로 — 화면에 need_pin 같은 코드가 그대로 뜨지 않게 한다 */
+function errMsg(code){const c=(""+(code||"")).trim();
+ const M={need_pin:"저장하려면 아래에 비밀번호(숫자 4자리)를 입력해 주세요.",invalid:"비밀번호가 맞지 않아요. 다시 입력해 주세요.",
+  locked:"시도가 많아 잠시 잠겼어요. 15분 뒤에 다시 시도해 주세요.",no_answers:"입력된 답이 없어요. 문항을 입력한 뒤 저장해 주세요.",
+  no_token:"로그인이 풀렸어요. 아래에 비밀번호(숫자 4자리)를 입력해 주세요.",timeout:"서버 응답이 없어요. 잠시 뒤 다시 시도해 주세요.",
+  "Failed to fetch":"인터넷 연결이 불안정해요. 연결을 확인한 뒤 다시 시도해 주세요."};
+ for(const k in M){if(c===k||c.indexOf(k)===0)return M[k];}
+ return c;}
 function saveStatusUI(){const apiOn=!!CONFIG.api,saved=S.saveMode==="server",failed=apiOn&&S.saveMode&&!saved,needPin=failed&&!TK.has();
  if(saved)return{html:`<div class="saved">✅ 델타스킬 서버에 저장됐어요 · 매주 쌓여 학습 경로가 됩니다${S._updWarn?`<div style="font-size:11.5px;color:var(--mut2);margin-top:4px">(수정 반영은 실패해 새 회차로 저장했어요 · ${esc(S._updWarn)})</div>`:``}</div>`,saved:true};
- if(failed)return{html:`<div class="saved demo" style="border-color:rgba(255,143,116,.6);align-items:flex-start"><div style="flex:1;line-height:1.6">⚠️ <b>${S.savedSubId?"수정 내용이 반영되지 않았어요.":"아직 저장되지 않았어요."}</b> ${S.savedSubId?"아래 <b>저장하기</b>로 다시 시도해 주세요. (중복 회차는 생기지 않아요)":"아래 <b>저장하기</b> 버튼을 눌러 주세요."}${(S.saveMode&&(""+S.saveMode).indexOf("error:")===0)?`<div style="font-size:11.5px;color:var(--mut2);margin-top:4px">사유: ${esc((""+S.saveMode).slice(6))}${S._saveTries?` · ${S._saveTries}번째 시도 실패 ${esc(S._lastTry||"")}`:``}</div>`:``}${needPin?`<div style="margin-top:8px;font-size:12.5px">저장 확인용 <b>비밀번호(숫자 4자리)</b>를 입력하세요<input class="txt" id="savePin" type="password" inputmode="numeric" maxlength="4" placeholder="숫자 4자리" value="${esc(S._pin||'')}" style="margin-top:6px;width:100%"></div>`:``}</div></div>`,saved:false};
+ if(failed)return{html:`<div class="saved demo" style="border-color:rgba(255,143,116,.6);align-items:flex-start"><div style="flex:1;line-height:1.6">⚠️ <b>${S.savedSubId?"수정 내용이 반영되지 않았어요.":"아직 저장되지 않았어요."}</b> ${S.savedSubId?"아래 <b>저장하기</b>로 다시 시도해 주세요. (중복 회차는 생기지 않아요)":"아래 <b>저장하기</b> 버튼을 눌러 주세요."}${(S.saveMode&&(""+S.saveMode).indexOf("error:")===0)?`<div style="font-size:11.5px;color:var(--mut2);margin-top:4px">${esc(errMsg((""+S.saveMode).slice(6)))}${S._saveTries?` · ${S._saveTries}번째 시도 실패 ${esc(S._lastTry||"")}`:``}</div>`:``}${needPin?`<div style="margin-top:8px;font-size:12.5px">저장 확인용 <b>비밀번호(숫자 4자리)</b>를 입력하세요<input class="txt" id="savePin" type="password" inputmode="numeric" maxlength="4" placeholder="숫자 4자리" value="${esc(S._pin||'')}" style="margin-top:6px;width:100%"></div>`:``}</div></div>`,saved:false};
  return{html:`<div class="saved demo">저장 완료(데모=브라우저)</div>`,saved:false};}
 function saveFab(saved,onSave,onEdit){
  if(saved&&S._editMode){/* 수정 모드 저장 완료 — 완료 버튼만. 마이페이지에서 온 경우 마이페이지로 복귀 */
@@ -344,10 +352,16 @@ function saveFab(saved,onSave,onEdit){
  const nb=el("newBtn");if(nb)nb.onclick=()=>{S._forceNew=true;onSave();};}
 /* 재시도 결과가 눈에 보이도록 시도 횟수·시각을 남긴다 (같은 화면이 다시 그려져 '반응 없음'처럼 보이던 문제) */
 function noteTry(mode){if((""+mode).indexOf("error")===0){S._saveTries=(S._saveTries||0)+1;try{S._lastTry=new Date().toLocaleTimeString("ko-KR",{hour12:false});}catch(_){S._lastTry="";}}else{S._saveTries=0;S._lastTry=null;}}
-async function retrySaveDiag(){grabSavePin();const b=el("saveBtn");if(b){b.disabled=true;b.textContent="저장 중...";}
+async function retrySaveDiag(){grabSavePin();
+ /* 비밀번호 칸이 떠 있는데 비어 있으면 — 서버에 보내기 전에 입력부터 요청(헛된 '시도 실패' 방지) */
+ if(CONFIG.api&&!TK.has()&&!/^\d{4}$/.test(S._pin||"")){const pe=el("savePin");
+   if(pe){pe.focus();pe.placeholder="숫자 4자리를 입력해 주세요";pe.style.borderColor="rgba(255,143,116,.85)";}
+   return;}
+ const b=el("saveBtn");if(b){b.disabled=true;b.textContent="저장 중...";}
  const t0=Date.now();let mode="demo";try{mode=await saveAll(buildResult());}catch(e){mode="error:"+(e&&e.message||e);}
  const rest=450-(Date.now()-t0);if(rest>0)await new Promise(r=>setTimeout(r,rest));   /* 처리 중임이 보이도록 */
- S.saveMode=mode;noteTry(mode);result();window.scrollTo(0,0);}
+ S.saveMode=mode;noteTry(mode);result();window.scrollTo(0,0);
+ const pe2=el("savePin");if(pe2)pe2.focus();}
 async function retrySaveCustom(){grabSavePin();const b=el("saveBtn");if(b){b.disabled=true;b.textContent="저장 중...";}await saveCustom();}
 
 async function saveAll(res,examCode){examCode=examCode||EXAM.code;
