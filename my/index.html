@@ -37,6 +37,13 @@ input,select{font:inherit;padding:10px 12px;border:1px solid var(--line2);border
 .sub{border:1px solid var(--line);border-radius:10px;background:var(--card);padding:10px 12px;margin:6px 0;cursor:pointer}
 .sub:hover{background:rgba(186,214,247,.08)}
 .consent{display:flex;gap:9px;align-items:flex-start;font-size:12.5px;margin:9px 0;line-height:1.55;color:var(--mut)}.consent input[type=checkbox]{width:16px;height:16px;flex:0 0 16px;margin:2px 0 0;padding:0;accent-color:var(--acc)}.consent b{color:#e8eef7}
+.ol{list-style:none;padding:0;margin:8px 0;counter-reset:s}
+.ol li{position:relative;padding:11px 12px 11px 42px;border:1px solid var(--line);border-radius:10px;background:var(--card);margin:6px 0;font-size:13.5px}
+.ol li:before{counter-increment:s;content:counter(s);position:absolute;left:10px;top:11px;width:24px;height:24px;border-radius:50%;background:var(--acc);color:#04101f;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center}
+.rep-tag{display:inline-block;font-size:11px;font-weight:700;color:#ffd166;border:1px solid rgba(255,209,102,.4);border-radius:999px;padding:1px 7px;margin-left:6px}
+.dir{border-left:3px solid var(--acc);background:rgba(90,162,255,.07);border-radius:0 8px 8px 0;padding:9px 12px;margin:6px 0;font-size:13px}
+#report:not(:empty){border:1px solid var(--line2);border-radius:14px;padding:6px 14px 16px;margin:8px 0 14px;background:rgba(10,16,32,.5)}
+@media print{.top,#reportBtn,#body>h2,#body>.cards,.sub,.det{display:none!important}#report:not(:empty){border:none;background:#fff}body{background:#fff;color:#111}h1,h2,.card b{color:#111}}
 </style>
 </head>
 <body>
@@ -93,7 +100,14 @@ const skillsReady = fetch("/skills.json",{cache:"no-store"}).then(r=>r.json()).t
 
 const AREA2TRACK = {"수학Ⅰ":"공통","수학Ⅱ":"공통","공통":"공통","미적분(선택)":"미적분","미적분":"미적분","확률과통계":"확통","확률과 통계":"확통","확통":"확통","기하":"기하"};
 function skillsOf(exam,area,no){const E=ITEM_SKILLS[exam];if(!E)return null;const n=+no;if(n>=1&&n<=22&&E["공통"]&&E["공통"][no])return E["공통"][no];const tr=AREA2TRACK[area]||area;return (E[tr]&&E[tr][no])||null;}
-function skillCell(exam,area,no){const s=skillsOf(exam,area,no);if(!s||((!s.uses||!s.uses.length)&&(!s.anchors||!s.anchors.length)))return "<span class='k'>-</span>";let o="";if(s.anchors&&s.anchors.length)o+=s.anchors.map(a=>`<span class="anchor">⚡ ${esc(a)}</span>`).join("<br>");if(s.uses&&s.uses.length){if(o)o+="<br>";o+="<span class='k'>"+s.uses.map(esc).join(" · ")+"</span>";}return o;}
+function useName(u){return typeof u==="string"?u:((u&&u.skill)||"");}
+function skillCell(exam,area,no){const s=skillsOf(exam,area,no);if(!s)return "<span class='k'>-</span>";const as=(s.anchors||[]).map(useName).filter(Boolean);const us=(s.uses||[]).map(useName).filter(Boolean);if(!as.length&&!us.length)return "<span class='k'>-</span>";let o="";if(as.length)o+=as.map(a=>`<span class="anchor">⚡ ${esc(a)}</span>`).join("<br>");if(us.length){if(o)o+="<br>";o+="<span class='k'>"+us.map(esc).join(" · ")+"</span>";}return o;}
+
+/* 시험명 · 교육과정(상류→하류) 순서 · 오답원인별 처방 — 리포트/이력 공용 */
+const EXAM_NAMES={OMEGA_8:"OMEGA 8회",OMEGA_9:"OMEGA 9회",OMEGA_5:"OMEGA 5회",OMEGA_6:"OMEGA 6회",OMEGA_7:"OMEGA 7회",OMEGA_10:"OMEGA 10회",SV27_04:"서바이벌 4회",SV27_01:"서바이벌 1회",SV27_02:"서바이벌 2회",SV27_03:"서바이벌 3회",HP26_03:"3월 학평",HP26_05:"5월 학평",HP26_07:"7월 학평",MP27_06:"6월 모평",EX2028_V1:"델타스킬 모의 1회",SN26:"2026 수능",JD27_07:"7월 전대실모",JQ27_02:"지QUEL 2회",JQ27_03:"지QUEL 3주"};
+function examName(c){return EXAM_NAMES[c]|| (typeof c==="string"&&c.indexOf("자유:")===0?c.slice(3):c) || "-";}
+const ORDER=["지수함수와 로그함수","삼각함수","함수의 극한과 연속","다항함수의 미분법","다항함수의 적분법","수열","미분법","적분법","수열의 극한","경우의 수","확률","통계"];
+const REASONFIX={"개념 모름":"개념 강의·개념서로 이해 → 기초 유형 5문항","계산 실수":"같은 유형 계산 드릴 10문항(속도·정확도)","접근 안 떠오름":"유형별 대표문항 풀이법 정리 → 유사 3문항","시간 부족":"타임어택 세트(문항당 목표시간)","아는데 실수":"오답 검토 루틴 체크리스트","안 배움":"해당 단원 진도 보강 강의"};
 
 async function api(path,opt){opt=opt||{};const method=opt.method||"GET";const auth=opt.auth!==false;const h={"Content-Type":"application/json"};if(auth){const t=TK.get();if(!t)throw new Error("no_token");h["Authorization"]="Bearer "+t;}const r=await fetch(API+path,{method,headers:h,body:opt.body?JSON.stringify(opt.body):undefined});let j=null;try{j=await r.json();}catch(_){}if(r.status===401&&auth){TK.clear();boot();}if(!r.ok||!j||j.ok===false)throw new Error((j&&j.error)||("HTTP "+r.status));return j;}
 
@@ -150,10 +164,9 @@ async function load(){
   const subs=hist.items||[];
   window.__examOf={}; subs.forEach(s=>window.__examOf[s.submission_id]=s.exam_code);
   if(!subs.length){ body.innerHTML="<p class='k'>아직 제출한 오답노트가 없어요. <a href='/pilot/'>오답노트 쓰러 가기 →</a></p>"; return; }
-  const names={OMEGA_8:"OMEGA 8회",OMEGA_9:"OMEGA 9회",SV27_04:"서바이벌 4회",SV27_01:"서바이벌 1회",SV27_02:"서바이벌 2회",SV27_03:"서바이벌 3회",HP26_03:"3월 학평",HP26_05:"5월 학평",HP26_07:"7월 학평",MP27_06:"6월 모평",EX2028_V1:"델타스킬 모의 1회",SN26:"2026 수능",JD27_07:"7월 전대실모"};
-  const examName=c=>names[c]||c||"-";
   let h=`<div class="cards"><div class="card"><b>${subs.length}</b><div class="k">제출 회차</div></div>
     <div class="card"><b>${esc(subs[0].score??"-")}</b><div class="k">최근 자기채점</div></div></div>`;
+  h+=`<button class="p" id="reportBtn" style="margin:4px 0 2px">📊 분석 리포트 받기</button><div id="report"></div>`;
   h+="<h2>제출 이력 <span class='k'>(누르면 오답·요구 스킬)</span></h2>";
   for(const s of subs){
     h+=`<div class="sub" data-sub="${esc(s.submission_id)}"><b>${esc(examName(s.exam_code))}</b> <span class="k">· ${esc((s.created_at||"").slice(0,10))} · ${esc(s.attempt_no||1)}회차 · 자기채점 ${esc(s.score??"-")}</span>
@@ -161,6 +174,7 @@ async function load(){
   }
   body.innerHTML=h;
   document.querySelectorAll("[data-sub]").forEach(el=>el.onclick=()=>openSub(el.dataset.sub, examName));
+  const rb=document.getElementById("reportBtn"); if(rb)rb.onclick=generateReport;
 }
 
 const OPENED={};
@@ -190,6 +204,95 @@ async function openSub(id, examName){
   } else { h+="<span class='k'>이 회차 오답이 없어요.</span>"; }
   box.innerHTML=h;
   box.querySelectorAll("[data-photo]").forEach(b=>b.onclick=async()=>{const [sub,no]=b.dataset.photo.split("|");try{const p=await api(`/photo?submission_id=${encodeURIComponent(sub)}&item_no=${no}`);box.querySelector(".photobox").innerHTML=`<a href="${esc(p.url)}" target="_blank" rel="noopener"><img class="ph" src="${esc(p.url)}"></a>`;}catch(_){b.textContent="사진 없음";}});
+}
+
+/* ---- 분석 리포트 ---- */
+async function generateReport(){
+  const rep=document.getElementById("report"); if(!rep)return;
+  const btn=document.getElementById("reportBtn");
+  if(rep.innerHTML.trim()){ rep.innerHTML=""; if(btn)btn.textContent="📊 분석 리포트 받기"; return; }
+  if(btn){btn.disabled=true;btn.textContent="리포트 생성 중…";}
+  rep.innerHTML="<p class='k'>제출한 회차를 모아 분석하고 있어요…</p>";
+  await skillsReady;
+  const done=(t)=>{if(btn){btn.disabled=false;btn.textContent=t;}};
+  let hist; try{ hist=await api("/history"); }catch(e){ rep.innerHTML="<p class='bad'>리포트를 만들지 못했어요. 다시 시도해 주세요.</p>"; done("📊 분석 리포트 받기"); return; }
+  const subs=hist.items||[];
+  if(!subs.length){ rep.innerHTML="<p class='k'>분석할 제출 기록이 없어요. 먼저 <a href='/pilot/'>오답노트</a>를 작성해 주세요.</p>"; done("📊 분석 리포트 받기"); return; }
+  const details=await Promise.all(subs.map(s=>api("/submission?id="+encodeURIComponent(s.submission_id)).then(j=>({s,rs:j.responses||[]})).catch(()=>({s,rs:[]}))));
+
+  const byUnit={},byArea={},reasonCount={},skillCount={}; let totalWrong=0; const scored=[];
+  for(const {s,rs} of details){
+    scored.push({name:examName(s.exam_code),date:(s.created_at||"").slice(0,10),score:(s.score==null?null:s.score),attempt:s.attempt_no||1});
+    for(const r of rs){
+      if(r.area){const a=byArea[r.area]=byArea[r.area]||[0,0];a[1]++;if(r.result==="o")a[0]++;}
+      if(r.result==="x"){
+        totalWrong++;
+        if(r.reason)reasonCount[r.reason]=(reasonCount[r.reason]||0)+1;
+        const sk=skillsOf(s.exam_code,r.area,r.item_no); const nm=[];
+        if(sk){(sk.anchors||[]).forEach(a=>{const x=useName(a);if(x)nm.push(x);});(sk.uses||[]).forEach(u=>{const x=useName(u);if(x)nm.push(x);});}
+        nm.forEach(x=>{skillCount[x]=(skillCount[x]||0)+1;});
+        if(r.unit){const u=byUnit[r.unit]=byUnit[r.unit]||{wrong:0,exams:{},area:r.area||"",skills:{}};u.wrong++;u.exams[s.exam_code]=1;nm.forEach(x=>{u.skills[x]=(u.skills[x]||0)+1;});}
+      }
+    }
+  }
+  const units=Object.keys(byUnit).map(u=>({unit:u,wrong:byUnit[u].wrong,exams:Object.keys(byUnit[u].exams).length,skills:byUnit[u].skills}));
+  const oi=u=>{const i=ORDER.indexOf(u);return i<0?99:i;};
+  const repeated=units.filter(u=>u.exams>=2);
+  const byFreq=units.slice().sort((a,b)=>b.wrong-a.wrong);
+  const study=units.slice().sort((a,b)=>((b.exams>=2)-(a.exams>=2))||(oi(a.unit)-oi(b.unit))||(b.wrong-a.wrong)).slice(0,6);
+  const topSkills=Object.keys(skillCount).sort((a,b)=>skillCount[b]-skillCount[a]).slice(0,6);
+  const topReasons=Object.keys(reasonCount).sort((a,b)=>reasonCount[b]-reasonCount[a]);
+  const nums=scored.filter(x=>typeof x.score==="number");
+  const avg=nums.length?Math.round(nums.reduce((s,x)=>s+x.score,0)/nums.length):null;
+  const dates=scored.map(x=>x.date).filter(Boolean).sort();
+  const period=dates.length?`${dates[0]} ~ ${dates[dates.length-1]}`:"";
+
+  let h=`<h2 style="border-left-color:#ffd166">📊 나의 분석 리포트</h2>`;
+  h+=`<p class="k">제출 ${subs.length}회${period?` · ${esc(period)}`:""} · 총 오답 ${totalWrong}개${repeated.length?` · 반복 결손 단원 ${repeated.length}개`:""}</p>`;
+
+  h+=`<div class="cards"><div class="card"><b>${subs.length}</b><div class="k">제출 회차</div></div>`+
+     `<div class="card"><b>${avg==null?"-":avg}</b><div class="k">평균 자기채점</div></div>`+
+     `<div class="card"><b>${totalWrong}</b><div class="k">총 오답</div></div>`+
+     `<div class="card"><b>${repeated.length}</b><div class="k">반복 결손</div></div></div>`;
+
+  h+=`<h2>① 회차별 결과</h2><table><tr><th>시험</th><th>회차</th><th>날짜</th><th>자기채점</th></tr>`;
+  scored.forEach(x=>{h+=`<tr><td>${esc(x.name)}</td><td>${esc(x.attempt)}회</td><td>${esc(x.date||"-")}</td><td>${x.score==null?"-":esc(x.score)}</td></tr>`;});
+  h+=`</table>`;
+
+  h+=`<h2>② 영역·단원 분석</h2>`;
+  const arKeys=Object.keys(byArea);
+  if(arKeys.length)h+=`<div style="margin:4px 0"><b>영역별 정답률</b> — `+arKeys.map(a=>`${esc(a)} ${pct(byArea[a][0],byArea[a][1])}`).join(" · ")+`</div>`;
+  if(byFreq.length){
+    h+=`<div class="k" style="margin-top:6px">자주 틀린 단원</div><table><tr><th>단원</th><th>오답</th><th>반복</th></tr>`;
+    byFreq.slice(0,6).forEach(u=>{h+=`<tr><td>${esc(u.unit)}</td><td>${u.wrong}개</td><td>${u.exams>=2?`<span class="anchor">★ ${u.exams}개 회차</span>`:"-"}</td></tr>`;});
+    h+=`</table>`;
+  } else { h+=`<p class="k">단원 정보가 있는 오답이 아직 없어요(직접입력 회차만 있을 수 있어요).</p>`; }
+  if(topReasons.length)h+=`<div style="margin-top:8px"><b>자주 고른 오답 원인</b> — `+topReasons.slice(0,4).map(r=>`${esc(r)}(${reasonCount[r]})`).join(" · ")+`</div>`;
+  if(topSkills.length)h+=`<div style="margin-top:6px"><b>보강이 필요한 핵심 스킬</b><br>`+topSkills.map(s=>`<span class="anchor">⚡ ${esc(s)}</span>`).join(" ")+`</div>`;
+
+  h+=`<h2>③ 공부 순서 <span class="k">(반복 결손·기초 단원부터)</span></h2>`;
+  if(study.length){
+    h+=`<ol class="ol">`;
+    study.forEach(u=>{const top=Object.keys(u.skills||{}).sort((a,b)=>u.skills[b]-u.skills[a])[0];
+      h+=`<li><b>${esc(u.unit)}</b>${u.exams>=2?`<span class="rep-tag">반복 ${u.exams}회차</span>`:""} <span class="k">· 오답 ${u.wrong}개</span>${top?`<br><span class="anchor">⚡ ${esc(top)}</span> <span class="k">먼저 잡기</span>`:""}</li>`;});
+    h+=`</ol><p class="k">기초(상류) 단원과 반복해서 뚫린 단원을 먼저 메우면 점수가 가장 빠르게 오릅니다.</p>`;
+  } else { h+=`<p class="k">아직 단원별 오답이 충분치 않아요. 오답노트를 더 쌓으면 순서를 제시해 드려요.</p>`; }
+
+  h+=`<h2>④ 공부 방향</h2>`;
+  if(repeated.length)h+=`<div class="dir"><b>반복 결손 우선</b> — ${repeated.slice(0,3).map(u=>esc(u.unit)).join(" · ")}${repeated.length>3?" 등":""}은 여러 회차에서 반복해 틀렸어요. <b>이 단원부터</b> 핵심 스킬을 잡고 같은 유형 대표문항 3~5개로 굳히세요.</div>`;
+  if(topReasons.length){
+    h+=`<div class="k" style="margin-top:6px">오답 원인별 처방</div>`;
+    topReasons.slice(0,3).forEach(r=>{const fix=REASONFIX[r];if(fix)h+=`<div class="dir"><b>${esc(r)}</b> → ${esc(fix)}</div>`;});
+  }
+  h+=`<div class="dir">다음 회차에서 같은 단원이 또 틀리는지 확인하고, 2회 연속 맞으면 다음 순서 단원으로 넘어가세요.</div>`;
+  h+=`<p class="k" style="margin-top:8px">* 입력하신 자기채점·오답 원인과 회차별 요구 스킬을 바탕으로 자동 생성된 리포트입니다.</p>`;
+  h+=`<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap"><button class="sm" id="repPrint">🖨️ 인쇄 · PDF 저장</button><button class="sm" id="repClose">닫기</button></div>`;
+
+  rep.innerHTML=h;
+  done("📊 리포트 다시 생성");
+  const rp=document.getElementById("repPrint"); if(rp)rp.onclick=()=>window.print();
+  const rc=document.getElementById("repClose"); if(rc)rc.onclick=()=>{rep.innerHTML="";if(btn)btn.textContent="📊 분석 리포트 받기";};
+  rep.scrollIntoView({behavior:"smooth",block:"start"});
 }
 
 boot();
