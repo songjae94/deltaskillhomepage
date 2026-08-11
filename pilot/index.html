@@ -318,14 +318,20 @@ async function calcAttempt(examCode){
  if(items){const a=items.filter(x=>x&&x.exam_code===examCode).map(x=>+x.attempt_no||0);return (a.length?Math.max.apply(null,a):0)+1;}
  return ((LS.get("ds_subs")||[]).filter(x=>x.phone===S.phone&&x.exam===examCode).length)+1;
 }
-function resetApp(){S={screen:"login",phone:"",profile:null,studentId:null,catSel:null,ans:{},reason:{},conf:{},memo:{},step:{},photo:{},previewPath:false,attempt:1,saveMode:null,savedSubId:null,savedExam:null,_forceNew:false};render();window.scrollTo(0,0);}
+function resetApp(){S={screen:"login",phone:"",profile:null,studentId:null,catSel:null,ans:{},reason:{},conf:{},memo:{},step:{},photo:{},previewPath:false,attempt:1,saveMode:null,savedSubId:null,savedExam:null,_forceNew:false};
+ /* 저장된 번호·프로필이 있으면 첫 접속과 똑같이 자동 로그인 — 전화번호 화면으로 떨어뜨리지 않는다 */
+ var ph=localStorage.getItem("ds_phone");if(ph){S.phone=ph;var st=(LS.get("ds_students")||{})[ph];if(st&&st.profile){S.profile=st.profile;S.studentId=st.id;S.catSel=null;S.screen="exam";}}
+ render();window.scrollTo(0,0);}
 function grabSavePin(){const pe=el("savePin");if(pe){const v=pe.value.replace(/[^0-9]/g,"").slice(0,4);if(v)S._pin=v;}}
 function saveStatusUI(){const apiOn=!!CONFIG.api,saved=S.saveMode==="server",failed=apiOn&&S.saveMode&&!saved,needPin=failed&&!TK.has();
  if(saved)return{html:`<div class="saved">✅ 델타스킬 서버에 저장됐어요 · 매주 쌓여 학습 경로가 됩니다${S._updWarn?`<div style="font-size:11.5px;color:var(--mut2);margin-top:4px">(수정 반영은 실패해 새 회차로 저장했어요 · ${esc(S._updWarn)})</div>`:``}</div>`,saved:true};
  if(failed)return{html:`<div class="saved demo" style="border-color:rgba(255,143,116,.6);align-items:flex-start"><div style="flex:1;line-height:1.6">⚠️ <b>${S.savedSubId?"수정 내용이 반영되지 않았어요.":"아직 저장되지 않았어요."}</b> ${S.savedSubId?"아래 <b>저장하기</b>로 다시 시도해 주세요. (중복 회차는 생기지 않아요)":"아래 <b>저장하기</b> 버튼을 눌러 주세요."}${(S.saveMode&&(""+S.saveMode).indexOf("error:")===0)?`<div style="font-size:11.5px;color:var(--mut2);margin-top:4px">사유: ${esc((""+S.saveMode).slice(6))}${S._saveTries?` · ${S._saveTries}번째 시도 실패 ${esc(S._lastTry||"")}`:``}</div>`:``}${needPin?`<div style="margin-top:8px;font-size:12.5px">저장 확인용 <b>비밀번호(숫자 4자리)</b>를 입력하세요<input class="txt" id="savePin" type="password" inputmode="numeric" maxlength="4" placeholder="숫자 4자리" value="${esc(S._pin||'')}" style="margin-top:6px;width:100%"></div>`:``}</div></div>`,saved:false};
  return{html:`<div class="saved demo">저장 완료(데모=브라우저)</div>`,saved:false};}
 function saveFab(saved,onSave,onEdit){
- if(saved&&S._editMode){/* 수정 모드 저장 완료 — 완료 버튼만 */el("fab").innerHTML=`<button class="btn ghost" id="home">완료 · 처음으로</button>`;const hb0=el("home");if(hb0)hb0.onclick=resetApp;return;}
+ if(saved&&S._editMode){/* 수정 모드 저장 완료 — 완료 버튼만. 마이페이지에서 온 경우 마이페이지로 복귀 */
+  if(S._fromMy){el("fab").innerHTML=`<button class="btn ghost" id="home">완료 · 내 오답노트로</button>`;const hbm=el("home");if(hbm)hbm.onclick=()=>{location.href="/my/";};}
+  else{el("fab").innerHTML=`<button class="btn ghost" id="home">완료 · 처음으로</button>`;const hb0=el("home");if(hb0)hb0.onclick=resetApp;}
+  return;}
  if(saved){el("fab").innerHTML=`<div style="display:flex;gap:8px"><button class="btn ghost" id="home" style="flex:2">완료 · 처음으로</button><button class="btn ghost" id="editBtn" style="flex:1">수정하기</button></div>`;const hb=el("home");if(hb)hb.onclick=resetApp;const eb2=el("editBtn");if(eb2)eb2.onclick=onEdit;return;}
  const updFailed=!!S.savedSubId;  /* 이미 저장된 회차의 덮어쓰기가 실패한 상황 */
  if(S._editMode){ /* 마이페이지·이전회차에서 불러온 수정 모드 — 저장하기만 둔다 */
@@ -531,6 +537,7 @@ render();
  const sid=decodeURIComponent(m[1]);
  try{history.replaceState({},"","/pilot/");}catch(_){}
  if(!TK.has()||!S.profile){alert("수정하려면 먼저 로그인해 주세요.");return;}
+ S._fromMy=true;   /* 마이페이지에서 넘어온 수정 — 완료 시 마이페이지로 복귀 */
  el("screen").innerHTML='<div class="center">저장된 회차를 불러오는 중…</div>';el("fab").innerHTML="";
  const r=await enterEditMode(sid);
  if(r==="custom_exam"){alert("직접입력으로 기록한 회차는 문항 화면에서 수정할 수 없어요.");render();}
