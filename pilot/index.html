@@ -91,6 +91,22 @@ input.txt{width:100%;padding:14px 15px;border:1.5px solid rgba(90,162,255,.42);b
 .hint i{display:inline-block;width:11px;height:11px;border-radius:4px;border:1px solid var(--line);vertical-align:-1px;margin:0 3px 0 7px}
 .hint i.x{background:rgba(255,143,116,.32);border-color:rgba(255,143,116,.62)}
 .hint i.g{background:rgba(255,178,122,.32);border-color:rgba(255,178,122,.68)}
+/* 인트로에서 바로 누르는 선택 카드 (하단 버튼 대신) */
+.pick{display:block;width:100%;text-align:left;background:var(--panel);border:1px solid var(--line2);border-radius:18px;
+ padding:17px 44px 17px 18px;margin-bottom:11px;position:relative;font-family:inherit;color:var(--ink);cursor:pointer;
+ transition:border-color .18s var(--ease),background .18s var(--ease),transform .1s var(--ease);-webkit-tap-highlight-color:transparent}
+.pick:hover{border-color:var(--brand);background:rgba(90,162,255,.07)}
+.pick:active{transform:scale(.993)}
+.pick:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.pick .pt{display:block;font-size:15.5px;font-weight:800;letter-spacing:-.022em;margin-bottom:4px;color:var(--ink)}
+.pick .pd{display:block;font-size:12.5px;color:var(--mut);line-height:1.6}
+.pick .pa{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:20px;color:var(--brand);font-weight:700;line-height:1}
+.pick.warm{border-color:rgba(255,178,122,.42)}
+.pick.warm .pa{color:var(--amber)}
+.pick.warm:hover{border-color:rgba(255,178,122,.75);background:rgba(255,178,122,.07)}
+.metaline{font-size:12.5px;color:var(--mut2);margin:15px 2px 0;line-height:1.6}
+.metaline b{color:var(--mut)}
+.app.nofab{padding-bottom:30px}
 .memo{width:100%;margin-top:9px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;font-size:13px;background:var(--panel);color:var(--ink)}.memo::placeholder{color:var(--mut2)}.memo:focus{outline:none;border-color:var(--brand)}
 .kpirow{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:14px}.kpi{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:17px}.kpi .v{font-size:28px;font-weight:800;color:var(--ink);letter-spacing:-.5px;font-variant-numeric:tabular-nums}.kpi .l{font-size:11.5px;color:var(--mut2);margin-top:3px}
 .bar{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px 17px;margin-bottom:11px}.bar h4{font-size:12.5px;font-weight:700;margin-bottom:13px;color:var(--mut)}
@@ -180,7 +196,10 @@ function setProg(){const m=S.screen==="note"?markedItems().length:0;
  el("pbar").style.width=(["login","signup","exam","custom"].includes(S.screen)?0:["result","cdone"].includes(S.screen)?100:
   S.screen==="quiz"?answeredCount()/30*100:
   S.screen==="note"?(m?20+noteDone()/m*70:15):8)+"%";}
-function render(){setProg();document.body.classList.toggle('qlight',S.screen==='quiz'||S.screen==='note');const custS=["custom","cdone"].includes(S.screen);el("subttl").textContent=(["login","signup","exam"].includes(S.screen)?"AI 오답노트":custS?"모의고사 직접입력 · AI 오답노트":EXAM.title+" · AI 오답노트")+(S.profile&&!["login","signup","exam","custom","cdone"].includes(S.screen)?` · ${S.profile.subject}`:"");({login:login,signup:signup,exam:examSelect,intro:intro,quiz:quiz,note:noteScreen,result:result,custom:customForm,cdone:customResult}[S.screen])();syncHist();}
+function render(){setProg();document.body.classList.toggle('qlight',S.screen==='quiz'||S.screen==='note');const custS=["custom","cdone"].includes(S.screen);el("subttl").textContent=(["login","signup","exam"].includes(S.screen)?"AI 오답노트":custS?"모의고사 직접입력 · AI 오답노트":EXAM.title+" · AI 오답노트")+(S.profile&&!["login","signup","exam","custom","cdone"].includes(S.screen)?` · ${S.profile.subject}`:"");({login:login,signup:signup,exam:examSelect,intro:intro,quiz:quiz,note:noteScreen,result:result,custom:customForm,cdone:customResult}[S.screen])();
+ /* 하단 고정 버튼이 없는 화면은 아래 여백을 줄인다 */
+ const app=document.querySelector(".app");if(app)app.classList.toggle("nofab",!el("fab").innerHTML.trim());
+ syncHist();}
 
 /* ---------- 로그인 ---------- */
 function login(){el("screen").innerHTML=`<div class="pad"><div style="margin-bottom:8px"><a href="/" style="color:#94a3b8;font-size:13px;text-decoration:none">← 델타스킬 홈</a></div><div class="h">AI 오답노트 작성</div>
@@ -253,12 +272,14 @@ function examSelect(){
 
 /* ---------- 진단 인트로 ---------- */
 function intro(){el("screen").innerHTML=`<div class="pad"><div class="h">${esc(S.profile.name)}님, 반가워요</div>
- <div class="desc">${EXAM.title} (${S.attempt}회차) — <b>채점부터 할지</b>, 이미 채점했으니 <b>오답만 정리할지</b> 골라주세요.</div>
- <div class="bar" style="margin-bottom:10px"><div class="pl"><span class="ic">✅</span><div><b>채점부터 하기</b><br><span style="font-size:12px;color:var(--mut)">30문항 답을 입력하면 자동 채점 → 틀린 문항은 그 자리에서 원인까지</span></div></div></div>
- <div class="bar"><div class="pl up"><span class="ic">✏️</span><div><b>채점은 했어요 · 오답만 체크</b><br><span style="font-size:12px;color:var(--mut)">틀린 번호만 탭하면 점수가 자동 계산돼요. 답 입력 없이 원인만 정리</span></div></div></div>
- <div class="bar" style="margin-top:10px"><div class="pl"><span class="ic">📝</span><div>공통 22문항 + <b>${S.profile.subject}</b> 8문항 · 약 5분</div></div></div>
+ <div class="desc">${EXAM.title} (${S.attempt}회차) — 어떻게 시작할지 <b>골라서 눌러 주세요.</b></div>
+ <button class="pick" id="st" type="button"><span class="pt">채점부터 하기</span>
+   <span class="pd">30문항 답을 입력하면 자동 채점 → 틀린 문항은 그 자리에서 원인까지</span><span class="pa">›</span></button>
+ <button class="pick warm" id="stn" type="button"><span class="pt">채점은 했어요 · 오답만 체크</span>
+   <span class="pd">틀린 번호만 탭하면 점수가 자동 계산돼요. 답 입력 없이 원인만 정리</span><span class="pa">›</span></button>
+ <div class="metaline">공통 22문항 + <b>${esc(S.profile.subject)}</b> 8문항 · 약 5분</div>
  <div id="prevBox"></div></div>`;
- el("fab").innerHTML=`<div style="display:flex;flex-direction:column;gap:8px"><button class="btn" id="st">채점부터 하기</button><button class="btn ghost" id="stn">채점은 했어요 · 오답만 체크</button></div>`;
+ el("fab").innerHTML="";   /* 선택은 위 카드에서 — 하단 버튼 없음 */
  el("st").onclick=()=>{S.mode="grade";S.screen="quiz";render();window.scrollTo(0,0);};
  el("stn").onclick=()=>{S.mode="note";S.screen="note";render();window.scrollTo(0,0);};
  /* 이 시험을 전에 저장한 적이 있으면, 새 회차 대신 그 회차를 불러와 수정할 수 있게 한다 */
