@@ -186,7 +186,7 @@ function examSelect(){
   return `<div class="q" style="width:100%;opacity:.55"><div class="qh" style="margin-bottom:2px"><span style="font-weight:800;font-size:15.5px;color:var(--mut)">${e.title}</span><span class="badge" style="margin-left:auto;background:rgba(255,255,255,.06);color:var(--mut2)">준비 중</span></div><div style="font-size:12px;color:var(--mut)">${e.note||"준비 중 — 곧 열려요"}</div></div>`;
  }).join("")+`</div>`;
  document.querySelectorAll("[data-back]").forEach(b=>b.onclick=()=>{history.back();});
- document.querySelectorAll("[data-ex]").forEach(b=>b.onclick=async()=>{EXAM=EXAMS[+b.dataset.ex];await injectSteps();S.attempt=((LS.get("ds_subs")||[]).filter(x=>x.phone===S.phone&&x.exam===EXAM.code).length)+1;S.savedSubId=null;S.savedExam=null;S.saveMode=null;S._forceNew=false;S._updWarn=null;S.ans={};S.reason={};S.conf={};S.memo={};S.step={};S.photo={};S.screen="intro";render();window.scrollTo(0,0);});
+ document.querySelectorAll("[data-ex]").forEach(b=>b.onclick=async()=>{EXAM=EXAMS[+b.dataset.ex];await injectSteps();S.attempt=await calcAttempt(EXAM.code);S.savedSubId=null;S.savedExam=null;S.saveMode=null;S._forceNew=false;S._updWarn=null;S.ans={};S.reason={};S.conf={};S.memo={};S.step={};S.photo={};S.screen="intro";render();window.scrollTo(0,0);});
  el("fab").innerHTML="";}
 
 /* ---------- 진단 인트로 ---------- */
@@ -194,8 +194,32 @@ function intro(){el("screen").innerHTML=`<div class="pad"><div class="h">${esc(S
  <div class="desc">${EXAM.title} 오답노트예요 (${S.attempt}회차). 답을 입력하면 자동 채점되고, <b>틀린 이유</b>를 한 번씩 탭하면 나에게 맞는 처방이 나와요.</div>
  <div class="bar"><div class="pl"><span class="ic">📝</span><div>공통 22문항 + <b>${S.profile.subject}</b> 8문항</div></div>
  <div class="pl"><span class="ic">⏱️</span><div>약 5분 · 대부분 탭 한 번</div></div>
- <div class="pl"><span class="ic">🎯</span><div>끝나면 영역별 정답률 + 이번 주 처방을 바로 확인</div></div></div></div>`;
- el("fab").innerHTML=`<button class="btn" id="st">오답노트 시작</button>`;el("st").onclick=()=>{S.screen="quiz";render();window.scrollTo(0,0);};}
+ <div class="pl"><span class="ic">🎯</span><div>끝나면 영역별 정답률 + 이번 주 처방을 바로 확인</div></div></div>
+ <div id="prevBox"></div></div>`;
+ el("fab").innerHTML=`<button class="btn" id="st">오답노트 시작</button>`;el("st").onclick=()=>{S.screen="quiz";render();window.scrollTo(0,0);};
+ /* 이 시험을 전에 저장한 적이 있으면, 새 회차 대신 그 회차를 불러와 수정할 수 있게 한다 */
+ (async()=>{try{
+   const items=await histItems();if(!items||!items.length)return;
+   const prev=items.filter(x=>x&&x.exam_code===EXAM.code).sort((a,b)=>String(b.created_at||"").localeCompare(String(a.created_at||"")))[0];
+   if(!prev||!idOf(prev))return;const box=el("prevBox");if(!box||S.screen!=="intro")return;
+   box.innerHTML=`<div class="bar" style="margin-top:10px"><div class="pl"><span class="ic">✏️</span><div><b>이전에 저장한 기록이 있어요</b><br><span style="font-size:12px;color:var(--mut)">${esc(prev.attempt_no||1)}회차 · ${esc((prev.created_at||"").slice(0,10))} · 자기채점 ${esc(prev.score??"-")}</span></div></div>
+     <button class="btn ghost" id="loadPrev" style="margin-top:8px">그 회차 불러와 수정하기</button>
+     <div style="font-size:11.5px;color:var(--mut2);margin-top:6px">불러와 고치면 <b>새 회차가 생기지 않고</b> 그 기록이 갱신돼요.</div></div>`;
+   const lp=el("loadPrev");if(lp)lp.onclick=async()=>{lp.disabled=true;lp.textContent="불러오는 중...";
+     try{
+       const j=await api("/submission?id="+encodeURIComponent(idOf(prev)));
+       const rs=(j&&j.responses)||[];
+       S.ans={};S.reason={};S.conf={};S.memo={};S.step={};
+       rs.forEach(r=>{const no=r.item_no;if(no==null)return;
+         if(r.my_answer!=null&&r.my_answer!=="")S.ans[no]=r.my_answer;
+         if(r.reason)S.reason[no]=r.reason;if(r.confidence)S.conf[no]=r.confidence;
+         if(r.memo)S.memo[no]=r.memo;if(r.reached_step)S.step[no]=r.reached_step;});
+       S.attempt=+prev.attempt_no||1;S.savedSubId=idOf(prev);S.savedExam=EXAM.code;S.saveMode="server";S._forceNew=false;
+       rememberSubId(EXAM.code,S.attempt,S.savedSubId);
+       S.screen="quiz";render();window.scrollTo(0,0);
+     }catch(e){lp.disabled=false;lp.textContent="불러오기 실패 — 다시 시도";}
+   };
+ }catch(_){ }})();}
 
 /* ---------- 진단 ---------- */
 function card(q){const g=graded(q);
@@ -246,6 +270,30 @@ function buildResult(){const its=items().filter(q=>graded(q)!=null);
    responses:its.map(q=>({item_no:q.no,area:q.area,unit:q.unit,my_answer:""+S.ans[q.no],correct_answer:""+q.ans,result:graded(q),reached_step:S.step[q.no]||null,reason:S.reason[q.no]||null,confidence:S.conf[q.no]||null,memo:S.memo[q.no]||null}))};}
 
 /* ---- 저장 상태 UI · 재저장/수정 (실패해도 입력 유지) ---- */
+/* ---- 회차 id 확보: 메모리 → localStorage → 서버 이력 순으로 조회 ----
+   (메모리에만 두면 새로고침·기기변경 시 id를 잃어 같은 회차가 새로 쌓인다) */
+let HISTC=null;
+async function histItems(force){if(HISTC&&!force)return HISTC;try{const h=await api("/history");HISTC=(h&&h.items)||[];}catch(_){HISTC=null;}return HISTC;}
+function subIdMap(){return LS.get("ds_subid")||{};}
+function subIdKey(exam,att){return (S.phone||"")+"|"+exam+"|"+att;}
+function rememberSubId(exam,att,id){if(!id)return;const m=subIdMap();m[subIdKey(exam,att)]=id;LS.set("ds_subid",m);}
+function idOf(x){return (x&&(x.submission_id||x.submissionId||x.id))||null;}
+async function resolveSubId(examCode){
+ if(S.savedSubId&&S.savedExam===examCode)return S.savedSubId;
+ const m=subIdMap(),k=subIdKey(examCode,S.attempt);if(m[k])return m[k];
+ const items=await histItems(true);
+ if(items&&items.length){
+   const same=items.filter(x=>x&&x.exam_code===examCode&&(x.attempt_no==null||+x.attempt_no===+S.attempt));
+   if(same.length){same.sort((a,b)=>String(b.created_at||"").localeCompare(String(a.created_at||"")));return idOf(same[0]);}
+ }
+ return null;
+}
+/* 회차 번호는 서버 이력 기준 — 로컬 데모기록으로 세면 저장할 때마다 번호가 부풀어 중복처럼 쌓인다 */
+async function calcAttempt(examCode){
+ const items=await histItems(true);
+ if(items){const a=items.filter(x=>x&&x.exam_code===examCode).map(x=>+x.attempt_no||0);return (a.length?Math.max.apply(null,a):0)+1;}
+ return ((LS.get("ds_subs")||[]).filter(x=>x.phone===S.phone&&x.exam===examCode).length)+1;
+}
 function resetApp(){S={screen:"login",phone:"",profile:null,studentId:null,catSel:null,ans:{},reason:{},conf:{},memo:{},step:{},photo:{},previewPath:false,attempt:1,saveMode:null,savedSubId:null,savedExam:null,_forceNew:false};render();window.scrollTo(0,0);}
 function grabSavePin(){const pe=el("savePin");if(pe){const v=pe.value.replace(/[^0-9]/g,"").slice(0,4);if(v)S._pin=v;}}
 function saveStatusUI(){const apiOn=!!CONFIG.api,saved=S.saveMode==="server",failed=apiOn&&S.saveMode&&!saved,needPin=failed&&!TK.has();
@@ -291,15 +339,19 @@ async function saveAll(res,examCode){examCode=examCode||EXAM.code;
    await ensureToken();
    localStorage.setItem("ds_tk_ph",S.phone);
    let subId;
-   if(S.savedSubId&&S.savedExam===examCode&&!S._forceNew){
+   /* 메모리·localStorage·서버 이력에서 이 회차의 id를 찾는다 (없으면 새로 만든다) */
+   const target=S._forceNew?null:await resolveSubId(examCode);
+   if(target){
      /* 이미 서버에 저장된 회차 — 새 회차를 만들지 않고 덮어쓴다.
         실패하면 조용히 새 회차를 만들지 않는다(중복 방지) — 사유를 보여주고 사용자가 선택. */
-     await api("/submit-update",{method:"POST",body:{submission_id:S.savedSubId,score:res.score,responses:res.responses}});
-     subId=S.savedSubId;S._updWarn=null;
+     S.savedSubId=target;S.savedExam=examCode;
+     await api("/submit-update",{method:"POST",body:{submission_id:target,score:res.score,responses:res.responses}});
+     subId=target;S._updWarn=null;
    }else{
      subId=await doSubmitNew();
      if(S._forceNew){S._forceNew=false;S._updWarn=null;}
    }
+   rememberSubId(examCode,S.attempt,subId);HISTC=null;
    S.savedSubId=subId;S.savedExam=examCode;S.studentId=subId;
    const failed=[];
    for(const no of Object.keys(S.photo||{})){
@@ -390,7 +442,7 @@ async function saveCustom(){
  const subject=S._cSub||S.profile.subject;const date=S._cDate||"";
  const btn=el("csub");if(btn){btn.disabled=true;btn.textContent="저장 중...";}
  const examCode=("자유:"+name).slice(0,40);
- S.attempt=((LS.get("ds_subs")||[]).filter(x=>x.phone===S.phone&&x.exam===examCode).length)+1;
+ S.attempt=await calcAttempt(examCode);
  const responses=[{item_no:0,area:null,unit:null,my_answer:"",correct_answer:"",result:"o",reason:null,confidence:null,memo:`[직접입력] 과목:${subject} · 날짜:${date} · 시험:${name}`}].concat(wrongs.map(w=>({item_no:w,area:null,unit:null,my_answer:"",correct_answer:"",result:"x",reason:null,confidence:null,memo:null})));
  const res={score:sc,total:0,correct:0,responses};
  let mode="demo";try{mode=await saveAll(res,examCode);}catch(e){mode="error:"+(e&&e.message||e);}
