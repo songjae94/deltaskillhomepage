@@ -67,6 +67,30 @@ input.txt{width:100%;padding:14px 15px;border:1.5px solid rgba(90,162,255,.42);b
 .q.gs{border-color:rgba(255,178,122,.45)}
 .badge.g{background:rgba(255,178,122,.16);color:var(--amber)}
 .empty{text-align:center;color:var(--mut2);font-size:12.5px;padding:22px 10px;border:1px dashed var(--line);border-radius:16px}
+/* 입력 끝난 문항은 한 줄로 접힌다 — 탭하면 다시 열려 수정 */
+.nsum{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line);border-radius:14px;
+ padding:11px 14px;margin-bottom:9px;cursor:pointer;font-size:13px;transition:border-color .15s var(--ease);-webkit-tap-highlight-color:transparent}
+.nsum:hover{border-color:var(--line2)}
+.nsum.gs{border-color:rgba(255,178,122,.42)}
+.nsum b{font-weight:800;min-width:22px;font-variant-numeric:tabular-nums}
+.nsum .t{color:var(--mut);font-size:12.5px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nsum .ck{font-size:11.5px;font-weight:700;color:var(--ok);flex:none}
+.nsum .ck.wait{color:var(--amber)}
+/* 카드 안 상태 선택 — 틀림 / 찍어서 맞음 */
+.stat{display:flex;gap:7px;margin:10px 0 13px}
+.stat button{flex:1;border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:10px 6px;
+ font-family:inherit;font-size:12.5px;color:var(--mut);cursor:pointer;font-weight:600;transition:all .15s var(--ease)}
+.stat button.on{border-color:rgba(255,143,116,.62);background:rgba(255,143,116,.13);color:var(--no)}
+.stat button.gon{border-color:rgba(255,178,122,.68);background:rgba(255,178,122,.14);color:var(--amber)}
+.ndone{display:flex;gap:8px;margin-top:14px}
+.ndone .ib{flex:1;background:var(--brand);color:#04122b;border:0;border-radius:13px;padding:12px;font-family:inherit;
+ font-weight:800;font-size:14px;cursor:pointer;letter-spacing:-.01em}
+.ndone .rm{border:1px solid var(--line);background:none;color:var(--mut2);border-radius:13px;padding:12px 14px;
+ font-family:inherit;font-size:12.5px;cursor:pointer}
+.hint{font-size:11.5px;color:var(--mut2);margin:9px 2px 14px;line-height:1.6}
+.hint i{display:inline-block;width:11px;height:11px;border-radius:4px;border:1px solid var(--line);vertical-align:-1px;margin:0 3px 0 7px}
+.hint i.x{background:rgba(255,143,116,.32);border-color:rgba(255,143,116,.62)}
+.hint i.g{background:rgba(255,178,122,.32);border-color:rgba(255,178,122,.68)}
 .memo{width:100%;margin-top:9px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;font-size:13px;background:var(--panel);color:var(--ink)}.memo::placeholder{color:var(--mut2)}.memo:focus{outline:none;border-color:var(--brand)}
 .kpirow{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:14px}.kpi{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:17px}.kpi .v{font-size:28px;font-weight:800;color:var(--ink);letter-spacing:-.5px;font-variant-numeric:tabular-nums}.kpi .l{font-size:11.5px;color:var(--mut2);margin-top:3px}
 .bar{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px 17px;margin-bottom:11px}.bar h4{font-size:12.5px;font-weight:700;margin-bottom:13px;color:var(--mut)}
@@ -140,7 +164,7 @@ const el=id=>document.getElementById(id);
 const esc=s=>(""+(s??"")).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
 const uid=()=>(crypto.randomUUID?crypto.randomUUID():Date.now()+"-"+Math.random().toString(16).slice(2));
 const LS={get:k=>JSON.parse(localStorage.getItem(k)||"null"),set:(k,v)=>localStorage.setItem(k,JSON.stringify(v))};
-let S={screen:"login",phone:"",profile:null,studentId:null,catSel:null,mode:null,mark:{},ans:{},reason:{},conf:{},memo:{},step:{},photo:{},previewPath:false,attempt:1,saveMode:null,savedSubId:null,savedExam:null,_forceNew:false};
+let S={screen:"login",phone:"",profile:null,studentId:null,catSel:null,mode:null,mark:{},open:null,ans:{},reason:{},conf:{},memo:{},step:{},photo:{},previewPath:false,attempt:1,saveMode:null,savedSubId:null,savedExam:null,_forceNew:false};
 function items(){const D=EXAM.data;return D.gong.concat(S.profile&&S.profile.subject==="미적분"?D.mi:D.hw);}
 /* 오답만 체크 모드에서 문항 표시 상태 — "x"=틀림, "g"=찍어서 맞음, 없으면 그냥 맞음 */
 function markOf(q){return (S.mark||{})[q.no]||null;}
@@ -213,7 +237,7 @@ function examSelect(){
  <div class="desc">응시한 모의고사의 분류를 먼저 선택하세요. 이전에 본 시험도 입력할 수 있어요.</div>`+
   CATS.map((c,i)=>{const n=c.exams.filter(e=>e.ex!=null).length;const sub=c.custom?"내가 본 다른 모의고사를 직접 기록해요":`${c.desc} · 입력 가능 ${n}개${n<c.exams.length?` / 준비 중 ${c.exams.length-n}개`:''}`;return `<button class="q" style="width:100%;text-align:left;cursor:pointer" data-cat="${i}"><div class="qh" style="margin-bottom:2px"><span style="font-weight:800;font-size:15.5px">${c.name}</span><span style="margin-left:auto;color:var(--mut2)">${c.custom?'✏️':'→'}</span></div><div style="font-size:12px;color:var(--mut)">${sub}</div></button>`;}).join("")+`</div>`;
   const rl=document.querySelector("[data-relogin]");if(rl)rl.onclick=()=>{localStorage.removeItem("ds_phone");TK.clear();S.phone="";S.profile=null;S._pin="";S._pin2="";S.screen="login";render();window.scrollTo(0,0);};
-  document.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>{const i=+b.dataset.cat;if(CATS[i].custom){S._cName="";S._cDate=(new Date()).toISOString().slice(0,10);S._cSub=S.profile.subject;S._cScore="";S._cWrong={};S.photo={};S.savedSubId=null;S.savedExam=null;S.saveMode=null;S._forceNew=false;S._updWarn=null;S._editMode=false;S.mode=null;S.mark={};S.screen="custom";render();window.scrollTo(0,0);return;}S.catSel=i;render();window.scrollTo(0,0);});
+  document.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>{const i=+b.dataset.cat;if(CATS[i].custom){S._cName="";S._cDate=(new Date()).toISOString().slice(0,10);S._cSub=S.profile.subject;S._cScore="";S._cWrong={};S.photo={};S.savedSubId=null;S.savedExam=null;S.saveMode=null;S._forceNew=false;S._updWarn=null;S._editMode=false;S.mode=null;S.mark={};S.open=null;S.screen="custom";render();window.scrollTo(0,0);return;}S.catSel=i;render();window.scrollTo(0,0);});
   el("fab").innerHTML="";return;
  }
  const c=CATS[S.catSel];
@@ -224,7 +248,7 @@ function examSelect(){
   return `<div class="q" style="width:100%;opacity:.55"><div class="qh" style="margin-bottom:2px"><span style="font-weight:800;font-size:15.5px;color:var(--mut)">${e.title}</span><span class="badge" style="margin-left:auto;background:rgba(255,255,255,.06);color:var(--mut2)">준비 중</span></div><div style="font-size:12px;color:var(--mut)">${e.note||"준비 중 — 곧 열려요"}</div></div>`;
  }).join("")+`</div>`;
  document.querySelectorAll("[data-back]").forEach(b=>b.onclick=()=>{history.back();});
- document.querySelectorAll("[data-ex]").forEach(b=>b.onclick=async()=>{EXAM=EXAMS[+b.dataset.ex];await injectSteps();S.attempt=await calcAttempt(EXAM.code);S.savedSubId=null;S.savedExam=null;S.saveMode=null;S._forceNew=false;S._updWarn=null;S._editMode=false;S.mode=null;S.mark={};S.ans={};S.reason={};S.conf={};S.memo={};S.step={};S.photo={};S.screen="intro";render();window.scrollTo(0,0);});
+ document.querySelectorAll("[data-ex]").forEach(b=>b.onclick=async()=>{EXAM=EXAMS[+b.dataset.ex];await injectSteps();S.attempt=await calcAttempt(EXAM.code);S.savedSubId=null;S.savedExam=null;S.saveMode=null;S._forceNew=false;S._updWarn=null;S._editMode=false;S.mode=null;S.mark={};S.open=null;S.ans={};S.reason={};S.conf={};S.memo={};S.step={};S.photo={};S.screen="intro";render();window.scrollTo(0,0);});
  el("fab").innerHTML="";}
 
 /* ---------- 진단 인트로 ---------- */
@@ -290,26 +314,45 @@ function updFab(){const n=answeredCount();el("fab").innerHTML=`<button class="bt
 function noteFab(){const m=markedItems().length,d=noteDone();
  el("fab").innerHTML=`<button class="btn" id="sub">저장하고 결과 보기${m?` (원인 ${d}/${m})`:""}</button>`;
  el("sub").onclick=submitDiag;}
-function nrefresh(focusNo){const y=window.scrollY;noteScreen();window.scrollTo(0,y);setProg();
- if(focusNo!=null){const c=document.getElementById("nc"+focusNo);
-   if(c)c.scrollIntoView({behavior:"smooth",block:"center"});}}
-function noteCard(q){const mk=markOf(q),guess=mk==="g";
+/* 상단 고정 영역(헤더+점수)에 가리지 않도록 그만큼 띄워서 스크롤한다 */
+function nscroll(t){if(!t)return;
+ const top=document.querySelector(".top"),sc=document.querySelector(".scoretop");
+ const off=(top?top.offsetHeight:85)+(sc?sc.offsetHeight:60)+12;
+ const y=window.scrollY+t.getBoundingClientRect().top-off;
+ window.scrollTo({top:Math.max(0,y),behavior:"smooth"});}
+function nrefresh(scroll){const y=window.scrollY;noteScreen();window.scrollTo(0,y);setProg();
+ if(scroll==="card"&&S.open!=null)nscroll(el("nc"+S.open));
+ else if(scroll==="grid")nscroll(el("gridTop"));}
+/* 입력이 끝난(=완료를 누른) 문항은 요약 한 줄로 접는다 */
+function noteSummary(q){const guess=markOf(q)==="g",r=S.reason[q.no];
+ const d=document.createElement("div");d.className="nsum"+(guess?" gs":"");d.id="nc"+q.no;
+ d.innerHTML=`<b>${q.no}</b><span class="t">${esc(q.unit)} · ${guess?"찍어서 맞음":"오답"}${r?` · ${esc(r)}`:""}</span>
+  <span class="ck${r?"":" wait"}">${r?"✓ 입력됨":"원인 미입력"}</span>`;
+ d.onclick=()=>{S.open=q.no;nrefresh("card");};
+ return d;}
+function noteCard(q){const guess=markOf(q)==="g";
  const d=document.createElement("div");d.className="q"+(guess?" gs":"");d.id="nc"+q.no;
- const badge=guess?`<span class="badge g">찍어서 맞음</span>`:`<span class="badge x">오답</span>`;
- const stepUI=q.steps?`<div class="dlab">어디까지 갔나요?</div><div class="rchips" style="margin-bottom:9px">`+
+ const stepUI=q.steps?`<div class="dlab">어디까지 갔나요?</div><div class="rchips" style="margin-bottom:11px">`+
    ["손도 못 댐"].concat(q.steps.map((s,i)=>(i+1)+". "+s)).concat([guess?"다 풀었는데 확신은 없었음":"다 풀었는데 답 틀림"])
    .map(s=>`<span class="rchip ${S.step[q.no]===s?'on':''}" data-st="${esc(s)}">${esc(s)}</span>`).join("")+`</div>`:"";
- d.innerHTML=`<div class="qh"><span class="qno">${q.no}</span><span class="qmeta"><b>${esc(q.unit)}</b> · ${esc(q.topic)} · ${q.jum}점 · ${q.fmt==='c'?'객관식':'단답'}</span>${badge}</div>
-  <div class="diag" style="border-top:0;padding-top:2px;margin-top:8px">${stepUI}
+ d.innerHTML=`<div class="qh"><span class="qno">${q.no}</span><span class="qmeta"><b>${esc(q.unit)}</b> · ${esc(q.topic)} · ${q.jum}점 · ${q.fmt==='c'?'객관식':'단답'}</span></div>
+  <div class="stat"><button data-mk="x" class="${guess?'':'on'}">틀렸어요</button><button data-mk="g" class="${guess?'gon':''}">찍어서 맞았어요</button></div>
+  ${guess?`<div class="hint" style="margin:-6px 2px 10px">점수에는 <b style="color:var(--ok)">맞은 것으로</b> 반영되고, 다시 볼 문항으로만 담겨요.</div>`:``}
+  <div class="diag" style="border-top:0;padding-top:0;margin-top:0">${stepUI}
   <div class="dlab">${guess?"무엇이 확실하지 않았나요? (한 번 탭)":"왜 틀렸나요? (한 번 탭)"}</div>
   <div class="rchips">`+REASONS.map(r=>`<span class="rchip ${S.reason[q.no]===r?'on':''}" data-r="${r}">${r}</span>`).join("")+`</div>
   <input class="memo" placeholder="막힌 지점 한 줄 (선택)" value="${esc(S.memo[q.no]||'')}" data-memo="1">
-  <div style="margin-top:8px">${S.photo[q.no]?`<span class="rchip on" data-phx="1">풀이 사진 첨부됨 · 탭하면 제거</span>`:`<span class="rchip" data-ph="1">풀이 사진 첨부 (선택)</span>`}</div></div>`;
+  <div style="margin-top:8px">${S.photo[q.no]?`<span class="rchip on" data-phx="1">풀이 사진 첨부됨 · 탭하면 제거</span>`:`<span class="rchip" data-ph="1">풀이 사진 첨부 (선택)</span>`}</div>
+  <div class="ndone"><button class="ib" data-in="1">입력 완료 · 다음 문항</button><button class="rm" data-rm="1">빼기</button></div></div>`;
+ d.querySelectorAll("[data-mk]").forEach(b=>b.onclick=()=>{S.mark[q.no]=b.dataset.mk;nrefresh();});
  d.querySelectorAll("[data-r]").forEach(c=>c.onclick=()=>{S.reason[q.no]=c.dataset.r;nrefresh();});
  d.querySelectorAll("[data-st]").forEach(c=>c.onclick=()=>{S.step[q.no]=c.dataset.st;nrefresh();});
  const ph=d.querySelector("[data-ph]");if(ph)ph.onclick=()=>pickPhoto(q);
  const phx=d.querySelector("[data-phx]");if(phx)phx.onclick=()=>{delete S.photo[q.no];nrefresh();};
  const m=d.querySelector("[data-memo]");if(m)m.oninput=e=>S.memo[q.no]=e.target.value;
+ d.querySelector("[data-in]").onclick=()=>{S.open=null;nrefresh("grid");};
+ d.querySelector("[data-rm]").onclick=()=>{delete S.mark[q.no];delete S.reason[q.no];delete S.step[q.no];delete S.memo[q.no];delete S.photo[q.no];
+   S.open=null;nrefresh("grid");};
  return d;}
 function noteScreen(){
  const its=items();
@@ -318,11 +361,12 @@ function noteScreen(){
  const grid=arr=>`<div class="gwrap">`+arr.map(q=>{const mk=markOf(q)||"";
    return `<button class="gn ${mk}" data-n="${q.no}"><b>${q.no}</b><s>${q.jum}점</s></button>`;}).join("")+`</div>`;
  const wrap=document.createElement("div");wrap.className="pad";
- wrap.innerHTML=`<div class="h" style="font-size:16px">틀린 문항을 골라주세요</div>
-  <div class="desc">시험지를 보면서 <b>틀린 번호만</b> 탭하면 점수가 자동으로 계산돼요. 답은 입력하지 않아도 됩니다.</div>
+ wrap.innerHTML=`<div class="h" style="font-size:16px">오답노트 작성이 시작됩니다</div>
+  <div class="desc">틀린 문항과 <b>찍어서 맞춘 문항</b>을 체크하세요.<br><b>실수로 틀린 문항도</b> 같은 실수를 반복하지 않도록 꼭 작성해 주세요.</div>
   <div class="scoretop"><div class="sc">${score}<span>점</span></div>
     <div class="sd">${wrong.length?`틀림 <b>${wrong.length}문항</b> · ${lost}점 감점`:"아직 고른 문항이 없어요"}${guess.length?` · 찍어서 맞음 <i>${guess.length}문항</i>`:""}</div></div>
-  <div class="legend"><em><i class="x"></i>한 번 탭 = 틀림</em><em><i class="g"></i>두 번 = 찍어서 맞음</em><em>세 번 = 해제</em></div>
+  <div class="hint" id="gridTop">번호를 탭하면 아래에 입력칸이 열려요. 입력 완료를 누르면 다음 문항을 고를 수 있고, 번호를 다시 탭하면 언제든 고칠 수 있어요.<br>
+   <i class="x"></i>틀림 <i class="g"></i>찍어서 맞음 <span style="opacity:.8">— 카드 안에서 고르면 점수에 바로 반영돼요</span></div>
   <div class="sechd">공통과목 (1–22)</div>${grid(EXAM.data.gong)}
   <div class="sechd">선택과목 · ${esc(S.profile.subject)} (23–30)</div>${grid(S.profile.subject==="미적분"?EXAM.data.mi:EXAM.data.hw)}
   <div class="sechd">정리할 문항 <span style="color:var(--mut2);font-weight:400">— 고른 문항이 여기 열려요</span></div>
@@ -330,12 +374,14 @@ function noteScreen(){
  el("screen").innerHTML="";el("screen").appendChild(wrap);
  const box=el("ncards");
  const picked=its.filter(q=>markOf(q));
- if(!picked.length)box.innerHTML=`<div class="empty">위에서 틀린 번호를 탭하면<br>여기에 원인 입력칸이 열립니다</div>`;
- else picked.forEach(q=>box.appendChild(noteCard(q)));
+ if(!picked.length)box.innerHTML=`<div class="empty">위에서 틀린 번호를 탭하면<br>여기에 입력칸이 열립니다</div>`;
+ else picked.forEach(q=>box.appendChild(q.no===S.open?noteCard(q):noteSummary(q)));
+ /* 번호 탭 — 처음이면 새로 열고, 이미 고른 문항이면 다시 열어 수정한다 */
  wrap.querySelectorAll("[data-n]").forEach(b=>b.onclick=()=>{
-   const no=+b.dataset.n, cur=S.mark[no];
-   if(!cur)S.mark[no]="x"; else if(cur==="x")S.mark[no]="g"; else {delete S.mark[no];delete S.reason[no];delete S.step[no];delete S.memo[no];delete S.photo[no];}
-   nrefresh(S.mark[no]?no:null);});
+   const no=+b.dataset.n;
+   if(!S.mark[no])S.mark[no]="x";
+   S.open=(S.open===no)?null:no;
+   nrefresh(S.open===no?"card":null);});
  noteFab();}
 
 async function pickPhoto(q){const inp=document.createElement("input");inp.type="file";inp.accept="image/*";
@@ -388,7 +434,7 @@ async function resolveSubId(examCode){
 async function loadSubmission(subId){
  const j=await api("/submission?id="+encodeURIComponent(subId));
  const rs=(j&&(j.responses||j.items))||[];
- S.ans={};S.reason={};S.conf={};S.memo={};S.step={};S.mark={};
+ S.ans={};S.reason={};S.conf={};S.memo={};S.step={};S.mark={};S.open=null;
  let n=0,marks=0;
  rs.forEach(r=>{const no=r&&r.item_no;if(no==null)return;
    const a=r.my_answer;
@@ -422,7 +468,7 @@ async function calcAttempt(examCode){
  if(items){const a=items.filter(x=>x&&x.exam_code===examCode).map(x=>+x.attempt_no||0);return (a.length?Math.max.apply(null,a):0)+1;}
  return ((LS.get("ds_subs")||[]).filter(x=>x.phone===S.phone&&x.exam===examCode).length)+1;
 }
-function resetApp(){S={screen:"login",phone:"",profile:null,studentId:null,catSel:null,mode:null,mark:{},ans:{},reason:{},conf:{},memo:{},step:{},photo:{},previewPath:false,attempt:1,saveMode:null,savedSubId:null,savedExam:null,_forceNew:false};
+function resetApp(){S={screen:"login",phone:"",profile:null,studentId:null,catSel:null,mode:null,mark:{},open:null,ans:{},reason:{},conf:{},memo:{},step:{},photo:{},previewPath:false,attempt:1,saveMode:null,savedSubId:null,savedExam:null,_forceNew:false};
  /* 저장된 번호·프로필이 있으면 첫 접속과 똑같이 자동 로그인 — 전화번호 화면으로 떨어뜨리지 않는다 */
  var ph=localStorage.getItem("ds_phone");if(ph){S.phone=ph;var st=(LS.get("ds_students")||{})[ph];if(st&&st.profile){S.profile=st.profile;S.studentId=st.id;S.catSel=null;S.screen="exam";}}
  render();window.scrollTo(0,0);}
