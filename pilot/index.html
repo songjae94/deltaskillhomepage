@@ -113,7 +113,7 @@ const el=id=>document.getElementById(id);
 const esc=s=>(""+(s??"")).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
 const uid=()=>(crypto.randomUUID?crypto.randomUUID():Date.now()+"-"+Math.random().toString(16).slice(2));
 const LS={get:k=>JSON.parse(localStorage.getItem(k)||"null"),set:(k,v)=>localStorage.setItem(k,JSON.stringify(v))};
-let S={screen:"login",phone:"",profile:null,studentId:null,catSel:null,ans:{},reason:{},conf:{},memo:{},step:{},photo:{},previewPath:false,attempt:1,saveMode:null,savedSubId:null,savedExam:null};
+let S={screen:"login",phone:"",profile:null,studentId:null,catSel:null,ans:{},reason:{},conf:{},memo:{},step:{},photo:{},previewPath:false,attempt:1,saveMode:null,savedSubId:null,savedExam:null,_forceNew:false};
 function items(){const D=EXAM.data;return D.gong.concat(S.profile&&S.profile.subject==="미적분"?D.mi:D.hw);}
 function graded(q){const a=S.ans[q.no];if(a==null||a==="")return null;return(""+a)===(""+q.ans)?"o":"x";}
 function answeredCount(){return items().filter(q=>S.ans[q.no]!=null&&S.ans[q.no]!=="").length;}
@@ -175,7 +175,7 @@ function examSelect(){
  <div class="desc">응시한 모의고사의 분류를 먼저 선택하세요. 이전에 본 시험도 입력할 수 있어요.</div>`+
   CATS.map((c,i)=>{const n=c.exams.filter(e=>e.ex!=null).length;const sub=c.custom?"내가 본 다른 모의고사를 직접 기록해요":`${c.desc} · 입력 가능 ${n}개${n<c.exams.length?` / 준비 중 ${c.exams.length-n}개`:''}`;return `<button class="q" style="width:100%;text-align:left;cursor:pointer" data-cat="${i}"><div class="qh" style="margin-bottom:2px"><span style="font-weight:800;font-size:15.5px">${c.name}</span><span style="margin-left:auto;color:var(--mut2)">${c.custom?'✏️':'→'}</span></div><div style="font-size:12px;color:var(--mut)">${sub}</div></button>`;}).join("")+`</div>`;
   const rl=document.querySelector("[data-relogin]");if(rl)rl.onclick=()=>{localStorage.removeItem("ds_phone");TK.clear();S.phone="";S.profile=null;S._pin="";S._pin2="";S.screen="login";render();window.scrollTo(0,0);};
-  document.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>{const i=+b.dataset.cat;if(CATS[i].custom){S._cName="";S._cDate=(new Date()).toISOString().slice(0,10);S._cSub=S.profile.subject;S._cScore="";S._cWrong={};S.photo={};S.savedSubId=null;S.savedExam=null;S.saveMode=null;S.screen="custom";render();window.scrollTo(0,0);return;}S.catSel=i;render();window.scrollTo(0,0);});
+  document.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>{const i=+b.dataset.cat;if(CATS[i].custom){S._cName="";S._cDate=(new Date()).toISOString().slice(0,10);S._cSub=S.profile.subject;S._cScore="";S._cWrong={};S.photo={};S.savedSubId=null;S.savedExam=null;S.saveMode=null;S._forceNew=false;S._updWarn=null;S.screen="custom";render();window.scrollTo(0,0);return;}S.catSel=i;render();window.scrollTo(0,0);});
   el("fab").innerHTML="";return;
  }
  const c=CATS[S.catSel];
@@ -186,7 +186,7 @@ function examSelect(){
   return `<div class="q" style="width:100%;opacity:.55"><div class="qh" style="margin-bottom:2px"><span style="font-weight:800;font-size:15.5px;color:var(--mut)">${e.title}</span><span class="badge" style="margin-left:auto;background:rgba(255,255,255,.06);color:var(--mut2)">준비 중</span></div><div style="font-size:12px;color:var(--mut)">${e.note||"준비 중 — 곧 열려요"}</div></div>`;
  }).join("")+`</div>`;
  document.querySelectorAll("[data-back]").forEach(b=>b.onclick=()=>{history.back();});
- document.querySelectorAll("[data-ex]").forEach(b=>b.onclick=async()=>{EXAM=EXAMS[+b.dataset.ex];await injectSteps();S.attempt=((LS.get("ds_subs")||[]).filter(x=>x.phone===S.phone&&x.exam===EXAM.code).length)+1;S.savedSubId=null;S.savedExam=null;S.saveMode=null;S.ans={};S.reason={};S.conf={};S.memo={};S.step={};S.photo={};S.screen="intro";render();window.scrollTo(0,0);});
+ document.querySelectorAll("[data-ex]").forEach(b=>b.onclick=async()=>{EXAM=EXAMS[+b.dataset.ex];await injectSteps();S.attempt=((LS.get("ds_subs")||[]).filter(x=>x.phone===S.phone&&x.exam===EXAM.code).length)+1;S.savedSubId=null;S.savedExam=null;S.saveMode=null;S._forceNew=false;S._updWarn=null;S.ans={};S.reason={};S.conf={};S.memo={};S.step={};S.photo={};S.screen="intro";render();window.scrollTo(0,0);});
  el("fab").innerHTML="";}
 
 /* ---------- 진단 인트로 ---------- */
@@ -246,16 +246,18 @@ function buildResult(){const its=items().filter(q=>graded(q)!=null);
    responses:its.map(q=>({item_no:q.no,area:q.area,unit:q.unit,my_answer:""+S.ans[q.no],correct_answer:""+q.ans,result:graded(q),reached_step:S.step[q.no]||null,reason:S.reason[q.no]||null,confidence:S.conf[q.no]||null,memo:S.memo[q.no]||null}))};}
 
 /* ---- 저장 상태 UI · 재저장/수정 (실패해도 입력 유지) ---- */
-function resetApp(){S={screen:"login",phone:"",profile:null,studentId:null,catSel:null,ans:{},reason:{},conf:{},memo:{},step:{},photo:{},previewPath:false,attempt:1,saveMode:null,savedSubId:null,savedExam:null};render();window.scrollTo(0,0);}
+function resetApp(){S={screen:"login",phone:"",profile:null,studentId:null,catSel:null,ans:{},reason:{},conf:{},memo:{},step:{},photo:{},previewPath:false,attempt:1,saveMode:null,savedSubId:null,savedExam:null,_forceNew:false};render();window.scrollTo(0,0);}
 function grabSavePin(){const pe=el("savePin");if(pe){const v=pe.value.replace(/[^0-9]/g,"").slice(0,4);if(v)S._pin=v;}}
 function saveStatusUI(){const apiOn=!!CONFIG.api,saved=S.saveMode==="server",failed=apiOn&&S.saveMode&&!saved,needPin=failed&&!TK.has();
  if(saved)return{html:`<div class="saved">✅ 델타스킬 서버에 저장됐어요 · 매주 쌓여 학습 경로가 됩니다${S._updWarn?`<div style="font-size:11.5px;color:var(--mut2);margin-top:4px">(수정 반영은 실패해 새 회차로 저장했어요 · ${esc(S._updWarn)})</div>`:``}</div>`,saved:true};
- if(failed)return{html:`<div class="saved demo" style="border-color:rgba(255,143,116,.6);align-items:flex-start"><div style="flex:1;line-height:1.6">⚠️ <b>아직 저장되지 않았어요.</b> 아래 <b>저장하기</b> 버튼을 눌러 주세요.${(S.saveMode&&(""+S.saveMode).indexOf("error:")===0)?`<div style="font-size:11.5px;color:var(--mut2);margin-top:4px">사유: ${esc((""+S.saveMode).slice(6))}</div>`:``}${needPin?`<div style="margin-top:8px;font-size:12.5px">저장 확인용 <b>비밀번호(숫자 4자리)</b>를 입력하세요<input class="txt" id="savePin" type="password" inputmode="numeric" maxlength="4" placeholder="숫자 4자리" value="${esc(S._pin||'')}" style="margin-top:6px;width:100%"></div>`:``}</div></div>`,saved:false};
+ if(failed)return{html:`<div class="saved demo" style="border-color:rgba(255,143,116,.6);align-items:flex-start"><div style="flex:1;line-height:1.6">⚠️ <b>${S.savedSubId?"수정 내용이 반영되지 않았어요.":"아직 저장되지 않았어요."}</b> ${S.savedSubId?"아래 <b>저장하기</b>로 다시 시도해 주세요. (중복 회차는 생기지 않아요)":"아래 <b>저장하기</b> 버튼을 눌러 주세요."}${(S.saveMode&&(""+S.saveMode).indexOf("error:")===0)?`<div style="font-size:11.5px;color:var(--mut2);margin-top:4px">사유: ${esc((""+S.saveMode).slice(6))}</div>`:``}${needPin?`<div style="margin-top:8px;font-size:12.5px">저장 확인용 <b>비밀번호(숫자 4자리)</b>를 입력하세요<input class="txt" id="savePin" type="password" inputmode="numeric" maxlength="4" placeholder="숫자 4자리" value="${esc(S._pin||'')}" style="margin-top:6px;width:100%"></div>`:``}</div></div>`,saved:false};
  return{html:`<div class="saved demo">저장 완료(데모=브라우저)</div>`,saved:false};}
 function saveFab(saved,onSave,onEdit){
  if(saved){el("fab").innerHTML=`<div style="display:flex;gap:8px"><button class="btn ghost" id="home" style="flex:2">완료 · 처음으로</button><button class="btn ghost" id="editBtn" style="flex:1">수정하기</button></div>`;const hb=el("home");if(hb)hb.onclick=resetApp;const eb2=el("editBtn");if(eb2)eb2.onclick=onEdit;return;}
- el("fab").innerHTML=`<div style="display:flex;gap:8px"><button class="btn" id="saveBtn" style="flex:2">저장하기</button><button class="btn ghost" id="editBtn" style="flex:1">수정하기</button></div>`;
- const sb=el("saveBtn");if(sb)sb.onclick=onSave;const eb=el("editBtn");if(eb)eb.onclick=onEdit;}
+ const updFailed=!!S.savedSubId;  /* 이미 저장된 회차의 덮어쓰기가 실패한 상황 */
+ el("fab").innerHTML=`<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="saveBtn" style="flex:2">저장하기${updFailed?" (덮어쓰기 재시도)":""}</button><button class="btn ghost" id="editBtn" style="flex:1">수정하기</button>${updFailed?`<button class="btn ghost" id="newBtn" style="flex:1 1 100%;font-size:13px">새 회차로 따로 저장</button>`:``}</div>`;
+ const sb=el("saveBtn");if(sb)sb.onclick=onSave;const eb=el("editBtn");if(eb)eb.onclick=onEdit;
+ const nb=el("newBtn");if(nb)nb.onclick=()=>{S._forceNew=true;onSave();};}
 async function retrySaveDiag(){grabSavePin();const b=el("saveBtn");if(b){b.disabled=true;b.textContent="저장 중...";}let mode="demo";try{mode=await saveAll(buildResult());}catch(e){mode="error:"+(e&&e.message||e);}S.saveMode=mode;result();window.scrollTo(0,0);}
 async function retrySaveCustom(){grabSavePin();await saveCustom();}
 
@@ -276,24 +278,22 @@ async function saveAll(res,examCode){examCode=examCode||EXAM.code;
      else throw e;
    }
  };
- const doSubmitNew=async()=>{const sub=await api("/submit",{method:"POST",body:{exam_code:examCode,attempt_no:S.attempt,score:res.score,responses:res.responses}});return sub.submission_id;};
+ /* 서버가 submission_id·id·submissionId 중 무엇으로 주든 회차 id를 찾아낸다 */
+ const pickSubId=o=>{if(!o||typeof o!=="object")return null;const d=o.data&&typeof o.data==="object"?o.data:{};const s=o.submission&&typeof o.submission==="object"?o.submission:{};
+   return o.submission_id||o.submissionId||o.id||d.submission_id||d.submissionId||d.id||s.submission_id||s.id||null;};
+ const doSubmitNew=async()=>{const sub=await api("/submit",{method:"POST",body:{exam_code:examCode,attempt_no:S.attempt,score:res.score,responses:res.responses}});return pickSubId(sub);};
  try{
    await ensureToken();
    localStorage.setItem("ds_tk_ph",S.phone);
    let subId;
-   if(S.savedSubId&&S.savedExam===examCode){
-     /* 이미 서버에 저장된 회차 — 새 회차를 만들지 않고 덮어쓴다 */
-     try{
-       await api("/submit-update",{method:"POST",body:{submission_id:S.savedSubId,score:res.score,responses:res.responses}});
-       subId=S.savedSubId;S._updWarn=null;
-     }catch(e){
-       /* 덮어쓰기 실패 → 새 회차로라도 저장해 유실을 막는다 */
-       S._updWarn=""+(e&&e.message||e);
-       await ensureToken();
-       subId=await doSubmitNew();
-     }
+   if(S.savedSubId&&S.savedExam===examCode&&!S._forceNew){
+     /* 이미 서버에 저장된 회차 — 새 회차를 만들지 않고 덮어쓴다.
+        실패하면 조용히 새 회차를 만들지 않는다(중복 방지) — 사유를 보여주고 사용자가 선택. */
+     await api("/submit-update",{method:"POST",body:{submission_id:S.savedSubId,score:res.score,responses:res.responses}});
+     subId=S.savedSubId;S._updWarn=null;
    }else{
      subId=await doSubmitNew();
+     if(S._forceNew){S._forceNew=false;S._updWarn=null;}
    }
    S.savedSubId=subId;S.savedExam=examCode;S.studentId=subId;
    const failed=[];
