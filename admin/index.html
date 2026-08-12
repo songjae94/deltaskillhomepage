@@ -17,6 +17,7 @@ th,td{border:1px solid #ddd;padding:5px 8px;text-align:left}
 th{background:#f6f6f6}
 tr.click{cursor:pointer} tr.click:hover td{background:#fff5f5}
 .k{color:#777;font-size:12px}
+.cand{display:inline-block;font-size:10px;font-weight:700;color:#06c;border:1px solid #9cc4ec;border-radius:999px;padding:0 6px;white-space:nowrap}
 .bad{color:var(--red);font-weight:600}.warn{background:#fff3cd}
 .bar{display:inline-block;height:10px;background:var(--red);vertical-align:middle}
 .gray{display:inline-block;height:10px;background:#bbb;vertical-align:middle}
@@ -85,7 +86,7 @@ const pct = (n, d) => d ? Math.round(100 * n / d) + "%" : "-";
 //    자동 생성 블록 — 회차 추가 시 admin/exam_item_skills.gen.json 재생성 후 교체.
 /* 요구 스킬 — /skills.json 하나에서 불러온다. 회차 추가 시 그 파일만 교체 */
 let ITEM_SKILLS = {};
-const skillsReady = fetch("/skills.json",{cache:"no-store"}).then(r=>r.json()).then(d=>{ITEM_SKILLS=d;}).catch(()=>{});
+const skillsReady = fetch("/deltamap.json",{cache:"no-store"}).then(r=>r.json()).then(d=>{ITEM_SKILLS=d;}).catch(()=>{});
 // 응답의 area(수학Ⅰ/Ⅱ·미적분(선택)·확률과통계)를 계류 트랙 키로 옮긴다.
 const AREA2TRACK = {"수학Ⅰ":"공통","수학Ⅱ":"공통","공통":"공통","미적분(선택)":"미적분","미적분":"미적분","확률과통계":"확통","확률과 통계":"확통","확통":"확통","기하":"기하"};
 function skillsOf(exam, area, no){
@@ -95,13 +96,20 @@ function skillsOf(exam, area, no){
   const tr = AREA2TRACK[area] || area;                                    // 선택 23~30 은 트랙으로 갈림
   return (E[tr] && E[tr][no]) || null;
 }
+/* uses·anchors 는 문자열이거나 {skill,step} 객체다. 객체를 그대로 esc 하면 [object Object] 가 찍힌다 */
+function useName(u){ return typeof u === "string" ? u : ((u && u.skill) || ""); }
 function skillCell(exam, area, no){
   const s = skillsOf(exam, area, no);
-  if(!s || ((!s.uses || !s.uses.length) && (!s.anchors || !s.anchors.length))) return "<span class='k'>-</span>";
-  let out = "";
-  if(s.anchors && s.anchors.length) out += s.anchors.map(a=>`<b title="지름길(계류) — 기본 풀이보다 빠른 길">⚡ ${esc(a)}</b>`).join("<br>");
-  if(s.uses && s.uses.length){ if(out) out += "<br>"; out += "<span class='k'>" + s.uses.map(esc).join(" · ") + "</span>"; }
-  return out;
+  if(!s) return "<span class='k'>-</span>";
+  const as = (s.anchors || []).map(useName).filter(Boolean);
+  const us = (s.uses || []).map(useName).filter(Boolean);
+  if(!as.length && !us.length) return "<span class='k'>-</span>";
+  const p = [];
+  /* COST ○강 = 알맞은 도구를 쓰면 풀이가 크게 줄어드는 문항 → 교재 스킬로 뽑을 후보 */
+  if(s.cand) p.push(`<span class="cand" title="COST ○강 — 도구를 알면 풀이가 크게 줄어드는 문항. 교재 스킬 후보">스킬 후보</span>`);
+  if(as.length) p.push(as.map(a=>`<b title="지름길(계류) — 기본 풀이보다 빠른 길">⚡ ${esc(a)}</b>`).join("<br>"));
+  if(us.length) p.push("<span class='k'>" + us.map(esc).join(" · ") + "</span>");
+  return p.join("<br>");
 }
 
 async function api(body) {

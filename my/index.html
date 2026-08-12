@@ -31,6 +31,7 @@ input,select{font:inherit;padding:10px 12px;border:1px solid var(--line2);border
 .err{color:#ff8a8a;font-size:13px;min-height:18px;margin:4px 0}
 .lnk{color:var(--acc2);font-size:13px;background:none;border:none;padding:6px 0;cursor:pointer;text-decoration:underline}
 .anchor{color:#ffd166;font-weight:600}
+.cand{display:inline-block;font-size:10px;font-weight:700;color:var(--acc);border:1px solid rgba(90,162,255,.45);border-radius:999px;padding:0 7px;white-space:nowrap}
 .field{margin:8px 0}.field label{font-size:13px;font-weight:600;display:block;margin-bottom:2px}
 .seg{display:flex;gap:6px}.seg button{flex:1}.seg button.on{background:var(--acc);color:#04101f;border-color:var(--acc)}.acg{display:grid;grid-template-columns:1fr 1fr;gap:6px}.acg button.full{grid-column:1/-1}.acg button.on{background:var(--acc);color:#04101f;border-color:var(--acc)}
 .ph{max-width:120px;border:1px solid var(--line);border-radius:6px;margin:3px}
@@ -97,12 +98,17 @@ const pct = (n,d)=> d ? Math.round(100*n/d)+"%" : "-";
 
 /* 문항별 요구 스킬 (계류) — /skills.json 하나에서 불러온다. 회차 추가 시 그 파일만 교체. */
 let ITEM_SKILLS = {};
-const skillsReady = fetch("/skills.json",{cache:"no-store"}).then(r=>r.json()).then(d=>{ITEM_SKILLS=d;}).catch(()=>{});
+const skillsReady = fetch("/deltamap.json",{cache:"no-store"}).then(r=>r.json()).then(d=>{ITEM_SKILLS=d;}).catch(()=>{});
 
 const AREA2TRACK = {"수학Ⅰ":"공통","수학Ⅱ":"공통","공통":"공통","미적분(선택)":"미적분","미적분":"미적분","확률과통계":"확통","확률과 통계":"확통","확통":"확통","기하":"기하"};
 function skillsOf(exam,area,no){const E=ITEM_SKILLS[exam];if(!E)return null;const n=+no;if(n>=1&&n<=22&&E["공통"]&&E["공통"][no])return E["공통"][no];const tr=AREA2TRACK[area]||area;return (E[tr]&&E[tr][no])||null;}
 function useName(u){return typeof u==="string"?u:((u&&u.skill)||"");}
-function skillCell(exam,area,no){const s=skillsOf(exam,area,no);if(!s)return "<span class='k'>-</span>";const as=(s.anchors||[]).map(useName).filter(Boolean);const us=(s.uses||[]).map(useName).filter(Boolean);if(!as.length&&!us.length)return "<span class='k'>-</span>";let o="";if(as.length)o+=as.map(a=>`<span class="anchor">⚡ ${esc(a)}</span>`).join("<br>");if(us.length){if(o)o+="<br>";o+="<span class='k'>"+us.map(esc).join(" · ")+"</span>";}return o;}
+function skillCell(exam,area,no){const s=skillsOf(exam,area,no);if(!s)return "<span class='k'>-</span>";const as=(s.anchors||[]).map(useName).filter(Boolean);const us=(s.uses||[]).map(useName).filter(Boolean);if(!as.length&&!us.length)return "<span class='k'>-</span>";const p=[];
+ /* COST ○강 = 알맞은 도구를 쓰면 풀이가 크게 줄어드는 문항 → 교재 스킬로 뽑을 후보 */
+ if(s.cand)p.push(`<span class="cand" title="COST ○강 — 도구를 알면 풀이가 크게 줄어드는 문항. 교재 스킬 후보">스킬 후보</span>`);
+ if(as.length)p.push(as.map(a=>`<span class="anchor">⚡ ${esc(a)}</span>`).join("<br>"));
+ if(us.length)p.push("<span class='k'>"+us.map(esc).join(" · ")+"</span>");
+ return p.join("<br>");}
 
 /* 시험명 · 교육과정(상류→하류) 순서 · 오답원인별 처방 — 리포트/이력 공용 */
 const EXAM_NAMES={OMEGA_8:"OMEGA 8회",OMEGA_9:"OMEGA 9회",OMEGA_5:"OMEGA 5회",OMEGA_6:"OMEGA 6회",OMEGA_7:"OMEGA 7회",OMEGA_10:"OMEGA 10회",SV27_04:"서바이벌 4회",SV27_01:"서바이벌 1회",SV27_02:"서바이벌 2회",SV27_03:"서바이벌 3회",HP26_03:"3월 학평",HP26_05:"5월 학평",HP26_07:"7월 학평",MP27_06:"6월 모평",EX2028_V1:"델타스킬 모의 1회",SN26:"2026 수능",JD27_07:"7월 전대실모",JQ27_02:"지QUEL 2회",JQ27_03:"지QUEL 3주"};
