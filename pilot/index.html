@@ -13,7 +13,7 @@
 <meta property="og:image" content="https://www.deltaskill.co.kr/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
 <style>
-:root{--bg:#05060f;--panel:rgba(255,255,255,.028);--panel2:rgba(255,255,255,.05);--line:rgba(186,215,247,.12);--line2:rgba(186,215,247,.22);--ink:#fff;--mut:rgba(209,228,250,.62);--mut2:rgba(209,228,250,.40);--brand:#5aa2ff;--brand2:#a8cbff;--ok:#5fd39a;--no:#f0806c;--amber:#f0806c;--r:20px;--ease:cubic-bezier(.16,1,.3,1)}
+:root{--bg:#05060f;--panel:rgba(255,255,255,.028);--panel2:rgba(255,255,255,.05);--line:rgba(186,215,247,.12);--line2:rgba(186,215,247,.22);--ink:#fff;--mut:rgba(209,228,250,.62);--mut2:rgba(209,228,250,.40);--brand:#5aa2ff;--brand2:#a8cbff;--brandInk:#a8cbff;--brandSoft:rgba(90,162,255,.16);--brandSoft2:rgba(90,162,255,.24);--ok:#5fd39a;--no:#f0806c;--amber:#f0806c;--r:20px;--ease:cubic-bezier(.16,1,.3,1)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{background:var(--bg);color-scheme:dark}
 body{font-family:"Pretendard Variable",Pretendard,system-ui,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}
@@ -83,8 +83,10 @@ input.txt{width:100%;padding:14px 15px;border:1.5px solid rgba(90,162,255,.42);b
 .stat button.on{border-color:rgba(240,128,108,.62);background:rgba(240,128,108,.13);color:var(--no)}
 .stat button.gon{border-color:rgba(240,128,108,.85);border-width:2px;background:transparent;color:var(--amber)}
 .ndone{display:flex;gap:8px;margin-top:14px}
-.ndone .ib{flex:1;background:var(--brand);color:#04122b;border:0;border-radius:13px;padding:12px;font-family:inherit;
- font-weight:800;font-size:14px;cursor:pointer;letter-spacing:-.01em}
+/* 카드 안 단계 버튼 — 최종 저장 버튼보다 한 단계 낮춘 톤 (같은 파랑 계열) */
+.ndone .ib{flex:1;background:var(--brandSoft);color:var(--brandInk);border:0;border-radius:13px;padding:12px;font-family:inherit;
+ font-weight:800;font-size:14px;cursor:pointer;letter-spacing:-.01em;transition:background .15s var(--ease)}
+.ndone .ib:hover{background:var(--brandSoft2)}
 .ndone .rm{border:1px solid var(--line);background:none;color:var(--mut2);border-radius:13px;padding:12px 14px;
  font-family:inherit;font-size:12.5px;cursor:pointer}
 .hint{font-size:11.5px;color:var(--mut2);margin:9px 2px 14px;line-height:1.6}
@@ -119,7 +121,7 @@ input.txt{width:100%;padding:14px 15px;border:1.5px solid rgba(90,162,255,.42);b
 .step{display:flex;gap:12px;align-items:flex-start;padding:13px 0;border-bottom:1px solid var(--line)}.step:last-child{border:none}.stepn{width:26px;height:26px;border-radius:50%;background:rgba(90,162,255,.16);border:1px solid rgba(90,162,255,.5);color:var(--brand2);font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}.step .st{font-size:13.5px;color:var(--ink)}.step .st b{font-weight:700}.step .stt{font-size:11.5px;color:var(--mut2);margin-top:2px}
 .saved{display:flex;gap:10px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:13px 14px;font-size:12.5px;color:var(--mut);margin-bottom:16px}.saved:before{content:"";flex:none;width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 9px 1px rgba(95,211,154,.6)}.saved.demo:before{background:var(--amber);box-shadow:0 0 9px 1px rgba(240,128,108,.5)}
 .note{font-size:11.5px;color:var(--mut2);text-align:center;margin-top:18px}.center{text-align:center;padding:44px 20px;color:var(--mut)}
-body.qlight{--bg:#f5f7fb;--panel:#fff;--panel2:#eef2f8;--line:rgba(23,43,77,.13);--line2:rgba(23,43,77,.22);--ink:#0c1322;--mut:rgba(16,28,50,.82);--mut2:rgba(16,28,50,.62);--ok:#0f9d58;--no:#c14933;--amber:#c14933;color-scheme:light}body.qlight .top{background:rgba(245,247,251,.82)}body.qlight .prog{background:rgba(23,43,77,.10)}body.qlight .app:before{background:radial-gradient(58% 60% at 50% 0,rgba(90,162,255,.10),transparent 72%)}body.qlight .chip.on{color:#1c4fa0;background:rgba(90,162,255,.15);border-color:rgba(90,162,255,.5);box-shadow:inset 0 0 0 1px rgba(90,162,255,.22)}body.qlight .rchip{background:var(--panel2)}body.qlight .memo{background:var(--panel2)}body.qlight .numin:-webkit-autofill{-webkit-box-shadow:0 0 0 1000px #eef2f8 inset}</style></head><body><div class="app">
+body.qlight{--bg:#f5f7fb;--panel:#fff;--panel2:#eef2f8;--line:rgba(23,43,77,.13);--line2:rgba(23,43,77,.22);--ink:#0c1322;--mut:rgba(16,28,50,.82);--mut2:rgba(16,28,50,.62);--ok:#0f9d58;--no:#c14933;--brandInk:#1c4fa0;--brandSoft:#e4eeff;--brandSoft2:#d6e6ff;--amber:#c14933;color-scheme:light}body.qlight .top{background:rgba(245,247,251,.82)}body.qlight .prog{background:rgba(23,43,77,.10)}body.qlight .app:before{background:radial-gradient(58% 60% at 50% 0,rgba(90,162,255,.10),transparent 72%)}body.qlight .chip.on{color:#1c4fa0;background:rgba(90,162,255,.15);border-color:rgba(90,162,255,.5);box-shadow:inset 0 0 0 1px rgba(90,162,255,.22)}body.qlight .rchip{background:var(--panel2)}body.qlight .memo{background:var(--panel2)}body.qlight .numin:-webkit-autofill{-webkit-box-shadow:0 0 0 1000px #eef2f8 inset}</style></head><body><div class="app">
 <div class="top"><a class="brand" href="/" style="text-decoration:none;color:inherit;cursor:pointer" title="델타스킬 홈으로">델타<span>스킬</span></a><div class="sub" id="subttl">AI 오답노트</div><div class="prog"><i id="pbar"></i></div></div>
 <div id="screen"></div><div class="fab" id="fab"></div></div>
 <script>
