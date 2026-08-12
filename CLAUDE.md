@@ -21,7 +21,7 @@
 - 페이지는 **단일 HTML 파일 SPA** — CSS·JS 전부 인라인. 빌드 없음.
 - 상태 객체: pilot은 `S`, my는 `SG`. 화면 전환은 `S.screen` + `render()`.
 - localStorage 키: `ds_phone`(전화번호), `ds_students`(프로필), `ds_tk`(토큰), `ds_tk_ph`(**토큰이 어느 번호의 것인지** — 불일치하면 토큰 폐기), `ds_subs`(데모 기록), `ds_subid`(회차→submission_id 매핑).
-- 백엔드: Supabase Edge Function (`CONFIG.api`). 엔드포인트: `/enroll` `/login` `/submit` `/submit-update` `/history` `/submission` `/photo` `/photo-upload`. 백엔드 코드는 이 리포에 없음(Supabase에 직접 배포, 버전관리 안 됨).
+- 백엔드: Supabase Edge Function (`CONFIG.api`). 엔드포인트: `/enroll` `/login` `/revoke` `/submit` `/submit-update` `/history` `/submission` `/profile` `/photo` `/photo-upload`. 백엔드 코드는 이 리포에 없음(Supabase에 직접 배포, 버전관리 안 됨).
 - ⚠️ 전역 `input{width:100%}`가 있어 체크박스 등에는 개별 오버라이드 필요 (과거 버그 원인).
 - ⚠️ **토큰을 저장하는 모든 곳은 `ds_tk_ph`도 함께 저장·삭제할 것.** 빠뜨리면 파일럿 저장이 `need_pin`으로 막힌다 (실제 발생했던 버그).
 
@@ -86,8 +86,26 @@
 
 ## 백엔드 구조 (2026-08-12 확인)
 
-- Edge Function `api`(v7, 파일명 `deltaskill_api_index_v3_upsert.ts`)는 **supabase-js(PostgREST REST) + service_role 키**로 DB에 접근 — Postgres 직결(5432/6543) 아님. 클라이언트는 모듈 스코프 전역 1회 생성이라 연결 고갈 위험 없음.
+- Edge Function `api`(**v8**, 파일명 `deltaskill_api_index_v8.ts`)는 **supabase-js(PostgREST REST) + service_role 키**로 DB에 접근 — Postgres 직결(5432/6543) 아님. 클라이언트는 모듈 스코프 전역 1회 생성이라 연결 고갈 위험 없음. 롤백본은 `api_v7_rollback.eszip`(운영자 PC로 옮겨 둘 것).
+- **소유 판정은 student_id가 아니라 전화번호다.** `my_history`·`my_submission`·`/submit-update`가 모두 `students.phone` 으로 매칭한다 — 기기 변경·재가입으로 student_id가 갈라져도 이력이 보인다. 반대로 `review_items`(복습 원장)는 `student_id` 로만 묶이므로 계정이 갈라지면 **복습 카드만 쪼개진다.**
 - 인증: 자체 토큰의 SHA-256 해시를 RPC `auth_verify`로 검증. `auth_enroll`·`auth_login`(레이트리밋 포함)·`auth_revoke_all`·`my_history`·`my_submission`·`my_photo_ok` RPC 사용.
+### 같은 번호로 계정이 갈라진 사고 (2026-08-12 해결)
+
+마이페이지에서 [수정하기]를 눌렀는데 "먼저 로그인해 주세요"가 뜨고, 다시 입력했더니 **같은 번호로 학생이 하나 더 생기던** 문제. 원인이 앞뒤로 두 겹이었다.
+
+| 층 | 무엇이 잘못됐나 |
+|---|---|
+| 프론트 | `/my/` 로그인이 `ds_students`(로컬 프로필)를 저장하지 않았다 → 파일럿이 프로필을 못 찾아 **가입 화면**을 다시 띄웠다 |
+| 백엔드 | `/enroll`이 `students` 행을 **먼저 INSERT** 한 뒤 `auth_enroll`을 불렀다. 이미 등록된 번호면 `already_enrolled`(409)로 막히는데 **방금 만든 행은 롤백되지 않았다** → 빈 유령 계정이 쌓임 |
+
+- 피해: 7개 번호 11행(빈 행 8 · 데이터 있는 행 3). 제출 이력은 `my_history`가 전화번호로 매칭해 계속 보였지만 **복습 카드(`review_items` 12장)는 student_id 기준이라 갈라져 있었다.**
+- 병합: `student_auth`가 가리키는 행을 정본으로 삼아 `submissions`·`review_items`·`auth_tokens`를 옮기고 중복 행에 `merged_into`를 표시했다(**삭제하지 않는다** — FK·감사 보존). 충돌 0건. 원본은 `students_merge_log`에 `to_jsonb` 통째로 남겼다.
+- 재발 방지 **세 겹**:
+  1. DB — `students_phone_active_uniq` 부분 UNIQUE 인덱스 `on students(phone) where merged_into is null`. 병합된 행은 예외라 인덱스가 유지된다.
+  2. 백엔드 v8 — `/enroll`이 살아 있는 같은 번호 행을 먼저 찾아 **재사용**하고, `auth_enroll`이 실패하면 이번에 만든 행을 **보상 삭제**한다. `already_enrolled`(409)는 그대로 유지 — 프론트의 `/login` 폴백이 이 문자열에 걸려 있다.
+  3. 프론트 — `/my/`가 로그인·가입·재진입 때 `ds_students`를 저장하고, 파일럿은 로컬 프로필이 없어도 토큰이 있으면 `/profile`에서 받아 복구한다(부팅·[시작하기]·`?edit=`·`?profile=` 네 경로 전부).
+- ⚠️ **토큰만 있고 프로필이 없다고 가입 화면을 띄우지 말 것.** 그게 이 사고의 방아쇠였다. 진짜 신규(토큰 없음)만 가입으로 보낸다.
+
 - **`review_items` 테이블(간격반복 복습 원장)이 `responses.id`를 FK(NO ACTION)로 참조** — responses를 함부로 DELETE하면 막히거나 복습 이력이 끊긴다. `/submit-update`가 UPSERT인 이유.
 - `responses(submission_id, item_no)` unique index `responses_sub_item_uniq` 존재 (UPSERT 전제조건).
 - 프로젝트: `deltaskill-pilot`(ref cvlrphtupjmaefahodgz, 서울 ap-northeast-2). 조직은 **Pro 플랜**(2026-08-12 업그레이드) — 일일 자동 백업 7일 보관(매일 KST 0시 33분경), PITR은 미사용. 같은 조직의 `deltaskill` 프로젝트는 옛것(일시정지 상태 — resume하면 과금되니 그대로 둘 것).
@@ -200,9 +218,18 @@ A(2.59)와 D(2.47)는 서로 정합인데 **C(3.17)만 위로 밀려 있다.** �
 - 반별 표와 "최고–최저 격차"는 **서버 정렬에 기대지 않고** 화면에서 다시 정렬·계산한다(과거 필터 후 격차가 틀리던 버그).
 - 이 페이지는 메인 사이트의 다크 테마가 아니라 **인쇄 친화 밝은 화면**(`--red:#c00`, 표 중심)이다. 위 디자인 체계와 별개이니 이 페이지 관례를 따를 것.
 
+## 개인정보 수정란 (2026-08-12)
+
+파일럿에 `profile` 화면을 추가했다 — 이름·학원·구분·**선택과목**을 고친다. 들어가는 길 두 개: 시험 선택 화면의 `⚙︎ 내 정보` 칩, 마이페이지의 [내 정보] 버튼(`/pilot/?profile=1`).
+
+- 저장은 서버(`POST /profile`) + 로컬(`ds_students`) **양쪽**. 서버가 실패하면 로컬만 저장했다고 화면에 알린다.
+- 필수 동의(`consent`)는 여기서 못 바꾼다. 알림·홍보 동의는 백엔드가 받지만 화면엔 아직 안 뺐다.
+- ⚠️ **선택과목은 저장한 회차마다 다를 수 있다.** 확통→미적분으로 바꾼 뒤 예전 회차를 열면 21~30번이 다른 과목으로 뒤바뀐다. 그래서 저장된 응답의 `area`로 그 회차의 과목을 되살려 `S._subjOv`에 담고, 화면은 `curSubject()`(=`_subjOv` 우선)를 쓴다. 새 회차를 시작할 때 `_subjOv`를 반드시 `null`로 되돌린다.
+
 ## 작업 이력
 
 **2026-08-12**
+- **같은 번호 계정 갈라짐 사고 해결** (위 절) — 11행 병합 · 부분 UNIQUE 인덱스 · Edge Function `api` v8 배포 · 프론트 복구 경로 4개 · 개인정보 수정란 추가. 검증: 백엔드 12개 호출(신규 등록·재등록 409·유령 0행·프로필 조회/수정·submit/submit-update 회귀), 프론트 브라우저 6개 시나리오 전부 통과(JS 오류 0, 웹폰트 CDN 차단 제외).
 - **정답표 채점 오류 5건 정정** — 서바1 공통8·9, 서바2 공통4, 서바3 공통9·미적26이 전부 정답 `⑤`인데 앱에 `③`으로 들어가 **정답을 쓴 학생을 오답 처리**하고 있었다. 방향이 전부 같은 계통 오류(⑤→③ 오판독). 파일 길이 불변(5글자만 교체) 확인 후 반영.
   - ⚠️ **재발 방지**: 사설 팩은 정답표를 원본 이미지에서 재대조하고(OCR 신뢰 금지), steps 주입 후 **단답 정답 ↔ 마지막 step 자동 대조**를 배포 게이트로 둘 것. 이번 오염도 "앱 정답·topic은 맞는데 맵 steps만 한두 칸 밀린" 형태였다.
 - **deltamap 재추출본 반영** — 서바 오염 steps 정리·14문항 재추출·기하 104문항 제거·`SN26` 별칭 추가. 24회차 888문항 → **32회차 1,088문항**.

@@ -83,7 +83,7 @@ input,select{font:inherit;padding:10px 12px;border:1px solid var(--line2);border
 <div id="app" class="wrap" hidden>
   <div class="top">
     <a href="/" class="brand"><img src="/logo-dark-192.png" alt=""><span>델타스킬</span></a>
-    <div><button class="sm" onclick="location.href='/pilot/'">오답노트 쓰기</button> <button class="sm" onclick="doLogout()">로그아웃</button></div>
+    <div><button class="sm" onclick="location.href='/pilot/'">오답노트 쓰기</button> <button class="sm" onclick="location.href='/pilot/?profile=1'">내 정보</button> <button class="sm" onclick="doLogout()">로그아웃</button></div>
   </div>
   <h1 id="hello">내 오답노트</h1>
   <div id="body"></div>
@@ -148,12 +148,36 @@ function scoreChart(points,subj){
 
 async function api(path,opt){opt=opt||{};const method=opt.method||"GET";const auth=opt.auth!==false;const h={"Content-Type":"application/json"};if(auth){const t=TK.get();if(!t)throw new Error("no_token");h["Authorization"]="Bearer "+t;}const r=await fetch(API+path,{method,headers:h,body:opt.body?JSON.stringify(opt.body):undefined});let j=null;try{j=await r.json();}catch(_){}if(r.status===401&&auth){TK.clear();boot();}if(!r.ok||!j||j.ok===false)throw new Error((j&&j.error)||("HTTP "+r.status));return j;}
 
+/* 파일럿이 읽는 로컬 프로필(ds_students)을 여기서도 남긴다.
+   ⚠️ 이걸 빠뜨리면 마이페이지에서 '수정하기'로 넘어갔을 때 파일럿이 프로필을 못 찾아
+   "먼저 로그인해 주세요"로 되돌리고, 사용자가 가입 화면을 다시 채우면서 같은 번호로
+   빈 계정이 하나 더 생겼다 (2026-08-12에 실제로 11행 발생 → 병합). */
+function saveLocalProfile(phone,p){
+  if(!phone||!p)return;
+  try{
+    const all=JSON.parse(localStorage.getItem("ds_students")||"null")||{};
+    const prev=all[phone]||{};
+    all[phone]={id:prev.id||("stu_"+phone),phone,profile:{
+      name:p.name||(prev.profile&&prev.profile.name)||"",
+      academy:p.academy||(prev.profile&&prev.profile.academy)||"",
+      grade:p.grade||(prev.profile&&prev.profile.grade)||"",
+      subject:p.subject||(prev.profile&&prev.profile.subject)||""},
+      consent_at:prev.consent_at||new Date().toISOString()};
+    localStorage.setItem("ds_students",JSON.stringify(all));
+  }catch(_){}
+}
+/* 서버가 가진 내 정보를 받아 로컬에 반영 — 이미 로그인된 사용자도 다음 진입에서 자동 복구된다 */
+async function syncProfile(phone){
+  try{const j=await api("/profile");if(j&&j.profile){saveLocalProfile(phone||localStorage.getItem("ds_phone")||"",j.profile);return j.profile;}}catch(_){}
+  return null;
+}
+
 /* ---- 로그인 ---- */
 async function doLogin(){
   document.getElementById("lerr").textContent="";
   const phone=document.getElementById("phone").value.replace(/[^0-9]/g,""), pw=document.getElementById("pw").value;
   if(phone.length<10){document.getElementById("lerr").textContent="전화번호를 정확히 입력하세요.";return;}
-  try{ const j=await api("/login",{method:"POST",auth:false,body:{phone,pin:pw}}); TK.set(j.token,phone); localStorage.setItem("ds_phone",phone); boot(); }
+  try{ const j=await api("/login",{method:"POST",auth:false,body:{phone,pin:pw}}); TK.set(j.token,phone); localStorage.setItem("ds_phone",phone); await syncProfile(phone); boot(); }
   catch(e){ document.getElementById("lerr").textContent = e.message==="invalid"?"전화번호 또는 비밀번호가 맞지 않아요.":e.message==="locked"?"시도가 많아 잠시 잠겼어요. 15분 후 다시.":"로그인에 실패했어요."; }
 }
 
@@ -178,7 +202,9 @@ async function doSignup(){
   if(!consent)return err("필수 동의가 필요해요.");
   try{
     const j=await api("/enroll",{method:"POST",auth:false,body:{phone,pin:pw,name,academy,grade:SG.grade,subject:SG.subject,consent:true,consent_notify:notify}});
-    TK.set(j.token,phone); localStorage.setItem("ds_phone",phone); history.replaceState({},"", "/my/"); boot();
+    TK.set(j.token,phone); localStorage.setItem("ds_phone",phone);
+    saveLocalProfile(phone,{name,academy,grade:SG.grade,subject:SG.subject});
+    history.replaceState({},"", "/my/"); boot();
   }catch(e){ err(e.message==="already_enrolled"?"이미 가입된 번호예요. 로그인해 주세요.":e.message==="weak_pin"?"너무 쉬운 비밀번호예요.":"가입에 실패했어요."); }
 }
 
@@ -189,7 +215,8 @@ function boot(){
   document.getElementById("app").hidden=!has;
   document.getElementById("login").hidden=has||wantSignup;
   document.getElementById("signup").hidden=has||!wantSignup;
-  if(has) load();
+  /* 이미 로그인돼 있어도 로컬 프로필을 한 번 맞춰 둔다 — 예전 로그인은 이걸 저장하지 않았다 */
+  if(has){ load(); syncProfile(); }
   else if(wantSignup){ bindSeg("s_grade","grade"); bindSeg("s_subject","subject");bindAcg(); }
 }
 

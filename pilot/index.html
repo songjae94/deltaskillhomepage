@@ -187,7 +187,10 @@ const esc=s=>(""+(s??"")).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/
 const uid=()=>(crypto.randomUUID?crypto.randomUUID():Date.now()+"-"+Math.random().toString(16).slice(2));
 const LS={get:k=>JSON.parse(localStorage.getItem(k)||"null"),set:(k,v)=>localStorage.setItem(k,JSON.stringify(v))};
 let S={screen:"login",phone:"",profile:null,studentId:null,catSel:null,mode:null,mark:{},open:null,ans:{},reason:{},conf:{},memo:{},step:{},photo:{},previewPath:false,attempt:1,saveMode:null,savedSubId:null,savedExam:null,_forceNew:false};
-function items(){const D=EXAM.data;return D.gong.concat(S.profile&&S.profile.subject==="미적분"?D.mi:D.hw);}
+/* 지금 화면이 쓰는 선택과목 — 저장된 회차를 열 때는 그 회차의 과목(_subjOv)이 우선한다.
+   프로필에서 확통↔미적분을 바꾼 뒤 예전 회차를 열면 21~30번이 다른 과목으로 뒤바뀌기 때문. */
+function curSubject(){return S._subjOv||(S.profile&&S.profile.subject)||"확통";}
+function items(){const D=EXAM.data;return D.gong.concat(curSubject()==="미적분"?D.mi:D.hw);}
 /* 오답만 체크 모드에서 문항 표시 상태 — "x"=틀림, "g"=찍어서 맞음, 없으면 그냥 맞음 */
 function markOf(q){return (S.mark||{})[q.no]||null;}
 function noteMode(){return S.mode==="note";}
@@ -199,17 +202,79 @@ function markedItems(){return items().filter(q=>markOf(q));}          /* 정리 
 function noteDone(){return markedItems().filter(q=>S.reason[q.no]).length;}
 function answeredCount(){return items().filter(q=>S.ans[q.no]!=null&&S.ans[q.no]!=="").length;}
 function setProg(){const m=S.screen==="note"?markedItems().length:0;
- el("pbar").style.width=(["login","signup","exam","custom"].includes(S.screen)?0:["result","cdone"].includes(S.screen)?100:
+ el("pbar").style.width=(["login","signup","profile","exam","custom"].includes(S.screen)?0:["result","cdone"].includes(S.screen)?100:
   S.screen==="quiz"?answeredCount()/30*100:
   S.screen==="note"?(m?20+noteDone()/m*70:15):8)+"%";}
 function render(){setProg();const lightScr=S.screen==='quiz'||S.screen==='note';
  document.body.classList.toggle('qlight',lightScr);
  /* 루트에도 같이 알려준다 — 브라우저 다크 모드가 밝은 화면을 강제로 어둡게 칠해 색이 뭉개지는 것을 막는다 */
  document.documentElement.style.colorScheme=lightScr?'light':'dark';
- const tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content',lightScr?'#f5f7fb':'#05060f');const custS=["custom","cdone"].includes(S.screen);el("subttl").textContent=(["login","signup","exam"].includes(S.screen)?"AI 오답노트":custS?"모의고사 직접입력 · AI 오답노트":EXAM.title+" · AI 오답노트")+(S.profile&&!["login","signup","exam","custom","cdone"].includes(S.screen)?` · ${S.profile.subject}`:"");({login:login,signup:signup,exam:examSelect,intro:intro,quiz:quiz,note:noteScreen,result:result,custom:customForm,cdone:customResult}[S.screen])();
+ const tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content',lightScr?'#f5f7fb':'#05060f');const custS=["custom","cdone"].includes(S.screen);el("subttl").textContent=(["login","signup","profile","exam"].includes(S.screen)?"AI 오답노트":custS?"모의고사 직접입력 · AI 오답노트":EXAM.title+" · AI 오답노트")+(S.profile&&!["login","signup","profile","exam","custom","cdone"].includes(S.screen)?` · ${curSubject()}`:"");({login:login,signup:signup,profile:profileScreen,exam:examSelect,intro:intro,quiz:quiz,note:noteScreen,result:result,custom:customForm,cdone:customResult}[S.screen])();
  /* 하단 고정 버튼이 없는 화면은 아래 여백을 줄인다 */
  const app=document.querySelector(".app");if(app)app.classList.toggle("nofab",!el("fab").innerHTML.trim());
  syncHist();}
+
+/* ---------- 내 정보 (로컬 + 서버) ----------
+   로컬 프로필(ds_students)이 없으면 가입 화면이 뜬다. 그런데 /my/ 로그인은 이걸
+   저장하지 않았기 때문에, 마이페이지에서 '수정하기'로 넘어온 사람이 이미 가입돼
+   있는데도 가입 화면을 다시 채웠고 그때마다 같은 번호로 빈 계정이 생겼다.
+   (2026-08-12 11행 병합 · 백엔드 v8과 DB 부분 UNIQUE 인덱스로도 함께 막는다)
+   토큰이 있으면 서버(/profile)에서 받아 되살린다 — 가입 화면을 띄우지 않는다. */
+function saveProfile(p){
+ const all=LS.get("ds_students")||{};const prev=all[S.phone]||{};
+ const id=prev.id||S.studentId||("stu_"+S.phone);
+ all[S.phone]={id:id,phone:S.phone,profile:p,consent_at:prev.consent_at||new Date().toISOString()};
+ LS.set("ds_students",all);S.profile=p;S.studentId=id;
+}
+async function fetchProfile(){
+ if(!CONFIG.api||!TK.has())return null;
+ try{const j=await api("/profile");return (j&&j.profile&&j.profile.subject)?j.profile:null;}catch(_){return null;}
+}
+async function recoverProfile(){
+ if(S.profile&&S.profile.subject)return true;
+ if(!TK.has())return false;
+ const tph=localStorage.getItem("ds_tk_ph");if(tph&&tph!==S.phone)return false;
+ const p=await fetchProfile();if(!p)return false;
+ saveProfile({name:p.name||"",academy:p.academy||"",grade:p.grade||"",subject:p.subject});
+ return true;
+}
+
+/* ---------- 내 정보 수정 ----------
+   선택과목은 바뀔 수 있다(확통↔미적분). 바뀌면 다음 회차부터 문항 세트가 달라진다.
+   이미 저장한 회차의 기록은 그대로 남는다 — 저장할 때의 area가 응답에 함께 들어가 있다. */
+function profileScreen(){
+ const cur=S.profile||{name:"",academy:"",grade:"",subject:""};
+ const p=S._pp||(S._pp={name:cur.name||"",academy:cur.academy||"",grade:cur.grade||"",subject:cur.subject||""});
+ const preset=ACADEMIES.indexOf(p.academy)>=0||p.academy==="비재원생";
+ if(S._paMode===undefined)S._paMode=(p.academy&&!preset)?"etc":"preset";
+ el("screen").innerHTML=`<div class="pad"><div style="margin-bottom:8px"><span class="rchip" data-pback="1" style="cursor:pointer">← 돌아가기</span></div>
+ <div class="h">내 정보</div><div class="desc">선택과목을 바꾸면 <b>다음에 입력하는 회차부터</b> 문항 세트가 바뀌어요. 이미 저장한 회차 기록은 그대로 남아요.</div>
+ <div class="field"><label>이름</label><input class="txt" id="pnm" placeholder="이름" value="${esc(p.name)}"></div>
+ <div class="field"><label>학원 선택</label><div class="acg">${ACADEMIES.map(a=>`<button data-pac="${a}" class="${S._paMode!=='etc'&&p.academy===a?'on':''}">${a}</button>`).join("")}<button data-pac="__etc" class="full ${S._paMode==='etc'?'on':''}">기타 (직접 입력)</button><button data-pac="비재원생" class="full ${S._paMode!=='etc'&&p.academy==='비재원생'?'on':''}">비재원생</button></div>${S._paMode==='etc'?`<input class="txt" id="pac" placeholder="학원명을 직접 입력하세요" value="${esc(p.academy)}" style="margin-top:8px">`:``}</div>
+ <div class="field"><label>구분</label><div class="seg"><button data-pg="재수생" class="${p.grade==='재수생'?'on':''}">재수생(N수)</button><button data-pg="고3" class="${p.grade==='고3'?'on':''}">고3</button></div></div>
+ <div class="field"><label>수학 선택과목</label><div class="seg"><button data-ps="미적분" class="${p.subject==='미적분'?'on':''}">미적분</button><button data-ps="확통" class="${p.subject==='확통'?'on':''}">확률과통계</button></div>
+ ${cur.subject&&p.subject&&p.subject!==cur.subject?`<div style="font-size:12px;color:var(--no);margin-top:6px;line-height:1.5">선택과목을 <b>${esc(cur.subject)} → ${esc(p.subject)}</b>로 바꿉니다.</div>`:``}</div>
+ <div id="perr" style="font-size:12.5px;color:var(--no);min-height:18px"></div></div>`;
+ el("pnm").oninput=e=>{p.name=e.target.value;el("psave").disabled=!pok();};
+ if(el("pac"))el("pac").oninput=e=>{p.academy=e.target.value;el("psave").disabled=!pok();};
+ document.querySelectorAll("[data-pac]").forEach(b=>b.onclick=()=>{if(b.dataset.pac==="__etc"){S._paMode="etc";p.academy="";}else{S._paMode="preset";p.academy=b.dataset.pac;}render();});
+ document.querySelectorAll("[data-pg]").forEach(b=>b.onclick=()=>{p.grade=b.dataset.pg;render();});
+ document.querySelectorAll("[data-ps]").forEach(b=>b.onclick=()=>{p.subject=b.dataset.ps;render();});
+ const back=()=>{S._pp=null;S._paMode=undefined;S.catSel=null;S.screen="exam";render();window.scrollTo(0,0);};
+ const bk=document.querySelector("[data-pback]");if(bk)bk.onclick=back;
+ function pok(){return !!(p.name&&p.academy&&p.grade&&p.subject);}
+ el("fab").innerHTML=`<button class="btn" id="psave" ${pok()?"":"disabled"}>저장하기</button>`;
+ el("psave").onclick=async()=>{if(!pok())return;
+   const btn=el("psave");btn.disabled=true;btn.textContent="저장 중…";
+   let serverOk=true;
+   if(CONFIG.api&&TK.has()){
+     try{await api("/profile",{method:"POST",body:{name:p.name,academy:p.academy,grade:p.grade,subject:p.subject}});}
+     catch(e){serverOk=false;}
+   }
+   saveProfile({name:p.name,academy:p.academy,grade:p.grade,subject:p.subject});
+   if(!serverOk){el("perr").textContent="이 기기에는 저장했지만 서버 반영은 실패했어요. 잠시 뒤 다시 시도해 주세요.";btn.disabled=false;btn.textContent="저장하기";return;}
+   back();};
+}
 
 /* ---------- 로그인 ---------- */
 function login(){el("screen").innerHTML=`<div class="pad"><div style="margin-bottom:8px"><a href="/" style="color:#94a3b8;font-size:13px;text-decoration:none">← 델타스킬 홈</a></div><div class="h">AI 오답노트 작성</div>
@@ -217,11 +282,18 @@ function login(){el("screen").innerHTML=`<div class="pad"><div style="margin-bot
  <div class="field"><label>휴대폰 번호</label><input class="txt" id="ph" inputmode="numeric" placeholder="01000000000" value="${S.phone}"></div></div>`;
  el("ph").oninput=e=>S.phone=e.target.value.replace(/[^0-9]/g,"");
  el("fab").innerHTML=`<button class="btn" id="go">시작하기</button>`;
- el("go").onclick=()=>{if(S.phone.length<10){alert("휴대폰 번호를 정확히 입력하세요");return;}
+ el("go").onclick=async()=>{if(S.phone.length<10){alert("휴대폰 번호를 정확히 입력하세요");return;}
    localStorage.setItem("ds_phone",S.phone);
    const st=(LS.get("ds_students")||{})[S.phone];
-   if(st){S.profile=st.profile;S.studentId=st.id;S.catSel=null;S.screen="exam";}
-   else{S.screen="signup";}render();window.scrollTo(0,0);};}
+   if(st&&st.profile&&st.profile.subject){S.profile=st.profile;S.studentId=st.id;S.catSel=null;S.screen="exam";}
+   else{
+     /* 이 기기에 프로필이 없어도 이미 가입된 번호면 가입 화면을 띄우지 않는다 —
+        다시 가입시키면 같은 번호로 계정이 하나 더 생긴다 (2026-08-12 사고) */
+     S.profile=null;el("go").disabled=true;el("go").textContent="확인 중…";
+     const okp=await recoverProfile();
+     if(okp){S.catSel=null;S.screen="exam";}else{S.screen="signup";}
+   }
+   render();window.scrollTo(0,0);};}
 
 /* ---------- 가입 + 동의 ---------- */
 function signup(){const p=S.profile||{name:"",academy:"",grade:"",subject:""};S._p=p;S._consent=S._consent||false;S._consent2=S._consent2||false;
@@ -262,11 +334,12 @@ function signup(){const p=S.profile||{name:"",academy:"",grade:"",subject:""};S.
 /* ---------- 시험 선택 ---------- */
 function examSelect(){
  if(S.catSel==null){
-  el("screen").innerHTML=`<div class="pad"><div style="margin-bottom:8px"><a href="/" style="color:#94a3b8;font-size:13px;text-decoration:none">← 델타스킬 홈</a> · <span class="rchip" onclick="location.href='/my/'" style="cursor:pointer">내 오답노트</span> · <span class="rchip" data-relogin="1" style="cursor:pointer">다른 번호로 로그인</span></div><div class="h">어떤 시험인가요?</div>
+  el("screen").innerHTML=`<div class="pad"><div style="margin-bottom:8px"><a href="/" style="color:#94a3b8;font-size:13px;text-decoration:none">← 델타스킬 홈</a> · <span class="rchip" onclick="location.href='/my/'" style="cursor:pointer">내 오답노트</span> · <span class="rchip" data-prof="1" style="cursor:pointer">⚙︎ 내 정보</span> · <span class="rchip" data-relogin="1" style="cursor:pointer">다른 번호로 로그인</span></div><div class="h">어떤 시험인가요?</div>
  <div class="desc">응시한 모의고사의 분류를 먼저 선택하세요. 이전에 본 시험도 입력할 수 있어요.</div>`+
   CATS.map((c,i)=>{const n=c.exams.filter(e=>e.ex!=null).length;const sub=c.custom?"내가 본 다른 모의고사를 직접 기록해요":`${c.desc} · 입력 가능 ${n}개${n<c.exams.length?` / 준비 중 ${c.exams.length-n}개`:''}`;return `<button class="q" style="width:100%;text-align:left;cursor:pointer" data-cat="${i}"><div class="qh" style="margin-bottom:2px"><span style="font-weight:800;font-size:15.5px">${c.name}</span><span style="margin-left:auto;color:var(--mut2)">${c.custom?'✏️':'→'}</span></div><div style="font-size:12px;color:var(--mut)">${sub}</div></button>`;}).join("")+`</div>`;
+  const pf=document.querySelector("[data-prof]");if(pf)pf.onclick=()=>{S._pp=null;S._paMode=undefined;S.screen="profile";render();window.scrollTo(0,0);};
   const rl=document.querySelector("[data-relogin]");if(rl)rl.onclick=()=>{localStorage.removeItem("ds_phone");TK.clear();S.phone="";S.profile=null;S._pin="";S._pin2="";S.screen="login";render();window.scrollTo(0,0);};
-  document.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>{const i=+b.dataset.cat;if(CATS[i].custom){S._cName="";S._cDate=(new Date()).toISOString().slice(0,10);S._cSub=S.profile.subject;S._cScore="";S._cWrong={};S.photo={};S.savedSubId=null;S.savedExam=null;S.saveMode=null;S._forceNew=false;S._updWarn=null;S._editMode=false;S.mode=null;S.mark={};S.open=null;S.screen="custom";render();window.scrollTo(0,0);return;}S.catSel=i;render();window.scrollTo(0,0);});
+  document.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>{const i=+b.dataset.cat;if(CATS[i].custom){S._cName="";S._cDate=(new Date()).toISOString().slice(0,10);S._cSub=S.profile.subject;S._cScore="";S._cWrong={};S.photo={};S.savedSubId=null;S.savedExam=null;S.saveMode=null;S._forceNew=false;S._updWarn=null;S._editMode=false;S._subjOv=null;S.mode=null;S.mark={};S.open=null;S.screen="custom";render();window.scrollTo(0,0);return;}S.catSel=i;render();window.scrollTo(0,0);});
   el("fab").innerHTML="";return;
  }
  const c=CATS[S.catSel];
@@ -277,7 +350,7 @@ function examSelect(){
   return `<div class="q" style="width:100%;opacity:.55"><div class="qh" style="margin-bottom:2px"><span style="font-weight:800;font-size:15.5px;color:var(--mut)">${e.title}</span><span class="badge" style="margin-left:auto;background:rgba(255,255,255,.06);color:var(--mut2)">준비 중</span></div><div style="font-size:12px;color:var(--mut)">${e.note||"준비 중 — 곧 열려요"}</div></div>`;
  }).join("")+`</div>`;
  document.querySelectorAll("[data-back]").forEach(b=>b.onclick=()=>{history.back();});
- document.querySelectorAll("[data-ex]").forEach(b=>b.onclick=async()=>{EXAM=EXAMS[+b.dataset.ex];await injectSteps();S.attempt=await calcAttempt(EXAM.code);S.savedSubId=null;S.savedExam=null;S.saveMode=null;S._forceNew=false;S._updWarn=null;S._editMode=false;S.mode=null;S.mark={};S.open=null;S.ans={};S.reason={};S.conf={};S.memo={};S.step={};S.photo={};S.screen="intro";render();window.scrollTo(0,0);});
+ document.querySelectorAll("[data-ex]").forEach(b=>b.onclick=async()=>{EXAM=EXAMS[+b.dataset.ex];await injectSteps();S.attempt=await calcAttempt(EXAM.code);S.savedSubId=null;S.savedExam=null;S.saveMode=null;S._forceNew=false;S._updWarn=null;S._editMode=false;S._subjOv=null;S.mode=null;S.mark={};S.open=null;S.ans={};S.reason={};S.conf={};S.memo={};S.step={};S.photo={};S.screen="intro";render();window.scrollTo(0,0);});
  el("fab").innerHTML="";}
 
 /* ---------- 진단 인트로 ---------- */
@@ -465,6 +538,10 @@ async function resolveSubId(examCode){
 async function loadSubmission(subId){
  const j=await api("/submission?id="+encodeURIComponent(subId));
  const rs=(j&&(j.responses||j.items))||[];
+ /* 저장된 응답의 area 로 이 회차의 선택과목을 되살린다 */
+ const A=rs.map(r=>String((r&&r.area)||""));
+ const nMi=A.filter(a=>a.indexOf("미적")>=0).length, nHw=A.filter(a=>a.indexOf("확률")>=0||a.indexOf("확통")>=0).length;
+ S._subjOv=(nMi||nHw)?(nMi>=nHw?"미적분":"확통"):null;
  S.ans={};S.reason={};S.conf={};S.memo={};S.step={};S.mark={};S.open=null;
  let n=0,marks=0;
  rs.forEach(r=>{const no=r&&r.item_no;if(no==null)return;
@@ -730,6 +807,13 @@ try{history.replaceState({p:_pos()},"");}catch(e){}     // 초기 위치를 히�
  if(st&&st.profile){S.profile=st.profile;S.studentId=st.id;S.catSel=null;S.screen="exam";}
 }catch(_){}})();
 render();
+/* 이 기기에 프로필이 없어도 토큰이 살아 있으면 서버에서 받아 자동 로그인한다.
+   (예전에는 여기서 전화번호 화면에 멈췄고, 사용자가 가입을 다시 해 계정이 하나 더 생겼다) */
+(async function(){try{
+ if(/[?&](edit|profile)=/.test(location.search))return;   /* 아래 딥링크 처리기가 맡는다 */
+ if(S.screen!=="login"||!S.phone||!TK.has())return;
+ if(await recoverProfile()){S.catSel=null;S.screen="exam";render();}
+}catch(_){}})();
 /* 접근성 — onclick만 달린 span(rchip 등)을 키보드로도 조작 가능하게 (Tab 포커스 + Enter/Space) */
 (function(){
  function isInteractive(el){if(el.hasAttribute("onclick"))return true;for(var i=0;i<el.attributes.length;i++){if(el.attributes[i].name.indexOf("data-")===0)return true;}return false;}
@@ -738,12 +822,26 @@ render();
  document.addEventListener("keydown",function(e){var t=e.target;if((e.key==="Enter"||e.key===" ")&&t&&t.classList&&t.classList.contains("rchip")&&t.getAttribute("role")==="button"){e.preventDefault();t.click();}});
  stamp();
 })();
+/* 마이페이지 '내 정보'에서 넘어온 경우: /pilot/?profile=1 */
+(async function(){try{
+ if(!/[?&]profile=1/.test(location.search))return;
+ try{history.replaceState({},"","/pilot/");}catch(_){}
+ S.phone=localStorage.getItem("ds_phone")||S.phone;
+ if(!S.profile||!S.profile.subject)await recoverProfile();
+ if(!S.phone){alert("먼저 로그인해 주세요.");render();return;}
+ S._pp=null;S._paMode=undefined;S.screen="profile";render();window.scrollTo(0,0);
+}catch(e){try{render();}catch(_){}}})();
 /* 마이페이지에서 '수정하기'로 넘어온 경우: /pilot/?edit=<submission_id> */
 (async function(){try{
  const m=location.search.match(/[?&]edit=([^&]+)/);if(!m)return;
  const sid=decodeURIComponent(m[1]);
  try{history.replaceState({},"","/pilot/");}catch(_){}
- if(!TK.has()||!S.profile){alert("수정하려면 먼저 로그인해 주세요.");return;}
+ if(!TK.has()){alert("수정하려면 먼저 로그인해 주세요.");return;}
+ if(!S.profile||!S.profile.subject){
+   /* /my/ 에서 넘어오면 이 기기에 프로필이 없을 수 있다. 서버에서 받아 되살린다. */
+   S.phone=localStorage.getItem("ds_phone")||S.phone;
+   if(!await recoverProfile()){alert("수정하려면 먼저 로그인해 주세요.");return;}
+ }
  S._fromMy=true;   /* 마이페이지에서 넘어온 수정 — 완료 시 마이페이지로 복귀 */
  el("screen").innerHTML='<div class="center">저장된 회차를 불러오는 중…</div>';el("fab").innerHTML="";
  const r=await enterEditMode(sid);
