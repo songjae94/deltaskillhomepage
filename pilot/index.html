@@ -509,7 +509,7 @@ function errMsg(code){const c=(""+(code||"")).trim();
  for(const k in M){if(c===k||c.indexOf(k)===0)return M[k];}
  return c;}
 function saveStatusUI(){const apiOn=!!CONFIG.api,saved=S.saveMode==="server",failed=apiOn&&S.saveMode&&!saved,needPin=failed&&!TK.has();
- if(saved)return{html:`<div class="saved">✅ 델타스킬 서버에 저장됐어요 · 매주 쌓여 학습 경로가 됩니다${S._updWarn?`<div style="font-size:11.5px;color:var(--mut2);margin-top:4px">(수정 반영은 실패해 새 회차로 저장했어요 · ${esc(S._updWarn)})</div>`:``}</div>`,saved:true};
+ if(saved)return{html:`<div class="saved">✅ 델타스킬 서버에 저장됐어요 · 매주 쌓여 학습 경로가 됩니다${S._updWarn?`<div style="font-size:11.5px;color:var(--mut2);margin-top:4px">(수정 반영은 실패해 새 회차로 저장했어요 · ${esc(S._updWarn)})</div>`:``}${S._syncWarn?`<div style="font-size:11.5px;color:var(--no);margin-top:4px">⚠ 저장은 됐지만 ${esc(S._syncWarn)}</div>`:``}</div>`,saved:true};
  if(failed)return{html:`<div class="saved demo" style="border-color:rgba(240,128,108,.6);align-items:flex-start"><div style="flex:1;line-height:1.6">⚠️ <b>${S.savedSubId?"수정 내용이 반영되지 않았어요.":"아직 저장되지 않았어요."}</b> ${S.savedSubId?"아래 <b>저장하기</b>로 다시 시도해 주세요. (중복 회차는 생기지 않아요)":"아래 <b>저장하기</b> 버튼을 눌러 주세요."}${(S.saveMode&&(""+S.saveMode).indexOf("error:")===0)?`<div style="font-size:11.5px;color:var(--mut2);margin-top:4px">${esc(errMsg((""+S.saveMode).slice(6)))}${S._saveTries?` · ${S._saveTries}번째 시도 실패 ${esc(S._lastTry||"")}`:``}</div>`:``}${needPin?`<div style="margin-top:8px;font-size:12.5px">저장 확인용 <b>비밀번호(숫자 4자리)</b>를 입력하세요<input class="txt" id="savePin" type="password" inputmode="numeric" maxlength="4" placeholder="숫자 4자리" value="${esc(S._pin||'')}" style="margin-top:6px;width:100%"></div>`:``}</div></div>`,saved:false};
  return{html:`<div class="saved demo">저장 완료(데모=브라우저)</div>`,saved:false};}
 function saveFab(saved,onSave,onEdit){
@@ -573,10 +573,15 @@ async function saveAll(res,examCode){examCode=examCode||EXAM.code;
      /* 이미 서버에 저장된 회차 — 새 회차를 만들지 않고 덮어쓴다.
         실패하면 조용히 새 회차를 만들지 않는다(중복 방지) — 사유를 보여주고 사용자가 선택. */
      S.savedSubId=target;S.savedExam=examCode;
-     await api("/submit-update",{method:"POST",body:{submission_id:target,score:res.score,responses:res.responses}});
+     const uj=await api("/submit-update",{method:"POST",body:{submission_id:target,score:res.score,responses:res.responses}});
      subId=target;S._updWarn=null;
+     /* 새 핸들러의 검산 결과 — 정리 실패나 개수 불일치(유령 응답)는 성공으로 위장하지 않고 표시한다.
+        구 핸들러는 이 필드가 없으므로 둘 다 숫자일 때만 비교. */
+     S._syncWarn=null;
+     if(uj&&uj.stale_cleanup==="failed")S._syncWarn="예전 답안 일부가 서버에 함께 남았을 수 있어요 (운영자에게 알려주세요)";
+     else if(uj&&typeof uj.saved==="number"&&typeof uj.stored==="number"&&uj.saved!==uj.stored)S._syncWarn="보낸 "+uj.saved+"문항과 서버에 남은 "+uj.stored+"문항이 달라요 (운영자에게 알려주세요)";
    }else{
-     subId=await doSubmitNew();
+     subId=await doSubmitNew();S._syncWarn=null;
      if(S._forceNew){S._forceNew=false;S._updWarn=null;}
    }
    rememberSubId(examCode,S.attempt,subId);HISTC=null;
