@@ -77,7 +77,7 @@
 - 인증: 자체 토큰의 SHA-256 해시를 RPC `auth_verify`로 검증. `auth_enroll`·`auth_login`(레이트리밋 포함)·`auth_revoke_all`·`my_history`·`my_submission`·`my_photo_ok` RPC 사용.
 - **`review_items` 테이블(간격반복 복습 원장)이 `responses.id`를 FK(NO ACTION)로 참조** — responses를 함부로 DELETE하면 막히거나 복습 이력이 끊긴다. `/submit-update`가 UPSERT인 이유.
 - `responses(submission_id, item_no)` unique index `responses_sub_item_uniq` 존재 (UPSERT 전제조건).
-- 프로젝트: `deltaskill-pilot`(ref cvlrphtupjmaefahodgz, 서울 ap-northeast-2, Free 플랜 — **자동 백업 없음**). 같은 조직의 `deltaskill` 프로젝트는 옛것(일시정지 상태).
+- 프로젝트: `deltaskill-pilot`(ref cvlrphtupjmaefahodgz, 서울 ap-northeast-2). 조직은 **Pro 플랜**(2026-08-12 업그레이드) — 일일 자동 백업 7일 보관(매일 KST 0시 33분경), PITR은 미사용. 같은 조직의 `deltaskill` 프로젝트는 옛것(일시정지 상태 — resume하면 과금되니 그대로 둘 것).
 
 ## 작업 이력
 
