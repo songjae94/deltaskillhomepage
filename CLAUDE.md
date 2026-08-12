@@ -71,7 +71,20 @@
 - 오답 원인은 5개: 개념 모름 · 계산 실수 · 접근 안 떠오름 · 시간 부족 · 아는데 실수
   ("안 배움"은 "개념 모름"과 중복이라 제거. 단 기존 기록용으로 `REASONFIX` 매핑은 남겨 둠).
 
+## 백엔드 구조 (2026-08-12 확인)
+
+- Edge Function `api`(v7, 파일명 `deltaskill_api_index_v3_upsert.ts`)는 **supabase-js(PostgREST REST) + service_role 키**로 DB에 접근 — Postgres 직결(5432/6543) 아님. 클라이언트는 모듈 스코프 전역 1회 생성이라 연결 고갈 위험 없음.
+- 인증: 자체 토큰의 SHA-256 해시를 RPC `auth_verify`로 검증. `auth_enroll`·`auth_login`(레이트리밋 포함)·`auth_revoke_all`·`my_history`·`my_submission`·`my_photo_ok` RPC 사용.
+- **`review_items` 테이블(간격반복 복습 원장)이 `responses.id`를 FK(NO ACTION)로 참조** — responses를 함부로 DELETE하면 막히거나 복습 이력이 끊긴다. `/submit-update`가 UPSERT인 이유.
+- `responses(submission_id, item_no)` unique index `responses_sub_item_uniq` 존재 (UPSERT 전제조건).
+- 프로젝트: `deltaskill-pilot`(ref cvlrphtupjmaefahodgz, 서울 ap-northeast-2, Free 플랜 — **자동 백업 없음**). 같은 조직의 `deltaskill` 프로젝트는 옛것(일시정지 상태).
+
 ## 작업 이력
+
+**2026-08-12**
+- 백엔드 진단(코드·스키마 직접 확인): `/submit-update`의 `update_failed_delete` 원인 확정 — 구버전 DELETE→INSERT의 DELETE를 `review_items` FK가 차단한 것. 운영자가 8/11 배포한 v3 UPSERT 핸들러로 해결됐고, 배포 후 실사용 수정 저장 4건 성공·유령 응답 0건·고아 review_items 0건 확인.
+- 실서버 점검: 전 페이지가 main(b930600)과 일치, apex→www 301 정상.
+- 참고: v3 핸들러는 검산 필드(saved/stored/stale_cleanup)를 반환하지 않음 — 프론트(b930600)는 필드가 없으면 경고를 생략하므로 호환. 정리 실패를 알리려면 백엔드에 필드 추가 필요(선택 과제).
 
 **2026-08-11**
 - pilot: **채점/오답노트 분리** (위 표), 인트로를 누르는 카드 2개로 교체, 오답 원인 5개로 정리.
@@ -87,10 +100,9 @@
 
 ## 미해결 (다음 세션에서 확인할 것)
 
-1. **`/submit-update`가 `update_failed_delete`로 실패** — UPSERT 방식 v2 핸들러와 진단 SQL을 운영자에게 전달함. `responses(submission_id,item_no)` unique index 필요. 배포·재테스트 미확인.
-2. **skills.json 20회차 중 6회차가 파일럿에 미등재** (JQ27_01·02·03·0701·0702, SU27_06) — 등재하려면 배점·유형·정답·tc가 담긴 EXAMS 데이터가 필요하고, 그건 Cowork에서 받아야 한다.
-3. **기하 트랙이 14회차에 존재** — 위 "기하 등재 금지" 규칙과 충돌. 규칙을 고칠지 데이터를 뺄지 미결.
-4. 404 페이지 없음 · sitemap lastmod 낡음 · GA가 메인/리포트에만 설치됨.
+1. **skills.json 20회차 중 6회차가 파일럿에 미등재** (JQ27_01·02·03·0701·0702, SU27_06) — 등재하려면 배점·유형·정답·tc가 담긴 EXAMS 데이터가 필요하고, 그건 Cowork에서 받아야 한다.
+2. **기하 트랙이 14회차에 존재** — 위 "기하 등재 금지" 규칙과 충돌. 규칙을 고칠지 데이터를 뺄지 미결.
+3. 404 페이지 없음 · sitemap lastmod 낡음 · GA가 메인/리포트에만 설치됨.
 
 ## 작업 규칙
 
