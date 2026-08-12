@@ -79,12 +79,31 @@
 - `responses(submission_id, item_no)` unique index `responses_sub_item_uniq` 존재 (UPSERT 전제조건).
 - 프로젝트: `deltaskill-pilot`(ref cvlrphtupjmaefahodgz, 서울 ap-northeast-2). 조직은 **Pro 플랜**(2026-08-12 업그레이드) — 일일 자동 백업 7일 보관(매일 KST 0시 33분경), PITR은 미사용. 같은 조직의 `deltaskill` 프로젝트는 옛것(일시정지 상태 — resume하면 과금되니 그대로 둘 것).
 
+## 기관용(파일럿2) 데이터 — 2026-08-12 확인
+
+**`admin-api`(Edge Function, v4)가 이미 기관 백엔드의 절반이다.** `admins(role, academy)` + `admin_sessions`(토큰 해시·12시간 만료) + `admin_login`·`rl_hit` RPC + **서버측 학원 범위 강제**(`role='academy'`면 `students.academy` 밖을 못 봄). 관리자 계정은 현재 **1개, `role='owner'`**(운영자 본인).
+
+| 테이블 | 내용 | 배포된 API가 읽는가 |
+|---|---|---|
+| `official_scores` | **운영자가 강사로서 보유한 한 학원의 성적 명단.** 623행(OMEGA_5·6·7·8) + JEONDAE_7 218행. 202명. `class`(I1~I11·일산 01~11반), `math_type`, `korean`/`english`/`math`, `math_grade_est`, **`student_no`(학번, 2026-08-12 추가)** | ✗ (v4 기준) |
+| `item_stats` | 문항별 `correct_rate` + `c1`~`c5`(**선택지별 선택률 — 정답 포함**). OMEGA_5~8 확통·미적분만 238행 | ✗ (v4 기준) |
+| `review_tokens`·`notify_log` | 미사용(0행) | ✗ |
+
+- **원본은 회차마다 엑셀 2개**: 성적(`DB` 시트 + 반별 시트 + 평균) · 문항분석(과목별 시트, 7회는 `DB` 통합). 원본에는 **학번·탐구1/2·국어유형(화작/언매)·수험번호**가 더 있고 그중 학번만 적재했다.
+- **적재 규칙: 수학 응시자만.** 원본 248/245/244/241명 → DB 184/147/137/155행으로 정확히 일치(총 623).
+- **조인 키는 `student_no`.** 이름도 원본에서 수기로 구분돼(`강건우1`·`김유찬1`) 실제로는 유일하지만, 그 규칙에 기대지 않는다.
+- ⚠️ `official_scores`는 **`role='owner'` 전용**으로 다룰 것. 학원 계정(`role='academy'`)에 열면 동의 범위 밖 개인정보 제공이 된다.
+- ⚠️ **등급컷이 프론트 하드코딩이고 회차 구분이 없다** — `my/index.html`의 `GRADE_CUTS`(확통/미적분 각 1벌)를 `estGrade(score, subj)`가 전 회차에 일괄 적용한다. 사설 모의고사에 6월 모평 컷을 씌우는 셈이라 예상 등급이 부정확하다. 회차별 컷 테이블이 필요하다.
+- 기하: 문항분석에 3회차 모두 존재하고 실제 선택 학생도 있다(I2·I4·I11) — "기하 등재 금지" 규칙과 충돌(미해결 #2).
+
 ## 작업 이력
 
 **2026-08-12**
 - 백엔드 진단(코드·스키마 직접 확인): `/submit-update`의 `update_failed_delete` 원인 확정 — 구버전 DELETE→INSERT의 DELETE를 `review_items` FK가 차단한 것. 운영자가 8/11 배포한 v3 UPSERT 핸들러로 해결됐고, 배포 후 실사용 수정 저장 4건 성공·유령 응답 0건·고아 review_items 0건 확인.
 - 실서버 점검: 전 페이지가 main(b930600)과 일치, apex→www 301 정상.
 - 참고: v3 핸들러는 검산 필드(saved/stored/stale_cleanup)를 반환하지 않음 — 프론트(b930600)는 필드가 없으면 경고를 생략하므로 호환. 정리 실패를 알리려면 백엔드에 필드 추가 필요(선택 과제).
+- 기관 데이터 조사(위 절 참고) + `official_scores.student_no` 컬럼 추가·백필(623행 전부, 미매칭 0).
+- 파일럿2 방향 확정: **데모(`/pilot2/*`)는 가상 데이터로 유지**하고, 실데이터는 `/admin/`(admin-api 확장)에 짓는다. 첫 대상은 **live(단과) · I1·I2·I5 3개 반**(87명, 성적 스펙트럼 80.5/72.6/48.7, I5에 급락 알림이 실제로 켜짐).
 
 **2026-08-11**
 - pilot: **채점/오답노트 분리** (위 표), 인트로를 누르는 카드 2개로 교체, 오답 원인 5개로 정리.
