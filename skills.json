@@ -11919,5 +11919,741 @@
     ]
    }
   }
+ },
+ "DSP-27-M03": {
+  "공통": {
+   "9": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "불연속·꺾인점이 다른 인자의 영점과 곱해져 상쇄되는 조건을 찾는다",
+      "code": "KINK-CANCEL",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "10": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "도형 급수에서 앵커 조건으로 닮음비를 방정식화한다",
+      "code": "GEOM-ANCHOR",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "11": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "원래 합/적분과 절댓값 합/적분의 합·차로 음수부를 복원한다",
+      "code": "SIGNED-SPLIT",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "12": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "각을 최소 변수 집합으로 회계하고 덧셈정리·차수로 역산한다",
+      "code": "ANGLE-LEDGER",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "13": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "넓이·적분값·누적 결과에서 함수·계수를 역산해 확정한다",
+      "code": "INV-AREA",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "14": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "2n/2n+1형 첨자를 이진 경로로 역추적한다(블록합 포함)",
+      "code": "BIN-INDEX",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "15": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "수평선이 극값 높이를 지날 때 교점 수가 점프하는 것을 임계값으로 센다",
+      "code": "LEVEL-JUMP",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "20": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "대칭축·반전 치환으로 항을 쌍으로 묶어 소거·반감한다",
+      "code": "FLIP-SYM",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "21": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "발산 성분을 상쇄시켜 수렴을 강제하고 최고차로 극한을 맞춘다",
+      "code": "LIMIT-FIT",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "22": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "초월 교점을 풀지 않고 기준점·기준선 사이에 끼워 부등식을 판정한다",
+      "code": "GRAPH-SANDWICH",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   }
+  },
+  "확통": {
+   "28": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "함숫값 다중집합 패턴을 확정한 뒤 같은 것 있는 순열로 배치한다",
+      "code": "MULTISET-PERM",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "29": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "한 종류의 배치가 다른 종류의 하한을 정하고, 하한을 빼 중복조합",
+      "code": "MINIMA-STARS",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "30": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "이웃 강제는 블록 묶기, 이웃 금지는 갭 배치로 센다",
+      "code": "BLOCK-GAP",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   }
+  },
+  "미적분": {
+   "28": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "발산 성분을 상쇄시켜 수렴을 강제하고 최고차로 극한을 맞춘다",
+      "code": "LIMIT-FIT",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "29": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "발산 성분을 상쇄시켜 수렴을 강제하고 최고차로 극한을 맞춘다",
+      "code": "LIMIT-FIT",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "30": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "수평선이 극값 높이를 지날 때 교점 수가 점프하는 것을 임계값으로 센다",
+      "code": "LEVEL-JUMP",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   }
+  }
+ },
+ "DSP-27-M04": {
+  "공통": {
+   "9": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "합성·곱의 미분 구조를 인수분해해 해집합을 분리한다",
+      "code": "CHAIN-COMPOSE",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "10": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "원래 합/적분과 절댓값 합/적분의 합·차로 음수부를 복원한다",
+      "code": "SIGNED-SPLIT",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "11": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "부호 변화·단조가 조각식과 다음 분기를 연쇄적으로 잠근다",
+      "code": "SIGN-LOCK",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "12": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "부분합·누적식을 차분해 일반항을 뽑는다(+n=1 검산)",
+      "code": "DIFF-SEQ",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "13": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "발산 성분을 상쇄시켜 수렴을 강제하고 최고차로 극한을 맞춘다",
+      "code": "LIMIT-FIT",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "14": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "각을 최소 변수 집합으로 회계하고 덧셈정리·차수로 역산한다",
+      "code": "ANGLE-LEDGER",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "15": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "조각 경계에서 값(0차)과 기울기(1차)를 동시에 접합해 계수를 확정한다",
+      "code": "SEAM-MATCH",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "20": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "부분합·누적식을 차분해 일반항을 뽑는다(+n=1 검산)",
+      "code": "DIFF-SEQ",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "21": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "수평선이 극값 높이를 지날 때 교점 수가 점프하는 것을 임계값으로 센다",
+      "code": "LEVEL-JUMP",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "22": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "초월 교점을 풀지 않고 기준점·기준선 사이에 끼워 부등식을 판정한다",
+      "code": "GRAPH-SANDWICH",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   }
+  },
+  "확통": {
+   "28": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "기존 함수값과 새로 도입할 값을 분리해 치역 크기를 맞춘다",
+      "code": "RANGE-COUNT",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "29": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "이웃 강제는 블록 묶기, 이웃 금지는 갭 배치로 센다",
+      "code": "BLOCK-GAP",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "30": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "한 종류의 배치가 다른 종류의 하한을 정하고, 하한을 빼 중복조합",
+      "code": "MINIMA-STARS",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   }
+  },
+  "미적분": {
+   "28": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "발산 성분을 상쇄시켜 수렴을 강제하고 최고차로 극한을 맞춘다",
+      "code": "LIMIT-FIT",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "29": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "도형 급수에서 앵커 조건으로 닮음비를 방정식화한다",
+      "code": "GEOM-ANCHOR",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "30": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "로그제곱 (ln ax)²의 변곡을 내부로그=1로 즉결한다",
+      "code": "INFLECT-LOG",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   }
+  }
+ },
+ "DSP-27-M05": {
+  "공통": {
+   "9": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "수평선이 극값 높이를 지날 때 교점 수가 점프하는 것을 임계값으로 센다",
+      "code": "LEVEL-JUMP",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "10": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "부등식을 지수 파라미터화해 임계값을 추출한다",
+      "code": "EXP-PARAM",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "11": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "원래 합/적분과 절댓값 합/적분의 합·차로 음수부를 복원한다",
+      "code": "SIGNED-SPLIT",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "12": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "부분합·누적식을 차분해 일반항을 뽑는다(+n=1 검산)",
+      "code": "DIFF-SEQ",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "13": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "발산 성분을 상쇄시켜 수렴을 강제하고 최고차로 극한을 맞춘다",
+      "code": "LIMIT-FIT",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "14": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "각을 최소 변수 집합으로 회계하고 덧셈정리·차수로 역산한다",
+      "code": "ANGLE-LEDGER",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "15": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "넓이·적분값·누적 결과에서 함수·계수를 역산해 확정한다",
+      "code": "INV-AREA",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "20": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "대칭축·반전 치환으로 항을 쌍으로 묶어 소거·반감한다",
+      "code": "FLIP-SYM",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "21": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "곡선과 기준직선의 접촉 = 차함수의 중근으로 바꿔 계수를 정한다",
+      "code": "LINE-TANGENCY",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "22": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "초월 교점을 풀지 않고 기준점·기준선 사이에 끼워 부등식을 판정한다",
+      "code": "GRAPH-SANDWICH",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   }
+  },
+  "확통": {
+   "28": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "합·개수의 홀짝으로 케이스 공간을 절반 이하로 압축한다",
+      "code": "PARITY-GATE",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "29": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "기존 함수값과 새로 도입할 값을 분리해 치역 크기를 맞춘다",
+      "code": "RANGE-COUNT",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "30": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "'모두 포함/적어도 하나'를 결손 배제(여사건)로 처리한다",
+      "code": "DISTRIB-COMPLEMENT",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   }
+  },
+  "미적분": {
+   "28": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "역함수 관계(교점·대칭·미분)를 원함수 조건으로 되돌린다",
+      "code": "INV-DERIV",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "29": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "발산 성분을 상쇄시켜 수렴을 강제하고 최고차로 극한을 맞춘다",
+      "code": "LIMIT-FIT",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "30": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "합성·곱의 미분 구조를 인수분해해 해집합을 분리한다",
+      "code": "CHAIN-COMPOSE",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   }
+  }
+ },
+ "DSP-27-M07": {
+  "공통": {
+   "9": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "이동하는 고정길이 구간의 극값 위치를 경계 부등식으로 바꾼다",
+      "code": "WINDOW-EXTREME",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "10": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "각을 최소 변수 집합으로 회계하고 덧셈정리·차수로 역산한다",
+      "code": "ANGLE-LEDGER",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "11": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "원래 합/적분과 절댓값 합/적분의 합·차로 음수부를 복원한다",
+      "code": "SIGNED-SPLIT",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "12": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "부분합·누적식을 차분해 일반항을 뽑는다(+n=1 검산)",
+      "code": "DIFF-SEQ",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "13": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "수평선이 극값 높이를 지날 때 교점 수가 점프하는 것을 임계값으로 센다",
+      "code": "LEVEL-JUMP",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "14": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "대칭축·반전 치환으로 항을 쌍으로 묶어 소거·반감한다",
+      "code": "FLIP-SYM",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "15": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "조각 경계에서 값(0차)과 기울기(1차)를 동시에 접합해 계수를 확정한다",
+      "code": "SEAM-MATCH",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "20": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "초월 교점을 풀지 않고 기준점·기준선 사이에 끼워 부등식을 판정한다",
+      "code": "GRAPH-SANDWICH",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "21": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "발산 성분을 상쇄시켜 수렴을 강제하고 최고차로 극한을 맞춘다",
+      "code": "LIMIT-FIT",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "22": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "2n/2n+1형 첨자를 이진 경로로 역추적한다(블록합 포함)",
+      "code": "BIN-INDEX",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   }
+  },
+  "확통": {
+   "28": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "한 종류의 배치가 다른 종류의 하한을 정하고, 하한을 빼 중복조합",
+      "code": "MINIMA-STARS",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "29": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "정규·밀도의 대칭성(z 대칭·규격화)으로 모수를 확정한다",
+      "code": "NORM-SYM",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "30": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "다단계 시행에서 조건부확률을 약분 먼저·역추적으로 처리한다",
+      "code": "COND-TRIAL",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   }
+  },
+  "미적분": {
+   "28": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "곡선과 기준직선의 접촉 = 차함수의 중근으로 바꿔 계수를 정한다",
+      "code": "LINE-TANGENCY",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "29": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "도형 급수에서 앵커 조건으로 닮음비를 방정식화한다",
+      "code": "GEOM-ANCHOR",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   },
+   "30": {
+    "steps": [],
+    "uses": [
+     {
+      "skill": "대칭축·반전 치환으로 항을 쌍으로 묶어 소거·반감한다",
+      "code": "FLIP-SYM",
+      "step": 1
+     }
+    ],
+    "anchors": []
+   }
+  }
  }
 }
