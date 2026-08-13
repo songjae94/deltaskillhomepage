@@ -325,7 +325,7 @@ A(2.59)와 D(2.47)는 서로 정합인데 **C(3.17)만 위로 밀려 있다.** �
 - **두 리포다.** `deltaskillhomepage`(공개) = 홈페이지 코드. `deltaskill-ops`(비공개) = 백엔드
   소스·DB 마이그레이션·스크립트·live2 평문 원본. 공개 리포에 못 넣는 것이 전부 ops로 간다.
   → `github.com/songjae94/deltaskill-ops` · 그 리포의 규칙은 `deltaskill-ops/CLAUDE.md`.
-  **세션을 이어받았다면 `deltaskill-ops/docs/로컬-세션-인수인계-0813.md` 를 먼저 읽는다** —
+  **세션을 이어받았다면 `deltaskill-ops/docs/코워크-인수인계-0813.md` 를 먼저 읽는다** —
   지금 무엇이 끝났고 다음이 무엇인지가 거기 있다.
 - **`deltamap.json` 을 건드렸으면 배포 전에 게이트를 돌린다.**
   `python3 ../deltaskill-ops/scripts/check_steps_vs_answers.py .`
