@@ -96,15 +96,16 @@ const TK = { get:()=>localStorage.getItem("ds_tk")||"", set:(t,ph)=>{localStorag
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const pct = (n,d)=> d ? Math.round(100*n/d)+"%" : "-";
 
-/* 문항별 요구 스킬 (계류) — /skills.json 하나에서 불러온다. 회차 추가 시 그 파일만 교체. */
-let ITEM_SKILLS = {};
-const skillsReady = fetch("/deltamap.json",{cache:"no-store"}).then(r=>r.json()).then(d=>{ITEM_SKILLS=d;}).catch(()=>{});
+/* 문항별 요구 스킬 — /deltamap.json 하나에서 불러온다. 회차 추가 시 그 파일만 교체.
+   (2026-08-12 개명: 예전 이름이 skills.json 이었다. 지금 skills.json 은 존재하지 않는다) */
+let DELTAMAP = {};
+const deltamapReady = fetch("/deltamap.json",{cache:"no-store"}).then(r=>r.json()).then(d=>{DELTAMAP=d;}).catch(()=>{});
 /* 회차별 실제 등급컷. 없는 회차는 아래 GRADE_CUTS(전국 모평 기준)로 되돌아간다. */
 let EXAM_CUTS = {};
 const cutsReady = fetch("/cuts.json",{cache:"no-store"}).then(r=>r.json()).then(d=>{EXAM_CUTS=d;}).catch(()=>{});
 
 const AREA2TRACK = {"수학Ⅰ":"공통","수학Ⅱ":"공통","공통":"공통","미적분(선택)":"미적분","미적분":"미적분","확률과통계":"확통","확률과 통계":"확통","확통":"확통","기하":"기하"};
-function skillsOf(exam,area,no){const E=ITEM_SKILLS[exam];if(!E)return null;const n=+no;if(n>=1&&n<=22&&E["공통"]&&E["공통"][no])return E["공통"][no];const tr=AREA2TRACK[area]||area;return (E[tr]&&E[tr][no])||null;}
+function skillsOf(exam,area,no){const E=DELTAMAP[exam];if(!E)return null;const n=+no;if(n>=1&&n<=22&&E["공통"]&&E["공통"][no])return E["공통"][no];const tr=AREA2TRACK[area]||area;return (E[tr]&&E[tr][no])||null;}
 function useName(u){return typeof u==="string"?u:((u&&u.skill)||"");}
 function skillCell(exam,area,no){const s=skillsOf(exam,area,no);if(!s)return "<span class='k'>-</span>";const as=(s.anchors||[]).map(useName).filter(Boolean);const us=(s.uses||[]).map(useName).filter(Boolean);if(!as.length&&!us.length)return "<span class='k'>-</span>";const p=[];
  /* COST ○강 = 알맞은 도구를 쓰면 풀이가 크게 줄어드는 문항 → 교재 스킬로 뽑을 후보 */
@@ -222,7 +223,7 @@ function boot(){
 
 /* ---- 결과 ---- */
 async function load(){
-  const body=document.getElementById("body"); body.innerHTML="<p class='k'>불러오는 중…</p>"; await skillsReady;
+  const body=document.getElementById("body"); body.innerHTML="<p class='k'>불러오는 중…</p>"; await deltamapReady;
   let hist;
   try{ hist=await api("/history"); }catch(e){ if(e.message==="no_token"){boot();return;} body.innerHTML="<p class='bad'>불러오지 못했어요. 다시 시도해 주세요.</p>"; return; }
   const subs=hist.items||[];
@@ -283,7 +284,7 @@ async function generateReport(){
   if(rep.innerHTML.trim()){ rep.innerHTML=""; if(btn)btn.textContent="📊 분석 리포트 받기"; return; }
   if(btn){btn.disabled=true;btn.textContent="리포트 생성 중…";}
   rep.innerHTML="<p class='k'>제출한 회차를 모아 분석하고 있어요…</p>";
-  await skillsReady;
+  await deltamapReady;
   const done=(t)=>{if(btn){btn.disabled=false;btn.textContent=t;}};
   let hist; try{ hist=await api("/history"); }catch(e){ rep.innerHTML="<p class='bad'>리포트를 만들지 못했어요. 다시 시도해 주세요.</p>"; done("📊 분석 리포트 받기"); return; }
   const subs=hist.items||[];

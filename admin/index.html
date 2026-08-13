@@ -82,15 +82,16 @@ const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt
 const pct = (n, d) => d ? Math.round(100 * n / d) + "%" : "-";
 
 // ── 문항별 요구 스킬 (계류) — 오답 옆에 "이 문항이 쓰는 스킬"을 띄운다.
-//    ITEM_SKILLS[시험코드][트랙][번호] = {uses:[기본 풀이가 쓰는 스킬], anchors:[지름길]}
+//    DELTAMAP[시험코드][트랙][번호] = {uses:[기본 풀이가 쓰는 스킬], anchors:[지름길]}
 //    자동 생성 블록 — 회차 추가 시 admin/exam_item_skills.gen.json 재생성 후 교체.
-/* 요구 스킬 — /skills.json 하나에서 불러온다. 회차 추가 시 그 파일만 교체 */
-let ITEM_SKILLS = {};
-const skillsReady = fetch("/deltamap.json",{cache:"no-store"}).then(r=>r.json()).then(d=>{ITEM_SKILLS=d;}).catch(()=>{});
+/* 요구 스킬 — /deltamap.json 하나에서 불러온다. 회차 추가 시 그 파일만 교체
+   (2026-08-12 개명: 예전 이름이 skills.json 이었다. 지금 skills.json 은 존재하지 않는다) */
+let DELTAMAP = {};
+const deltamapReady = fetch("/deltamap.json",{cache:"no-store"}).then(r=>r.json()).then(d=>{DELTAMAP=d;}).catch(()=>{});
 // 응답의 area(수학Ⅰ/Ⅱ·미적분(선택)·확률과통계)를 계류 트랙 키로 옮긴다.
 const AREA2TRACK = {"수학Ⅰ":"공통","수학Ⅱ":"공통","공통":"공통","미적분(선택)":"미적분","미적분":"미적분","확률과통계":"확통","확률과 통계":"확통","확통":"확통","기하":"기하"};
 function skillsOf(exam, area, no){
-  const E = ITEM_SKILLS[exam]; if(!E) return null;
+  const E = DELTAMAP[exam]; if(!E) return null;
   const n = +no;
   if(n>=1 && n<=22 && E["공통"] && E["공통"][no]) return E["공통"][no];  // 공통 1~22 번호 유일
   const tr = AREA2TRACK[area] || area;                                    // 선택 23~30 은 트랙으로 갈림
@@ -228,7 +229,7 @@ function filterRows() {
 
 // ── 상세(상담 리포트) 화면 ─────────────────────────
 async function loadDetail(phone) {
-  await skillsReady;
+  await deltamapReady;
   const j = await api({ action: "student", phone });
   const st = mergeByPhone(j.students)[0];
   const subs = j.submissions, resps = j.responses, cohort = j.cohort || {};

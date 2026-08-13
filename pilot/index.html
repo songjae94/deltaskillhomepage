@@ -163,9 +163,9 @@ const EXAMS=[{code:"OMEGA_8",title:"OMEGA 8회",desc:"공통 22문항 + 선택 8
 const TIDX={};EXAMS.forEach(e=>{const d=e.data;Object.keys(d).forEach(a=>d[a].forEach(q=>{(q.tc||[]).forEach(c=>{(TIDX[c]=TIDX[c]||[]).push({e:e.code,t:e.title,a:a,no:q.no,j:q.jum});});}));});
 
 let EXAM=EXAMS[0];
-let SKILLS={};
-const skillsReady=fetch("/deltamap.json",{cache:"no-store"}).then(r=>r.json()).then(d=>{SKILLS=d;}).catch(()=>{});
-async function injectSteps(){try{await skillsReady;}catch(_){}const s=SKILLS[EXAM.code];if(!s)return;const map={gong:"공통",mi:"미적분",hw:"확통",gi:"기하"};for(const k in map){const arr=EXAM.data[k];if(!arr)continue;for(const it of arr){const rec=s[map[k]]&&s[map[k]][it.no];if(rec&&rec.steps&&rec.steps.length)it.steps=rec.steps;}}}
+let DELTAMAP={};
+const deltamapReady=fetch("/deltamap.json",{cache:"no-store"}).then(r=>r.json()).then(d=>{DELTAMAP=d;}).catch(()=>{});
+async function injectSteps(){try{await deltamapReady;}catch(_){}const s=DELTAMAP[EXAM.code];if(!s)return;const map={gong:"공통",mi:"미적분",hw:"확통",gi:"기하"};for(const k in map){const arr=EXAM.data[k];if(!arr)continue;for(const it of arr){const rec=s[map[k]]&&s[map[k]][it.no];if(rec&&rec.steps&&rec.steps.length)it.steps=rec.steps;}}}
 const CATS=[
  {name:"기출 모의고사",desc:"교육청·평가원",exams:[{ex:2},{ex:3},{ex:4},{ex:5},{ex:1},{soon:1,title:"9월 모의평가"},{soon:1,title:"10월 학력평가"}]},
  {name:"메가스터디 모의고사",desc:"오메가·전국대비실전모의",exams:[{ex:6},{ex:7},{ex:8},{ex:0},{ex:9},{ex:16},{ex:10},{soon:1,title:"8월 전대실모"}]},
