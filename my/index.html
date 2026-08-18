@@ -19,7 +19,9 @@ h2{font-size:15px;margin:20px 0 8px;border-left:4px solid var(--acc);padding-lef
 table{border-collapse:collapse;width:100%;font-size:13px;margin:6px 0;background:var(--card)}
 th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
 th{background:rgba(186,214,247,.08)}
-.k{color:var(--mut);font-size:12px}.bad{color:#ff8a8a;font-weight:600}.warn{background:rgba(255,213,79,.12)}
+.k{color:var(--mut);font-size:12px}
+.rxc{border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin:6px 0;background:var(--card)}
+.rxc ol.rxl{margin:6px 0 2px;padding-left:20px}.rxc li{margin:4px 0}.bad{color:#ff8a8a;font-weight:600}.warn{background:rgba(255,213,79,.12)}
 .cards{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
 .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;flex:1;min-width:88px;text-align:center}
 .card b{font-size:22px;display:block;color:#fff}
@@ -103,9 +105,17 @@ const deltamapReady = fetch("/deltamap.json",{cache:"no-store"}).then(r=>r.json(
 /* 회차별 실제 등급컷. 없는 회차는 아래 GRADE_CUTS(전국 모평 기준)로 되돌아간다. */
 let EXAM_CUTS = {};
 const cutsReady = fetch("/cuts.json",{cache:"no-store"}).then(r=>r.json()).then(d=>{EXAM_CUTS=d;}).catch(()=>{});
+/* 연습 처방 — 원장 DB에서 추출한 rx.json (문항→도구→원형 기출 사다리). 대성 4회차부터.
+   문항 원문은 담지 않는다 — 자작 처방 텍스트와 출처 라벨뿐이라 정적 배포가 가능하다. */
+let RX = {};
+const rxReady = fetch("/rx.json",{cache:"no-store"}).then(r=>r.json()).then(d=>{RX=d;}).catch(()=>{});
 
 const AREA2TRACK = {"수학Ⅰ":"공통","수학Ⅱ":"공통","공통":"공통","미적분(선택)":"미적분","미적분":"미적분","확률과통계":"확통","확률과 통계":"확통","확통":"확통","기하":"기하"};
 function skillsOf(exam,area,no){const E=DELTAMAP[exam];if(!E)return null;const n=+no;if(n>=1&&n<=22&&E["공통"]&&E["공통"][no])return E["공통"][no];const tr=AREA2TRACK[area]||area;return (E[tr]&&E[tr][no])||null;}
+function rxOf(exam,area,no){const E=(RX.exams||{})[exam];if(!E)return null;const n=+no;
+ let e=(n>=1&&n<=22&&E["공통"]&&E["공통"][String(no)])||null;
+ if(!e){const tr=AREA2TRACK[area]||area;e=(E[tr]&&E[tr][String(no)])||null;}
+ if(!e)return null;const t=(RX.tools||{})[e];return t&&t.ladder&&t.ladder.length?t:null;}
 function useName(u){return typeof u==="string"?u:((u&&u.skill)||"");}
 function skillCell(exam,area,no){const s=skillsOf(exam,area,no);if(!s)return "<span class='k'>-</span>";const as=(s.anchors||[]).map(useName).filter(Boolean);const us=(s.uses||[]).map(useName).filter(Boolean);if(!as.length&&!us.length)return "<span class='k'>-</span>";const p=[];
  /* COST ○강 = 알맞은 도구를 쓰면 풀이가 크게 줄어드는 문항 → 교재 스킬로 뽑을 후보 */
@@ -223,7 +233,7 @@ function boot(){
 
 /* ---- 결과 ---- */
 async function load(){
-  const body=document.getElementById("body"); body.innerHTML="<p class='k'>불러오는 중…</p>"; await deltamapReady;
+  const body=document.getElementById("body"); body.innerHTML="<p class='k'>불러오는 중…</p>"; await deltamapReady; await rxReady;
   let hist;
   try{ hist=await api("/history"); }catch(e){ if(e.message==="no_token"){boot();return;} body.innerHTML="<p class='bad'>불러오지 못했어요. 다시 시도해 주세요.</p>"; return; }
   const subs=hist.items||[];
@@ -269,6 +279,17 @@ async function openSub(id, examName){
         <td>${esc(r.my_answer)}→${esc(r.correct_answer)}</td><td>${esc(r.reason)}</td></tr>`;
     }
     h+="</table>";
+    const rxCards=wrong.map(r=>({no:r.item_no,area:r.area,t:rxOf(excode,r.area,r.item_no)})).filter(x=>x.t);
+    if(rxCards.length){
+      h+=`<div style="margin:10px 0 4px"><b>연습 처방</b> <span class="k">— 틀린 문항의 도구를 원형 기출로 연습해요 (쉬운 것부터)</span></div>`;
+      for(const c of rxCards){
+        h+=`<div class="rxc"><b>${esc(c.no)}번</b>${c.t.line?` · <span class="k">${esc(c.t.line)}</span>`:""}<ol class="rxl">`;
+        for(const L of c.t.ladder){
+          h+=`<li><b>${esc(L.src)}</b>${L.line&&L.line!==c.t.line?`<br><span class="k">${esc(L.line)}</span>`:""}${(L.drill||[]).length?`<br><span class="k">연습: ${L.drill.map(esc).join(" · ")}</span>`:""}</li>`;
+        }
+        h+=`</ol></div>`;
+      }
+    }
     // 사진
     const withPhoto=rs.filter(r=>r.photo_path);
     if(withPhoto.length){ h+="<div style='margin-top:6px'><b>내 풀이 사진</b><br>"; for(const r of withPhoto){ h+=`<button class="sm" data-photo="${id}|${r.item_no}">${r.item_no}번 사진 보기</button> `; } h+="<div class='photobox'></div></div>"; }
