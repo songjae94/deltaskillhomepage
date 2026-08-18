@@ -125,19 +125,24 @@ function skillCell(exam,area,no){const s=skillsOf(exam,area,no);if(!s)return "<s
  return p.join("<br>");}
 
 /* 시험명 · 교육과정(상류→하류) 순서 · 오답원인별 처방 — 리포트/이력 공용 */
-const EXAM_NAMES={OMEGA_8:"OMEGA 8회",OMEGA_9:"OMEGA 9회",OMEGA_5:"OMEGA 5회",OMEGA_6:"OMEGA 6회",OMEGA_7:"OMEGA 7회",OMEGA_10:"OMEGA 10회",SV27_04:"서바이벌 4회",SV27_01:"서바이벌 1회",SV27_02:"서바이벌 2회",SV27_03:"서바이벌 3회",HP26_03:"3월 학평",HP26_05:"5월 학평",HP26_07:"7월 학평",MP27_06:"6월 모평",EX2028_V1:"델타스킬 모의 1회",SN26:"2026 수능",JD27_07:"7월 전대실모",JD27_08:"8월 전대실모",JQ27_02:"지QUEL 2회",JQ27_03:"지QUEL 3주"};
+const EXAM_NAMES={OMEGA_8:"OMEGA 8회",OMEGA_9:"OMEGA 9회",OMEGA_5:"OMEGA 5회",OMEGA_6:"OMEGA 6회",OMEGA_7:"OMEGA 7회",OMEGA_10:"OMEGA 10회",SV27_04:"서바이벌 4회",SV27_01:"서바이벌 1회",SV27_02:"서바이벌 2회",SV27_03:"서바이벌 3회",HP26_03:"3월 학평",HP26_05:"5월 학평",HP26_07:"7월 학평",MP27_06:"6월 모평",EX2028_V1:"델타스킬 모의 1회",SN26:"2026 수능",JD27_07:"7월 전대실모",JD27_08:"8월 전대실모",JQ27_02:"지QUEL 2회",JQ27_03:"지QUEL 3주","DSP-27-M03":"대성 더프 3월","DSP-27-M04":"대성 더프 4월","DSP-27-M05":"대성 더프 5월","DSP-27-M07":"대성 더프 7월"};
 function examName(c){return EXAM_NAMES[c]|| (typeof c==="string"&&c.indexOf("자유:")===0?c.slice(3):c) || "-";}
 const ORDER=["지수함수와 로그함수","삼각함수","함수의 극한과 연속","다항함수의 미분법","다항함수의 적분법","수열","미분법","적분법","수열의 극한","경우의 수","확률","통계"];
 const REASONFIX={"개념 모름":"개념 강의·개념서로 이해 → 기초 유형 5문항","계산 실수":"같은 유형 계산 드릴 10문항(속도·정확도)","접근 안 떠오름":"유형별 대표문항 풀이법 정리 → 유사 3문항","시간 부족":"타임어택 세트(문항당 목표시간)","아는데 실수":"오답 검토 루틴 체크리스트","안 배움":"해당 단원 진도 보강 강의"};
 /* 원점수→예상 등급 (최근 모의고사 등급컷 평균 · 과목별 추정) */
 const GRADE_CUTS={"확통":[88,80,71,60,47,33,22,12],"미적분":[84,75,66,56,45,32,21,11]};
-function examCuts(code){const e=code&&EXAM_CUTS[code];return (e&&e.cuts&&e.cuts.length)?e:null;}
+/* 과목별 컷이 있는 회차(대성 등)는 subj 로 그 과목 컷을 고른다 — 같은 85점이 확통 2등급·
+   미적분 3등급인 회차가 실제로 있어 회차당 컷 한 벌로 다루면 틀린다. 옛 모양(cuts 배열)도 그대로 받는다. */
+function examCuts(code,subj){const e=code&&EXAM_CUTS[code];if(!e)return null;
+  if(e.subj){const s=subj&&e.subj[subj];return (s&&s.cuts&&s.cuts.length)?{cuts:s.cuts,basis:e.basis,label:e.label}:null;}
+  return (e.cuts&&e.cuts.length)?e:null;}
 function estGrade(score,subj,code){
   if(typeof score!=="number")return null;
-  const e=examCuts(code);
+  const e=examCuts(code,subj);
   if(e){ for(let i=0;i<e.cuts.length;i++) if(score>=e.cuts[i]) return i+1;
-         /* 가진 컷 아래로는 추측하지 않는다 — 5등급컷이 있을 때만 6등급까지 말한다 */
-         return e.cuts.length>=5?6:null; }
+         /* 가진 컷 아래로는 추측하지 않는다 — 8컷이면 9까지, 5컷이면 6까지, 그 밖엔 null.
+            DB grade_of() 와 같은 규칙 */
+         return e.cuts.length>=8?9:(e.cuts.length>=5?6:null); }
   const c=GRADE_CUTS[subj]||GRADE_CUTS["확통"];
   for(let i=0;i<c.length;i++)if(score>=c[i])return i+1;return 9;}
 /* 점수 추이 미니 라인차트 (인라인 SVG) */
@@ -355,15 +360,18 @@ async function generateReport(){
 
   if(chartPoints.length>=2){
     h+=`<h2>점수 추이 <span class="k">(${subj} 예상 등급선)</span></h2>`+scoreChart(chartPoints,subj);
-    h+=`<p class="k">그래프의 등급선은 ${subj} 기준 <b>평균 컷</b>이에요. 아래 회차별 표에서 <sup>*</sup>가 붙은 회차는 <b>그 회차 실제 컷</b>으로 다시 계산한 값이라 그래프 선과 다를 수 있어요.</p>`;
+    h+=`<p class="k">그래프의 등급선은 ${subj} 기준 <b>평균 컷</b>이에요. 아래 회차별 표에서 <sup>*</sup>·<sup>†</sup>가 붙은 회차는 <b>그 회차 실제 컷</b>으로 다시 계산한 값이라 그래프 선과 다를 수 있어요.</p>`;
   }
 
   h+=`<h2>① 회차별 결과</h2><table><tr><th>시험</th><th>회차</th><th>날짜</th><th>자기채점</th><th>예상등급</th></tr>`;
-  let usedOwn=0;
-  scored.forEach(x=>{const own=!!examCuts(x.code);if(own)usedOwn++;const g=estGrade(x.score,subj,x.code);
-    h+=`<tr><td>${esc(x.name)}</td><td>${esc(x.attempt)}회</td><td>${esc(x.date||"-")}</td><td>${x.score==null?"-":esc(x.score)}</td><td>${g?g+"등급"+(own?"<sup>*</sup>":""):"-"}</td></tr>`;});
+  let usedOwn=0,usedOfficial=0;
+  scored.forEach(x=>{const own=examCuts(x.code,subj);const official=own&&own.basis==="수능예상";
+    if(own){if(official)usedOfficial++;else usedOwn++;}
+    const g=estGrade(x.score,subj,x.code);
+    h+=`<tr><td>${esc(x.name)}</td><td>${esc(x.attempt)}회</td><td>${esc(x.date||"-")}</td><td>${x.score==null?"-":esc(x.score)}</td><td>${g?g+"등급"+(official?"<sup>†</sup>":own?"<sup>*</sup>":""):"-"}</td></tr>`;});
   h+=`</table>`;
   if(usedOwn)h+=`<p class="k"><sup>*</sup> 그 회차의 <b>실제 등급컷</b>을 적용했어요. 응시자 분포에서 뽑은 값이라 전국 등급과는 다를 수 있어요.</p>`;
+  if(usedOfficial)h+=`<p class="k"><sup>†</sup> 출제사 <b>공식 등급컷(수능예상 환산)</b>을 ${esc(subj)} 과목 기준으로 적용했어요.</p>`;
 
   h+=`<h2>② 영역·단원 분석</h2>`;
   const arKeys=Object.keys(byArea);
