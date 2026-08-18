@@ -40,6 +40,9 @@ input.txt{width:100%;padding:14px 15px;border:1.5px solid rgba(90,162,255,.42);b
 .numin{width:120px;padding:12px;border:1px solid var(--line);border-radius:12px;font-size:16px;text-align:center;font-weight:700;background:var(--panel2);color:var(--ink)}.numrow{display:flex;gap:8px;align-items:stretch}.numrow .numin{flex:0 0 130px}.numgo{padding:0 20px;border:1px solid rgba(90,162,255,.6);border-radius:12px;background:rgba(90,162,255,.18);color:#dcebff;font-size:14.5px;font-weight:800;cursor:pointer;transition:all .18s var(--ease)}.numgo:disabled{opacity:.35;cursor:default}.numgo.done{border-color:var(--line);background:var(--panel2);color:var(--mut2)}body.qlight .numgo{color:#1c4fa0;background:rgba(90,162,255,.15);border-color:rgba(90,162,255,.5)}body.qlight .numgo.done{background:var(--panel2);color:var(--mut2);border-color:var(--line)}.numin::placeholder{color:var(--mut2)}.numin:focus{outline:none;border-color:var(--brand)}
 .diag{margin-top:13px;padding-top:13px;border-top:1px dashed var(--line)}.dlab{font-size:11.5px;color:var(--mut2);margin:2px 0 8px;font-weight:600}
 .rchips{display:flex;gap:6px;flex-wrap:wrap}.rchip{padding:8px 12px;border:1px solid var(--line);border-radius:20px;background:var(--panel);font-size:12.5px;color:var(--mut);transition:all .18s var(--ease)}.rchip.on{border-color:rgba(240,128,108,.5);background:rgba(240,128,108,.13);color:var(--amber);font-weight:600}
+.rchip.dqok{border-color:var(--ok);background:rgba(95,211,154,.13);color:var(--ok);font-weight:600}
+.rchip.dqno{border-color:var(--no,#f0806c);background:rgba(240,128,108,.10);color:var(--no,#f0806c)}
+.dqwhy{font-size:12.5px;color:var(--mut);line-height:1.6;margin:0 2px 10px;padding:9px 12px;border-left:2px solid var(--brandInk);background:var(--panel2);border-radius:0 10px 10px 0}
 /* ── 오답만 체크 화면 (채점 없이 틀린 문항만 고르기) ── */
 .gwrap{display:grid;grid-template-columns:repeat(6,1fr);gap:7px}
 @media(max-width:359px){.gwrap{grid-template-columns:repeat(5,1fr)}}
@@ -121,7 +124,7 @@ input.txt{width:100%;padding:14px 15px;border:1.5px solid rgba(90,162,255,.42);b
 .step{display:flex;gap:12px;align-items:flex-start;padding:13px 0;border-bottom:1px solid var(--line)}.step:last-child{border:none}.stepn{width:26px;height:26px;border-radius:50%;background:rgba(90,162,255,.16);border:1px solid rgba(90,162,255,.5);color:var(--brand2);font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}.step .st{font-size:13.5px;color:var(--ink)}.step .st b{font-weight:700}.step .stt{font-size:11.5px;color:var(--mut2);margin-top:2px}
 .saved{display:flex;gap:10px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:13px 14px;font-size:12.5px;color:var(--mut);margin-bottom:16px}.saved:before{content:"";flex:none;width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 9px 1px rgba(95,211,154,.6)}.saved.demo:before{background:var(--amber);box-shadow:0 0 9px 1px rgba(240,128,108,.5)}
 .note{font-size:11.5px;color:var(--mut2);text-align:center;margin-top:18px}.center{text-align:center;padding:44px 20px;color:var(--mut)}
-body.qlight{--bg:#f5f7fb;--panel:#fff;--panel2:#eef2f8;--line:rgba(23,43,77,.13);--line2:rgba(23,43,77,.22);--ink:#0c1322;--mut:rgba(16,28,50,.82);--mut2:rgba(16,28,50,.62);--ok:#0f9d58;--no:#c14933;--brandInk:#1c4fa0;--brandSoft:#e4eeff;--brandSoft2:#d6e6ff;--amber:#c14933;color-scheme:light}body.qlight .top{background:rgba(245,247,251,.82)}body.qlight .prog{background:rgba(23,43,77,.10)}body.qlight .app:before{background:radial-gradient(58% 60% at 50% 0,rgba(90,162,255,.10),transparent 72%)}body.qlight .chip.on{color:#1c4fa0;background:rgba(90,162,255,.15);border-color:rgba(90,162,255,.5);box-shadow:inset 0 0 0 1px rgba(90,162,255,.22)}body.qlight .rchip{background:var(--panel2)}body.qlight .memo{background:var(--panel2)}body.qlight .numin:-webkit-autofill{-webkit-box-shadow:0 0 0 1000px #eef2f8 inset}</style></head><body><div class="app">
+body.qlight{--bg:#f5f7fb;--panel:#fff;--panel2:#eef2f8;--line:rgba(23,43,77,.13);--line2:rgba(23,43,77,.22);--ink:#0c1322;--mut:rgba(16,28,50,.82);--mut2:rgba(16,28,50,.62);--ok:#0f9d58;--no:#c14933;--brandInk:#1c4fa0;--brandSoft:#e4eeff;--brandSoft2:#d6e6ff;--amber:#c14933;color-scheme:light}body.qlight .top{background:rgba(245,247,251,.82)}body.qlight .prog{background:rgba(23,43,77,.10)}body.qlight .app:before{background:radial-gradient(58% 60% at 50% 0,rgba(90,162,255,.10),transparent 72%)}body.qlight .chip.on{color:#1c4fa0;background:rgba(90,162,255,.15);border-color:rgba(90,162,255,.5);box-shadow:inset 0 0 0 1px rgba(90,162,255,.22)}body.qlight .rchip{background:var(--panel2)}body.qlight .rchip.dqok{color:#0b7d46;border-color:#0b7d46;background:rgba(15,157,88,.10)}body.qlight .memo{background:var(--panel2)}body.qlight .numin:-webkit-autofill{-webkit-box-shadow:0 0 0 1000px #eef2f8 inset}</style></head><body><div class="app">
 <div class="top"><a class="brand" href="/" style="text-decoration:none;color:inherit;cursor:pointer" title="델타스킬 홈으로">델타<span>스킬</span></a><div class="sub" id="subttl">AI 오답노트</div><div class="prog"><i id="pbar"></i></div></div>
 <div id="screen"></div><div class="fab" id="fab"></div></div>
 <script>
@@ -165,7 +168,7 @@ const EXAMS=[{code:"OMEGA_8",title:"OMEGA 8회",desc:"공통 22문항 + 선택 8
 let EXAM=EXAMS[0];
 let DELTAMAP={};
 const deltamapReady=fetch("/deltamap.json",{cache:"no-store"}).then(r=>r.json()).then(d=>{DELTAMAP=d;}).catch(()=>{});
-async function injectSteps(){try{await deltamapReady;}catch(_){}const s=DELTAMAP[EXAM.code];if(!s)return;const map={gong:"공통",mi:"미적분",hw:"확통",gi:"기하"};for(const k in map){const arr=EXAM.data[k];if(!arr)continue;for(const it of arr){const rec=s[map[k]]&&s[map[k]][it.no];if(rec&&rec.steps&&rec.steps.length)it.steps=rec.steps;}}}
+async function injectSteps(){try{await deltamapReady;}catch(_){}const s=DELTAMAP[EXAM.code];if(!s)return;const map={gong:"공통",mi:"미적분",hw:"확통",gi:"기하"};for(const k in map){const arr=EXAM.data[k];if(!arr)continue;for(const it of arr){const rec=s[map[k]]&&s[map[k]][it.no];if(rec&&rec.steps&&rec.steps.length)it.steps=rec.steps;if(rec&&rec.dq)it.dq=rec.dq;}}}
 const CATS=[
  {name:"기출 모의고사",desc:"교육청·평가원",exams:[{ex:2},{ex:3},{ex:4},{ex:5},{ex:1},{soon:1,title:"9월 모의평가"},{soon:1,title:"10월 학력평가"}]},
  {name:"메가스터디 모의고사",desc:"오메가·전국대비실전모의",exams:[{ex:6},{ex:7},{ex:8},{ex:0},{ex:9},{ex:16},{ex:10},{ex:21}]},
@@ -186,7 +189,7 @@ const el=id=>document.getElementById(id);
 const esc=s=>(""+(s??"")).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
 const uid=()=>(crypto.randomUUID?crypto.randomUUID():Date.now()+"-"+Math.random().toString(16).slice(2));
 const LS={get:k=>JSON.parse(localStorage.getItem(k)||"null"),set:(k,v)=>localStorage.setItem(k,JSON.stringify(v))};
-let S={screen:"login",phone:"",profile:null,studentId:null,catSel:null,mode:null,mark:{},open:null,ans:{},reason:{},conf:{},memo:{},step:{},photo:{},previewPath:false,attempt:1,saveMode:null,savedSubId:null,savedExam:null,_forceNew:false};
+let S={screen:"login",phone:"",profile:null,studentId:null,catSel:null,mode:null,mark:{},open:null,ans:{},reason:{},conf:{},memo:{},step:{},dq:{},photo:{},previewPath:false,attempt:1,saveMode:null,savedSubId:null,savedExam:null,_forceNew:false};
 /* 지금 화면이 쓰는 선택과목 — 저장된 회차를 열 때는 그 회차의 과목(_subjOv)이 우선한다.
    프로필에서 확통↔미적분을 바꾼 뒤 예전 회차를 열면 21~30번이 다른 과목으로 뒤바뀌기 때문. */
 function curSubject(){return S._subjOv||(S.profile&&S.profile.subject)||"확통";}
@@ -350,7 +353,7 @@ function examSelect(){
   return `<div class="q" style="width:100%;opacity:.55"><div class="qh" style="margin-bottom:2px"><span style="font-weight:800;font-size:15.5px;color:var(--mut)">${e.title}</span><span class="badge" style="margin-left:auto;background:rgba(255,255,255,.06);color:var(--mut2)">준비 중</span></div><div style="font-size:12px;color:var(--mut)">${e.note||"준비 중 — 곧 열려요"}</div></div>`;
  }).join("")+`</div>`;
  document.querySelectorAll("[data-back]").forEach(b=>b.onclick=()=>{history.back();});
- document.querySelectorAll("[data-ex]").forEach(b=>b.onclick=async()=>{EXAM=EXAMS[+b.dataset.ex];await injectSteps();S.attempt=await calcAttempt(EXAM.code);S.savedSubId=null;S.savedExam=null;S.saveMode=null;S._forceNew=false;S._updWarn=null;S._editMode=false;S._subjOv=null;S.mode=null;S.mark={};S.open=null;S.ans={};S.reason={};S.conf={};S.memo={};S.step={};S.photo={};S.screen="intro";render();window.scrollTo(0,0);});
+ document.querySelectorAll("[data-ex]").forEach(b=>b.onclick=async()=>{EXAM=EXAMS[+b.dataset.ex];await injectSteps();S.attempt=await calcAttempt(EXAM.code);S.savedSubId=null;S.savedExam=null;S.saveMode=null;S._forceNew=false;S._updWarn=null;S._editMode=false;S._subjOv=null;S.mode=null;S.mark={};S.open=null;S.ans={};S.reason={};S.conf={};S.memo={};S.step={};S.dq={};S.photo={};S.screen="intro";render();window.scrollTo(0,0);});
  el("fab").innerHTML="";}
 
 /* ---------- 진단 인트로 ---------- */
@@ -388,10 +391,22 @@ function intro(){el("screen").innerHTML=`<div class="pad"><div class="h">${esc(S
  }catch(_){ }})();}
 
 /* ---------- 진단 ---------- */
+/* 진단질의(원장 A2 추출, deltamap dq) — 원본은 정답이 항상 (A)라 화면에서만 문항번호 기반
+   고정 순열로 섞는다. why 문장이 원본 라벨(B는/C는)을 참조하므로 표시 기호로 함께 번역한다. */
+const DQP=[[0,1,2],[0,2,1],[1,0,2],[1,2,0],[2,0,1],[2,1,0]],DQS=["①","②","③"];
+function dqUI(q){if(!q.dq||!q.dq.ch||q.dq.ch.length!==3)return "";
+ const P=DQP[q.no%6],aIdx="ABC".indexOf(q.dq.a),sel=S.dq[q.no],done=sel!=null;
+ const posOf=i=>DQS[P.indexOf(i)];
+ const chips=P.map((oi,pos)=>{let cls="rchip";
+  if(done){if(oi===aIdx)cls+=" dqok";else if(oi===sel)cls+=" dqno";}
+  return `<span class="${cls}" data-dq="${oi}">${DQS[pos]} ${esc(q.dq.ch[oi])}</span>`;}).join("");
+ const why=done?`<div class="dqwhy"><b>${sel===aIdx?"맞아요.":"정답은 "+posOf(aIdx)+"."}</b> ${esc(q.dq.why).replace(/([ABC])(?=는)/g,m=>posOf("ABC".indexOf(m)))}</div>`:"";
+ return `<div class="dlab">${esc(q.dq.q)} (하나 탭 — 스스로 확인)</div><div class="rchips" style="margin-bottom:9px">${chips}</div>${why}`;}
 function card(q){const g=graded(q);
  let ansUI=q.fmt==="c"?`<div class="chips">`+CHIP.map(c=>`<button class="chip ${S.ans[q.no]===c?'on':''}" data-a="${c}">${c}</button>`).join("")+`</div>`:`<div class="numrow"><input class="numin" inputmode="numeric" placeholder="답 입력 (숫자)" value="${S.ans[q.no]??''}" data-num="1"><button class="numgo${(S.ans[q.no]!=null&&S.ans[q.no]!=='')?' done':''}" data-go="1" ${(S.ans[q.no]!=null&&S.ans[q.no]!=='')?'':'disabled'}>${(S.ans[q.no]!=null&&S.ans[q.no]!=='')?'입력됨':'입력'}</button></div>`;
  let badge=g?`<span class="badge ${g}">${g==='o'?'정답':'오답'}</span>`:"";
- let diag=(S.ans[q.no]!=null&&S.ans[q.no]!=="")?`<div class="diag">${g==='x'?`${q.steps?`<div class="dlab">어디까지 갔나요?</div><div class="rchips" style="margin-bottom:9px">`+["손도 못 댐"].concat(q.steps.map((s,i)=>(i+1)+". "+s)).concat(["다 풀었는데 답 틀림"]).map(s=>`<span class="rchip ${S.step[q.no]===s?'on':''}" data-st="${esc(s)}">${esc(s)}</span>`).join("")+`</div>`:""}<div class="dlab">${q.steps?'막힌 이유는?':'왜 틀렸나요?'} (한 번 탭)</div><div class="rchips">`+REASONS.map(r=>`<span class="rchip ${S.reason[q.no]===r?'on':''}" data-r="${r}">${r}</span>`).join("")+`</div><input class="memo" placeholder="막힌 지점 한 줄 (선택)" value="${esc(S.memo[q.no])}" data-memo="1"><div style="margin-top:8px">${S.photo[q.no]?`<span class="rchip on" data-phx="1">풀이 사진 첨부됨 · 탭하면 제거</span>`:`<span class="rchip" data-ph="1">풀이 사진 첨부 (선택)</span><div style="font-size:11px;color:var(--mut2);margin-top:5px;line-height:1.5">풀이 과정만 나오게 찍어 주세요 · 이름·학교는 가려 주세요</div>`}</div>`:`<div class="dlab">확신도</div><div class="rchips">`+["확신함","애매함","찍음"].map(r=>`<span class="rchip ${S.conf[q.no]===r?'on':''}" data-c="${r}">${r}</span>`).join("")+`</div>`}</div>`:"";
+ let dqB=dqUI(q);
+ let diag=(S.ans[q.no]!=null&&S.ans[q.no]!=="")?`<div class="diag">${g==='x'?`${q.steps?`<div class="dlab">어디까지 갔나요?</div><div class="rchips" style="margin-bottom:9px">`+["손도 못 댐"].concat(q.steps.map((s,i)=>(i+1)+". "+s)).concat(["다 풀었는데 답 틀림"]).map(s=>`<span class="rchip ${S.step[q.no]===s?'on':''}" data-st="${esc(s)}">${esc(s)}</span>`).join("")+`</div>`:""}${dqB}<div class="dlab">${q.steps?'막힌 이유는?':'왜 틀렸나요?'} (한 번 탭)</div><div class="rchips">`+REASONS.map(r=>`<span class="rchip ${S.reason[q.no]===r?'on':''}" data-r="${r}">${r}</span>`).join("")+`</div><input class="memo" placeholder="막힌 지점 한 줄 (선택)" value="${esc(S.memo[q.no])}" data-memo="1"><div style="margin-top:8px">${S.photo[q.no]?`<span class="rchip on" data-phx="1">풀이 사진 첨부됨 · 탭하면 제거</span>`:`<span class="rchip" data-ph="1">풀이 사진 첨부 (선택)</span><div style="font-size:11px;color:var(--mut2);margin-top:5px;line-height:1.5">풀이 과정만 나오게 찍어 주세요 · 이름·학교는 가려 주세요</div>`}</div>`:`<div class="dlab">확신도</div><div class="rchips">`+["확신함","애매함","찍음"].map(r=>`<span class="rchip ${S.conf[q.no]===r?'on':''}" data-c="${r}">${r}</span>`).join("")+`</div>`}</div>`:"";
  const d=document.createElement("div");d.className="q";d.innerHTML=`<div class="qh"><span class="qno">${q.no}</span><span class="qmeta"><b>${q.unit}</b> · ${q.topic} · ${q.jum}점 · ${q.fmt==='c'?'객관식':'단답'}</span>${badge}</div>${ansUI}${diag}`;
  d.querySelectorAll(".chip").forEach(b=>b.onclick=()=>{S.ans[q.no]=b.dataset.a;refresh();});
  const num=d.querySelector("[data-num]");const go=d.querySelector("[data-go]");
@@ -401,6 +416,7 @@ function card(q){const g=graded(q);
   if(go)go.onclick=commit;}
  d.querySelectorAll("[data-r]").forEach(c=>c.onclick=()=>{S.reason[q.no]=c.dataset.r;refresh();});
  d.querySelectorAll("[data-st]").forEach(c=>c.onclick=()=>{S.step[q.no]=c.dataset.st;refresh();});
+ d.querySelectorAll("[data-dq]").forEach(c=>c.onclick=()=>{if(S.dq[q.no]!=null)return;S.dq[q.no]=+c.dataset.dq;refresh();});
  const ph=d.querySelector("[data-ph]");if(ph)ph.onclick=()=>pickPhoto(q);
  const phx=d.querySelector("[data-phx]");if(phx)phx.onclick=()=>{delete S.photo[q.no];refresh();};
  d.querySelectorAll("[data-c]").forEach(c=>c.onclick=()=>{S.conf[q.no]=c.dataset.c;refresh();});
@@ -442,7 +458,7 @@ function noteCard(q){const guess=markOf(q)==="g";
  d.innerHTML=`<div class="qh"><span class="qno">${q.no}</span><span class="qmeta"><b>${esc(q.unit)}</b> · ${esc(q.topic)} · ${q.jum}점 · ${q.fmt==='c'?'객관식':'단답'}</span></div>
   <div class="stat"><button data-mk="x" class="${guess?'':'on'}">틀렸어요</button><button data-mk="g" class="${guess?'gon':''}">찍어서 맞았어요</button></div>
   ${guess?`<div class="hint" style="margin:-6px 2px 10px">점수에는 <b style="color:var(--ok)">맞은 것으로</b> 반영되고, 다시 볼 문항으로만 담겨요.</div>`:``}
-  <div class="diag" style="border-top:0;padding-top:0;margin-top:0">${stepUI}
+  <div class="diag" style="border-top:0;padding-top:0;margin-top:0">${stepUI}${dqUI(q)}
   <div class="dlab">${guess?"무엇이 확실하지 않았나요? (한 번 탭)":"왜 틀렸나요? (한 번 탭)"}</div>
   <div class="rchips">`+REASONS.map(r=>`<span class="rchip ${S.reason[q.no]===r?'on':''}" data-r="${r}">${r}</span>`).join("")+`</div>
   <input class="memo" placeholder="막힌 지점 한 줄 (선택)" value="${esc(S.memo[q.no]||'')}" data-memo="1">
@@ -451,11 +467,12 @@ function noteCard(q){const guess=markOf(q)==="g";
  d.querySelectorAll("[data-mk]").forEach(b=>b.onclick=()=>{S.mark[q.no]=b.dataset.mk;nrefresh();});
  d.querySelectorAll("[data-r]").forEach(c=>c.onclick=()=>{S.reason[q.no]=c.dataset.r;nrefresh();});
  d.querySelectorAll("[data-st]").forEach(c=>c.onclick=()=>{S.step[q.no]=c.dataset.st;nrefresh();});
+ d.querySelectorAll("[data-dq]").forEach(c=>c.onclick=()=>{if(S.dq[q.no]!=null)return;S.dq[q.no]=+c.dataset.dq;nrefresh();});
  const ph=d.querySelector("[data-ph]");if(ph)ph.onclick=()=>pickPhoto(q);
  const phx=d.querySelector("[data-phx]");if(phx)phx.onclick=()=>{delete S.photo[q.no];nrefresh();};
  const m=d.querySelector("[data-memo]");if(m)m.oninput=e=>S.memo[q.no]=e.target.value;
  d.querySelector("[data-in]").onclick=()=>{S.open=null;nrefresh("grid");};
- d.querySelector("[data-rm]").onclick=()=>{delete S.mark[q.no];delete S.reason[q.no];delete S.step[q.no];delete S.memo[q.no];delete S.photo[q.no];
+ d.querySelector("[data-rm]").onclick=()=>{delete S.mark[q.no];delete S.reason[q.no];delete S.step[q.no];delete S.dq[q.no];delete S.memo[q.no];delete S.photo[q.no];
    S.open=null;nrefresh("grid");};
  return d;}
 function noteScreen(){
@@ -542,7 +559,7 @@ async function loadSubmission(subId){
  const A=rs.map(r=>String((r&&r.area)||""));
  const nMi=A.filter(a=>a.indexOf("미적")>=0).length, nHw=A.filter(a=>a.indexOf("확률")>=0||a.indexOf("확통")>=0).length;
  S._subjOv=(nMi||nHw)?(nMi>=nHw?"미적분":"확통"):null;
- S.ans={};S.reason={};S.conf={};S.memo={};S.step={};S.mark={};S.open=null;
+ S.ans={};S.reason={};S.conf={};S.memo={};S.step={};S.dq={};S.mark={};S.open=null;
  let n=0,marks=0;
  rs.forEach(r=>{const no=r&&r.item_no;if(no==null)return;
    const a=r.my_answer;
@@ -576,7 +593,7 @@ async function calcAttempt(examCode){
  if(items){const a=items.filter(x=>x&&x.exam_code===examCode).map(x=>+x.attempt_no||0);return (a.length?Math.max.apply(null,a):0)+1;}
  return ((LS.get("ds_subs")||[]).filter(x=>x.phone===S.phone&&x.exam===examCode).length)+1;
 }
-function resetApp(){S={screen:"login",phone:"",profile:null,studentId:null,catSel:null,mode:null,mark:{},open:null,ans:{},reason:{},conf:{},memo:{},step:{},photo:{},previewPath:false,attempt:1,saveMode:null,savedSubId:null,savedExam:null,_forceNew:false};
+function resetApp(){S={screen:"login",phone:"",profile:null,studentId:null,catSel:null,mode:null,mark:{},open:null,ans:{},reason:{},conf:{},memo:{},step:{},dq:{},photo:{},previewPath:false,attempt:1,saveMode:null,savedSubId:null,savedExam:null,_forceNew:false};
  /* 저장된 번호·프로필이 있으면 첫 접속과 똑같이 자동 로그인 — 전화번호 화면으로 떨어뜨리지 않는다 */
  var ph=localStorage.getItem("ds_phone");if(ph){S.phone=ph;var st=(LS.get("ds_students")||{})[ph];if(st&&st.profile){S.profile=st.profile;S.studentId=st.id;S.catSel=null;S.screen="exam";}}
  render();window.scrollTo(0,0);}
