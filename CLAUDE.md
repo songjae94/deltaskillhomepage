@@ -136,7 +136,7 @@
 | 테이블 | 내용 | 읽는 액션 |
 |---|---|---|
 | `official_scores` | **운영자가 강사로서 보유한 한 학원의 성적 명단.** 623행(OMEGA_5·6·7·8) + JEONDAE_7 218행. 202명. `class`(I1~I11·일산 01~11반), `math_type`, `korean`/`english`/`math`, `math_grade_est`, **`student_no`(학번, 2026-08-12 추가)** | `cohort` |
-| `item_stats` | 문항별 `correct_rate` + `c1`~`c5`(**선택지별 선택률 — 정답 포함**). OMEGA_5~8 확통·미적분만 238행 | `items` |
+| `item_stats` | 문항별 `correct_rate` + `c1`~`c5`(**선택지별 선택률 — 정답 포함**). OMEGA_5~9 확통·미적분 298행(`source` NULL) + **2026-08-18 `source='KCSAT-ML'` 322행** — 수능 2014~2025학년도 **전국 공식 cohort** 오답률(naver-ai KCSAT-ML), `exam_code`는 원장 코드 `SNG-YY-M11`, subject 공통·미적분·확통/가형·나형/A형·B형, 기하 제외. ⚠️ 두 통계는 모집단이 다르다 — 원장 '통합'(메가·EBSi 표본) 대비 KCSAT는 나형 −14~−23p·현행 −3~−6p 낮다. 섞어 밴드를 매기지 말 것 | `items` |
 | `review_tokens`·`notify_log` | 미사용(0행) | — |
 
 **admin-api v5 (2026-08-12 배포) — 추가된 액션 2개, 둘 다 `role='owner'` 전용(403으로 차단):**
@@ -422,6 +422,12 @@ A(2.59)와 D(2.47)는 서로 정합인데 **C(3.17)만 위로 밀려 있다.** �
 - ⚠️ **선택과목은 저장한 회차마다 다를 수 있다.** 확통→미적분으로 바꾼 뒤 예전 회차를 열면 21~30번이 다른 과목으로 뒤바뀐다. 그래서 저장된 응답의 `area`로 그 회차의 과목을 되살려 `S._subjOv`에 담고, 화면은 `curSubject()`(=`_subjOv` 우선)를 쓴다. 새 회차를 시작할 때 `_subjOv`를 반드시 `null`로 되돌린다.
 
 ## 작업 이력
+
+**2026-08-18** (로컬 창 · 상세는 `deltaskill-ops/docs/디지털자산화-실행계획-0818.md` · `외부디지털자료-활용-0818.md`)
+- **시험 단위 레지스트리** `deltaskill-ops/scripts/exam_registry.py` — 바탕화면 `기출문제` 1,826파일 → **242 시험단위**(고1·고2 16파일은 `재분류\기출문제_고1고2\`로 이동), 확정표 10건, 산출 `C:\deltaskill\registry\gichul\`.
+- **HWP 로컬 파서** `deltaskill-ops/scripts/hwp_local.py` — 한컴 API 없이 766개 전부 파싱(71초·비용 0). 수식 스크립트 제자리 삽입 `⟦EQ:…⟧`, **미주 번호=문항 번호**로 정답·출제의도·해설 확보. 242 단위 중 HWP 미주해설 237. ⚠️ 원문자 `➀➁➂`(딩뱃)는 `①~⑤`로 정규화해야 정답이 잡힌다. ⚠️ 주말 `math_assets` 문항 JSON은 소스 선택 오류(경남파이널→수능 공통, 평가원→EDU)로 **초안** — 재생성 대상. `hancom_raw/`만 재사용.
+- **외부 디지털 기출** `C:\DeltaSkillData\01_raw` 11종 중 기출 3종(KCSAT-ML 664·Korean_SAT_MATH 120·HRM8K 210) 정규화 → `external_ksat_items.jsonl`. **KCSAT-ML 정답도 ~2% 틀린다**(3건 확인) — 정본이 아니라 제3의 눈. 다수결 금지, 인쇄 PDF 정답표가 결정.
+- **`item_stats` 에 KCSAT-ML 전국 cohort 정답률 322행 적재**(`source='KCSAT-ML'`, 위 표 참고). 원장 '통합' 대비 나형 −14~−23p·현행 −3~−6p — 모집단이 다르니 섞어 밴드를 매기지 말 것.
 
 **2026-08-13**
 - **정답 대조 자동화** — 앱 정답표 ↔ 원장(`ledger_items`) 대조를 스크립트화(`deltaskill-ops/scripts/verify_answers.py`). 대성 4회차 **64문항 전부 일치, 불일치 0**(단답 28 + 객관식 36 — 객관식은 이번이 처음). `answer_verified` 7 → 64.
