@@ -151,7 +151,7 @@
 
 | 테이블 | 내용 | 읽는 액션 |
 |---|---|---|
-| `official_scores` | **운영자가 강사로서 보유한 한 학원의 성적 명단.** 623행(OMEGA_5·6·7·8) + JEONDAE_7 218행. 202명. `class`(I1~I11·일산 01~11반), `math_type`, `korean`/`english`/`math`, `math_grade_est`, **`student_no`(학번, 2026-08-12 추가)** | `cohort` |
+| `official_scores` | **운영자가 강사로서 보유한 학원 성적 명단.** 623행(OMEGA_5·6·7·8) + JEONDAE_7 218행(일산) + **JEONDAE_8 332행(신촌, 2026-08-19 — 확통217·미적107·기하8, 교차검증: 답안정오표↔명단 332명 불일치 0)**. ⚠️ 7월=일산·8월=신촌 — **지점이 달라 추이 비교 불가.** JEONDAE_8 의 `math_grade_est` 는 비움(컷 미보유). 202명. `class`(I1~I11·일산 01~11반), `math_type`, `korean`/`english`/`math`, `math_grade_est`, **`student_no`(학번, 2026-08-12 추가)** | `cohort` |
 | `item_stats` | 문항별 `correct_rate` + `c1`~`c5`(**선택지별 선택률 — 정답 포함**). OMEGA_5~9 확통·미적분 298행(`source` NULL) + **2026-08-18 `source='KCSAT-ML'` 322행** — 수능 2014~2025학년도 **전국 공식 cohort** 오답률(naver-ai KCSAT-ML), `exam_code`는 원장 코드 `SNG-YY-M11`, subject 공통·미적분·확통/가형·나형/A형·B형, 기하 제외. ⚠️ 두 통계는 모집단이 다르다 — 원장 '통합'(메가·EBSi 표본) 대비 KCSAT는 나형 −14~−23p·현행 −3~−6p 낮다. 섞어 밴드를 매기지 말 것 | `items` |
 | `review_tokens`·`notify_log` | 미사용(0행) | — |
 
