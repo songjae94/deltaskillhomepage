@@ -18,6 +18,9 @@ body{margin:0;background:var(--bg);color:var(--ink);
 .top h1{font-size:1.15rem;margin:0;color:var(--brand)}
 .top a.home{color:var(--sub);font-size:.82rem;text-decoration:none}
 .sub{color:var(--sub);font-size:.82rem;margin:0 0 10px}
+.quick{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 10px}
+.quick a{border:1px solid var(--line);border-radius:999px;padding:5px 13px;font-size:.82rem;color:var(--sub);text-decoration:none;background:var(--panel)}
+.quick a:hover{border-color:var(--brand);color:var(--brand)}
 .tabs{display:flex;gap:6px;margin:8px 0 6px}
 .tabs button{flex:1;border:1.4px solid var(--line);background:var(--panel);border-radius:10px;
   padding:8px 0;font:inherit;font-weight:700;font-size:.9rem;cursor:pointer;color:var(--sub)}
@@ -29,6 +32,8 @@ body{margin:0;background:var(--bg);color:var(--ink);
 .qn.p3{background:#c7d9f2;color:#1c4fa0}
 .qn.p4{background:#1c4fa0;color:#fff}
 .qn.on{border-color:#0d2c63;box-shadow:0 0 0 2px #0d2c6355}
+.qn.seen{position:relative}
+.qn.seen::after{content:"✓";position:absolute;top:-5px;right:-3px;font-size:11px;font-weight:800;color:var(--ok);background:var(--panel);border-radius:50%;padding:0 2px;line-height:1.1}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
 .card header{display:flex;gap:10px;align-items:baseline;margin-bottom:6px;flex-wrap:wrap}
 .tno{font-weight:800;color:var(--brand);font-size:1.02rem}
@@ -98,6 +103,7 @@ h3{font-size:.95rem;color:var(--brand);margin:16px 0 6px}
 <div class="wrap">
   <div class="top"><h1>델타스킬 해설실</h1><a class="home" href="/">deltaskill.co.kr</a></div>
   <p class="sub">2027학년도 9월 모의평가 수학 · 공통 22 + 확통 8 + 미적분 8 · 공식 정답 기준</p>
+  <div class="quick"><a href="/pilot/?exam=MP27_09&amp;mode=grade">🖊️ 채점하기</a><a href="/pilot/?exam=MP27_09&amp;mode=note">✔️ 오답만 기록</a><a href="/my/">📊 마이페이지</a></div>
   <div id="gate" hidden>
     <h2>해설은 로그인하면 볼 수 있어요</h2>
     <p>델타스킬 오답노트에 쓰는 전화번호 로그인 그대로예요. 처음이면 가입에 1분이면 됩니다.</p>
@@ -1222,6 +1228,11 @@ h3{font-size:.95rem;color:var(--brand);margin:16px 0 6px}
 const LIST = [{"key":"공통_1","track":"공통","no":1,"pts":2},{"key":"공통_2","track":"공통","no":2,"pts":2},{"key":"공통_3","track":"공통","no":3,"pts":3},{"key":"공통_4","track":"공통","no":4,"pts":3},{"key":"공통_5","track":"공통","no":5,"pts":3},{"key":"공통_6","track":"공통","no":6,"pts":3},{"key":"공통_7","track":"공통","no":7,"pts":3},{"key":"공통_8","track":"공통","no":8,"pts":3},{"key":"공통_9","track":"공통","no":9,"pts":4},{"key":"공통_10","track":"공통","no":10,"pts":4},{"key":"공통_11","track":"공통","no":11,"pts":4},{"key":"공통_12","track":"공통","no":12,"pts":4},{"key":"공통_13","track":"공통","no":13,"pts":4},{"key":"공통_14","track":"공통","no":14,"pts":4},{"key":"공통_15","track":"공통","no":15,"pts":4},{"key":"공통_16","track":"공통","no":16,"pts":3},{"key":"공통_17","track":"공통","no":17,"pts":3},{"key":"공통_18","track":"공통","no":18,"pts":3},{"key":"공통_19","track":"공통","no":19,"pts":3},{"key":"공통_20","track":"공통","no":20,"pts":4},{"key":"공통_21","track":"공통","no":21,"pts":4},{"key":"공통_22","track":"공통","no":22,"pts":4},{"key":"확통_23","track":"확통","no":23,"pts":2},{"key":"확통_24","track":"확통","no":24,"pts":3},{"key":"확통_25","track":"확통","no":25,"pts":3},{"key":"확통_26","track":"확통","no":26,"pts":3},{"key":"확통_27","track":"확통","no":27,"pts":3},{"key":"확통_28","track":"확통","no":28,"pts":4},{"key":"확통_29","track":"확통","no":29,"pts":4},{"key":"확통_30","track":"확통","no":30,"pts":4},{"key":"미적분_23","track":"미적분","no":23,"pts":2},{"key":"미적분_24","track":"미적분","no":24,"pts":3},{"key":"미적분_25","track":"미적분","no":25,"pts":3},{"key":"미적분_26","track":"미적분","no":26,"pts":3},{"key":"미적분_27","track":"미적분","no":27,"pts":3},{"key":"미적분_28","track":"미적분","no":28,"pts":4},{"key":"미적분_29","track":"미적분","no":29,"pts":4},{"key":"미적분_30","track":"미적분","no":30,"pts":4}];
 const TRACKS = ["공통","확통","미적분"];
 let curTrack = '공통', cur = null;
+// 해설을 연 문항 표시 — 이 기기에만 저장되는 열람 체크
+let SEEN = {};
+const SEENKEY = 'sol_seen_' + 'MP27_09';
+try { SEEN = JSON.parse(localStorage.getItem(SEENKEY) || '{}') || {}; } catch (e) {}
+function markSeen(k){ if (SEEN[k]) return; SEEN[k] = 1; try { localStorage.setItem(SEENKEY, JSON.stringify(SEEN)); } catch (e) {} renderGrid(); }
 const $ = s => document.querySelector(s);
 
 // 로그인 게이트(형 결정 0902: 로그인 학생 전체) — 파일럿·마이페이지와 같은 토큰 키
@@ -1247,7 +1258,7 @@ function renderGrid(){
   const box = $('#grid'); box.innerHTML = '';
   for (const it of LIST.filter(x => x.track === curTrack)) {
     const b = document.createElement('button');
-    b.className = 'qn p' + Math.min(4, Math.max(2, it.pts)) + (cur === it.key ? ' on' : '');
+    b.className = 'qn p' + Math.min(4, Math.max(2, it.pts)) + (cur === it.key ? ' on' : '') + (SEEN[it.key] ? ' seen' : '');
     b.textContent = it.no;
     b.title = it.track + ' ' + it.no + '번 · ' + it.pts + '점';
     b.onclick = () => select(it.key);
@@ -1273,8 +1284,10 @@ document.addEventListener('click', e => {
   if (tb) { curTrack = tb.dataset.t; select(LIST.find(x => x.track === curTrack).key); return; }
   const tg = e.target.closest('.tg');
   if (tg) {
-    const t = tg.closest('.card').querySelector('.solution');
+    const card = tg.closest('.card');
+    const t = card.querySelector('.solution');
     t.hidden = !t.hidden;
+    if (!t.hidden) markSeen(card.dataset.key);
     tg.classList.toggle('on', !t.hidden);
     tg.textContent = t.hidden ? '정답·해설 보기' : '해설 접기';
     return;
