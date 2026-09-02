@@ -259,6 +259,7 @@ async function load(){
     h+=`<div class="sub" data-sub="${esc(s.submission_id)}">
       <div style="display:flex;align-items:center;gap:8px">
         <div style="flex:1;min-width:0"><b>${esc(examName(s.exam_code))}</b> <span class="k">· ${esc((s.created_at||"").slice(0,10))} · ${esc(s.attempt_no||1)}회차 · 자기채점 ${esc(s.score??"-")}</span></div>
+        ${SOL_EXAMS[s.exam_code]?`<button class="sm" data-sol="1" style="flex:none">해설 보기</button>`:``}
         ${editable?`<button class="sm" data-edit="${esc(s.submission_id)}" style="flex:none">수정하기</button>`:``}
       </div>
       <div class="det k" id="det_${esc(s.submission_id)}" style="margin-top:6px"></div></div>`;
@@ -266,6 +267,7 @@ async function load(){
   body.innerHTML=h;
   document.querySelectorAll("[data-sub]").forEach(el=>el.onclick=()=>openSub(el.dataset.sub, examName));
   document.querySelectorAll("[data-edit]").forEach(b=>b.onclick=e=>{e.stopPropagation();location.href="/pilot/?edit="+encodeURIComponent(b.dataset.edit);});
+  document.querySelectorAll("[data-sol]").forEach(b=>b.onclick=e=>{e.stopPropagation();location.href="/sol/";});
   const rb=document.getElementById("reportBtn"); if(rb)rb.onclick=generateReport;
 }
 

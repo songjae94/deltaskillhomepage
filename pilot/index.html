@@ -186,6 +186,7 @@ const CATS=[
 ];
 const ACADEMIES=["메가스터디","시대인재","대성학원","청솔학원","종로학원"];
 const REASONS=["개념 모름","계산 실수","접근 안 떠오름","시간 부족","아는데 실수"];   /* "안 배움"은 "개념 모름"과 중복이라 제거 (기존 기록의 처방 매핑은 REASONFIX에 남겨 둔다) */
+const SOL_EXAMS={MP27_09:1};   /* 해설실(/sol/) 등재 회차 — my/의 같은 상수·/sol/ 페이지와 함께 늘린다 (0902) */
 const CHIP=["①","②","③","④","⑤"];
 const REASONFIX={"개념 모름":"개념 강의·개념서로 이해 → 기초 유형 5문항","계산 실수":"같은 유형 계산 드릴 10문항(속도·정확도)","접근 안 떠오름":"유형별 대표문항 풀이법 정리 → 유사 3문항","시간 부족":"타임어택 세트(문항당 목표시간)","아는데 실수":"오답 검토 루틴 체크리스트","안 배움":"해당 단원 진도 보강 강의"};
 const BANK={"지수함수와 로그함수":{type:"지수·로그 계산과 그래프 성질",gichul:["6평 1·10·16·20번","2028예시 1·10·22번"]},"삼각함수":{type:"삼각함수 관계·그래프, 사인·코사인법칙",gichul:["6평 8번","2028예시 7·16·19번"],up:"코사인법칙이 막히면 상류 '이차방정식 근'부터"},"수열":{type:"등차·등비 일반항, 시그마, 귀납적 정의",gichul:["6평 12·18·22번","2028예시 4·24번"]},"함수의 극한과 연속":{type:"극한값과 함숫값 구분, 연속·극한 존재조건",gichul:["6평 4·11번","2028예시 2·18번"]},"다항함수의 미분법":{type:"미분계수·곱의 미분, 극값·접선",gichul:["6평 7·13·17번","2028예시 5·11·25번"],up:"인수분해·이차방정식이 약하면 상류부터"},"다항함수의 적분법":{type:"부정적분·정적분, 넓이",gichul:["6평 9·15·19번","2028예시 8·17·23번"]},"미분법":{type:"초월함수 미분·음함수·합성함수",gichul:["(미적 심화 기출 별도 태깅 필요)"]},"적분법":{type:"치환·부분적분, 정적분 활용",gichul:["(미적 심화 기출 별도 태깅 필요)"]},"수열의 극한":{type:"수열의 극한·급수",gichul:["(미적 심화 기출 별도 태깅 필요)"]},"경우의 수":{type:"순열·조합, 중복순열·중복조합",gichul:["6평 23·25·27번","2028예시 3·21번"]},"확률":{type:"덧셈·곱셈정리, 여사건, 조건부확률",gichul:["6평 24·26·28번","2028예시 9·12·29번"]},"통계":{type:"정규분포, 표본평균·신뢰구간",gichul:["2028예시 6·13·26번"]}};
@@ -743,7 +744,7 @@ function result(){const its=items();const done=its.filter(q=>graded(q)!=null);co
  el("screen").innerHTML=`<div class="pad">${savedUI}<div class="h">${esc(S.profile.name)}님 오답노트 결과</div><div class="desc">${EXAM.title} · ${S.profile.subject} · ${S.attempt}회차</div>
   <div class="kpirow"><div class="kpi"><div class="v">${score}<span style="font-size:14px;color:var(--mut2)">점</span></div><div class="l">자기채점 원점수 (100)</div></div><div class="kpi"><div class="v">${correct.length}<span style="font-size:14px;color:var(--mut2)">/${done.length}</span></div><div class="l">맞은 문항</div></div></div>
   <div class="bar"><h4>영역별 정답률</h4>${areaRows}</div>
-  ${EXAM.code==="MP27_09"?`<div class="bar"><div class="pl"><span class="ic">📖</span><div><b>9월 모평 해설이 열려 있어요</b> — 틀린 문항 풀이를 <a href="/sol/" style="color:inherit;text-decoration:underline;font-weight:700">해설실</a>에서 바로 볼 수 있어요.</div></div></div>`:""}
+  ${SOL_EXAMS[EXAM.code]?`<div class="bar" style="text-align:center"><div style="margin-bottom:10px"><b>이 시험의 해설이 열려 있어요</b> — 틀린 문항 풀이를 바로 확인하세요.</div><a href="/sol/" style="display:inline-flex;align-items:center;justify-content:center;height:46px;padding:0 26px;border-radius:13px;background:var(--brand);color:#04122b;font-weight:800;font-size:15px;text-decoration:none">📖 문제·해설 보기</a></div>`:""}
   <div class="seclabel">이번 주 나의 처방</div>${presc}
   ${guessSec}
   ${patSec?`<div class="seclabel">묶어서 연습할 기술</div>`+patSec:""}
