@@ -743,6 +743,7 @@ function result(){const its=items();const done=its.filter(q=>graded(q)!=null);co
  el("screen").innerHTML=`<div class="pad">${savedUI}<div class="h">${esc(S.profile.name)}님 오답노트 결과</div><div class="desc">${EXAM.title} · ${S.profile.subject} · ${S.attempt}회차</div>
   <div class="kpirow"><div class="kpi"><div class="v">${score}<span style="font-size:14px;color:var(--mut2)">점</span></div><div class="l">자기채점 원점수 (100)</div></div><div class="kpi"><div class="v">${correct.length}<span style="font-size:14px;color:var(--mut2)">/${done.length}</span></div><div class="l">맞은 문항</div></div></div>
   <div class="bar"><h4>영역별 정답률</h4>${areaRows}</div>
+  ${EXAM.code==="MP27_09"?`<div class="bar"><div class="pl"><span class="ic">📖</span><div><b>9월 모평 해설이 열려 있어요</b> — 틀린 문항 풀이를 <a href="/sol/" style="color:inherit;text-decoration:underline;font-weight:700">해설실</a>에서 바로 볼 수 있어요.</div></div></div>`:""}
   <div class="seclabel">이번 주 나의 처방</div>${presc}
   ${guessSec}
   ${patSec?`<div class="seclabel">묶어서 연습할 기술</div>`+patSec:""}

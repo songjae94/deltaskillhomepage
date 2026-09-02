@@ -117,6 +117,12 @@ function rxOf(exam,area,no){const E=(RX.exams||{})[exam];if(!E)return null;const
  if(!e){const tr=AREA2TRACK[area]||area;e=(E[tr]&&E[tr][String(no)])||null;}
  if(!e)return null;const t=(RX.tools||{})[e];return t&&t.ladder&&t.ladder.length?t:null;}
 function useName(u){return typeof u==="string"?u:((u&&u.skill)||"");}
+/* 해설실(/sol/) 등재 회차 — 새 회차 해설을 올리면 여기와 /sol/ 페이지를 함께 늘린다 (0902) */
+const SOL_EXAMS={MP27_09:1};
+function solCell(exam,area,no){if(!SOL_EXAMS[exam])return "<span class='k'>-</span>";const n=+no;
+ const tr=n<=22?"공통":(AREA2TRACK[area]||area);
+ if(tr!=="공통"&&tr!=="확통"&&tr!=="미적분")return "<span class='k'>-</span>";
+ return `<a href="/sol/#${tr}-${n}" target="_blank" rel="noopener" style="font-weight:700">보기</a>`;}
 function skillCell(exam,area,no){const s=skillsOf(exam,area,no);if(!s)return "<span class='k'>-</span>";const as=(s.anchors||[]).map(useName).filter(Boolean);const us=(s.uses||[]).map(useName).filter(Boolean);if(!as.length&&!us.length)return "<span class='k'>-</span>";const p=[];
  /* COST ○강 = 알맞은 도구를 쓰면 풀이가 크게 줄어드는 문항 → 교재 스킬로 뽑을 후보 */
  if(s.cand)p.push(`<span class="cand" title="COST ○강 — 도구를 알면 풀이가 크게 줄어드는 문항. 교재 스킬 후보">스킬 후보</span>`);
@@ -278,10 +284,10 @@ async function openSub(id, examName){
   const ar=Object.keys(areas);
   if(ar.length){ h+="<div style='margin:6px 0'><b>영역별 정답률</b>: "+ar.map(a=>`${esc(a)} ${pct(areas[a][0],areas[a][1])}`).join(" · ")+"</div>"; }
   if(wrong.length){
-    h+="<table><tr><th>번호</th><th>영역</th><th>요구 스킬</th><th>내답→정답</th><th>이유</th></tr>";
+    h+="<table><tr><th>번호</th><th>영역</th><th>요구 스킬</th><th>내답→정답</th><th>이유</th><th>해설</th></tr>";
     for(const r of wrong){
       h+=`<tr><td>${esc(r.item_no)}</td><td>${esc(r.area)}</td><td>${skillCell(excode,r.area,r.item_no)}</td>
-        <td>${esc(r.my_answer)}→${esc(r.correct_answer)}</td><td>${esc(r.reason)}</td></tr>`;
+        <td>${esc(r.my_answer)}→${esc(r.correct_answer)}</td><td>${esc(r.reason)}</td><td>${solCell(excode,r.area,r.item_no)}</td></tr>`;
     }
     h+="</table>";
     const rxCards=wrong.map(r=>({no:r.item_no,area:r.area,t:rxOf(excode,r.area,r.item_no)})).filter(x=>x.t);
