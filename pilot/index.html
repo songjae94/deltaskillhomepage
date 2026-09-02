@@ -837,7 +837,7 @@ render();
 /* 이 기기에 프로필이 없어도 토큰이 살아 있으면 서버에서 받아 자동 로그인한다.
    (예전에는 여기서 전화번호 화면에 멈췄고, 사용자가 가입을 다시 해 계정이 하나 더 생겼다) */
 (async function(){try{
- if(/[?&](edit|profile)=/.test(location.search))return;   /* 아래 딥링크 처리기가 맡는다 */
+ if(/[?&](edit|profile|exam)=/.test(location.search))return;   /* 아래 딥링크 처리기가 맡는다 */
  if(S.screen!=="login"||!S.phone||!TK.has())return;
  if(await recoverProfile()){S.catSel=null;S.screen="exam";render();}
 }catch(_){}})();
@@ -874,5 +874,27 @@ render();
  const r=await enterEditMode(sid);
  if(r==="custom_exam"){alert("직접입력으로 기록한 회차는 문항 화면에서 수정할 수 없어요.");render();}
  else if(r!=="ok"&&r!=="empty"){alert("회차를 불러오지 못했어요. 다시 시도해 주세요.");render();}
+}catch(e){try{render();}catch(_){}}})();
+/* 회차 허브에서 넘어온 경우: /pilot/?exam=<code>&mode=grade|note (0902) —
+   data-ex 선택 핸들러와 같은 초기화를 그대로 밟은 뒤, mode 가 있으면 인트로의 두 카드와 같은 진입을 한다 */
+(async function(){try{
+ const m=location.search.match(/[?&]exam=([^&]+)/);if(!m)return;
+ const code=decodeURIComponent(m[1]);
+ const mode=(location.search.match(/[?&]mode=(grade|note)/)||[])[1]||null;
+ try{history.replaceState({},"","/pilot/");}catch(_){}
+ const idx=EXAMS.findIndex(e=>e.code===code);if(idx<0){render();return;}
+ if(!S.profile||!S.profile.subject){
+   S.phone=localStorage.getItem("ds_phone")||S.phone;
+   const st=(LS.get("ds_students")||{})[S.phone];
+   if(st&&st.profile&&st.profile.subject){S.profile=st.profile;S.studentId=st.id;}
+   else if(TK.has()){await recoverProfile();}
+ }
+ if(!S.profile||!S.profile.subject){render();return;}   /* 미로그인 — 평소 부팅 흐름으로 */
+ EXAM=EXAMS[idx];await injectSteps();S.attempt=await calcAttempt(EXAM.code);
+ S.savedSubId=null;S.savedExam=null;S.saveMode=null;S._forceNew=false;S._updWarn=null;S._editMode=false;S._subjOv=null;S.mode=null;S.mark={};S.open=null;S.ans={};S.reason={};S.conf={};S.memo={};S.step={};S.dq={};S.photo={};
+ if(mode==="grade"){S.mode="grade";S.screen="quiz";}
+ else if(mode==="note"){S.mode="note";S.screen="note";}
+ else{S.screen="intro";}
+ render();window.scrollTo(0,0);
 }catch(e){try{render();}catch(_){}}})();
 </script></body></html>

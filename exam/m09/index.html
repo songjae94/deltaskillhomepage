@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2027학년도 9월 모의평가 | 델타스킬</title>
+<meta name="theme-color" content="#05060f">
+<style>
+:root{--bg:#05060f;--panel:rgba(255,255,255,.03);--line:rgba(186,215,247,.14);--line2:rgba(186,215,247,.26);
+  --ink:#fff;--mut:rgba(209,228,250,.62);--brand:#5aa2ff;--brandSoft:rgba(90,162,255,.14);--ok:#5fd39a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif;font-size:16px;line-height:1.7}
+a{text-decoration:none;color:inherit}
+.wrap{max-width:760px;margin:0 auto;padding:18px 16px 70px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+.brand{font-weight:800;font-size:16px}
+.brand span{color:var(--brand)}
+.top a.home{color:var(--mut);font-size:13.5px}
+.head{border:1px solid var(--line2);border-radius:18px;padding:22px 22px 18px;
+  background:linear-gradient(135deg,rgba(90,162,255,.16),rgba(90,162,255,.04))}
+.head .ey{color:var(--brand);font-size:13px;font-weight:700;letter-spacing:.02em;margin:0 0 6px}
+.head h1{font-size:24px;margin:0 0 6px;letter-spacing:-.02em}
+.head p{margin:0;color:var(--mut);font-size:14px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+@media(max-width:560px){.grid{grid-template-columns:1fr}}
+.card{display:block;border:1px solid var(--line);border-radius:16px;background:var(--panel);
+  padding:18px 18px 16px;transition:border-color .2s,transform .2s}
+.card:hover{border-color:var(--brand);transform:translateY(-2px)}
+.card .ic{font-size:22px}
+.card h2{font-size:16.5px;margin:8px 0 4px}
+.card p{margin:0;color:var(--mut);font-size:13px;line-height:1.6}
+.card .go{display:inline-block;margin-top:10px;color:var(--brand);font-weight:700;font-size:13.5px}
+.note{margin-top:18px;border:1px dashed var(--line2);border-radius:14px;padding:13px 16px;
+  color:var(--mut);font-size:13.5px;background:var(--brandSoft)}
+.note b{color:var(--ink)}
+.note a{color:var(--brand);font-weight:700}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a class="brand" href="/">델타<span>스킬</span></a>
+    <a class="home" href="/">← 메인으로</a>
+  </div>
+
+  <div class="head">
+    <p class="ey">시행 완료 · 채점·해설 열림</p>
+    <h1>2027학년도 9월 모의평가 · 수학</h1>
+    <p>2026년 9월 2일 시행 · 공통 22문항 + 확률과 통계 / 미적분 각 8문항</p>
+  </div>
+
+  <div class="grid">
+    <a class="card" href="/pilot/?exam=MP27_09&mode=grade">
+      <span class="ic">🖊️</span>
+      <h2>채점하기</h2>
+      <p>30문항 답을 입력하면 자동 채점되고, 틀린 문항의 원인 진단까지 이어집니다. 약 5분.</p>
+      <span class="go">채점 시작 →</span>
+    </a>
+    <a class="card" href="/pilot/?exam=MP27_09&mode=note">
+      <span class="ic">✔️</span>
+      <h2>오답만 기록하기</h2>
+      <p>채점은 이미 끝냈다면 — 틀린 번호만 탭하세요. 점수는 자동 계산됩니다.</p>
+      <span class="go">오답 기록 →</span>
+    </a>
+    <a class="card" href="/sol/">
+      <span class="ic">📖</span>
+      <h2>문제·해설 보기</h2>
+      <p>전 문항(기하 제외)의 문제와 델타스킬 해설. 4점 문항은 풀이 단계·관문·자가확인까지.</p>
+      <span class="go">해설실 열기 →</span>
+    </a>
+    <a class="card" href="/sol/">
+      <span class="ic">🧭</span>
+      <h2>관련 문항 검토</h2>
+      <p>각 문항 해설 아래에 같은 주제를 이어서 풀 회차·번호가 함께 나옵니다.</p>
+      <span class="go">해설과 함께 보기 →</span>
+    </a>
+  </div>
+
+  <div class="note">
+    기록을 저장하면 <a href="/my/">마이페이지</a>에서 영역별 정답률·오답별 해설·연습 처방을 볼 수 있어요.
+    <b>유형·구조·관문까지 맞춘 맞춤 연습</b>은 수능까지 운영하는 멤버십에서 열립니다.
+  </div>
+</div>
+</body>
+</html>
