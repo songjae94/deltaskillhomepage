@@ -84,6 +84,8 @@
 
 ## 작업 규칙
 
+- **착수는 ops 리포의 작업 스킬을 먼저 부른다**(`deltaskill-ops/.claude/skills/<작업유형>/` — 홈페이지배포·델타맵·성적적재 축은 이 파일 절이 정본, 형 승인 0908). 산출·대장 커밋은 스탬프(`지침 확인: 문서@판`)가 있어야 한다(ops 훅, 9/15부터 차단).
+
 1. 수정 후 `node --check`(script 추출) → main 직접 push(=배포) → 커밋 메시지는 한국어 한 줄.
 2. **저장은 요청받지 않아도, 덩어리 끝날 때마다**: 홈페이지→이 리포 · DB 변경→ops
    `db/migrations/`(실행 전 파일 먼저) · Edge Function→ops `backend/` · 스크립트→ops `scripts/`.
