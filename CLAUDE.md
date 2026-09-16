@@ -100,6 +100,8 @@
 6. 눈판정대 요구 시 `deltaskill-ops/docs/눈판정대-프로세스-0902.md` 형식(빌더는 ops
    `scripts/judge_app/` 개조 — 새로 짓지 않는다).
 
+- **0916 DSP-27-M09(더프 9월) 등재** — 등재는 ops `scripts/pilot_회차등재.py`(검증 산출물 자동 대조 → EXAMS 맨 뒤·CATS·my EXAM_NAMES·deltamap 글 끼움) 한 길, 손 타이핑 금지. 파일럿 칸 이름 실물은 `gong/hw/mi(·gi)`·단답 `fmt:"s"`. 더프 해설 발췌본엔 정답표가 없다 → 전사·분석 두 줄기 독립 대조(38/38). 4점 steps 16 은 deltamap + pilot data 안 둘 다. 원장 적재·3점 steps 는 후속.
+
 ## 상세·이력이 필요할 때 (판례집 절 제목)
 
 백엔드 구조 · 기관용(파일럿2) 데이터 · `/pilot2/live2/`(평문 원본은 ops — 공개 이동 금지) ·
