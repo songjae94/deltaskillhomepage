@@ -133,7 +133,7 @@ function useName(u){return typeof u==="string"?u:((u&&u.skill)||"");}
 /* 해설실(/sol/) 등재 회차 — 새 회차 해설을 올리면 여기와 /sol/ 페이지를 함께 늘린다 (0902) */
 const SOL_EXAMS={MP27_09:1};
 /* 1006 사설 코드 중립화 · 형 결정 — 옛 사설 회차 코드(기기 저장·서버 이력에 남아 있는 것)를 읽을 때 새 코드로 한 번 바꿔 준다. 쓸 때는 새 코드만. 별칭 표는 pilot/·my/ 두 파일에만 둔다. */
-const LEGACY_CODE={"DSP-27-M03":"PRV27-D03","DSP-27-M04":"PRV27-D04","DSP-27-M05":"PRV27-D05","DSP-27-M07":"PRV27-D07","DSP-27-M08":"PRV27-D08","DSP-27-M09":"PRV27-D09","GDK22_0":"PRV27-E00","JD27_08":"PRV27-C08","JQ27_01":"PRV27-C01","JQ27_02":"PRV27-C02","JQ27_03":"PRV27-C03","JQ27_0603":"PRV27-C06","JQ27_0701":"PRV27-C07A","JQ27_0702":"PRV27-C07B","SV27_01":"PRV27-B01","SV27_02":"PRV27-B02","SV27_03":"PRV27-B03","SV27_04":"PRV27-B04"};
+const LEGACY_CODE={"OMEGA_1":"PRV27-A01","OMEGA_2":"PRV27-A02","OMEGA_3":"PRV27-A03","OMEGA_4":"PRV27-A04","OMEGA_5":"PRV27-A05","OMEGA_6":"PRV27-A06","OMEGA_7":"PRV27-A07","OMEGA_8":"PRV27-A08","OMEGA_9":"PRV27-A09","OMEGA_10":"PRV27-A10","JD27_07":"PRV27-C07","DSP-27-M03":"PRV27-D03","DSP-27-M04":"PRV27-D04","DSP-27-M05":"PRV27-D05","DSP-27-M07":"PRV27-D07","DSP-27-M08":"PRV27-D08","DSP-27-M09":"PRV27-D09","GDK22_0":"PRV27-E00","JD27_08":"PRV27-C08","JQ27_01":"PRV27-C01","JQ27_02":"PRV27-C02","JQ27_03":"PRV27-C03","JQ27_0603":"PRV27-C06","JQ27_0701":"PRV27-C07A","JQ27_0702":"PRV27-C07B","SV27_01":"PRV27-B01","SV27_02":"PRV27-B02","SV27_03":"PRV27-B03","SV27_04":"PRV27-B04"};
 const normExam=c=>(typeof c==="string"&&Object.prototype.hasOwnProperty.call(LEGACY_CODE,c))?LEGACY_CODE[c]:c;
 const normHist=a=>(a||[]).map(x=>(x&&x.exam_code)?Object.assign({},x,{exam_code:normExam(x.exam_code)}):x);
 function solCell(exam,area,no){if(!SOL_EXAMS[exam])return "<span class='k'>-</span>";const n=+no;
