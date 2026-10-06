@@ -132,6 +132,10 @@ function rxOf(exam,area,no){const E=(RX.exams||{})[exam];if(!E)return null;const
 function useName(u){return typeof u==="string"?u:((u&&u.skill)||"");}
 /* 해설실(/sol/) 등재 회차 — 새 회차 해설을 올리면 여기와 /sol/ 페이지를 함께 늘린다 (0902) */
 const SOL_EXAMS={MP27_09:1};
+/* 1006 사설 코드 중립화 · 형 결정 — 옛 사설 회차 코드(기기 저장·서버 이력에 남아 있는 것)를 읽을 때 새 코드로 한 번 바꿔 준다. 쓸 때는 새 코드만. 별칭 표는 pilot/·my/ 두 파일에만 둔다. */
+const LEGACY_CODE={"OMEGA_1":"PRV27-A01","OMEGA_2":"PRV27-A02","OMEGA_3":"PRV27-A03","OMEGA_4":"PRV27-A04","OMEGA_5":"PRV27-A05","OMEGA_6":"PRV27-A06","OMEGA_7":"PRV27-A07","OMEGA_8":"PRV27-A08","OMEGA_9":"PRV27-A09","OMEGA_10":"PRV27-A10","JD27_07":"PRV27-C07","DSP-27-M03":"PRV27-D03","DSP-27-M04":"PRV27-D04","DSP-27-M05":"PRV27-D05","DSP-27-M07":"PRV27-D07","DSP-27-M08":"PRV27-D08","DSP-27-M09":"PRV27-D09","GDK22_0":"PRV27-E00","JD27_08":"PRV27-C08","JQ27_01":"PRV27-C01","JQ27_02":"PRV27-C02","JQ27_03":"PRV27-C03","JQ27_0603":"PRV27-C06","JQ27_0701":"PRV27-C07A","JQ27_0702":"PRV27-C07B","SV27_01":"PRV27-B01","SV27_02":"PRV27-B02","SV27_03":"PRV27-B03","SV27_04":"PRV27-B04"};
+const normExam=c=>(typeof c==="string"&&Object.prototype.hasOwnProperty.call(LEGACY_CODE,c))?LEGACY_CODE[c]:c;
+const normHist=a=>(a||[]).map(x=>(x&&x.exam_code)?Object.assign({},x,{exam_code:normExam(x.exam_code)}):x);
 function solCell(exam,area,no){if(!SOL_EXAMS[exam])return "<span class='k'>-</span>";const n=+no;
  const tr=n<=22?"공통":(AREA2TRACK[area]||area);
  if(tr!=="공통"&&tr!=="확통"&&tr!=="미적분")return "<span class='k'>-</span>";
@@ -258,7 +262,7 @@ async function load(){
   const body=document.getElementById("body"); body.innerHTML="<p class='k'>불러오는 중…</p>"; await deltamapReady; await rxReady;
   let hist;
   try{ hist=await api("/history"); }catch(e){ if(e.message==="no_token"){boot();return;} body.innerHTML="<p class='bad'>불러오지 못했어요. 다시 시도해 주세요.</p>"; return; }
-  const subs=hist.items||[];
+  const subs=normHist(hist.items);
   window.__examOf={}; subs.forEach(s=>window.__examOf[s.submission_id]=s.exam_code);
   if(!subs.length){ body.innerHTML="<p class='k'>아직 제출한 오답노트가 없어요. <a href='/pilot/'>오답노트 쓰러 가기 →</a></p>"; return; }
   let h=`<div class="cards"><div class="card"><b>${subs.length}</b><div class="k">제출 회차</div></div>
@@ -332,7 +336,7 @@ async function generateReport(){
   await deltamapReady;
   const done=(t)=>{if(btn){btn.disabled=false;btn.textContent=t;}};
   let hist; try{ hist=await api("/history"); }catch(e){ rep.innerHTML="<p class='bad'>리포트를 만들지 못했어요. 다시 시도해 주세요.</p>"; done("📊 분석 리포트 받기"); return; }
-  const subs=hist.items||[];
+  const subs=normHist(hist.items);
   if(!subs.length){ rep.innerHTML="<p class='k'>분석할 제출 기록이 없어요. 먼저 <a href='/pilot/'>오답노트</a>를 작성해 주세요.</p>"; done("📊 분석 리포트 받기"); return; }
   const details=await Promise.all(subs.map(s=>api("/submission?id="+encodeURIComponent(s.submission_id)).then(j=>({s,rs:j.responses||[]})).catch(()=>({s,rs:[]}))));
 
