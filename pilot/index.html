@@ -124,9 +124,38 @@ input.txt{width:100%;padding:14px 15px;border:1.5px solid rgba(90,162,255,.42);b
 .step{display:flex;gap:12px;align-items:flex-start;padding:13px 0;border-bottom:1px solid var(--line)}.step:last-child{border:none}.stepn{width:26px;height:26px;border-radius:50%;background:rgba(90,162,255,.16);border:1px solid rgba(90,162,255,.5);color:var(--brand2);font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}.step .st{font-size:13.5px;color:var(--ink)}.step .st b{font-weight:700}.step .stt{font-size:11.5px;color:var(--mut2);margin-top:2px}
 .saved{display:flex;gap:10px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:13px 14px;font-size:12.5px;color:var(--mut);margin-bottom:16px}.saved:before{content:"";flex:none;width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 9px 1px rgba(95,211,154,.6)}.saved.demo:before{background:var(--amber);box-shadow:0 0 9px 1px rgba(240,128,108,.5)}
 .note{font-size:11.5px;color:var(--mut2);text-align:center;margin-top:18px}.center{text-align:center;padding:44px 20px;color:var(--mut)}
-body.qlight{--bg:#f5f7fb;--panel:#fff;--panel2:#eef2f8;--line:rgba(23,43,77,.13);--line2:rgba(23,43,77,.22);--ink:#0c1322;--mut:rgba(16,28,50,.82);--mut2:rgba(16,28,50,.62);--ok:#0f9d58;--no:#c14933;--brandInk:#1c4fa0;--brandSoft:#e4eeff;--brandSoft2:#d6e6ff;--amber:#c14933;color-scheme:light}body.qlight .top{background:rgba(245,247,251,.82)}body.qlight .prog{background:rgba(23,43,77,.10)}body.qlight .app:before{background:radial-gradient(58% 60% at 50% 0,rgba(90,162,255,.10),transparent 72%)}body.qlight .chip.on{color:#1c4fa0;background:rgba(90,162,255,.15);border-color:rgba(90,162,255,.5);box-shadow:inset 0 0 0 1px rgba(90,162,255,.22)}body.qlight .rchip{background:var(--panel2)}body.qlight .rchip.dqok{color:#0b7d46;border-color:#0b7d46;background:rgba(15,157,88,.10)}body.qlight .memo{background:var(--panel2)}body.qlight .numin:-webkit-autofill{-webkit-box-shadow:0 0 0 1000px #eef2f8 inset}</style></head><body><div class="app">
+body.qlight{--bg:#f5f7fb;--panel:#fff;--panel2:#eef2f8;--line:rgba(23,43,77,.13);--line2:rgba(23,43,77,.22);--ink:#0c1322;--mut:rgba(16,28,50,.82);--mut2:rgba(16,28,50,.62);--ok:#0f9d58;--no:#c14933;--brandInk:#1c4fa0;--brandSoft:#e4eeff;--brandSoft2:#d6e6ff;--amber:#c14933;color-scheme:light}body.qlight .top{background:rgba(245,247,251,.82)}body.qlight .prog{background:rgba(23,43,77,.10)}body.qlight .app:before{background:radial-gradient(58% 60% at 50% 0,rgba(90,162,255,.10),transparent 72%)}body.qlight .chip.on{color:#1c4fa0;background:rgba(90,162,255,.15);border-color:rgba(90,162,255,.5);box-shadow:inset 0 0 0 1px rgba(90,162,255,.22)}body.qlight .rchip{background:var(--panel2)}body.qlight .rchip.dqok{color:#0b7d46;border-color:#0b7d46;background:rgba(15,157,88,.10)}body.qlight .memo{background:var(--panel2)}body.qlight .numin:-webkit-autofill{-webkit-box-shadow:0 0 0 1000px #eef2f8 inset}</style><style id="biz-css">
+.biz{display:block;box-sizing:border-box;background:#05060f;color:#aab7ca;font:400 13px/1.8 "Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;letter-spacing:0;text-align:left;padding:24px 16px 36px;border-top:1px solid rgba(186,215,247,.16)}
+.biz>*{max-width:1080px;margin-left:auto;margin-right:auto}
+.biz p{margin:0 auto 6px;font-size:13px;line-height:1.8;color:#aab7ca;word-break:keep-all;overflow-wrap:anywhere}
+.biz a{color:#d1e4fa;text-decoration:underline;text-underline-offset:2px}
+.biz .policy{display:flex;flex-wrap:wrap;gap:4px 6px;margin-bottom:12px}
+.biz .policy a{display:inline-flex;align-items:center;min-height:44px;padding:0 12px;font-size:14px;text-decoration:none;border-radius:8px}
+.biz .policy a.pp{background:#D8281C;color:#fff}
+.biz b{color:inherit}
+.biz .policy a.pp b{font-weight:700;color:#fff}
+.biz .copy{color:#8f9db3}
+footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
+</style>
+</head><body><div class="app">
 <div class="top"><a class="brand" href="/" style="text-decoration:none;color:inherit;cursor:pointer" title="델타스킬 홈으로">델타<span>스킬</span></a><div class="sub" id="subttl">AI 오답노트</div><div class="prog"><i id="pbar"></i></div></div>
 <div id="screen"></div><div class="fab" id="fab"></div></div>
+<footer class="sitefoot" style="padding-bottom:96px">
+<div class="biz" id="bizinfo">
+  <nav class="policy" aria-label="정책">
+    <a href="/terms/">이용약관</a>
+    <a class="pp" href="/privacy/"><b>개인정보처리방침</b></a>
+    <a href="/refund/">환불·청약철회 안내</a>
+    <a href="/minor/">미성년자 구매 안내</a>
+    <a href="/store/">유형서 구매</a>
+  </nav>
+  <p>상호 델타스킬 · 대표 송재형 · 사업자등록번호 345-62-00876 <a href="https://www.ftc.go.kr/bizCommPop.do?wrkr_no=3456200876" target="_blank" rel="noopener">사업자정보확인</a> · 통신판매업 신고 (신고 진행 중)</p>
+  <p>주소 서울특별시 서초구 마방로10길 18-16, 4층(양재동, 진우빌딩) · 전화 070-8065-2468 · 이메일 <a href="mailto:admin@deltaskill.co.kr">admin@deltaskill.co.kr</a></p>
+  <p>개인정보보호책임자 송재형 · 호스팅 제공자 GitHub, Inc.(GitHub Pages)</p>
+  <p class="src">자료 출처: 평가원 공개 자료 + EBSi 공개 채점 자료 · 판매 PDF는 델타스킬이 직접 제작한 콘텐츠입니다 · 디지털콘텐츠는 다운로드(열람) 후 청약철회가 제한됩니다(다운로드 전 7일 이내 전액 환불) · 정기결제 없음(단건 결제)</p>
+  <p class="copy">© 2026 델타스킬. All rights reserved.</p>
+</div>
+</footer>
 <script>
 /* ===== 서버 연결 설정: Supabase 프로젝트 만들면 아래 두 값만 채우면 실제 서버 저장됨 (비우면 데모=브라우저 저장) ===== */
 const CONFIG={ api:"https://cvlrphtupjmaefahodgz.supabase.co/functions/v1/api" };
