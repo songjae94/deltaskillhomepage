@@ -395,7 +395,7 @@ function trendChart(trend, sel, exams) {
       <text x="${L - 6}" y="${Y(v) + 4}" font-size="10" fill="#999" text-anchor="end">${v}</text>`;
   }
   exams.forEach((e, i) => {
-    g += `<text x="${X(i)}" y="${H - 8}" font-size="10" fill="#777" text-anchor="middle">${esc(e.replace(/^OMEGA_/, ""))}회</text>`;
+    g += `<text x="${X(i)}" y="${H - 8}" font-size="10" fill="#777" text-anchor="middle">${esc(e.replace(/^[A-Z]+_(?=\d+$)/, ""))}회</text>`;
   });
   const cls = [...sel].filter(c => rows.some(r => r.class === c));
   cls.forEach((c, ci) => {
@@ -419,7 +419,7 @@ function renderCohort() {
   const sel = COH_SEL;
   const all = COH.by_class.filter(c => sel.has(c.class))
     .sort((a, b) => (b.avg_math ?? -1) - (a.avg_math ?? -1));
-  const examLabel = c => esc(c.replace(/^OMEGA_/, "OMEGA ") + (/^OMEGA_/.test(c) ? "회" : ""));
+  const examLabel = c => esc(/^[A-Z]+_\d+$/.test(c) ? c.replace(/^[A-Z]+_/, "사설 모의고사 ") + "회" : c);
   document.getElementById("title").textContent = `반별 현황 — ${examLabel(COH.exam_code)}`;
 
   // 선택 반 기준 KPI
@@ -532,17 +532,17 @@ function demoApi(body) {
     { id: "b", phone: "010-0000-0002", name: "김파일럿", academy: "델타학원", grade: "재수생", subject: "확통", created_at: "2026-07-03" },
     { id: "c", phone: "010-0000-0003", name: "이가입만", academy: "다른학원", grade: "고3", subject: "미적분", created_at: "2026-08-01" }];
   const submissions = [
-    { id: "s1", student_id: "a", exam_code: "OMEGA_8", attempt_no: 1, score: 72, created_at: "2026-07-20" },
-    { id: "s2", student_id: "a", exam_code: "OMEGA_9", attempt_no: 1, score: 80, created_at: "2026-08-03" },
-    { id: "s1b", student_id: "a", exam_code: "OMEGA_7", attempt_no: 1, score: 68, created_at: "2026-07-10" },
-    { id: "s1c", student_id: "a", exam_code: "OMEGA_5", attempt_no: 1, score: 60, created_at: "2026-06-28" },
-    { id: "s1d", student_id: "a", exam_code: "OMEGA_6", attempt_no: 1, score: 64, created_at: "2026-07-02" },
-    { id: "s3", student_id: "b", exam_code: "OMEGA_9", attempt_no: 1, score: 64, created_at: "2026-08-04" }];
-  const names = { OMEGA_8: "OMEGA 8회", OMEGA_9: "OMEGA 9회" };
+    { id: "s1", student_id: "a", exam_code: "PV_8", attempt_no: 1, score: 72, created_at: "2026-07-20" },
+    { id: "s2", student_id: "a", exam_code: "PV_9", attempt_no: 1, score: 80, created_at: "2026-08-03" },
+    { id: "s1b", student_id: "a", exam_code: "PV_7", attempt_no: 1, score: 68, created_at: "2026-07-10" },
+    { id: "s1c", student_id: "a", exam_code: "PV_5", attempt_no: 1, score: 60, created_at: "2026-06-28" },
+    { id: "s1d", student_id: "a", exam_code: "PV_6", attempt_no: 1, score: 64, created_at: "2026-07-02" },
+    { id: "s3", student_id: "b", exam_code: "PV_9", attempt_no: 1, score: 64, created_at: "2026-08-04" }];
+  const names = { PV_8: "사설 모의고사 8회", PV_9: "사설 모의고사 9회" };
   if (body.action === "students") return { ok: 1, role: "owner", academy: null, students, submissions, names,
     photoCounts: { a: 3, b: 1 } };
   if (body.action === "cohort") {
-    const exams = ["OMEGA_5", "OMEGA_6", "OMEGA_7", "OMEGA_8"];
+    const exams = ["PV_5", "PV_6", "PV_7", "PV_8"];
     const exam = body.exam_code || exams[exams.length - 1];
     const base = { "A반": 80, "B반": 72, "C반": 49 };
     const by_class = Object.entries(base).map(([c, v], i) => ({
@@ -565,7 +565,7 @@ function demoApi(body) {
         correct_rate: rate, objective: obj, choices: obj ? [10, 20, 30, 20, 20] : [0, 0, 0, 0, 0],
         top_wrong: obj ? { choice: (no % 5) + 1, rate: 100 - rate } : null });
     }
-    return { ok: 1, exam_code: body.exam_code || "OMEGA_8", subjects: ["미적분", "확통"], items };
+    return { ok: 1, exam_code: body.exam_code || "PV_8", subjects: ["미적분", "확통"], items };
   }
   if (body.action === "student") {
     const st = students.filter(s => s.phone === body.phone);
