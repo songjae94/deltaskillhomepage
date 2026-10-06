@@ -137,7 +137,7 @@ img{max-width:100%;display:block}
 }
 
 /* ── nav ── */
-header{position:sticky;top:0;z-index:100;background:rgba(5,6,15,.72);
+header{position:sticky;top:0;z-index:120;background:rgba(5,6,15,.72);
   -webkit-backdrop-filter:saturate(180%) blur(16px);backdrop-filter:saturate(180%) blur(16px);
   border-bottom:1px solid transparent;transition:border-color .3s}
 header.stuck{border-bottom-color:var(--line)}
@@ -158,9 +158,10 @@ header.stuck{border-bottom-color:var(--line)}
   .authed .nav .btn.pri{display:none}
   .nav .btn.pri{padding:0 13px;font-size:13.5px;height:36px}
   .menu{position:absolute;top:calc(100% + 1px);left:0;right:0;flex-direction:column;gap:0;
-    background:rgba(5,6,15,.97);-webkit-backdrop-filter:saturate(180%) blur(16px);backdrop-filter:saturate(180%) blur(16px);
+    background:#05060F;-webkit-backdrop-filter:saturate(180%) blur(16px);backdrop-filter:saturate(180%) blur(16px);
     border-bottom:1px solid var(--line);padding:6px 20px 14px;display:none}
   .menu.open{display:flex}
+  body.navopen{overflow:hidden}
   .menu a{padding:13px 2px;border-bottom:1px solid var(--line);font-size:15px}
   .menu a:last-child{border-bottom:0}
 }
@@ -347,7 +348,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 <header id="hd">
   <div class="wrap nav">
     <a href="/" class="brand"><img src="/logo-dark-192.png" alt="델타스킬 로고" width="24" height="24" /><span>델타스킬</span></a>
-    <nav class="menu" id="navmenu" aria-label="주요 메뉴"><a href="/#how">작성 방법</a><a href="/#rx">학습 처방</a><a href="/#review">AI 오답노트</a><a href="/#data">데이터</a><a href="/report/2027-06/">모의고사 분석</a><a href="/#faq">자주 묻는 질문</a><a href="/partners/" style="color:#fff">교육기관</a></nav>
+    <nav class="menu" id="navmenu" aria-label="주요 메뉴"><a href="/#how">작성 방법</a><a href="/#rx">학습 처방</a><a href="/#review">AI 오답노트</a><a href="/#data">데이터</a><a href="/report/2027-06/">모의고사 분석</a><a href="/#faq">자주 묻는 질문</a><a href="/partners/" style="color:#fff">교육기관</a><a href="/store/">유형서 구매</a></nav>
     <span id="authnav" style="display:inline-flex;gap:10px;align-items:center;margin-right:10px;font-size:14px;font-weight:600"></span>
     <a href="/pilot/" class="btn pri">AI 오답노트</a>
     <a id="mypage" class="mypagebtn" href="/my/">마이페이지</a>
@@ -598,7 +599,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 })();
 /* 모바일 햄버거 메뉴 토글 */
 (function(){var b=document.getElementById('navtoggle'),m=document.getElementById('navmenu');if(!b||!m)return;
- function set(o){m.classList.toggle('open',o);b.setAttribute('aria-expanded',o?'true':'false');b.setAttribute('aria-label',o?'메뉴 닫기':'메뉴 열기');b.textContent=o?'✕':'☰';}
+ function set(o){m.classList.toggle('open',o);document.body.classList.toggle('navopen',o);b.setAttribute('aria-expanded',o?'true':'false');b.setAttribute('aria-label',o?'메뉴 닫기':'메뉴 열기');b.textContent=o?'✕':'☰';}
  b.addEventListener('click',function(e){e.stopPropagation();set(!m.classList.contains('open'));});
  m.addEventListener('click',function(e){if(e.target.tagName==='A')set(false);});
  document.addEventListener('click',function(e){if(m.classList.contains('open')&&!m.contains(e.target)&&e.target!==b)set(false);});
