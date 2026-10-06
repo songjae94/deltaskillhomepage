@@ -200,6 +200,10 @@ const el=id=>document.getElementById(id);
 const esc=s=>(""+(s??"")).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
 const uid=()=>(crypto.randomUUID?crypto.randomUUID():Date.now()+"-"+Math.random().toString(16).slice(2));
 const LS={get:k=>JSON.parse(localStorage.getItem(k)||"null"),set:(k,v)=>localStorage.setItem(k,JSON.stringify(v))};
+/* 1006 사설 코드 중립화 · 형 결정 — 옛 사설 회차 코드(기기 저장·서버 이력에 남아 있는 것)를 읽을 때 새 코드로 한 번 바꿔 준다. 쓸 때는 새 코드만. 별칭 표는 pilot/·my/ 두 파일에만 둔다. */
+const LEGACY_CODE={"DSP-27-M03":"PRV27-D03","DSP-27-M04":"PRV27-D04","DSP-27-M05":"PRV27-D05","DSP-27-M07":"PRV27-D07","DSP-27-M08":"PRV27-D08","DSP-27-M09":"PRV27-D09","GDK22_0":"PRV27-E00","JD27_08":"PRV27-C08","JQ27_01":"PRV27-C01","JQ27_02":"PRV27-C02","JQ27_03":"PRV27-C03","JQ27_0603":"PRV27-C06","JQ27_0701":"PRV27-C07A","JQ27_0702":"PRV27-C07B","SV27_01":"PRV27-B01","SV27_02":"PRV27-B02","SV27_03":"PRV27-B03","SV27_04":"PRV27-B04"};
+const normExam=c=>(typeof c==="string"&&Object.prototype.hasOwnProperty.call(LEGACY_CODE,c))?LEGACY_CODE[c]:c;
+const normHist=a=>(a||[]).map(x=>(x&&x.exam_code)?Object.assign({},x,{exam_code:normExam(x.exam_code)}):x);
 let S={screen:"login",phone:"",profile:null,studentId:null,catSel:null,mode:null,mark:{},open:null,ans:{},reason:{},conf:{},memo:{},step:{},dq:{},photo:{},previewPath:false,attempt:1,saveMode:null,savedSubId:null,savedExam:null,_forceNew:false};
 /* 지금 화면이 쓰는 선택과목 — 저장된 회차를 열 때는 그 회차의 과목(_subjOv)이 우선한다.
    프로필에서 확통↔미적분을 바꾼 뒤 예전 회차를 열면 21~30번이 다른 과목으로 뒤바뀌기 때문. */
@@ -543,8 +547,8 @@ function buildResult(){const nm=noteMode();
 /* ---- 회차 id 확보: 메모리 → localStorage → 서버 이력 순으로 조회 ----
    (메모리에만 두면 새로고침·기기변경 시 id를 잃어 같은 회차가 새로 쌓인다) */
 let HISTC=null;
-async function histItems(force){if(HISTC&&!force)return HISTC;try{const h=await api("/history");HISTC=(h&&h.items)||[];}catch(_){HISTC=null;}return HISTC;}
-function subIdMap(){return LS.get("ds_subid")||{};}
+async function histItems(force){if(HISTC&&!force)return HISTC;try{const h=await api("/history");HISTC=normHist(h&&h.items);}catch(_){HISTC=null;}return HISTC;}
+function subIdMap(){const m=LS.get("ds_subid")||{},o={};for(const k in m){const p=k.split("|");if(p.length===3)p[1]=normExam(p[1]);o[p.join("|")]=m[k];}return o;}
 function subIdKey(exam,att){return (S.phone||"")+"|"+exam+"|"+att;}
 function rememberSubId(exam,att,id){if(!id)return;const m=subIdMap();m[subIdKey(exam,att)]=id;LS.set("ds_subid",m);}
 function idOf(x){return (x&&(x.submission_id||x.submissionId||x.id))||null;}
@@ -598,7 +602,7 @@ async function enterEditMode(subId){
 async function calcAttempt(examCode){
  const items=await histItems(true);
  if(items){const a=items.filter(x=>x&&x.exam_code===examCode).map(x=>+x.attempt_no||0);return (a.length?Math.max.apply(null,a):0)+1;}
- return ((LS.get("ds_subs")||[]).filter(x=>x.phone===S.phone&&x.exam===examCode).length)+1;
+ return ((LS.get("ds_subs")||[]).filter(x=>x.phone===S.phone&&normExam(x.exam)===examCode).length)+1;
 }
 function resetApp(){S={screen:"login",phone:"",profile:null,studentId:null,catSel:null,mode:null,mark:{},open:null,ans:{},reason:{},conf:{},memo:{},step:{},dq:{},photo:{},previewPath:false,attempt:1,saveMode:null,savedSubId:null,savedExam:null,_forceNew:false};
  /* 저장된 번호·프로필이 있으면 첫 접속과 똑같이 자동 로그인 — 전화번호 화면으로 떨어뜨리지 않는다 */
@@ -800,7 +804,7 @@ function customResult(){
  <div class="desc">${esc(d.name)} · ${esc(d.date)} · ${esc(d.subject)}</div>
  <div class="kpirow"><div class="kpi"><div class="v">${d.score??0}<span style="font-size:14px;color:var(--mut2)">점</span></div><div class="l">원점수 (100)</div></div><div class="kpi"><div class="v">${wrongs.length}<span style="font-size:14px;color:var(--mut2)">문항</span></div><div class="l">틀린 문항</div></div></div>
  ${wrongs.length?`<div class="bar"><h4>다시 풀 문항</h4><div class="rchips">${wrongs.map(n=>`<span class="rchip">${n}번</span>`).join("")}</div>${np?`<div style="font-size:12px;color:var(--mut);margin-top:8px">오답 사진 ${np}장 첨부${pf.length?` · ${pf.length}장 실패`:''}</div>`:''}</div>`:`<div class="bar"><div class="pl"><span class="ic">🎉</span><div>틀린 문항이 없네요! 기록만 저장했어요.</div></div></div>`}
- <div class="bar"><div class="pl"><span class="ic">📌</span><div><b>단원별 약점·예상등급</b>은 프리셋 시험(기출·메가 등)에서 자동으로 나와요. 직접입력은 점수·오답 이력 기록용이에요.</div></div></div>
+ <div class="bar"><div class="pl"><span class="ic">📌</span><div><b>단원별 약점·예상등급</b>은 프리셋 시험(기출·사설 모의고사 등)에서 자동으로 나와요. 직접입력은 점수·오답 이력 기록용이에요.</div></div></div>
  <div class="note">AI 오답노트 · www.deltaskill.co.kr</div></div>`;
  saveFab(ss.saved,retrySaveCustom,()=>{S.screen="custom";render();window.scrollTo(0,0);});}
 /* ---------- 브라우저 뒤로/앞으로: 화면별 히스토리로 정상 처리 ---------- */
@@ -877,7 +881,7 @@ render();
    data-ex 선택 핸들러와 같은 초기화를 그대로 밟은 뒤, mode 가 있으면 인트로의 두 카드와 같은 진입을 한다 */
 (async function(){try{
  const m=location.search.match(/[?&]exam=([^&]+)/);if(!m)return;
- const code=decodeURIComponent(m[1]);
+ const code=normExam(decodeURIComponent(m[1]));
  const mode=(location.search.match(/[?&]mode=(grade|note)/)||[])[1]||null;
  try{history.replaceState({},"","/pilot/");}catch(_){}
  const idx=EXAMS.findIndex(e=>e.code===code);if(idx<0){render();return;}
