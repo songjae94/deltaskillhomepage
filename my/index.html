@@ -105,7 +105,7 @@ const deltamapReady = fetch("/deltamap.json",{cache:"no-store"}).then(r=>r.json(
 /* 회차별 실제 등급컷. 없는 회차는 아래 GRADE_CUTS(전국 모평 기준)로 되돌아간다. */
 let EXAM_CUTS = {};
 const cutsReady = fetch("/cuts.json",{cache:"no-store"}).then(r=>r.json()).then(d=>{EXAM_CUTS=d;}).catch(()=>{});
-/* 연습 처방 — 원장 DB에서 추출한 rx.json (문항→도구→원형 기출 사다리). 대성 4회차부터.
+/* 연습 처방 — 원장 DB에서 추출한 rx.json (문항→도구→원형 기출 사다리). DSP 4회차부터.
    문항 원문은 담지 않는다 — 자작 처방 텍스트와 출처 라벨뿐이라 정적 배포가 가능하다. */
 let RX = {};
 const rxReady = fetch("/rx.json",{cache:"no-store"}).then(r=>r.json()).then(d=>{RX=d;}).catch(()=>{});
@@ -137,7 +137,7 @@ const ORDER=["지수함수와 로그함수","삼각함수","함수의 극한과 
 const REASONFIX={"개념 모름":"개념 강의·개념서로 이해 → 기초 유형 5문항","계산 실수":"같은 유형 계산 드릴 10문항(속도·정확도)","접근 안 떠오름":"유형별 대표문항 풀이법 정리 → 유사 3문항","시간 부족":"타임어택 세트(문항당 목표시간)","아는데 실수":"오답 검토 루틴 체크리스트","안 배움":"해당 단원 진도 보강 강의"};
 /* 원점수→예상 등급 (최근 모의고사 등급컷 평균 · 과목별 추정) */
 const GRADE_CUTS={"확통":[88,80,71,60,47,33,22,12],"미적분":[84,75,66,56,45,32,21,11]};
-/* 과목별 컷이 있는 회차(대성 등)는 subj 로 그 과목 컷을 고른다 — 같은 85점이 확통 2등급·
+/* 과목별 컷이 있는 회차(DSP 등)는 subj 로 그 과목 컷을 고른다 — 같은 85점이 확통 2등급·
    미적분 3등급인 회차가 실제로 있어 회차당 컷 한 벌로 다루면 틀린다. 옛 모양(cuts 배열)도 그대로 받는다. */
 function examCuts(code,subj){const e=code&&EXAM_CUTS[code];if(!e)return null;
   if(e.subj){const s=subj&&e.subj[subj];return (s&&s.cuts&&s.cuts.length)?{cuts:s.cuts,basis:e.basis,label:e.label}:null;}

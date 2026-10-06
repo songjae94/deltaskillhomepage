@@ -4,7 +4,7 @@
 <noscript><style>.rv{opacity:1!important;transform:none!important}</style></noscript>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>델타스킬 | AI 오답노트 — 틀린 문제만 입력하면, 복습할 문제까지</title>
+<title>델타스킬 | AI가 분석하고 예측한 올해의 수능</title>
 <meta name="description" content="고3·N수생 AI 오답노트. 틀린 문항만 입력하면 AI가 어디서 막혔는지 분석해 오늘 복습할 문제와 다시 볼 시점까지 정해 드립니다. 약 5분이면 끝납니다." />
 <meta name="author" content="델타스킬" />
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
@@ -23,13 +23,13 @@
 <meta property="og:site_name" content="델타스킬 DeltaSkill" />
 <meta property="og:locale" content="ko_KR" />
 <meta property="og:url" content="https://www.deltaskill.co.kr/" />
-<meta property="og:title" content="델타스킬 — 수학 4등급을 2등급으로 | AI 오답노트" />
+<meta property="og:title" content="델타스킬 — AI가 분석하고 예측한 올해의 수능" />
 <meta property="og:description" content="모의고사를 문항 단위로 분석해 등급을 가르는 문항을 찾고, 오늘 풀 문제까지 정해 드립니다." />
 <meta property="og:image" content="https://www.deltaskill.co.kr/og-image.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="델타스킬 | AI 오답노트 — 4등급에서 2등급까지의 최소 학습 경로" />
+<meta name="twitter:title" content="델타스킬 | AI가 분석하고 예측한 올해의 수능" />
 <meta name="twitter:description" content="수능 수학 3~4등급 고3·N수생을 위한 AI 오답노트. 틀린 문항만 입력하면 어디서 막혔는지를 AI가 분석해 복습할 문제와 다시 볼 시점을 정해 줍니다. 약 5분이면 끝납니다." />
 <meta name="twitter:image" content="https://www.deltaskill.co.kr/og-image.png" />
 
@@ -166,7 +166,7 @@
           "name": "어떤 시험을 입력할 수 있나요?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "올해 치른 평가원 모의평가·교육청 학력평가와 메가스터디 OMEGA·전국대비실전모의, 시대인재 서바이벌 같은 학원 모의고사를 회차별로 고를 수 있습니다. 목록에 없는 시험은 직접 입력할 수 있고, 이미 본 회차를 소급해서 넣어도 됩니다. 회차가 쌓일수록 분석이 정밀해집니다."
+            "text": "올해 치른 평가원 모의평가·교육청 학력평가와 학원 모의고사를 회차별로 고를 수 있습니다. 목록에 없는 시험은 직접 입력할 수 있고, 이미 본 회차를 소급해서 넣어도 됩니다. 회차가 쌓일수록 분석이 정밀해집니다."
           }
         },
         {
@@ -603,12 +603,13 @@ h1.swap .num{opacity:0;transform:translateY(-6px)}
 <section class="hero">
   <div class="wrap">
     <p class="eyebrow rv">고3 &middot; N수생 AI 오답노트</p>
-    <h1 class="rv d1" id="h1">수학 <span class="num" id="nFrom">4</span>등급을,<br /><span class="dim"><span class="num" id="nTo">2</span>등급으로.</span></h1>
+    <h1 class="rv d1" id="h1"><span id="dday">D-44</span>, 남은 건 나올 문제뿐.</h1>
     <p class="lead rv d2">해설을 듣고 이해했는데, 왜 다음 시험에 또 틀릴까요?<br /><b style="color:#fff;font-weight:500">틀린 문제만 입력하세요.</b> 어디서 막혔는지 AI가 분석해서, 오늘 복습할 문제까지 정해 드립니다.</p>
     <div class="btns rv d3">
       <a href="/pilot/" class="btn pri" style="height:46px;padding:0 26px;font-size:15.5px">AI 오답노트 시작하기</a>
     </div>
     <p class="tiny rv d3" style="margin-top:14px">시험지만 있으면 약 5분 &middot; 풀이는 사진으로 첨부</p>
+    <p class="tiny rv d3" id="price" style="margin-top:8px"><b style="color:#fff;font-weight:500">10/20 출시 예정</b> &middot; 번호별 유형서 1권 3,900원 &middot; 선택과목 세트(14권) 24,900원(10/27부터 29,900원) &middot; 수능 직전 점검 9,900원 &middot; 코스 패키지 59,000원 &middot; 부가세 포함 &middot; <a href="/store/" style="color:inherit;text-decoration:underline">상품 안내</a></p>
 
     <div class="tabwrap rv d4">
       <div class="tabs" role="tablist" aria-label="등급 경로 선택">
@@ -850,7 +851,7 @@ h1.swap .num{opacity:0;transform:translateY(-6px)}
         <h3>매주 쌓이는 내 기록</h3><p>회차를 입력할수록 어떤 유형에서 반복해 무너지는지가 드러납니다. 기록은 사라지지 않고 오답 타임캡슐에 담겨 다시 찾아옵니다.</p></div>
       <div class="bx ob gt w3 rv d1">
         <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3.2 8.4 4.3L12 11.8 3.6 7.5z"/><path d="m3.6 12 8.4 4.3 8.4-4.3"/><path d="m3.6 16.4 8.4 4.3 8.4-4.3"/></svg></div>
-        <h3>지난 회차도 소급 입력</h3><p>올해 치른 평가원 모의평가&middot;교육청 학력평가와 메가스터디&middot;시대인재 등 학원 모의고사를 회차별로 고를 수 있고, 목록에 없는 시험은 직접 입력할 수 있습니다.</p></div>
+        <h3>지난 회차도 소급 입력</h3><p>올해 치른 평가원 모의평가&middot;교육청 학력평가와 학원 모의고사를 회차별로 고를 수 있고, 목록에 없는 시험은 직접 입력할 수 있습니다.</p></div>
       <div class="bx ob gt w2 rv">
         <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M8.5 7 10 4.5h4L15.5 7"/><circle cx="12" cy="13.5" r="3.2"/></svg></div>
         <h3>내 풀이를 사진으로</h3><p>말로 적기 어려운 오답은 <b style="color:#fff;font-weight:500">노트를 찍어 올리면</b> 됩니다. 그 사진은 오답 타임캡슐이 같은 문항을 다시 물어볼 때 함께 나옵니다 &mdash; 두 달 전 내 글씨를 보면 무엇을 몰랐는지 바로 떠오릅니다. 파일럿 기간에는 델타스킬 담당자가 직접 보고 막힌 지점에 피드백을 드립니다. 다른 학생에게는 공개되지 않고, 언제든 지울 수 있습니다.</p></div>
@@ -890,7 +891,7 @@ h1.swap .num{opacity:0;transform:translateY(-6px)}
     <div class="center rv d4" style="margin-top:22px">
       <a href="/report/2027-06/" class="btn">6월 모의평가 전체 분석 보기 <span aria-hidden="true">&rsaquo;</span></a>
     </div>
-    <p class="tiny rv d4 center" style="margin-top:14px;opacity:.65">* 문항·배점·단원·출제의도는 평가원 공개 자료, 정답률과 선택지별 반응률은 EBSi·메가스터디 공개 채점 자료 기준입니다.</p>
+    <p class="tiny rv d4 center" style="margin-top:14px;opacity:.65">* 문항·배점·단원·출제의도는 평가원 공개 자료, 정답률과 선택지별 반응률은 EBSi 공개 채점 자료 기준입니다.</p>
   </div>
 </section>
 
@@ -920,7 +921,7 @@ h1.swap .num{opacity:0;transform:translateY(-6px)}
 
       <p class="faqg">시험 자료</p>
       <details class="qa ob"><summary>모의고사 문제를 앱에서 볼 수 있나요?</summary><p class="a">문항 원문은 제공하지 않습니다. 기출 문항의 저작권은 평가원과 시·도교육청에 있고, 문제지는 공식 경로로만 배포됩니다. 델타스킬은 시험 회차와 문항 번호, 단원, 공식 출제의도, 그리고 본인이 남긴 기록을 관리합니다. 다시 풀어야 할 때는 어떤 시험 몇 번인지와 공식 자료 위치를 함께 안내해 드립니다.</p></details>
-      <details class="qa ob"><summary>어떤 시험을 입력할 수 있나요?</summary><p class="a">올해 치른 평가원 모의평가·교육청 학력평가와 메가스터디 OMEGA·전국대비실전모의, 시대인재 서바이벌 같은 학원 모의고사를 회차별로 고를 수 있습니다. 목록에 없는 시험은 직접 입력할 수 있고, 이미 본 회차를 소급해서 넣어도 됩니다. 회차가 쌓일수록 분석이 정밀해집니다.</p></details>
+      <details class="qa ob"><summary>어떤 시험을 입력할 수 있나요?</summary><p class="a">올해 치른 평가원 모의평가·교육청 학력평가와 학원 모의고사를 회차별로 고를 수 있습니다. 목록에 없는 시험은 직접 입력할 수 있고, 이미 본 회차를 소급해서 넣어도 됩니다. 회차가 쌓일수록 분석이 정밀해집니다.</p></details>
 
       <p class="faqg">이용과 개인정보</p>
       <details class="qa ob"><summary>비용이 드나요?</summary><p class="a">파일럿 기간에는 참여 학생에게 비용이 없습니다. 학원을 통해 안내받은 학생은 안내받은 방법 그대로 이용하시면 됩니다.</p></details>
@@ -968,7 +969,7 @@ h1.swap .num{opacity:0;transform:translateY(-6px)}
       </div>
       <div class="flinks">
         <a href="/#how">작성 방법</a><a href="/#rx">학습 처방</a><a href="/#review">AI 오답노트</a><a href="/#data">데이터</a>
-        <a href="/#faq">자주 묻는 질문</a><a href="/partners/">교육기관 도입</a><a href="/pilot/">오답노트 시작하기</a><a href="/terms/">이용약관</a><a href="/privacy/">개인정보처리방침</a><a href="/refund/">환불·청약철회 안내</a>
+        <a href="/#faq">자주 묻는 질문</a><a href="/partners/">교육기관 도입</a><a href="/pilot/">오답노트 시작하기</a><a href="/terms/">이용약관</a><a href="/privacy/">개인정보처리방침</a><a href="/refund/">환불·청약철회 안내</a><a href="/store/">상품 안내</a>
       </div>
     </div>
     <div class="fbiz">
@@ -1003,7 +1004,7 @@ h1.swap .num{opacity:0;transform:translateY(-6px)}
     var p=PATHS[i];cur=i;
     tabs.forEach(function(b,j){b.setAttribute('aria-selected',j===i?'true':'false')});
     var set=function(){
-      nF.textContent=p.from; nT.textContent=p.to;
+      if(nF){nF.textContent=p.from;} if(nT){nT.textContent=p.to;}
       rF.textContent=p.from; rT.textContent=p.to; rG.textContent='+'+p.gap+'점';
       tip.innerHTML=p.tip;
       document.getElementById('qlead').innerHTML=p.lead;
@@ -1089,5 +1090,6 @@ h1.swap .num{opacity:0;transform:translateY(-6px)}
  window.addEventListener('resize',function(){if(window.innerWidth>880)set(false);});
 })();
 </script>
+<script>(function(){var e=document.getElementById('dday');if(!e)return;var n=new Date(),t=new Date(2026,10,19),d=Math.ceil((t-new Date(n.getFullYear(),n.getMonth(),n.getDate()))/86400000);e.textContent=d>0?'D-'+d:'D-DAY';})();</script>
 </body>
 </html>
