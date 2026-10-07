@@ -132,9 +132,9 @@ function rxOf(exam,area,no){const E=(RX.exams||{})[exam];if(!E)return null;const
 function useName(u){return typeof u==="string"?u:((u&&u.skill)||"");}
 /* 해설실(/sol/) 등재 회차 — 새 회차 해설을 올리면 여기와 /sol/ 페이지를 함께 늘린다 (0902) */
 const SOL_EXAMS={MP27_09:1};
-/* 1006 사설 코드 중립화 · 형 결정 — 옛 사설 회차 코드(기기 저장·서버 이력에 남아 있는 것)를 읽을 때 새 코드로 한 번 바꿔 준다. 쓸 때는 새 코드만. 별칭 표는 pilot/·my/ 두 파일에만 둔다. */
-const LEGACY_CODE=JSON.parse(atob("eyJPTUVHQV8xIjoiUFJWMjctQTAxIiwiT01FR0FfMiI6IlBSVjI3LUEwMiIsIk9NRUdBXzMiOiJQUlYyNy1BMDMiLCJPTUVHQV80IjoiUFJWMjctQTA0IiwiT01FR0FfNSI6IlBSVjI3LUEwNSIsIk9NRUdBXzYiOiJQUlYyNy1BMDYiLCJPTUVHQV83IjoiUFJWMjctQTA3IiwiT01FR0FfOCI6IlBSVjI3LUEwOCIsIk9NRUdBXzkiOiJQUlYyNy1BMDkiLCJPTUVHQV8xMCI6IlBSVjI3LUExMCIsIkpEMjdfMDciOiJQUlYyNy1DMDciLCJEU1AtMjctTTAzIjoiUFJWMjctRDAzIiwiRFNQLTI3LU0wNCI6IlBSVjI3LUQwNCIsIkRTUC0yNy1NMDUiOiJQUlYyNy1EMDUiLCJEU1AtMjctTTA3IjoiUFJWMjctRDA3IiwiRFNQLTI3LU0wOCI6IlBSVjI3LUQwOCIsIkRTUC0yNy1NMDkiOiJQUlYyNy1EMDkiLCJHREsyMl8wIjoiUFJWMjctRTAwIiwiSkQyN18wOCI6IlBSVjI3LUMwOCIsIkpRMjdfMDEiOiJQUlYyNy1DMDEiLCJKUTI3XzAyIjoiUFJWMjctQzAyIiwiSlEyN18wMyI6IlBSVjI3LUMwMyIsIkpRMjdfMDYwMyI6IlBSVjI3LUMwNiIsIkpRMjdfMDcwMSI6IlBSVjI3LUMwN0EiLCJKUTI3XzA3MDIiOiJQUlYyNy1DMDdCIiwiU1YyN18wMSI6IlBSVjI3LUIwMSIsIlNWMjdfMDIiOiJQUlYyNy1CMDIiLCJTVjI3XzAzIjoiUFJWMjctQjAzIiwiU1YyN18wNCI6IlBSVjI3LUIwNCJ9")); /* 옛→새 코드 29쌍 · base64 — 옛 코드 글자를 페이지 소스에 남기지 않는다(토스 R2 · 1006 밤) · 원문 표는 ops db/migrations/2026-10-06_사설회차_중립코드_앱표*.sql */
-const normExam=c=>(typeof c==="string"&&Object.prototype.hasOwnProperty.call(LEGACY_CODE,c))?LEGACY_CODE[c]:c;
+/* 1007 옛 회차 코드 별칭 표는 공개 소스에서 삭제(형 1007 · 10/13 공개 전). 별칭이 필요하면 서버(exam_aliases) 쪽에서 바꿔 내려준다.
+   여기서는 코드를 그대로 쓴다 — 목록에 없는 옛 코드는 「지원하지 않음」으로 안내한다. */
+const normExam=c=>c;
 const normHist=a=>(a||[]).map(x=>(x&&x.exam_code)?Object.assign({},x,{exam_code:normExam(x.exam_code)}):x);
 function solCell(exam,area,no){if(!SOL_EXAMS[exam])return "<span class='k'>-</span>";const n=+no;
  const tr=n<=22?"공통":(AREA2TRACK[area]||area);
@@ -149,7 +149,8 @@ function skillCell(exam,area,no){const s=skillsOf(exam,area,no);if(!s)return "<s
 
 /* 시험명 · 교육과정(상류→하류) 순서 · 오답원인별 처방 — 리포트/이력 공용 */
 const EXAM_NAMES={HP26_03:"3월 학평",HP26_05:"5월 학평",HP26_07:"7월 학평",MP27_06:"6월 모평",MP27_09:"9월 모평",EX2028_V1:"델타스킬 모의 1회",SN26:"2026 수능"};
-function examName(c){return EXAM_NAMES[c]|| (typeof c==="string"&&c.indexOf("자유:")===0?c.slice(3):c) || "-";}
+/* 목록에 없는 코드는 글자 그대로 보이지 않게 — 옛 코드는 지원하지 않음(1007) */
+function examName(c){if(EXAM_NAMES[c])return EXAM_NAMES[c];if(typeof c==="string"&&c.indexOf("자유:")===0)return c.slice(3)||"-";return c?"옛 회차(지원하지 않음)":"-";}
 const ORDER=["지수함수와 로그함수","삼각함수","함수의 극한과 연속","다항함수의 미분법","다항함수의 적분법","수열","미분법","적분법","수열의 극한","경우의 수","확률","통계"];
 const REASONFIX={"개념 모름":"개념 강의·개념서로 이해 → 기초 유형 5문항","계산 실수":"같은 유형 계산 드릴 10문항(속도·정확도)","접근 안 떠오름":"유형별 대표문항 풀이법 정리 → 유사 3문항","시간 부족":"타임어택 세트(문항당 목표시간)","아는데 실수":"오답 검토 루틴 체크리스트","안 배움":"해당 단원 진도 보강 강의"};
 /* 원점수→예상 등급 (최근 모의고사 등급컷 평균 · 과목별 추정) */
