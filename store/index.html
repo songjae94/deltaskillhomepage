@@ -100,7 +100,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   <h1>번호별 유형서</h1>
   <p class="lede">보기·풀기는 무료 · 유형서 PDF 1권 3,900원(VAT 포함). 구매 전에 무료 미리보기로 내용과 난이도를 확인해 주세요.</p>
   <div class="notice">
-    <p><b>판매는 10/20(화) 19:00에 시작합니다.</b> 지금은 상품 안내만 볼 수 있고 결제는 열려 있지 않습니다. 시작 때 알려 드리려면 상품마다 「알림 받기」를 눌러 주세요.</p>
+    <p><b>판매는 10/20(화) 19:00에 시작합니다.</b> <span id="sale-note">지금은 상품 안내만 볼 수 있고 결제는 열려 있지 않습니다.</span> 시작 때 알려 드리려면 상품마다 「알림 받기」를 눌러 주세요.</p>
     <p>모든 가격은 VAT 포함입니다. 정기결제(자동 결제)는 없고, 상품마다 한 번 결제합니다. <a href="/refund/">환불·청약철회 안내</a> · <a href="/minor/">미성년자 구매 안내</a></p>
   </div>
   <section class="grp"><h2>공통 유형서 · 10권</h2><p class=gd>공통 9~15번, 20~22번.</p><div class="list"><details class="sku" id="sku-C09">
@@ -396,6 +396,12 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   fetch("/pay-config.json",{cache:"no-store"}).then(function(r){return r.ok?r.json():null;}).then(function(c){
     if(!c||(c.PAY_MODE!=="test"&&c.PAY_MODE!=="live"))return;
     var t=Date.now();
+    /* 1007 PG 점검: 머리 문구를 화면과 맞춘다 — test 면 「구매하기」가 켜지므로 테스트 결제임을 밝히고, live 판매 중이면 「지금 구매할 수 있습니다」 */
+    var note=document.getElementById("sale-note");
+    if(note){
+      if(c.PAY_MODE==="test")note.textContent="지금은 결제 연동 점검 기간입니다. 「구매하기」로 열리는 결제는 테스트 결제이며 실제로 청구되지 않고 자료도 제공되지 않습니다.";
+      else if(t>=SALE)note.textContent="지금 구매할 수 있습니다. 결제 뒤 바로 내려받을 수 있고, 제공 예정 상품은 제공일부터 내려받습니다.";
+    }
     document.querySelectorAll(".act[data-sku]").forEach(function(a){
       var sku=a.getAttribute("data-sku"),buy=a.querySelector(".btn.buy"),dis=a.querySelector(".btn.dis");
       if(!buy)return;
