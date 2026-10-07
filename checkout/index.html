@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>주문서 | 델타스킬</title>
+<meta name="description" content="델타스킬 유형서 주문서 — 상품·가격(VAT 포함)·동의 확인 후 토스페이먼츠로 결제합니다." />
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://www.deltaskill.co.kr/checkout/" />
+<link rel="icon" href="/favicon-32.png" sizes="32x32" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<meta name="theme-color" content="#E6F3FC" />
+<meta property="og:title" content="주문서 | 델타스킬" />
+<meta property="og:description" content="델타스킬 유형서 주문서 — 상품·가격(VAT 포함)·동의 확인 후 토스페이먼츠로 결제합니다." />
+<meta property="og:image" content="https://www.deltaskill.co.kr/og-image.png" />
+<meta property="og:url" content="https://www.deltaskill.co.kr/checkout/" />
+<meta property="og:type" content="website" />
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+<style>
+:root{--red:#D8281C;--ink:#0B2A4F;--ink2:#2C4A6E;--sub:#44607F;--line:rgba(11,42,79,.12);--line2:rgba(11,42,79,.2);--sky0:#CFE8F9;--sky1:#E6F3FC;--sky2:#F4F9FE;--card:#fff;--r:18px}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;background:var(--sky2)}
+body{margin:0;font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;color:var(--ink);background:linear-gradient(180deg,var(--sky0) 0,var(--sky1) 260px,var(--sky2) 520px);-webkit-font-smoothing:antialiased;letter-spacing:-.018em;word-break:keep-all;overflow-wrap:anywhere;line-height:1.6}
+a{color:inherit}
+[hidden]{display:none!important}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 20px;max-width:1080px;margin:0 auto}
+.logo{display:flex;gap:9px;align-items:center;font-weight:760;font-size:16.5px;text-decoration:none;color:var(--ink);min-height:44px}
+.mark{width:26px;height:26px;border-radius:8px;background:var(--red);display:grid;place-items:center;flex:none}
+.mark svg{width:17px;height:17px}
+.gnav{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+.gnav a{display:inline-flex;align-items:center;min-height:44px;padding:0 12px;border-radius:999px;font-size:14px;font-weight:620;color:var(--ink2);text-decoration:none}
+.gnav a.on{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
+main{max-width:720px;margin:0 auto;padding:0 20px 56px}
+.crumb{font-size:13px;font-weight:600;color:var(--ink2);margin:14px 0 10px}
+.crumb a{text-decoration:none;opacity:.8}
+h1{font-size:clamp(26px,5vw,36px);line-height:1.2;letter-spacing:-.04em;font-weight:760;margin:6px 0 0}
+.lede{font-size:15px;color:var(--ink2);margin:10px 0 0}
+.band{margin:16px 0 4px;padding:14px 16px;border-radius:14px;background:#fff;box-shadow:inset 0 0 0 2px var(--red);color:var(--ink);font-size:14.5px;font-weight:650;line-height:1.6}
+.card{background:var(--card);border-radius:var(--r);box-shadow:inset 0 0 0 1px var(--line),0 10px 28px -22px rgba(26,86,160,.5);padding:18px;margin:14px 0}
+.card h2{font-size:17px;letter-spacing:-.02em;margin:0 0 8px}
+.pname{font-size:18px;font-weight:760;margin:0}
+.price{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 8px;margin:6px 0 0}
+.price b{font-size:24px;font-weight:800;color:var(--red)}
+.price small{font-size:12.5px;color:var(--sub)}
+dl{margin:10px 0 0}
+dl div{display:flex;gap:12px;padding:6px 0;border-bottom:1px dashed var(--line)}
+dt{flex:none;width:72px;font-size:13px;font-weight:700;color:var(--sub)}
+dd{margin:0;font-size:14.5px;min-width:0}
+.course{margin:12px 0 0;padding:10px 12px;border-radius:12px;background:var(--sky1);font-size:13.5px;font-weight:600}
+.fix{margin-top:12px;padding-top:10px;border-top:1px solid var(--line);font-size:12.5px;line-height:1.65;color:var(--ink2)}
+.fix p{margin:0 0 6px}.fix a{color:var(--ink);font-weight:650;text-decoration:underline}
+label.f{display:block;font-size:13.5px;font-weight:700;color:var(--ink2);margin:12px 0 0}
+.in{display:block;width:100%;margin-top:6px;min-height:48px;padding:0 12px;border-radius:12px;border:1px solid var(--line2);font:inherit;font-size:16px;color:var(--ink);background:#fff}
+.in:focus{outline:3px solid var(--ink);outline-offset:1px}
+.hint{font-size:12.5px;color:var(--sub);margin:4px 0 0}
+.chk{display:flex;gap:10px;align-items:flex-start;padding:11px 0;border-bottom:1px dashed var(--line);font-size:14px;line-height:1.55;cursor:pointer;min-height:44px}
+.chk:last-of-type{border-bottom:0}
+.chk input{flex:none;width:22px;height:22px;margin:1px 0 0;accent-color:var(--red)}
+.chk a{color:var(--ink);font-weight:650;text-decoration:underline;text-underline-offset:2px}
+.chk.all{font-weight:750;border-bottom:1px solid var(--line2)}
+.pi{font-size:12.5px;color:var(--sub);margin:2px 0 0 32px;line-height:1.6}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;border-radius:12px;font-size:14.5px;font-weight:700;text-decoration:none;font-family:inherit;border:0;cursor:pointer}
+.btn.pri{background:var(--red);color:#fff;width:100%;min-height:52px;font-size:16px}
+.btn.pri:disabled{background:#E3E8EF;color:#3A4A5F;cursor:not-allowed}
+.btn.ghost{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.btn.sm{min-height:44px;padding:0 14px;font-size:14px}
+.acts{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0}
+.msg{font-size:14px;color:var(--ink2);margin:10px 0 0}
+.msg.err{color:var(--red);font-weight:650}
+.notice{padding:14px 16px;border-radius:14px;background:var(--sky1);font-size:14px;color:var(--ink);margin:12px 0 0}
+#payment-method,#agreement{min-height:0}
+.files{list-style:none;margin:10px 0 0;padding:0}
+.files li{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:10px 0;border-bottom:1px dashed var(--line);font-size:14.5px}
+.files li span{min-width:0}
+.files small{display:block;font-size:12.5px;color:var(--sub)}
+.tag{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:999px;font-size:11.5px;font-weight:700;background:var(--sky1);color:var(--ink)}
+.fn{margin-top:22px;font-size:13px;color:var(--sub)}
+.fn a{color:var(--ink);text-decoration:underline}
+a:focus-visible,.btn:focus-visible,.chk input:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+@media(max-width:560px){.top{padding:10px 14px}main{padding:0 14px 40px}.card{padding:16px 14px}dt{width:60px}}
+</style>
+<style id="biz-css">
+.biz{display:block;box-sizing:border-box;background:#05060f;color:#aab7ca;font:400 13px/1.8 "Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;letter-spacing:0;text-align:left;padding:24px 16px 36px;border-top:1px solid rgba(186,215,247,.16)}
+.biz>*{max-width:1080px;margin-left:auto;margin-right:auto}
+.biz p{margin:0 auto 6px;font-size:13px;line-height:1.8;color:#aab7ca;word-break:keep-all;overflow-wrap:anywhere}
+.biz a{color:#d1e4fa;text-decoration:underline;text-underline-offset:2px}
+.biz .policy{display:flex;flex-wrap:wrap;gap:4px 6px;margin-bottom:12px}
+.biz .policy a{display:inline-flex;align-items:center;min-height:44px;padding:0 12px;font-size:14px;text-decoration:none;border-radius:8px}
+.biz .policy a.pp{background:#D8281C;color:#fff}
+.biz b{color:inherit}
+.biz .policy a.pp b{font-weight:700;color:#fff}
+.biz .copy{color:#8f9db3}
+footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="logo" href="/"><span class="mark"><svg viewBox="-1 -2 102 102" aria-hidden="true"><path fill="#fff" d="M47.17,10.29 Q50,5 52.83,10.29 L68.39,39.44 Q68.96,40.5 67.76,40.5 L45.86,40.5 Q41.45,40.5 41.45,44.91 L41.45,45.09 Q41.45,49.5 45.86,49.5 L72.57,49.5 Q73.77,49.5 74.33,50.56 L94.64,88.59 Q97,93 92,93 L8,93 Q3,93 5.36,88.59 L12.85,74.56 Q13.41,73.5 14.61,73.5 L59.26,73.5 Q63.67,73.5 63.67,69.09 L63.67,68.91 Q63.67,64.5 59.26,64.5 L19.42,64.5 Q18.22,64.5 18.79,63.44 Z"/></svg></span>델타스킬</a>
+  <nav class="gnav" aria-label="주요 메뉴"><a href="/">메인</a><a href="/store/">유형서 구매</a><a href="/orders/">주문 조회</a></nav>
+</header>
+<main>
+  <p class="crumb"><a href="/">메인</a> › <a href="/store/">유형서 구매</a> › 주문서</p>
+  <div class="band" id="band" role="note" hidden>지금은 결제 연동 점검 중입니다(테스트 결제). 실제로 청구되지 않으며 자료도 제공되지 않습니다. 정식 판매: 10/20(화) 19:00부터.</div>
+  <h1>주문서</h1>
+  <section class="card" id="prod" aria-live="polite"><p class="msg">상품을 불러오는 중…</p></section>
+  <form id="f" novalidate hidden>
+    <section class="card">
+      <h2>구매자 정보</h2>
+      <label class="f" for="em">이메일</label>
+      <input id="em" type="email" autocomplete="email" inputmode="email" maxlength="254" required class="in">
+      <p class="hint">주문 조회와 다시 내려받기에 쓰입니다. 정확히 적어 주세요.</p>
+      <label class="f" for="nm">이름</label>
+      <input id="nm" type="text" autocomplete="name" maxlength="40" required class="in">
+    </section>
+    <section class="card">
+      <h2>동의</h2>
+      <label class="chk all"><input type="checkbox" id="ca"> <span>아래 필수 항목에 모두 동의합니다.</span></label>
+      <label class="chk"><input type="checkbox" class="ag" id="c1"> <span>[필수] <a href="/terms/" target="_blank" rel="noopener">이용약관</a>에 동의합니다.</span></label>
+      <label class="chk"><input type="checkbox" class="ag" id="c2"> <span>[필수] <a href="/privacy/" target="_blank" rel="noopener">개인정보처리방침</a>에 따른 개인정보 수집·이용에 동의합니다.</span></label>
+      <p class="pi">수집 항목: 주문자 이메일·이름, 주문번호, 상품, 결제금액, 결제수단, 승인일시, 다운로드 기록(카드번호 등 결제정보는 토스페이먼츠가 처리, 회사는 저장하지 않음) · 목적: 상품 판매: 주문·결제·환불 처리, 디지털콘텐츠 다운로드 제공 · 보유: 5년(전자상거래법 시행령 제6조)</p>
+      <label class="chk"><input type="checkbox" class="ag" id="c3"> <span>[필수] 이 상품은 디지털콘텐츠로, 다운로드(열람) 후에는 청약철회(환불)가 제한된다는 점을 확인했습니다. 다운로드 전에는 7일 이내 전액 환불이 가능합니다. <a href="/refund/" target="_blank" rel="noopener">환불·청약철회 안내</a></span></label>
+      <label class="chk"><input type="checkbox" class="ag" id="c4"> <span>[필수] 확인했습니다. (만 19세 미만인 경우: 법정대리인의 동의를 받았습니다.) <a href="/minor/" target="_blank" rel="noopener">미성년자 구매 안내</a></span></label>
+    </section>
+    <section class="card">
+      <h2>결제</h2>
+      <div id="payment-method"></div>
+      <div id="agreement"></div>
+      <p class="notice" id="paynote" hidden></p>
+      <p class="msg" id="msg" role="status"></p>
+      <button type="submit" class="btn pri" id="pay" disabled>결제하기</button>
+    </section>
+  </form>
+  <p class="fn">결제는 토스페이먼츠 결제창에서 진행됩니다. 결제가 끝나면 주문번호가 나옵니다 — <a href="/orders/">주문 조회</a>에서 이메일과 주문번호로 다시 확인할 수 있습니다. 환불 신청: admin@deltaskill.co.kr 또는 070-8065-2468로 상품명·주문번호·결제수단을 알려 주세요.</p>
+</main>
+<footer class="sitefoot">
+<div class="biz" id="bizinfo">
+  <nav class="policy" aria-label="정책">
+    <a href="/terms/">이용약관</a>
+    <a class="pp" href="/privacy/"><b>개인정보처리방침</b></a>
+    <a href="/refund/">환불·청약철회 안내</a>
+    <a href="/minor/">미성년자 구매 안내</a>
+    <a href="/store/">유형서 구매</a>
+  </nav>
+  <p>상호 델타스킬 · 대표 송재형 · 사업자등록번호 345-62-00876 <a href="https://www.ftc.go.kr/bizCommPop.do?wrkr_no=3456200876" target="_blank" rel="noopener">사업자정보확인</a> · 통신판매업 신고 (신고 진행 중)</p>
+  <p>주소 서울특별시 서초구 마방로10길 18-16, 4층(양재동, 진우빌딩) · 전화 070-8065-2468 · 이메일 <a href="mailto:admin@deltaskill.co.kr">admin@deltaskill.co.kr</a></p>
+  <p>개인정보보호책임자 송재형 · 호스팅 제공자 GitHub, Inc.(GitHub Pages)</p>
+  <p class="src">자료 출처: 평가원 공개 자료 + EBSi 공개 채점 자료 · 판매 PDF는 델타스킬이 직접 제작한 콘텐츠입니다 · 디지털콘텐츠는 다운로드(열람) 후 청약철회가 제한됩니다(다운로드 전 7일 이내 전액 환불) · 정기결제 없음(단건 결제)</p>
+  <p class="copy">© 2026 델타스킬. All rights reserved.</p>
+</div>
+</footer>
+<script>
+"use strict";
+function $(id){return document.getElementById(id);}
+function won(n){return Number(n).toLocaleString("ko-KR")+"원";}
+function kst(iso){try{return new Date(iso).toLocaleString("ko-KR",{timeZone:"Asia/Seoul",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});}catch(_){return iso||"";}}
+function loadCfg(){return fetch("/pay-config.json",{cache:"no-store"}).then(function(r){return r.ok?r.json():{};}).catch(function(){return {};});}
+function apiBase(cfg){return (cfg&&typeof cfg.api==="string"?cfg.api:"").replace(/\/+$/,"");}
+function callApi(cfg,name,body){
+  return fetch(apiBase(cfg)+"/"+name,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)})
+    .then(function(r){return r.json().catch(function(){return {ok:false,error:"server"};});})
+    .catch(function(){return {ok:false,error:"network"};});
+}
+var ERR={
+  unknown_sku:"상품을 찾을 수 없습니다. 유형서 구매 화면에서 다시 골라 주세요.",
+  bad_buyer:"이메일과 이름을 확인해 주세요.",
+  consent_required:"필수 동의를 모두 체크해 주세요.",
+  not_on_sale:"지금은 이 상품의 판매 기간이 아닙니다.",
+  bad_request:"요청 값이 올바르지 않습니다.",
+  order_not_found:"주문을 찾을 수 없습니다.",
+  already_paid:"이미 결제가 끝난 주문입니다. 주문 조회 화면에서 확인해 주세요.",
+  bad_status:"이 주문은 지금 승인할 수 없는 상태입니다. 주문 조회 화면에서 확인해 주세요.",
+  busy:"승인을 처리하고 있습니다. 잠시 뒤 주문 조회 화면에서 확인해 주세요.",
+  amount_mismatch:"결제 금액이 주문 금액과 달라 승인하지 않았습니다.",
+  toss_confirm_failed:"결제 승인에 실패했습니다.",
+  review:"결제 확인이 필요합니다. 아래 연락처로 주문번호를 알려 주세요.",
+  not_found:"주문을 찾을 수 없습니다. 이메일과 주문번호를 확인해 주세요.",
+  test_mode:"테스트 결제라 자료가 제공되지 않습니다.",
+  not_paid:"결제가 끝나지 않은 주문입니다.",
+  expired:"다시 받을 수 있는 기간(구매일로부터 6개월)이 지났습니다.",
+  not_yet:"아직 제공 전인 파일입니다.",
+  canceled:"취소·환불된 결제입니다.",
+  bad_file:"이 주문에 없는 파일입니다.",
+  file_not_ready:"파일을 준비하고 있습니다. 잠시 뒤 다시 시도해 주세요.",
+  network:"서버에 연결하지 못했습니다. 잠시 뒤 다시 시도해 주세요."
+};
+var HELP=" 계속되면 admin@deltaskill.co.kr 또는 070-8065-2468로 알려 주세요.";
+function errText(r){
+  if(r&&r.code==="USER_CANCEL")return "결제를 취소했습니다.";
+  var t=(r&&r.error&&ERR[r.error])||"";
+  if(r&&r.error==="toss_confirm_failed"&&r.message)t+=" ("+r.message+")";
+  if(!t)t=(r&&r.message)?String(r.message):"처리하지 못했습니다.";
+  return t+(r&&(r.error==="server"||r.error==="network"||r.error==="review"||!ERR[r.error])?HELP:"");
+}
+var STATUS={paid:"결제 완료",waiting:"입금 대기",ready:"결제 대기",confirming:"승인 처리 중",failed:"결제 실패",canceled:"취소·환불",review:"확인 중"};
+function setMsg(el,t,err){el.textContent=t||"";el.className="msg"+(err?" err":"");}
+/* 주문 요약 + 파일 목록(내려받기) — success · orders 공용 */
+function renderOrder(box,o,cfg,email){
+  box.textContent="";
+  var dl=document.createElement("dl");
+  function row(k,v){if(v==null||v==="")return;var d=document.createElement("div"),t=document.createElement("dt"),x=document.createElement("dd");t.textContent=k;x.textContent=v;d.appendChild(t);d.appendChild(x);dl.appendChild(d);}
+  row("주문번호",o.orderId);row("상품",o.orderName);row("결제금액",won(o.amount)+" (VAT 포함)");
+  row("상태",(STATUS[o.status]||o.status)+(o.mode==="test"?" · 테스트 결제":""));
+  row("결제수단",o.method);row("승인일시",o.approvedAt?kst(o.approvedAt):"");
+  row("다시 받기",o.redownloadUntil?(kst(o.redownloadUntil)+"까지"):"");
+  box.appendChild(dl);
+  var h=document.createElement("h2");h.textContent="파일";h.style.marginTop="16px";box.appendChild(h);
+  if(o.mode==="test"){var n=document.createElement("p");n.className="notice";n.textContent="테스트 결제라 자료가 제공되지 않습니다. 실제로 청구되지 않습니다.";box.appendChild(n);return;}
+  var w=document.createElement("p");w.className="hint";w.textContent="내려받기(열람)를 시작한 파일은 청약철회(환불)가 제한됩니다. 내려받지 않은 파일은 결제일로부터 7일 이내(제공 예정 파일은 제공 전까지 언제든) 전액 환불됩니다.";box.appendChild(w);
+  var ul=document.createElement("ul");ul.className="files";
+  var msg=document.createElement("p");msg.className="msg";msg.setAttribute("role","status");
+  (o.files||[]).forEach(function(f){
+    var li=document.createElement("li"),s=document.createElement("span");
+    s.textContent=f.title;
+    if(f.downloaded){var g=document.createElement("span");g.className="tag";g.textContent="내려받음";s.appendChild(g);}
+    var sm=document.createElement("small");sm.textContent=f.ready?"제공 중":(kst(f.from)+"부터 제공 예정");s.appendChild(sm);
+    li.appendChild(s);
+    if(o.status==="paid"&&f.ready){
+      var b=document.createElement("button");b.type="button";b.className="btn ghost sm";b.textContent="내려받기";
+      b.onclick=function(){
+        if(!email){setMsg(msg,"주문 조회 화면에서 이메일과 주문번호로 내려받을 수 있습니다.",true);return;}
+        if(!confirm("내려받기를 시작하면 이 파일은 청약철회(환불)가 제한됩니다. 계속할까요?"))return;
+        b.disabled=true;setMsg(msg,"내려받기 주소를 받는 중…");
+        callApi(cfg,"download-url",{orderId:o.orderId,email:email,fileId:f.id}).then(function(r){
+          b.disabled=false;
+          if(r&&r.ok&&r.url){setMsg(msg,"내려받기를 시작합니다.");location.href=r.url;}
+          else setMsg(msg,errText(r),true);
+        });
+      };
+      li.appendChild(b);
+    }
+    ul.appendChild(li);
+  });
+  box.appendChild(ul);box.appendChild(msg);
+}
+var CAT={"C09":{"name":"공통 9번 유형서","price":3900,"priceNote":"VAT 포함","comp":"PDF 1개 · 약 25문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함","give":"10/27(화) 제공 예정 · 제공 전에는 언제든 전액 환불","saleFrom":"2026-10-20T19:00:00+09:00"},"C10":{"name":"공통 10번 유형서","price":3900,"priceNote":"VAT 포함","comp":"PDF 1개 · 약 25문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함","give":"10/27(화) 제공 예정 · 제공 전에는 언제든 전액 환불","saleFrom":"2026-10-20T19:00:00+09:00"},"C11":{"name":"공통 11번 유형서","price":3900,"priceNote":"VAT 포함","comp":"PDF 1개 · 약 25문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함","give":"10/27(화) 제공 예정 · 제공 전에는 언제든 전액 환불","saleFrom":"2026-10-20T19:00:00+09:00"},"C12":{"name":"공통 12번 유형서","price":3900,"priceNote":"VAT 포함","comp":"PDF 1개 · 약 25문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함","give":"10/27(화) 제공 예정 · 제공 전에는 언제든 전액 환불","saleFrom":"2026-10-20T19:00:00+09:00"},"C13":{"name":"공통 13번 유형서","price":3900,"priceNote":"VAT 포함","comp":"PDF 1개 · 약 25문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함","give":"10/27(화) 제공 예정 · 제공 전에는 언제든 전액 환불","saleFrom":"2026-10-20T19:00:00+09:00"},"C14":{"name":"공통 14번 유형서","price":3900,"priceNote":"VAT 포함","comp":"PDF 1개 · 약 25문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함","give":"10/20(화) 19:00부터 결제 후 바로 다운로드","saleFrom":"2026-10-20T19:00:00+09:00"},"C15":{"name":"공통 15번 유형서","price":3900,"priceNote":"VAT 포함","comp":"PDF 1개 · 약 20문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함","give":"10/20(화) 19:00부터 결제 후 바로 다운로드","saleFrom":"2026-10-20T19:00:00+09:00"},"C20":{"name":"공통 20번 유형서","price":3900,"priceNote":"VAT 포함","comp":"PDF 1개 · 약 20문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함","give":"10/20(화) 19:00부터 결제 후 바로 다운로드","saleFrom":"2026-10-20T19:00:00+09:00"},"C21":{"name":"공통 21번 유형서","price":3900,"priceNote":"VAT 포함","comp":"PDF 1개 · 약 20문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함","give":"10/20(화) 19:00부터 결제 후 바로 다운로드","saleFrom":"2026-10-20T19:00:00+09:00"},"C22":{"name":"공통 22번 유형서","price":3900,"priceNote":"VAT 포함","comp":"PDF 1개 · 약 20문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함","give":"10/20(화) 19:00부터 결제 후 바로 다운로드","saleFrom":"2026-10-20T19:00:00+09:00"},"H27":{"name":"확률과 통계 27번 유형서","price":3900,"priceNote":"VAT 포함","comp":"PDF 1개 · 약 25문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함","give":"10/27(화) 제공 예정 · 제공 전에는 언제든 전액 환불","saleFrom":"2026-10-20T19:00:00+09:00"},"H28":{"name":"확률과 통계 28번 유형서","price":3900,"priceNote":"VAT 포함","comp":"PDF 1개 · 약 20문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함","give":"10/27(화) 제공 예정 · 제공 전에는 언제든 전액 환불","saleFrom":"2026-10-20T19:00:00+09:00"},"H29":{"name":"확률과 통계 29번 유형서","price":3900,"priceNote":"VAT 포함","comp":"PDF 1개 · 약 20문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함","give":"10/20(화) 19:00부터 결제 후 바로 다운로드","saleFrom":"2026-10-20T19:00:00+09:00"},"H30":{"name":"확률과 통계 30번 유형서","price":3900,"priceNote":"VAT 포함","comp":"PDF 1개 · 약 20문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함","give":"10/20(화) 19:00부터 결제 후 바로 다운로드","saleFrom":"2026-10-20T19:00:00+09:00"},"M27":{"name":"미적분 27번 유형서","price":3900,"priceNote":"VAT 포함","comp":"PDF 1개 · 약 25문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함","give":"10/27(화) 제공 예정 · 제공 전에는 언제든 전액 환불","saleFrom":"2026-10-20T19:00:00+09:00"},"M28":{"name":"미적분 28번 유형서","price":3900,"priceNote":"VAT 포함","comp":"PDF 1개 · 약 20문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함","give":"10/20(화) 19:00부터 결제 후 바로 다운로드","saleFrom":"2026-10-20T19:00:00+09:00"},"M29":{"name":"미적분 29번 유형서","price":3900,"priceNote":"VAT 포함","comp":"PDF 1개 · 약 20문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함","give":"10/20(화) 19:00부터 결제 후 바로 다운로드","saleFrom":"2026-10-20T19:00:00+09:00"},"M30":{"name":"미적분 30번 유형서","price":3900,"priceNote":"VAT 포함","comp":"PDF 1개 · 약 20문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함","give":"10/20(화) 19:00부터 결제 후 바로 다운로드","saleFrom":"2026-10-20T19:00:00+09:00"},"SET-H":{"name":"선택과목 세트 · 확률과 통계 (14권)","price":24900,"priceNote":"VAT 포함 · 출시 기념가 10/26까지 · 10/27부터 29,900원","comp":"공통 10권 + 선택 27~30 4권 · 약 315문항 · PDF 14개","give":"결제 후 바로: 공통 14·15·20·21·22 + 확통 29·30(7권) · 10/27(화) 추가 제공: 나머지","saleFrom":"2026-10-20T19:00:00+09:00","price2":29900,"price2From":"2026-10-27T00:00:00+09:00"},"SET-M":{"name":"선택과목 세트 · 미적분 (14권)","price":24900,"priceNote":"VAT 포함 · 출시 기념가 10/26까지 · 10/27부터 29,900원","comp":"공통 10권 + 선택 27~30 4권 · 약 315문항 · PDF 14개","give":"결제 후 바로: 공통 14·15·20·21·22 + 미적 28·29·30(8권) · 10/27(화) 추가 제공: 나머지","saleFrom":"2026-10-20T19:00:00+09:00","price2":29900,"price2From":"2026-10-27T00:00:00+09:00"},"FIN":{"name":"수능 직전 점검 모음","price":9900,"priceNote":"VAT 포함","comp":"PDF · 약 60문항","give":"11/9(월)~11/12(목) 제공 예정 · 제공 전에는 언제든 전액 환불 · 늦어지면 전액 환불","saleFrom":"2026-10-20T19:00:00+09:00"},"PRE-H-43":{"name":"파이널의 파이널 등급별 코스 · 확률과 통계 · 4→3","price":59000,"priceNote":"VAT 포함","comp":"선택과목 유형서 14권 코스 순서 + 직전 점검 모음 + D-10 하루 계획표","give":"11/9(월)~11/12(목) 판매 · 결제 후 바로 다운로드","saleFrom":"2026-11-09T00:00:00+09:00","course":"점수나 등급을 약속하지 않습니다. 고를 번호와 순서를 정리해 고민을 줄여 드리는 자료입니다.","saleTo":"2026-11-13T00:00:00+09:00"},"PRE-H-32":{"name":"파이널의 파이널 등급별 코스 · 확률과 통계 · 3→2","price":59000,"priceNote":"VAT 포함","comp":"선택과목 유형서 14권 코스 순서 + 직전 점검 모음 + D-10 하루 계획표","give":"11/9(월)~11/12(목) 판매 · 결제 후 바로 다운로드","saleFrom":"2026-11-09T00:00:00+09:00","course":"점수나 등급을 약속하지 않습니다. 고를 번호와 순서를 정리해 고민을 줄여 드리는 자료입니다.","saleTo":"2026-11-13T00:00:00+09:00"},"PRE-H-21":{"name":"파이널의 파이널 등급별 코스 · 확률과 통계 · 2→1","price":59000,"priceNote":"VAT 포함","comp":"선택과목 유형서 14권 코스 순서 + 직전 점검 모음 + D-10 하루 계획표 · 킬러 심화편 포함","give":"11/9(월)~11/12(목) 판매 · 결제 후 바로 다운로드","saleFrom":"2026-11-09T00:00:00+09:00","course":"점수나 등급을 약속하지 않습니다. 고를 번호와 순서를 정리해 고민을 줄여 드리는 자료입니다.","saleTo":"2026-11-13T00:00:00+09:00"},"PRE-H-1K":{"name":"파이널의 파이널 등급별 코스 · 확률과 통계 · 1등급 굳히기","price":59000,"priceNote":"VAT 포함","comp":"선택과목 유형서 14권 코스 순서 + 직전 점검 모음 + D-10 하루 계획표 · 킬러 심화편 포함","give":"11/9(월)~11/12(목) 판매 · 결제 후 바로 다운로드","saleFrom":"2026-11-09T00:00:00+09:00","course":"점수나 등급을 약속하지 않습니다. 고를 번호와 순서를 정리해 고민을 줄여 드리는 자료입니다.","saleTo":"2026-11-13T00:00:00+09:00"},"PRE-M-43":{"name":"파이널의 파이널 등급별 코스 · 미적분 · 4→3","price":59000,"priceNote":"VAT 포함","comp":"선택과목 유형서 14권 코스 순서 + 직전 점검 모음 + D-10 하루 계획표","give":"11/9(월)~11/12(목) 판매 · 결제 후 바로 다운로드","saleFrom":"2026-11-09T00:00:00+09:00","course":"점수나 등급을 약속하지 않습니다. 고를 번호와 순서를 정리해 고민을 줄여 드리는 자료입니다.","saleTo":"2026-11-13T00:00:00+09:00"},"PRE-M-32":{"name":"파이널의 파이널 등급별 코스 · 미적분 · 3→2","price":59000,"priceNote":"VAT 포함","comp":"선택과목 유형서 14권 코스 순서 + 직전 점검 모음 + D-10 하루 계획표","give":"11/9(월)~11/12(목) 판매 · 결제 후 바로 다운로드","saleFrom":"2026-11-09T00:00:00+09:00","course":"점수나 등급을 약속하지 않습니다. 고를 번호와 순서를 정리해 고민을 줄여 드리는 자료입니다.","saleTo":"2026-11-13T00:00:00+09:00"},"PRE-M-21":{"name":"파이널의 파이널 등급별 코스 · 미적분 · 2→1","price":59000,"priceNote":"VAT 포함","comp":"선택과목 유형서 14권 코스 순서 + 직전 점검 모음 + D-10 하루 계획표 · 킬러 심화편 포함","give":"11/9(월)~11/12(목) 판매 · 결제 후 바로 다운로드","saleFrom":"2026-11-09T00:00:00+09:00","course":"점수나 등급을 약속하지 않습니다. 고를 번호와 순서를 정리해 고민을 줄여 드리는 자료입니다.","saleTo":"2026-11-13T00:00:00+09:00"},"PRE-M-1K":{"name":"파이널의 파이널 등급별 코스 · 미적분 · 1등급 굳히기","price":59000,"priceNote":"VAT 포함","comp":"선택과목 유형서 14권 코스 순서 + 직전 점검 모음 + D-10 하루 계획표 · 킬러 심화편 포함","give":"11/9(월)~11/12(목) 판매 · 결제 후 바로 다운로드","saleFrom":"2026-11-09T00:00:00+09:00","course":"점수나 등급을 약속하지 않습니다. 고를 번호와 순서를 정리해 고민을 줄여 드리는 자료입니다.","saleTo":"2026-11-13T00:00:00+09:00"}};
+var FIX="<p>디지털콘텐츠(PDF)는 다운로드(열람)를 시작하면 청약철회(환불)가 제한됩니다(전자상거래법 제17조 제2항 제5호). 다운로드하지 않은 파일과 아직 제공되지 않은 파일은 결제일로부터 7일 이내(제공 예정 상품은 제공 전까지 언제든) 전액 환불됩니다. 구매 전에 무료 미리보기로 내용과 난이도를 확인해 주세요. 자세히: <a href=\"/refund/\">환불·청약철회 안내</a></p><p>유료 PDF에는 기출 문항 원문이 들어 있지 않습니다. 델타스킬이 직접 만든 유형문항·해설·분석만 담고, 기출은 시험·번호로만 가리킵니다.</p><p>정기결제(자동 결제)는 없습니다. 상품마다 한 번 결제합니다.</p>";
+var SDK="https://js.tosspayments.com/v2/standard";
+var sku=(new URLSearchParams(location.search).get("sku")||"").trim();
+var P=Object.prototype.hasOwnProperty.call(CAT,sku)?CAT[sku]:null;
+var cfg={},widgets=null,ready=false,busy=false,amount=0;
+function priceNow(p){return (p.price2&&p.price2From&&Date.now()>=Date.parse(p.price2From))?p.price2:p.price;}
+function onSale(p){var t=Date.now();return t>=Date.parse(p.saleFrom)&&!(p.saleTo&&t>=Date.parse(p.saleTo));}
+function absUrl(u,d){try{return new URL(u||d,location.origin).href;}catch(_){return location.origin+d;}}
+function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e;}
+function showProduct(){
+  var box=$("prod");box.textContent="";
+  if(!P){box.appendChild(el("p","msg err","상품을 찾을 수 없습니다."));var a=el("a","btn ghost","유형서 구매로 돌아가기");a.href="/store/";var d=el("div","acts");d.appendChild(a);box.appendChild(d);return false;}
+  box.appendChild(el("p","pname",P.name));
+  var pr=el("p","price");pr.appendChild(el("b",null,won(amount)));pr.appendChild(el("small",null,P.priceNote));box.appendChild(pr);
+  var dl=el("dl");[["SKU",sku],["구성",P.comp],["제공",P.give]].forEach(function(r){var d=el("div");d.appendChild(el("dt",null,r[0]));d.appendChild(el("dd",null,r[1]));dl.appendChild(d);});box.appendChild(dl);
+  if(P.course)box.appendChild(el("p","course",P.course));
+  var fx=el("div","fix");fx.innerHTML=FIX;box.appendChild(fx);
+  $("pay").textContent=won(amount)+" 결제하기";
+  return true;
+}
+function okEmail(s){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);}
+function agreed(){return ["c1","c2","c3","c4"].every(function(i){return $(i).checked;});}
+function update(){
+  $("ca").checked=agreed();
+  $("pay").disabled=!(ready&&apiBase(cfg)&&!busy&&okEmail($("em").value.trim())&&$("nm").value.trim()&&agreed());
+}
+function stop(text){ready=false;var n=$("paynote");n.textContent=text;n.hidden=false;$("pay").disabled=true;}
+function loadSdk(){return new Promise(function(ok,no){
+  if(window.TossPayments){ok();return;}
+  var s=document.createElement("script");s.src=SDK;s.async=true;
+  s.onload=function(){window.TossPayments?ok():no(new Error("sdk"));};s.onerror=function(){no(new Error("sdk"));};
+  document.head.appendChild(s);
+});}
+function startWidget(){
+  var tp;
+  try{tp=window.TossPayments(cfg.clientKey);}catch(e){stop("결제창을 열지 못했습니다. 잠시 뒤 다시 시도해 주세요.");return;}
+  widgets=tp.widgets({customerKey:window.TossPayments.ANONYMOUS});
+  widgets.setAmount({currency:"KRW",value:amount}).then(function(){
+    return Promise.all([
+      widgets.renderPaymentMethods({selector:"#payment-method",variantKey:"DEFAULT"}),
+      widgets.renderAgreement({selector:"#agreement",variantKey:"AGREEMENT"})
+    ]);
+  }).then(function(){
+    ready=true;
+    if(!apiBase(cfg)){var n=$("paynote");n.textContent="결제 서버 연동 준비 중입니다. 지금은 결제를 진행할 수 없습니다.";n.hidden=false;}
+    update();
+  }).catch(function(){stop("결제창을 열지 못했습니다. 잠시 뒤 다시 시도해 주세요.");});
+}
+function boot(){
+  amount=P?priceNow(P):0;
+  if(!showProduct()){loadCfg().then(function(c){if(c&&c.PAY_MODE==="test")$("band").hidden=false;});return;}
+  $("f").hidden=false;
+  ["em","nm","c1","c2","c3","c4"].forEach(function(i){$(i).addEventListener("input",update);$(i).addEventListener("change",update);});
+  $("ca").addEventListener("change",function(){var v=$("ca").checked;["c1","c2","c3","c4"].forEach(function(i){$(i).checked=v;});update();});
+  loadCfg().then(function(c){
+    cfg=c||{};
+    var mode=cfg.PAY_MODE;
+    if(mode==="test")$("band").hidden=false;
+    if(mode!=="test"&&mode!=="live"){stop("결제가 아직 열려 있지 않습니다. 정식 판매: 10/20(화) 19:00부터.");return;}
+    if(mode==="live"&&!onSale(P)){stop("지금은 이 상품의 판매 기간이 아닙니다. 제공: "+P.give);return;}
+    loadSdk().then(function(){
+      document.documentElement.setAttribute("data-toss-sdk","loaded");
+      if(!cfg.clientKey){stop("결제 연동 준비 중입니다. 지금은 결제창이 열리지 않습니다. 정식 판매: 10/20(화) 19:00부터.");$("pay").textContent="결제 연동 준비 중";return;}
+      startWidget();
+    }).catch(function(){document.documentElement.setAttribute("data-toss-sdk","error");stop("결제 모듈을 불러오지 못했습니다. 새로고침해 주세요.");});
+  });
+  $("f").addEventListener("submit",function(ev){
+    ev.preventDefault();
+    if($("pay").disabled)return;
+    var email=$("em").value.trim(),name=$("nm").value.trim();
+    busy=true;update();setMsg($("msg"),"주문을 만드는 중…");
+    callApi(cfg,"create-order",{sku:sku,email:email,name:name,agree:{terms:$("c1").checked,privacy:$("c2").checked,digital:$("c3").checked,minor:$("c4").checked}}).then(function(r){
+      if(!r||!r.ok)throw r||{};
+      if(r.amount!==amount){
+        amount=r.amount;showProduct();
+        return widgets.setAmount({currency:"KRW",value:amount}).then(function(){busy=false;update();setMsg($("msg"),"가격이 바뀌어 다시 계산했습니다. 금액을 확인하고 다시 눌러 주세요.",true);});
+      }
+      try{sessionStorage.setItem("ds_order",JSON.stringify({orderId:r.orderId,email:email,sku:sku}));}catch(_){}
+      setMsg($("msg"),"결제창을 여는 중…");
+      return widgets.requestPayment({orderId:r.orderId,orderName:r.orderName,successUrl:absUrl(cfg.successUrl,"/checkout/success/"),failUrl:absUrl(cfg.failUrl,"/checkout/fail/")});
+    }).catch(function(e){busy=false;update();setMsg($("msg"),errText(e),true);});
+  });
+}
+boot();
+</script>
+</body>
+</html>

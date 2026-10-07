@@ -65,6 +65,9 @@ dd{margin:0;font-size:14.5px;min-width:0}
 .act{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0}
 .btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;border-radius:12px;font-size:14.5px;font-weight:700;text-decoration:none}
 .btn.dis{background:#E3E8EF;color:#3A4A5F;cursor:not-allowed;border:0;font-family:inherit}
+.btn[hidden]{display:none}
+.btn.buy{background:var(--red);color:#fff}
+.pv img{display:block;width:100%;max-width:560px;height:auto;margin:8px 0 0;border-radius:12px;box-shadow:inset 0 0 0 1px var(--line);background:#fff}
 .btn.ghost{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
 .fix{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-size:12.5px;line-height:1.65;color:var(--ink2)}
 .fix p{margin:0 0 6px}.fix a{color:var(--ink);font-weight:650;text-decoration:underline}
@@ -89,7 +92,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 <body>
 <header class="top">
   <a class="logo" href="/"><span class="mark"><svg viewBox="-1 -2 102 102" aria-hidden="true"><path fill="#fff" d="M47.17,10.29 Q50,5 52.83,10.29 L68.39,39.44 Q68.96,40.5 67.76,40.5 L45.86,40.5 Q41.45,40.5 41.45,44.91 L41.45,45.09 Q41.45,49.5 45.86,49.5 L72.57,49.5 Q73.77,49.5 74.33,50.56 L94.64,88.59 Q97,93 92,93 L8,93 Q3,93 5.36,88.59 L12.85,74.56 Q13.41,73.5 14.61,73.5 L59.26,73.5 Q63.67,73.5 63.67,69.09 L63.67,68.91 Q63.67,64.5 59.26,64.5 L19.42,64.5 Q18.22,64.5 18.79,63.44 Z"/></svg></span>델타스킬</a>
-  <nav class="gnav" aria-label="주요 메뉴"><a href="/">메인</a><a href="/pilot/">AI 오답노트</a><a href="/store/" class="on" aria-current="page">유형서 구매</a></nav>
+  <nav class="gnav" aria-label="주요 메뉴"><a href="/">메인</a><a href="/pilot/">AI 오답노트</a><a href="/store/" class="on" aria-current="page">유형서 구매</a><a href="/orders/">주문 조회</a></nav>
 </header>
 <main>
   <p class="crumb"><a href="/">메인</a> › 유형서 구매</p>
@@ -105,7 +108,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     <dl><div><dt>SKU</dt><dd>C09</dd></div><div><dt>구성</dt><dd>PDF 1개 · 약 25문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함</dd></div><div><dt>예상 주제</dt><dd>AI 1순위 · 속도·가속도와 미분</dd></div><div><dt>제공</dt><dd>10/27(화) 제공 예정 · 제공 전에는 언제든 전액 환불</dd></div></dl>
     
     <div class="pv"><b>미리보기</b> <span>미리보기 준비 중</span></div>
-    <div class="act"><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
+    <div class="act" data-sku="C09"><a class="btn buy" href="/checkout/?sku=C09" hidden>구매하기</a><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
     <div class="fix"><p>디지털콘텐츠(PDF)는 다운로드(열람)를 시작하면 청약철회(환불)가 제한됩니다(전자상거래법 제17조 제2항 제5호). 다운로드하지 않은 파일과 아직 제공되지 않은 파일은 결제일로부터 7일 이내(제공 예정 상품은 제공 전까지 언제든) 전액 환불됩니다. 구매 전에 무료 미리보기로 내용과 난이도를 확인해 주세요. 자세히: <a href="/refund/">환불·청약철회 안내</a></p><p>유료 PDF에는 기출 문항 원문이 들어 있지 않습니다. 델타스킬이 직접 만든 유형문항·해설·분석만 담고, 기출은 시험·번호로만 가리킵니다.</p><p>정기결제(자동 결제)는 없습니다. 상품마다 한 번 결제합니다.</p></div>
   </div>
 </details><details class="sku" id="sku-C10">
@@ -114,7 +117,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     <dl><div><dt>SKU</dt><dd>C10</dd></div><div><dt>구성</dt><dd>PDF 1개 · 약 25문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함</dd></div><div><dt>예상 주제</dt><dd>AI 1순위 · 지수로그 그래프·좌표·도형</dd></div><div><dt>제공</dt><dd>10/27(화) 제공 예정 · 제공 전에는 언제든 전액 환불</dd></div></dl>
     
     <div class="pv"><b>미리보기</b> <span>미리보기 준비 중</span></div>
-    <div class="act"><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
+    <div class="act" data-sku="C10"><a class="btn buy" href="/checkout/?sku=C10" hidden>구매하기</a><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
     <div class="fix"><p>디지털콘텐츠(PDF)는 다운로드(열람)를 시작하면 청약철회(환불)가 제한됩니다(전자상거래법 제17조 제2항 제5호). 다운로드하지 않은 파일과 아직 제공되지 않은 파일은 결제일로부터 7일 이내(제공 예정 상품은 제공 전까지 언제든) 전액 환불됩니다. 구매 전에 무료 미리보기로 내용과 난이도를 확인해 주세요. 자세히: <a href="/refund/">환불·청약철회 안내</a></p><p>유료 PDF에는 기출 문항 원문이 들어 있지 않습니다. 델타스킬이 직접 만든 유형문항·해설·분석만 담고, 기출은 시험·번호로만 가리킵니다.</p><p>정기결제(자동 결제)는 없습니다. 상품마다 한 번 결제합니다.</p></div>
   </div>
 </details><details class="sku" id="sku-C11">
@@ -123,7 +126,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     <dl><div><dt>SKU</dt><dd>C11</dd></div><div><dt>구성</dt><dd>PDF 1개 · 약 25문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함</dd></div><div><dt>예상 주제</dt><dd>AI 1순위 · 적분 관계식·누적함수로 함수 결정</dd></div><div><dt>제공</dt><dd>10/27(화) 제공 예정 · 제공 전에는 언제든 전액 환불</dd></div></dl>
     
     <div class="pv"><b>미리보기</b> <span>미리보기 준비 중</span></div>
-    <div class="act"><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
+    <div class="act" data-sku="C11"><a class="btn buy" href="/checkout/?sku=C11" hidden>구매하기</a><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
     <div class="fix"><p>디지털콘텐츠(PDF)는 다운로드(열람)를 시작하면 청약철회(환불)가 제한됩니다(전자상거래법 제17조 제2항 제5호). 다운로드하지 않은 파일과 아직 제공되지 않은 파일은 결제일로부터 7일 이내(제공 예정 상품은 제공 전까지 언제든) 전액 환불됩니다. 구매 전에 무료 미리보기로 내용과 난이도를 확인해 주세요. 자세히: <a href="/refund/">환불·청약철회 안내</a></p><p>유료 PDF에는 기출 문항 원문이 들어 있지 않습니다. 델타스킬이 직접 만든 유형문항·해설·분석만 담고, 기출은 시험·번호로만 가리킵니다.</p><p>정기결제(자동 결제)는 없습니다. 상품마다 한 번 결제합니다.</p></div>
   </div>
 </details><details class="sku" id="sku-C12">
@@ -132,7 +135,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     <dl><div><dt>SKU</dt><dd>C12</dd></div><div><dt>구성</dt><dd>PDF 1개 · 약 25문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함</dd></div><div><dt>예상 주제</dt><dd>AI 1순위 · 사인·코사인법칙·삼각형 도형</dd></div><div><dt>제공</dt><dd>10/27(화) 제공 예정 · 제공 전에는 언제든 전액 환불</dd></div></dl>
     
     <div class="pv"><b>미리보기</b> <span>미리보기 준비 중</span></div>
-    <div class="act"><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
+    <div class="act" data-sku="C12"><a class="btn buy" href="/checkout/?sku=C12" hidden>구매하기</a><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
     <div class="fix"><p>디지털콘텐츠(PDF)는 다운로드(열람)를 시작하면 청약철회(환불)가 제한됩니다(전자상거래법 제17조 제2항 제5호). 다운로드하지 않은 파일과 아직 제공되지 않은 파일은 결제일로부터 7일 이내(제공 예정 상품은 제공 전까지 언제든) 전액 환불됩니다. 구매 전에 무료 미리보기로 내용과 난이도를 확인해 주세요. 자세히: <a href="/refund/">환불·청약철회 안내</a></p><p>유료 PDF에는 기출 문항 원문이 들어 있지 않습니다. 델타스킬이 직접 만든 유형문항·해설·분석만 담고, 기출은 시험·번호로만 가리킵니다.</p><p>정기결제(자동 결제)는 없습니다. 상품마다 한 번 결제합니다.</p></div>
   </div>
 </details><details class="sku" id="sku-C13">
@@ -141,7 +144,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     <dl><div><dt>SKU</dt><dd>C13</dd></div><div><dt>구성</dt><dd>PDF 1개 · 약 25문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함</dd></div><div><dt>예상 주제</dt><dd>AI 1순위 · 정적분·넓이·부호</dd></div><div><dt>제공</dt><dd>10/27(화) 제공 예정 · 제공 전에는 언제든 전액 환불</dd></div></dl>
     
     <div class="pv"><b>미리보기</b> <span>미리보기 준비 중</span></div>
-    <div class="act"><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
+    <div class="act" data-sku="C13"><a class="btn buy" href="/checkout/?sku=C13" hidden>구매하기</a><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
     <div class="fix"><p>디지털콘텐츠(PDF)는 다운로드(열람)를 시작하면 청약철회(환불)가 제한됩니다(전자상거래법 제17조 제2항 제5호). 다운로드하지 않은 파일과 아직 제공되지 않은 파일은 결제일로부터 7일 이내(제공 예정 상품은 제공 전까지 언제든) 전액 환불됩니다. 구매 전에 무료 미리보기로 내용과 난이도를 확인해 주세요. 자세히: <a href="/refund/">환불·청약철회 안내</a></p><p>유료 PDF에는 기출 문항 원문이 들어 있지 않습니다. 델타스킬이 직접 만든 유형문항·해설·분석만 담고, 기출은 시험·번호로만 가리킵니다.</p><p>정기결제(자동 결제)는 없습니다. 상품마다 한 번 결제합니다.</p></div>
   </div>
 </details><details class="sku" id="sku-C14">
@@ -149,8 +152,8 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   <div class="body">
     <dl><div><dt>SKU</dt><dd>C14</dd></div><div><dt>구성</dt><dd>PDF 1개 · 약 25문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함</dd></div><div><dt>예상 주제</dt><dd>AI 1순위 · 거듭제곱근·정수 조건</dd></div><div><dt>제공</dt><dd>10/20(화) 19:00부터 결제 후 바로 다운로드</dd></div></dl>
     
-    <div class="pv"><b>미리보기</b> <span>미리보기 준비 중</span></div>
-    <div class="act"><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
+    <div class="pv" data-pv="C14"><b>미리보기</b> <span>미리보기 준비 중</span></div>
+    <div class="act" data-sku="C14"><a class="btn buy" href="/checkout/?sku=C14" hidden>구매하기</a><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
     <div class="fix"><p>디지털콘텐츠(PDF)는 다운로드(열람)를 시작하면 청약철회(환불)가 제한됩니다(전자상거래법 제17조 제2항 제5호). 다운로드하지 않은 파일과 아직 제공되지 않은 파일은 결제일로부터 7일 이내(제공 예정 상품은 제공 전까지 언제든) 전액 환불됩니다. 구매 전에 무료 미리보기로 내용과 난이도를 확인해 주세요. 자세히: <a href="/refund/">환불·청약철회 안내</a></p><p>유료 PDF에는 기출 문항 원문이 들어 있지 않습니다. 델타스킬이 직접 만든 유형문항·해설·분석만 담고, 기출은 시험·번호로만 가리킵니다.</p><p>정기결제(자동 결제)는 없습니다. 상품마다 한 번 결제합니다.</p></div>
   </div>
 </details><details class="sku" id="sku-C15">
@@ -158,8 +161,8 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   <div class="body">
     <dl><div><dt>SKU</dt><dd>C15</dd></div><div><dt>구성</dt><dd>PDF 1개 · 약 20문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함</dd></div><div><dt>예상 주제</dt><dd>AI 1순위 · 극한 존재 조건으로 함수 결정</dd></div><div><dt>제공</dt><dd>10/20(화) 19:00부터 결제 후 바로 다운로드</dd></div></dl>
     
-    <div class="pv"><b>미리보기</b> <span>미리보기 준비 중</span></div>
-    <div class="act"><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
+    <div class="pv" data-pv="C15"><b>미리보기</b> <span>미리보기 준비 중</span></div>
+    <div class="act" data-sku="C15"><a class="btn buy" href="/checkout/?sku=C15" hidden>구매하기</a><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
     <div class="fix"><p>디지털콘텐츠(PDF)는 다운로드(열람)를 시작하면 청약철회(환불)가 제한됩니다(전자상거래법 제17조 제2항 제5호). 다운로드하지 않은 파일과 아직 제공되지 않은 파일은 결제일로부터 7일 이내(제공 예정 상품은 제공 전까지 언제든) 전액 환불됩니다. 구매 전에 무료 미리보기로 내용과 난이도를 확인해 주세요. 자세히: <a href="/refund/">환불·청약철회 안내</a></p><p>유료 PDF에는 기출 문항 원문이 들어 있지 않습니다. 델타스킬이 직접 만든 유형문항·해설·분석만 담고, 기출은 시험·번호로만 가리킵니다.</p><p>정기결제(자동 결제)는 없습니다. 상품마다 한 번 결제합니다.</p></div>
   </div>
 </details><details class="sku" id="sku-C20">
@@ -167,8 +170,8 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   <div class="body">
     <dl><div><dt>SKU</dt><dd>C20</dd></div><div><dt>구성</dt><dd>PDF 1개 · 약 20문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함</dd></div><div><dt>예상 주제</dt><dd>AI 1순위 · 삼각함수 그래프·주기·방정식</dd></div><div><dt>제공</dt><dd>10/20(화) 19:00부터 결제 후 바로 다운로드</dd></div></dl>
     
-    <div class="pv"><b>미리보기</b> <span>미리보기 준비 중</span></div>
-    <div class="act"><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
+    <div class="pv" data-pv="C20"><b>미리보기</b> <span>미리보기 준비 중</span></div>
+    <div class="act" data-sku="C20"><a class="btn buy" href="/checkout/?sku=C20" hidden>구매하기</a><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
     <div class="fix"><p>디지털콘텐츠(PDF)는 다운로드(열람)를 시작하면 청약철회(환불)가 제한됩니다(전자상거래법 제17조 제2항 제5호). 다운로드하지 않은 파일과 아직 제공되지 않은 파일은 결제일로부터 7일 이내(제공 예정 상품은 제공 전까지 언제든) 전액 환불됩니다. 구매 전에 무료 미리보기로 내용과 난이도를 확인해 주세요. 자세히: <a href="/refund/">환불·청약철회 안내</a></p><p>유료 PDF에는 기출 문항 원문이 들어 있지 않습니다. 델타스킬이 직접 만든 유형문항·해설·분석만 담고, 기출은 시험·번호로만 가리킵니다.</p><p>정기결제(자동 결제)는 없습니다. 상품마다 한 번 결제합니다.</p></div>
   </div>
 </details><details class="sku" id="sku-C21">
@@ -176,8 +179,8 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   <div class="body">
     <dl><div><dt>SKU</dt><dd>C21</dd></div><div><dt>구성</dt><dd>PDF 1개 · 약 20문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함</dd></div><div><dt>예상 주제</dt><dd>AI 1순위 · 극한 존재 조건으로 함수 결정</dd></div><div><dt>제공</dt><dd>10/20(화) 19:00부터 결제 후 바로 다운로드</dd></div></dl>
     
-    <div class="pv"><b>미리보기</b> <span>미리보기 준비 중</span></div>
-    <div class="act"><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
+    <div class="pv" data-pv="C21"><b>미리보기</b> <span>미리보기 준비 중</span></div>
+    <div class="act" data-sku="C21"><a class="btn buy" href="/checkout/?sku=C21" hidden>구매하기</a><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
     <div class="fix"><p>디지털콘텐츠(PDF)는 다운로드(열람)를 시작하면 청약철회(환불)가 제한됩니다(전자상거래법 제17조 제2항 제5호). 다운로드하지 않은 파일과 아직 제공되지 않은 파일은 결제일로부터 7일 이내(제공 예정 상품은 제공 전까지 언제든) 전액 환불됩니다. 구매 전에 무료 미리보기로 내용과 난이도를 확인해 주세요. 자세히: <a href="/refund/">환불·청약철회 안내</a></p><p>유료 PDF에는 기출 문항 원문이 들어 있지 않습니다. 델타스킬이 직접 만든 유형문항·해설·분석만 담고, 기출은 시험·번호로만 가리킵니다.</p><p>정기결제(자동 결제)는 없습니다. 상품마다 한 번 결제합니다.</p></div>
   </div>
 </details><details class="sku" id="sku-C22">
@@ -185,8 +188,8 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   <div class="body">
     <dl><div><dt>SKU</dt><dd>C22</dd></div><div><dt>구성</dt><dd>PDF 1개 · 약 20문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함</dd></div><div><dt>예상 주제</dt><dd>AI 1순위 · 지수로그 그래프·좌표·도형</dd></div><div><dt>제공</dt><dd>10/20(화) 19:00부터 결제 후 바로 다운로드</dd></div></dl>
     
-    <div class="pv"><b>미리보기</b> <span>미리보기 준비 중</span></div>
-    <div class="act"><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
+    <div class="pv" data-pv="C22"><b>미리보기</b> <span>미리보기 준비 중</span></div>
+    <div class="act" data-sku="C22"><a class="btn buy" href="/checkout/?sku=C22" hidden>구매하기</a><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
     <div class="fix"><p>디지털콘텐츠(PDF)는 다운로드(열람)를 시작하면 청약철회(환불)가 제한됩니다(전자상거래법 제17조 제2항 제5호). 다운로드하지 않은 파일과 아직 제공되지 않은 파일은 결제일로부터 7일 이내(제공 예정 상품은 제공 전까지 언제든) 전액 환불됩니다. 구매 전에 무료 미리보기로 내용과 난이도를 확인해 주세요. 자세히: <a href="/refund/">환불·청약철회 안내</a></p><p>유료 PDF에는 기출 문항 원문이 들어 있지 않습니다. 델타스킬이 직접 만든 유형문항·해설·분석만 담고, 기출은 시험·번호로만 가리킵니다.</p><p>정기결제(자동 결제)는 없습니다. 상품마다 한 번 결제합니다.</p></div>
   </div>
 </details></div></section><section class="grp"><h2>확률과 통계 유형서 · 4권</h2><p class=gd>확률과 통계 27~30번.</p><div class="list"><details class="sku" id="sku-H27">
@@ -195,7 +198,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     <dl><div><dt>SKU</dt><dd>H27</dd></div><div><dt>구성</dt><dd>PDF 1개 · 약 25문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함</dd></div><div><dt>예상 주제</dt><dd>AI 1순위 · 정규분포·표준화</dd></div><div><dt>제공</dt><dd>10/27(화) 제공 예정 · 제공 전에는 언제든 전액 환불</dd></div></dl>
     
     <div class="pv"><b>미리보기</b> <span>미리보기 준비 중</span></div>
-    <div class="act"><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
+    <div class="act" data-sku="H27"><a class="btn buy" href="/checkout/?sku=H27" hidden>구매하기</a><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
     <div class="fix"><p>디지털콘텐츠(PDF)는 다운로드(열람)를 시작하면 청약철회(환불)가 제한됩니다(전자상거래법 제17조 제2항 제5호). 다운로드하지 않은 파일과 아직 제공되지 않은 파일은 결제일로부터 7일 이내(제공 예정 상품은 제공 전까지 언제든) 전액 환불됩니다. 구매 전에 무료 미리보기로 내용과 난이도를 확인해 주세요. 자세히: <a href="/refund/">환불·청약철회 안내</a></p><p>유료 PDF에는 기출 문항 원문이 들어 있지 않습니다. 델타스킬이 직접 만든 유형문항·해설·분석만 담고, 기출은 시험·번호로만 가리킵니다.</p><p>정기결제(자동 결제)는 없습니다. 상품마다 한 번 결제합니다.</p></div>
   </div>
 </details><details class="sku" id="sku-H28">
@@ -204,7 +207,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     <dl><div><dt>SKU</dt><dd>H28</dd></div><div><dt>구성</dt><dd>PDF 1개 · 약 20문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함</dd></div><div><dt>예상 주제</dt><dd>AI 1순위 · 조건부 배열·함수·복합 경우의 수</dd></div><div><dt>제공</dt><dd>10/27(화) 제공 예정 · 제공 전에는 언제든 전액 환불</dd></div></dl>
     
     <div class="pv"><b>미리보기</b> <span>미리보기 준비 중</span></div>
-    <div class="act"><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
+    <div class="act" data-sku="H28"><a class="btn buy" href="/checkout/?sku=H28" hidden>구매하기</a><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
     <div class="fix"><p>디지털콘텐츠(PDF)는 다운로드(열람)를 시작하면 청약철회(환불)가 제한됩니다(전자상거래법 제17조 제2항 제5호). 다운로드하지 않은 파일과 아직 제공되지 않은 파일은 결제일로부터 7일 이내(제공 예정 상품은 제공 전까지 언제든) 전액 환불됩니다. 구매 전에 무료 미리보기로 내용과 난이도를 확인해 주세요. 자세히: <a href="/refund/">환불·청약철회 안내</a></p><p>유료 PDF에는 기출 문항 원문이 들어 있지 않습니다. 델타스킬이 직접 만든 유형문항·해설·분석만 담고, 기출은 시험·번호로만 가리킵니다.</p><p>정기결제(자동 결제)는 없습니다. 상품마다 한 번 결제합니다.</p></div>
   </div>
 </details><details class="sku" id="sku-H29">
@@ -212,8 +215,8 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   <div class="body">
     <dl><div><dt>SKU</dt><dd>H29</dd></div><div><dt>구성</dt><dd>PDF 1개 · 약 20문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함</dd></div><div><dt>예상 주제</dt><dd>AI 1순위 · 조건부 배열·함수·복합 경우의 수</dd></div><div><dt>제공</dt><dd>10/20(화) 19:00부터 결제 후 바로 다운로드</dd></div></dl>
     
-    <div class="pv"><b>미리보기</b> <span>미리보기 준비 중</span></div>
-    <div class="act"><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
+    <div class="pv" data-pv="H29"><b>미리보기</b> <span>미리보기 준비 중</span></div>
+    <div class="act" data-sku="H29"><a class="btn buy" href="/checkout/?sku=H29" hidden>구매하기</a><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
     <div class="fix"><p>디지털콘텐츠(PDF)는 다운로드(열람)를 시작하면 청약철회(환불)가 제한됩니다(전자상거래법 제17조 제2항 제5호). 다운로드하지 않은 파일과 아직 제공되지 않은 파일은 결제일로부터 7일 이내(제공 예정 상품은 제공 전까지 언제든) 전액 환불됩니다. 구매 전에 무료 미리보기로 내용과 난이도를 확인해 주세요. 자세히: <a href="/refund/">환불·청약철회 안내</a></p><p>유료 PDF에는 기출 문항 원문이 들어 있지 않습니다. 델타스킬이 직접 만든 유형문항·해설·분석만 담고, 기출은 시험·번호로만 가리킵니다.</p><p>정기결제(자동 결제)는 없습니다. 상품마다 한 번 결제합니다.</p></div>
   </div>
 </details><details class="sku" id="sku-H30">
@@ -221,8 +224,8 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   <div class="body">
     <dl><div><dt>SKU</dt><dd>H30</dd></div><div><dt>구성</dt><dd>PDF 1개 · 약 20문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함</dd></div><div><dt>예상 주제</dt><dd>AI 1순위 · 조건부 배열·함수·복합 경우의 수</dd></div><div><dt>제공</dt><dd>10/20(화) 19:00부터 결제 후 바로 다운로드</dd></div></dl>
     
-    <div class="pv"><b>미리보기</b> <span>미리보기 준비 중</span></div>
-    <div class="act"><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
+    <div class="pv" data-pv="H30"><b>미리보기</b> <span>미리보기 준비 중</span></div>
+    <div class="act" data-sku="H30"><a class="btn buy" href="/checkout/?sku=H30" hidden>구매하기</a><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
     <div class="fix"><p>디지털콘텐츠(PDF)는 다운로드(열람)를 시작하면 청약철회(환불)가 제한됩니다(전자상거래법 제17조 제2항 제5호). 다운로드하지 않은 파일과 아직 제공되지 않은 파일은 결제일로부터 7일 이내(제공 예정 상품은 제공 전까지 언제든) 전액 환불됩니다. 구매 전에 무료 미리보기로 내용과 난이도를 확인해 주세요. 자세히: <a href="/refund/">환불·청약철회 안내</a></p><p>유료 PDF에는 기출 문항 원문이 들어 있지 않습니다. 델타스킬이 직접 만든 유형문항·해설·분석만 담고, 기출은 시험·번호로만 가리킵니다.</p><p>정기결제(자동 결제)는 없습니다. 상품마다 한 번 결제합니다.</p></div>
   </div>
 </details></div></section><section class="grp"><h2>미적분 유형서 · 4권</h2><p class=gd>미적분 27~30번.</p><div class="list"><details class="sku" id="sku-M27">
@@ -231,7 +234,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     <dl><div><dt>SKU</dt><dd>M27</dd></div><div><dt>구성</dt><dd>PDF 1개 · 약 25문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함</dd></div><div><dt>예상 주제</dt><dd>AI 1순위 · 음함수·매개변수·변화율</dd></div><div><dt>제공</dt><dd>10/27(화) 제공 예정 · 제공 전에는 언제든 전액 환불</dd></div></dl>
     
     <div class="pv"><b>미리보기</b> <span>미리보기 준비 중</span></div>
-    <div class="act"><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
+    <div class="act" data-sku="M27"><a class="btn buy" href="/checkout/?sku=M27" hidden>구매하기</a><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
     <div class="fix"><p>디지털콘텐츠(PDF)는 다운로드(열람)를 시작하면 청약철회(환불)가 제한됩니다(전자상거래법 제17조 제2항 제5호). 다운로드하지 않은 파일과 아직 제공되지 않은 파일은 결제일로부터 7일 이내(제공 예정 상품은 제공 전까지 언제든) 전액 환불됩니다. 구매 전에 무료 미리보기로 내용과 난이도를 확인해 주세요. 자세히: <a href="/refund/">환불·청약철회 안내</a></p><p>유료 PDF에는 기출 문항 원문이 들어 있지 않습니다. 델타스킬이 직접 만든 유형문항·해설·분석만 담고, 기출은 시험·번호로만 가리킵니다.</p><p>정기결제(자동 결제)는 없습니다. 상품마다 한 번 결제합니다.</p></div>
   </div>
 </details><details class="sku" id="sku-M28">
@@ -239,8 +242,8 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   <div class="body">
     <dl><div><dt>SKU</dt><dd>M28</dd></div><div><dt>구성</dt><dd>PDF 1개 · 약 20문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함</dd></div><div><dt>예상 주제</dt><dd>AI 1순위 · 함수 관계식·합성함수 조건</dd></div><div><dt>제공</dt><dd>10/20(화) 19:00부터 결제 후 바로 다운로드</dd></div></dl>
     
-    <div class="pv"><b>미리보기</b> <span>미리보기 준비 중</span></div>
-    <div class="act"><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
+    <div class="pv" data-pv="M28"><b>미리보기</b> <span>미리보기 준비 중</span></div>
+    <div class="act" data-sku="M28"><a class="btn buy" href="/checkout/?sku=M28" hidden>구매하기</a><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
     <div class="fix"><p>디지털콘텐츠(PDF)는 다운로드(열람)를 시작하면 청약철회(환불)가 제한됩니다(전자상거래법 제17조 제2항 제5호). 다운로드하지 않은 파일과 아직 제공되지 않은 파일은 결제일로부터 7일 이내(제공 예정 상품은 제공 전까지 언제든) 전액 환불됩니다. 구매 전에 무료 미리보기로 내용과 난이도를 확인해 주세요. 자세히: <a href="/refund/">환불·청약철회 안내</a></p><p>유료 PDF에는 기출 문항 원문이 들어 있지 않습니다. 델타스킬이 직접 만든 유형문항·해설·분석만 담고, 기출은 시험·번호로만 가리킵니다.</p><p>정기결제(자동 결제)는 없습니다. 상품마다 한 번 결제합니다.</p></div>
   </div>
 </details><details class="sku" id="sku-M29">
@@ -248,8 +251,8 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   <div class="body">
     <dl><div><dt>SKU</dt><dd>M29</dd></div><div><dt>구성</dt><dd>PDF 1개 · 약 20문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함</dd></div><div><dt>예상 주제</dt><dd>AI 1순위 · 등비수열의 수렴 조건</dd></div><div><dt>제공</dt><dd>10/20(화) 19:00부터 결제 후 바로 다운로드</dd></div></dl>
     
-    <div class="pv"><b>미리보기</b> <span>미리보기 준비 중</span></div>
-    <div class="act"><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
+    <div class="pv" data-pv="M29"><b>미리보기</b> <span>미리보기 준비 중</span></div>
+    <div class="act" data-sku="M29"><a class="btn buy" href="/checkout/?sku=M29" hidden>구매하기</a><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
     <div class="fix"><p>디지털콘텐츠(PDF)는 다운로드(열람)를 시작하면 청약철회(환불)가 제한됩니다(전자상거래법 제17조 제2항 제5호). 다운로드하지 않은 파일과 아직 제공되지 않은 파일은 결제일로부터 7일 이내(제공 예정 상품은 제공 전까지 언제든) 전액 환불됩니다. 구매 전에 무료 미리보기로 내용과 난이도를 확인해 주세요. 자세히: <a href="/refund/">환불·청약철회 안내</a></p><p>유료 PDF에는 기출 문항 원문이 들어 있지 않습니다. 델타스킬이 직접 만든 유형문항·해설·분석만 담고, 기출은 시험·번호로만 가리킵니다.</p><p>정기결제(자동 결제)는 없습니다. 상품마다 한 번 결제합니다.</p></div>
   </div>
 </details><details class="sku" id="sku-M30">
@@ -257,8 +260,8 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   <div class="body">
     <dl><div><dt>SKU</dt><dd>M30</dd></div><div><dt>구성</dt><dd>PDF 1개 · 약 20문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함</dd></div><div><dt>예상 주제</dt><dd>AI 1순위 · 정적분·평면 넓이</dd></div><div><dt>제공</dt><dd>10/20(화) 19:00부터 결제 후 바로 다운로드</dd></div></dl>
     
-    <div class="pv"><b>미리보기</b> <span>미리보기 준비 중</span></div>
-    <div class="act"><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
+    <div class="pv" data-pv="M30"><b>미리보기</b> <span>미리보기 준비 중</span></div>
+    <div class="act" data-sku="M30"><a class="btn buy" href="/checkout/?sku=M30" hidden>구매하기</a><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
     <div class="fix"><p>디지털콘텐츠(PDF)는 다운로드(열람)를 시작하면 청약철회(환불)가 제한됩니다(전자상거래법 제17조 제2항 제5호). 다운로드하지 않은 파일과 아직 제공되지 않은 파일은 결제일로부터 7일 이내(제공 예정 상품은 제공 전까지 언제든) 전액 환불됩니다. 구매 전에 무료 미리보기로 내용과 난이도를 확인해 주세요. 자세히: <a href="/refund/">환불·청약철회 안내</a></p><p>유료 PDF에는 기출 문항 원문이 들어 있지 않습니다. 델타스킬이 직접 만든 유형문항·해설·분석만 담고, 기출은 시험·번호로만 가리킵니다.</p><p>정기결제(자동 결제)는 없습니다. 상품마다 한 번 결제합니다.</p></div>
   </div>
 </details></div></section><section class="grp"><h2>선택과목 세트</h2><p class=gd>공통 10권 + 선택과목 4권을 한 번에 담은 세트입니다.</p><div class="list"><details class="sku" id="sku-SET-H">
@@ -267,7 +270,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     <dl><div><dt>SKU</dt><dd>SET-H</dd></div><div><dt>구성</dt><dd>공통 10권 + 선택 27~30 4권 · 약 315문항 · PDF 14개</dd></div><div><dt>제공</dt><dd>결제 후 바로: 공통 14·15·20·21·22 + 확통 29·30(7권) · 10/27(화) 추가 제공: 나머지</dd></div></dl>
     
     <div class="pv"><b>미리보기</b> <span>미리보기 준비 중</span></div>
-    <div class="act"><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
+    <div class="act" data-sku="SET-H"><a class="btn buy" href="/checkout/?sku=SET-H" hidden>구매하기</a><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
     <div class="fix"><p>디지털콘텐츠(PDF)는 다운로드(열람)를 시작하면 청약철회(환불)가 제한됩니다(전자상거래법 제17조 제2항 제5호). 다운로드하지 않은 파일과 아직 제공되지 않은 파일은 결제일로부터 7일 이내(제공 예정 상품은 제공 전까지 언제든) 전액 환불됩니다. 구매 전에 무료 미리보기로 내용과 난이도를 확인해 주세요. 자세히: <a href="/refund/">환불·청약철회 안내</a></p><p>유료 PDF에는 기출 문항 원문이 들어 있지 않습니다. 델타스킬이 직접 만든 유형문항·해설·분석만 담고, 기출은 시험·번호로만 가리킵니다.</p><p>정기결제(자동 결제)는 없습니다. 상품마다 한 번 결제합니다.</p></div>
   </div>
 </details><details class="sku" id="sku-SET-M">
@@ -276,7 +279,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     <dl><div><dt>SKU</dt><dd>SET-M</dd></div><div><dt>구성</dt><dd>공통 10권 + 선택 27~30 4권 · 약 315문항 · PDF 14개</dd></div><div><dt>제공</dt><dd>결제 후 바로: 공통 14·15·20·21·22 + 미적 28·29·30(8권) · 10/27(화) 추가 제공: 나머지</dd></div></dl>
     
     <div class="pv"><b>미리보기</b> <span>미리보기 준비 중</span></div>
-    <div class="act"><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
+    <div class="act" data-sku="SET-M"><a class="btn buy" href="/checkout/?sku=SET-M" hidden>구매하기</a><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
     <div class="fix"><p>디지털콘텐츠(PDF)는 다운로드(열람)를 시작하면 청약철회(환불)가 제한됩니다(전자상거래법 제17조 제2항 제5호). 다운로드하지 않은 파일과 아직 제공되지 않은 파일은 결제일로부터 7일 이내(제공 예정 상품은 제공 전까지 언제든) 전액 환불됩니다. 구매 전에 무료 미리보기로 내용과 난이도를 확인해 주세요. 자세히: <a href="/refund/">환불·청약철회 안내</a></p><p>유료 PDF에는 기출 문항 원문이 들어 있지 않습니다. 델타스킬이 직접 만든 유형문항·해설·분석만 담고, 기출은 시험·번호로만 가리킵니다.</p><p>정기결제(자동 결제)는 없습니다. 상품마다 한 번 결제합니다.</p></div>
   </div>
 </details></div></section><section class="grp"><h2>수능 직전 점검 모음</h2><div class="list"><details class="sku" id="sku-FIN">
@@ -285,7 +288,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     <dl><div><dt>SKU</dt><dd>FIN</dd></div><div><dt>구성</dt><dd>PDF · 약 60문항</dd></div><div><dt>제공</dt><dd>11/9(월)~11/12(목) 제공 예정 · 제공 전에는 언제든 전액 환불 · 늦어지면 전액 환불</dd></div></dl>
     
     <div class="pv"><b>미리보기</b> <span>미리보기 준비 중</span></div>
-    <div class="act"><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
+    <div class="act" data-sku="FIN"><a class="btn buy" href="/checkout/?sku=FIN" hidden>구매하기</a><button type="button" class="btn dis" disabled>10/20(화) 19:00 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
     <div class="fix"><p>디지털콘텐츠(PDF)는 다운로드(열람)를 시작하면 청약철회(환불)가 제한됩니다(전자상거래법 제17조 제2항 제5호). 다운로드하지 않은 파일과 아직 제공되지 않은 파일은 결제일로부터 7일 이내(제공 예정 상품은 제공 전까지 언제든) 전액 환불됩니다. 구매 전에 무료 미리보기로 내용과 난이도를 확인해 주세요. 자세히: <a href="/refund/">환불·청약철회 안내</a></p><p>유료 PDF에는 기출 문항 원문이 들어 있지 않습니다. 델타스킬이 직접 만든 유형문항·해설·분석만 담고, 기출은 시험·번호로만 가리킵니다.</p><p>정기결제(자동 결제)는 없습니다. 상품마다 한 번 결제합니다.</p></div>
   </div>
 </details></div></section><section class="grp"><h2>파이널의 파이널 · 등급별 코스</h2><p class=gd>선택과목별로 4→3 · 3→2 · 2→1 · 1등급 굳히기 코스가 있습니다. 점수나 등급을 약속하지 않습니다. 고를 번호와 순서를 정리해 고민을 줄여 드리는 자료입니다.</p><div class="list"><details class="sku" id="sku-PRE-H-43">
@@ -294,7 +297,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     <dl><div><dt>SKU</dt><dd>PRE-H-43</dd></div><div><dt>구성</dt><dd>선택과목 유형서 14권 코스 순서 + 직전 점검 모음 + D-10 하루 계획표</dd></div><div><dt>제공</dt><dd>11/9(월)~11/12(목) 판매 · 결제 후 바로 다운로드</dd></div></dl>
     <p class="course">점수나 등급을 약속하지 않습니다. 고를 번호와 순서를 정리해 고민을 줄여 드리는 자료입니다.</p>
     <div class="pv"><b>미리보기</b> <span>미리보기 준비 중</span></div>
-    <div class="act"><button type="button" class="btn dis" disabled>11/9(월) 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
+    <div class="act" data-sku="PRE-H-43"><a class="btn buy" href="/checkout/?sku=PRE-H-43" hidden>구매하기</a><button type="button" class="btn dis" disabled>11/9(월) 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
     <div class="fix"><p>디지털콘텐츠(PDF)는 다운로드(열람)를 시작하면 청약철회(환불)가 제한됩니다(전자상거래법 제17조 제2항 제5호). 다운로드하지 않은 파일과 아직 제공되지 않은 파일은 결제일로부터 7일 이내(제공 예정 상품은 제공 전까지 언제든) 전액 환불됩니다. 구매 전에 무료 미리보기로 내용과 난이도를 확인해 주세요. 자세히: <a href="/refund/">환불·청약철회 안내</a></p><p>유료 PDF에는 기출 문항 원문이 들어 있지 않습니다. 델타스킬이 직접 만든 유형문항·해설·분석만 담고, 기출은 시험·번호로만 가리킵니다.</p><p>정기결제(자동 결제)는 없습니다. 상품마다 한 번 결제합니다.</p></div>
   </div>
 </details><details class="sku" id="sku-PRE-H-32">
@@ -303,7 +306,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     <dl><div><dt>SKU</dt><dd>PRE-H-32</dd></div><div><dt>구성</dt><dd>선택과목 유형서 14권 코스 순서 + 직전 점검 모음 + D-10 하루 계획표</dd></div><div><dt>제공</dt><dd>11/9(월)~11/12(목) 판매 · 결제 후 바로 다운로드</dd></div></dl>
     <p class="course">점수나 등급을 약속하지 않습니다. 고를 번호와 순서를 정리해 고민을 줄여 드리는 자료입니다.</p>
     <div class="pv"><b>미리보기</b> <span>미리보기 준비 중</span></div>
-    <div class="act"><button type="button" class="btn dis" disabled>11/9(월) 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
+    <div class="act" data-sku="PRE-H-32"><a class="btn buy" href="/checkout/?sku=PRE-H-32" hidden>구매하기</a><button type="button" class="btn dis" disabled>11/9(월) 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
     <div class="fix"><p>디지털콘텐츠(PDF)는 다운로드(열람)를 시작하면 청약철회(환불)가 제한됩니다(전자상거래법 제17조 제2항 제5호). 다운로드하지 않은 파일과 아직 제공되지 않은 파일은 결제일로부터 7일 이내(제공 예정 상품은 제공 전까지 언제든) 전액 환불됩니다. 구매 전에 무료 미리보기로 내용과 난이도를 확인해 주세요. 자세히: <a href="/refund/">환불·청약철회 안내</a></p><p>유료 PDF에는 기출 문항 원문이 들어 있지 않습니다. 델타스킬이 직접 만든 유형문항·해설·분석만 담고, 기출은 시험·번호로만 가리킵니다.</p><p>정기결제(자동 결제)는 없습니다. 상품마다 한 번 결제합니다.</p></div>
   </div>
 </details><details class="sku" id="sku-PRE-H-21">
@@ -312,7 +315,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     <dl><div><dt>SKU</dt><dd>PRE-H-21</dd></div><div><dt>구성</dt><dd>선택과목 유형서 14권 코스 순서 + 직전 점검 모음 + D-10 하루 계획표 · 킬러 심화편 포함</dd></div><div><dt>제공</dt><dd>11/9(월)~11/12(목) 판매 · 결제 후 바로 다운로드</dd></div></dl>
     <p class="course">점수나 등급을 약속하지 않습니다. 고를 번호와 순서를 정리해 고민을 줄여 드리는 자료입니다.</p>
     <div class="pv"><b>미리보기</b> <span>미리보기 준비 중</span></div>
-    <div class="act"><button type="button" class="btn dis" disabled>11/9(월) 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
+    <div class="act" data-sku="PRE-H-21"><a class="btn buy" href="/checkout/?sku=PRE-H-21" hidden>구매하기</a><button type="button" class="btn dis" disabled>11/9(월) 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
     <div class="fix"><p>디지털콘텐츠(PDF)는 다운로드(열람)를 시작하면 청약철회(환불)가 제한됩니다(전자상거래법 제17조 제2항 제5호). 다운로드하지 않은 파일과 아직 제공되지 않은 파일은 결제일로부터 7일 이내(제공 예정 상품은 제공 전까지 언제든) 전액 환불됩니다. 구매 전에 무료 미리보기로 내용과 난이도를 확인해 주세요. 자세히: <a href="/refund/">환불·청약철회 안내</a></p><p>유료 PDF에는 기출 문항 원문이 들어 있지 않습니다. 델타스킬이 직접 만든 유형문항·해설·분석만 담고, 기출은 시험·번호로만 가리킵니다.</p><p>정기결제(자동 결제)는 없습니다. 상품마다 한 번 결제합니다.</p></div>
   </div>
 </details><details class="sku" id="sku-PRE-H-1K">
@@ -321,7 +324,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     <dl><div><dt>SKU</dt><dd>PRE-H-1K</dd></div><div><dt>구성</dt><dd>선택과목 유형서 14권 코스 순서 + 직전 점검 모음 + D-10 하루 계획표 · 킬러 심화편 포함</dd></div><div><dt>제공</dt><dd>11/9(월)~11/12(목) 판매 · 결제 후 바로 다운로드</dd></div></dl>
     <p class="course">점수나 등급을 약속하지 않습니다. 고를 번호와 순서를 정리해 고민을 줄여 드리는 자료입니다.</p>
     <div class="pv"><b>미리보기</b> <span>미리보기 준비 중</span></div>
-    <div class="act"><button type="button" class="btn dis" disabled>11/9(월) 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
+    <div class="act" data-sku="PRE-H-1K"><a class="btn buy" href="/checkout/?sku=PRE-H-1K" hidden>구매하기</a><button type="button" class="btn dis" disabled>11/9(월) 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
     <div class="fix"><p>디지털콘텐츠(PDF)는 다운로드(열람)를 시작하면 청약철회(환불)가 제한됩니다(전자상거래법 제17조 제2항 제5호). 다운로드하지 않은 파일과 아직 제공되지 않은 파일은 결제일로부터 7일 이내(제공 예정 상품은 제공 전까지 언제든) 전액 환불됩니다. 구매 전에 무료 미리보기로 내용과 난이도를 확인해 주세요. 자세히: <a href="/refund/">환불·청약철회 안내</a></p><p>유료 PDF에는 기출 문항 원문이 들어 있지 않습니다. 델타스킬이 직접 만든 유형문항·해설·분석만 담고, 기출은 시험·번호로만 가리킵니다.</p><p>정기결제(자동 결제)는 없습니다. 상품마다 한 번 결제합니다.</p></div>
   </div>
 </details><details class="sku" id="sku-PRE-M-43">
@@ -330,7 +333,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     <dl><div><dt>SKU</dt><dd>PRE-M-43</dd></div><div><dt>구성</dt><dd>선택과목 유형서 14권 코스 순서 + 직전 점검 모음 + D-10 하루 계획표</dd></div><div><dt>제공</dt><dd>11/9(월)~11/12(목) 판매 · 결제 후 바로 다운로드</dd></div></dl>
     <p class="course">점수나 등급을 약속하지 않습니다. 고를 번호와 순서를 정리해 고민을 줄여 드리는 자료입니다.</p>
     <div class="pv"><b>미리보기</b> <span>미리보기 준비 중</span></div>
-    <div class="act"><button type="button" class="btn dis" disabled>11/9(월) 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
+    <div class="act" data-sku="PRE-M-43"><a class="btn buy" href="/checkout/?sku=PRE-M-43" hidden>구매하기</a><button type="button" class="btn dis" disabled>11/9(월) 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
     <div class="fix"><p>디지털콘텐츠(PDF)는 다운로드(열람)를 시작하면 청약철회(환불)가 제한됩니다(전자상거래법 제17조 제2항 제5호). 다운로드하지 않은 파일과 아직 제공되지 않은 파일은 결제일로부터 7일 이내(제공 예정 상품은 제공 전까지 언제든) 전액 환불됩니다. 구매 전에 무료 미리보기로 내용과 난이도를 확인해 주세요. 자세히: <a href="/refund/">환불·청약철회 안내</a></p><p>유료 PDF에는 기출 문항 원문이 들어 있지 않습니다. 델타스킬이 직접 만든 유형문항·해설·분석만 담고, 기출은 시험·번호로만 가리킵니다.</p><p>정기결제(자동 결제)는 없습니다. 상품마다 한 번 결제합니다.</p></div>
   </div>
 </details><details class="sku" id="sku-PRE-M-32">
@@ -339,7 +342,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     <dl><div><dt>SKU</dt><dd>PRE-M-32</dd></div><div><dt>구성</dt><dd>선택과목 유형서 14권 코스 순서 + 직전 점검 모음 + D-10 하루 계획표</dd></div><div><dt>제공</dt><dd>11/9(월)~11/12(목) 판매 · 결제 후 바로 다운로드</dd></div></dl>
     <p class="course">점수나 등급을 약속하지 않습니다. 고를 번호와 순서를 정리해 고민을 줄여 드리는 자료입니다.</p>
     <div class="pv"><b>미리보기</b> <span>미리보기 준비 중</span></div>
-    <div class="act"><button type="button" class="btn dis" disabled>11/9(월) 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
+    <div class="act" data-sku="PRE-M-32"><a class="btn buy" href="/checkout/?sku=PRE-M-32" hidden>구매하기</a><button type="button" class="btn dis" disabled>11/9(월) 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
     <div class="fix"><p>디지털콘텐츠(PDF)는 다운로드(열람)를 시작하면 청약철회(환불)가 제한됩니다(전자상거래법 제17조 제2항 제5호). 다운로드하지 않은 파일과 아직 제공되지 않은 파일은 결제일로부터 7일 이내(제공 예정 상품은 제공 전까지 언제든) 전액 환불됩니다. 구매 전에 무료 미리보기로 내용과 난이도를 확인해 주세요. 자세히: <a href="/refund/">환불·청약철회 안내</a></p><p>유료 PDF에는 기출 문항 원문이 들어 있지 않습니다. 델타스킬이 직접 만든 유형문항·해설·분석만 담고, 기출은 시험·번호로만 가리킵니다.</p><p>정기결제(자동 결제)는 없습니다. 상품마다 한 번 결제합니다.</p></div>
   </div>
 </details><details class="sku" id="sku-PRE-M-21">
@@ -348,7 +351,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     <dl><div><dt>SKU</dt><dd>PRE-M-21</dd></div><div><dt>구성</dt><dd>선택과목 유형서 14권 코스 순서 + 직전 점검 모음 + D-10 하루 계획표 · 킬러 심화편 포함</dd></div><div><dt>제공</dt><dd>11/9(월)~11/12(목) 판매 · 결제 후 바로 다운로드</dd></div></dl>
     <p class="course">점수나 등급을 약속하지 않습니다. 고를 번호와 순서를 정리해 고민을 줄여 드리는 자료입니다.</p>
     <div class="pv"><b>미리보기</b> <span>미리보기 준비 중</span></div>
-    <div class="act"><button type="button" class="btn dis" disabled>11/9(월) 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
+    <div class="act" data-sku="PRE-M-21"><a class="btn buy" href="/checkout/?sku=PRE-M-21" hidden>구매하기</a><button type="button" class="btn dis" disabled>11/9(월) 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
     <div class="fix"><p>디지털콘텐츠(PDF)는 다운로드(열람)를 시작하면 청약철회(환불)가 제한됩니다(전자상거래법 제17조 제2항 제5호). 다운로드하지 않은 파일과 아직 제공되지 않은 파일은 결제일로부터 7일 이내(제공 예정 상품은 제공 전까지 언제든) 전액 환불됩니다. 구매 전에 무료 미리보기로 내용과 난이도를 확인해 주세요. 자세히: <a href="/refund/">환불·청약철회 안내</a></p><p>유료 PDF에는 기출 문항 원문이 들어 있지 않습니다. 델타스킬이 직접 만든 유형문항·해설·분석만 담고, 기출은 시험·번호로만 가리킵니다.</p><p>정기결제(자동 결제)는 없습니다. 상품마다 한 번 결제합니다.</p></div>
   </div>
 </details><details class="sku" id="sku-PRE-M-1K">
@@ -357,7 +360,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     <dl><div><dt>SKU</dt><dd>PRE-M-1K</dd></div><div><dt>구성</dt><dd>선택과목 유형서 14권 코스 순서 + 직전 점검 모음 + D-10 하루 계획표 · 킬러 심화편 포함</dd></div><div><dt>제공</dt><dd>11/9(월)~11/12(목) 판매 · 결제 후 바로 다운로드</dd></div></dl>
     <p class="course">점수나 등급을 약속하지 않습니다. 고를 번호와 순서를 정리해 고민을 줄여 드리는 자료입니다.</p>
     <div class="pv"><b>미리보기</b> <span>미리보기 준비 중</span></div>
-    <div class="act"><button type="button" class="btn dis" disabled>11/9(월) 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
+    <div class="act" data-sku="PRE-M-1K"><a class="btn buy" href="/checkout/?sku=PRE-M-1K" hidden>구매하기</a><button type="button" class="btn dis" disabled>11/9(월) 판매 시작</button><a class="btn ghost" href="mailto:admin@deltaskill.co.kr?subject=%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC">알림 받기</a></div>
     <div class="fix"><p>디지털콘텐츠(PDF)는 다운로드(열람)를 시작하면 청약철회(환불)가 제한됩니다(전자상거래법 제17조 제2항 제5호). 다운로드하지 않은 파일과 아직 제공되지 않은 파일은 결제일로부터 7일 이내(제공 예정 상품은 제공 전까지 언제든) 전액 환불됩니다. 구매 전에 무료 미리보기로 내용과 난이도를 확인해 주세요. 자세히: <a href="/refund/">환불·청약철회 안내</a></p><p>유료 PDF에는 기출 문항 원문이 들어 있지 않습니다. 델타스킬이 직접 만든 유형문항·해설·분석만 담고, 기출은 시험·번호로만 가리킵니다.</p><p>정기결제(자동 결제)는 없습니다. 상품마다 한 번 결제합니다.</p></div>
   </div>
 </details></div></section>
@@ -382,5 +385,43 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   <p class="copy">© 2026 델타스킬. All rights reserved.</p>
 </div>
 </footer>
+<script>
+/* 1007 결제 점검: /pay-config.json 의 PAY_MODE 가 test 면 「구매하기」를 켠다(판매 시작 단추는 그대로 둠).
+   live 면 판매 기간 안의 상품만 「구매하기」를 켜고 그 상품의 판매 시작 단추를 숨긴다. 설정을 못 읽으면 아무것도 바꾸지 않는다. */
+(function(){
+  "use strict";
+  var SALE=Date.parse("2026-10-20T19:00:00+09:00"),PRE0=Date.parse("2026-11-09T00:00:00+09:00"),PRE1=Date.parse("2026-11-13T00:00:00+09:00");
+  function open(sku,t){return sku.indexOf("PRE-")===0?(t>=PRE0&&t<PRE1):t>=SALE;}
+  fetch("/pay-config.json",{cache:"no-store"}).then(function(r){return r.ok?r.json():null;}).then(function(c){
+    if(!c||(c.PAY_MODE!=="test"&&c.PAY_MODE!=="live"))return;
+    var t=Date.now();
+    document.querySelectorAll(".act[data-sku]").forEach(function(a){
+      var sku=a.getAttribute("data-sku"),buy=a.querySelector(".btn.buy"),dis=a.querySelector(".btn.dis");
+      if(!buy)return;
+      if(c.PAY_MODE==="test"){buy.hidden=false;return;}
+      if(open(sku,t)){buy.hidden=false;if(dis)dis.hidden=true;}
+    });
+  }).catch(function(){});
+  /* 미리보기: /store/preview/<SKU>-1.png · -2.png 가 있으면 상세를 열 때 끼운다. 없으면 「미리보기 준비 중」 그대로(가짜 그림 없음). */
+  document.querySelectorAll(".pv[data-pv]").forEach(function(pv){
+    var d=pv.closest("details"),done=false;
+    function tryLoad(){
+      if(done||!d.open)return;done=true;
+      var sku=pv.getAttribute("data-pv"),span=pv.querySelector("span");
+      [1,2].forEach(function(n){
+        var im=new Image();
+        im.onload=function(){
+          if(span&&span.parentNode)span.parentNode.removeChild(span);
+          im.alt=sku+" 미리보기 "+n;im.decoding="async";im.setAttribute("data-n",String(n));
+          pv.appendChild(im);
+          [].slice.call(pv.querySelectorAll("img")).sort(function(a,b){return a.getAttribute("data-n")-b.getAttribute("data-n");}).forEach(function(x){pv.appendChild(x);});
+        };
+        im.src="/store/preview/"+encodeURIComponent(sku)+"-"+n+".png";
+      });
+    }
+    if(d){d.addEventListener("toggle",tryLoad);tryLoad();}
+  });
+})();
+</script>
 </body>
 </html>
