@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>주문서 | 델타스킬</title>
 <meta name="description" content="델타스킬 유형서 주문서 — 상품·가격(VAT 포함)·동의 확인 후 토스페이먼츠로 결제합니다." />
-<meta name="robots" content="index, follow" />
+<meta name="robots" content="noindex" />
 <link rel="canonical" href="https://www.deltaskill.co.kr/checkout/" />
 <link rel="icon" href="/favicon-32.png" sizes="32x32" />
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -54,6 +54,7 @@ label.f{display:block;font-size:13.5px;font-weight:700;color:var(--ink2);margin:
 .in{display:block;width:100%;margin-top:6px;min-height:48px;padding:0 12px;border-radius:12px;border:1px solid var(--line2);font:inherit;font-size:16px;color:var(--ink);background:#fff}
 .in:focus{outline:3px solid var(--ink);outline-offset:1px}
 .hint{font-size:12.5px;color:var(--sub);margin:4px 0 0}
+.hint+.btn.pri{margin-top:10px}
 .chk{display:flex;gap:10px;align-items:flex-start;padding:11px 0;border-bottom:1px dashed var(--line);font-size:14px;line-height:1.55;cursor:pointer;min-height:44px}
 .chk:last-of-type{border-bottom:0}
 .chk input{flex:none;width:22px;height:22px;margin:1px 0 0;accent-color:var(--red)}
@@ -120,6 +121,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
       <label class="chk"><input type="checkbox" class="ag" id="c2"> <span>[필수] <a href="/privacy/" target="_blank" rel="noopener">개인정보처리방침</a>에 따른 개인정보 수집·이용에 동의합니다.</span></label>
       <p class="pi">수집 항목: 주문자 이메일·이름, 주문번호, 상품, 결제금액, 결제수단, 승인일시, 다운로드 기록(카드번호 등 결제정보는 토스페이먼츠가 처리, 회사는 저장하지 않음) · 목적: 상품 판매: 주문·결제·환불 처리, 디지털콘텐츠 다운로드 제공 · 보유: 5년(전자상거래법 시행령 제6조)</p>
       <label class="chk"><input type="checkbox" class="ag" id="c3"> <span>[필수] 이 상품은 디지털콘텐츠로, 다운로드(열람) 후에는 청약철회(환불)가 제한된다는 점을 확인했습니다. 다운로드 전에는 7일 이내 전액 환불이 가능합니다. <a href="/refund/" target="_blank" rel="noopener">환불·청약철회 안내</a></span></label>
+      <p class="pi"><b>미성년자 구매 안내</b><br>만 19세 미만 미성년자가 구매할 때 법정대리인(부모 등)이 동의하지 않으면, 미성년자 본인 또는 법정대리인이 구매 계약을 취소할 수 있습니다. 구매 전에 보호자에게 알리고 동의를 받아 주세요.</p>
       <label class="chk"><input type="checkbox" class="ag" id="c4"> <span>[필수] 확인했습니다. (만 19세 미만인 경우: 법정대리인의 동의를 받았습니다.) <a href="/minor/" target="_blank" rel="noopener">미성년자 구매 안내</a></span></label>
     </section>
     <section class="card">
@@ -128,6 +130,8 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
       <div id="agreement"></div>
       <p class="notice" id="paynote" hidden></p>
       <p class="msg" id="msg" role="status"></p>
+      <p class="hint">정기결제 없음 · 한 번 결제</p>
+      <p class="hint">휴대폰 결제는 통신사 한도·미성년자 차단 정책에 따라 안 될 수 있어요. 그럴 땐 다른 결제수단을 써 주세요.</p>
       <button type="submit" class="btn pri" id="pay" disabled>결제하기</button>
     </section>
   </form>
@@ -144,7 +148,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   </nav>
   <p>상호 델타스킬 · 대표 송재형 · 사업자등록번호 345-62-00876 <a href="https://www.ftc.go.kr/bizCommPop.do?wrkr_no=3456200876" target="_blank" rel="noopener">사업자정보확인</a> · 통신판매업 신고 (신고 진행 중)</p>
   <p>주소 서울특별시 서초구 마방로10길 18-16, 4층(양재동, 진우빌딩) · 전화 070-8065-2468 · 이메일 <a href="mailto:admin@deltaskill.co.kr">admin@deltaskill.co.kr</a></p>
-  <p>개인정보보호책임자 송재형 · 호스팅 제공자 GitHub, Inc.(GitHub Pages)</p>
+  <p>개인정보보호책임자 송재형 · 호스팅 제공자 GitHub, Inc.(GitHub Pages) · Supabase, Inc.(결제·다운로드 서버)</p>
   <p class="src">자료 출처: 평가원 공개 자료 + EBSi 공개 채점 자료 · 판매 PDF는 델타스킬이 직접 제작한 콘텐츠입니다 · 디지털콘텐츠는 다운로드(열람) 후 청약철회가 제한됩니다(다운로드 전 7일 이내 전액 환불) · 정기결제 없음(단건 결제)</p>
   <p class="copy">© 2026 델타스킬. All rights reserved.</p>
 </div>
