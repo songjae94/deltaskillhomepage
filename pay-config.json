@@ -1,1 +1,1 @@
-{"PAY_MODE": "test", "clientKey": "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm", "successUrl": "/checkout/success/", "failUrl": "/checkout/fail/", "api": "https://cvlrphtupjmaefahodgz.supabase.co/functions/v1"}
+{"PAY_MODE": "test", "clientKey": "test_ck_QbgMGZzorz4nxwkAxPxk3l5E1em4", "successUrl": "/checkout/success/", "failUrl": "/checkout/fail/", "api": "https://cvlrphtupjmaefahodgz.supabase.co/functions/v1"}
