@@ -606,16 +606,8 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
  document.addEventListener('keydown',function(e){if(e.key==='Escape')set(false);});
  window.addEventListener('resize',function(){if(window.innerWidth>880)set(false);});
 })();
-/* 로그인/로그아웃 (상단 authnav + 모바일 버튼) */
-(function(){var n=document.getElementById("authnav");
- var loggedIn=!!localStorage.getItem("ds_tk");
- document.documentElement.classList.toggle("authed",loggedIn);
- var links=loggedIn?[["/my/","내 오답노트",""],["#","로그아웃","dsout"]]:[["/my/","로그인",""],["/my/?signup","회원가입",""]];
- if(n)n.innerHTML=links.map(function(l){return '<a href="'+l[0]+'"'+(l[2]?' class="'+l[2]+'"':'')+'>'+l[1]+'</a>';}).join("");
- var mb=document.getElementById("mauth");
- if(mb){if(loggedIn){mb.textContent="로그아웃";mb.href="#";mb.className="mauthbtn dsout";}else{mb.textContent="로그인";mb.href="/my/";mb.className="mauthbtn";}}
- [].forEach.call(document.querySelectorAll(".dsout"),function(o){o.addEventListener("click",function(e){e.preventDefault();localStorage.removeItem("ds_tk");location.reload();});});
-})();
+/* 로그인/로그아웃 → 공용 /auth.js (1008) */
 </script>
+<script src="/auth.js"></script>
 </body>
 </html>

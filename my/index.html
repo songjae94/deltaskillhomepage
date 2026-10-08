@@ -64,48 +64,20 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 </head>
 <body>
 
-<!-- 로그인 -->
-<div id="login" class="card2" hidden>
-  <a href="/" class="brand"><img src="/logo-dark-192.png" alt=""><span>델타스킬</span></a>
-  <h1 style="border:none;font-size:18px;margin:12px 0 4px">내 오답노트</h1>
-  <p class="k" id="lmode">가입한 전화번호와 비밀번호로 로그인하세요.</p>
-  <input id="phone" placeholder="전화번호 (- 없이)" inputmode="numeric" autocomplete="username">
-  <input id="pw" placeholder="숫자 4자리 비밀번호" type="password" inputmode="numeric" maxlength="4" autocomplete="current-password">
-  <div class="err" id="lerr"></div>
-  <button class="p" id="loginBtn" onclick="doLogin()">로그인</button>
-  <div style="text-align:center;margin-top:10px"><button class="lnk" onclick="location.href='/my/?signup'">처음이신가요? 회원가입</button></div>
-</div>
-
-<!-- 회원가입 -->
-<div id="signup" class="card2" hidden>
-  <a href="/" class="brand"><img src="/logo-dark-192.png" alt=""><span>델타스킬</span></a>
-  <h1 style="border:none;font-size:18px;margin:12px 0 4px">회원가입</h1>
-  <div class="field"><label>전화번호 (- 없이)</label><input id="s_phone" inputmode="numeric" placeholder="01000000000"></div>
-  <div class="field"><label>이름</label><input id="s_name" placeholder="이름"></div>
-  <div class="field"><label>다니는 학원 (선택, 직접 입력)</label><input id="s_academy" placeholder="학원명을 직접 입력하세요"></div>
-  <div class="field"><label>구분</label><div class="seg" id="s_grade"><button data-g="재수생">재수생(N수)</button><button data-g="고3">고3</button></div></div>
-  <div class="field"><label>수학 선택과목</label><div class="seg" id="s_subject"><button data-s="미적분">미적분</button><button data-s="확통">확률과통계</button></div></div>
-  <div class="field"><label>비밀번호 (숫자 4자리)</label><input id="s_pw" type="password" inputmode="numeric" maxlength="4" autocomplete="new-password" placeholder="숫자 4자리"></div>
-  <div class="field"><label>비밀번호 확인</label><input id="s_pw2" type="password" inputmode="numeric" maxlength="4" autocomplete="new-password" placeholder="숫자 4자리 다시 입력"></div>
-  <label class="consent"><input type="checkbox" id="s_consent"><span><b>[필수]</b> 만 14세 이상이며 <a href="/privacy/" target="_blank">개인정보 수집·이용 및 AI 자동 분석</a>에 동의합니다.</span></label>
-  <label class="consent"><input type="checkbox" id="s_notify"><span>[선택] 복습 알림(카카오톡·문자) 수신에 동의합니다.</span></label>
-  <div class="err" id="serr"></div>
-  <button class="p" id="signupBtn" onclick="doSignup()">가입하고 시작</button>
-  <div style="text-align:center;margin-top:10px"><button class="lnk" onclick="location.href='/my/'">← 로그인으로</button></div>
-</div>
-
+<!-- 로그인·회원가입은 /auth/ (1008) -->
 <!-- 결과 -->
 <div id="app" class="wrap" hidden>
   <div class="top">
     <a href="/" class="brand"><img src="/logo-dark-192.png" alt=""><span>델타스킬</span></a>
-    <div><button class="sm" onclick="location.href='/pilot/'">오답노트 쓰기</button> <button class="sm" onclick="location.href='/pilot/?profile=1'">내 정보</button> <button class="sm" onclick="doLogout()">로그아웃</button></div>
+    <div><button class="sm" onclick="location.href='/pilot/'">오답노트 쓰기</button> <button class="sm" onclick="location.href='/pilot/?profile=1'">내 정보</button> <button class="sm" onclick="location.href='/auth/?mode=phone'">번호 바꾸기</button> <button class="sm" onclick="location.href='/auth/?mode=reset'">비밀번호</button> <button class="sm" onclick="doLogout()">로그아웃</button></div>
   </div>
   <h1 id="hello">내 오답노트</h1>
   <div id="body"></div>
 </div>
 
+<script src="/auth.js"></script>
 <script>
-const API = "https://cvlrphtupjmaefahodgz.supabase.co/functions/v1/api";
+const API = window.DSAuth ? window.DSAuth.api : "https://cvlrphtupjmaefahodgz.supabase.co/functions/v1/api";
 /* 토큰은 항상 '어느 번호의 토큰인지'(ds_tk_ph)와 함께 다룬다 — 파일럿 저장 시 번호가 어긋나면 토큰이 폐기돼 저장이 막힌다 */
 const TK = { get:()=>localStorage.getItem("ds_tk")||"", set:(t,ph)=>{localStorage.setItem("ds_tk",t);if(ph)localStorage.setItem("ds_tk_ph",ph);}, clear:()=>{localStorage.removeItem("ds_tk");localStorage.removeItem("ds_tk_ph");} };
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -212,50 +184,16 @@ async function syncProfile(phone){
   return null;
 }
 
-/* ---- 로그인 ---- */
-async function doLogin(){
-  document.getElementById("lerr").textContent="";
-  const phone=document.getElementById("phone").value.replace(/[^0-9]/g,""), pw=document.getElementById("pw").value;
-  if(phone.length<10){document.getElementById("lerr").textContent="전화번호를 정확히 입력하세요.";return;}
-  try{ const j=await api("/login",{method:"POST",auth:false,body:{phone,pin:pw}}); TK.set(j.token,phone); localStorage.setItem("ds_phone",phone); await syncProfile(phone); boot(); }
-  catch(e){ document.getElementById("lerr").textContent = e.message==="invalid"?"전화번호 또는 비밀번호가 맞지 않아요.":e.message==="locked"?"시도가 많아 잠시 잠겼어요. 15분 후 다시.":"로그인에 실패했어요."; }
-}
-
-/* ---- 회원가입 ---- */
-let SG={grade:"",subject:"",academy:""};
-function bindSeg(id,key){document.querySelectorAll(`#${id} button`).forEach(b=>b.onclick=()=>{SG[key]=b.dataset.g||b.dataset.s;document.querySelectorAll(`#${id} button`).forEach(x=>x.classList.remove("on"));b.classList.add("on");});}
-async function doSignup(){
-  document.getElementById("serr").textContent="";
-  const phone=document.getElementById("s_phone").value.replace(/[^0-9]/g,"");
-  const name=document.getElementById("s_name").value.trim();
-  const academy=document.getElementById("s_academy").value.trim()||"비재원생";
-  const pw=document.getElementById("s_pw").value, pw2=document.getElementById("s_pw2").value;
-  const consent=document.getElementById("s_consent").checked, notify=document.getElementById("s_notify").checked;
-  const err=m=>{document.getElementById("serr").textContent=m;};
-  if(phone.length<10)return err("전화번호를 정확히 입력하세요.");
-  if(!name)return err("이름을 입력하세요.");
-  if(!SG.grade||!SG.subject)return err("구분과 선택과목을 골라주세요.");
-  if(!/^\d{4}$/.test(pw))return err("비밀번호는 숫자 4자리예요.");
-  if(pw!==pw2)return err("비밀번호가 일치하지 않아요.");
-  if(!consent)return err("필수 동의가 필요해요.");
-  try{
-    const j=await api("/enroll",{method:"POST",auth:false,body:{phone,pin:pw,name,academy,grade:SG.grade,subject:SG.subject,consent:true,consent_notify:notify}});
-    TK.set(j.token,phone); localStorage.setItem("ds_phone",phone);
-    saveLocalProfile(phone,{name,academy,grade:SG.grade,subject:SG.subject});
-    history.replaceState({},"", "/my/"); boot();
-  }catch(e){ err(e.message==="already_enrolled"?"이미 가입된 번호예요. 로그인해 주세요.":e.message==="weak_pin"?"너무 쉬운 비밀번호예요.":"가입에 실패했어요."); }
-}
-
-async function doLogout(){ TK.clear(); location.href="/"; }
+/* ---- 로그인·회원가입·로그아웃 → /auth/ (1008 · 문자 인증 · 서버 토큰 폐기) ---- */
+function goAuth(mode){ location.replace("/auth/?"+(mode?"mode="+mode+"&":"")+"next="+encodeURIComponent("/my/")); }
+async function doLogout(){ if(window.DSAuth){DSAuth.logout("/");} else { TK.clear(); location.href="/"; } }
 
 function boot(){
   const has=!!TK.get(), wantSignup=location.search.indexOf("signup")>=0;
-  document.getElementById("app").hidden=!has;
-  document.getElementById("login").hidden=has||wantSignup;
-  document.getElementById("signup").hidden=has||!wantSignup;
+  if(!has){ goAuth(wantSignup?"signup":""); return; }
+  document.getElementById("app").hidden=false;
   /* 이미 로그인돼 있어도 로컬 프로필을 한 번 맞춰 둔다 — 예전 로그인은 이걸 저장하지 않았다 */
-  if(has){ load(); syncProfile(); }
-  else if(wantSignup){ bindSeg("s_grade","grade"); bindSeg("s_subject","subject"); }
+  load(); syncProfile();
 }
 
 /* ---- 결과 ---- */

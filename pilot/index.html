@@ -306,7 +306,9 @@ function login(){el("screen").innerHTML=`<div class="pad"><div style="margin-bot
         다시 가입시키면 같은 번호로 계정이 하나 더 생긴다 (2026-08-12 사고) */
      S.profile=null;el("go").disabled=true;el("go").textContent="확인 중…";
      const okp=await recoverProfile();
-     if(okp){S.catSel=null;S.screen="exam";}else{S.screen="signup";}
+     if(okp){S.catSel=null;S.screen="exam";}
+     else{ /* 가입은 /auth/ 에서 — 휴대폰 문자 인증 뒤 가입(1008). 돌아오면 토큰으로 프로필을 복구한다 */
+       location.href="/auth/?mode=signup&next="+encodeURIComponent("/pilot/")+"&phone="+S.phone; return; }
    }
    render();window.scrollTo(0,0);};}
 
@@ -613,7 +615,8 @@ function grabSavePin(){const pe=el("savePin");if(pe){const v=pe.value.replace(/[
 function errMsg(code){const c=(""+(code||"")).trim();
  const M={need_pin:"저장하려면 아래에 비밀번호(숫자 4자리)를 입력해 주세요.",invalid:"비밀번호가 맞지 않아요. 다시 입력해 주세요.",
   locked:"시도가 많아 잠시 잠겼어요. 15분 뒤에 다시 시도해 주세요.",no_answers:"입력된 답이 없어요. 문항을 입력한 뒤 저장해 주세요.",
-  no_token:"로그인이 풀렸어요. 아래에 비밀번호(숫자 4자리)를 입력해 주세요.",timeout:"서버 응답이 없어요. 잠시 뒤 다시 시도해 주세요.",
+  no_token:"로그인이 풀렸어요. 아래에 비밀번호(숫자 4자리)를 입력해 주세요.",
+  verify_required:"휴대폰 인증이 필요해요. 로그인 페이지(/auth/)에서 가입을 마친 뒤 다시 저장해 주세요.",unauthorized:"로그인이 풀렸어요. 다시 로그인해 주세요.",timeout:"서버 응답이 없어요. 잠시 뒤 다시 시도해 주세요.",
   "Failed to fetch":"인터넷 연결이 불안정해요. 연결을 확인한 뒤 다시 시도해 주세요."};
  for(const k in M){if(c===k||c.indexOf(k)===0)return M[k];}
  return c;}

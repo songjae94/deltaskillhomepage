@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>델타스킬 · 로그인</title>
+<meta name="theme-color" content="#05060f">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<style>
+:root{--acc:#5aa2ff;--acc2:#a8cbff;--mut:#9fb2cc;--line:rgba(186,215,247,.14);--line2:rgba(186,215,247,.24);--bg:#05060f;--card:#0c1222;--bad:#ff8a8a;--ok:#7ddc9a}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:#e8eef7;font-family:"Pretendard Variable",Pretendard,'Malgun Gothic',-apple-system,"Apple SD Gothic Neo",sans-serif;line-height:1.55;-webkit-text-size-adjust:100%}
+a{color:var(--acc2)}
+.wrap{max-width:440px;margin:0 auto;padding:18px 16px 60px;min-height:100svh;display:flex;flex-direction:column}
+.brand{display:flex;align-items:center;gap:7px;font-weight:800;font-size:16px;text-decoration:none;color:#fff;margin:6px 0 18px}
+.brand img{width:22px;height:22px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 20px}
+h1{font-size:20px;margin:0 0 6px;color:#fff;letter-spacing:-.01em}
+.desc{color:var(--mut);font-size:13.5px;margin:0 0 14px}
+.field{margin:10px 0}.field label{font-size:13px;font-weight:600;display:block;margin-bottom:4px}
+input{font:inherit;padding:12px 13px;border:1px solid var(--line2);border-radius:10px;width:100%;background:#0a1020;color:#e8eef7;font-size:16px}
+input:focus{outline:2px solid var(--acc);outline-offset:-1px}
+input[disabled]{opacity:.55}
+.row{display:flex;gap:8px;align-items:stretch}.row input{flex:1}
+button{font:inherit;padding:11px 14px;border:1px solid var(--line2);border-radius:10px;background:rgba(186,214,247,.09);color:#e8eef7;cursor:pointer;font-size:15px}
+button.p{background:var(--acc);border-color:transparent;color:#04101f;width:100%;font-weight:700;padding:13px;margin-top:6px}
+button.p[disabled],button[disabled]{opacity:.5;cursor:default}
+button.ghost{background:none;border:none;color:var(--acc2);font-size:13px;padding:6px 0;text-decoration:underline;cursor:pointer}
+.seg{display:flex;gap:6px}.seg button{flex:1}.seg button.on{background:var(--acc);color:#04101f;border-color:var(--acc);font-weight:700}
+.err{color:var(--bad);font-size:13px;min-height:18px;margin:6px 0 0}
+.ok{color:var(--ok);font-size:13px}
+.hint{font-size:12px;color:var(--mut);margin-top:4px}
+.consent{display:flex;gap:9px;align-items:flex-start;font-size:12.5px;margin:9px 0;line-height:1.55;color:var(--mut)}
+.consent input[type=checkbox]{width:16px;height:16px;flex:0 0 16px;margin:2px 0 0;padding:0;accent-color:var(--acc)}
+.consent b{color:#e8eef7}
+.links{display:flex;justify-content:space-between;gap:8px;margin-top:14px;flex-wrap:wrap}
+.steps{display:flex;gap:6px;margin:0 0 14px}.steps i{flex:1;height:3px;border-radius:2px;background:var(--line2)}.steps i.on{background:var(--acc)}
+.timer{font-variant-numeric:tabular-nums;color:var(--mut);font-size:12px}
+.done{text-align:center;padding:10px 0}
+.done b{display:block;font-size:18px;color:#fff;margin-bottom:6px}
+[hidden]{display:none!important}
+.foot{margin-top:auto;padding-top:20px;font-size:12px;color:var(--mut);text-align:center}
+.foot a{color:var(--mut)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a href="/" class="brand"><img src="/logo-dark-192.png" alt="">델타스킬</a>
+
+  <!-- 로그인 -->
+  <section class="card" id="v-login" hidden>
+    <h1>로그인</h1>
+    <p class="desc">가입한 휴대폰 번호와 비밀번호(숫자 4자리)를 입력하세요.</p>
+    <div class="field"><label for="l-phone">휴대폰 번호</label><input id="l-phone" inputmode="numeric" autocomplete="username" placeholder="01000000000" maxlength="13"></div>
+    <div class="field"><label for="l-pin">비밀번호</label><input id="l-pin" type="password" inputmode="numeric" maxlength="6" autocomplete="current-password" placeholder="숫자 4자리"></div>
+    <div class="err" id="l-err"></div>
+    <button class="p" id="l-go">로그인</button>
+    <div class="links"><button class="ghost" data-go="reset">비밀번호를 잊었어요</button><button class="ghost" data-go="signup">처음이신가요? 회원가입</button></div>
+  </section>
+
+  <!-- 회원가입: 번호 → 인증 → 정보 -->
+  <section class="card" id="v-signup" hidden>
+    <h1 id="s-title">회원가입</h1>
+    <div class="steps"><i class="on"></i><i id="st2"></i><i id="st3"></i></div>
+    <div id="s-step1">
+      <p class="desc">휴대폰 번호로 가입합니다. 인증번호 문자를 보내 드려요.</p>
+      <div class="field"><label for="s-phone">휴대폰 번호</label><input id="s-phone" inputmode="numeric" autocomplete="tel" placeholder="01000000000" maxlength="13"></div>
+      <div class="err" id="s-err1"></div>
+      <button class="p" id="s-send">인증번호 받기</button>
+    </div>
+    <div id="s-step2" hidden>
+      <p class="desc"><b id="s-phone-shown"></b> 로 보낸 인증번호 6자리를 입력하세요. <span class="timer" id="s-timer"></span></p>
+      <div class="row"><input id="s-code" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="인증번호 6자리"><button id="s-resend" disabled>재전송</button></div>
+      <div class="err" id="s-err2"></div>
+      <button class="p" id="s-check">확인</button>
+      <div class="links"><button class="ghost" id="s-back1">번호 다시 입력</button></div>
+    </div>
+    <div id="s-step3" hidden>
+      <p class="desc ok" id="s-verified">휴대폰 인증 완료</p>
+      <div class="field"><label for="s-name">이름</label><input id="s-name" placeholder="이름" autocomplete="name" maxlength="40"></div>
+      <div class="field"><label>구분</label><div class="seg" id="s-grade"><button type="button" data-v="고3">고3</button><button type="button" data-v="재수생">재수생(N수)</button></div></div>
+      <div class="field"><label>수학 선택과목</label><div class="seg" id="s-subject"><button type="button" data-v="확통">확률과 통계</button><button type="button" data-v="미적분">미적분</button></div></div>
+      <div class="field"><label for="s-academy">다니는 학원 <span class="hint" style="display:inline">(선택)</span></label><input id="s-academy" placeholder="없으면 비워 두세요" maxlength="60"></div>
+      <div class="field"><label for="s-pin">비밀번호 (숫자 4자리)</label><input id="s-pin" type="password" inputmode="numeric" maxlength="4" autocomplete="new-password" placeholder="숫자 4자리"></div>
+      <div class="field"><label for="s-pin2">비밀번호 확인</label><input id="s-pin2" type="password" inputmode="numeric" maxlength="4" autocomplete="new-password" placeholder="다시 입력"></div>
+      <label class="consent"><input type="checkbox" id="c-privacy"><span><b>[필수]</b> 만 14세 이상이며 <a href="/privacy/" target="_blank">개인정보 수집·이용 및 AI 자동 분석</a>에 동의합니다.</span></label>
+      <label class="consent"><input type="checkbox" id="c-terms"><span><b>[필수]</b> <a href="/terms/" target="_blank">이용약관</a>에 동의합니다.</span></label>
+      <label class="consent"><input type="checkbox" id="c-notify"><span>[선택] 복습 알림(카카오톡·문자) 수신에 동의합니다.</span></label>
+      <div class="err" id="s-err3"></div>
+      <button class="p" id="s-go">가입하고 시작</button>
+    </div>
+    <div class="links"><button class="ghost" data-go="login">이미 가입했어요 · 로그인</button></div>
+  </section>
+
+  <!-- 비밀번호 재설정: 번호 → 인증 → 새 비밀번호 -->
+  <section class="card" id="v-reset" hidden>
+    <h1>비밀번호 재설정</h1>
+    <div class="steps"><i class="on"></i><i id="rt2"></i><i id="rt3"></i></div>
+    <div id="r-step1">
+      <p class="desc">가입한 휴대폰 번호로 인증번호를 보내 드려요. 재설정하면 다른 기기에서는 모두 로그아웃됩니다.</p>
+      <div class="field"><label for="r-phone">휴대폰 번호</label><input id="r-phone" inputmode="numeric" autocomplete="tel" placeholder="01000000000" maxlength="13"></div>
+      <div class="err" id="r-err1"></div>
+      <button class="p" id="r-send">인증번호 받기</button>
+    </div>
+    <div id="r-step2" hidden>
+      <p class="desc"><b id="r-phone-shown"></b> 로 보낸 인증번호 6자리를 입력하세요. <span class="timer" id="r-timer"></span></p>
+      <div class="row"><input id="r-code" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="인증번호 6자리"><button id="r-resend" disabled>재전송</button></div>
+      <div class="err" id="r-err2"></div>
+      <button class="p" id="r-check">확인</button>
+    </div>
+    <div id="r-step3" hidden>
+      <div class="field"><label for="r-pin">새 비밀번호 (숫자 4자리)</label><input id="r-pin" type="password" inputmode="numeric" maxlength="4" autocomplete="new-password"></div>
+      <div class="field"><label for="r-pin2">새 비밀번호 확인</label><input id="r-pin2" type="password" inputmode="numeric" maxlength="4" autocomplete="new-password"></div>
+      <div class="err" id="r-err3"></div>
+      <button class="p" id="r-go">비밀번호 바꾸고 로그인</button>
+    </div>
+    <div class="links"><button class="ghost" data-go="login">← 로그인으로</button></div>
+  </section>
+
+  <!-- 휴대폰 번호 바꾸기(로그인 상태) -->
+  <section class="card" id="v-phone" hidden>
+    <h1>휴대폰 번호 바꾸기</h1>
+    <p class="desc">지금 번호 <b id="p-cur"></b>. 새 번호로 인증번호를 보내고, 비밀번호로 본인을 확인합니다.</p>
+    <div id="p-step1">
+      <div class="field"><label for="p-new">새 휴대폰 번호</label><input id="p-new" inputmode="numeric" placeholder="01000000000" maxlength="13"></div>
+      <div class="err" id="p-err1"></div>
+      <button class="p" id="p-send">인증번호 받기</button>
+    </div>
+    <div id="p-step2" hidden>
+      <p class="desc"><b id="p-phone-shown"></b> 로 보낸 인증번호 6자리 <span class="timer" id="p-timer"></span></p>
+      <div class="row"><input id="p-code" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="인증번호 6자리"><button id="p-resend" disabled>재전송</button></div>
+      <div class="field"><label for="p-pin">현재 비밀번호</label><input id="p-pin" type="password" inputmode="numeric" maxlength="6" autocomplete="current-password"></div>
+      <div class="err" id="p-err2"></div>
+      <button class="p" id="p-go">번호 바꾸기</button>
+    </div>
+    <div class="links"><a href="/my/">← 내 오답노트</a></div>
+  </section>
+
+  <!-- 탈퇴(로그인 상태) -->
+  <section class="card" id="v-withdraw" hidden>
+    <h1>탈퇴</h1>
+    <p class="desc">탈퇴하면 이름·휴대폰 번호가 지워지고 로그인할 수 없게 됩니다. 오답노트 기록은 익명 통계로만 남습니다. 결제·주문 기록은 전자상거래법에 따라 5년 보관됩니다.</p>
+    <div class="field"><label for="w-pin">비밀번호</label><input id="w-pin" type="password" inputmode="numeric" maxlength="6" autocomplete="current-password"></div>
+    <label class="consent"><input type="checkbox" id="w-ok"><span>위 내용을 확인했고 탈퇴합니다.</span></label>
+    <div class="err" id="w-err"></div>
+    <button class="p" id="w-go" style="background:#ff6b6b">탈퇴하기</button>
+    <div class="links"><a href="/my/">← 내 오답노트</a></div>
+  </section>
+
+  <!-- 끝 -->
+  <section class="card done" id="v-done" hidden><b id="d-title"></b><p class="desc" id="d-desc"></p><a class="p" id="d-go" style="display:block;text-decoration:none;background:var(--acc);color:#04101f;border-radius:10px;padding:13px;font-weight:700;margin-top:10px">계속</a></section>
+
+  <p class="foot">문의 <a href="mailto:admin@deltaskill.co.kr">admin@deltaskill.co.kr</a> · <a href="/privacy/">개인정보처리방침</a> · <a href="/terms/">이용약관</a></p>
+</div>
+
+<script src="/auth.js"></script>
+<script>
+/* /auth/ — 로그인 · 회원가입(문자 인증) · 비밀번호 재설정 · 번호 변경 · 탈퇴 (1008)
+   서버: api v10(verify-send · verify-check · enroll · login · pin-reset · phone-change · withdraw · me).
+   v10 전(옛 서버)에서는 verify-send 가 404/sms_disabled → 인증 단계 없이 가입(옛 흐름)으로 내려간다 — 화면에 그 사실을 적는다.
+   문서 판(동의 기록용): privacy·terms 시행일 — /privacy/ /terms/ 머리의 「개정판 시행일」과 같게 둔다. */
+(() => {
+const A = window.DSAuth, API = A.api, Q = new URLSearchParams(location.search);
+const DOC_VER = { privacy: "2026-10-20", terms: "2026-10-20" };
+const $ = id => document.getElementById(id);
+const PH = s => String(s || "").replace(/\D/g, "");
+const fmt = p => p.length >= 10 ? p.slice(0, 3) + "-" + p.slice(3, -4) + "-" + p.slice(-4) : p;
+const MSG = {
+  bad_phone: "휴대폰 번호를 정확히 입력하세요.", already_enrolled: "이미 가입된 번호예요. 로그인해 주세요.", not_enrolled: "가입되지 않은 번호예요.",
+  too_many: "요청이 많아요. 잠시 뒤 다시 시도해 주세요.", sms_failed: "문자를 보내지 못했어요. 잠시 뒤 다시 시도해 주세요.", sms_misconfig: "문자 발송이 아직 준비되지 않았어요.",
+  wrong_code: "인증번호가 맞지 않아요.", expired: "인증번호가 만료됐어요. 다시 받아 주세요.", not_found: "인증번호를 먼저 받아 주세요.",
+  invalid: "휴대폰 번호 또는 비밀번호가 맞지 않아요.", locked: "시도가 많아 잠시 잠겼어요. 15분 뒤 다시 시도해 주세요.",
+  weak_pin: "너무 쉬운 비밀번호예요(같은 숫자·연속 숫자 금지).", bad_pw_format: "비밀번호는 숫자 4자리예요.", consent_required: "필수 동의가 필요해요.",
+  verify_required: "휴대폰 인증이 필요해요. 처음부터 다시 진행해 주세요.", bad_verify: "인증이 만료됐어요. 인증번호를 다시 받아 주세요.",
+  unauthorized: "로그인이 풀렸어요. 다시 로그인해 주세요.", server: "서버 오류예요. 잠시 뒤 다시 시도해 주세요.", "Failed to fetch": "인터넷 연결을 확인해 주세요."
+};
+const msg = e => { const c = String(e && e.message || e || ""); for (const k in MSG) if (c === k || c.indexOf(k) === 0) return MSG[k]; return "실패했어요. 다시 시도해 주세요."; };
+async function api(path, body, auth) {
+  const h = { "Content-Type": "application/json" };
+  if (auth) { const t = A.get(); if (!t) throw new Error("unauthorized"); h.Authorization = "Bearer " + t; }
+  const r = await fetch(API + path, { method: body ? "POST" : "GET", headers: h, body: body ? JSON.stringify(body) : undefined });
+  let j = null; try { j = await r.json(); } catch (_) {}
+  if (r.status === 404 && !j) throw new Error("not_deployed");
+  if (!r.ok || !j || j.ok === false) throw new Error((j && j.error) || ("HTTP " + r.status));
+  return j;
+}
+const next = (() => { const n = Q.get("next") || "/my/"; return /^\/[A-Za-z0-9_\-./?#=&%]*$/.test(n) && n.indexOf("//") !== 0 ? n : "/my/"; })();
+function show(id) { ["login", "signup", "reset", "phone", "withdraw", "done"].forEach(v => $("v-" + v).hidden = v !== id); window.scrollTo(0, 0); }
+function done(title, desc, go) { $("d-title").textContent = title; $("d-desc").textContent = desc; $("d-go").href = go || next; show("done"); }
+function saveProfile(phone, p) {
+  try { const all = JSON.parse(localStorage.getItem("ds_students") || "null") || {}; const prev = all[phone] || {};
+    all[phone] = { id: prev.id || ("stu_" + phone), phone, profile: { name: p.name || "", academy: p.academy || "", grade: p.grade || "", subject: p.subject || "" }, consent_at: prev.consent_at || new Date().toISOString() };
+    localStorage.setItem("ds_students", JSON.stringify(all)); } catch (_) {}
+}
+async function syncProfile(phone) { try { const j = await api("/profile", null, true); if (j && j.profile) saveProfile(phone, j.profile); } catch (_) {} }
+function busy(btn, on, label) { btn.disabled = on; if (label) btn.dataset.l = btn.dataset.l || btn.textContent, btn.textContent = on ? label : btn.dataset.l; }
+document.querySelectorAll("[data-go]").forEach(b => b.onclick = () => { history.replaceState({}, "", "/auth/?mode=" + b.dataset.go + "&next=" + encodeURIComponent(next)); show(b.dataset.go); });
+
+/* ── 인증번호 공통: 보내기 · 타이머 · 확인 ── */
+function otp(prefix, purpose, phoneGetter, onVerified) {
+  const T = { phone: "", until: 0, tick: null, proof: "" };
+  const timerEl = $(prefix + "-timer"), resend = $(prefix + "-resend");
+  function startTimer(sec) { T.until = Date.now() + sec * 1000; resend.disabled = true; setTimeout(() => resend.disabled = false, 30000); clearInterval(T.tick);
+    const f = () => { const s = Math.max(0, Math.round((T.until - Date.now()) / 1000)); timerEl.textContent = s ? `(${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")})` : "(만료 — 재전송)"; if (!s) clearInterval(T.tick); }; f(); T.tick = setInterval(f, 1000); }
+  async function send(btn, errEl) {
+    const phone = PH(phoneGetter()); errEl.textContent = "";
+    if (phone.length < 10 || phone.length > 11) { errEl.textContent = MSG.bad_phone; return false; }
+    busy(btn, true, "보내는 중…");
+    try {
+      const j = await api("/verify-send", { phone, purpose });
+      T.phone = phone; $(prefix + "-phone-shown").textContent = fmt(phone); startTimer(j.expires_in || 300);
+      if (j.dev_code) { $(prefix + "-code").value = j.dev_code; errEl.innerHTML = '<span class="ok">개발 모드 — 인증번호가 자동으로 들어갔어요</span>'; }
+      return true;
+    } catch (e) {
+      const c = String(e.message);
+      if (c === "sms_disabled" || c === "not_deployed") return "nosms";   // 서버가 아직 문자 인증을 안 켬 → 옛 흐름
+      errEl.textContent = msg(e); return false;
+    } finally { busy(btn, false); }
+  }
+  async function check(btn, errEl) {
+    const code = PH($(prefix + "-code").value); errEl.textContent = "";
+    if (code.length !== 6) { errEl.textContent = "인증번호 6자리를 입력하세요."; return; }
+    busy(btn, true, "확인 중…");
+    try { const j = await api("/verify-check", { phone: T.phone, purpose, code }); T.proof = j.verify_token; clearInterval(T.tick); timerEl.textContent = ""; onVerified(T); }
+    catch (e) { errEl.textContent = msg(e) + (e.message === "wrong_code" ? "" : ""); }
+    finally { busy(btn, false); }
+  }
+  resend.onclick = () => send(resend, $(prefix + "-err2"));
+  return { T, send, check };
+}
+
+/* ── 로그인 ── */
+$("l-go").onclick = async () => {
+  const phone = PH($("l-phone").value), pin = $("l-pin").value, err = $("l-err"); err.textContent = "";
+  if (phone.length < 10) return err.textContent = MSG.bad_phone;
+  if (!/^\d{4,6}$/.test(pin)) return err.textContent = MSG.bad_pw_format;
+  busy($("l-go"), true, "로그인 중…");
+  try { const j = await api("/login", { phone, pin, device: navigator.platform || "" }); A.set(j.token, phone); await syncProfile(phone); location.replace(next); }
+  catch (e) { err.textContent = msg(e); busy($("l-go"), false); }
+};
+$("l-pin").addEventListener("keydown", e => { if (e.key === "Enter") $("l-go").click(); });
+
+/* ── 회원가입 ── */
+const S = { grade: "", subject: "", nosms: false };
+const so = otp("s", "enroll", () => $("s-phone").value, () => { $("s-step2").hidden = true; $("s-step3").hidden = false; $("st3").classList.add("on"); $("s-verified").textContent = "휴대폰 인증 완료 · " + fmt(so.T.phone); $("s-name").focus(); });
+$("s-send").onclick = async () => {
+  const r = await so.send($("s-send"), $("s-err1"));
+  if (r === true) { $("s-step1").hidden = true; $("s-step2").hidden = false; $("st2").classList.add("on"); $("s-code").focus(); }
+  else if (r === "nosms") { S.nosms = true; so.T.phone = PH($("s-phone").value); $("s-step1").hidden = true; $("s-step3").hidden = false; $("st2").classList.add("on"); $("st3").classList.add("on"); $("s-verified").textContent = "휴대폰 문자 인증은 준비 중이에요 — 번호 " + fmt(so.T.phone) + " 로 가입합니다."; $("s-verified").className = "desc"; }
+};
+$("s-check").onclick = () => so.check($("s-check"), $("s-err2"));
+$("s-back1").onclick = () => { $("s-step2").hidden = true; $("s-step1").hidden = false; $("st2").classList.remove("on"); };
+["s-grade", "s-subject"].forEach(id => document.querySelectorAll("#" + id + " button").forEach(b => b.onclick = () => { document.querySelectorAll("#" + id + " button").forEach(x => x.classList.remove("on")); b.classList.add("on"); S[id === "s-grade" ? "grade" : "subject"] = b.dataset.v; }));
+$("s-go").onclick = async () => {
+  const err = $("s-err3"); err.textContent = "";
+  const name = $("s-name").value.trim(), academy = $("s-academy").value.trim() || "비재원생", pin = $("s-pin").value, pin2 = $("s-pin2").value;
+  if (!name) return err.textContent = "이름을 입력하세요.";
+  if (!S.grade || !S.subject) return err.textContent = "구분과 선택과목을 골라 주세요.";
+  if (!/^\d{4}$/.test(pin)) return err.textContent = MSG.bad_pw_format;
+  if (pin !== pin2) return err.textContent = "비밀번호가 일치하지 않아요.";
+  if (!$("c-privacy").checked || !$("c-terms").checked) return err.textContent = MSG.consent_required;
+  busy($("s-go"), true, "가입 중…");
+  const consents = [{ doc: "privacy", version: DOC_VER.privacy, granted: true }, { doc: "terms", version: DOC_VER.terms, granted: true }, { doc: "notify", version: DOC_VER.privacy, granted: $("c-notify").checked }];
+  try {
+    const j = await api("/enroll", { phone: so.T.phone, pin, name, academy, grade: S.grade, subject: S.subject, consent: true, consent_notify: $("c-notify").checked, verify_token: so.T.proof || undefined, consents, privacy_version: DOC_VER.privacy, device: navigator.platform || "" });
+    A.set(j.token, so.T.phone); saveProfile(so.T.phone, { name, academy, grade: S.grade, subject: S.subject });
+    done("가입 완료", name + " 님, 환영해요. 이제 오답노트와 예측을 이어서 볼 수 있어요.");
+  } catch (e) { err.textContent = msg(e); busy($("s-go"), false); }
+};
+
+/* ── 비밀번호 재설정 ── */
+const ro = otp("r", "reset", () => $("r-phone").value, () => { $("r-step2").hidden = true; $("r-step3").hidden = false; $("rt3").classList.add("on"); $("r-pin").focus(); });
+$("r-send").onclick = async () => {
+  const r = await ro.send($("r-send"), $("r-err1"));
+  if (r === true) { $("r-step1").hidden = true; $("r-step2").hidden = false; $("rt2").classList.add("on"); $("r-code").focus(); }
+  else if (r === "nosms") $("r-err1").textContent = "비밀번호 재설정은 휴대폰 문자 인증이 준비된 뒤 열려요. 그동안은 admin@deltaskill.co.kr 로 문의해 주세요.";
+};
+$("r-check").onclick = () => ro.check($("r-check"), $("r-err2"));
+$("r-go").onclick = async () => {
+  const err = $("r-err3"), pin = $("r-pin").value; err.textContent = "";
+  if (!/^\d{4}$/.test(pin)) return err.textContent = MSG.bad_pw_format;
+  if (pin !== $("r-pin2").value) return err.textContent = "비밀번호가 일치하지 않아요.";
+  busy($("r-go"), true, "바꾸는 중…");
+  try { const j = await api("/pin-reset", { phone: ro.T.phone, pin, verify_token: ro.T.proof, privacy_version: DOC_VER.privacy, device: navigator.platform || "" }); A.set(j.token, ro.T.phone); await syncProfile(ro.T.phone); done("비밀번호를 바꿨어요", "이 기기는 로그인됐고, 다른 기기에서는 모두 로그아웃됐어요."); }
+  catch (e) { err.textContent = msg(e); busy($("r-go"), false); }
+};
+
+/* ── 번호 바꾸기 ── */
+const po = otp("p", "phone_change", () => $("p-new").value, () => {});
+$("p-send").onclick = async () => {
+  const r = await po.send($("p-send"), $("p-err1"));
+  if (r === true) { $("p-step1").hidden = true; $("p-step2").hidden = false; $("p-code").focus(); }
+  else if (r === "nosms") $("p-err1").textContent = "번호 변경은 휴대폰 문자 인증이 준비된 뒤 열려요.";
+};
+$("p-go").onclick = async () => {
+  const err = $("p-err2"); err.textContent = "";
+  const code = PH($("p-code").value), pin = $("p-pin").value;
+  if (code.length !== 6) return err.textContent = "인증번호 6자리를 입력하세요.";
+  if (!/^\d{4,6}$/.test(pin)) return err.textContent = MSG.bad_pw_format;
+  busy($("p-go"), true, "확인 중…");
+  try {
+    const v = await api("/verify-check", { phone: po.T.phone, purpose: "phone_change", code });
+    const j = await api("/phone-change", { new_phone: po.T.phone, pin, verify_token: v.verify_token, privacy_version: DOC_VER.privacy }, true);
+    A.set(A.get(), po.T.phone); try { localStorage.setItem("ds_phone", po.T.phone); } catch (_) {}
+    done("번호를 바꿨어요", "이제 " + (j.phone_masked || fmt(po.T.phone)) + " 로 로그인합니다.", "/my/");
+  } catch (e) { err.textContent = msg(e); busy($("p-go"), false); }
+};
+
+/* ── 탈퇴 ── */
+$("w-go").onclick = async () => {
+  const err = $("w-err"), pin = $("w-pin").value; err.textContent = "";
+  if (!/^\d{4,6}$/.test(pin)) return err.textContent = MSG.bad_pw_format;
+  if (!$("w-ok").checked) return err.textContent = "확인란에 체크해 주세요.";
+  if (!confirm("정말 탈퇴할까요? 되돌릴 수 없어요.")) return;
+  busy($("w-go"), true, "처리 중…");
+  try { await api("/withdraw", { pin }, true); A.clear(); try { localStorage.removeItem("ds_students"); localStorage.removeItem("ds_phone"); } catch (_) {} done("탈퇴했어요", "그동안 고마웠어요. 다시 오면 새로 가입하면 돼요.", "/"); }
+  catch (e) { err.textContent = msg(e); busy($("w-go"), false); }
+};
+
+/* ── 시작 ── */
+(async () => {
+  const mode = Q.get("mode") || "login";
+  if (mode === "phone" || mode === "withdraw") {
+    if (!A.has()) return location.replace("/auth/?next=" + encodeURIComponent("/auth/?mode=" + mode));
+    try { const m = await api("/me", null, true); $("p-cur").textContent = m.phone_masked || fmt(A.phone()); } catch (_) { $("p-cur").textContent = fmt(A.phone()); }
+    return show(mode);
+  }
+  if (A.has() && mode === "login") return location.replace(next);   // 이미 로그인 → 바로 돌아감
+  if (Q.get("phone")) { $("s-phone").value = PH(Q.get("phone")); $("l-phone").value = PH(Q.get("phone")); }
+  show(["signup", "reset"].includes(mode) ? mode : "login");
+})();
+})();
+</script>
+</body>
+</html>
