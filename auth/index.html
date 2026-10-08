@@ -42,6 +42,8 @@ button.ghost{background:none;border:none;color:var(--acc2);font-size:13px;paddin
 [hidden]{display:none!important}
 .kakao{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:14px;background:#FEE500;color:#191919;border:0;border-radius:10px;padding:13px;font-weight:700;font-size:15px;cursor:pointer}
 .kakao svg{width:18px;height:18px}
+.naver{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:8px;background:#03C75A;color:#fff;border:0;border-radius:10px;padding:13px;font-weight:700;font-size:15px;cursor:pointer}
+.naver b{font-family:Arial,sans-serif;font-weight:900;font-size:17px;line-height:1}
 .or{display:flex;align-items:center;gap:10px;color:var(--mut);font-size:12px;margin:14px 0 2px}.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
 .foot{margin-top:auto;padding-top:20px;font-size:12px;color:var(--mut);text-align:center}
 .foot a{color:var(--mut)}
@@ -60,7 +62,8 @@ button.ghost{background:none;border:none;color:var(--acc2);font-size:13px;paddin
     <div class="err" id="l-err"></div>
     <button class="p" id="l-go">로그인</button>
     <div class="or">또는</div>
-    <button type="button" class="kakao" data-kakao><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#191919" d="M12 3C6.5 3 2 6.4 2 10.6c0 2.7 1.8 5 4.5 6.4l-1 3.8c-.1.3.3.6.6.4l4.4-2.9c.5.1 1 .1 1.5.1 5.5 0 10-3.4 10-7.8S17.5 3 12 3z"/></svg>카카오로 시작하기</button>
+    <button type="button" class="kakao" data-oauth="kakao"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#191919" d="M12 3C6.5 3 2 6.4 2 10.6c0 2.7 1.8 5 4.5 6.4l-1 3.8c-.1.3.3.6.6.4l4.4-2.9c.5.1 1 .1 1.5.1 5.5 0 10-3.4 10-7.8S17.5 3 12 3z"/></svg>카카오로 시작하기</button>
+    <button type="button" class="naver" data-oauth="naver"><b>N</b>네이버로 시작하기</button>
     <div class="links"><button class="ghost" data-go="reset">비밀번호를 잊었어요</button><button class="ghost" data-go="signup">처음이신가요? 회원가입</button></div>
   </section>
 
@@ -74,7 +77,8 @@ button.ghost{background:none;border:none;color:var(--acc2);font-size:13px;paddin
       <div class="err" id="s-err1"></div>
       <button class="p" id="s-send">인증번호 받기</button>
       <div class="or">또는</div>
-      <button type="button" class="kakao" data-kakao><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#191919" d="M12 3C6.5 3 2 6.4 2 10.6c0 2.7 1.8 5 4.5 6.4l-1 3.8c-.1.3.3.6.6.4l4.4-2.9c.5.1 1 .1 1.5.1 5.5 0 10-3.4 10-7.8S17.5 3 12 3z"/></svg>카카오로 시작하기</button>
+      <button type="button" class="kakao" data-oauth="kakao"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#191919" d="M12 3C6.5 3 2 6.4 2 10.6c0 2.7 1.8 5 4.5 6.4l-1 3.8c-.1.3.3.6.6.4l4.4-2.9c.5.1 1 .1 1.5.1 5.5 0 10-3.4 10-7.8S17.5 3 12 3z"/></svg>카카오로 시작하기</button>
+    <button type="button" class="naver" data-oauth="naver"><b>N</b>네이버로 시작하기</button>
     </div>
     <div id="s-step2" hidden>
       <p class="desc"><b id="s-phone-shown"></b> 로 보낸 인증번호 6자리를 입력하세요. <span class="timer" id="s-timer"></span></p>
@@ -202,6 +206,9 @@ const A = window.DSAuth, API = A.api, Q = new URLSearchParams(location.search);
 const DOC_VER = { privacy: "2026-10-20", terms: "2026-10-20" };
 /* 카카오 간편 로그인(앱 ID 1601933 · REST API 키 = OAuth client_id · 공개값 · 도메인·리다이렉트 URI 로 잠김). 열쇠는 휴대폰 계정 — 카카오는 입구. */
 const KAKAO_CLIENT_ID = "0f1a0a20f693cd43efaea989b8c01156", KAKAO_REDIRECT = location.origin + "/auth/";
+/* 네이버 로그인(Client ID = 공개값 · 비밀값은 서버만). 비어 있으면 단추가 「준비 중」 안내. */
+const NAVER_CLIENT_ID = "";
+const OAUTH_NAME = { kakao: "카카오", naver: "네이버" };
 const $ = id => document.getElementById(id);
 const PH = s => String(s || "").replace(/\D/g, "");
 const fmt = p => p.length >= 10 ? p.slice(0, 3) + "-" + p.slice(3, -4) + "-" + p.slice(-4) : p;
@@ -212,7 +219,7 @@ const MSG = {
   invalid: "휴대폰 번호 또는 비밀번호가 맞지 않아요.", locked: "시도가 많아 잠시 잠겼어요. 15분 뒤 다시 시도해 주세요.",
   weak_pin: "너무 쉬운 비밀번호예요(같은 숫자·연속 숫자 금지).", bad_pw_format: "비밀번호는 숫자 4자리예요.", consent_required: "필수 동의가 필요해요.",
   verify_required: "휴대폰 인증이 필요해요. 처음부터 다시 진행해 주세요.", bad_verify: "인증이 만료됐어요. 인증번호를 다시 받아 주세요.",
-  unauthorized: "로그인이 풀렸어요. 다시 로그인해 주세요.", kakao_failed: "카카오 확인에 실패했어요. 다시 시도해 주세요.", bad_link: "카카오 인증이 만료됐어요. 카카오 단추부터 다시 눌러 주세요.", bad_redirect: "카카오 설정이 맞지 않아요(리다이렉트 주소).", server: "서버 오류예요. 잠시 뒤 다시 시도해 주세요.", "Failed to fetch": "인터넷 연결을 확인해 주세요."
+  unauthorized: "로그인이 풀렸어요. 다시 로그인해 주세요.", kakao_failed: "카카오 확인에 실패했어요. 다시 시도해 주세요.", naver_failed: "네이버 확인에 실패했어요. 다시 시도해 주세요.", bad_link: "카카오 인증이 만료됐어요. 카카오 단추부터 다시 눌러 주세요.", bad_redirect: "카카오 설정이 맞지 않아요(리다이렉트 주소).", server: "서버 오류예요. 잠시 뒤 다시 시도해 주세요.", "Failed to fetch": "인터넷 연결을 확인해 주세요."
 };
 const msg = e => { const c = String(e && e.message || e || ""); for (const k in MSG) if (c === k || c.indexOf(k) === 0) return MSG[k]; return "실패했어요. 다시 시도해 주세요."; };
 async function api(path, body, auth) {
@@ -358,11 +365,15 @@ $("w-go").onclick = async () => {
 };
 
 /* ── 카카오 ── */
-const K = { link: "", nickname: "", grade: "", subject: "" };
-document.querySelectorAll("[data-kakao]").forEach(b => b.onclick = () => {
+const K = { link: "", nickname: "", grade: "", subject: "", p: "kakao" };
+document.querySelectorAll("[data-oauth]").forEach(b => b.onclick = () => {
+  const p = b.dataset.oauth;
+  if (p === "naver" && !NAVER_CLIENT_ID) { alert("네이버 로그인은 준비 중이에요. 카카오 또는 휴대폰 번호로 로그인해 주세요."); return; }
   const st = Array.from(crypto.getRandomValues(new Uint8Array(12)), x => x.toString(16).padStart(2, "0")).join("");
-  try { sessionStorage.setItem("ds_kakao", JSON.stringify({ state: st, next })); } catch (_) {}
-  location.href = "https://kauth.kakao.com/oauth/authorize?client_id=" + KAKAO_CLIENT_ID + "&redirect_uri=" + encodeURIComponent(KAKAO_REDIRECT) + "&response_type=code&state=" + st;
+  try { sessionStorage.setItem("ds_oauth", JSON.stringify({ p, state: st, next })); } catch (_) {}
+  location.href = p === "naver"
+    ? "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=" + NAVER_CLIENT_ID + "&redirect_uri=" + encodeURIComponent(KAKAO_REDIRECT) + "&state=" + st
+    : "https://kauth.kakao.com/oauth/authorize?client_id=" + KAKAO_CLIENT_ID + "&redirect_uri=" + encodeURIComponent(KAKAO_REDIRECT) + "&response_type=code&state=" + st;
 });
 const ko = otp("k", "kakao_link", () => $("k-phone").value, () => { $("k-step2").hidden = true; tryLink(); });
 $("k-send").onclick = async () => {
@@ -377,12 +388,12 @@ async function tryLink(profile) {
   const body = { link_token: K.link, phone: ko.T.phone, verify_token: ko.T.proof, device: navigator.platform || "", privacy_version: DOC_VER.privacy };
   if (profile) Object.assign(body, profile);
   try {
-    const j = await api("/kakao-link", body);
+    const j = await api("/" + K.p + "-link", body);
     A.set(j.token, ko.T.phone); if (profile) saveProfile(ko.T.phone, profile); else await syncProfile(ko.T.phone);
-    done(j.created ? "가입 완료" : "카카오 연결 완료", "다음부터는 카카오 단추 하나로 로그인됩니다.");
+    done(j.created ? "가입 완료" : OAUTH_NAME[K.p] + " 연결 완료", "다음부터는 " + OAUTH_NAME[K.p] + " 단추 하나로 로그인됩니다.");
   } catch (e) {
     if (String(e.message) === "need_profile") { $("k-step3").hidden = false; $("kt3").classList.add("on"); if (!$("k-name").value) $("k-name").value = K.nickname || ""; return; }
-    const m = String(e.message) === "already_linked" ? "이 카카오 계정은 이미 다른 번호에 연결돼 있어요." : String(e.message) === "student_has_link" ? "이 번호에는 이미 다른 카카오 계정이 연결돼 있어요." : msg(e);
+    const m = String(e.message) === "already_linked" ? "이 " + OAUTH_NAME[K.p] + " 계정은 이미 다른 번호에 연결돼 있어요." : String(e.message) === "student_has_link" ? "이 번호에는 이미 다른 " + OAUTH_NAME[K.p] + " 계정이 연결돼 있어요." : msg(e);
     (profile ? err : $("k-err2")).textContent = m; if (!profile) { $("k-step2").hidden = false; }
   }
 }
@@ -397,18 +408,20 @@ $("k-go").onclick = async () => {
   await tryLink({ name, academy: "비재원생", grade: K.grade, subject: K.subject, consent: true, consent_notify: $("kc-notify").checked, consents });
   busy($("k-go"), false);
 }
-async function kakaoCallback(code, state) {
-  let saved = null; try { saved = JSON.parse(sessionStorage.getItem("ds_kakao") || "null"); sessionStorage.removeItem("ds_kakao"); } catch (_) {}
+async function oauthCallback(code, state) {
+  let saved = null; try { saved = JSON.parse(sessionStorage.getItem("ds_oauth") || "null"); sessionStorage.removeItem("ds_oauth"); } catch (_) {}
+  const p = (saved && saved.p) || "kakao", name = OAUTH_NAME[p] || "간편";
   history.replaceState({}, "", "/auth/?next=" + encodeURIComponent((saved && saved.next) || next));
-  if (!saved || saved.state !== state) { show("login"); $("l-err").textContent = "카카오 로그인 확인에 실패했어요. 다시 시도해 주세요."; return; }
-  show("login"); $("l-err").textContent = "카카오 확인 중…";
+  if (!saved || saved.state !== state) { show("login"); $("l-err").textContent = name + " 로그인 확인에 실패했어요. 다시 시도해 주세요."; return; }
+  show("login"); $("l-err").textContent = name + " 확인 중…";
   try {
-    const j = await api("/kakao-login", { code, redirect_uri: KAKAO_REDIRECT, device: navigator.platform || "" });
+    const j = await api("/" + p + "-login", { code, state, redirect_uri: KAKAO_REDIRECT, device: navigator.platform || "" });
     if (j.linked) { A.set(j.token, j.phone || ""); await syncProfile(j.phone || ""); location.replace((saved && saved.next) || next); return; }
-    K.link = j.link_token; K.nickname = j.nickname || "";
-    if (K.nickname) $("k-desc").textContent = K.nickname + " 님, 카카오 인증이 끝났어요. 처음 한 번만 휴대폰 번호를 확인하면, 다음부터는 카카오 단추 하나로 로그인됩니다.";
+    K.link = j.link_token; K.nickname = j.nickname || ""; K.p = p;
+    $("v-kakao").querySelector("h1").textContent = name + " 계정 연결";
+    $("k-desc").textContent = (K.nickname ? K.nickname + " 님, " : "") + name + " 인증이 끝났어요. 처음 한 번만 휴대폰 번호를 확인하면, 다음부터는 " + name + " 단추 하나로 로그인됩니다.";
     show("kakao"); $("k-phone").focus();
-  } catch (e) { $("l-err").textContent = String(e.message) === "not_deployed" || String(e.message) === "kakao_misconfig" ? "카카오 로그인은 준비 중이에요. 휴대폰 번호로 로그인해 주세요." : msg(e); }
+  } catch (e) { $("l-err").textContent = /not_deployed|_misconfig$/.test(String(e.message)) ? name + " 로그인은 준비 중이에요. 휴대폰 번호로 로그인해 주세요." : msg(e); }
 }
 
 /* ── 시작 ── */
@@ -419,8 +432,8 @@ async function kakaoCallback(code, state) {
     try { const m = await api("/me", null, true); $("p-cur").textContent = m.phone_masked || fmt(A.phone()); } catch (_) { $("p-cur").textContent = fmt(A.phone()); }
     return show(mode);
   }
-  if (Q.get("code")) return kakaoCallback(Q.get("code"), Q.get("state") || "");   // 카카오에서 돌아옴
-  if (Q.get("error")) { show("login"); $("l-err").textContent = "카카오 로그인을 취소했어요."; return; }
+  if (Q.get("code")) return oauthCallback(Q.get("code"), Q.get("state") || "");   // 카카오·네이버에서 돌아옴
+  if (Q.get("error")) { show("login"); $("l-err").textContent = "간편 로그인을 취소했어요."; try { sessionStorage.removeItem("ds_oauth"); } catch (_) {} return; }
   if (A.has() && mode === "login") return location.replace(next);   // 이미 로그인 → 바로 돌아감
   if (Q.get("phone")) { $("s-phone").value = PH(Q.get("phone")); $("l-phone").value = PH(Q.get("phone")); }
   show(["signup", "reset"].includes(mode) ? mode : "login");
