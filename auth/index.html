@@ -56,9 +56,9 @@ button.ghost{background:none;border:none;color:var(--acc2);font-size:13px;paddin
   <!-- 로그인 -->
   <section class="card" id="v-login" hidden>
     <h1>로그인</h1>
-    <p class="desc">가입한 휴대폰 번호와 비밀번호(숫자 4자리)를 입력하세요.</p>
+    <p class="desc">가입한 휴대폰 번호와 비밀번호(숫자 6자리)를 입력하세요. 예전 4자리도 됩니다.</p>
     <div class="field"><label for="l-phone">휴대폰 번호</label><input id="l-phone" inputmode="numeric" autocomplete="username" placeholder="01000000000" maxlength="13"></div>
-    <div class="field"><label for="l-pin">비밀번호</label><input id="l-pin" type="password" inputmode="numeric" maxlength="6" autocomplete="current-password" placeholder="숫자 4자리"></div>
+    <div class="field"><label for="l-pin">비밀번호</label><input id="l-pin" type="password" inputmode="numeric" maxlength="6" autocomplete="current-password" placeholder="숫자 6자리"></div>
     <div class="err" id="l-err"></div>
     <button class="p" id="l-go">로그인</button>
     <div class="or">또는</div>
@@ -93,8 +93,8 @@ button.ghost{background:none;border:none;color:var(--acc2);font-size:13px;paddin
       <div class="field"><label>구분</label><div class="seg" id="s-grade"><button type="button" data-v="고3">고3</button><button type="button" data-v="재수생">재수생(N수)</button></div></div>
       <div class="field"><label>수학 선택과목</label><div class="seg" id="s-subject"><button type="button" data-v="확통">확률과 통계</button><button type="button" data-v="미적분">미적분</button></div></div>
       <div class="field"><label for="s-academy">다니는 학원 <span class="hint" style="display:inline">(선택)</span></label><input id="s-academy" placeholder="없으면 비워 두세요" maxlength="60"></div>
-      <div class="field"><label for="s-pin">비밀번호 (숫자 4자리)</label><input id="s-pin" type="password" inputmode="numeric" maxlength="4" autocomplete="new-password" placeholder="숫자 4자리"></div>
-      <div class="field"><label for="s-pin2">비밀번호 확인</label><input id="s-pin2" type="password" inputmode="numeric" maxlength="4" autocomplete="new-password" placeholder="다시 입력"></div>
+      <div class="field"><label for="s-pin">비밀번호 (숫자 6자리)</label><input id="s-pin" type="password" inputmode="numeric" maxlength="6" autocomplete="new-password" placeholder="숫자 6자리"></div>
+      <div class="field"><label for="s-pin2">비밀번호 확인</label><input id="s-pin2" type="password" inputmode="numeric" maxlength="6" autocomplete="new-password" placeholder="다시 입력"></div>
       <label class="consent"><input type="checkbox" id="c-privacy"><span><b>[필수]</b> 만 14세 이상이며 <a href="/privacy/" target="_blank">개인정보 수집·이용 및 AI 자동 분석</a>에 동의합니다.</span></label>
       <label class="consent"><input type="checkbox" id="c-terms"><span><b>[필수]</b> <a href="/terms/" target="_blank">이용약관</a>에 동의합니다.</span></label>
       <label class="consent"><input type="checkbox" id="c-notify"><span>[선택] 복습 알림(카카오톡·문자) 수신에 동의합니다.</span></label>
@@ -121,8 +121,8 @@ button.ghost{background:none;border:none;color:var(--acc2);font-size:13px;paddin
       <button class="p" id="r-check">확인</button>
     </div>
     <div id="r-step3" hidden>
-      <div class="field"><label for="r-pin">새 비밀번호 (숫자 4자리)</label><input id="r-pin" type="password" inputmode="numeric" maxlength="4" autocomplete="new-password"></div>
-      <div class="field"><label for="r-pin2">새 비밀번호 확인</label><input id="r-pin2" type="password" inputmode="numeric" maxlength="4" autocomplete="new-password"></div>
+      <div class="field"><label for="r-pin">새 비밀번호 (숫자 6자리)</label><input id="r-pin" type="password" inputmode="numeric" maxlength="6" autocomplete="new-password"></div>
+      <div class="field"><label for="r-pin2">새 비밀번호 확인</label><input id="r-pin2" type="password" inputmode="numeric" maxlength="6" autocomplete="new-password"></div>
       <div class="err" id="r-err3"></div>
       <button class="p" id="r-go">비밀번호 바꾸고 로그인</button>
     </div>
@@ -203,6 +203,7 @@ button.ghost{background:none;border:none;color:var(--acc2);font-size:13px;paddin
    문서 판(동의 기록용): privacy·terms 시행일 — /privacy/ /terms/ 머리의 「개정판 시행일」과 같게 둔다. */
 (() => {
 const A = window.DSAuth, API = A.api, Q = new URLSearchParams(location.search);
+const weakPin = p => /^(\d)\1+$/.test(p) || "0123456789012345".includes(p) || "9876543210987654".includes(p);
 const DOC_VER = { privacy: "2026-10-20", terms: "2026-10-20" };
 /* 카카오 간편 로그인(앱 ID 1601933 · REST API 키 = OAuth client_id · 공개값 · 도메인·리다이렉트 URI 로 잠김). 열쇠는 휴대폰 계정 — 카카오는 입구. */
 const KAKAO_CLIENT_ID = "0f1a0a20f693cd43efaea989b8c01156", KAKAO_REDIRECT = location.origin + "/auth/";
@@ -217,7 +218,7 @@ const MSG = {
   too_many: "요청이 많아요. 잠시 뒤 다시 시도해 주세요.", sms_failed: "문자를 보내지 못했어요. 잠시 뒤 다시 시도해 주세요.", sms_misconfig: "문자 발송이 아직 준비되지 않았어요.",
   wrong_code: "인증번호가 맞지 않아요.", expired: "인증번호가 만료됐어요. 다시 받아 주세요.", not_found: "인증번호를 먼저 받아 주세요.",
   invalid: "휴대폰 번호 또는 비밀번호가 맞지 않아요.", locked: "시도가 많아 잠시 잠겼어요. 15분 뒤 다시 시도해 주세요.",
-  weak_pin: "너무 쉬운 비밀번호예요(같은 숫자·연속 숫자 금지).", bad_pw_format: "비밀번호는 숫자 4자리예요.", consent_required: "필수 동의가 필요해요.",
+  weak_pin: "너무 쉬운 비밀번호예요(같은 숫자·연속 숫자 금지).", bad_pw_format: "비밀번호는 숫자 6자리예요.", consent_required: "필수 동의가 필요해요.",
   verify_required: "휴대폰 인증이 필요해요. 처음부터 다시 진행해 주세요.", bad_verify: "인증이 만료됐어요. 인증번호를 다시 받아 주세요.",
   unauthorized: "로그인이 풀렸어요. 다시 로그인해 주세요.", kakao_failed: "카카오 확인에 실패했어요. 다시 시도해 주세요.", naver_failed: "네이버 확인에 실패했어요. 다시 시도해 주세요.", bad_link: "카카오 인증이 만료됐어요. 카카오 단추부터 다시 눌러 주세요.", bad_redirect: "카카오 설정이 맞지 않아요(리다이렉트 주소).", server: "서버 오류예요. 잠시 뒤 다시 시도해 주세요.", "Failed to fetch": "인터넷 연결을 확인해 주세요."
 };
@@ -282,7 +283,7 @@ $("l-go").onclick = async () => {
   if (phone.length < 10) return err.textContent = MSG.bad_phone;
   if (!/^\d{4,6}$/.test(pin)) return err.textContent = MSG.bad_pw_format;
   busy($("l-go"), true, "로그인 중…");
-  try { const j = await api("/login", { phone, pin, device: navigator.platform || "" }); A.set(j.token, phone); await syncProfile(phone); location.replace(next); }
+  try { const j = await api("/login", { phone, pin, device: navigator.platform || "" }); A.set(j.token, phone); try { if (pin.length < 6) localStorage.setItem("ds_pin_short", "1"); else localStorage.removeItem("ds_pin_short"); } catch (_) {} await syncProfile(phone); location.replace(next); }
   catch (e) { err.textContent = msg(e); busy($("l-go"), false); }
 };
 $("l-pin").addEventListener("keydown", e => { if (e.key === "Enter") $("l-go").click(); });
@@ -303,7 +304,8 @@ $("s-go").onclick = async () => {
   const name = $("s-name").value.trim(), academy = $("s-academy").value.trim() || "비재원생", pin = $("s-pin").value, pin2 = $("s-pin2").value;
   if (!name) return err.textContent = "이름을 입력하세요.";
   if (!S.grade || !S.subject) return err.textContent = "구분과 선택과목을 골라 주세요.";
-  if (!/^\d{4}$/.test(pin)) return err.textContent = MSG.bad_pw_format;
+  if (!/^\d{6}$/.test(pin)) return err.textContent = MSG.bad_pw_format;
+  if (weakPin(pin)) return err.textContent = MSG.weak_pin;
   if (pin !== pin2) return err.textContent = "비밀번호가 일치하지 않아요.";
   if (!$("c-privacy").checked || !$("c-terms").checked) return err.textContent = MSG.consent_required;
   busy($("s-go"), true, "가입 중…");
@@ -325,10 +327,11 @@ $("r-send").onclick = async () => {
 $("r-check").onclick = () => ro.check($("r-check"), $("r-err2"));
 $("r-go").onclick = async () => {
   const err = $("r-err3"), pin = $("r-pin").value; err.textContent = "";
-  if (!/^\d{4}$/.test(pin)) return err.textContent = MSG.bad_pw_format;
+  if (!/^\d{6}$/.test(pin)) return err.textContent = MSG.bad_pw_format;
+  if (weakPin(pin)) return err.textContent = MSG.weak_pin;
   if (pin !== $("r-pin2").value) return err.textContent = "비밀번호가 일치하지 않아요.";
   busy($("r-go"), true, "바꾸는 중…");
-  try { const j = await api("/pin-reset", { phone: ro.T.phone, pin, verify_token: ro.T.proof, privacy_version: DOC_VER.privacy, device: navigator.platform || "" }); A.set(j.token, ro.T.phone); await syncProfile(ro.T.phone); done("비밀번호를 바꿨어요", "이 기기는 로그인됐고, 다른 기기에서는 모두 로그아웃됐어요."); }
+  try { const j = await api("/pin-reset", { phone: ro.T.phone, pin, verify_token: ro.T.proof, privacy_version: DOC_VER.privacy, device: navigator.platform || "" }); A.set(j.token, ro.T.phone); try { localStorage.removeItem("ds_pin_short"); } catch (_) {} await syncProfile(ro.T.phone); done("비밀번호를 바꿨어요", "이 기기는 로그인됐고, 다른 기기에서는 모두 로그아웃됐어요."); }
   catch (e) { err.textContent = msg(e); busy($("r-go"), false); }
 };
 

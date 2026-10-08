@@ -192,6 +192,7 @@ function boot(){
   const has=!!TK.get(), wantSignup=location.search.indexOf("signup")>=0;
   if(!has){ goAuth(wantSignup?"signup":""); return; }
   document.getElementById("app").hidden=false;
+  try{ if(localStorage.getItem("ds_pin_short")){ const n=document.createElement("div"); n.className="dir"; n.innerHTML="비밀번호가 4자리예요. 보안을 위해 <b>6자리</b>로 바꿔 주세요. <a href=\"/auth/?mode=reset\">비밀번호 바꾸기 →</a>"; document.getElementById("hello").after(n);} }catch(_){}
   /* 이미 로그인돼 있어도 로컬 프로필을 한 번 맞춰 둔다 — 예전 로그인은 이걸 저장하지 않았다 */
   load(); syncProfile();
 }
