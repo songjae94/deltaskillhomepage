@@ -120,7 +120,7 @@ function skillCell(exam,area,no){const s=skillsOf(exam,area,no);if(!s)return "<s
  return p.join("<br>");}
 
 /* 시험명 · 교육과정(상류→하류) 순서 · 오답원인별 처방 — 리포트/이력 공용 */
-const EXAM_NAMES={HP26_03:"3월 학평",HP26_05:"5월 학평",HP26_07:"7월 학평",MP27_06:"6월 모평",MP27_09:"9월 모평",EX2028_V1:"델타스킬 모의 1회",SN26:"2026 수능"};
+const EXAM_NAMES={HP26_03:"3월 학평",HP26_05:"5월 학평",HP26_07:"7월 학평",MP27_06:"6월 모평",MP27_09:"9월 모평",EX2028_V1:"델타스킬 모의 1회",SN26:"2026 수능","PRV27-C10":"10월 사설 C","PRV27-D10":"10월 사설 D","PRV27-B10":"10월 사설 B"};
 /* 목록에 없는 코드는 글자 그대로 보이지 않게 — 옛 코드는 지원하지 않음(1007) */
 function examName(c){if(EXAM_NAMES[c])return EXAM_NAMES[c];if(typeof c==="string"&&c.indexOf("자유:")===0)return c.slice(3)||"-";return c?"옛 회차(지원하지 않음)":"-";}
 const ORDER=["지수함수와 로그함수","삼각함수","함수의 극한과 연속","다항함수의 미분법","다항함수의 적분법","수열","미분법","적분법","수열의 극한","경우의 수","확률","통계"];
