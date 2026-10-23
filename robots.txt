@@ -1,14 +1,18 @@
 User-agent: *
 Allow: /
+Disallow: /flow/
 
 # 검색엔진 크롤러 개별 허용
 User-agent: Yeti
 Allow: /
+Disallow: /flow/
 
 User-agent: Googlebot
 Allow: /
+Disallow: /flow/
 
 User-agent: Daumoa
 Allow: /
+Disallow: /flow/
 
 Sitemap: https://www.deltaskill.co.kr/sitemap.xml

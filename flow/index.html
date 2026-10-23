@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#05060f">
+<title>델타스킬 · 학습 흐름 시험</title>
+<!-- 학생 흐름 시험(초대 학생 전용 · 1023) — 질문·문항·설명은 서버(Edge Function flow)가 회원에게만 내려준다. 이 파일엔 문항 글이 없다. -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<style>
+:root{--acc:#5aa2ff;--acc2:#a8cbff;--mut:#9fb2cc;--line:rgba(186,215,247,.14);--line2:rgba(186,215,247,.24);--bg:#05060f;--card:#0c1222;--ok:#5fd39a;--coral:#ff8a8a}
+*{box-sizing:border-box}
+body{font-family:Pretendard,'Malgun Gothic',-apple-system,sans-serif;margin:0;color:#e8eef7;line-height:1.6;background:var(--bg)}
+a{color:var(--acc2)}
+.wrap{max-width:560px;margin:0 auto;padding:16px 16px 80px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px}
+.brand{font-weight:800;font-size:16px;text-decoration:none;color:#fff}
+.step{color:var(--mut);font-size:12px}
+h1{font-size:18px;border-bottom:2px solid var(--acc);padding-bottom:8px;margin:10px 0 12px;color:#fff}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:10px 0;overflow-x:auto}
+.k{color:var(--mut);font-size:12px}
+button{font:inherit;padding:10px 14px;border:1px solid var(--line2);border-radius:9px;background:rgba(186,214,247,.09);color:#e8eef7;cursor:pointer;text-align:left}
+button:disabled{opacity:.5;cursor:default}
+button.p{background:var(--acc);border-color:transparent;color:#04101f;width:100%;font-weight:700;text-align:center}
+.opts{display:grid;gap:8px;margin:10px 0}
+.opts button{width:100%}
+.opts button.on{border-color:var(--acc);background:rgba(90,162,255,.18)}
+.seg{display:flex;gap:6px;margin:8px 0}.seg button{flex:1;text-align:center;font-size:14px}.seg button.on{background:var(--acc);color:#04101f;border-color:var(--acc)}
+.nums{display:grid;grid-template-columns:repeat(5,1fr) 1.6fr;gap:6px;margin:10px 0}.nums button{text-align:center}
+.nums button.on{background:var(--acc);color:#04101f;border-color:var(--acc)}
+.ok{color:var(--ok);font-weight:700}.bad{color:var(--coral);font-weight:700}
+.help{border-left:3px solid var(--acc);padding:6px 10px;margin:8px 0;background:rgba(90,162,255,.06)}
+.err{color:var(--coral);font-size:13px;min-height:18px;margin:6px 0}
+.lnk{color:var(--acc2);font-size:13px;background:none;border:none;padding:6px 0;cursor:pointer;text-decoration:underline}
+ul{padding-left:20px;margin:6px 0}
+.stem img{max-width:100%}
+.choices{display:grid;gap:4px;margin:10px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="brand" href="/">델타스킬</a><span class="step" id="step"></span></div>
+  <h1>학습 흐름 시험</h1>
+  <div id="app"><div class="card k">불러오는 중…</div></div>
+  <div class="err" id="err"></div>
+  <button class="lnk" id="ask" hidden>선생님께 물어보기</button>
+</div>
+<script src="/auth.js"></script>
+<script>
+(function () {
+  "use strict";
+  var FLOW = "https://cvlrphtupjmaefahodgz.supabase.co/functions/v1/flow";
+  try { if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname) && localStorage.getItem("ds_flow_dev")) FLOW = localStorage.getItem("ds_flow_dev"); } catch (e) {}
+  var V = (new URLSearchParams(location.search).get("v") || "INT-v30-T1").replace(/[^A-Za-z0-9_-]/g, "").slice(0, 40);
+  var $app = document.getElementById("app"), $err = document.getElementById("err"), $step = document.getElementById("step"), $ask = document.getElementById("ask");
+  var VERDICT = { ok_unaided: ["확인됨", "ok"], ok_with_help: ["도움 받아 해냄", ""], gap_confirmed: ["다시 볼 곳", "bad"], gap_suspected: ["다시 볼 곳(더 확인 필요)", "bad"], unclear: ["아직 판단 못 함", ""], not_observed: ["보지 못함", ""] };
+  if (!window.DSAuth || !DSAuth.requireLogin(location.pathname + location.search)) return;
+
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  function math(node) { try { if (window.renderMathInElement) renderMathInElement(node, { delimiters: [{ left: "$", right: "$", display: false }], throwOnError: false }); } catch (e) {} }
+  function idem() { return (Date.now().toString(36) + Math.random().toString(36).slice(2, 12)).slice(0, 40); }
+  function err(m) { $err.textContent = m || ""; }
+  function api(method, path, body) {
+    var h = { "Authorization": "Bearer " + DSAuth.get() };
+    if (body) h["Content-Type"] = "application/json";
+    var url = FLOW + "/" + path + (method === "GET" ? "?v=" + encodeURIComponent(V) : "");
+    return fetch(url, { method: method, headers: h, body: body ? JSON.stringify(Object.assign({ v: V, client_version: V }, body)) : undefined })
+      .then(function (r) { return r.json().catch(function () { return { ok: false, error: "network" }; }).then(function (j) { j._status = r.status; return j; }); })
+      .catch(function () { return { ok: false, error: "network" }; });
+  }
+  var MSG = { no_token: "로그인이 끝났어요. 다시 로그인해 주세요.", not_member: "이 시험에 초대된 학생만 볼 수 있어요.", not_open: "시험이 아직 열리지 않았어요.",
+              version_mismatch: "시험 판이 바뀌었어요. 새로고침해 주세요.", not_current: "화면이 바뀌었어요. 다시 불러올게요.", help_refused: "지금은 그 도움을 열 수 없어요.",
+              network: "연결이 끊겼어요. 잠시 뒤 다시 눌러 주세요.", server: "서버에서 문제가 생겼어요. 선생님께 알려 주세요." };
+  function fail(j) {
+    err(MSG[j.error] || "문제가 생겼어요(" + (j.error || "unknown") + ")");
+    if (j.error === "no_token") { DSAuth.clear(); setTimeout(function () { DSAuth.requireLogin(location.pathname + location.search); }, 800); }
+    if (j.error === "not_current") setTimeout(load, 600);
+  }
+  /* 같은 동작을 다시 보내도 한 번만 들어가게 — 실패하면 같은 열쇠로 다시 보낸다 */
+  function sendOnce(path, body, btns, done) {
+    var key = idem();
+    btns.forEach(function (b) { b.disabled = true; });
+    (function go(tries) {
+      api("POST", path, Object.assign({ idem_key: key }, body)).then(function (j) {
+        if (j.ok) { err(""); return done(j); }
+        if (j.error === "network" && tries < 2) return setTimeout(function () { go(tries + 1); }, 900);
+        btns.forEach(function (b) { b.disabled = false; }); fail(j);
+      });
+    })(0);
+  }
+
+  function screenQuestion(c) {
+    $app.innerHTML = "";
+    var card = el("div", "card"); var p = el("div", "", c.prompt); card.appendChild(p);
+    var box = el("div", "opts"), chosen = null, conf = null;
+    c.options.forEach(function (o) {
+      var b = el("button", "", o.text);
+      b.onclick = function () { chosen = o.id; [].forEach.call(box.children, function (x) { x.classList.remove("on"); }); b.classList.add("on"); go.disabled = !conf; };
+      box.appendChild(b);
+    });
+    card.appendChild(box);
+    card.appendChild(el("div", "k", "얼마나 확실해요?"));
+    var seg = el("div", "seg");
+    [["sure", "확실"], ["unsure", "헷갈림"], ["guess", "찍음"]].forEach(function (x) {
+      var b = el("button", "", x[1]); b.onclick = function () { conf = x[0]; [].forEach.call(seg.children, function (y) { y.classList.remove("on"); }); b.classList.add("on"); go.disabled = !chosen; }; seg.appendChild(b);
+    });
+    card.appendChild(seg);
+    var go = el("button", "p", "답하기"); go.disabled = true;
+    go.onclick = function () { sendOnce("answer", { question_id: c.question_id, choice_id: chosen, confidence: conf }, [go], load); };
+    card.appendChild(go); $app.appendChild(card); math(card);
+  }
+  function gateList(gates) {
+    var ul = el("ul");
+    gates.forEach(function (g) { var li = el("li"); var v = VERDICT[g.verdict] || [g.verdict, ""]; li.appendChild(el("span", "", g.name + " — ")); li.appendChild(el("span", v[1], v[0])); ul.appendChild(li); });
+    return ul;
+  }
+  function screenResult(c, end) {
+    $app.innerHTML = ""; var card = el("div", "card");
+    card.appendChild(el("div", "k", end ? "오늘 흐름을 모두 마쳤어요. 확인한 것과 아직 모르는 것:" : "지금까지 확인한 것과 아직 모르는 것:"));
+    card.appendChild(gateList(c.gates)); math(card);
+    card.appendChild(el("div", "k", "한 번 틀린 것만으로 「모른다」고 정하지 않아요. 도움을 받고 맞힌 것은 따로 셉니다."));
+    if (!end) { var b = el("button", "p", "다음"); b.onclick = function () { sendOnce("answer", { ack: "result" }, [b], load); }; card.appendChild(b); }
+    $app.appendChild(card);
+  }
+  function gateCard(c, into) {
+    into.appendChild(el("b", "", c.name));
+    if (c.form) { into.appendChild(el("div", "k", "이렇게 바꿔 읽어요")); into.appendChild(el("div", "", c.form)); }
+    if (c.holds && c.holds.length) { into.appendChild(el("div", "k", "이럴 때 쓸 수 있어요")); var ul = el("ul"); c.holds.forEach(function (h) { ul.appendChild(el("li", "", h)); }); into.appendChild(ul); }
+    if (c.basis) into.appendChild(el("div", "k", "근거: " + (c.basis.map || "") + (c.basis.sha ? " · " + String(c.basis.sha).slice(0, 8) : "")));
+  }
+  function screenExplain(c) {
+    $app.innerHTML = ""; var card = el("div", "card"); gateCard(c, card); math(card);
+    var b = el("button", "p", "읽었어요"); b.onclick = function () { sendOnce("answer", { ack: "explain" }, [b], load); };
+    card.appendChild(b); $app.appendChild(card);
+  }
+  function screenItem(sc, c, recheck) {
+    $app.innerHTML = ""; var card = el("div", "card");
+    card.appendChild(el("div", "k", recheck ? "다시 확인 — 처음 보는 문항이에요. 도움 없이 풀어 주세요." : "연습 " + sc.n + " / " + sc.of + " (" + c.points + "점)"));
+    var stem = el("div", "stem"); stem.innerHTML = c.stem_html; card.appendChild(stem);
+    var ch = el("div", "choices"); (c.choices_html || []).forEach(function (h) { var d = el("div"); d.innerHTML = h; ch.appendChild(d); }); card.appendChild(ch);   /* 렌더 선지에 ①~⑤ 가 이미 있다 — 목록 번호를 겹치지 않는다 */
+    var nums = el("div", "nums"), pick = null, btns = [];
+    ["1", "2", "3", "4", "5", "unknown"].forEach(function (n) {
+      var b = el("button", "", n === "unknown" ? "모르겠어" : n); btns.push(b);
+      b.onclick = function () { pick = n; btns.forEach(function (x) { x.classList.remove("on"); }); b.classList.add("on"); go.disabled = false; };
+      nums.appendChild(b);
+    });
+    card.appendChild(nums);
+    var helpBox = el("div"); card.appendChild(helpBox);
+    var go = el("button", "p", "답하기"); go.disabled = true;
+    go.onclick = function () {
+      sendOnce("answer", { item_key: c.item_key, choice: pick === "unknown" ? "unknown" : Number(pick) }, btns.concat([go, hb]), function (j) {
+        if (recheck) return load();
+        var r = el("div", j.result === "right" ? "ok" : j.result === "wrong" ? "bad" : "k", j.result === "right" ? "맞았어요" : j.result === "wrong" ? "아쉬워요 — 다음 문항으로 가요" : "모르겠어로 남겼어요");
+        card.appendChild(r); var nx = el("button", "p", "다음"); nx.onclick = load; card.appendChild(nx);
+      });
+    };
+    var level = c.help_level || 0;
+    var hb = el("button", "", "도움 받기");
+    function label() { hb.textContent = level >= 4 ? "도움을 다 봤어요" : "도움 받기 (" + (level + 1) + "/4)"; hb.disabled = level >= 4; }
+    hb.onclick = function () {
+      sendOnce("help", { level: level + 1 }, [hb], function (j) {
+        level = j.level; label(); hb.disabled = level >= 4;
+        var box = el("div", "help"); var t = j.content;
+        if (j.level <= 2) t.forEach(function (g) { gateCard(g, box); });
+        else if (j.level === 3) { box.appendChild(el("div", "k", "이 문항에서 할 판단")); box.appendChild(el("div", "", t.judgment_line)); box.appendChild(el("div", "k", "근거: " + t.basis.map)); }
+        else { box.appendChild(el("div", "", "정답 " + t.answer)); var s = el("div"); s.innerHTML = t.solution_html; box.appendChild(s); }
+        helpBox.appendChild(box); math(box);
+      });
+    };
+    if (!recheck && c.help_open) { label(); card.appendChild(hb); card.appendChild(el("div", "k", "도움을 열고 맞힌 것은 「도움 받아 해냄」으로 따로 셉니다.")); }
+    card.appendChild(go); $app.appendChild(card); math(card);
+  }
+  function render(j) {
+    var sc = j.screen, c = j.content || {};
+    $ask.hidden = false;
+    $step.textContent = { question: "확인 질문", result: "결과", explain: "설명", practice: "연습", recheck: "다시 확인", wait: "내일 다시", end: "끝", dead_end: "선생님께" }[sc.kind] || "";
+    if (sc.kind === "question") return screenQuestion(c);
+    if (sc.kind === "result") return screenResult(c, false);
+    if (sc.kind === "end") return screenResult(c, true);
+    if (sc.kind === "explain") return screenExplain(c);
+    if (sc.kind === "practice") return screenItem(sc, c, false);
+    if (sc.kind === "recheck") return screenItem(sc, c, true);
+    $app.innerHTML = ""; var card = el("div", "card");
+    if (sc.kind === "wait") card.appendChild(el("div", "", "오늘 연습은 끝났어요. 내일(한국 시간) 이후 다시 오면, 처음 보는 문항 하나로 도움 없이 다시 확인해요."));
+    else if (sc.kind === "dead_end") card.appendChild(el("div", "", "준비된 문항을 다 썼어요. 선생님께 이어서 볼 수 있게 알렸어요(동의한 경우)."));
+    else card.appendChild(el("div", "", "알 수 없는 화면이에요. 새로고침해 주세요."));
+    $app.appendChild(card);
+  }
+  function load() {
+    err(""); api("GET", "next").then(function (j) {
+      if (!j.ok) { $app.innerHTML = ""; $app.appendChild(el("div", "card k", MSG[j.error] || "불러오지 못했어요.")); return fail(j); }
+      render(j);
+    });
+  }
+  $ask.onclick = function () { sendOnce("handoff", {}, [$ask], function (j) { err(""); $ask.textContent = j.created ? "선생님께 알렸어요" : "선생님 연결 동의가 없어 알리지 못했어요"; }); };
+  api("GET", "status").then(function (j) {
+    if (!j.ok) { $app.innerHTML = ""; return fail(j); }
+    if (!j.member) { $app.innerHTML = ""; $app.appendChild(el("div", "card", MSG.not_member)); return; }
+    if (j.version_status !== "open") { $app.innerHTML = ""; $app.appendChild(el("div", "card", MSG.not_open)); return; }
+    load();
+  });
+})();
+</script>
+</body>
+</html>
