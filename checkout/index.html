@@ -247,11 +247,11 @@ var P=Object.prototype.hasOwnProperty.call(CAT,sku)?CAT[sku]:null;
 var NS=sku.indexOf("NS-")===0;
 /* 내신 상품은 /naesin/catalog.json 한 값에서 읽는다(서버 표와 같은 정본 · 게이트 scripts/홈페이지/내신상품표.py). 가격·판매일·맛보기·PDF·한글 파일 중 하나라도 비면 주문서를 열지 않는다. */
 function naesinP(c){
-  var u=null;((c&&c.subjects)||[]).forEach(function(s){(s.units||[]).forEach(function(x){if(x.sku===sku)u=x;});});
+  var u=null;((c&&c.subjects)||[]).forEach(function(s){(s.units||[]).forEach(function(x){if(x.sku===sku)u=x;(x.items||[]).forEach(function(i){if(i.sku===sku)u=i;});});});
   if(!u)return null;
   var fm=(u.files||[]).map(function(f){return f.fmt;});
   if(!u.price||u.taxFreeAmount==null||!u.saleFrom||!u.sample||fm.indexOf("pdf")<0||fm.indexOf("hwpx")<0)return null;
-  return {name:u.name,price:u.price,priceNote:"VAT 포함",comp:"PDF · 한글(HWPX) 파일 "+u.files.length+"개 · 단원 변형 문항",give:"결제 뒤 바로 내려받기",saleFrom:u.saleFrom,saleTo:u.saleTo||undefined,cards:(c.cards||[])};
+  return {name:u.name,price:u.price,priceNote:"VAT 포함",comp:"PDF · 한글(HWPX) 파일 "+u.files.length+"개 · "+(u.kind?"":"단원 ")+"변형 문항",give:"결제 뒤 바로 내려받기",saleFrom:u.saleFrom,saleTo:u.saleTo||undefined,cards:(c.cards||[])};
 }
 var cfg={},widgets=null,ready=false,busy=false,amount=0;
 function priceNow(p){return (p.price2&&p.price2From&&Date.now()>=Date.parse(p.price2From))?p.price2:p.price;}
