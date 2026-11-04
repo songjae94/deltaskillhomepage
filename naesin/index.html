@@ -269,7 +269,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     });
     return o;
   }
-  function twoPrices(u){var a=[];FMTS.forEach(function(x){if(priceAt(u,x[0]))a.push(x[2]+" "+won(priceAt(u,x[0])));});return a.join(" · ");}
+  function twoPrices(u){var a=[];FMTS.forEach(function(x){if(priceAt(u,x[0]))a.push(x[2]+" "+won(priceAt(u,x[0])));});return a.join(" 또는 ");}
   /* 구성 카드의 값 줄 — 값이 있는 상품만 말한다. 값이 하나뿐이면 어느 단원 값인지 함께 적는다 */
   function priceLine(c,s){
     var has=linesOf(c,s).filter(function(x){return anyPrice(x.u);});
@@ -278,8 +278,10 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     return c.sku==="item"?"유형마다 값이 다릅니다":"단원마다 값이 다릅니다";
   }
   function pathPriced(p,s){return comps(function(x){return x.path===p&&linesOf(x,s).some(function(l){return anyPrice(l.u);});}).length>0;}
-  /* 구성 단위 = 따로 내려받을 수 있는 파일 · 같은 내용의 PDF 와 한글은 합쳐 하나(약관 제11조 제8항 1호). f 를 주면 그 형식 파일만 센다 */
-  function fileUnits(u,f){var l=f?filesAt(u,f):((u&&u.files)||[]);if(!l.length)return 0;var o={};l.forEach(function(x){o[String(x.id).replace(/\.[a-z]+$/,"")]=1;});return Object.keys(o).length;}
+  /* 고른 형식의 파일 수(형 11-04: 한 주문은 한 형식 · 한글 값에 PDF 는 따라오지 않는다) */
+  function fileUnits(u,f){return filesAt(u,f).length;}
+  /* 그 형식 주문에 들어 있지 않은 것 — 고르기 · 확인 · 주문서 · 주문 조회가 같은 말을 쓴다 */
+  function notIn(f){return f==="hwpx"?"PDF는 들어 있지 않습니다":"한글 파일은 들어 있지 않습니다";}
   /* ── 화면 공통 ── */
   function kick(n,q,s,b){
     var k=el("p","kick");add(k,el("span","n",String(n)));
@@ -360,7 +362,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   /* ④ 기본형 — 정본 구성표 path=basic 인 구성. 단원은 다음 화면(상세선택)에서 고른다 */
   function vBasic(q,s,b){
     var f=document.createDocumentFragment(),base={who:q.who,s:q.s,b:q.b};
-    add(f,backLink(base),kick(4,q,s,b),h1("기본형","미리 만든 구성입니다. 구성을 고른 뒤 단원을 고릅니다."));
+    add(f,backLink(base),kick(4,q,s,b),h1("기본형","미리 만든 구성입니다. 구성을 고른 뒤 단원을 고릅니다. 파일은 PDF와 한글(HWPX) 가운데 한 형식을 고르며, 고른 형식의 파일만 받습니다."));
     var ul=el("ul","opts");
     comps(function(c){return c.path==="basic";}).forEach(function(c){
       var li=el("li"),a=link("opt",Object.assign({p:"detail",c:c.id},base));
@@ -381,7 +383,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     var f=document.createDocumentFragment(),base={who:q.who,s:q.s,b:q.b};
     var c=comp(q.c);if(c&&c.path==="free")c=null;
     var came=history.state&&history.state.prev,up=came&&/[?&]p=basic(&|$)/.test(came)?Object.assign({p:"basic"},base):base;
-    add(f,backLink(up),kick(4,q,s,b),h1("상세선택","구성을 고르고 단원을 고릅니다. 값 · 문항 수 · 쪽 수는 다음 화면에 함께 보입니다."));
+    add(f,backLink(up),kick(4,q,s,b),h1("상세선택","구성을 고르고 단원을 고릅니다. 값 · 문항 수 · 쪽 수는 다음 화면에 함께 보입니다. 미리 만든 구성은 다음 화면에서 한 형식을 고르고, 고른 형식의 파일만 받습니다."));
     var st={};Object.keys(q).forEach(function(k){st[k]=q[k];});st.p="detail";delete st.v;
     function upd(ch,redraw){
       Object.keys(ch).forEach(function(k){if(ch[k]==null)delete st[k];else st[k]=ch[k];});
@@ -504,6 +506,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   function row(dl,k,v,small,cls){
     var d=el("div");add(d,el("dt",null,k));var x=el("dd",cls||null);x.appendChild(document.createTextNode(v));if(small)add(x,el("small",null,small));add(d,x);dl.appendChild(d);
   }
+  function pickFmt0(c,u){return c.path!=="free"&&c.make==="ready"&&!!u;}
   function vConfirm(q,s,b,c){
     var f=document.createDocumentFragment(),base={who:q.who,s:q.s,b:q.b};
     var free=c.path==="free",u=product(c,q,s),back=Object.assign({},q);delete back.v;
@@ -522,14 +525,14 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     if(!nq&&c.pick==="unitsCount"){var m=counts(q);unitsOf(q,s).forEach(function(x){nq+=m[x.no]||0;});nnote="단원마다 적은 수의 합";}
     if(!nq&&c.pick==="unitsTotal"){nq=total(q);nnote="적은 수";}
     if(nq)row(dl,"문항 수",nq+"문항",nnote);else row(dl,"문항 수","문항 수 추후 공지",null,"blank");
-    if(u&&u.pages)row(dl,"쪽 수",u.pages+"쪽");else row(dl,"쪽 수","쪽 수 추후 공지",null,"blank");
+    if(u&&u.pages)row(dl,"쪽 수",u.pages+"쪽",pickFmt0(c,u)?"PDF 기준":null);else row(dl,"쪽 수","쪽 수 추후 공지",null,"blank");
     /* 미리 만든 유료 구성은 손님이 형식을 고른다 — 고른 형식의 값을 치르고 그 형식 파일을 받는다 */
-    var pickFmt=!free&&c.make==="ready"&&!!u,fm=fmtOf(q);
-    var fu=pickFmt?fileUnits(u,fm):fileUnits(u),fnote=pickFmt?fmtName(fm)+" 기준":"PDF와 한글(HWPX)은 합쳐 하나로 셉니다";
+    var pickFmt=pickFmt0(c,u),fm=fmtOf(q);
+    var fu=pickFmt?fileUnits(u,fm):0,fnote=pickFmt?fmtName(fm)+" 기준":null;
     if(fu)row(dl,"파일 수",fu+"개",fnote);else row(dl,"파일 수","파일 수 추후 공지",fnote,"blank");
-    if(pickFmt)row(dl,"파일 형식",fmtName(fm),"아래에서 고릅니다");
-    else if(free)row(dl,"파일 형식","PDF + 한글(HWPX)");
-    else if(c.make==="ready")row(dl,"파일 형식","PDF 또는 한글(HWPX)");
+    if(pickFmt)row(dl,"파일 형식",fmtName(fm)+" 파일만",notIn(fm)+" · 아래에서 바꿉니다");
+    else if(free)row(dl,"파일 형식","PDF · 한글(HWPX) 모두 0원");
+    else if(c.make==="ready")row(dl,"파일 형식","PDF 또는 한글(HWPX) 가운데 한 형식");
     else row(dl,"파일 형식","파일 형식 추후 공지",null,"blank");
     if(c.make==="ready")row(dl,"제공",u&&u.saleFrom?"결제 뒤 바로 내려받기":"제공일 추후 공지",null,u&&u.saleFrom?null:"blank");
     else row(dl,"제공","주문 뒤 만들어 제공 · 제공일 추후 공지",null,"blank");
@@ -545,14 +548,14 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
       var fl=el("ul","picks");
       FMTS.forEach(function(x){
         var li=el("li"),p=priceAt(u,x[0]);
-        var r=radioRow("fmt",x[0],fm===x[0],x[1],p?won(p)+" · 부가세 포함":"가격 추후 공지",null,function(){
+        var r=radioRow("fmt",x[0],fm===x[0],x[1]+" 파일만",(p?won(p)+" · 부가세 포함":"가격 추후 공지")+" · "+notIn(x[0]),null,function(){
           var n={},y=window.scrollY;Object.keys(q).forEach(function(k){n[k]=q[k];});n.f=x[0];
           history.replaceState(history.state,"",url(n));draw(false);window.scrollTo(0,y);
           var e=document.querySelector('[data-fk="f-'+x[0]+'"]');if(e)e.focus();
         });
         r.querySelector("input").dataset.fk="f-"+x[0];add(li,r);add(fl,li);
       });
-      add(fs,fl);add(f,fs);
+      add(fs,fl);add(fs,el("p","fine","한 주문에는 고른 형식의 파일만 들어 있습니다. 두 형식이 다 필요하면 형식마다 따로 주문하고, 값도 따로 치릅니다."));add(f,fs);
     }
     var act=el("div","act"),ok=pickFmt&&canBuy(u,fm);
     if(free&&b.freeSet){var fa=el("a","btn buy","무료로 받기");fa.href=b.freeSet;add(act,fa);}
@@ -561,7 +564,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     var al=el("a","btn ghost","알림 받기");al.href="mailto:admin@deltaskill.co.kr?subject="+encodeURIComponent("내신 파일 알림 "+s.code+" "+c.id+(u?" "+u.sku:""));add(act,al);
     add(f,act);
     var fine=el("p","fine");
-    fine.appendChild(document.createTextNode("따로 내려받는 파일 하나가 구성 단위입니다. 어느 한 형식이라도 내려받으면 그 파일은 제공이 시작된 것으로 봅니다. 파일이 하나인 구성은 내려받는 순간 부분 환불이 없습니다. "));
+    fine.appendChild(document.createTextNode("따로 내려받는 파일 하나가 구성 단위입니다. 파일을 내려받으면 그 파일은 제공이 시작된 것으로 봅니다. 파일이 하나인 구성은 내려받는 순간 부분 환불이 없습니다. "));
     var r1=el("a",null,"환불·청약철회 안내");r1.href="/refund/";add(fine,r1);fine.appendChild(document.createTextNode(" · "));
     var r2=el("a",null,"이용약관 개정 안내");r2.href="/notice/";add(fine,r2);
     add(f,fine,proNote(q));

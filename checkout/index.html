@@ -254,7 +254,7 @@ function naesinP(c){
   var f=m[2],n=(u.files||[]).filter(function(x){return x.fmt===f;}).length,pr=u.price&&u.price[f];
   if(!pr||!u.taxFreeAmount||u.taxFreeAmount[f]==null||!u.saleFrom||!u.sample||!n)return null;
   var fn=f==="hwpx"?"한글(HWPX)":"PDF";
-  return {name:u.name+(f==="hwpx"?" (한글)":" (PDF)"),price:pr,priceNote:"부가세 포함",comp:fn+" 파일 "+n+"개 · "+(u.kind?"":"단원 ")+"변형 문항",give:"결제 뒤 바로 내려받기",saleFrom:u.saleFrom,saleTo:u.saleTo||undefined,cards:(c.cards||[])};
+  return {name:u.name+(f==="hwpx"?" (한글)":" (PDF)"),price:pr,priceNote:"부가세 포함",comp:fn+" 파일 "+n+"개 · "+(u.kind?"":"단원 ")+"변형 문항",only:fn+" 파일만 받습니다. "+(f==="hwpx"?"PDF는":"한글 파일은")+" 들어 있지 않습니다.",give:"결제 뒤 바로 내려받기",saleFrom:u.saleFrom,saleTo:u.saleTo||undefined,cards:(c.cards||[])};
 }
 var TRANSFER_MIN=1000; /* 계좌이체 하한(내신상품구조 §8 · 공개 수수료 기준) — 서버 create-order 와 같은 값. 토스 결제창에는 금액별 수단 제한이 없어 이 화면의 수단 칸에서 뺀다 */
 var cfg={},widgets=null,ready=false,busy=false,amount=0;
@@ -267,10 +267,10 @@ function showProduct(){
   if(!P){box.appendChild(el("p","msg err",NS?"이 상품은 아직 판매 준비 중입니다.":"상품을 찾을 수 없습니다."));var a=el("a","btn ghost",NS?"내신 파일로 돌아가기":"유형서 구매로 돌아가기");a.href=NS?"/naesin/":"/store/";var d=el("div","acts");d.appendChild(a);box.appendChild(d);return false;}
   box.appendChild(el("p","pname",P.name));
   var pr=el("p","price");pr.appendChild(el("b",null,won(amount)));pr.appendChild(el("small",null,P.priceNote));box.appendChild(pr);
-  var dl=el("dl");[["SKU",sku],["구성",P.comp],["제공",P.give]].forEach(function(r){var d=el("div");d.appendChild(el("dt",null,r[0]));d.appendChild(el("dd",null,r[1]));dl.appendChild(d);});box.appendChild(dl);
+  var dl=el("dl");[["SKU",sku],["구성",P.comp]].concat(P.only?[["파일 형식",P.only]]:[],[["제공",P.give]]).forEach(function(r){var d=el("div");d.appendChild(el("dt",null,r[0]));d.appendChild(el("dd",null,r[1]));dl.appendChild(d);});box.appendChild(dl);
   if(P.course)box.appendChild(el("p","course",P.course));
   if(P.cards&&P.cards.length)box.appendChild(el("p","hint","지금 결제할 수 있는 카드: "+P.cards.join(" · ")));
-  var fx=el("div","fix");fx.innerHTML=NS?FIX.replace("디지털콘텐츠(PDF)","디지털콘텐츠(PDF·한글 파일)"):FIX;box.appendChild(fx);
+  var fx=el("div","fix");fx.innerHTML=NS?FIX.replace("디지털콘텐츠(PDF)","디지털콘텐츠(고른 형식의 파일)").replace("유료 PDF에는","유료 파일에는"):FIX;box.appendChild(fx);
   $("pay").textContent=won(amount)+" 결제하기";
   return true;
 }

@@ -180,7 +180,11 @@ function renderOrder(box,o,cfg,email){
   box.textContent="";
   var dl=document.createElement("dl");
   function row(k,v){if(v==null||v==="")return;var d=document.createElement("div"),t=document.createElement("dt"),x=document.createElement("dd");t.textContent=k;x.textContent=v;d.appendChild(t);d.appendChild(x);dl.appendChild(d);}
-  row("주문번호",o.orderId);row("상품",o.orderName);row("결제금액",won(o.amount)+" (부가세 포함)");
+  row("주문번호",o.orderId);row("상품",o.orderName);
+  /* 내신 주문은 한 형식(형 11-04) — 주문한 형식만 들어 있다는 것을 다시 적는다. 수능 유형서 줄은 그대로 */
+  var ns=(o.files||[]).filter(function(f){return /^NS-/.test(f.id);});
+  if(ns.length)row("파일 형식",ns[0].fmt==="hwpx"?"한글(HWPX) 파일만 · PDF는 들어 있지 않습니다":"PDF 파일만 · 한글 파일은 들어 있지 않습니다");
+  row("결제금액",won(o.amount)+" (부가세 포함)");
   row("상태",(STATUS[o.status]||o.status)+(o.mode==="test"?" · 테스트 결제":""));
   row("결제수단",o.method);row("승인일시",o.approvedAt?kst(o.approvedAt):"");
   row("다시 받기",o.redownloadUntil?(kst(o.redownloadUntil)+"까지"):"");
@@ -213,7 +217,7 @@ function renderOrder(box,o,cfg,email){
     ul.appendChild(li);
   });
   box.appendChild(ul);
-  /* 한 주문에 파일이 여럿이면(내신 PDF + 한글) 차례로 받는다. 파일마다 download-url 을 한 번씩 부르고 받은 수와 실패를 그대로 보인다. */
+  /* 한 주문에 파일이 여럿이면(내신 단원 전체 · 주문한 형식의 파일들) 차례로 받는다. 파일마다 download-url 을 한 번씩 부르고 받은 수와 실패를 그대로 보인다. */
   var some=(o.files||[]).filter(function(f){return o.status==="paid"&&f.ready;});
   if(email&&some.length>1){
     var all=document.createElement("button");all.type="button";all.className="btn pri sm";all.textContent="파일 "+some.length+"개 모두 내려받기";all.style.marginTop="12px";
