@@ -34,7 +34,7 @@
    "path": "basic",
    "pick": "unit",
    "make": "ready",
-   "sku": null
+   "sku": "pack"
   },
   {
    "id": "C3",
@@ -44,7 +44,7 @@
    "path": "basic",
    "pick": "units",
    "make": "ready",
-   "sku": null,
+   "sku": "pack",
    "perUnit": 20
   },
   {
@@ -149,7 +149,8 @@
      "sample": null,
      "files": [],
      "types": [],
-     "items": []
+     "items": [],
+     "packs": []
     },
     {
      "sku": "NS-MI1-02",
@@ -168,7 +169,8 @@
      "sample": null,
      "files": [],
      "types": [],
-     "items": []
+     "items": [],
+     "packs": []
     },
     {
      "sku": "NS-MI1-03",
@@ -187,7 +189,8 @@
      "sample": null,
      "files": [],
      "types": [],
-     "items": []
+     "items": [],
+     "packs": []
     },
     {
      "sku": "NS-MI1-04",
@@ -206,7 +209,8 @@
      "sample": null,
      "files": [],
      "types": [],
-     "items": []
+     "items": [],
+     "packs": []
     },
     {
      "sku": "NS-MI1-05",
@@ -225,7 +229,8 @@
      "sample": null,
      "files": [],
      "types": [],
-     "items": []
+     "items": [],
+     "packs": []
     },
     {
      "sku": "NS-MI1-06",
@@ -237,7 +242,10 @@
      "textbook": "OLY",
      "count": null,
      "pages": null,
-     "price": null,
+     "price": {
+      "pdf": 3000,
+      "hwpx": 6000
+     },
      "taxFreeAmount": null,
      "saleFrom": null,
      "saleTo": null,
@@ -453,6 +461,43 @@
        "sample": null,
        "files": []
       }
+     ],
+     "packs": [
+      {
+       "sku": "NS-MI1-06-D00",
+       "kind": "D00",
+       "title": "미적분Ⅰ 06 정적분의 활용 대표유형 + 연습",
+       "name": "미적분Ⅰ 06 정적분의 활용 대표유형 + 연습 내신 변형 문항",
+       "composition": "C2",
+       "textbook": "OLY",
+       "count": null,
+       "pages": null,
+       "price": null,
+       "taxFreeAmount": null,
+       "saleFrom": null,
+       "saleTo": null,
+       "sample": null,
+       "files": []
+      },
+      {
+       "sku": "NS-MI1-06-N20",
+       "kind": "N20",
+       "title": "미적분Ⅰ 06 정적분의 활용 단원 20문항",
+       "name": "미적분Ⅰ 06 정적분의 활용 단원 20문항 내신 변형 문항",
+       "composition": "C3",
+       "textbook": "OLY",
+       "count": null,
+       "pages": null,
+       "price": {
+        "pdf": 500,
+        "hwpx": 1000
+       },
+       "taxFreeAmount": null,
+       "saleFrom": null,
+       "saleTo": null,
+       "sample": null,
+       "files": []
+      }
      ]
     }
    ]
@@ -487,7 +532,8 @@
      "sample": null,
      "files": [],
      "types": [],
-     "items": []
+     "items": [],
+     "packs": []
     },
     {
      "sku": "NS-CM2-02",
@@ -506,7 +552,8 @@
      "sample": null,
      "files": [],
      "types": [],
-     "items": []
+     "items": [],
+     "packs": []
     },
     {
      "sku": "NS-CM2-03",
@@ -525,7 +572,8 @@
      "sample": null,
      "files": [],
      "types": [],
-     "items": []
+     "items": [],
+     "packs": []
     },
     {
      "sku": "NS-CM2-04",
@@ -544,7 +592,8 @@
      "sample": null,
      "files": [],
      "types": [],
-     "items": []
+     "items": [],
+     "packs": []
     },
     {
      "sku": "NS-CM2-05",
@@ -563,7 +612,8 @@
      "sample": null,
      "files": [],
      "types": [],
-     "items": []
+     "items": [],
+     "packs": []
     },
     {
      "sku": "NS-CM2-06",
@@ -582,7 +632,8 @@
      "sample": null,
      "files": [],
      "types": [],
-     "items": []
+     "items": [],
+     "packs": []
     },
     {
      "sku": "NS-CM2-07",
@@ -594,7 +645,10 @@
      "textbook": "OLY",
      "count": null,
      "pages": null,
-     "price": null,
+     "price": {
+      "pdf": 4000,
+      "hwpx": 8000
+     },
      "taxFreeAmount": null,
      "saleFrom": null,
      "saleTo": null,
@@ -1076,6 +1130,43 @@
        "count": null,
        "pages": null,
        "price": null,
+       "taxFreeAmount": null,
+       "saleFrom": null,
+       "saleTo": null,
+       "sample": null,
+       "files": []
+      }
+     ],
+     "packs": [
+      {
+       "sku": "NS-CM2-07-D00",
+       "kind": "D00",
+       "title": "공통수학2 07 유리함수와 무리함수 대표유형 + 연습",
+       "name": "공통수학2 07 유리함수와 무리함수 대표유형 + 연습 내신 변형 문항",
+       "composition": "C2",
+       "textbook": "OLY",
+       "count": null,
+       "pages": null,
+       "price": null,
+       "taxFreeAmount": null,
+       "saleFrom": null,
+       "saleTo": null,
+       "sample": null,
+       "files": []
+      },
+      {
+       "sku": "NS-CM2-07-N20",
+       "kind": "N20",
+       "title": "공통수학2 07 유리함수와 무리함수 단원 20문항",
+       "name": "공통수학2 07 유리함수와 무리함수 단원 20문항 내신 변형 문항",
+       "composition": "C3",
+       "textbook": "OLY",
+       "count": null,
+       "pages": null,
+       "price": {
+        "pdf": 500,
+        "hwpx": 1000
+       },
        "taxFreeAmount": null,
        "saleFrom": null,
        "saleTo": null,

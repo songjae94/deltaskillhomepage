@@ -172,6 +172,7 @@ var ERR={
   bad_buyer:"이메일과 이름을 확인해 주세요.",
   consent_required:"필수 동의를 모두 체크해 주세요.",
   not_on_sale:"지금은 이 상품의 판매 기간이 아닙니다.",
+  transfer_min:"계좌이체는 1,000원 이상 결제에서 쓸 수 있습니다. 다른 결제수단을 골라 주세요.",
   bad_request:"요청 값이 올바르지 않습니다.",
   order_not_found:"주문을 찾을 수 없습니다.",
   already_paid:"이미 결제가 끝난 주문입니다. 주문 조회 화면에서 확인해 주세요.",
@@ -245,14 +246,17 @@ var SDK="https://js.tosspayments.com/v2/standard";
 var sku=(new URLSearchParams(location.search).get("sku")||"").trim();
 var P=Object.prototype.hasOwnProperty.call(CAT,sku)?CAT[sku]:null;
 var NS=sku.indexOf("NS-")===0;
-/* 내신 상품은 /naesin/catalog.json 한 값에서 읽는다(서버 표와 같은 정본 · 게이트 scripts/홈페이지/내신상품표.py). 가격·판매일·맛보기·PDF·한글 파일 중 하나라도 비면 주문서를 열지 않는다. */
+/* 내신 상품은 /naesin/catalog.json 한 값에서 읽는다(서버 표와 같은 정본 · 게이트 scripts/홈페이지/내신상품표.py). 주소는 sku=<SKU>.<형식>(pdf · hwpx) — 그 형식의 가격·면세값·파일과 판매일·맛보기 중 하나라도 비면 주문서를 열지 않는다. */
 function naesinP(c){
-  var u=null;((c&&c.subjects)||[]).forEach(function(s){(s.units||[]).forEach(function(x){if(x.sku===sku)u=x;(x.items||[]).forEach(function(i){if(i.sku===sku)u=i;});});});
+  var m=/^(NS-[A-Z0-9-]+)\.(pdf|hwpx)$/.exec(sku);if(!m)return null;
+  var u=null;((c&&c.subjects)||[]).forEach(function(s){(s.units||[]).forEach(function(x){if(x.sku===m[1])u=x;(x.items||[]).concat(x.packs||[]).forEach(function(i){if(i.sku===m[1])u=i;});});});
   if(!u)return null;
-  var fm=(u.files||[]).map(function(f){return f.fmt;});
-  if(!u.price||u.taxFreeAmount==null||!u.saleFrom||!u.sample||fm.indexOf("pdf")<0||fm.indexOf("hwpx")<0)return null;
-  return {name:u.name,price:u.price,priceNote:"VAT 포함",comp:"PDF · 한글(HWPX) 파일 "+u.files.length+"개 · "+(u.kind?"":"단원 ")+"변형 문항",give:"결제 뒤 바로 내려받기",saleFrom:u.saleFrom,saleTo:u.saleTo||undefined,cards:(c.cards||[])};
+  var f=m[2],n=(u.files||[]).filter(function(x){return x.fmt===f;}).length,pr=u.price&&u.price[f];
+  if(!pr||!u.taxFreeAmount||u.taxFreeAmount[f]==null||!u.saleFrom||!u.sample||!n)return null;
+  var fn=f==="hwpx"?"한글(HWPX)":"PDF";
+  return {name:u.name+(f==="hwpx"?" (한글)":" (PDF)"),price:pr,priceNote:"VAT 포함",comp:fn+" 파일 "+n+"개 · "+(u.kind?"":"단원 ")+"변형 문항",give:"결제 뒤 바로 내려받기",saleFrom:u.saleFrom,saleTo:u.saleTo||undefined,cards:(c.cards||[])};
 }
+var TRANSFER_MIN=1000; /* 계좌이체 하한(내신상품구조 §8 · 공개 수수료 기준) — 서버 create-order 와 같은 값. 토스 결제창에는 금액별 수단 제한이 없어 이 화면의 수단 칸에서 뺀다 */
 var cfg={},widgets=null,ready=false,busy=false,amount=0;
 function priceNow(p){return (p.price2&&p.price2From&&Date.now()>=Date.parse(p.price2From))?p.price2:p.price;}
 function onSale(p){var t=Date.now();return t>=Date.parse(p.saleFrom)&&!(p.saleTo&&t>=Date.parse(p.saleTo));}
@@ -294,15 +298,19 @@ function startWidget(){
   var tp;
   try{tp=window.TossPayments(cfg.clientKey);}catch(e){stop("결제창을 열지 못했습니다. 잠시 뒤 다시 시도해 주세요.");return;}
   try{widgets=tp.payment({customerKey:window.TossPayments.ANONYMOUS});}catch(e){stop("결제창을 열지 못했습니다. 잠시 뒤 다시 시도해 주세요.");return;}
-  var box=$("payment-method");box.textContent="";
-  var h=el("p","pm-t","결제수단");box.appendChild(h);
-  [["CARD","카드"],["TRANSFER","계좌이체"],["MOBILE_PHONE","휴대폰"]].forEach(function(m,i){
-    var l=el("label","chk pm");var r=document.createElement("input");r.type="radio";r.name="pm";r.value=m[0];if(i===0)r.checked=true;
-    l.appendChild(r);l.appendChild(el("span",null,m[1]));box.appendChild(l);
-  });
+  drawMethods();
   ready=true;
   if(!apiBase(cfg)){var n=$("paynote");n.textContent="결제 서버 연동 준비 중입니다. 지금은 결제를 진행할 수 없습니다.";n.hidden=false;}
   update();
+}
+function drawMethods(){
+  var box=$("payment-method");box.textContent="";
+  var h=el("p","pm-t","결제수단");box.appendChild(h);
+  [["CARD","카드"],["TRANSFER","계좌이체"],["MOBILE_PHONE","휴대폰"]].filter(function(m){return m[0]!=="TRANSFER"||amount>=TRANSFER_MIN;}).forEach(function(m,i){
+    var l=el("label","chk pm");var r=document.createElement("input");r.type="radio";r.name="pm";r.value=m[0];if(i===0)r.checked=true;
+    l.appendChild(r);l.appendChild(el("span",null,m[1]));box.appendChild(l);
+  });
+  if(amount<TRANSFER_MIN)box.appendChild(el("p","hint","계좌이체는 1,000원 이상 결제에서 쓸 수 있습니다."));
 }
 function pickMethod(){var r=document.querySelector('input[name="pm"]:checked');return r?r.value:"CARD";}
 function payReq(r,email,name){
@@ -337,10 +345,10 @@ function boot(){
     if($("pay").disabled)return;
     var email=$("em").value.trim(),name=$("nm").value.trim();
     busy=true;update();setMsg($("msg"),"주문을 만드는 중…");
-    callApi(cfg,"create-order",{sku:sku,email:email,name:name,agree:{terms:$("c1").checked,privacy:$("c2").checked,digital:$("c3").checked,minor:$("c4").checked}}).then(function(r){
+    callApi(cfg,"create-order",{sku:sku,email:email,name:name,method:pickMethod(),agree:{terms:$("c1").checked,privacy:$("c2").checked,digital:$("c3").checked,minor:$("c4").checked}}).then(function(r){
       if(!r||!r.ok)throw r||{};
       if(r.amount!==amount){
-        amount=r.amount;showProduct();
+        amount=r.amount;showProduct();drawMethods();
         busy=false;update();setMsg($("msg"),"가격이 바뀌어 다시 계산했습니다. 금액을 확인하고 다시 눌러 주세요.",true);return;
       }
       try{sessionStorage.setItem("ds_order",JSON.stringify({orderId:r.orderId,email:email,sku:sku}));}catch(_){}
