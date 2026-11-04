@@ -250,8 +250,8 @@ function naesinP(c){
   var u=null;((c&&c.subjects)||[]).forEach(function(s){(s.units||[]).forEach(function(x){if(x.sku===sku)u=x;});});
   if(!u)return null;
   var fm=(u.files||[]).map(function(f){return f.fmt;});
-  if(!u.price||!u.saleFrom||!u.sample||fm.indexOf("pdf")<0||fm.indexOf("hwpx")<0)return null;
-  return {name:u.name,price:u.price,priceNote:"VAT 포함",comp:"PDF · 한글(HWPX) 파일 "+u.files.length+"개 · 단원 변형 문항",give:"결제 뒤 바로 내려받기",saleFrom:u.saleFrom,saleTo:u.saleTo||undefined};
+  if(!u.price||u.taxFreeAmount==null||!u.saleFrom||!u.sample||fm.indexOf("pdf")<0||fm.indexOf("hwpx")<0)return null;
+  return {name:u.name,price:u.price,priceNote:"VAT 포함",comp:"PDF · 한글(HWPX) 파일 "+u.files.length+"개 · 단원 변형 문항",give:"결제 뒤 바로 내려받기",saleFrom:u.saleFrom,saleTo:u.saleTo||undefined,cards:(c.cards||[])};
 }
 var cfg={},widgets=null,ready=false,busy=false,amount=0;
 function priceNow(p){return (p.price2&&p.price2From&&Date.now()>=Date.parse(p.price2From))?p.price2:p.price;}
@@ -265,6 +265,7 @@ function showProduct(){
   var pr=el("p","price");pr.appendChild(el("b",null,won(amount)));pr.appendChild(el("small",null,P.priceNote));box.appendChild(pr);
   var dl=el("dl");[["SKU",sku],["구성",P.comp],["제공",P.give]].forEach(function(r){var d=el("div");d.appendChild(el("dt",null,r[0]));d.appendChild(el("dd",null,r[1]));dl.appendChild(d);});box.appendChild(dl);
   if(P.course)box.appendChild(el("p","course",P.course));
+  if(P.cards&&P.cards.length)box.appendChild(el("p","hint","지금 결제할 수 있는 카드: "+P.cards.join(" · ")));
   var fx=el("div","fix");fx.innerHTML=NS?FIX.replace("디지털콘텐츠(PDF)","디지털콘텐츠(PDF·한글 파일)"):FIX;box.appendChild(fx);
   $("pay").textContent=won(amount)+" 결제하기";
   return true;
@@ -301,6 +302,7 @@ function pickMethod(){var r=document.querySelector('input[name="pm"]:checked');r
 function payReq(r,email,name){
   var m=pickMethod();
   var q={method:m,amount:{currency:"KRW",value:amount},orderId:r.orderId,orderName:r.orderName,successUrl:absUrl(cfg.successUrl,"/checkout/success/"),failUrl:absUrl(cfg.failUrl,"/checkout/fail/"),customerEmail:email,customerName:name};
+  if(typeof r.taxFreeAmount==="number")q.taxFreeAmount=r.taxFreeAmount; /* 면세 금액은 서버 상품표 값만 넣는다 · 값이 없으면 안 넘긴다 */
   if(m==="CARD")q.card={useEscrow:false,flowMode:"DEFAULT",useCardPoint:false,useAppCardOnly:false};
   if(m==="TRANSFER")q.transfer={cashReceipt:{type:"소득공제"},useEscrow:false};
   return widgets.requestPayment(q);

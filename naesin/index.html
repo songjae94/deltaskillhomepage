@@ -136,7 +136,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   function row(dl,k,v){var d=el("div");d.appendChild(el("dt",null,k));d.appendChild(el("dd",null,v));dl.appendChild(d);}
   function sellable(u,now){
     var fm=(u.files||[]).map(function(f){return f.fmt;});
-    if(!u.price||!u.saleFrom||!u.sample||fm.indexOf("pdf")<0||fm.indexOf("hwpx")<0)return false;
+    if(!u.price||u.taxFreeAmount==null||!u.saleFrom||!u.sample||fm.indexOf("pdf")<0||fm.indexOf("hwpx")<0)return false;
     if(now<Date.parse(u.saleFrom))return false;
     return !(u.saleTo&&now>=Date.parse(u.saleTo));
   }
