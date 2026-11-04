@@ -281,7 +281,16 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   }
   function pathPriced(p,s){return comps(function(x){return x.path===p&&linesOf(x,s).some(function(l){return anyPrice(l.u);});}).length>0;}
   /* 고른 형식의 파일 수(형 11-04: 한 주문은 한 형식 · 한글 값에 PDF 는 따라오지 않는다) */
-  function fileUnits(u,f){return filesAt(u,f).length;}
+  function fileUnits(u,f){var n=filesAt(u,f).length;if(n)return n;var s=setOf(u,f);return s&&s.count?s.count:0;}
+  /* 단원 전체의 형식별 파일 묶음(catalog fileSets): PDF = 합본 1파일 · 한글 = 유형별 파일 묶음. 파일 수를 모르면 0 → 「파일 수 추후 공지」 */
+  function setOf(u,f){return (u&&u.fileSets&&u.fileSets[f])||null;}
+  function setLine(u,f){var s=setOf(u,f),n=fileUnits(u,f);if(!s)return "";if(s.kind==="merged"&&n===1)return "합본 1파일";return n?"유형별 파일 "+n+"개":"유형별 파일 묶음(파일 수 추후 공지)";}
+  /* 받으면 제공 시작 — 약관 제11조 제8항 1 · 2 · 4호와 제5항에 맞춘 글. checkout/index.html 의 startText 와 글자가 같아야 한다(시험 합본_재기.mjs 가 잰다) */
+  function startText(n,kind){
+    if(n===1||(!n&&kind==="merged"))return "파일이 하나입니다. 내려받거나 사이트에서 열람하면 제공이 시작되어 그때부터 환불되지 않습니다(파일 오류 · 표시와 다른 경우는 제외). 받기 전이면 결제일로부터 7일 이내에 요청해 전액 환불받습니다.";
+    if(n>1||kind==="types")return "파일마다 따로 봅니다. 내려받거나 사이트에서 열람한 파일은 제공이 시작된 것으로 보고, 결제일로부터 7일 이내에 요청하면 받은 파일을 뺀 비율만큼 환불합니다(약관 제11조 제8항 4호). 하나도 받기 전이면 전액 환불합니다.";
+    return "";
+  }
   /* 그 형식 주문에 들어 있지 않은 것 — 고르기 · 확인 · 주문서 · 주문 조회가 같은 말을 쓴다 */
   function notIn(f){return f==="hwpx"?"PDF는 들어 있지 않습니다":"한글 파일은 들어 있지 않습니다";}
   /* ── 화면 공통 ── */
@@ -530,7 +539,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     if(u&&u.pages)row(dl,"쪽 수",u.pages+"쪽",pickFmt0(c,u)?"PDF 기준":null);else row(dl,"쪽 수","쪽 수 추후 공지",null,"blank");
     /* 미리 만든 유료 구성은 손님이 형식을 고른다 — 고른 형식의 값을 치르고 그 형식 파일을 받는다 */
     var pickFmt=pickFmt0(c,u),fm=fmtOf(q);
-    var fu=pickFmt?fileUnits(u,fm):0,fnote=pickFmt?fmtName(fm)+" 기준":null;
+    var fu=pickFmt?fileUnits(u,fm):0,fset=pickFmt?setOf(u,fm):null,fstart=pickFmt?startText(fu,fset&&fset.kind):"",fnote=pickFmt?fmtName(fm)+(fset?(fset.kind==="merged"?" 합본":" 유형별 파일 묶음"):" 기준"):null;
     if(fu)row(dl,"파일 수",fu+"개",fnote);else row(dl,"파일 수","파일 수 추후 공지",fnote,"blank");
     if(pickFmt)row(dl,"파일 형식",fmtName(fm)+" 파일만",notIn(fm)+" · 아래에서 바꿉니다");
     else if(free)row(dl,"파일 형식","PDF · 한글(HWPX) 모두 0원");
@@ -538,6 +547,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     else row(dl,"파일 형식","파일 형식 추후 공지",null,"blank");
     if(c.make==="ready")row(dl,"제공",u&&u.saleFrom?"결제 뒤 바로 내려받기":"제공일 추후 공지",null,u&&u.saleFrom?null:"blank");
     else row(dl,"제공","주문 뒤 만들어 제공 · 제공일 추후 공지",null,"blank");
+    if(fstart)row(dl,"제공 시작","받으면 제공이 시작됩니다",fstart);
     if(u)row(dl,"상품 번호",u.sku);
     var d=el("div");add(d,el("dt",null,"값"));var dd=el("dd");
     if(free)add(dd,el("span","won","0원"));
@@ -550,14 +560,14 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
       var fl=el("ul","picks");
       FMTS.forEach(function(x){
         var li=el("li"),p=priceAt(u,x[0]);
-        var r=radioRow("fmt",x[0],fm===x[0],x[1]+" 파일만",(p?won(p)+" · 부가세 포함":"가격 추후 공지")+" · "+notIn(x[0]),null,function(){
+        var r=radioRow("fmt",x[0],fm===x[0],x[1]+" 파일만",(p?won(p)+" · 부가세 포함":"가격 추후 공지")+(setLine(u,x[0])?" · "+setLine(u,x[0]):"")+" · "+notIn(x[0]),null,function(){
           var n={},y=window.scrollY;Object.keys(q).forEach(function(k){n[k]=q[k];});n.f=x[0];
           history.replaceState(history.state,"",url(n));draw(false);window.scrollTo(0,y);
           var e=document.querySelector('[data-fk="f-'+x[0]+'"]');if(e)e.focus();
         });
         r.querySelector("input").dataset.fk="f-"+x[0];add(li,r);add(fl,li);
       });
-      add(fs,fl);add(fs,el("p","fine","한 주문에는 고른 형식의 파일만 들어 있습니다. 두 형식이 다 필요하면 형식마다 따로 주문하고, 값도 따로 치릅니다."));add(f,fs);
+      add(fs,fl);add(fs,el("p","fine","한 주문에는 고른 형식의 파일만 들어 있습니다. 두 형식이 다 필요하면 형식마다 따로 주문하고, 값도 따로 치릅니다."+(setOf(u,"pdf")?" PDF 합본은 나눠 받지 않습니다. 유형 하나만 필요하면 구성에서 「유형 낱개」를 고릅니다.":"")));add(f,fs);
     }
     var act=el("div","act"),ok=pickFmt&&canBuy(u,fm);
     if(free&&b.freeSet){var fa=el("a","btn buy","무료로 받기");fa.href=b.freeSet;add(act,fa);}
@@ -566,7 +576,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     var al=el("a","btn ghost","알림 받기");al.href="mailto:admin@deltaskill.co.kr?subject="+encodeURIComponent("내신 파일 알림 "+s.code+" "+c.id+(u?" "+u.sku:""));add(act,al);
     add(f,act);
     var fine=el("p","fine");
-    fine.appendChild(document.createTextNode("따로 내려받는 파일 하나가 구성 단위입니다. 파일을 내려받으면 그 파일은 제공이 시작된 것으로 봅니다. 파일이 하나인 구성은 내려받는 순간 부분 환불이 없습니다. "));
+    if(!fstart)fine.appendChild(document.createTextNode("따로 내려받는 파일 하나가 구성 단위입니다. 파일을 내려받으면 그 파일은 제공이 시작된 것으로 봅니다. 파일이 하나인 구성은 내려받는 순간 부분 환불이 없습니다. "));
     var r1=el("a",null,"환불·청약철회 안내");r1.href="/refund/";add(fine,r1);fine.appendChild(document.createTextNode(" · "));
     var r2=el("a",null,"이용약관 개정 안내");r2.href="/notice/";add(fine,r2);
     add(f,fine,proNote(q));

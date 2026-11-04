@@ -253,8 +253,12 @@ function naesinP(c){
   if(!u)return null;
   var f=m[2],n=(u.files||[]).filter(function(x){return x.fmt===f;}).length,pr=u.price&&u.price[f];
   if(!pr||!u.taxFreeAmount||u.taxFreeAmount[f]==null||!u.saleFrom||!u.sample||!n)return null;
-  var fn=f==="hwpx"?"한글(HWPX)":"PDF";
-  return {name:u.name+(f==="hwpx"?" (한글)":" (PDF)"),price:pr,priceNote:"부가세 포함",comp:fn+" 파일 "+n+"개 · "+(u.kind?"":"단원 ")+"변형 문항",only:fn+" 파일만 받습니다. "+(f==="hwpx"?"PDF는":"한글 파일은")+" 들어 있지 않습니다.",give:"결제 뒤 바로 내려받기",saleFrom:u.saleFrom,saleTo:u.saleTo||undefined,cards:(c.cards||[])};
+  var fn=f==="hwpx"?"한글(HWPX)":"PDF",fs=u.fileSets&&u.fileSets[f],cnt=fs&&fs.kind==="merged"&&n===1?fn+" 합본 1파일":fs&&fs.kind==="types"?fn+" 유형별 파일 "+n+"개":fn+" 파일 "+n+"개";
+  return {name:u.name+(f==="hwpx"?" (한글)":" (PDF)"),price:pr,priceNote:"부가세 포함",comp:cnt+" · "+(u.kind?"":"단원 ")+"변형 문항",start:startText(n),only:fn+" 파일만 받습니다. "+(f==="hwpx"?"PDF는":"한글 파일은")+" 들어 있지 않습니다.",give:"결제 뒤 바로 내려받기",saleFrom:u.saleFrom,saleTo:u.saleTo||undefined,cards:(c.cards||[])};
+}
+/* 받으면 제공 시작 — 약관 제11조 제8항 1 · 2 · 4호와 제5항에 맞춘 글. naesin/index.html 의 startText 와 글자가 같아야 한다(시험 합본_재기.mjs 가 잰다) */
+function startText(n){
+  return n===1?"파일이 하나입니다. 내려받거나 사이트에서 열람하면 제공이 시작되어 그때부터 환불되지 않습니다(파일 오류 · 표시와 다른 경우는 제외). 받기 전이면 결제일로부터 7일 이내에 요청해 전액 환불받습니다.":"파일마다 따로 봅니다. 내려받거나 사이트에서 열람한 파일은 제공이 시작된 것으로 보고, 결제일로부터 7일 이내에 요청하면 받은 파일을 뺀 비율만큼 환불합니다(약관 제11조 제8항 4호). 하나도 받기 전이면 전액 환불합니다.";
 }
 var TRANSFER_MIN=1000; /* 계좌이체 하한(내신상품구조 §8 · 공개 수수료 기준) — 서버 create-order 와 같은 값. 토스 결제창에는 금액별 수단 제한이 없어 이 화면의 수단 칸에서 뺀다 */
 var cfg={},widgets=null,ready=false,busy=false,amount=0;
@@ -267,7 +271,7 @@ function showProduct(){
   if(!P){box.appendChild(el("p","msg err",NS?"이 상품은 아직 판매 준비 중입니다.":"상품을 찾을 수 없습니다."));var a=el("a","btn ghost",NS?"내신 파일로 돌아가기":"유형서 구매로 돌아가기");a.href=NS?"/naesin/":"/store/";var d=el("div","acts");d.appendChild(a);box.appendChild(d);return false;}
   box.appendChild(el("p","pname",P.name));
   var pr=el("p","price");pr.appendChild(el("b",null,won(amount)));pr.appendChild(el("small",null,P.priceNote));box.appendChild(pr);
-  var dl=el("dl");[["SKU",sku],["구성",P.comp]].concat(P.only?[["파일 형식",P.only]]:[],[["제공",P.give]]).forEach(function(r){var d=el("div");d.appendChild(el("dt",null,r[0]));d.appendChild(el("dd",null,r[1]));dl.appendChild(d);});box.appendChild(dl);
+  var dl=el("dl");[["SKU",sku],["구성",P.comp]].concat(P.only?[["파일 형식",P.only]]:[],[["제공",P.give]],P.start?[["제공 시작",P.start]]:[]).forEach(function(r){var d=el("div");d.appendChild(el("dt",null,r[0]));d.appendChild(el("dd",null,r[1]));dl.appendChild(d);});box.appendChild(dl);
   if(P.course)box.appendChild(el("p","course",P.course));
   if(P.cards&&P.cards.length)box.appendChild(el("p","hint","지금 결제할 수 있는 카드: "+P.cards.join(" · ")));
   var fx=el("div","fix");fx.innerHTML=NS?FIX.replace("디지털콘텐츠(PDF)","디지털콘텐츠(고른 형식의 파일)").replace("유료 PDF에는","유료 파일에는"):FIX;box.appendChild(fx);
