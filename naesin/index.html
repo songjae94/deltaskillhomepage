@@ -236,6 +236,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   function rangeOf(q,s){var a=-1,b=-1;s.units.forEach(function(u,i){if(u.no===q.from)a=i;if(u.no===q.to)b=i;});if(a<0||b<0||a>b)return [];return s.units.slice(a,b+1);}
   function counts(q){var o={};(q.n||"").split(",").forEach(function(x){var m=/^(\d\d):(\d{1,3})$/.exec(x);if(m&&+m[2]>0)o[m[1]]=+m[2];});return o;}
   function total(q){var m=/^\d{1,3}$/.exec(q.n||"");return m&&+m[0]>0?+m[0]:0;}
+  function withAlias(i,t){return i.alias?t+" ("+i.alias+")":t;}
   function itemOf(q,s){var r=null;unitsOf(q,s).forEach(function(u){(u.items||[]).forEach(function(i){if(i.kind===q.t)r=i;});});return r;}
   /* 이 구성이 다 골랐는가 */
   function picked(c,q,s){
@@ -487,7 +488,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
         var one=unitsOf(st,s);
         if(one.length===1&&(one[0].items||[]).length){
           var l=el("label","field","유형"),sel=el("select");sel.dataset.fk="t";add(sel,el("option",null,"고르세요"));sel.firstChild.value="";
-          one[0].items.forEach(function(i){var o=el("option",null,i.title.replace(s.subject+" ","").replace(one[0].no+" "+one[0].unit+" ",""));o.value=i.kind;if(st.t===i.kind)o.selected=true;add(sel,o);});
+          one[0].items.forEach(function(i){var o=el("option",null,withAlias(i,i.title.replace(s.subject+" ","").replace(one[0].no+" "+one[0].unit+" ","")));o.value=i.kind;if(st.t===i.kind)o.selected=true;add(sel,o);});
           sel.addEventListener("change",function(){upd({t:sel.value||null},false);});
           add(l,sel);add(ts,l);
         }else add(ts,el("p","empty",one.length===1?"이 단원의 유형 목록은 준비 중입니다.":"단원을 고르면 유형이 보입니다."));
@@ -527,7 +528,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     row(dl,"구성",c.name,c.desc);
     if(c.pick==="range"){var rg=rangeOf(q,s);row(dl,"시험범위",rg[0].no+" "+rg[0].unit+" ~ "+rg[rg.length-1].no+" "+rg[rg.length-1].unit);}
     else if(!free){var us=unitsOf(q,s);row(dl,us.length>1?"단원 "+us.length+"개":"단원",us.map(function(x){return x.no+" "+x.unit;}).join(" · "));}
-    if(c.pick==="type"){var it=itemOf(q,s);row(dl,"유형",it?it.title:"유형 목록 준비 중",null,it?null:"blank");}
+    if(c.pick==="type"){var it=itemOf(q,s);row(dl,"유형",it?withAlias(it,it.title):"유형 목록 준비 중",null,it?null:"blank");}
     if(c.pick==="unitItems"||c.pick==="unitsTotal")row(dl,"유형","유형 목록 준비 중",null,"blank");
     if(c.pick==="unitItems")row(dl,"문항","문항 고르기 준비 중",null,"blank");
     /* 문항 수 — 정본 값 · 구성 정의(단원당 20) · 손님이 적은 수만. 그 밖은 빈 칸 */
