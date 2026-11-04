@@ -1,0 +1,185 @@
+{
+ "subjects": [
+  {
+   "subject": "미적분Ⅰ",
+   "grade": "고2",
+   "units": [
+    {
+     "sku": "NS-MI1-01",
+     "no": "01",
+     "major": "Ⅰ 함수의 극한과 연속",
+     "unit": "함수의 극한",
+     "name": "미적분Ⅰ 함수의 극한 내신 변형 문항",
+     "price": null,
+     "saleFrom": null,
+     "saleTo": null,
+     "sample": null,
+     "types": [],
+     "files": []
+    },
+    {
+     "sku": "NS-MI1-02",
+     "no": "02",
+     "major": "Ⅰ 함수의 극한과 연속",
+     "unit": "함수의 연속",
+     "name": "미적분Ⅰ 함수의 연속 내신 변형 문항",
+     "price": null,
+     "saleFrom": null,
+     "saleTo": null,
+     "sample": null,
+     "types": [],
+     "files": []
+    },
+    {
+     "sku": "NS-MI1-03",
+     "no": "03",
+     "major": "Ⅱ 미분",
+     "unit": "미분계수와 도함수",
+     "name": "미적분Ⅰ 미분계수와 도함수 내신 변형 문항",
+     "price": null,
+     "saleFrom": null,
+     "saleTo": null,
+     "sample": null,
+     "types": [],
+     "files": []
+    },
+    {
+     "sku": "NS-MI1-04",
+     "no": "04",
+     "major": "Ⅱ 미분",
+     "unit": "도함수의 활용",
+     "name": "미적분Ⅰ 도함수의 활용 내신 변형 문항",
+     "price": null,
+     "saleFrom": null,
+     "saleTo": null,
+     "sample": null,
+     "types": [],
+     "files": []
+    },
+    {
+     "sku": "NS-MI1-05",
+     "no": "05",
+     "major": "Ⅲ 적분",
+     "unit": "부정적분과 정적분",
+     "name": "미적분Ⅰ 부정적분과 정적분 내신 변형 문항",
+     "price": null,
+     "saleFrom": null,
+     "saleTo": null,
+     "sample": null,
+     "types": [],
+     "files": []
+    },
+    {
+     "sku": "NS-MI1-06",
+     "no": "06",
+     "major": "Ⅲ 적분",
+     "unit": "정적분의 활용",
+     "name": "미적분Ⅰ 정적분의 활용 내신 변형 문항",
+     "price": null,
+     "saleFrom": null,
+     "saleTo": null,
+     "sample": null,
+     "types": [],
+     "files": []
+    }
+   ]
+  },
+  {
+   "subject": "공통수학2",
+   "grade": "고1",
+   "units": [
+    {
+     "sku": "NS-CM2-01",
+     "no": "01",
+     "major": "Ⅰ 도형의 방정식",
+     "unit": "평면좌표와 직선의 방정식",
+     "name": "공통수학2 평면좌표와 직선의 방정식 내신 변형 문항",
+     "price": null,
+     "saleFrom": null,
+     "saleTo": null,
+     "sample": null,
+     "types": [],
+     "files": []
+    },
+    {
+     "sku": "NS-CM2-02",
+     "no": "02",
+     "major": "Ⅰ 도형의 방정식",
+     "unit": "원의 방정식",
+     "name": "공통수학2 원의 방정식 내신 변형 문항",
+     "price": null,
+     "saleFrom": null,
+     "saleTo": null,
+     "sample": null,
+     "types": [],
+     "files": []
+    },
+    {
+     "sku": "NS-CM2-03",
+     "no": "03",
+     "major": "Ⅰ 도형의 방정식",
+     "unit": "도형의 이동",
+     "name": "공통수학2 도형의 이동 내신 변형 문항",
+     "price": null,
+     "saleFrom": null,
+     "saleTo": null,
+     "sample": null,
+     "types": [],
+     "files": []
+    },
+    {
+     "sku": "NS-CM2-04",
+     "no": "04",
+     "major": "Ⅱ 집합과 명제",
+     "unit": "집합",
+     "name": "공통수학2 집합 내신 변형 문항",
+     "price": null,
+     "saleFrom": null,
+     "saleTo": null,
+     "sample": null,
+     "types": [],
+     "files": []
+    },
+    {
+     "sku": "NS-CM2-05",
+     "no": "05",
+     "major": "Ⅱ 집합과 명제",
+     "unit": "명제",
+     "name": "공통수학2 명제 내신 변형 문항",
+     "price": null,
+     "saleFrom": null,
+     "saleTo": null,
+     "sample": null,
+     "types": [],
+     "files": []
+    },
+    {
+     "sku": "NS-CM2-06",
+     "no": "06",
+     "major": "Ⅲ 함수와 그래프",
+     "unit": "함수",
+     "name": "공통수학2 함수 내신 변형 문항",
+     "price": null,
+     "saleFrom": null,
+     "saleTo": null,
+     "sample": null,
+     "types": [],
+     "files": []
+    },
+    {
+     "sku": "NS-CM2-07",
+     "no": "07",
+     "major": "Ⅲ 함수와 그래프",
+     "unit": "유리함수와 무리함수",
+     "name": "공통수학2 유리함수와 무리함수 내신 변형 문항",
+     "price": null,
+     "saleFrom": null,
+     "saleTo": null,
+     "sample": null,
+     "types": [],
+     "files": []
+    }
+   ]
+  }
+ ]
+}

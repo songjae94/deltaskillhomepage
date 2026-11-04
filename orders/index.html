@@ -97,12 +97,12 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 <body>
 <header class="top">
   <a class="logo" href="/"><span class="mark"><svg viewBox="-1 -2 102 102" aria-hidden="true"><path fill="#fff" d="M47.17,10.29 Q50,5 52.83,10.29 L68.39,39.44 Q68.96,40.5 67.76,40.5 L45.86,40.5 Q41.45,40.5 41.45,44.91 L41.45,45.09 Q41.45,49.5 45.86,49.5 L72.57,49.5 Q73.77,49.5 74.33,50.56 L94.64,88.59 Q97,93 92,93 L8,93 Q3,93 5.36,88.59 L12.85,74.56 Q13.41,73.5 14.61,73.5 L59.26,73.5 Q63.67,73.5 63.67,69.09 L63.67,68.91 Q63.67,64.5 59.26,64.5 L19.42,64.5 Q18.22,64.5 18.79,63.44 Z"/></svg></span>델타스킬</a>
-  <nav class="gnav" aria-label="주요 메뉴"><a href="/">메인</a><a href="/store/">유형서 구매</a><a href="/orders/" class="on" aria-current="page">주문 조회</a></nav>
+  <nav class="gnav" aria-label="주요 메뉴"><a href="/">메인</a><a href="/naesin/">내신 파일</a><a href="/store/">유형서 구매</a><a href="/orders/" class="on" aria-current="page">주문 조회</a></nav>
 </header>
 <main>
   <p class="crumb"><a href="/">메인</a> › 주문 조회</p>
   <h1>주문 조회</h1>
-  <p class="lede">결제할 때 적은 이메일과 주문번호로 주문 상태를 보고, 구매한 파일을 다시 내려받을 수 있습니다(구매일로부터 6개월).</p>
+  <p class="lede">결제할 때 적은 이메일과 주문번호로 주문 상태를 보고, 구매한 파일을 다시 내려받을 수 있습니다(구매일로부터 12개월).</p>
   <form class="card" id="f" novalidate>
     <label class="f" for="em">이메일</label>
     <input id="em" type="email" autocomplete="email" inputmode="email" maxlength="254" required class="in">
@@ -158,7 +158,7 @@ var ERR={
   not_found:"주문을 찾을 수 없습니다. 이메일과 주문번호를 확인해 주세요.",
   test_mode:"테스트 결제라 자료가 제공되지 않습니다.",
   not_paid:"결제가 끝나지 않은 주문입니다.",
-  expired:"다시 받을 수 있는 기간(구매일로부터 6개월)이 지났습니다.",
+  expired:"다시 받을 수 있는 기간(구매일로부터 12개월)이 지났습니다.",
   not_yet:"아직 제공 전인 파일입니다.",
   canceled:"취소·환불된 결제입니다.",
   bad_file:"이 주문에 없는 파일입니다.",
@@ -212,7 +212,33 @@ function renderOrder(box,o,cfg,email){
     }
     ul.appendChild(li);
   });
-  box.appendChild(ul);box.appendChild(msg);
+  box.appendChild(ul);
+  /* 한 주문에 파일이 여럿이면(내신 PDF + 한글) 차례로 받는다. 파일마다 download-url 을 한 번씩 부르고 받은 수와 실패를 그대로 보인다. */
+  var some=(o.files||[]).filter(function(f){return o.status==="paid"&&f.ready;});
+  if(email&&some.length>1){
+    var all=document.createElement("button");all.type="button";all.className="btn pri sm";all.textContent="파일 "+some.length+"개 모두 내려받기";all.style.marginTop="12px";
+    all.onclick=function(){
+      if(!confirm("파일 "+some.length+"개를 모두 내려받습니다. 내려받기를 시작하면 이 파일들은 청약철회(환불)가 제한됩니다. 계속할까요?"))return;
+      all.disabled=true;var got=0,bad=[];
+      function next(i){
+        if(i>=some.length){
+          all.disabled=false;
+          setMsg(msg,bad.length?("파일 "+some.length+"개 중 "+got+"개를 받았습니다. 받지 못한 파일: "+bad.join(" · ")+HELP):("파일 "+got+"개를 모두 받았습니다. 브라우저의 내려받기 목록에서 확인해 주세요."),!!bad.length);
+          return;
+        }
+        var f=some[i];setMsg(msg,"내려받는 중… ("+(i+1)+"/"+some.length+")");
+        callApi(cfg,"download-url",{orderId:o.orderId,email:email,fileId:f.id}).then(function(r){
+          if(r&&r.ok&&r.url){
+            got++;var fr=document.createElement("iframe");fr.hidden=true;fr.src=r.url;document.body.appendChild(fr);
+            setTimeout(function(){next(i+1);},900);
+          }else{bad.push(f.title+"("+errText(r)+")");next(i+1);}
+        });
+      }
+      next(0);
+    };
+    box.appendChild(all);
+  }
+  box.appendChild(msg);
 }
 (function(){
   var q=new URLSearchParams(location.search);
