@@ -388,25 +388,26 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 </footer>
 <script>
 /* 1007 결제 점검: /pay-config.json 의 PAY_MODE 가 test 면 「구매하기」를 켠다(판매 시작 단추는 그대로 둠).
-   live 면 판매 기간 안의 상품만 「구매하기」를 켜고 그 상품의 판매 시작 단추를 숨긴다. 설정을 못 읽으면 아무것도 바꾸지 않는다. */
+   live 면 판매 기간 안의 상품만 「구매하기」를 켜고 그 상품의 판매 시작 단추를 숨긴다. 설정을 못 읽으면 아무것도 바꾸지 않는다.
+   수능 판매 스위치(1104): live 에서는 pay-config.json 의 SUNEUNG_SALE_OPEN 이 정확히 true 일 때만 위 live 동작을 한다. 없거나 false 면 아무 상품도 켜지 않는다. test 동작은 이 값을 보지 않는다. */
 (function(){
   "use strict";
   var SALE=Date.parse("2026-10-20T19:00:00+09:00"),PRE0=Date.parse("2026-11-09T00:00:00+09:00"),PRE1=Date.parse("2026-11-13T00:00:00+09:00");
   function open(sku,t){return sku.indexOf("PRE-")===0?(t>=PRE0&&t<PRE1):t>=SALE;}
   fetch("/pay-config.json",{cache:"no-store"}).then(function(r){return r.ok?r.json():null;}).then(function(c){
     if(!c||(c.PAY_MODE!=="test"&&c.PAY_MODE!=="live"))return;
-    var t=Date.now();
+    var t=Date.now(),sn=c.SUNEUNG_SALE_OPEN===true;
     /* 1007 PG 점검: 머리 문구를 화면과 맞춘다 — test 면 「구매하기」가 켜지므로 테스트 결제임을 밝히고, live 판매 중이면 「지금 구매할 수 있습니다」 */
     var note=document.getElementById("sale-note");
     if(note){
       if(c.PAY_MODE==="test")note.textContent="지금은 결제 연동 점검 기간입니다. 「구매하기」로 열리는 결제는 테스트 결제이며 실제로 청구되지 않고 자료도 제공되지 않습니다.";
-      else if(t>=SALE)note.textContent="지금 구매할 수 있습니다. 결제 뒤 바로 내려받을 수 있고, 제공 예정 상품은 제공일부터 내려받습니다.";
+      else if(sn&&t>=SALE)note.textContent="지금 구매할 수 있습니다. 결제 뒤 바로 내려받을 수 있고, 제공 예정 상품은 제공일부터 내려받습니다.";
     }
     document.querySelectorAll(".act[data-sku]").forEach(function(a){
       var sku=a.getAttribute("data-sku"),buy=a.querySelector(".btn.buy"),dis=a.querySelector(".btn.dis");
       if(!buy)return;
       if(c.PAY_MODE==="test"){buy.hidden=false;return;}
-      if(open(sku,t)){buy.hidden=false;if(dis)dis.hidden=true;}
+      if(sn&&open(sku,t)){buy.hidden=false;if(dis)dis.hidden=true;}
     });
   }).catch(function(){});
   /* 미리보기: /store/preview/<SKU>-1.png · -2.png 가 있으면 상세를 열 때 끼운다. 없으면 「미리보기 준비 중」 그대로(가짜 그림 없음). */

@@ -277,6 +277,12 @@ function update(){
   $("pay").disabled=!(ready&&apiBase(cfg)&&!busy&&okEmail($("em").value.trim())&&$("nm").value.trim()&&agreed());
 }
 function stop(text){ready=false;var n=$("paynote");n.textContent=text;n.hidden=false;$("pay").disabled=true;}
+/* 수능 판매 스위치(1104): live 에서 내신 밖 상품은 pay-config.json 의 SUNEUNG_SALE_OPEN 이 정확히 true 일 때만 주문서를 연다. test 동작은 이 값을 보지 않는다. 서버 표지는 products.ts 의 같은 이름 값. */
+function suneungClosed(){
+  ready=false;$("pay").disabled=true;$("f").hidden=true;
+  var box=$("prod");box.appendChild(el("p","notice","판매 시작일은 추후 공지합니다. 지금은 상품 안내만 볼 수 있고 결제는 열려 있지 않습니다."));
+  var a=el("a","btn ghost","유형서 구매로 돌아가기");a.href="/store/";var d=el("div","acts");d.appendChild(a);box.appendChild(d);
+}
 function loadSdk(){return new Promise(function(ok,no){
   if(window.TossPayments){ok();return;}
   var s=document.createElement("script");s.src=SDK;s.async=true;
@@ -318,6 +324,7 @@ function boot(){
     var mode=cfg.PAY_MODE;
     if(mode==="test")$("band").hidden=false;
     if(mode!=="test"&&mode!=="live"){stop("결제가 아직 열려 있지 않습니다. 정식 판매 시작일은 추후 공지합니다.");return;}
+    if(mode==="live"&&!NS&&cfg.SUNEUNG_SALE_OPEN!==true){suneungClosed();return;}
     if(mode==="live"&&!onSale(P)){stop("지금은 이 상품의 판매 기간이 아닙니다. 제공: "+P.give);return;}
     loadSdk().then(function(){
       document.documentElement.setAttribute("data-toss-sdk","loaded");
