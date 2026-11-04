@@ -2,14 +2,14 @@
 <meta name="theme-color" content="#05060f">
 <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <title>델타스킬 · AI 오답노트</title>
-<meta name="description" content="모의고사 본 뒤 5분 오답노트 체크로 나에게 맞는 학습 처방과 등급 상승 경로를 받는 델타스킬 AI 오답노트.">
+<meta name="description" content="모의고사 본 뒤 5분 오답노트 체크로 나에게 맞는 학습 처방을 받는 델타스킬 AI 오답노트.">
 <link rel="canonical" href="https://www.deltaskill.co.kr/pilot/">
 <link rel="icon" href="/favicon-32.png" sizes="32x32">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.deltaskill.co.kr/pilot/">
 <meta property="og:title" content="델타스킬 · AI 오답노트">
-<meta property="og:description" content="모의고사 본 뒤 5분 오답노트 체크로 나에게 맞는 학습 처방과 등급 상승 경로를 받는 델타스킬 AI 오답노트.">
+<meta property="og:description" content="모의고사 본 뒤 5분 오답노트 체크로 나에게 맞는 학습 처방을 받는 델타스킬 AI 오답노트.">
 <meta property="og:image" content="https://www.deltaskill.co.kr/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
 <style>
@@ -298,7 +298,7 @@ function profileScreen(){
 
 /* ---------- 로그인 ---------- */
 function login(){el("screen").innerHTML=`<div class="pad"><div style="margin-bottom:8px"><a href="/" style="color:#94a3b8;font-size:13px;text-decoration:none">← 델타스킬 홈</a></div><div class="h">AI 오답노트 작성</div>
- <div class="desc">모의고사 본 뒤 5분 오답노트 체크로, 나에게 맞는 학습 처방과 등급 상승 경로를 받아요. 휴대폰 번호로 시작하세요.</div>
+ <div class="desc">모의고사 본 뒤 5분 오답노트 체크로, 나에게 맞는 학습 처방을 받아요. 휴대폰 번호로 시작하세요.</div>
  <div class="field"><label>휴대폰 번호</label><input class="txt" id="ph" inputmode="numeric" placeholder="01000000000" value="${S.phone}"></div></div>`;
  el("ph").oninput=e=>S.phone=e.target.value.replace(/[^0-9]/g,"");
  el("fab").innerHTML=`<button class="btn" id="go">시작하기</button>`;
@@ -723,7 +723,7 @@ async function saveAll(res,examCode){examCode=examCode||EXAM.code;
 
 /* ---------- 결과 ---------- */
 function pathLocked(){const on=Math.min(S.attempt,3);return `<div class="lock"><div class="lg">🗺️</div><h4>학습 경로는 ${3-on>0?`${3-on}회 더 응시하면`:'곧'} 열려요</h4><p>한 번의 시험은 그날 컨디션이 섞여요. 3회가 쌓이면 <b>반복되는 결손</b>만 골라 개인 학습 경로를 만들어드려요.</p><div class="dots">${[0,1,2].map(i=>`<i class="${i<on?'on':''}"></i>`).join("")}</div><div style="font-size:12px;color:var(--mut2);margin-bottom:12px">현재 ${on}/3회</div><button class="btn ghost" id="pv" style="max-width:280px;margin:0 auto">3회 누적됐다고 가정하고 미리보기</button></div>`;}
-function pathUnlocked(weak){const steps=weak.map(w=>w[0]).sort((a,b)=>ORDER.indexOf(a)-ORDER.indexOf(b));const body=steps.map((u,i)=>{const b=BANK[u]||{};return `<div class="step"><div class="stepn">${i+1}</div><div><div class="st"><b>${u}</b></div><div class="stt">${b.up?'상류 먼저 · ':''}${b.type||''}</div></div></div>`;}).join("");return `<div class="bar"><div style="font-size:11.5px;color:var(--ok);font-weight:700;margin-bottom:6px;letter-spacing:.03em">3회 누적 가정 · 반복 결손 기준</div><h4 style="margin-bottom:4px">${esc(S.profile.name)}님 학습 경로</h4><div style="font-size:12px;color:var(--mut);margin-bottom:8px">상류(기초)부터 순서대로 — 이 순서로 메우면 등급이 가장 빠르게 올라가요.</div>${body||'<div class="stt">약점이 뚜렷하지 않아요 — 유지 학습!</div>'}<div style="font-size:11px;color:var(--mut);margin-top:10px">* 예시 화면. 실제로는 여러 주간 반복 결손으로 자동 생성·매주 갱신됩니다.</div></div>`;}
+function pathUnlocked(weak){const steps=weak.map(w=>w[0]).sort((a,b)=>ORDER.indexOf(a)-ORDER.indexOf(b));const body=steps.map((u,i)=>{const b=BANK[u]||{};return `<div class="step"><div class="stepn">${i+1}</div><div><div class="st"><b>${u}</b></div><div class="stt">${b.up?'상류 먼저 · ':''}${b.type||''}</div></div></div>`;}).join("");return `<div class="bar"><div style="font-size:11.5px;color:var(--ok);font-weight:700;margin-bottom:6px;letter-spacing:.03em">3회 누적 가정 · 반복 결손 기준</div><h4 style="margin-bottom:4px">${esc(S.profile.name)}님 학습 경로</h4><div style="font-size:12px;color:var(--mut);margin-bottom:8px">상류(기초)부터 순서대로.</div>${body||'<div class="stt">약점이 뚜렷하지 않아요 — 유지 학습!</div>'}<div style="font-size:11px;color:var(--mut);margin-top:10px">* 예시 화면. 실제로는 여러 주간 반복 결손으로 자동 생성·매주 갱신됩니다.</div></div>`;}
 function result(){const its=items();const done=its.filter(q=>graded(q)!=null);const correct=done.filter(q=>graded(q)==="o");const score=correct.reduce((s,q)=>s+q.jum,0);
  const areas={};its.forEach(q=>{const g=graded(q);if(g==null)return;areas[q.area]=areas[q.area]||{o:0,n:0};areas[q.area].n++;if(g==="o")areas[q.area].o++;});
  const areaRows=Object.entries(areas).map(([k,v])=>{const p=Math.round(v.o/v.n*100);const col=p>=70?"linear-gradient(90deg,#3d7fe0,#7cb6ff)":p>=45?"linear-gradient(90deg,#b3604f,#f0a08e)":"linear-gradient(90deg,#c25a45,#f0806c)";return `<div class="row"><span class="nm">${k}</span><span class="tr"><i style="width:${p}%;background:${col}"></i></span><span class="pc">${p}%</span></div>`;}).join("");
