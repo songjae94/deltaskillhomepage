@@ -228,6 +228,8 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   /* ── 자료 찾기 ── */
   function subj(q){var r=null;CAT.subjects.forEach(function(s){if(s.code===q.s)r=s;});return r;}
   function book(s,q){var r=null;s.textbooks.forEach(function(b){if(b.id===q.b)r=b;});return r;}
+  /* 부교재 칸의 글은 catalog.json 에서만 온다 — 일반 표기면 이름과 판이 파일에 아예 없다(짓는 곳 ops 내신상품표.py 부교재표기) */
+  function bookNote(b){return (b.edition?b.edition+" 기준 · ":"")+"문항 원문은 담지 않습니다";}
   function comp(id){var r=null;CAT.compositions.forEach(function(c){if(c.id===id)r=c;});return r;}
   function comps(f){return CAT.compositions.filter(f);}
   function unitsOf(q,s){var want=(q.u||"").split(",");return s.units.filter(function(u){return want.indexOf(u.no)>=0;});}
@@ -336,7 +338,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     var ul=el("ul","opts");
     s.textbooks.forEach(function(b){
       var li=el("li"),a=link("opt",{who:q.who,s:q.s,b:b.id});
-      add(a,el("b",null,b.name+" "+s.subject),el("small",null,b.edition+" 기준"),el("span","go","구성 고르기 →"));
+      add(a,el("b",null,b.label),el("small",null,bookNote(b)),el("span","go","구성 고르기 →"));
       add(li,a);add(ul,li);
     });
     var li=el("li"),sl=el("span","opt slot");add(sl,optTop("다른 부교재",el("span","tag","준비 중")),el("small",null,"늘어나면 이 자리에 보입니다."));add(li,sl);add(ul,li);
@@ -512,7 +514,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     var free=c.path==="free",u=product(c,q,s),back=Object.assign({},q);delete back.v;
     add(f,backLink(free?base:back),kick(5,q,s,b),h1("받을 내용을 확인하세요"));
     var dl=el("dl","conf");
-    row(dl,"부교재",b.name+" "+s.subject,b.edition+" 기준 · 문항 원문은 담지 않습니다");
+    row(dl,"부교재",b.label,bookNote(b));
     row(dl,"구성",c.name,c.desc);
     if(c.pick==="range"){var rg=rangeOf(q,s);row(dl,"시험범위",rg[0].no+" "+rg[0].unit+" ~ "+rg[rg.length-1].no+" "+rg[rg.length-1].unit);}
     else if(!free){var us=unitsOf(q,s);row(dl,us.length>1?"단원 "+us.length+"개":"단원",us.map(function(x){return x.no+" "+x.unit;}).join(" · "));}
