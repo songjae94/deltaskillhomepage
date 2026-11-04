@@ -164,7 +164,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   <noscript><p class="lede">이 화면은 자바스크립트를 켜야 고를 수 있습니다.</p></noscript>
   <div class="notice">
     <p><b>판매 시작일은 추후 공지합니다.</b> <span id="sale-note">지금은 상품 안내만 볼 수 있고 결제는 열려 있지 않습니다.</span></p>
-    <p>정기결제(자동 결제)는 없고, 주문마다 한 번 결제합니다. <a href="/refund/">환불·청약철회 안내</a> · <a href="/minor/">미성년자 구매 안내</a></p>
+    <p>표시한 값은 부가세 포함입니다. 정기결제(자동 결제)는 없고, 주문마다 한 번 결제합니다. <a href="/refund/">환불·청약철회 안내</a> · <a href="/minor/">미성년자 구매 안내</a></p>
   </div>
 </main>
 <footer class="sitefoot">
@@ -536,7 +536,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     if(u)row(dl,"상품 번호",u.sku);
     var d=el("div");add(d,el("dt",null,"값"));var dd=el("dd");
     if(free)add(dd,el("span","won","0원"));
-    else if(pickFmt&&priceAt(u,fm)){add(dd,el("span","won",won(priceAt(u,fm))));add(dd,el("small",null,fmtName(fm)+" · VAT 포함"));}
+    else if(pickFmt&&priceAt(u,fm)){add(dd,el("span","won",won(priceAt(u,fm))));add(dd,el("small",null,fmtName(fm)+" · 부가세 포함"));}
     else{dd.className="blank";dd.textContent="가격 추후 공지";}
     add(d,dd);dl.appendChild(d);
     add(f,dl);
@@ -545,7 +545,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
       var fl=el("ul","picks");
       FMTS.forEach(function(x){
         var li=el("li"),p=priceAt(u,x[0]);
-        var r=radioRow("fmt",x[0],fm===x[0],x[1],p?won(p)+" · VAT 포함":"가격 추후 공지",null,function(){
+        var r=radioRow("fmt",x[0],fm===x[0],x[1],p?won(p)+" · 부가세 포함":"가격 추후 공지",null,function(){
           var n={},y=window.scrollY;Object.keys(q).forEach(function(k){n[k]=q[k];});n.f=x[0];
           history.replaceState(history.state,"",url(n));draw(false);window.scrollTo(0,y);
           var e=document.querySelector('[data-fk="f-'+x[0]+'"]');if(e)e.focus();

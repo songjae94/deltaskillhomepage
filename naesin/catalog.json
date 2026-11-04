@@ -143,7 +143,10 @@
      "count": null,
      "pages": null,
      "price": null,
-     "taxFreeAmount": null,
+     "taxFreeAmount": {
+      "pdf": 0,
+      "hwpx": 0
+     },
      "saleFrom": null,
      "saleTo": null,
      "sample": null,
@@ -163,7 +166,10 @@
      "count": null,
      "pages": null,
      "price": null,
-     "taxFreeAmount": null,
+     "taxFreeAmount": {
+      "pdf": 0,
+      "hwpx": 0
+     },
      "saleFrom": null,
      "saleTo": null,
      "sample": null,
@@ -183,7 +189,10 @@
      "count": null,
      "pages": null,
      "price": null,
-     "taxFreeAmount": null,
+     "taxFreeAmount": {
+      "pdf": 0,
+      "hwpx": 0
+     },
      "saleFrom": null,
      "saleTo": null,
      "sample": null,
@@ -203,7 +212,10 @@
      "count": null,
      "pages": null,
      "price": null,
-     "taxFreeAmount": null,
+     "taxFreeAmount": {
+      "pdf": 0,
+      "hwpx": 0
+     },
      "saleFrom": null,
      "saleTo": null,
      "sample": null,
@@ -223,7 +235,10 @@
      "count": null,
      "pages": null,
      "price": null,
-     "taxFreeAmount": null,
+     "taxFreeAmount": {
+      "pdf": 0,
+      "hwpx": 0
+     },
      "saleFrom": null,
      "saleTo": null,
      "sample": null,
@@ -246,7 +261,10 @@
       "pdf": 3000,
       "hwpx": 6000
      },
-     "taxFreeAmount": null,
+     "taxFreeAmount": {
+      "pdf": 0,
+      "hwpx": 0
+     },
      "saleFrom": null,
      "saleTo": null,
      "sample": null,
@@ -263,7 +281,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -279,7 +300,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -295,7 +319,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -311,7 +338,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -327,7 +357,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -343,7 +376,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -359,7 +395,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -375,7 +414,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -391,7 +433,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -407,7 +452,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -423,7 +471,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -439,7 +490,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -455,7 +509,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -473,7 +530,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -492,7 +552,10 @@
         "pdf": 500,
         "hwpx": 1000
        },
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -526,7 +589,10 @@
      "count": null,
      "pages": null,
      "price": null,
-     "taxFreeAmount": null,
+     "taxFreeAmount": {
+      "pdf": 0,
+      "hwpx": 0
+     },
      "saleFrom": null,
      "saleTo": null,
      "sample": null,
@@ -546,7 +612,10 @@
      "count": null,
      "pages": null,
      "price": null,
-     "taxFreeAmount": null,
+     "taxFreeAmount": {
+      "pdf": 0,
+      "hwpx": 0
+     },
      "saleFrom": null,
      "saleTo": null,
      "sample": null,
@@ -566,7 +635,10 @@
      "count": null,
      "pages": null,
      "price": null,
-     "taxFreeAmount": null,
+     "taxFreeAmount": {
+      "pdf": 0,
+      "hwpx": 0
+     },
      "saleFrom": null,
      "saleTo": null,
      "sample": null,
@@ -586,7 +658,10 @@
      "count": null,
      "pages": null,
      "price": null,
-     "taxFreeAmount": null,
+     "taxFreeAmount": {
+      "pdf": 0,
+      "hwpx": 0
+     },
      "saleFrom": null,
      "saleTo": null,
      "sample": null,
@@ -606,7 +681,10 @@
      "count": null,
      "pages": null,
      "price": null,
-     "taxFreeAmount": null,
+     "taxFreeAmount": {
+      "pdf": 0,
+      "hwpx": 0
+     },
      "saleFrom": null,
      "saleTo": null,
      "sample": null,
@@ -626,7 +704,10 @@
      "count": null,
      "pages": null,
      "price": null,
-     "taxFreeAmount": null,
+     "taxFreeAmount": {
+      "pdf": 0,
+      "hwpx": 0
+     },
      "saleFrom": null,
      "saleTo": null,
      "sample": null,
@@ -649,7 +730,10 @@
       "pdf": 4000,
       "hwpx": 8000
      },
-     "taxFreeAmount": null,
+     "taxFreeAmount": {
+      "pdf": 0,
+      "hwpx": 0
+     },
      "saleFrom": null,
      "saleTo": null,
      "sample": null,
@@ -666,7 +750,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -682,7 +769,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -698,7 +788,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -714,7 +807,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -730,7 +826,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -746,7 +845,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -762,7 +864,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -778,7 +883,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -794,7 +902,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -810,7 +921,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -826,7 +940,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -842,7 +959,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -858,7 +978,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -874,7 +997,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -890,7 +1016,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -906,7 +1035,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -922,7 +1054,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -938,7 +1073,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -954,7 +1092,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -970,7 +1111,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -986,7 +1130,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -1002,7 +1149,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -1018,7 +1168,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -1034,7 +1187,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -1050,7 +1206,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -1066,7 +1225,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -1082,7 +1244,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -1098,7 +1263,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -1114,7 +1282,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -1130,7 +1301,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -1148,7 +1322,10 @@
        "count": null,
        "pages": null,
        "price": null,
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
@@ -1167,7 +1344,10 @@
         "pdf": 500,
         "hwpx": 1000
        },
-       "taxFreeAmount": null,
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
        "saleFrom": null,
        "saleTo": null,
        "sample": null,
