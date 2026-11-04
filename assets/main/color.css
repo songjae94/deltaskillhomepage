@@ -1,0 +1,25 @@
+/* 색 토큰 — 메인의 색은 이 파일에서만 정한다. 로고 2색(번개 #D8281C · 기준선 #0B1F3A) + 중립 + 상태 초록 하나. */
+:root{
+  --bg:#ffffff;--bg2:#f6f5f2;--bg3:#efede8;--card:#ffffff;
+  --ink:#0B0E14;--ink2:#3b3d44;--muted:#5f6269;--line:#e4e3e0;--line2:#cfcdc8;
+  --accent:#D8281C;--accentH:#b4211a;--accentT:#B4211A;--accentSoft:#fdf0ee;
+  --deep:#0B1F3A;--deepT:#0B1F3A;--deepSoft:#e9eef6;
+  --ok:#0D5A2E;--okSoft:#e3f6ea;
+  --focus:#0B1F3A;
+  --screen:#101216;             /* 영상 창 바탕(낮밤 공통) */
+  --screenT:#ffffff;--screenM:#c9ccd3;--demoT:#ffd27a;
+  --hdr:rgba(255,255,255,.9);
+  --shadow:0 24px 60px rgba(11,31,58,.10);
+  color-scheme:light;
+}
+html[data-theme="dark"]{
+  --bg:#121419;--bg2:#1a1d24;--bg3:#232733;--card:#1a1d24;
+  --ink:#e8e6e1;--ink2:#c9c7c1;--muted:#a3a39d;--line:#2b2f38;--line2:#3a3f4b;
+  --accent:#c9241a;--accentH:#D8281C;--accentT:#ff8a80;--accentSoft:#2a1a19;
+  --deep:#0B1F3A;--deepT:#9db3d6;--deepSoft:#1c2433;
+  --ok:#7bd3a0;--okSoft:#17291f;
+  --focus:#9db3d6;
+  --hdr:rgba(18,20,25,.88);
+  --shadow:0 24px 60px rgba(0,0,0,.4);
+  color-scheme:dark;
+}
