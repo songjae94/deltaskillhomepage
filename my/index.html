@@ -352,7 +352,7 @@ async function generateReport(){
     h+=`<ol class="ol">`;
     study.forEach(u=>{const top=Object.keys(u.skills||{}).sort((a,b)=>u.skills[b]-u.skills[a])[0];
       h+=`<li><b>${esc(u.unit)}</b>${u.exams>=2?`<span class="rep-tag">반복 ${u.exams}회차</span>`:""} <span class="k">· 오답 ${u.wrong}개</span>${top?`<br><span class="anchor">⚡ ${esc(top)}</span> <span class="k">먼저 잡기</span>`:""}</li>`;});
-    h+=`</ol><p class="k">기초(상류) 단원과 반복해서 뚫린 단원을 먼저 메우면 점수가 가장 빠르게 오릅니다.</p>`;
+    h+=`</ol><p class="k">기초(상류) 단원과 반복해서 뚫린 단원을 먼저 메웁니다.</p>`;
   } else { h+=`<p class="k">아직 단원별 오답이 충분치 않아요. 오답노트를 더 쌓으면 순서를 제시해 드려요.</p>`; }
 
   h+=`<h2>④ 공부 방향</h2>`;
