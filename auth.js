@@ -11,7 +11,7 @@
     has: function () { return !!A.get(); },
     phone: function () { try { return localStorage.getItem("ds_tk_ph") || localStorage.getItem("ds_phone") || ""; } catch (e) { return ""; } },
     set: function (t, ph) { try { localStorage.setItem("ds_tk", t); if (ph) { localStorage.setItem("ds_tk_ph", ph); localStorage.setItem("ds_phone", ph); } } catch (e) {} },
-    clear: function () { try { localStorage.removeItem("ds_tk"); localStorage.removeItem("ds_tk_ph"); } catch (e) {} },
+    clear: function () { try { localStorage.removeItem("ds_tk"); localStorage.removeItem("ds_tk_ph"); sessionStorage.removeItem("ds_l2"); } catch (e) {} },   /* ds_l2: 강사 페이지 값 — 로그아웃하면 이 탭에도 남기지 않는다 */
     loginUrl: function (next, mode) { return "/auth/?" + (mode ? "mode=" + mode + "&" : "") + "next=" + encodeURIComponent(safeNext(next || (location.pathname + location.search + location.hash))); },
     requireLogin: function (next) { if (A.has()) return true; location.replace(A.loginUrl(next)); return false; },
     /* 서버 토큰도 지운다(이 기기만). 서버가 안 받아도 로컬은 지운다. */
@@ -25,9 +25,9 @@
     },
     /* 헤더: #authnav(데스크톱 링크 묶음) · #mauth(모바일 단추) — 옛 인라인 조각과 같은 꼴 */
     header: function () {
-      var n = document.getElementById("authnav"), on = A.has();
+      var n = document.getElementById("authnav"), on = A.has(), back = (n && n.dataset.next) || location.pathname;   /* data-next: 로그인 뒤 갈 곳(메인은 /my/) */
       document.documentElement.classList.toggle("authed", on);
-      var links = on ? [["/my/", "내 오답노트", ""], ["#", "로그아웃", "dsout"]] : [[A.loginUrl(location.pathname), "로그인", ""], [A.loginUrl(location.pathname, "signup"), "회원가입", ""]];
+      var links = on ? [["/my/", "마이페이지", ""], ["#", "로그아웃", "dsout"]] : [[A.loginUrl(back), "로그인", ""], [A.loginUrl(back, "signup"), "회원가입", ""]];
       if (n) n.innerHTML = links.map(function (l) { return '<a href="' + l[0] + '"' + (l[2] ? ' class="' + l[2] + '"' : '') + '>' + l[1] + '</a>'; }).join("");
       var mb = document.getElementById("mauth");
       if (mb) { if (on) { mb.textContent = "로그아웃"; mb.href = "#"; mb.className = "mauthbtn dsout"; } else { mb.textContent = "로그인"; mb.href = A.loginUrl(location.pathname); mb.className = "mauthbtn"; } }

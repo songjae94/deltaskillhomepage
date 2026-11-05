@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>델타스킬 · 내 오답노트</title>
+<title>델타스킬 · 마이페이지</title>
 <style>
 :root{--acc:#5aa2ff;--acc2:#a8cbff;--mut:#9fb2cc;--line:rgba(186,215,247,.14);--line2:rgba(186,215,247,.24);--bg:#05060f;--card:#0c1222;--red:#5aa2ff}
 *{box-sizing:border-box}
@@ -69,10 +69,11 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 <div id="app" class="wrap" hidden>
   <div class="top">
     <a href="/" class="brand"><img src="/logo-dark-192.png" alt=""><span>델타스킬</span></a>
-    <div><button class="sm" onclick="location.href='/pilot/'">오답노트 쓰기</button> <button class="sm" onclick="location.href='/pilot/?profile=1'">내 정보</button> <button class="sm" onclick="location.href='/auth/?mode=phone'">번호 바꾸기</button> <button class="sm" onclick="location.href='/auth/?mode=reset'">비밀번호</button> <button class="sm" onclick="doLogout()">로그아웃</button></div>
+    <div><button class="sm" id="btnNote" onclick="location.href='/pilot/'">오답노트 쓰기</button> <button class="sm" id="btnInfo" onclick="location.href='/pilot/?profile=1'">내 정보</button> <button class="sm" onclick="location.href='/auth/?mode=phone'">번호 바꾸기</button> <button class="sm" onclick="location.href='/auth/?mode=password'">비밀번호 변경</button> <button class="sm" onclick="doLogout()">로그아웃</button></div>
   </div>
-  <h1 id="hello">내 오답노트</h1>
+  <h1 id="hello">마이페이지</h1>
   <div id="body"></div>
+  <div id="acct" class="k" style="margin-top:28px;display:flex;flex-wrap:wrap;gap:8px 18px"></div>
 </div>
 
 <script src="/auth.js"></script>
@@ -192,14 +193,37 @@ function boot(){
   const has=!!TK.get(), wantSignup=location.search.indexOf("signup")>=0;
   if(!has){ goAuth(wantSignup?"signup":""); return; }
   document.getElementById("app").hidden=false;
-  try{ if(localStorage.getItem("ds_pin_short")){ const n=document.createElement("div"); n.className="dir"; n.innerHTML="비밀번호가 4자리예요. 보안을 위해 <b>6자리</b>로 바꿔 주세요. <a href=\"/auth/?mode=reset\">비밀번호 바꾸기 →</a>"; document.getElementById("hello").after(n);} }catch(_){}
+  try{ if(localStorage.getItem("ds_pw_old")){ const n=document.createElement("div"); n.className="dir"; n.innerHTML="비밀번호를 영문과 숫자를 섞어 <b>8자 이상</b>으로 바꿔 주세요. <a href=\"/auth/?mode=password\">비밀번호 변경 →</a>"; document.getElementById("hello").after(n);} }catch(_){}
   /* 이미 로그인돼 있어도 로컬 프로필을 한 번 맞춰 둔다 — 예전 로그인은 이걸 저장하지 않았다 */
   load(); syncProfile();
 }
 
+/* ---- 강사 화면(1105) — 역할과 페이지 연결은 별개. 연결된 강사에게만 서버가 값을 준다 ---- */
+function acctLinks(role){
+  const a=document.getElementById("acct"), other=role==="teacher"?"student":"teacher";
+  a.innerHTML=`<a href="#" id="roleBtn">${other==="teacher"?"강사로 바꾸기":"학생으로 바꾸기"}</a><a href="/auth/?mode=withdraw">탈퇴</a>`;
+  document.getElementById("roleBtn").onclick=async e=>{e.preventDefault();try{await api("/role-change",{method:"POST",body:{role:other}});location.reload();}catch(_){alert("바꾸지 못했어요. 다시 시도해 주세요.");}};
+}
+async function loadTeacher(){
+  document.getElementById("btnNote").hidden=true; document.getElementById("btnInfo").hidden=true;
+  const body=document.getElementById("body"); body.innerHTML="<h2>학생관리</h2><p class='k'>불러오는 중…</p>";
+  try{
+    const j=await api("/teacher-page");
+    body.innerHTML="<h2>학생관리</h2><button class='p' id='openPage'>내 학생관리 열기</button>";
+    document.getElementById("openPage").onclick=()=>{try{sessionStorage.setItem("ds_l2",j.key);}catch(_){} location.href=j.path;};
+  }catch(e){
+    if(e.message==="no_page") body.innerHTML="<h2>학생관리</h2><p>아직 연결된 페이지가 없습니다. 강사 확인 뒤 연결해 드립니다.</p><p><a href='/pilot2/live/'>예시 사이트 보기 →</a></p><p><a href='mailto:admin@deltaskill.co.kr?subject=%EA%B0%95%EC%82%AC%20%ED%95%99%EC%83%9D%EA%B4%80%EB%A6%AC%20%EC%97%B0%EA%B2%B0%20%EB%AC%B8%EC%9D%98'>연결 문의 →</a></p>";
+    else body.innerHTML="<p class='bad'>불러오지 못했어요. 다시 시도해 주세요.</p>";
+  }
+}
+
 /* ---- 결과 ---- */
 async function load(){
-  const body=document.getElementById("body"); body.innerHTML="<p class='k'>불러오는 중…</p>"; await deltamapReady; await rxReady;
+  const body=document.getElementById("body"); body.innerHTML="<p class='k'>불러오는 중…</p>";
+  let role="student"; try{ const m=await api("/me"); if(m.role==="teacher") role="teacher"; }catch(_){}
+  acctLinks(role);
+  if(role==="teacher") return loadTeacher();
+  await deltamapReady; await rxReady;
   let hist;
   try{ hist=await api("/history"); }catch(e){ if(e.message==="no_token"){boot();return;} body.innerHTML="<p class='bad'>불러오지 못했어요. 다시 시도해 주세요.</p>"; return; }
   const subs=normHist(hist.items);

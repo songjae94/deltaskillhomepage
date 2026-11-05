@@ -90,6 +90,7 @@
 <body>
 <header class="hdr" id="hdr"><div class="wrap">
  <a class="brand" href="#q0" aria-label="델타스킬 처음으로"><img class="lg-k" src="/assets/main/deltaskill-ko-horizontal-color.svg" alt="델타스킬" width="118" height="32"><img class="lg-w" src="/assets/main/deltaskill-ko-horizontal-white.svg" alt="" width="118" height="32"></a>
+ <nav class="hnav" id="authnav" data-next="/my/" aria-label="계정"></nav>
  <button class="tg" type="button" data-theme-toggle aria-label="야간 모드 켜기/끄기"><i aria-hidden="true"></i><span class="on-l">낮</span><span class="on-d">밤</span></button>
 </div></header>
 
@@ -194,13 +195,13 @@
   </ul>
  </div>
 
- <!-- 학원/선생님 · 학생관리 — 회원은 자기 번호(live2 잠금 화면의 비밀번호)를 넣고 자기 페이지로 · 미가입은 예시 사이트 -->
+ <!-- 학원/선생님 · 학생관리 — 회원은 로그인 뒤 마이페이지에서 자기 페이지로 · 미가입은 예시 사이트 -->
  <div class="step" id="q-pro-mgmt">
   <a class="back" href="#q-pro" data-back>← 뒤로</a>
   <p class="kick"><span class="n">2</span><b>학생관리</b><span>학생관리 시스템 도입</span></p>
   <h1>학생관리 <br><em>시스템 도입</em></h1>
   <ul class="opts">
-   <li><a class="opt" href="/pilot2/live2/"><b>가입한 회원입니다</b><small>내 번호(비밀번호)를 넣고 내 페이지로 들어갑니다</small><span class="go">내 페이지로 →</span></a></li>
+   <li><a class="opt" href="/auth/?next=%2Fmy%2F"><b>가입한 회원입니다</b><small>로그인하고 마이페이지에서 내 학생관리로 들어갑니다</small><span class="go">로그인 →</span></a></li>
    <li><a class="opt" href="/pilot2/live/"><b>아직 가입 전입니다</b><small>이런 사이트입니다 — 예시 사이트 · 강사 · 학생 · 수치는 전부 가상</small><span class="go">예시 보기 →</span></a></li>
   </ul>
   <p class="sub"><a href="/partners/">교육기관 도입 안내</a></p>
@@ -293,6 +294,7 @@
   <p class="copy">© 2026 델타스킬. All rights reserved.</p>
 </div>
 </div></footer>
+<script src="/auth.js"></script>
 <script src="/assets/main/main.js"></script>
 </body>
 </html>

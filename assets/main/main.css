@@ -13,6 +13,10 @@ img,video{max-width:100%}
 .hdr{position:sticky;top:0;z-index:30;height:64px;display:flex;align-items:center;background:var(--hdr);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid transparent;transition:border-color .2s}
 .hdr.on{border-bottom-color:var(--line)}
 .hdr .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.hnav{margin-left:auto;display:flex;align-items:center;gap:14px;font-size:14px;font-weight:700;white-space:nowrap}
+.hnav a{color:var(--ink2)}
+.hnav a:hover{color:var(--ink)}
+@media(max-width:480px){.hnav a:nth-child(2){display:none}}
 .brand img{display:block;height:30px;width:auto}
 .brand .lg-w{display:none}
 html[data-theme="dark"] .brand .lg-k{display:none}
