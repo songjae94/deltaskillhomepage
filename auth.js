@@ -12,11 +12,13 @@
     phone: function () { try { return localStorage.getItem("ds_tk_ph") || localStorage.getItem("ds_phone") || ""; } catch (e) { return ""; } },
     set: function (t, ph) { try { localStorage.setItem("ds_tk", t); if (ph) { localStorage.setItem("ds_tk_ph", ph); localStorage.setItem("ds_phone", ph); } } catch (e) {} },
     clear: function () { try { localStorage.removeItem("ds_tk"); localStorage.removeItem("ds_tk_ph"); sessionStorage.removeItem("ds_l2"); } catch (e) {} },   /* ds_l2: 강사 페이지 값 — 로그아웃하면 이 탭에도 남기지 않는다 */
+    /* 로그아웃 때만: 이 기기에 남긴 번호 · 이름 · 학원 · 기록표를 지운다(형 1105 — 공용 컴퓨터에서 다음 사람에게 보였다). 토큰이 풀렸을 뿐일 때(clear)는 남겨 다시 로그인을 쉽게 한다. */
+    forget: function () { try { ["ds_phone", "ds_students", "ds_subs", "ds_subid", "ds_pw_old", "ds_pin_short"].forEach(function (k) { localStorage.removeItem(k); }); } catch (e) {} },
     loginUrl: function (next, mode) { return "/auth/?" + (mode ? "mode=" + mode + "&" : "") + "next=" + encodeURIComponent(safeNext(next || (location.pathname + location.search + location.hash))); },
     requireLogin: function (next) { if (A.has()) return true; location.replace(A.loginUrl(next)); return false; },
     /* 서버 토큰도 지운다(이 기기만). 서버가 안 받아도 로컬은 지운다. */
     logout: function (to) {
-      var t = A.get(); A.clear();
+      var t = A.get(); A.clear(); A.forget();
       var done = function () { location.href = to || "/"; };
       if (!t) return done();
       try {

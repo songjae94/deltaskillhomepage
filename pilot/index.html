@@ -159,6 +159,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 <script>
 /* ===== 서버 연결 설정: Supabase 프로젝트 만들면 아래 두 값만 채우면 실제 서버 저장됨 (비우면 데모=브라우저 저장) ===== */
 const CONFIG={ api:"https://cvlrphtupjmaefahodgz.supabase.co/functions/v1/api" };
+try{if(/^(localhost|127\.0\.0\.1)$/.test(location.hostname)&&localStorage.getItem("ds_api_dev"))CONFIG.api=localStorage.getItem("ds_api_dev");}catch(_){}   /* 로컬 시험에서만 가짜 서버 — auth.js 와 같은 길 */
 const TK={get:()=>localStorage.getItem("ds_tk")||"",set:t=>localStorage.setItem("ds_tk",t),has:()=>!!localStorage.getItem("ds_tk"),clear:()=>{localStorage.removeItem("ds_tk");localStorage.removeItem("ds_tk_ph");}};
 async function api(path,opt){opt=opt||{};const method=opt.method||"GET";const auth=opt.auth!==false;const h={"Content-Type":"application/json"};if(auth){const t=TK.get();if(!t)throw new Error("no_token");h["Authorization"]="Bearer "+t;}
  /* 서버가 응답하지 않을 때 '저장 중...'에서 멈추지 않도록 타임아웃 */
@@ -312,8 +313,8 @@ function login(){el("screen").innerHTML=`<div class="pad"><div style="margin-bot
      S.profile=null;el("go").disabled=true;el("go").textContent="확인 중…";
      const okp=await recoverProfile();
      if(okp){S.catSel=null;S.screen="exam";}
-     else{ /* 가입은 /auth/ 에서 — 휴대폰 문자 인증 뒤 가입(1008). 돌아오면 토큰으로 프로필을 복구한다 */
-       location.href="/auth/?mode=signup&next="+encodeURIComponent("/pilot/")+"&phone="+S.phone; return; }
+     else{ /* 로그인 · 가입은 /auth/ 에서 — 로그아웃한 기존 회원도 여기로 오므로 로그인 화면을 먼저 보인다(가입 단추는 그 화면에 있다 · 1105). 돌아오면 토큰으로 프로필을 복구한다 */
+       location.href="/auth/?next="+encodeURIComponent("/pilot/")+"&phone="+S.phone; return; }
    }
    render();window.scrollTo(0,0);};}
 
@@ -360,7 +361,7 @@ function examSelect(){
  <div class="desc">응시한 모의고사의 분류를 먼저 선택하세요. 이전에 본 시험도 입력할 수 있어요.</div>`+
   CATS.map((c,i)=>{const n=c.exams.filter(e=>e.ex!=null).length;const sub=c.custom?"내가 본 다른 모의고사를 직접 기록해요":`${c.desc} · 입력 가능 ${n}개${n<c.exams.length?` / 준비 중 ${c.exams.length-n}개`:''}`;return `<button class="q" style="width:100%;text-align:left;cursor:pointer" data-cat="${i}"><div class="qh" style="margin-bottom:2px"><span style="font-weight:800;font-size:15.5px">${c.name}</span><span style="margin-left:auto;color:var(--mut2)">${c.custom?'✏️':'→'}</span></div><div style="font-size:12px;color:var(--mut)">${sub}</div></button>`;}).join("")+`</div>`;
   const pf=document.querySelector("[data-prof]");if(pf)pf.onclick=()=>{S._pp=null;S.screen="profile";render();window.scrollTo(0,0);};
-  const rl=document.querySelector("[data-relogin]");if(rl)rl.onclick=()=>{localStorage.removeItem("ds_phone");TK.clear();S.phone="";S.profile=null;S._pin="";S._pin2="";S.screen="login";render();window.scrollTo(0,0);};
+  const rl=document.querySelector("[data-relogin]");if(rl)rl.onclick=()=>{["ds_phone","ds_students","ds_subs","ds_subid","ds_pw_old","ds_pin_short"].forEach(k=>localStorage.removeItem(k));TK.clear();S.phone="";S.profile=null;S._pin="";S._pin2="";S.screen="login";render();window.scrollTo(0,0);};
   document.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>{const i=+b.dataset.cat;if(CATS[i].custom){S._cName="";S._cDate=(new Date()).toISOString().slice(0,10);S._cSub=S.profile.subject;S._cScore="";S._cWrong={};S.photo={};S.savedSubId=null;S.savedExam=null;S.saveMode=null;S._forceNew=false;S._updWarn=null;S._editMode=false;S._subjOv=null;S.mode=null;S.mark={};S.open=null;S.screen="custom";render();window.scrollTo(0,0);return;}S.catSel=i;render();window.scrollTo(0,0);});
   el("fab").innerHTML="";return;
  }
@@ -619,7 +620,7 @@ function resetApp(){S={screen:"login",phone:"",profile:null,studentId:null,catSe
 function grabSavePin(){const pe=el("savePin");if(pe){const v=pe.value;if(v)S._pin=v;}}
 /* 서버·내부 오류코드를 사람이 읽는 말로 — 화면에 need_pin 같은 코드가 그대로 뜨지 않게 한다 */
 function errMsg(code){const c=(""+(code||"")).trim();
- const M={need_pin:"저장하려면 아래에 비밀번호를 입력해 주세요.",bad_pw_format:"비밀번호는 영문과 숫자를 섞어 8자 이상으로 정해 주세요.",invalid:"비밀번호가 맞지 않아요. 다시 입력해 주세요.",
+ const M={need_pin:"저장하려면 아래에 비밀번호를 입력해 주세요.",bad_pw_format:"비밀번호는 영문과 숫자를 섞어 8자 이상으로 정해 주세요.",invalid:"비밀번호가 맞지 않아요. 다시 입력해 주세요.",login_or_signup:"비밀번호가 맞지 않거나 아직 가입 전이에요. 다시 입력해 보시고, 처음이면 로그인 페이지(/auth/)에서 가입해 주세요.",
   locked:"시도가 많아 잠시 잠겼어요. 15분 뒤에 다시 시도해 주세요.",no_answers:"입력된 답이 없어요. 문항을 입력한 뒤 저장해 주세요.",
   no_token:"로그인이 풀렸어요. 아래에 비밀번호를 입력해 주세요.",
   verify_required:"휴대폰 인증이 필요해요. 로그인 페이지(/auth/)에서 가입을 마친 뒤 다시 저장해 주세요.",unauthorized:"로그인이 풀렸어요. 다시 로그인해 주세요.",timeout:"서버 응답이 없어요. 잠시 뒤 다시 시도해 주세요.",
@@ -628,7 +629,7 @@ function errMsg(code){const c=(""+(code||"")).trim();
  return c;}
 function saveStatusUI(){const apiOn=!!CONFIG.api,saved=S.saveMode==="server",failed=apiOn&&S.saveMode&&!saved,needPin=failed&&!TK.has();
  if(saved)return{html:`<div class="saved">✅ 델타스킬 서버에 저장됐어요 · 매주 쌓여 학습 경로가 됩니다${S._updWarn?`<div style="font-size:11.5px;color:var(--mut2);margin-top:4px">(수정 반영은 실패해 새 회차로 저장했어요 · ${esc(S._updWarn)})</div>`:``}${S._syncWarn?`<div style="font-size:11.5px;color:var(--no);margin-top:4px">⚠ 저장은 됐지만 ${esc(S._syncWarn)}</div>`:``}</div>`,saved:true};
- if(failed)return{html:`<div class="saved demo" style="border-color:rgba(240,128,108,.6);align-items:flex-start"><div style="flex:1;line-height:1.6">⚠️ <b>${S.savedSubId?"수정 내용이 반영되지 않았어요.":"아직 저장되지 않았어요."}</b> ${S.savedSubId?"아래 <b>저장하기</b>로 다시 시도해 주세요. (중복 회차는 생기지 않아요)":"아래 <b>저장하기</b> 버튼을 눌러 주세요."}${(S.saveMode&&(""+S.saveMode).indexOf("error:")===0)?`<div style="font-size:11.5px;color:var(--mut2);margin-top:4px">${esc(errMsg((""+S.saveMode).slice(6)))}${S._saveTries?` · ${S._saveTries}번째 시도 실패 ${esc(S._lastTry||"")}`:``}</div>`:``}${needPin?`<div style="margin-top:8px;font-size:12.5px">저장 확인용 <b>비밀번호(4~6자리)</b>를 입력하세요<input class="txt" id="savePin" type="password" maxlength="64" placeholder="비밀번호" value="${esc(S._pin||'')}" style="margin-top:6px;width:100%"></div>`:``}</div></div>`,saved:false};
+ if(failed)return{html:`<div class="saved demo" style="border-color:rgba(240,128,108,.6);align-items:flex-start"><div style="flex:1;line-height:1.6">⚠️ <b>${S.savedSubId?"수정 내용이 반영되지 않았어요.":"아직 저장되지 않았어요."}</b> ${S.savedSubId?"아래 <b>저장하기</b>로 다시 시도해 주세요. (중복 회차는 생기지 않아요)":"아래 <b>저장하기</b> 버튼을 눌러 주세요."}${(S.saveMode&&(""+S.saveMode).indexOf("error:")===0)?`<div style="font-size:11.5px;color:var(--mut2);margin-top:4px">${esc(errMsg((""+S.saveMode).slice(6)))}${S._saveTries?` · ${S._saveTries}번째 시도 실패 ${esc(S._lastTry||"")}`:``}</div>`:``}${needPin?`<div style="margin-top:8px;font-size:12.5px">저장 확인용 <b>비밀번호</b>를 입력하세요<input class="txt" id="savePin" type="password" maxlength="64" placeholder="비밀번호" value="${esc(S._pin||'')}" style="margin-top:6px;width:100%"></div>`:``}</div></div>`,saved:false};
  return{html:`<div class="saved demo">저장 완료(데모=브라우저)</div>`,saved:false};}
 function saveFab(saved,onSave,onEdit){
  if(saved&&S._editMode){/* 수정 모드 저장 완료 — 완료 버튼만. 마이페이지에서 온 경우 마이페이지로 복귀 */
@@ -667,13 +668,22 @@ async function saveAll(res,examCode){examCode=examCode||EXAM.code;
    if(TK.has())return;
    const pin=S._pin||"";
    if(pin.length<4)throw new Error("need_pin");
+   /* 1105: 로그인 먼저. 예전엔 /enroll 부터 불러 기존 회원이 가입 규칙(bad_pw_format · verify_required)에 막혀 비밀번호가 맞아도 저장을 못 했다. 서버는 없는 번호와 틀린 비밀번호를 구별해 주지 않는다. */
+   try{
+     const j=await api("/login",{method:"POST",auth:false,body:{phone:S.phone,pin:pin}});TK.set(j.token);
+     try{if(j.pw_upgrade)localStorage.setItem("ds_pw_old","1");}catch(_){}
+     /* 토큰 없이 시작하면 회차가 1로 잡힌다. 그대로 저장하면 전에 본 1회차를 덮어쓰므로 서버 이력으로 다시 센다(수정 중인 회차는 그대로). */
+     if(!S.savedSubId){HISTC=null;S.attempt=await calcAttempt(examCode);}
+     return;
+   }catch(e){if(!/^invalid/.test(""+(e&&e.message||e)))throw e;}
    try{
      const j=await api("/enroll",{method:"POST",auth:false,body:{phone:S.phone,pin:pin,name:S.profile.name,academy:S.profile.academy||"비재원생",grade:S.profile.grade,subject:S.profile.subject,consent:true,consent_marketing:S._consent2===true,consent_notify:S._consent3===true}});
      TK.set(j.token);
    }catch(e){
      const m=""+(e&&e.message||e);
-     if(/already_enrolled/.test(m)){const j=await api("/login",{method:"POST",auth:false,body:{phone:S.phone,pin:pin}});TK.set(j.token);}
-     else throw e;
+     if(/already_enrolled/.test(m))throw new Error("invalid");
+     if(/^(verify_required|bad_pw_format|weak_pin)/.test(m))throw new Error("login_or_signup");
+     throw e;
    }
  };
  /* 서버가 submission_id·id·submissionId 중 무엇으로 주든 회차 id를 찾아낸다 */
