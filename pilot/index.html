@@ -259,7 +259,7 @@ async function recoverProfile(){
  if(!TK.has())return false;
  const tph=localStorage.getItem("ds_tk_ph");if(tph&&tph!==S.phone)return false;
  const p=await fetchProfile();if(!p)return false;
- saveProfile({name:p.name||"",academy:p.academy||"",grade:p.grade||"",subject:p.subject});
+ saveProfile({name:p.name||"",academy:p.academy||"",school:(typeof p.school==="string"?p.school:""),grade:p.grade||"",subject:p.subject});
  return true;
 }
 
@@ -267,17 +267,28 @@ async function recoverProfile(){
    선택과목은 바뀔 수 있다(확통↔미적분). 바뀌면 다음 회차부터 문항 세트가 달라진다.
    이미 저장한 회차의 기록은 그대로 남는다 — 저장할 때의 area가 응답에 함께 들어가 있다. */
 function profileScreen(){
- const cur=S.profile||{name:"",academy:"",grade:"",subject:""};
- const p=S._pp||(S._pp={name:cur.name||"",academy:cur.academy||"",grade:cur.grade||"",subject:cur.subject||""});
+ const cur=S.profile||{name:"",academy:"",school:"",grade:"",subject:""};
+ const p=S._pp||(S._pp={name:cur.name||"",academy:cur.academy||"",school:cur.school||"",grade:cur.grade||"",subject:cur.subject||""});
+ /* 학교명(형 1106 · 학생 가입은 학교명 필수 · 학원은 선택): 이 기기 프로필에 학교명이 없으면 서버 값을 한 번 받아 채운다 — /my/ schoolLine 과 같은 읽기.
+    학교명이 없는 기존 회원은 비워 둔 채 다른 칸만 고칠 수 있다(/my/ 와 같다). */
+ if(!p._sq){p._sq=1;
+   if(!cur.school&&CONFIG.api&&TK.has())api("/profile").then(j=>{
+     const sv=(j&&j.profile&&typeof j.profile.school==="string")?j.profile.school:"";
+     if(!sv||S._pp!==p)return;
+     if(S.profile&&!S.profile.school)saveProfile(Object.assign({},S.profile,{school:sv}));
+     if(!p.school){p.school=sv;if(S.screen==="profile")render();}
+   }).catch(()=>{});}
  el("screen").innerHTML=`<div class="pad"><div style="margin-bottom:8px"><span class="rchip" data-pback="1" style="cursor:pointer">← 돌아가기</span></div>
  <div class="h">내 정보</div><div class="desc">선택과목을 바꾸면 <b>다음에 입력하는 회차부터</b> 문항 세트가 바뀌어요. 이미 저장한 회차 기록은 그대로 남아요.</div>
  <div class="field"><label>이름</label><input class="txt" id="pnm" placeholder="이름" value="${esc(p.name)}"></div>
+ <div class="field"><label>학교명</label><input class="txt" id="psc" placeholder="다니는 학교 이름" autocomplete="off" maxlength="60" value="${esc(p.school)}"></div>
  <div class="field"><label>다니는 학원 (선택, 직접 입력)</label><input class="txt" id="pac" placeholder="학원명을 직접 입력하세요" value="${esc(p.academy)}"></div>
  <div class="field"><label>구분</label><div class="seg"><button data-pg="재수생" class="${p.grade==='재수생'?'on':''}">재수생(N수)</button><button data-pg="고3" class="${p.grade==='고3'?'on':''}">고3</button></div></div>
  <div class="field"><label>수학 선택과목</label><div class="seg"><button data-ps="미적분" class="${p.subject==='미적분'?'on':''}">미적분</button><button data-ps="확통" class="${p.subject==='확통'?'on':''}">확률과통계</button></div>
  ${cur.subject&&p.subject&&p.subject!==cur.subject?`<div style="font-size:12px;color:var(--no);margin-top:6px;line-height:1.5">선택과목을 <b>${esc(cur.subject)} → ${esc(p.subject)}</b>로 바꿉니다.</div>`:``}</div>
  <div id="perr" style="font-size:12.5px;color:var(--no);min-height:18px"></div></div>`;
  el("pnm").oninput=e=>{p.name=e.target.value;el("psave").disabled=!pok();};
+ if(el("psc"))el("psc").oninput=e=>{p.school=e.target.value;};
  if(el("pac"))el("pac").oninput=e=>{p.academy=e.target.value;el("psave").disabled=!pok();};
  document.querySelectorAll("[data-pg]").forEach(b=>b.onclick=()=>{p.grade=b.dataset.pg;render();});
  document.querySelectorAll("[data-ps]").forEach(b=>b.onclick=()=>{p.subject=b.dataset.ps;render();});
@@ -286,14 +297,21 @@ function profileScreen(){
  function pok(){return !!(p.name&&p.grade&&p.subject);}
  el("fab").innerHTML=`<button class="btn" id="psave" ${pok()?"":"disabled"}>저장하기</button>`;
  el("psave").onclick=async()=>{if(!pok())return;
+   /* 학교명: 서버 키 school · 앞뒤 공백 떼고 60자(auth · my 와 같다). 서버는 빈 값을 지움으로 받지 않으므로 이미 있는 학교명을 비우는 저장은 막는다. 원래 없던 회원은 비워 둬도 된다. */
+   const school=String(p.school||"").trim().slice(0,60), had=String(cur.school||"");
+   el("perr").textContent="";
+   if(!school&&had){el("perr").textContent="학교명을 입력하세요.";return;}
    const btn=el("psave");btn.disabled=true;btn.textContent="저장 중…";
-   let serverOk=true;
+   let serverOk=true, schoolOk=true, keep=school;
    if(CONFIG.api&&TK.has()){
-     try{await api("/profile",{method:"POST",body:{name:p.name,academy:p.academy||"비재원생",grade:p.grade,subject:p.subject}});}
+     try{const j=await api("/profile",{method:"POST",body:Object.assign({name:p.name,academy:p.academy||"비재원생"},school?{school:school}:{},{grade:p.grade,subject:p.subject})});
+       /* 학교를 모르는 서버는 학교 없이 돌려준다 — 저장된 척하지 않는다(/my/ schoolSave 와 같은 확인) */
+       if(school&&!(j&&j.profile&&j.profile.school===school)){schoolOk=false;keep=had;}}
      catch(e){serverOk=false;}
    }
-   saveProfile({name:p.name,academy:p.academy||"비재원생",grade:p.grade,subject:p.subject});
+   saveProfile({name:p.name,academy:p.academy||"비재원생",school:keep,grade:p.grade,subject:p.subject});
    if(!serverOk){el("perr").textContent="이 기기에는 저장했지만 서버 반영은 실패했어요. 잠시 뒤 다시 시도해 주세요.";btn.disabled=false;btn.textContent="저장하기";return;}
+   if(!schoolOk){el("perr").textContent="다른 정보는 저장했지만 학교명은 저장하지 못했어요. 잠시 뒤 다시 시도해 주세요.";btn.disabled=false;btn.textContent="저장하기";return;}
    back();};
 }
 
@@ -319,16 +337,17 @@ function login(){el("screen").innerHTML=`<div class="pad"><div style="margin-bot
    render();window.scrollTo(0,0);};}
 
 /* ---------- 가입 + 동의 ---------- */
-function signup(){const p=S.profile||{name:"",academy:"",grade:"",subject:""};S._p=p;S._consent=S._consent||false;S._consent2=S._consent2||false;
+function signup(){const p=S.profile||{name:"",academy:"",school:"",grade:"",subject:""};S._p=p;S._consent=S._consent||false;S._consent2=S._consent2||false;
  el("screen").innerHTML=`<div class="pad"><div class="h">시작 정보 입력</div><div class="desc">다음 주부터 같은 번호로 접속하면 이어서 기록돼요.</div>
  <div class="field"><label>이름</label><input class="txt" id="nm" placeholder="이름" value="${esc(p.name)}"></div>
+ <div class="field"><label>학교명</label><input class="txt" id="sc" placeholder="다니는 학교 이름" autocomplete="off" maxlength="60" value="${esc(p.school||"")}"></div>
  <div class="field"><label>다니는 학원 (선택, 직접 입력)</label><input class="txt" id="ac" placeholder="학원명을 직접 입력하세요" value="${esc(p.academy)}"></div>
  <div class="field"><label>구분</label><div class="seg"><button data-g="재수생" class="${p.grade==='재수생'?'on':''}">재수생(N수)</button><button data-g="고3" class="${p.grade==='고3'?'on':''}">고3</button></div></div>
  <div class="field"><label>수학 선택과목</label><div class="seg"><button data-s="미적분" class="${p.subject==='미적분'?'on':''}">미적분</button><button data-s="확통" class="${p.subject==='확통'?'on':''}">확률과통계</button></div></div>
  <div class="field"><label>비밀번호</label><input class="txt" id="pin" type="password" maxlength="64" autocomplete="new-password" placeholder="영문 + 숫자 8자 이상" value="${S._pin||''}"><div style="font-size:11.5px;color:var(--mut2);margin-top:6px;line-height:1.5">기기를 바꾸거나 앱을 지웠을 때, 그리고 <b>내 결과 페이지 로그인</b>에 쓰는 비밀번호예요.</div></div>
  <div class="field"><label>비밀번호 확인</label><input class="txt" id="pin2" type="password" maxlength="64" autocomplete="new-password" placeholder="다시 입력" value="${S._pin2||''}"><div id="pwmsg" style="font-size:11.5px;color:var(--no);margin-top:6px"></div></div>
  <div class="field"><label>개인정보 수집·이용 동의 (만 14세 이상 본인 동의)</label>
-   <div class="legalbox"><b>개인정보처리자</b> 델타스킬 (대표 송재형) · 문의 admin@deltaskill.co.kr<br>델타스킬은 AI 오답노트 서비스 제공을 위해 아래와 같이 개인정보를 수집·이용합니다.<br><b>[필수] 수집·이용</b><br>• 수집 항목: 이름, 휴대폰번호, 학원명, 학년, 선택과목, 비밀번호, 모의고사 문항별 응답·정오·오답 원인 입력 데이터, 풀이 사진(선택 첨부 시 · 처방 분석 및 피드백 제공 목적, 델타스킬 담당자 열람 및 AI 자동 분석)<br>• 이용 목적: 개인 맞춤 오답 분석·처방·학습 경로 제공, 첨부한 풀이 사진 검토 및 피드백, AI 자동 분석을 통한 막힌 단계 판별, 서비스 개선<br>• <b>AI 자동 분석</b>: 입력한 응답 데이터와 첨부한 사진을 AI로 분석해 어느 단계에서 막혔는지 찾아 드립니다. <b>이름·휴대폰번호·학원명·PIN은 AI에 전송하지 않으며, 전송한 데이터는 AI 모델 학습에 사용되지 않습니다.</b> AI 분석을 원하지 않으시면 담당자가 직접 검토하는 방식으로 처방해 드립니다(문의: admin@deltaskill.co.kr).<br>• 국외 AI 사업자로의 전송은 <b>아직 시행 전</b>입니다. 개시하기 전에 어느 사업자에게 어느 나라로 전송하는지 알려 드리고 동의를 새로 받습니다.<br>• 사진은 <b>풀이 과정만</b> 촬영해 주세요. 이름·학교·수험번호 등 풀이와 무관한 정보는 가려 주시기 바랍니다.<br>• 개인정보는 델타스킬이 직접 관리하며, 본인 동의 없이 제3자에게 제공하지 않습니다<br>• 보유 기간: 서비스 종료 또는 동의 철회 시까지 (철회 문의: admin@deltaskill.co.kr)<br>• 법인 설립에 따른 이전: 현재 설립을 진행 중인 (주)델타스킬로 사업이 승계될 예정이며, 이 경우 수집된 개인정보도 함께 이전됩니다. 이전 전에 이전 사실·이전받는 자·이전을 원하지 않으실 때의 조치 방법을 별도로 알려 드립니다.<br>• 동의를 거부할 수 있으나, 거부 시 서비스 이용이 제한됩니다.<br><b>[선택] 복습 알림 수신</b><br>• 분석 결과에 따라 다시 봐야 할 문제를 카카오톡 또는 문자로 알려 드립니다.<br>• 알림에는 시험명·문항 번호·단원만 포함되며, <b>점수·등급은 포함되지 않습니다.</b><br>• 동의하지 않으셔도 서비스는 그대로 이용하실 수 있고, 알림은 언제든지 끄실 수 있습니다.<br><b>[선택] 홍보 활용</b><br>• 학습 결과(점수·등급 변화 등)를 개인을 알아볼 수 없도록 익명 처리하여 서비스 소개·홍보(홈페이지, SNS, 소개 자료 등)에 활용합니다.<br>• 선택 동의를 거부해도 서비스 이용에 불이익이 없습니다.</div>
+   <div class="legalbox"><b>개인정보처리자</b> 델타스킬 (대표 송재형) · 문의 admin@deltaskill.co.kr<br>델타스킬은 AI 오답노트 서비스 제공을 위해 아래와 같이 개인정보를 수집·이용합니다.<br><b>[필수] 수집·이용</b><br>• 수집 항목: 이름, 휴대폰번호, 학교명, 학원명, 학년, 선택과목, 비밀번호, 모의고사 문항별 응답·정오·오답 원인 입력 데이터, 풀이 사진(선택 첨부 시 · 처방 분석 및 피드백 제공 목적, 델타스킬 담당자 열람 및 AI 자동 분석)<br>• 이용 목적: 개인 맞춤 오답 분석·처방·학습 경로 제공, 학교에 맞춘 내신 자료 제공(학교명), 첨부한 풀이 사진 검토 및 피드백, AI 자동 분석을 통한 막힌 단계 판별, 서비스 개선<br>• <b>AI 자동 분석</b>: 입력한 응답 데이터와 첨부한 사진을 AI로 분석해 어느 단계에서 막혔는지 찾아 드립니다. <b>이름·휴대폰번호·학원명·PIN은 AI에 전송하지 않으며, 전송한 데이터는 AI 모델 학습에 사용되지 않습니다.</b> AI 분석을 원하지 않으시면 담당자가 직접 검토하는 방식으로 처방해 드립니다(문의: admin@deltaskill.co.kr).<br>• 국외 AI 사업자로의 전송은 <b>아직 시행 전</b>입니다. 개시하기 전에 어느 사업자에게 어느 나라로 전송하는지 알려 드리고 동의를 새로 받습니다.<br>• 사진은 <b>풀이 과정만</b> 촬영해 주세요. 이름·학교·수험번호 등 풀이와 무관한 정보는 가려 주시기 바랍니다.<br>• 개인정보는 델타스킬이 직접 관리하며, 본인 동의 없이 제3자에게 제공하지 않습니다<br>• 보유 기간: 서비스 종료 또는 동의 철회 시까지 (철회 문의: admin@deltaskill.co.kr)<br>• 법인 설립에 따른 이전: 현재 설립을 진행 중인 (주)델타스킬로 사업이 승계될 예정이며, 이 경우 수집된 개인정보도 함께 이전됩니다. 이전 전에 이전 사실·이전받는 자·이전을 원하지 않으실 때의 조치 방법을 별도로 알려 드립니다.<br>• 동의를 거부할 수 있으나, 거부 시 서비스 이용이 제한됩니다.<br><b>[선택] 복습 알림 수신</b><br>• 분석 결과에 따라 다시 봐야 할 문제를 카카오톡 또는 문자로 알려 드립니다.<br>• 알림에는 시험명·문항 번호·단원만 포함되며, <b>점수·등급은 포함되지 않습니다.</b><br>• 동의하지 않으셔도 서비스는 그대로 이용하실 수 있고, 알림은 언제든지 끄실 수 있습니다.<br><b>[선택] 홍보 활용</b><br>• 학습 결과(점수·등급 변화 등)를 개인을 알아볼 수 없도록 익명 처리하여 서비스 소개·홍보(홈페이지, SNS, 소개 자료 등)에 활용합니다.<br>• 선택 동의를 거부해도 서비스 이용에 불이익이 없습니다.</div>
    <label class="consent ${S._consent?'on':''}" id="cs"><input type="checkbox" id="ck" ${S._consent?'checked':''}><span class="ct"><b>[필수]</b> 만 14세 이상이며 개인정보 수집·이용 및 AI 자동 분석에 동의합니다.</span></label>
    <label class="consent ${S._consent3?'on':''}" id="cs3"><input type="checkbox" id="ck3" ${S._consent3?'checked':''}><span class="ct"><b>[선택]</b> 복습 알림(카카오톡·문자) 수신에 동의합니다.</span></label><label class="consent ${S._consent2?'on':''}" id="cs2"><input type="checkbox" id="ck2" ${S._consent2?'checked':''}><span class="ct"><b>[선택]</b> 익명 처리된 학습 결과의 홍보 활용에 동의합니다.</span></label></div>
  </div>`;
@@ -336,6 +355,7 @@ function signup(){const p=S.profile||{name:"",academy:"",grade:"",subject:""};S.
  el("pin").oninput=e=>{S._pin=e.target.value;pwChk();el("done").disabled=!ok();};
  el("pin2").oninput=e=>{S._pin2=e.target.value;pwChk();el("done").disabled=!ok();};
  function pwChk(){const m=el("pwmsg");if(!m)return;m.textContent=(S._pin2&&S._pin!==S._pin2)?"비밀번호가 일치하지 않아요.":((S._pin||"").length>0&&!pwNew(S._pin)?"영문과 숫자를 섞어 8자 이상으로 정해 주세요.":"");}
+ if(el("sc"))el("sc").oninput=e=>{p.school=e.target.value;el("done").disabled=!ok();};
  if(el("ac"))el("ac").oninput=e=>{p.academy=e.target.value;S._acEtc=e.target.value;el("done").disabled=!ok();};
  document.querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>{p.grade=b.dataset.g;render();});
  document.querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>{p.subject=b.dataset.s;render();});
@@ -345,11 +365,12 @@ function signup(){const p=S.profile||{name:"",academy:"",grade:"",subject:""};S.
  S.profile=p;
  function pwNew(p){return /^[\x21-\x7e]{8,64}$/.test(p)&&/[A-Za-z]/.test(p)&&/\d/.test(p);}   /* 서버 api_v11 pwNew 와 같다 */
  function validPin(){return pwNew(S._pin||"") && S._pin===S._pin2;}
- function ok(){return p.name&&p.grade&&p.subject&&S._consent&&validPin();}
+ function ok(){return p.name&&String(p.school||"").trim()&&p.grade&&p.subject&&S._consent&&validPin();}   /* 형 1106: 학생 가입은 학교명 필수 · 학원은 선택 */
  el("nm").addEventListener("input",()=>{el("done").disabled=!ok();});
  /* 학원은 버튼 선택 — 직접입력 모드에서만 ac 입력창 존재 (oninput에서 처리) */
  el("fab").innerHTML=`<button class="btn" id="done" ${ok()?"":"disabled"}>입력 완료 · 오답노트 시작</button>`;
  el("done").onclick=()=>{if(!ok())return;
+   p.school=String(p.school||"").trim().slice(0,60);
    const all=LS.get("ds_students")||{};S.studentId=S.studentId||("stu_"+S.phone);
    all[S.phone]={id:S.studentId,phone:S.phone,profile:p,consent_at:new Date().toISOString()};LS.set("ds_students",all);
    S.catSel=null;S.screen="exam";render();window.scrollTo(0,0);};}
@@ -676,8 +697,11 @@ async function saveAll(res,examCode){examCode=examCode||EXAM.code;
      if(!S.savedSubId){HISTC=null;S.attempt=await calcAttempt(examCode);}
      return;
    }catch(e){if(!/^invalid/.test(""+(e&&e.message||e)))throw e;}
+   /* 형 1106: 학생 가입은 학교명 필수(서버는 필수를 재지 않는다). 이 기기 프로필에 학교명이 없으면 이 길로 가입시키지 않고 /auth/ 가입으로 안내한다. */
+   const school=String((S.profile&&S.profile.school)||"").trim().slice(0,60);
+   if(!school)throw new Error("login_or_signup");
    try{
-     const j=await api("/enroll",{method:"POST",auth:false,body:{phone:S.phone,pin:pin,name:S.profile.name,academy:S.profile.academy||"비재원생",grade:S.profile.grade,subject:S.profile.subject,consent:true,consent_marketing:S._consent2===true,consent_notify:S._consent3===true}});
+     const j=await api("/enroll",{method:"POST",auth:false,body:{phone:S.phone,pin:pin,name:S.profile.name,academy:S.profile.academy||"비재원생",school:school,grade:S.profile.grade,subject:S.profile.subject,consent:true,consent_marketing:S._consent2===true,consent_notify:S._consent3===true}});
      TK.set(j.token);
      /* 1106 나-28: 동의 기록을 서버가 못 썼으면(consents_ok:false · 옛 서버는 칸 없음) /consent 로 한 번 다시 보낸다. 그래도 못 쓰면 콘솔에 남기고 저장은 이어 간다. */
      if(j.consents_ok===false){const pend=Array.isArray(j.consents_pending)?j.consents_pending:[];let ok=false;

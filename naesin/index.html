@@ -183,6 +183,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   <p class="copy">© 2026 델타스킬. All rights reserved.</p>
 </div>
 </footer>
+<script src="/auth.js"></script>
 <script>
 "use strict";
 /* 내신 상품 — /naesin/catalog.json 한 값에서 그린다(서버 표와 같은 정본 · 게이트 ops scripts/홈페이지/내신상품표.py).
@@ -250,7 +251,17 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     return false;
   }
   /* 무료 세트 — catalog freeSet(도구가 짓는다 · PDF · 한글이 다 찬 단원만 · 없으면 null). 제공 시작이 지난 세트만 연다.
-     파일은 공개 리포에 없다. /free-download 가 1분짜리 서명 URL 을 준다(주문을 안 거친다 · 받는 조건은 형 답 대기). */
+     파일은 공개 리포에 없다. /free-download 가 1분짜리 서명 URL 을 준다(주문을 안 거친다).
+     받는 조건(형 답 1106): 로그인한 회원만. 로그인 = 공용 /auth.js(DSAuth · 토큰 ds_tk). 토큰은 Authorization 머리로만 보낸다(주소 인수에 넣지 않는다).
+     손님에게는 「로그인하고 무료로 받기」 하나만 보이고, 로그인 뒤 이 주소로 돌아온다(DSAuth.loginUrl 의 next). 서버가 401 unauthorized 를 주면 토큰을 지우고 로그인으로 안내한다. */
+  var FREE_RULE="로그인한 회원만 받을 수 있습니다.",freeOut=false;
+  function authed(){return !!(window.DSAuth&&window.DSAuth.has());}
+  function loginHref(){var n=location.pathname+location.search;return window.DSAuth?window.DSAuth.loginUrl(n):"/auth/?next="+encodeURIComponent(n);}
+  function loginBtn(){var a=el("a","btn buy","로그인하고 무료로 받기");a.href=loginHref();a.dataset.fk="free-login";return a;}
+  function toLogin(){
+    freeOut=true;var y=window.scrollY;draw(false);window.scrollTo(0,y);
+    var e=document.querySelector('[data-fk="free-login"]');if(e)e.focus();
+  }
   function freeSets(b){
     if(!b.freeSet||!CFG||typeof CFG.api!=="string"||!CFG.api)return [];
     var now=Date.now();
@@ -260,12 +271,17 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   function freeBtn(x,f,many,msg){
     var b=el("button","btn buy",(many?x.no+" ":"")+"무료로 받기 ("+(f.fmt==="hwpx"?"한글":"PDF")+")");b.type="button";
     b.onclick=function(){
+      var tk=window.DSAuth?window.DSAuth.get():"";
+      if(!tk){toLogin();return;}   /* 그린 뒤 다른 탭에서 로그아웃한 경우 */
       b.disabled=true;msg.textContent="내려받기 주소를 받는 중…";
-      fetch(CFG.api.replace(/\/+$/,"")+"/free-download",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({fileId:f.id})})
-        .then(function(r){return r.json();}).catch(function(){return {ok:false,error:"network"};})
-        .then(function(r){
+      fetch(CFG.api.replace(/\/+$/,"")+"/free-download",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+tk},body:JSON.stringify({fileId:f.id})})
+        .then(function(x){return x.json().then(function(j){return {s:x.status,j:j};});}).catch(function(){return {s:0,j:{ok:false,error:"network"}};})
+        .then(function(o){
+          var r=o.j;
           b.disabled=false;
           if(r&&r.ok&&r.url){msg.textContent="내려받기를 시작합니다.";location.href=r.url;return;}
+          /* 로그인이 풀림(만료 · 다른 기기에서 로그아웃 · 탈퇴) — 다른 화면(pilot)과 같이 토큰을 짝으로 지우고 로그인으로 안내한다 */
+          if(o.s===401&&r&&r.error==="unauthorized"){if(window.DSAuth)window.DSAuth.clear();toLogin();return;}
           msg.textContent=r&&r.error==="not_yet"?"아직 제공 전입니다.":r&&r.error==="file_not_ready"?"파일을 준비 중입니다. 잠시 뒤 다시 시도해 주세요.":"내려받기를 시작하지 못했습니다. 잠시 뒤 다시 시도해 주세요.";
         });
     };
@@ -387,7 +403,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
       add(a,optTop(title,tag),el("small",null,desc),el("span","pr",price),el("span","go",go));
       add(li,a);return li;
     }
-    add(ul,card("free",free.name,free.desc,tag(freeSets(b).length>0),"0원","받을 내용 보기 →"));
+    add(ul,card("free",free.name,free.desc+" "+FREE_RULE,tag(freeSets(b).length>0),"0원","받을 내용 보기 →"));
     add(ul,card("basic","기본형","미리 만든 구성에서 고릅니다.",tag(pathOpen("basic",s)),pathPriced("basic",s)?"구성마다 값이 다릅니다":"가격 추후 공지","구성 보기 →"));
     add(ul,card("detail","상세선택","단원과 구성을 직접 고릅니다.",tag(pathOpen("basic",s)||pathOpen("detail",s)),(pathPriced("basic",s)||pathPriced("detail",s))?"구성마다 값이 다릅니다":"가격 추후 공지","직접 고르기 →"));
     add(f,ul,proNote(q));
@@ -569,7 +585,8 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     else if(free)row(dl,"파일 형식","PDF · 한글(HWPX) 모두 0원");
     else if(c.make==="ready")row(dl,"파일 형식","PDF 또는 한글(HWPX) 가운데 한 형식");
     else row(dl,"파일 형식","파일 형식 추후 공지",null,"blank");
-    if(fss.length)row(dl,"제공","바로 내려받기");else if(c.make==="ready")row(dl,"제공",u&&u.saleFrom?"결제 뒤 바로 내려받기":"제공일 추후 공지",null,u&&u.saleFrom?null:"blank");
+    if(free)row(dl,"받는 조건","로그인한 회원",FREE_RULE);
+    if(fss.length)row(dl,"제공",authed()?"바로 내려받기":"로그인 뒤 바로 내려받기");else if(c.make==="ready")row(dl,"제공",u&&u.saleFrom?"결제 뒤 바로 내려받기":"제공일 추후 공지",null,u&&u.saleFrom?null:"blank");
     else row(dl,"제공","주문 뒤 만들어 제공 · 제공일 추후 공지",null,"blank");
     if(fstart)row(dl,"제공 시작","받으면 제공이 시작됩니다",fstart);
     if(u)row(dl,"상품 번호",u.sku);else if(fss.length)row(dl,"상품 번호",fss.map(function(x){return x.sku;}).join(" · "));
@@ -594,7 +611,11 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
       add(fs,fl);add(fs,el("p","fine","한 주문에는 고른 형식의 파일만 들어 있습니다. 두 형식이 다 필요하면 형식마다 따로 주문하고, 값도 따로 치릅니다."+(setOf(u,"pdf")?" PDF 합본은 나눠 받지 않습니다. 유형 하나만 필요하면 구성에서 「유형 낱개」를 고릅니다.":"")));add(f,fs);
     }
     var act=el("div","act"),ok=pickFmt&&canBuy(u,fm);
-    if(fss.length){var fm0=el("p","fine");fss.forEach(function(x){x.files.forEach(function(ff){add(act,freeBtn(x,ff,fss.length>1,fm0));});});}
+    if(fss.length){
+      var fm0=el("p","fine");
+      if(authed()){freeOut=false;fss.forEach(function(x){x.files.forEach(function(ff){add(act,freeBtn(x,ff,fss.length>1,fm0));});});}
+      else{add(act,loginBtn());fm0.textContent=(freeOut?"로그인이 풀렸어요. 다시 로그인하면 바로 받을 수 있습니다.":"무료 세트는 "+FREE_RULE)+" 로그인하면 이 화면으로 돌아옵니다.";}
+    }
     else if(ok){var buy=el("a","btn buy","구매하기");buy.href="/checkout/?sku="+encodeURIComponent(u.sku+"."+fm);add(act,buy);}
     else{var dis=el("button","btn dis",pickFmt&&priceAt(u,fm)&&filesAt(u,fm).length?"판매 시작일 추후 공지":"준비 중");dis.type="button";dis.disabled=true;add(act,dis);}
     var al=el("a","btn ghost","알림 받기");al.href="mailto:admin@deltaskill.co.kr?subject="+encodeURIComponent("내신 파일 알림 "+s.code+" "+c.id+(u?" "+u.sku:""));add(act,al);
@@ -633,6 +654,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   }
   function get(u){return fetch(u,{cache:"no-store"}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});}
   window.addEventListener("popstate",function(){if(CAT)draw(true);});
+  window.addEventListener("pageshow",function(e){if(e.persisted&&CAT)draw(false);});   /* 뒤로 가기로 되살아난 화면 — 로그인 상태를 다시 읽는다(무료 세트 버튼) */
   Promise.all([get("/naesin/catalog.json"),get("/pay-config.json")]).then(function(v){
     CAT=v[0];CFG=v[1];
     if(!CAT||!CAT.subjects||!CAT.compositions){APP.textContent="";APP.appendChild(el("p","lede","상품 목록을 불러오지 못했습니다. 잠시 뒤 다시 시도해 주세요."));return;}
