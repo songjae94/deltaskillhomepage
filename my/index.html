@@ -173,6 +173,7 @@ function saveLocalProfile(phone,p){
     all[phone]={id:prev.id||("stu_"+phone),phone,profile:{
       name:p.name||(prev.profile&&prev.profile.name)||"",
       academy:p.academy||(prev.profile&&prev.profile.academy)||"",
+      school:p.school||(prev.profile&&prev.profile.school)||"",
       grade:p.grade||(prev.profile&&prev.profile.grade)||"",
       subject:p.subject||(prev.profile&&prev.profile.subject)||""},
       consent_at:prev.consent_at||new Date().toISOString()};
@@ -203,6 +204,29 @@ function acctLinks(role){
   const a=document.getElementById("acct"), other=role==="teacher"?"student":"teacher";
   a.innerHTML=`<a href="#" id="roleBtn">${other==="teacher"?"강사로 바꾸기":"학생으로 바꾸기"}</a><a href="/auth/?mode=withdraw">탈퇴</a>`;
   document.getElementById("roleBtn").onclick=async e=>{e.preventDefault();try{await api("/role-change",{method:"POST",body:{role:other}});location.reload();}catch(_){alert("바꾸지 못했어요. 다시 시도해 주세요.");}};
+  if(role==="student") schoolLine();
+}
+/* ---- 학교명 보기 · 고치기(형 1106 · 학생만) — 기존 회원 · 옛 서버는 빈 값이라 「아직 없음」으로 둔다 ---- */
+async function schoolLine(){
+  const old=document.getElementById("schoolBox"); if(old) old.remove();
+  const box=document.createElement("div"); box.id="schoolBox"; box.style.cssText="margin-top:18px;display:flex;flex-wrap:wrap;align-items:center;gap:8px";
+  document.getElementById("acct").before(box);
+  let cur=""; try{const j=await api("/profile"); cur=(j&&j.profile&&typeof j.profile.school==="string")?j.profile.school:"";}catch(_){}
+  const view=()=>{box.innerHTML=`<span class="k">학교명</span> <b id="schoolV"></b> <button class="sm" id="schoolEdit">${cur?"고치기":"적기"}</button>`;
+    document.getElementById("schoolV").textContent=cur||"아직 없음";
+    document.getElementById("schoolEdit").onclick=edit;};
+  const edit=()=>{box.innerHTML=`<span class="k">학교명</span> <input id="schoolIn" maxlength="60" placeholder="다니는 학교 이름"> <button class="sm" id="schoolSave">저장</button> <button class="sm" id="schoolCancel">취소</button> <span class="bad" id="schoolErr"></span>`;
+    const inp=document.getElementById("schoolIn"); inp.value=cur; inp.focus();
+    document.getElementById("schoolCancel").onclick=view;
+    document.getElementById("schoolSave").onclick=async()=>{
+      const v=inp.value.trim().slice(0,60), er=document.getElementById("schoolErr"); er.textContent="";
+      if(!v){er.textContent="학교명을 입력하세요.";return;}
+      try{const j=await api("/profile",{method:"POST",body:{school:v}});
+        if(!(j&&j.profile&&j.profile.school===v)){er.textContent="저장하지 못했어요. 다시 시도해 주세요.";return;}   /* 학교를 모르는 서버는 bad_payload 로 거절하거나 학교 없이 돌려준다 — 저장된 척하지 않는다 */
+        cur=v; saveLocalProfile(localStorage.getItem("ds_phone")||"",j.profile); view();
+      }catch(_){er.textContent="저장하지 못했어요. 다시 시도해 주세요.";}
+    };};
+  view();
 }
 async function loadTeacher(){
   document.getElementById("btnNote").hidden=true; document.getElementById("btnInfo").hidden=true;
