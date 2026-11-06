@@ -679,6 +679,10 @@ async function saveAll(res,examCode){examCode=examCode||EXAM.code;
    try{
      const j=await api("/enroll",{method:"POST",auth:false,body:{phone:S.phone,pin:pin,name:S.profile.name,academy:S.profile.academy||"비재원생",grade:S.profile.grade,subject:S.profile.subject,consent:true,consent_marketing:S._consent2===true,consent_notify:S._consent3===true}});
      TK.set(j.token);
+     /* 1106 나-28: 동의 기록을 서버가 못 썼으면(consents_ok:false · 옛 서버는 칸 없음) /consent 로 한 번 다시 보낸다. 그래도 못 쓰면 콘솔에 남기고 저장은 이어 간다. */
+     if(j.consents_ok===false){const pend=Array.isArray(j.consents_pending)?j.consents_pending:[];let ok=false;
+       try{if(pend.length){const r=await api("/consent",{method:"POST",body:{source:"enroll",consents:pend}});ok=(r&&r.saved|0)>=pend.length;}}catch(_){}
+       if(!ok)console.error("consent_save_failed","enroll");}
    }catch(e){
      const m=""+(e&&e.message||e);
      if(/already_enrolled/.test(m))throw new Error("invalid");

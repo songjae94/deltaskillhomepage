@@ -254,6 +254,16 @@ async function api(path, body, auth) {
   if (!r.ok || !j || j.ok === false) throw new Error((j && j.error) || ("HTTP " + r.status));
   return j;
 }
+/* 1106 나-28: 서버가 동의 기록을 못 쓰면 consents_ok:false + consents_pending 을 준다(옛 서버는 칸이 없다 → 그대로 통과).
+   로그인된 뒤 /consent 로 한 번 다시 보내고, 그래도 못 쓰면 false — 화면이 완료 문구에 알린다. */
+const CONSENT_FAIL = " 다만 동의 기록 저장에 실패했어요. admin@deltaskill.co.kr 로 알려 주세요.";
+async function ensureConsents(j, source) {
+  if (!j || j.consents_ok !== false) return true;
+  const pend = Array.isArray(j.consents_pending) ? j.consents_pending : [];
+  try { if (pend.length) { const r = await api("/consent", { source, consents: pend }, true); if ((r.saved | 0) >= pend.length) return true; } } catch (_) {}
+  console.error("consent_save_failed", source, (j.consents_want | 0) - (j.consents_saved | 0));
+  return false;
+}
 const next = (() => { const n = Q.get("next") || "/my/"; return /^\/[A-Za-z0-9_\-./?#=&%]*$/.test(n) && n.indexOf("//") !== 0 ? n : "/my/"; })();
 function show(id) { ["login", "signup", "reset", "phone", "withdraw", "kakao", "password", "done"].forEach(v => $("v-" + v).hidden = v !== id); window.scrollTo(0, 0); }
 function done(title, desc, go) { $("d-title").textContent = title; $("d-desc").textContent = desc; $("d-go").href = go || next; show("done"); }
@@ -337,7 +347,8 @@ $("s-go").onclick = async () => {
   try {
     const isT = S.role === "teacher", j = await api("/enroll", { phone: so.T.phone, pin, name, academy, role: S.role, grade: isT ? "" : S.grade, subject: isT ? "" : S.subject, consent: true, consent_notify: $("c-notify").checked, verify_token: so.T.proof || undefined, consents, privacy_version: DOC_VER.privacy, device: navigator.platform || "" });
     A.set(j.token, so.T.phone); saveProfile(so.T.phone, { name, academy, grade: isT ? "" : S.grade, subject: isT ? "" : S.subject });
-    done("가입 완료", name + " 님, 환영해요. " + (isT ? "마이페이지에서 학생관리를 확인하세요." : "이제 오답노트와 예측을 이어서 볼 수 있어요."));
+    const cOk = await ensureConsents(j, "enroll");
+    done("가입 완료", name + " 님, 환영해요. " + (isT ? "마이페이지에서 학생관리를 확인하세요." : "이제 오답노트와 예측을 이어서 볼 수 있어요.") + (cOk ? "" : CONSENT_FAIL));
   } catch (e) { err.textContent = msg(e); busy($("s-go"), false); }
 };
 
@@ -354,7 +365,7 @@ $("r-go").onclick = async () => {
   if (!pwNew(pin)) return err.textContent = MSG.bad_pw_format;
   if (pin !== $("r-pin2").value) return err.textContent = "비밀번호가 일치하지 않아요.";
   busy($("r-go"), true, "바꾸는 중…");
-  try { const j = await api("/pin-reset", { phone: ro.T.phone, pin, verify_token: ro.T.proof, privacy_version: DOC_VER.privacy, device: navigator.platform || "" }); A.set(j.token, ro.T.phone); try { localStorage.removeItem("ds_pin_short"); localStorage.removeItem("ds_pw_old"); } catch (_) {} await syncProfile(ro.T.phone); done("비밀번호를 바꿨어요", "이 기기는 로그인됐고, 다른 기기에서는 모두 로그아웃됐어요."); }
+  try { const j = await api("/pin-reset", { phone: ro.T.phone, pin, verify_token: ro.T.proof, privacy_version: DOC_VER.privacy, device: navigator.platform || "" }); A.set(j.token, ro.T.phone); try { localStorage.removeItem("ds_pin_short"); localStorage.removeItem("ds_pw_old"); } catch (_) {} await syncProfile(ro.T.phone); const cOk = await ensureConsents(j, "reset"); done("비밀번호를 바꿨어요", "이 기기는 로그인됐고, 다른 기기에서는 모두 로그아웃됐어요." + (cOk ? "" : CONSENT_FAIL)); }
   catch (e) { err.textContent = msg(e); busy($("r-go"), false); }
 };
 
@@ -375,7 +386,8 @@ $("p-go").onclick = async () => {
     const v = await api("/verify-check", { phone: po.T.phone, purpose: "phone_change", code });
     const j = await api("/phone-change", { new_phone: po.T.phone, pin, verify_token: v.verify_token, privacy_version: DOC_VER.privacy }, true);
     A.set(A.get(), po.T.phone); try { localStorage.setItem("ds_phone", po.T.phone); } catch (_) {}
-    done("번호를 바꿨어요", "이제 " + (j.phone_masked || fmt(po.T.phone)) + " 로 로그인합니다.", "/my/");
+    const cOk = await ensureConsents(j, "phone_change");
+    done("번호를 바꿨어요", "이제 " + (j.phone_masked || fmt(po.T.phone)) + " 로 로그인합니다." + (cOk ? "" : CONSENT_FAIL), "/my/");
   } catch (e) { err.textContent = msg(e); busy($("p-go"), false); }
 };
 
@@ -404,7 +416,7 @@ $("w-go").onclick = async () => {
   if (!$("w-ok").checked) return err.textContent = "확인란에 체크해 주세요.";
   if (!confirm("정말 탈퇴할까요? 되돌릴 수 없어요.")) return;
   busy($("w-go"), true, "처리 중…");
-  try { await api("/withdraw", { pin }, true); A.clear(); try { localStorage.removeItem("ds_students"); localStorage.removeItem("ds_phone"); localStorage.removeItem("ds_pw_old"); } catch (_) {} done("탈퇴했어요", "그동안 고마웠어요. 다시 오면 새로 가입하면 돼요.", "/"); }
+  try { const wj = await api("/withdraw", { pin }, true); if (wj.consents_ok === false) console.error("consent_save_failed", "withdraw");   /* 토큰이 지워져 다시 못 보낸다 — 서버 로그에 남는다 */ A.clear(); try { localStorage.removeItem("ds_students"); localStorage.removeItem("ds_phone"); localStorage.removeItem("ds_pw_old"); } catch (_) {} done("탈퇴했어요", "그동안 고마웠어요. 다시 오면 새로 가입하면 돼요.", "/"); }
   catch (e) { err.textContent = msg(e); busy($("w-go"), false); }
 };
 
@@ -435,7 +447,8 @@ async function tryLink(profile) {
   try {
     const j = await api("/" + K.p + "-link", body);
     A.set(j.token, ko.T.phone); if (profile) saveProfile(ko.T.phone, profile); else await syncProfile(ko.T.phone);
-    done(j.created ? "가입 완료" : OAUTH_NAME[K.p] + " 연결 완료", "다음부터는 " + OAUTH_NAME[K.p] + " 단추 하나로 로그인됩니다.");
+    const cOk = await ensureConsents(j, "enroll");
+    done(j.created ? "가입 완료" : OAUTH_NAME[K.p] + " 연결 완료", "다음부터는 " + OAUTH_NAME[K.p] + " 단추 하나로 로그인됩니다." + (cOk ? "" : CONSENT_FAIL));
   } catch (e) {
     if (String(e.message) === "need_profile") { $("k-step3").hidden = false; $("kt3").classList.add("on"); if (!$("k-name").value) $("k-name").value = K.nickname || ""; return; }
     const m = String(e.message) === "already_linked" ? "이 " + OAUTH_NAME[K.p] + " 계정은 이미 다른 번호에 연결돼 있어요." : String(e.message) === "student_has_link" ? "이 번호에는 이미 다른 " + OAUTH_NAME[K.p] + " 계정이 연결돼 있어요." : msg(e);
