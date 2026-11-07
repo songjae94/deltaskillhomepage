@@ -56,6 +56,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
 html[data-theme="dark"] .brand .lg-k{display:none}
 html[data-theme="dark"] .brand .lg-w{display:block}
 .hd-r{display:flex;align-items:center;gap:6px}
+.authnav{display:inline-flex;align-items:center}   /* 1107 B5: 로그인·회원가입 / 마이페이지·로그아웃 — /auth.js 가 #authnav 를 채운다(메인 머리와 같은 방식) */
 .hd-r a{display:inline-flex;align-items:center;min-height:44px;padding:0 10px;font-size:14px;font-weight:650;color:var(--ink2);text-decoration:none;white-space:nowrap}
 .tg{display:inline-flex;align-items:center;gap:7px;min-height:44px;padding:6px 12px;border-radius:999px;border:1px solid var(--line2);font-size:13px;font-weight:700;color:var(--ink2);background:var(--card);cursor:pointer;white-space:nowrap}
 .tg i{width:14px;height:14px;border-radius:50%;background:var(--ink);box-shadow:inset -4px -2px 0 0 var(--card);transform:rotate(-20deg)}
@@ -157,7 +158,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 <body>
 <header class="hdr"><div class="wrap">
   <a class="brand" href="/" aria-label="델타스킬 메인으로"><img class="lg-k" src="/naesin/deltaskill-ko-horizontal-color.svg" alt="델타스킬" width="110" height="30"><img class="lg-w" src="/naesin/deltaskill-ko-horizontal-white.svg" alt="" width="110" height="30"></a>
-  <div class="hd-r"><a href="/orders/">주문 조회</a><button class="tg" type="button" data-theme-toggle aria-label="야간 모드 켜기/끄기"><i aria-hidden="true"></i><span class="on-l">낮</span><span class="on-d">밤</span></button></div>
+  <div class="hd-r"><span id="authnav" class="authnav" aria-label="계정"></span><a href="/orders/">주문 조회</a><button class="tg" type="button" data-theme-toggle aria-label="야간 모드 켜기/끄기"><i aria-hidden="true"></i><span class="on-l">낮</span><span class="on-d">밤</span></button></div>
 </div></header>
 <main class="wrap">
   <div id="app" aria-live="polite"><p class="lede">상품을 불러오는 중…</p></div>
