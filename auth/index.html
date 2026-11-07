@@ -94,7 +94,6 @@ button.ghost{background:none;border:none;color:var(--acc2);font-size:13px;paddin
       <div class="field"><label>가입 유형</label><div class="seg" id="s-role"><button type="button" data-v="student">학생</button><button type="button" data-v="teacher">강사</button></div></div>
       <div id="s-stu" hidden>
       <div class="field"><label>구분</label><div class="seg" id="s-grade"><button type="button" data-v="고3">고3</button><button type="button" data-v="재수생">재수생(N수)</button></div></div>
-      <div class="field"><label>수학 선택과목</label><div class="seg" id="s-subject"><button type="button" data-v="확통">확률과 통계</button><button type="button" data-v="미적분">미적분</button></div></div>
       <div class="field"><label for="s-school">학교명</label><input id="s-school" placeholder="다니는 학교 이름" autocomplete="off" maxlength="60"></div>
       </div>
       <div class="field"><label for="s-academy"><span id="s-academy-l">다니는 학원</span> <span class="hint" style="display:inline">(선택)</span></label><input id="s-academy" placeholder="없으면 비워 두세요" maxlength="60"></div>
@@ -186,7 +185,6 @@ button.ghost{background:none;border:none;color:var(--acc2);font-size:13px;paddin
       <div class="field"><label>가입 유형</label><div class="seg" id="k-role"><button type="button" data-v="student">학생</button><button type="button" data-v="teacher">강사</button></div></div>
       <div id="k-stu" hidden>
       <div class="field"><label>구분</label><div class="seg" id="k-grade"><button type="button" data-v="고3">고3</button><button type="button" data-v="재수생">재수생(N수)</button></div></div>
-      <div class="field"><label>수학 선택과목</label><div class="seg" id="k-subject"><button type="button" data-v="확통">확률과 통계</button><button type="button" data-v="미적분">미적분</button></div></div>
       <div class="field"><label for="k-school">학교명</label><input id="k-school" placeholder="다니는 학교 이름" autocomplete="off" maxlength="60"></div>
       </div>
       <label class="consent"><input type="checkbox" id="kc-privacy"><span><b>[필수]</b> 만 14세 이상이며 <a href="/privacy/" target="_blank">개인정보 수집·이용 및 AI 자동 분석</a>에 동의합니다.</span></label>
@@ -271,7 +269,7 @@ function show(id) { ["login", "signup", "reset", "phone", "withdraw", "kakao", "
 function done(title, desc, go) { $("d-title").textContent = title; $("d-desc").textContent = desc; $("d-go").href = go || next; show("done"); }
 function saveProfile(phone, p) {
   try { const all = JSON.parse(localStorage.getItem("ds_students") || "null") || {}; const prev = all[phone] || {};
-    all[phone] = { id: prev.id || ("stu_" + phone), phone, profile: { name: p.name || "", academy: p.academy || "", school: p.school || "", grade: p.grade || "", subject: p.subject || "" }, consent_at: prev.consent_at || new Date().toISOString() };
+    all[phone] = { id: prev.id || ("stu_" + phone), phone, profile: { name: p.name || "", academy: p.academy || "", school: p.school || "", grade: p.grade || "", subject: p.subject || "" /* 옛 회원 값 보관 · 가입 때는 빈 값 */ }, consent_at: prev.consent_at || new Date().toISOString() };
     localStorage.setItem("ds_students", JSON.stringify(all)); } catch (_) {}
 }
 async function syncProfile(phone) { try { const j = await api("/profile", null, true); if (j && j.profile) saveProfile(phone, j.profile); } catch (_) {} }
@@ -323,7 +321,7 @@ $("l-go").onclick = async () => {
 $("l-pin").addEventListener("keydown", e => { if (e.key === "Enter") $("l-go").click(); });
 
 /* ── 회원가입 ── */
-const S = { role: "", grade: "", subject: "", nosms: false };
+const S = { role: "", grade: "", nosms: false };   /* 선택과목 칸 없음(형 1107 · 내년 수능부터 선택과목 폐지) */
 const so = otp("s", "enroll", () => $("s-phone").value, () => { $("s-step2").hidden = true; $("s-step3").hidden = false; $("st3").classList.add("on"); $("s-verified").textContent = "휴대폰 인증 완료 · " + fmt(so.T.phone); $("s-name").focus(); });
 $("s-send").onclick = async () => {
   const r = await so.send($("s-send"), $("s-err1"));
@@ -334,14 +332,14 @@ $("s-check").onclick = () => so.check($("s-check"), $("s-err2"));
 $("s-back1").onclick = () => { $("s-step2").hidden = true; $("s-step1").hidden = false; $("st2").classList.remove("on"); };
 function roleSeg(id, stuId, st, after) { document.querySelectorAll("#" + id + " button").forEach(b => b.onclick = () => { document.querySelectorAll("#" + id + " button").forEach(x => x.classList.remove("on")); b.classList.add("on"); st.role = b.dataset.v; $(stuId).hidden = st.role !== "student"; if (after) after(); }); }
 roleSeg("s-role", "s-stu", S, () => { $("s-academy-l").textContent = S.role === "teacher" ? "소속 학원" : "다니는 학원"; });
-["s-grade", "s-subject"].forEach(id => document.querySelectorAll("#" + id + " button").forEach(b => b.onclick = () => { document.querySelectorAll("#" + id + " button").forEach(x => x.classList.remove("on")); b.classList.add("on"); S[id === "s-grade" ? "grade" : "subject"] = b.dataset.v; }));
+document.querySelectorAll("#s-grade button").forEach(b => b.onclick = () => { document.querySelectorAll("#s-grade button").forEach(x => x.classList.remove("on")); b.classList.add("on"); S.grade = b.dataset.v; });
 $("s-go").onclick = async () => {
   const err = $("s-err3"); err.textContent = "";
   const name = $("s-name").value.trim(), academy = $("s-academy").value.trim() || (S.role === "teacher" ? "" : "비재원생"), pin = $("s-pin").value, pin2 = $("s-pin2").value;
   const school = S.role === "student" ? $("s-school").value.trim().slice(0, 60) : "";
   if (!name) return err.textContent = "이름을 입력하세요.";
   if (!S.role) return err.textContent = "학생 · 강사 중에서 골라 주세요.";
-  if (S.role === "student" && (!S.grade || !S.subject)) return err.textContent = "구분과 선택과목을 골라 주세요.";
+  if (S.role === "student" && !S.grade) return err.textContent = "구분을 골라 주세요.";
   if (S.role === "student" && !school) return err.textContent = "학교명을 입력하세요.";
   if (!pwNew(pin)) return err.textContent = MSG.bad_pw_format;
   if (pin !== pin2) return err.textContent = "비밀번호가 일치하지 않아요.";
@@ -349,8 +347,8 @@ $("s-go").onclick = async () => {
   busy($("s-go"), true, "가입 중…");
   const consents = [{ doc: "privacy", version: DOC_VER.privacy, granted: true }, { doc: "terms", version: DOC_VER.terms, granted: true }, { doc: "notify", version: DOC_VER.privacy, granted: $("c-notify").checked }];
   try {
-    const isT = S.role === "teacher", j = await api("/enroll", { phone: so.T.phone, pin, name, academy, ...(isT ? {} : { school }), role: S.role, grade: isT ? "" : S.grade, subject: isT ? "" : S.subject, consent: true, consent_notify: $("c-notify").checked, verify_token: so.T.proof || undefined, consents, privacy_version: DOC_VER.privacy, device: navigator.platform || "" });
-    A.set(j.token, so.T.phone); saveProfile(so.T.phone, { name, academy, school, grade: isT ? "" : S.grade, subject: isT ? "" : S.subject });
+    const isT = S.role === "teacher", j = await api("/enroll", { phone: so.T.phone, pin, name, academy, ...(isT ? {} : { school }), role: S.role, grade: isT ? "" : S.grade, consent: true, consent_notify: $("c-notify").checked, verify_token: so.T.proof || undefined, consents, privacy_version: DOC_VER.privacy, device: navigator.platform || "" });
+    A.set(j.token, so.T.phone); saveProfile(so.T.phone, { name, academy, school, grade: isT ? "" : S.grade });
     const cOk = await ensureConsents(j, "enroll");
     done("가입 완료", name + " 님, 환영해요. " + (isT ? "마이페이지에서 학생관리를 확인하세요." : "이제 오답노트와 예측을 이어서 볼 수 있어요.") + (cOk ? "" : CONSENT_FAIL));
   } catch (e) { err.textContent = msg(e); busy($("s-go"), false); }
@@ -425,7 +423,7 @@ $("w-go").onclick = async () => {
 };
 
 /* ── 카카오 ── */
-const K = { link: "", nickname: "", role: "", grade: "", subject: "", p: "kakao" };
+const K = { link: "", nickname: "", role: "", grade: "", p: "kakao" };
 roleSeg("k-role", "k-stu", K);
 document.querySelectorAll("[data-oauth]").forEach(b => b.onclick = () => {
   const p = b.dataset.oauth;
@@ -443,7 +441,7 @@ $("k-send").onclick = async () => {
   else if (r === "nosms") $("k-err1").textContent = "카카오 연결은 휴대폰 문자 인증이 준비된 뒤 열려요. 그동안은 휴대폰 번호로 로그인해 주세요.";
 };
 $("k-check").onclick = () => ko.check($("k-check"), $("k-err2"));
-["k-grade", "k-subject"].forEach(id => document.querySelectorAll("#" + id + " button").forEach(b => b.onclick = () => { document.querySelectorAll("#" + id + " button").forEach(x => x.classList.remove("on")); b.classList.add("on"); K[id === "k-grade" ? "grade" : "subject"] = b.dataset.v; }));
+document.querySelectorAll("#k-grade button").forEach(b => b.onclick = () => { document.querySelectorAll("#k-grade button").forEach(x => x.classList.remove("on")); b.classList.add("on"); K.grade = b.dataset.v; });
 async function tryLink(profile) {
   const err = $("k-err3"); err.textContent = "";
   const body = { link_token: K.link, phone: ko.T.phone, verify_token: ko.T.proof, device: navigator.platform || "", privacy_version: DOC_VER.privacy };
@@ -464,13 +462,13 @@ $("k-go").onclick = async () => {
   const name = $("k-name").value.trim();
   if (!name) return err.textContent = "이름을 입력하세요.";
   if (!K.role) return err.textContent = "학생 · 강사 중에서 골라 주세요.";
-  if (K.role === "student" && (!K.grade || !K.subject)) return err.textContent = "구분과 선택과목을 골라 주세요.";
+  if (K.role === "student" && !K.grade) return err.textContent = "구분을 골라 주세요.";
   const school = K.role === "student" ? $("k-school").value.trim().slice(0, 60) : "";
   if (K.role === "student" && !school) return err.textContent = "학교명을 입력하세요.";
   if (!$("kc-privacy").checked || !$("kc-terms").checked) return err.textContent = MSG.consent_required;
   busy($("k-go"), true, "연결 중…");
   const consents = [{ doc: "privacy", version: DOC_VER.privacy, granted: true }, { doc: "terms", version: DOC_VER.terms, granted: true }, { doc: "notify", version: DOC_VER.privacy, granted: $("kc-notify").checked }];
-  await tryLink({ name, role: K.role, academy: K.role === "teacher" ? "" : "비재원생", ...(K.role === "teacher" ? {} : { school }), grade: K.role === "teacher" ? "" : K.grade, subject: K.role === "teacher" ? "" : K.subject, consent: true, consent_notify: $("kc-notify").checked, consents });
+  await tryLink({ name, role: K.role, academy: K.role === "teacher" ? "" : "비재원생", ...(K.role === "teacher" ? {} : { school }), grade: K.role === "teacher" ? "" : K.grade, consent: true, consent_notify: $("kc-notify").checked, consents });
   busy($("k-go"), false);
 }
 async function oauthCallback(code, state) {
