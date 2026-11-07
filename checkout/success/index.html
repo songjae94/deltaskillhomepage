@@ -158,7 +158,8 @@ var ERR={
   canceled:"취소·환불된 결제입니다.",
   bad_file:"이 주문에 없는 파일입니다.",
   file_not_ready:"파일을 준비하고 있습니다. 잠시 뒤 다시 시도해 주세요.",
-  network:"서버에 연결하지 못했습니다. 잠시 뒤 다시 시도해 주세요."
+  network:"서버에 연결하지 못했습니다. 잠시 뒤 다시 시도해 주세요.",
+  toss_retry:"결제사에서 승인 결과를 아직 받지 못했습니다."
 };
 var HELP=" 계속되면 admin@deltaskill.co.kr 또는 070-8065-2468로 알려 주세요.";
 function errText(r){
@@ -166,7 +167,7 @@ function errText(r){
   var t=(r&&r.error&&ERR[r.error])||"";
   if(r&&r.error==="toss_confirm_failed"&&r.message)t+=" ("+r.message+")";
   if(!t)t=(r&&r.message)?String(r.message):"처리하지 못했습니다.";
-  return t+(r&&(r.error==="server"||r.error==="network"||r.error==="review"||!ERR[r.error])?HELP:"");
+  return t+(r&&(r.error==="server"||r.error==="network"||r.error==="toss_retry"||r.error==="review"||!ERR[r.error])?HELP:"");
 }
 var STATUS={paid:"결제 완료",waiting:"입금 대기",ready:"결제 대기",confirming:"승인 처리 중",failed:"결제 실패",canceled:"취소·환불",review:"확인 중"};
 function setMsg(el,t,err){el.textContent=t||"";el.className="msg"+(err?" err":"");}
@@ -254,7 +255,7 @@ function renderOrder(box,o,cfg,email){
     /* 1106 나-22: 응답이 안 닿음(network) · 서버 오류(server) · 처리 중(busy) · 알 수 없는 응답은 승인이 이미 됐을 수 있다.
        이때는 주소의 결제 값을 지우지 않고 같은 값으로 다시 부른다 — 서버는 paid+같은 결제 키면 그 결과를, confirming+같은 결제 키면 토스 조회로 되살린다(confirm-payment 83-102).
        주문이 돌아왔거나(paid · waiting · review) 서버가 확정 오류를 주면 그때 결제 값을 지운다. */
-    var AGAIN={network:1,server:1,busy:1},WAIT=[2000,5000],tries=0;
+    var AGAIN={network:1,server:1,busy:1,toss_retry:1},WAIT=[2000,5000],tries=0;   /* 1107 A5 짝: 서버가 토스 5xx·409·PROVIDER_ERROR 때 주문을 confirming 에 두고 503 toss_retry 를 준다 → 같은 값으로 다시 부른다(확정 실패로 읽고 결제 값을 지우면 되살릴 길이 없다) */
     function again(r){return !(r&&(r.ok||r.order||(r.error&&!AGAIN[r.error])));}
     function retryBox(r){
       $("ttl").textContent="결제 확인을 마치지 못했습니다";
