@@ -160,6 +160,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 <script>
 /* ===== 서버 연결 설정: Supabase 프로젝트 만들면 아래 두 값만 채우면 실제 서버 저장됨 (비우면 데모=브라우저 저장) ===== */
 const CONFIG={ api:"https://cvlrphtupjmaefahodgz.supabase.co/functions/v1/api" };
+const DOC_VER = { privacy: "2026-11-14", terms: "2026-11-11" };   /* auth/index.html 과 같은 값 · 1107 B2: pilot 가입도 동의 기록에 방침 판을 싣는다(이 화면엔 약관 동의가 없어 terms 는 싣지 않는다) */
 try{if(/^(localhost|127\.0\.0\.1)$/.test(location.hostname)&&localStorage.getItem("ds_api_dev"))CONFIG.api=localStorage.getItem("ds_api_dev");}catch(_){}   /* 로컬 시험에서만 가짜 서버 — auth.js 와 같은 길 */
 const TK={get:()=>localStorage.getItem("ds_tk")||"",set:t=>localStorage.setItem("ds_tk",t),has:()=>!!localStorage.getItem("ds_tk"),clear:()=>{localStorage.removeItem("ds_tk");localStorage.removeItem("ds_tk_ph");}};
 async function api(path,opt){opt=opt||{};const method=opt.method||"GET";const auth=opt.auth!==false;const h={"Content-Type":"application/json"};if(auth){const t=TK.get();if(!t)throw new Error("no_token");h["Authorization"]="Bearer "+t;}
@@ -701,7 +702,8 @@ async function saveAll(res,examCode){examCode=examCode||EXAM.code;
    const school=String((S.profile&&S.profile.school)||"").trim().slice(0,60);
    if(!school)throw new Error("login_or_signup");
    try{
-     const j=await api("/enroll",{method:"POST",auth:false,body:{phone:S.phone,pin:pin,name:S.profile.name,academy:S.profile.academy||"비재원생",school:school,grade:S.profile.grade,consent:true,consent_marketing:S._consent2===true,consent_notify:S._consent3===true}});
+     const consents=[{doc:"privacy",version:DOC_VER.privacy,granted:true},{doc:"notify",version:DOC_VER.privacy,granted:S._consent3===true}];
+     const j=await api("/enroll",{method:"POST",auth:false,body:{phone:S.phone,pin:pin,name:S.profile.name,academy:S.profile.academy||"비재원생",school:school,grade:S.profile.grade,consent:true,consent_marketing:S._consent2===true,consent_notify:S._consent3===true,consents,privacy_version:DOC_VER.privacy}});
      TK.set(j.token);
      /* 1106 나-28: 동의 기록을 서버가 못 썼으면(consents_ok:false · 옛 서버는 칸 없음) /consent 로 한 번 다시 보낸다. 그래도 못 쓰면 콘솔에 남기고 저장은 이어 간다. */
      if(j.consents_ok===false){const pend=Array.isArray(j.consents_pending)?j.consents_pending:[];let ok=false;
