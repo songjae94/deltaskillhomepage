@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>상황판 · 델타스킬 운영</title>
+<style>
+  :root { --bg:#0f1115; --card:#171a21; --line:#2a2f3a; --ink:#e8ebf1; --mute:#9aa3b2; --brand:#5aa2ff; --ok:#3ddc84; --bad:#ff6b6b; --chk:#b388ff; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.5 -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; }
+  main { max-width:1280px; margin:0 auto; padding:20px 16px 60px; }
+  h1 { font-size:20px; margin:0 0 4px; }
+  .sub { color:var(--mute); font-size:13px; margin:0 0 14px; }
+  .box { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; margin:0 0 16px; }
+  #login { max-width:380px; margin:60px auto; }
+  input { width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:8px; background:#0c0e12; color:var(--ink); font-size:16px; }
+  button { padding:9px 14px; border:1px solid var(--line); border-radius:8px; background:#20242e; color:var(--ink); font-size:14px; cursor:pointer; }
+  button.p { background:var(--brand); border-color:var(--brand); color:#06101f; font-weight:700; }
+  .err { color:var(--bad); font-size:13px; min-height:18px; margin-top:8px; }
+  .bar { display:flex; gap:8px; flex-wrap:wrap; align-items:center; justify-content:space-between; margin-bottom:12px; }
+  .legend span { margin-right:10px; font-size:13px; color:var(--mute); }
+  .wrap { overflow:auto; }
+  table { border-collapse:collapse; width:100%; font-size:13px; }
+  th, td { border:1px solid var(--line); padding:6px 8px; vertical-align:top; min-width:170px; }
+  th { background:#1d2130; position:sticky; top:0; }
+  th:first-child, td:first-child { position:sticky; left:0; background:#1d2130; min-width:120px; font-weight:700; z-index:1; }
+  td.s-done { background:rgba(61,220,132,.10); } td.s-blk { background:rgba(255,107,107,.14); } td.s-chk { background:rgba(179,136,255,.12); }
+  .g { font-weight:700; margin-right:4px; }
+  .tail { display:block; color:var(--mute); font-size:11.5px; margin-top:3px; word-break:break-all; }
+  .cnt { font-size:12px; color:var(--mute); white-space:nowrap; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fill, minmax(340px, 1fr)); gap:12px; }
+  .card h3 { margin:0 0 8px; font-size:15px; display:flex; justify-content:space-between; }
+  .card h3 small { color:var(--mute); font-weight:400; font-size:12px; }
+  .two { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .two h4 { margin:0 0 6px; font-size:13px; } .two h4.d { color:var(--ok); } .two h4.t { color:var(--brand); }
+  .two ul { margin:0; padding-left:16px; font-size:12.5px; } .two li { margin-bottom:5px; } .two li .tail { margin-top:1px; }
+  .blk li { color:var(--bad); }
+  .tot { font-size:13px; color:var(--mute); }
+  .stale { color:var(--bad); font-size:12px; }
+  @media (max-width:700px) { .two { grid-template-columns:1fr; } th, td { min-width:140px; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>상황판 — 본부가 표시 · 작업자는 읽기만</h1>
+  <p class="sub">완료 신호는 지금처럼 통로(이슈 #14)에 끝 글 한 줄 → 본부가 CSV 에 표시하고 main 에 올리면 1분 안에 여기 보인다.</p>
+
+  <section id="login" class="box" hidden>
+    <h2 style="font-size:16px;margin:0 0 10px">비밀번호</h2>
+    <input id="pw" type="password" autocomplete="current-password" placeholder="본부가 알려준 비밀번호">
+    <div class="err" id="lerr"></div>
+    <button class="p" id="lbtn" style="width:100%">들어가기</button>
+  </section>
+
+  <section id="board" hidden>
+    <div class="bar">
+      <div><b>갱신</b> <span id="upd">–</span> <span class="tot" id="srv"></span> <span class="stale" id="stale"></span></div>
+      <div><button id="rbtn">새로고침</button> <button id="obtn">로그아웃</button></div>
+    </div>
+    <div class="legend box" style="padding:8px 12px"><span>▫ 아직</span><span>✅ 끝</span><span>🔴 막힘</span><span>☑ 검증 끝</span> <span id="tot" class="tot"></span></div>
+    <div class="box wrap"><table id="tbl"></table></div>
+    <h2 style="font-size:16px;margin:18px 0 8px">작업자별 · 했음 ↔ 해야 함</h2>
+    <div class="cards" id="cards"></div>
+    <div class="box" style="margin-top:16px"><h3 style="margin:0 0 6px;font-size:15px">막힘 줄</h3><ul class="blk" id="blk"></ul></div>
+  </section>
+</main>
+<script>
+(function () {
+  var API = "https://cvlrphtupjmaefahodgz.supabase.co/functions/v1/hq-board";
+  try { if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname) && localStorage.getItem("ds_hq_api")) API = localStorage.getItem("ds_hq_api"); } catch (e) {}
+  var GLYPH = { "": "▫", "끝": "✅", "막힘": "🔴", "검증": "☑" }, CLS = { "끝": "s-done", "막힘": "s-blk", "검증": "s-chk" };
+  var DONE = { "끝": 1, "검증": 1 };
+  var $ = function (id) { return document.getElementById(id); };
+  var TK = { get: function () { try { return localStorage.getItem("ds_hq_tk") || ""; } catch (e) { return ""; } }, set: function (t) { try { localStorage.setItem("ds_hq_tk", t); } catch (e) {} }, clear: function () { try { localStorage.removeItem("ds_hq_tk"); } catch (e) {} } };
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+
+  /* RFC 4180 CSV — 따옴표 안의 쉼표 · 줄바꿈 · "" 을 다룬다 */
+  function parseCsv(text) {
+    var rows = [], row = [], cell = "", q = false, i, c;
+    text = text.replace(/^﻿/, "");
+    for (i = 0; i < text.length; i++) {
+      c = text[i];
+      if (q) { if (c === '"') { if (text[i + 1] === '"') { cell += '"'; i++; } else q = false; } else cell += c; }
+      else if (c === '"') q = true;
+      else if (c === ",") { row.push(cell); cell = ""; }
+      else if (c === "\n") { row.push(cell); rows.push(row); row = []; cell = ""; }
+      else if (c !== "\r") cell += c;
+    }
+    if (cell !== "" || row.length) { row.push(cell); rows.push(row); }
+    var head = rows.shift() || [];
+    return rows.filter(function (r) { return r.length > 1; }).map(function (r) { var o = {}; head.forEach(function (h, k) { o[h] = r[k] || ""; }); return o; });
+  }
+
+  function show(which) { $("login").hidden = which !== "login"; $("board").hidden = which !== "board"; }
+
+  function render(j) {
+    var rows = parseCsv(j.csv), workers = [], dates = [], by = {}, last = "";
+    rows.forEach(function (r) {
+      if (workers.indexOf(r["작업자"]) < 0) workers.push(r["작업자"]);
+      if (dates.indexOf(r["날짜"]) < 0) dates.push(r["날짜"]);
+      (by[r["작업자"]] = by[r["작업자"]] || {})[r["날짜"]] = r;
+      if (r["표시시각"] > last) last = r["표시시각"];
+    });
+    var n = { all: rows.length, done: 0, blk: 0, chk: 0, todo: 0 };
+    rows.forEach(function (r) { var s = r["상태"]; if (s === "끝") n.done++; else if (s === "막힘") n.blk++; else if (s === "검증") n.chk++; else n.todo++; });
+    $("upd").textContent = last ? last + " (마지막 표시)" : "표시 없음";
+    var ft = j.fetched_at ? new Date(j.fetched_at) : null;
+    $("srv").textContent = ft ? "· 서버 읽음 " + ft.toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" }) + (j.cache_age_s ? " (캐시 " + j.cache_age_s + "초)" : "") : "";
+    $("stale").textContent = j.stale ? "⚠ 원본을 못 읽어 묵은 판입니다" : "";
+    $("tot").textContent = "전체 " + n.all + " · 끝 " + n.done + " · 막힘 " + n.blk + " · 검증 " + n.chk + " · 아직 " + n.todo;
+
+    var h = "<thead><tr><th>작업자</th>" + dates.map(function (d) { return "<th>" + esc(d) + "</th>"; }).join("") + "<th>했음 / 해야 함</th></tr></thead><tbody>";
+    var cards = "", blk = "";
+    workers.forEach(function (w) {
+      var did = [], todo = [];
+      h += "<tr><td>" + esc(w) + "</td>";
+      dates.forEach(function (d) {
+        var r = by[w][d];
+        if (!r) { h += "<td></td>"; return; }
+        var s = r["상태"], tail = s ? r["표시시각"] + (r["근거"] ? " · " + r["근거"] : "") : "";
+        h += '<td class="' + (CLS[s] || "") + '"><span class="g">' + GLYPH[s] + "</span>" + esc(r["할일"]) + (tail ? '<span class="tail">' + esc(tail) + "</span>" : "") + "</td>";
+        var li = "<li><b>" + esc(d) + "</b> " + GLYPH[s] + " " + esc(r["할일"]) + (tail ? '<span class="tail">' + esc(tail) + "</span>" : "") + "</li>";
+        if (DONE[s]) did.push(li); else todo.push(li);
+        if (s === "막힘") blk += "<li><b>" + esc(w) + " · " + esc(d) + "</b> " + esc(r["할일"]) + '<span class="tail">' + esc(tail) + "</span></li>";
+      });
+      h += '<td class="cnt">✅ ' + did.length + " / ▫ " + todo.length + "</td></tr>";
+      cards += '<div class="box card"><h3>' + esc(w) + "<small>했음 " + did.length + " · 해야 함 " + todo.length + '</small></h3><div class="two"><div><h4 class="d">했음</h4><ul>' + (did.join("") || "<li class='tot'>없음</li>") + '</ul></div><div><h4 class="t">해야 함</h4><ul>' + (todo.join("") || "<li class='tot'>없음</li>") + "</ul></div></div></div>";
+    });
+    $("tbl").innerHTML = h + "</tbody>";
+    $("cards").innerHTML = cards;
+    $("blk").innerHTML = blk || "<li class='tot' style='color:var(--mute)'>없음</li>";
+    show("board");
+  }
+
+  function load() {
+    var t = TK.get();
+    if (!t) { show("login"); return; }
+    fetch(API + "/board", { headers: { "Authorization": "Bearer " + t } }).then(function (r) { return r.json().then(function (j) { return { s: r.status, j: j }; }); }).then(function (x) {
+      if (x.s === 401) { TK.clear(); show("login"); $("lerr").textContent = "다시 들어와 주세요(만료)"; return; }
+      if (!x.j || x.j.ok !== true) { show("board"); $("upd").textContent = "읽기 실패: " + ((x.j && x.j.error) || ("HTTP " + x.s)); return; }
+      render(x.j);
+    }).catch(function () { show("board"); $("upd").textContent = "서버에 닿지 못함"; });
+  }
+  function login() {
+    $("lerr").textContent = "";
+    var pw = $("pw").value; if (!pw) return;
+    fetch(API + "/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ pw: pw }) }).then(function (r) { return r.json().then(function (j) { return { s: r.status, j: j }; }); }).then(function (x) {
+      if (x.j && x.j.ok === true && x.j.token) { TK.set(x.j.token); $("pw").value = ""; load(); return; }
+      $("lerr").textContent = x.s === 429 ? "시도가 너무 잦습니다. 잠시 후 다시." : x.s === 503 ? "서버에 비밀번호가 아직 없습니다(본부)" : "비밀번호가 맞지 않습니다.";
+    }).catch(function () { $("lerr").textContent = "서버에 닿지 못함"; });
+  }
+  $("lbtn").addEventListener("click", login);
+  $("pw").addEventListener("keydown", function (e) { if (e.key === "Enter") login(); });
+  $("rbtn").addEventListener("click", load);
+  $("obtn").addEventListener("click", function () { TK.clear(); show("login"); });
+  load();
+  setInterval(function () { if (TK.get() && !document.hidden) load(); }, 60000);
+})();
+</script>
+</body>
+</html>
