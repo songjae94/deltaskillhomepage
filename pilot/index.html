@@ -105,6 +105,7 @@ input.txt{width:100%;padding:14px 15px;border:1.5px solid rgba(90,162,255,.42);b
 .pick:hover .pt,.pick:active .pt{color:#fff}
 .pick:active{transform:scale(.993)}
 .pick:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.pick:disabled{opacity:.45;cursor:default;transform:none;box-shadow:none}
 .pick .pt{display:block;font-size:15.5px;font-weight:800;letter-spacing:-.022em;margin-bottom:4px;color:var(--ink)}
 .pick .pd{display:block;font-size:12.5px;color:var(--mut);line-height:1.6}
 .pick .pa{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:20px;color:rgba(255,255,255,.5);font-weight:700;line-height:1;transition:color .18s var(--ease)}
@@ -211,9 +212,10 @@ const LS={get:k=>JSON.parse(localStorage.getItem(k)||"null"),set:(k,v)=>localSto
 const normExam=c=>c;
 const normHist=a=>(a||[]).map(x=>(x&&x.exam_code)?Object.assign({},x,{exam_code:normExam(x.exam_code)}):x);
 let S={screen:"login",phone:"",profile:null,studentId:null,catSel:null,mode:null,mark:{},open:null,ans:{},reason:{},conf:{},memo:{},step:{},dq:{},photo:{},previewPath:false,attempt:1,saveMode:null,savedSubId:null,savedExam:null,_forceNew:false};
-/* 지금 화면이 쓰는 선택과목 — 저장된 회차를 열 때는 그 회차의 과목(_subjOv)이 우선한다.
-   프로필에서 확통↔미적분을 바꾼 뒤 예전 회차를 열면 21~30번이 다른 과목으로 뒤바뀌기 때문. */
-function curSubject(){return S._subjOv||(S.profile&&S.profile.subject)||"확통";}
+/* 지금 화면이 쓰는 선택과목 — 회차에 들어갈 때 고른 과목(_subjOv)이 우선한다(형 1107: 가입·프로필에서는 과목을 받지 않는다 · 내년 수능부터 선택과목 폐지).
+   옛 회원의 프로필에 과목 값이 남아 있으면 그 값을 기본값으로만 쓴다. 둘 다 없으면 빈 값 — 인트로에서 고르기 전에는 문항 화면으로 가지 않는다. */
+function curSubject(){return S._subjOv||(S.profile&&S.profile.subject)||"";}
+function hasProf(p){return !!(p&&(p.name||p.grade||p.subject));}   /* 「프로필이 있다」 — 옛 코드는 subject 로 쟀다 */
 function items(){const D=EXAM.data;return D.gong.concat(curSubject()==="미적분"?D.mi:D.hw);}
 /* 오답만 체크 모드에서 문항 표시 상태 — "x"=틀림, "g"=찍어서 맞음, 없으면 그냥 맞음 */
 function markOf(q){return (S.mark||{})[q.no]||null;}
@@ -233,7 +235,7 @@ function render(){setProg();const lightScr=S.screen==='quiz'||S.screen==='note';
  document.body.classList.toggle('qlight',lightScr);
  /* 루트에도 같이 알려준다 — 브라우저 다크 모드가 밝은 화면을 강제로 어둡게 칠해 색이 뭉개지는 것을 막는다 */
  document.documentElement.style.colorScheme=lightScr?'light':'dark';
- const tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content',lightScr?'#f5f7fb':'#05060f');const custS=["custom","cdone"].includes(S.screen);el("subttl").textContent=(["login","signup","profile","exam"].includes(S.screen)?"AI 오답노트":custS?"모의고사 직접입력 · AI 오답노트":EXAM.title+" · AI 오답노트")+(S.profile&&!["login","signup","profile","exam","custom","cdone"].includes(S.screen)?` · ${curSubject()}`:"");({login:login,signup:signup,profile:profileScreen,exam:examSelect,intro:intro,quiz:quiz,note:noteScreen,result:result,custom:customForm,cdone:customResult}[S.screen])();
+ const tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content',lightScr?'#f5f7fb':'#05060f');const custS=["custom","cdone"].includes(S.screen);el("subttl").textContent=(["login","signup","profile","exam"].includes(S.screen)?"AI 오답노트":custS?"모의고사 직접입력 · AI 오답노트":EXAM.title+" · AI 오답노트")+(S.profile&&curSubject()&&!["login","signup","profile","exam","custom","cdone"].includes(S.screen)?` · ${curSubject()}`:"");({login:login,signup:signup,profile:profileScreen,exam:examSelect,intro:intro,quiz:quiz,note:noteScreen,result:result,custom:customForm,cdone:customResult}[S.screen])();
  /* 하단 고정 버튼이 없는 화면은 아래 여백을 줄인다 */
  const app=document.querySelector(".app");if(app)app.classList.toggle("nofab",!el("fab").innerHTML.trim());
  syncHist();}
@@ -252,23 +254,22 @@ function saveProfile(p){
 }
 async function fetchProfile(){
  if(!CONFIG.api||!TK.has())return null;
- try{const j=await api("/profile");return (j&&j.profile&&j.profile.subject)?j.profile:null;}catch(_){return null;}
+ try{const j=await api("/profile");return (j&&hasProf(j.profile))?j.profile:null;}catch(_){return null;}
 }
 async function recoverProfile(){
- if(S.profile&&S.profile.subject)return true;
+ if(hasProf(S.profile))return true;
  if(!TK.has())return false;
  const tph=localStorage.getItem("ds_tk_ph");if(tph&&tph!==S.phone)return false;
  const p=await fetchProfile();if(!p)return false;
- saveProfile({name:p.name||"",academy:p.academy||"",school:(typeof p.school==="string"?p.school:""),grade:p.grade||"",subject:p.subject});
+ saveProfile({name:p.name||"",academy:p.academy||"",school:(typeof p.school==="string"?p.school:""),grade:p.grade||"",subject:p.subject||""});
  return true;
 }
 
 /* ---------- 내 정보 수정 ----------
-   선택과목은 바뀔 수 있다(확통↔미적분). 바뀌면 다음 회차부터 문항 세트가 달라진다.
-   이미 저장한 회차의 기록은 그대로 남는다 — 저장할 때의 area가 응답에 함께 들어가 있다. */
+   선택과목 칸은 없다(형 1107). 과목은 회차에 들어갈 때 고른다 — 옛 회원의 저장된 과목 값은 지우지 않고 그대로 둔다(서버에는 보내지 않는다). */
 function profileScreen(){
  const cur=S.profile||{name:"",academy:"",school:"",grade:"",subject:""};
- const p=S._pp||(S._pp={name:cur.name||"",academy:cur.academy||"",school:cur.school||"",grade:cur.grade||"",subject:cur.subject||""});
+ const p=S._pp||(S._pp={name:cur.name||"",academy:cur.academy||"",school:cur.school||"",grade:cur.grade||""});
  /* 학교명(형 1106 · 학생 가입은 학교명 필수 · 학원은 선택): 이 기기 프로필에 학교명이 없으면 서버 값을 한 번 받아 채운다 — /my/ schoolLine 과 같은 읽기.
     학교명이 없는 기존 회원은 비워 둔 채 다른 칸만 고칠 수 있다(/my/ 와 같다). */
  if(!p._sq){p._sq=1;
@@ -279,22 +280,19 @@ function profileScreen(){
      if(!p.school){p.school=sv;if(S.screen==="profile")render();}
    }).catch(()=>{});}
  el("screen").innerHTML=`<div class="pad"><div style="margin-bottom:8px"><span class="rchip" data-pback="1" style="cursor:pointer">← 돌아가기</span></div>
- <div class="h">내 정보</div><div class="desc">선택과목을 바꾸면 <b>다음에 입력하는 회차부터</b> 문항 세트가 바뀌어요. 이미 저장한 회차 기록은 그대로 남아요.</div>
+ <div class="h">내 정보</div><div class="desc">선택과목은 회차를 입력할 때 그때 골라요. 이미 저장한 회차 기록은 그대로 남아요.</div>
  <div class="field"><label>이름</label><input class="txt" id="pnm" placeholder="이름" value="${esc(p.name)}"></div>
  <div class="field"><label>학교명</label><input class="txt" id="psc" placeholder="다니는 학교 이름" autocomplete="off" maxlength="60" value="${esc(p.school)}"></div>
  <div class="field"><label>다니는 학원 (선택, 직접 입력)</label><input class="txt" id="pac" placeholder="학원명을 직접 입력하세요" value="${esc(p.academy)}"></div>
  <div class="field"><label>구분</label><div class="seg"><button data-pg="재수생" class="${p.grade==='재수생'?'on':''}">재수생(N수)</button><button data-pg="고3" class="${p.grade==='고3'?'on':''}">고3</button></div></div>
- <div class="field"><label>수학 선택과목</label><div class="seg"><button data-ps="미적분" class="${p.subject==='미적분'?'on':''}">미적분</button><button data-ps="확통" class="${p.subject==='확통'?'on':''}">확률과통계</button></div>
- ${cur.subject&&p.subject&&p.subject!==cur.subject?`<div style="font-size:12px;color:var(--no);margin-top:6px;line-height:1.5">선택과목을 <b>${esc(cur.subject)} → ${esc(p.subject)}</b>로 바꿉니다.</div>`:``}</div>
  <div id="perr" style="font-size:12.5px;color:var(--no);min-height:18px"></div></div>`;
  el("pnm").oninput=e=>{p.name=e.target.value;el("psave").disabled=!pok();};
  if(el("psc"))el("psc").oninput=e=>{p.school=e.target.value;};
  if(el("pac"))el("pac").oninput=e=>{p.academy=e.target.value;el("psave").disabled=!pok();};
  document.querySelectorAll("[data-pg]").forEach(b=>b.onclick=()=>{p.grade=b.dataset.pg;render();});
- document.querySelectorAll("[data-ps]").forEach(b=>b.onclick=()=>{p.subject=b.dataset.ps;render();});
  const back=()=>{S._pp=null;S.catSel=null;S.screen="exam";render();window.scrollTo(0,0);};
  const bk=document.querySelector("[data-pback]");if(bk)bk.onclick=back;
- function pok(){return !!(p.name&&p.grade&&p.subject);}
+ function pok(){return !!(p.name&&p.grade);}
  el("fab").innerHTML=`<button class="btn" id="psave" ${pok()?"":"disabled"}>저장하기</button>`;
  el("psave").onclick=async()=>{if(!pok())return;
    /* 학교명: 서버 키 school · 앞뒤 공백 떼고 60자(auth · my 와 같다). 서버는 빈 값을 지움으로 받지 않으므로 이미 있는 학교명을 비우는 저장은 막는다. 원래 없던 회원은 비워 둬도 된다. */
@@ -304,12 +302,12 @@ function profileScreen(){
    const btn=el("psave");btn.disabled=true;btn.textContent="저장 중…";
    let serverOk=true, schoolOk=true, keep=school;
    if(CONFIG.api&&TK.has()){
-     try{const j=await api("/profile",{method:"POST",body:Object.assign({name:p.name,academy:p.academy||"비재원생"},school?{school:school}:{},{grade:p.grade,subject:p.subject})});
+     try{const j=await api("/profile",{method:"POST",body:Object.assign({name:p.name,academy:p.academy||"비재원생"},school?{school:school}:{},{grade:p.grade})});
        /* 학교를 모르는 서버는 학교 없이 돌려준다 — 저장된 척하지 않는다(/my/ schoolSave 와 같은 확인) */
        if(school&&!(j&&j.profile&&j.profile.school===school)){schoolOk=false;keep=had;}}
      catch(e){serverOk=false;}
    }
-   saveProfile({name:p.name,academy:p.academy||"비재원생",school:keep,grade:p.grade,subject:p.subject});
+   saveProfile({name:p.name,academy:p.academy||"비재원생",school:keep,grade:p.grade,subject:(cur.subject||"")});   /* 옛 과목 값은 그대로 보관 */
    if(!serverOk){el("perr").textContent="이 기기에는 저장했지만 서버 반영은 실패했어요. 잠시 뒤 다시 시도해 주세요.";btn.disabled=false;btn.textContent="저장하기";return;}
    if(!schoolOk){el("perr").textContent="다른 정보는 저장했지만 학교명은 저장하지 못했어요. 잠시 뒤 다시 시도해 주세요.";btn.disabled=false;btn.textContent="저장하기";return;}
    back();};
@@ -324,7 +322,7 @@ function login(){el("screen").innerHTML=`<div class="pad"><div style="margin-bot
  el("go").onclick=async()=>{if(S.phone.length<10){alert("휴대폰 번호를 정확히 입력하세요");return;}
    localStorage.setItem("ds_phone",S.phone);
    const st=(LS.get("ds_students")||{})[S.phone];
-   if(st&&st.profile&&st.profile.subject){S.profile=st.profile;S.studentId=st.id;S.catSel=null;S.screen="exam";}
+   if(st&&hasProf(st.profile)){S.profile=st.profile;S.studentId=st.id;S.catSel=null;S.screen="exam";}
    else{
      /* 이 기기에 프로필이 없어도 이미 가입된 번호면 가입 화면을 띄우지 않는다 —
         다시 가입시키면 같은 번호로 계정이 하나 더 생긴다 (2026-08-12 사고) */
@@ -337,17 +335,16 @@ function login(){el("screen").innerHTML=`<div class="pad"><div style="margin-bot
    render();window.scrollTo(0,0);};}
 
 /* ---------- 가입 + 동의 ---------- */
-function signup(){const p=S.profile||{name:"",academy:"",school:"",grade:"",subject:""};S._p=p;S._consent=S._consent||false;S._consent2=S._consent2||false;
+function signup(){const p=S.profile||{name:"",academy:"",school:"",grade:""};S._p=p;S._consent=S._consent||false;S._consent2=S._consent2||false;
  el("screen").innerHTML=`<div class="pad"><div class="h">시작 정보 입력</div><div class="desc">다음 주부터 같은 번호로 접속하면 이어서 기록돼요.</div>
  <div class="field"><label>이름</label><input class="txt" id="nm" placeholder="이름" value="${esc(p.name)}"></div>
  <div class="field"><label>학교명</label><input class="txt" id="sc" placeholder="다니는 학교 이름" autocomplete="off" maxlength="60" value="${esc(p.school||"")}"></div>
  <div class="field"><label>다니는 학원 (선택, 직접 입력)</label><input class="txt" id="ac" placeholder="학원명을 직접 입력하세요" value="${esc(p.academy)}"></div>
  <div class="field"><label>구분</label><div class="seg"><button data-g="재수생" class="${p.grade==='재수생'?'on':''}">재수생(N수)</button><button data-g="고3" class="${p.grade==='고3'?'on':''}">고3</button></div></div>
- <div class="field"><label>수학 선택과목</label><div class="seg"><button data-s="미적분" class="${p.subject==='미적분'?'on':''}">미적분</button><button data-s="확통" class="${p.subject==='확통'?'on':''}">확률과통계</button></div></div>
  <div class="field"><label>비밀번호</label><input class="txt" id="pin" type="password" maxlength="64" autocomplete="new-password" placeholder="영문 + 숫자 8자 이상" value="${S._pin||''}"><div style="font-size:11.5px;color:var(--mut2);margin-top:6px;line-height:1.5">기기를 바꾸거나 앱을 지웠을 때, 그리고 <b>내 결과 페이지 로그인</b>에 쓰는 비밀번호예요.</div></div>
  <div class="field"><label>비밀번호 확인</label><input class="txt" id="pin2" type="password" maxlength="64" autocomplete="new-password" placeholder="다시 입력" value="${S._pin2||''}"><div id="pwmsg" style="font-size:11.5px;color:var(--no);margin-top:6px"></div></div>
  <div class="field"><label>개인정보 수집·이용 동의 (만 14세 이상 본인 동의)</label>
-   <div class="legalbox"><b>개인정보처리자</b> 델타스킬 (대표 송재형) · 문의 admin@deltaskill.co.kr<br>델타스킬은 AI 오답노트 서비스 제공을 위해 아래와 같이 개인정보를 수집·이용합니다.<br><b>[필수] 수집·이용</b><br>• 수집 항목: 이름, 휴대폰번호, 학교명, 학원명, 학년, 선택과목, 비밀번호, 모의고사 문항별 응답·정오·오답 원인 입력 데이터, 풀이 사진(선택 첨부 시 · 처방 분석 및 피드백 제공 목적, 델타스킬 담당자 열람 및 AI 자동 분석)<br>• 이용 목적: 개인 맞춤 오답 분석·처방·학습 경로 제공, 학교에 맞춘 내신 자료 제공(학교명), 첨부한 풀이 사진 검토 및 피드백, AI 자동 분석을 통한 막힌 단계 판별, 서비스 개선<br>• <b>AI 자동 분석</b>: 입력한 응답 데이터와 첨부한 사진을 AI로 분석해 어느 단계에서 막혔는지 찾아 드립니다. <b>이름·휴대폰번호·학원명·PIN은 AI에 전송하지 않으며, 전송한 데이터는 AI 모델 학습에 사용되지 않습니다.</b> AI 분석을 원하지 않으시면 담당자가 직접 검토하는 방식으로 처방해 드립니다(문의: admin@deltaskill.co.kr).<br>• 국외 AI 사업자로의 전송은 <b>아직 시행 전</b>입니다. 개시하기 전에 어느 사업자에게 어느 나라로 전송하는지 알려 드리고 동의를 새로 받습니다.<br>• 사진은 <b>풀이 과정만</b> 촬영해 주세요. 이름·학교·수험번호 등 풀이와 무관한 정보는 가려 주시기 바랍니다.<br>• 개인정보는 델타스킬이 직접 관리하며, 본인 동의 없이 제3자에게 제공하지 않습니다<br>• 보유 기간: 서비스 종료 또는 동의 철회 시까지 (철회 문의: admin@deltaskill.co.kr)<br>• 법인 설립에 따른 이전: 현재 설립을 진행 중인 (주)델타스킬로 사업이 승계될 예정이며, 이 경우 수집된 개인정보도 함께 이전됩니다. 이전 전에 이전 사실·이전받는 자·이전을 원하지 않으실 때의 조치 방법을 별도로 알려 드립니다.<br>• 동의를 거부할 수 있으나, 거부 시 서비스 이용이 제한됩니다.<br><b>[선택] 복습 알림 수신</b><br>• 분석 결과에 따라 다시 봐야 할 문제를 카카오톡 또는 문자로 알려 드립니다.<br>• 알림에는 시험명·문항 번호·단원만 포함되며, <b>점수·등급은 포함되지 않습니다.</b><br>• 동의하지 않으셔도 서비스는 그대로 이용하실 수 있고, 알림은 언제든지 끄실 수 있습니다.<br><b>[선택] 홍보 활용</b><br>• 학습 결과(점수·등급 변화 등)를 개인을 알아볼 수 없도록 익명 처리하여 서비스 소개·홍보(홈페이지, SNS, 소개 자료 등)에 활용합니다.<br>• 선택 동의를 거부해도 서비스 이용에 불이익이 없습니다.</div>
+   <div class="legalbox"><b>개인정보처리자</b> 델타스킬 (대표 송재형) · 문의 admin@deltaskill.co.kr<br>델타스킬은 AI 오답노트 서비스 제공을 위해 아래와 같이 개인정보를 수집·이용합니다.<br><b>[필수] 수집·이용</b><br>• 수집 항목: 이름, 휴대폰번호, 학교명, 학원명, 학년, 비밀번호, 모의고사 문항별 응답·정오·오답 원인 입력 데이터, 풀이 사진(선택 첨부 시 · 처방 분석 및 피드백 제공 목적, 델타스킬 담당자 열람 및 AI 자동 분석)<br>• 이용 목적: 개인 맞춤 오답 분석·처방·학습 경로 제공, 학교에 맞춘 내신 자료 제공(학교명), 첨부한 풀이 사진 검토 및 피드백, AI 자동 분석을 통한 막힌 단계 판별, 서비스 개선<br>• <b>AI 자동 분석</b>: 입력한 응답 데이터와 첨부한 사진을 AI로 분석해 어느 단계에서 막혔는지 찾아 드립니다. <b>이름·휴대폰번호·학원명·PIN은 AI에 전송하지 않으며, 전송한 데이터는 AI 모델 학습에 사용되지 않습니다.</b> AI 분석을 원하지 않으시면 담당자가 직접 검토하는 방식으로 처방해 드립니다(문의: admin@deltaskill.co.kr).<br>• 국외 AI 사업자로의 전송은 <b>아직 시행 전</b>입니다. 개시하기 전에 어느 사업자에게 어느 나라로 전송하는지 알려 드리고 동의를 새로 받습니다.<br>• 사진은 <b>풀이 과정만</b> 촬영해 주세요. 이름·학교·수험번호 등 풀이와 무관한 정보는 가려 주시기 바랍니다.<br>• 개인정보는 델타스킬이 직접 관리하며, 본인 동의 없이 제3자에게 제공하지 않습니다<br>• 보유 기간: 서비스 종료 또는 동의 철회 시까지 (철회 문의: admin@deltaskill.co.kr)<br>• 법인 설립에 따른 이전: 현재 설립을 진행 중인 (주)델타스킬로 사업이 승계될 예정이며, 이 경우 수집된 개인정보도 함께 이전됩니다. 이전 전에 이전 사실·이전받는 자·이전을 원하지 않으실 때의 조치 방법을 별도로 알려 드립니다.<br>• 동의를 거부할 수 있으나, 거부 시 서비스 이용이 제한됩니다.<br><b>[선택] 복습 알림 수신</b><br>• 분석 결과에 따라 다시 봐야 할 문제를 카카오톡 또는 문자로 알려 드립니다.<br>• 알림에는 시험명·문항 번호·단원만 포함되며, <b>점수·등급은 포함되지 않습니다.</b><br>• 동의하지 않으셔도 서비스는 그대로 이용하실 수 있고, 알림은 언제든지 끄실 수 있습니다.<br><b>[선택] 홍보 활용</b><br>• 학습 결과(점수·등급 변화 등)를 개인을 알아볼 수 없도록 익명 처리하여 서비스 소개·홍보(홈페이지, SNS, 소개 자료 등)에 활용합니다.<br>• 선택 동의를 거부해도 서비스 이용에 불이익이 없습니다.</div>
    <label class="consent ${S._consent?'on':''}" id="cs"><input type="checkbox" id="ck" ${S._consent?'checked':''}><span class="ct"><b>[필수]</b> 만 14세 이상이며 개인정보 수집·이용 및 AI 자동 분석에 동의합니다.</span></label>
    <label class="consent ${S._consent3?'on':''}" id="cs3"><input type="checkbox" id="ck3" ${S._consent3?'checked':''}><span class="ct"><b>[선택]</b> 복습 알림(카카오톡·문자) 수신에 동의합니다.</span></label><label class="consent ${S._consent2?'on':''}" id="cs2"><input type="checkbox" id="ck2" ${S._consent2?'checked':''}><span class="ct"><b>[선택]</b> 익명 처리된 학습 결과의 홍보 활용에 동의합니다.</span></label></div>
  </div>`;
@@ -358,14 +355,13 @@ function signup(){const p=S.profile||{name:"",academy:"",school:"",grade:"",subj
  if(el("sc"))el("sc").oninput=e=>{p.school=e.target.value;el("done").disabled=!ok();};
  if(el("ac"))el("ac").oninput=e=>{p.academy=e.target.value;S._acEtc=e.target.value;el("done").disabled=!ok();};
  document.querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>{p.grade=b.dataset.g;render();});
- document.querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>{p.subject=b.dataset.s;render();});
  el("ck").onchange=e=>{S._consent=e.target.checked;el("cs").classList.toggle("on",e.target.checked);el("done").disabled=!ok();};
  el("ck2").onchange=e=>{S._consent2=e.target.checked;el("cs2").classList.toggle("on",e.target.checked);};
  el("ck3").onchange=e=>{S._consent3=e.target.checked;el("cs3").classList.toggle("on",e.target.checked);};
  S.profile=p;
  function pwNew(p){return /^[\x21-\x7e]{8,64}$/.test(p)&&/[A-Za-z]/.test(p)&&/\d/.test(p);}   /* 서버 api_v11 pwNew 와 같다 */
  function validPin(){return pwNew(S._pin||"") && S._pin===S._pin2;}
- function ok(){return p.name&&String(p.school||"").trim()&&p.grade&&p.subject&&S._consent&&validPin();}   /* 형 1106: 학생 가입은 학교명 필수 · 학원은 선택 */
+ function ok(){return p.name&&String(p.school||"").trim()&&p.grade&&S._consent&&validPin();}   /* 형 1106: 학생 가입은 학교명 필수 · 학원은 선택 */
  el("nm").addEventListener("input",()=>{el("done").disabled=!ok();});
  /* 학원은 버튼 선택 — 직접입력 모드에서만 ac 입력창 존재 (oninput에서 처리) */
  el("fab").innerHTML=`<button class="btn" id="done" ${ok()?"":"disabled"}>입력 완료 · 오답노트 시작</button>`;
@@ -383,7 +379,7 @@ function examSelect(){
   CATS.map((c,i)=>{const n=c.exams.filter(e=>e.ex!=null).length;const sub=c.custom?"내가 본 다른 모의고사를 직접 기록해요":`${c.desc} · 입력 가능 ${n}개${n<c.exams.length?` / 준비 중 ${c.exams.length-n}개`:''}`;return `<button class="q" style="width:100%;text-align:left;cursor:pointer" data-cat="${i}"><div class="qh" style="margin-bottom:2px"><span style="font-weight:800;font-size:15.5px">${c.name}</span><span style="margin-left:auto;color:var(--mut2)">${c.custom?'✏️':'→'}</span></div><div style="font-size:12px;color:var(--mut)">${sub}</div></button>`;}).join("")+`</div>`;
   const pf=document.querySelector("[data-prof]");if(pf)pf.onclick=()=>{S._pp=null;S.screen="profile";render();window.scrollTo(0,0);};
   const rl=document.querySelector("[data-relogin]");if(rl)rl.onclick=()=>{["ds_phone","ds_students","ds_subs","ds_subid","ds_pw_old","ds_pin_short"].forEach(k=>localStorage.removeItem(k));TK.clear();S.phone="";S.profile=null;S._pin="";S._pin2="";S.screen="login";render();window.scrollTo(0,0);};
-  document.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>{const i=+b.dataset.cat;if(CATS[i].custom){S._cName="";S._cDate=(new Date()).toISOString().slice(0,10);S._cSub=S.profile.subject;S._cScore="";S._cWrong={};S.photo={};S.savedSubId=null;S.savedExam=null;S.saveMode=null;S._forceNew=false;S._updWarn=null;S._editMode=false;S._subjOv=null;S.mode=null;S.mark={};S.open=null;S.screen="custom";render();window.scrollTo(0,0);return;}S.catSel=i;render();window.scrollTo(0,0);});
+  document.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>{const i=+b.dataset.cat;if(CATS[i].custom){S._cName="";S._cDate=(new Date()).toISOString().slice(0,10);S._cSub=curSubject()==="미적분"?"미적분":curSubject()==="확통"?"확률과통계":"";S._cScore="";S._cWrong={};S.photo={};S.savedSubId=null;S.savedExam=null;S.saveMode=null;S._forceNew=false;S._updWarn=null;S._editMode=false;S._subjOv=null;S.mode=null;S.mark={};S.open=null;S.screen="custom";render();window.scrollTo(0,0);return;}S.catSel=i;render();window.scrollTo(0,0);});
   el("fab").innerHTML="";return;
  }
  const c=CATS[S.catSel];
@@ -404,11 +400,15 @@ function intro(){el("screen").innerHTML=`<div class="pad"><div class="h">${esc(S
    <span class="pd">30문항 답을 입력하면 자동 채점 → 틀린 문항은 그 자리에서 원인까지</span><span class="pa">›</span></button>
  <button class="pick" id="stn" type="button"><span class="pt">채점은 했어요 · 오답만 체크</span>
    <span class="pd">틀린 번호만 탭하면 점수가 자동 계산돼요. 답 입력 없이 원인만 정리</span><span class="pa">›</span></button>
- <div class="metaline">공통 22문항 + <b>${esc(S.profile.subject)}</b> 8문항 · 약 5분</div>
+ <div class="field" style="margin-top:14px"><label>이 시험에서 본 선택과목</label><div class="seg"><button data-is="확통" class="${curSubject()==='확통'?'on':''}">확률과통계</button><button data-is="미적분" class="${curSubject()==='미적분'?'on':''}">미적분</button></div></div>
+ <div class="metaline">공통 22문항 + <b>${curSubject()?esc(curSubject()):"선택과목"}</b> 8문항 · 약 5분${curSubject()?"":" — 먼저 선택과목을 골라 주세요"}</div>
  <div id="prevBox"></div></div>`;
  el("fab").innerHTML="";   /* 선택은 위 카드에서 — 하단 버튼 없음 */
- el("st").onclick=()=>{S.mode="grade";S.screen="quiz";render();window.scrollTo(0,0);};
- el("stn").onclick=()=>{S.mode="note";S.screen="note";render();window.scrollTo(0,0);};
+ /* 과목은 가입·프로필이 아니라 여기서 고른다(형 1107). 고르기 전에는 두 카드가 잠긴다. */
+ document.querySelectorAll("[data-is]").forEach(b=>b.onclick=()=>{S._subjOv=b.dataset.is;render();});
+ el("st").disabled=el("stn").disabled=!curSubject();
+ el("st").onclick=()=>{if(!curSubject())return;S.mode="grade";S.screen="quiz";render();window.scrollTo(0,0);};
+ el("stn").onclick=()=>{if(!curSubject())return;S.mode="note";S.screen="note";render();window.scrollTo(0,0);};
  /* 이 시험을 전에 저장한 적이 있으면, 새 회차 대신 그 회차를 불러와 수정할 수 있게 한다 */
  (async()=>{try{
    const items=await histItems();if(!items||!items.length)return;
@@ -466,8 +466,8 @@ function refresh(){const y=window.scrollY;quiz();window.scrollTo(0,y);setProg();
 function quiz(){const wrap=document.createElement("div");wrap.className="pad";
  wrap.innerHTML=`<div class="h" style="font-size:16px">답을 입력하세요</div><div class="desc">객관식은 번호 탭, 단답은 숫자 입력. 채점은 자동이에요.</div><div class="sechd">공통과목 (1–22)</div>`;
  const g1=document.createElement("div");EXAM.data.gong.forEach(q=>g1.appendChild(card(q)));wrap.appendChild(g1);
- wrap.insertAdjacentHTML("beforeend",`<div class="sechd">선택과목 · ${S.profile.subject} (23–30)</div>`);
- const g2=document.createElement("div");(S.profile.subject==="미적분"?EXAM.data.mi:EXAM.data.hw).forEach(q=>g2.appendChild(card(q)));wrap.appendChild(g2);
+ wrap.insertAdjacentHTML("beforeend",`<div class="sechd">선택과목 · ${esc(curSubject())} (23–30)</div>`);
+ const g2=document.createElement("div");(curSubject()==="미적분"?EXAM.data.mi:EXAM.data.hw).forEach(q=>g2.appendChild(card(q)));wrap.appendChild(g2);
  el("screen").innerHTML="";el("screen").appendChild(wrap);updFab();}
 function updFab(){const n=answeredCount();el("fab").innerHTML=`<button class="btn" id="sub" ${n>=1?"":"disabled"}>저장하고 결과 보기 (${n}/30)</button>`;if(n>=1)el("sub").onclick=submitDiag;}
 
@@ -530,7 +530,7 @@ function noteScreen(){
   <div class="hint" id="gridTop">번호를 탭하면 아래에 입력칸이 열려요. 입력 완료를 누르면 다음 문항을 고를 수 있고, 번호를 다시 탭하면 언제든 고칠 수 있어요.<br>
    <i class="x"></i>틀림 <i class="g"></i>찍어서 맞음 <span style="opacity:.8">— 카드 안에서 고르면 점수에 바로 반영돼요</span></div>
   <div class="sechd">공통과목 (1–22)</div>${grid(EXAM.data.gong)}
-  <div class="sechd">선택과목 · ${esc(S.profile.subject)} (23–30)</div>${grid(S.profile.subject==="미적분"?EXAM.data.mi:EXAM.data.hw)}
+  <div class="sechd">선택과목 · ${esc(curSubject())} (23–30)</div>${grid(curSubject()==="미적분"?EXAM.data.mi:EXAM.data.hw)}
   <div class="sechd">정리할 문항 <span style="color:var(--mut2);font-weight:400">— 고른 문항이 여기 열려요</span></div>
   <div id="ncards"></div>`;
  el("screen").innerHTML="";el("screen").appendChild(wrap);
@@ -625,7 +625,7 @@ async function enterEditMode(subId){
  const n=await loadSubmission(subId);
  S.attempt=+rec.attempt_no||1;S.savedSubId=subId;S.savedExam=rec.exam_code;S.saveMode="server";S._forceNew=false;S._updWarn=null;S._editMode=true;
  rememberSubId(rec.exam_code,S.attempt,subId);
- S.catSel=null;S.screen=noteMode()?"note":"quiz";render();window.scrollTo(0,0);
+ S.catSel=null;S.screen=curSubject()?(noteMode()?"note":"quiz"):"intro";render();window.scrollTo(0,0);   /* 과목을 모르면 인트로에서 고른 뒤 들어간다 */
  return n>0?"ok":"empty";
 }
 /* 회차 번호는 서버 이력 기준 — 로컬 데모기록으로 세면 저장할 때마다 번호가 부풀어 중복처럼 쌓인다 */
@@ -701,7 +701,7 @@ async function saveAll(res,examCode){examCode=examCode||EXAM.code;
    const school=String((S.profile&&S.profile.school)||"").trim().slice(0,60);
    if(!school)throw new Error("login_or_signup");
    try{
-     const j=await api("/enroll",{method:"POST",auth:false,body:{phone:S.phone,pin:pin,name:S.profile.name,academy:S.profile.academy||"비재원생",school:school,grade:S.profile.grade,subject:S.profile.subject,consent:true,consent_marketing:S._consent2===true,consent_notify:S._consent3===true}});
+     const j=await api("/enroll",{method:"POST",auth:false,body:{phone:S.phone,pin:pin,name:S.profile.name,academy:S.profile.academy||"비재원생",school:school,grade:S.profile.grade,consent:true,consent_marketing:S._consent2===true,consent_notify:S._consent3===true}});
      TK.set(j.token);
      /* 1106 나-28: 동의 기록을 서버가 못 썼으면(consents_ok:false · 옛 서버는 칸 없음) /consent 로 한 번 다시 보낸다. 그래도 못 쓰면 콘솔에 남기고 저장은 이어 간다. */
      if(j.consents_ok===false){const pend=Array.isArray(j.consents_pending)?j.consents_pending:[];let ok=false;
@@ -775,7 +775,7 @@ function result(){const its=items();const done=its.filter(q=>graded(q)!=null);co
  const patSec=pweak.map(([k,v])=>{const b=PATBANK[k];if(!b)return"";return `<div class="presc"><div class="pu">${b.n}<span class="pw">이번 회차 ${v.wrong.length}문항</span></div><div class="pr">핵심 기술: <b>${b.k}</b></div>${b.c>0?`<div class="pl"><span class="ic">🧩</span><div><b>같은 기술을 쓰는 문항 ${b.c}개</b><br>${b.d}</div></div>`:""}<div class="pl"><span class="ic">🎯</span><div><b>묶어서 연습</b><br>${b.f}</div></div></div>`;}).join("");
    const tinfo={};its.forEach(q=>{const g=graded(q);if(g==null||!q.tc)return;q.tc.forEach(c=>{const o=tinfo[c]=tinfo[c]||{n:0,w:[]};o.n++;if(g==="x")o.w.push(q.no);});});
   const tweak=Object.entries(tinfo).filter(([c,v])=>v.w.length>0).sort((a,b)=>b[1].w.length-a[1].w.length).slice(0,3);
-  const myArea=S.profile&&S.profile.subject==="미적분"?"mi":"hw";
+  const myArea=curSubject()==="미적분"?"mi":"hw";
   const cWrong=its.filter(q=>graded(q)==="x"&&q.tc&&q.tc.length>1);
   const cCnt={};cWrong.forEach(q=>{const k=q.tc.slice().sort().join("+");cCnt[k]=(cCnt[k]||0)+1;});
   const topicSec=tweak.map(([c,v])=>{const tp=TOPIC[c];if(!tp)return"";
@@ -790,7 +790,7 @@ function result(){const its=items();const done=its.filter(q=>graded(q)!=null);co
    <div class="presc"><div class="pu">${guessed.length}문항<span class="pw">점수엔 반영 안 됨</span></div>
    ${guessed.map(q=>`<div class="pr">${q.no}번 · <b>${esc(q.unit)}</b>${S.reason[q.no]?` — ${esc(S.reason[q.no])}`:""}</div>`).join("")}
    <div class="pr" style="margin-top:6px;color:var(--mut2)">운으로 맞은 문항은 다음에 틀릴 문항입니다. 오답과 같은 무게로 다시 풀어 보세요.</div></div>`:"";
- el("screen").innerHTML=`<div class="pad">${savedUI}<div class="h">${esc(S.profile.name)}님 오답노트 결과</div><div class="desc">${EXAM.title} · ${S.profile.subject} · ${S.attempt}회차</div>
+ el("screen").innerHTML=`<div class="pad">${savedUI}<div class="h">${esc(S.profile.name)}님 오답노트 결과</div><div class="desc">${EXAM.title} · ${esc(curSubject())} · ${S.attempt}회차</div>
   <div class="kpirow"><div class="kpi"><div class="v">${score}<span style="font-size:14px;color:var(--mut2)">점</span></div><div class="l">자기채점 원점수 (100)</div></div><div class="kpi"><div class="v">${correct.length}<span style="font-size:14px;color:var(--mut2)">/${done.length}</span></div><div class="l">맞은 문항</div></div></div>
   <div class="bar"><h4>영역별 정답률</h4>${areaRows}</div>
   ${SOL_EXAMS[EXAM.code]?`<div class="bar" style="text-align:center"><div style="margin-bottom:10px"><b>이 시험의 해설이 열려 있어요</b> — 틀린 문항 풀이를 바로 확인하세요.</div><a href="/sol/" style="display:inline-flex;align-items:center;justify-content:center;height:46px;padding:0 26px;border-radius:13px;background:var(--brand);color:#04122b;font-weight:800;font-size:15px;text-decoration:none">📖 문제·해설 보기</a></div>`:""}
@@ -836,7 +836,7 @@ async function saveCustom(){
  const name=(S._cName||"").trim();if(!name){alert("시험 이름을 입력해주세요.");return;}
  const sc=parseInt(S._cScore,10);if(!(sc>=0&&sc<=100)){alert("원점수를 0~100 사이로 입력해주세요.");return;}
  const wrongs=Object.keys(S._cWrong||{}).filter(n=>S._cWrong[n]).map(Number).sort((a,b)=>a-b);
- const subject=S._cSub||S.profile.subject;const date=S._cDate||"";
+ const subject=S._cSub||"";if(!subject){alert("선택과목을 골라주세요.");return;}const date=S._cDate||"";
  const btn=el("csub");if(btn){btn.disabled=true;btn.textContent="저장 중...";}
  const examCode=("자유:"+name).slice(0,40);
  S.attempt=await calcAttempt(examCode);
@@ -903,7 +903,7 @@ render();
  if(!/[?&]profile=1/.test(location.search))return;
  try{history.replaceState({},"","/pilot/");}catch(_){}
  S.phone=localStorage.getItem("ds_phone")||S.phone;
- if(!S.profile||!S.profile.subject)await recoverProfile();
+ if(!hasProf(S.profile))await recoverProfile();
  if(!S.phone){alert("먼저 로그인해 주세요.");render();return;}
  S._pp=null;S.screen="profile";render();window.scrollTo(0,0);
 }catch(e){try{render();}catch(_){}}})();
@@ -913,7 +913,7 @@ render();
  const sid=decodeURIComponent(m[1]);
  try{history.replaceState({},"","/pilot/");}catch(_){}
  if(!TK.has()){alert("수정하려면 먼저 로그인해 주세요.");return;}
- if(!S.profile||!S.profile.subject){
+ if(!hasProf(S.profile)){
    /* /my/ 에서 넘어오면 이 기기에 프로필이 없을 수 있다. 서버에서 받아 되살린다. */
    S.phone=localStorage.getItem("ds_phone")||S.phone;
    if(!await recoverProfile()){alert("수정하려면 먼저 로그인해 주세요.");return;}
@@ -932,17 +932,17 @@ render();
  const mode=(location.search.match(/[?&]mode=(grade|note)/)||[])[1]||null;
  try{history.replaceState({},"","/pilot/");}catch(_){}
  const idx=EXAMS.findIndex(e=>e.code===code);if(idx<0){render();if(code)setTimeout(()=>alert("옛 회차 코드 입력은 지원하지 않습니다. 목록에서 회차를 골라 주세요."),0);return;}
- if(!S.profile||!S.profile.subject){
+ if(!hasProf(S.profile)){
    S.phone=localStorage.getItem("ds_phone")||S.phone;
    const st=(LS.get("ds_students")||{})[S.phone];
-   if(st&&st.profile&&st.profile.subject){S.profile=st.profile;S.studentId=st.id;}
+   if(st&&hasProf(st.profile)){S.profile=st.profile;S.studentId=st.id;}
    else if(TK.has()){await recoverProfile();}
  }
- if(!S.profile||!S.profile.subject){render();return;}   /* 미로그인 — 평소 부팅 흐름으로 */
+ if(!hasProf(S.profile)){render();return;}   /* 미로그인 — 평소 부팅 흐름으로 */
  EXAM=EXAMS[idx];await injectSteps();S.attempt=await calcAttempt(EXAM.code);
  S.savedSubId=null;S.savedExam=null;S.saveMode=null;S._forceNew=false;S._updWarn=null;S._editMode=false;S._subjOv=null;S.mode=null;S.mark={};S.open=null;S.ans={};S.reason={};S.conf={};S.memo={};S.step={};S.dq={};S.photo={};
- if(mode==="grade"){S.mode="grade";S.screen="quiz";}
- else if(mode==="note"){S.mode="note";S.screen="note";}
+ if(mode==="grade"&&curSubject()){S.mode="grade";S.screen="quiz";}
+ else if(mode==="note"&&curSubject()){S.mode="note";S.screen="note";}   /* 과목을 모르면 인트로에서 고른다 */
  else{S.screen="intro";}
  render();window.scrollTo(0,0);
 }catch(e){try{render();}catch(_){}}})();
