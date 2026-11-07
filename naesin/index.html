@@ -57,6 +57,7 @@ html[data-theme="dark"] .brand .lg-k{display:none}
 html[data-theme="dark"] .brand .lg-w{display:block}
 .hd-r{display:flex;align-items:center;gap:6px}
 .authnav{display:inline-flex;align-items:center}   /* 1107 B5: 로그인·회원가입 / 마이페이지·로그아웃 — /auth.js 가 #authnav 를 채운다(메인 머리와 같은 방식) */
+@media(max-width:400px){.authnav a{display:none!important}html:not(.authed) .authnav a:first-child,html.authed .authnav a.dsout{display:inline-flex!important}}   /* 1107 B5 짝: 좁은 폭은 손님 「로그인」 · 회원 「로그아웃」 하나만(320px 가로 넘침 31·54px 를 막음 · 무료_재기) */
 .hd-r a{display:inline-flex;align-items:center;min-height:44px;padding:0 10px;font-size:14px;font-weight:650;color:var(--ink2);text-decoration:none;white-space:nowrap}
 .tg{display:inline-flex;align-items:center;gap:7px;min-height:44px;padding:6px 12px;border-radius:999px;border:1px solid var(--line2);font-size:13px;font-weight:700;color:var(--ink2);background:var(--card);cursor:pointer;white-space:nowrap}
 .tg i{width:14px;height:14px;border-radius:50%;background:var(--ink);box-shadow:inset -4px -2px 0 0 var(--card);transform:rotate(-20deg)}
