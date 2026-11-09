@@ -132,3 +132,7 @@ html[data-theme="dark"] .tg i{background:#ffd27a;box-shadow:none}
 .biz .src{margin-top:8px}
 
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.js .rv{opacity:1;transform:none;transition:none}.btn:hover,.opt:hover{transform:none}.screen video{transition:none}}
+
+/* 1109 C3(점검표_개편판_1108): 머리 로그인 링크 터치 영역 40px · 640 아래 보조·정보 글 14px 이상(12~13.5 금지) */
+.hnav a{display:inline-flex;align-items:center;min-height:40px}
+@media(max-width:640px){.opt small,.opt .go,.note,.fine,.kick,.copy .lab,.tag,.tg,.screen .cap,.screen .cap span,.screen .demo,.screen .play,.biz,.biz p,.biz a,.cue{font-size:14px}.cue{letter-spacing:1px}}
