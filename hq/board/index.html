@@ -6,45 +6,101 @@
 <meta name="robots" content="noindex, nofollow">
 <title>상황판 · 델타스킬 운영</title>
 <style>
-  :root { --bg:#0f1115; --card:#171a21; --line:#2a2f3a; --ink:#e8ebf1; --mute:#9aa3b2; --brand:#5aa2ff; --ok:#3ddc84; --bad:#ff6b6b; --chk:#b388ff; }
+  :root { --bg:#0f1115; --card:#171a21; --card2:#1d2130; --line:#2a2f3a; --ink:#e8ebf1; --mute:#9aa3b2; --brand:#5aa2ff; --ok:#3ddc84; --bad:#ff6b6b; --chk:#b388ff; }
   * { box-sizing:border-box; }
-  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.5 -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; }
-  main { max-width:1280px; margin:0 auto; padding:20px 16px 60px; }
+  html { scroll-behavior:smooth; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.5 -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; -webkit-text-size-adjust:100%; }
+  main { max-width:1360px; margin:0 auto; padding:18px 16px 60px; }
   h1 { font-size:20px; margin:0 0 4px; }
+  h2 { font-size:16px; margin:22px 0 8px; display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; }
+  h2 small { color:var(--mute); font-weight:400; font-size:12.5px; }
   .sub { color:var(--mute); font-size:13px; margin:0 0 14px; }
-  .box { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; margin:0 0 16px; }
+  .box { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 16px; margin:0 0 12px; }
   #login { max-width:380px; margin:60px auto; }
   input { width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:8px; background:#0c0e12; color:var(--ink); font-size:16px; }
-  button { padding:9px 14px; border:1px solid var(--line); border-radius:8px; background:#20242e; color:var(--ink); font-size:14px; cursor:pointer; }
+  button { padding:8px 13px; border:1px solid var(--line); border-radius:8px; background:#20242e; color:var(--ink); font-size:14px; cursor:pointer; }
   button.p { background:var(--brand); border-color:var(--brand); color:#06101f; font-weight:700; }
   .err { color:var(--bad); font-size:13px; min-height:18px; margin-top:8px; }
-  .bar { display:flex; gap:8px; flex-wrap:wrap; align-items:center; justify-content:space-between; margin-bottom:12px; }
-  .legend span { margin-right:10px; font-size:13px; color:var(--mute); }
-  .wrap { overflow:auto; }
-  table { border-collapse:collapse; width:100%; font-size:13px; }
-  th, td { border:1px solid var(--line); padding:6px 8px; vertical-align:top; min-width:170px; }
-  th { background:#1d2130; position:sticky; top:0; }
-  th:first-child, td:first-child { position:sticky; left:0; background:#1d2130; min-width:120px; font-weight:700; z-index:1; }
-  td.s-done { background:rgba(61,220,132,.10); } td.s-blk { background:rgba(255,107,107,.14); } td.s-chk { background:rgba(179,136,255,.12); }
-  .g { font-weight:700; margin-right:4px; }
-  .tail { display:block; color:var(--mute); font-size:11.5px; margin-top:3px; word-break:break-all; }
-  .cnt { font-size:12px; color:var(--mute); white-space:nowrap; }
-  .cards { display:grid; grid-template-columns:repeat(auto-fill, minmax(340px, 1fr)); gap:12px; }
-  .card h3 { margin:0 0 8px; font-size:15px; display:flex; justify-content:space-between; }
-  .card h3 small { color:var(--mute); font-weight:400; font-size:12px; }
-  .two { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-  .two h4 { margin:0 0 6px; font-size:13px; } .two h4.d { color:var(--ok); } .two h4.t { color:var(--brand); }
-  .two ul { margin:0; padding-left:16px; font-size:12.5px; } .two li { margin-bottom:5px; } .two li .tail { margin-top:1px; }
-  .blk li { color:var(--bad); }
-  .tot { font-size:13px; color:var(--mute); }
-  .stale { color:var(--bad); font-size:12px; }
-  @media (max-width:700px) { .two { grid-template-columns:1fr; } th, td { min-width:140px; } }
+  .bar { display:flex; gap:8px; flex-wrap:wrap; align-items:center; justify-content:space-between; margin-bottom:10px; }
+  .bar .l { display:flex; gap:6px 14px; flex-wrap:wrap; align-items:baseline; font-size:13px; color:var(--mute); }
+  .bar .l b { color:var(--ink); }
+  .pill { display:inline-block; padding:1px 8px; border:1px solid var(--line); border-radius:999px; font-size:12px; color:var(--mute); background:var(--card2); }
+  .stale, .warn { color:var(--bad); font-size:12.5px; }
+  .legend { display:flex; gap:6px 14px; flex-wrap:wrap; align-items:center; font-size:13px; color:var(--mute); padding:8px 12px; }
+  .legend .n { margin-left:auto; color:var(--ink); }
+  .legend .n span { margin-left:10px; }
+  .count { display:flex; gap:8px 14px; flex-wrap:wrap; font-size:13.5px; }
+  .count b { font-size:18px; margin-right:3px; }
+  .count .done b { color:var(--ok); } .count .blk b { color:var(--bad); } .count .chk b { color:var(--chk); } .count .todo b { color:var(--mute); }
+
+  /* 1 격자 */
+  .wrap { overflow:auto; padding:0; -webkit-overflow-scrolling:touch; }
+  table.grid { border-collapse:separate; border-spacing:0; width:max-content; min-width:100%; font-size:12.5px; }
+  .grid th, .grid td { border-bottom:1px solid var(--line); border-right:1px solid var(--line); padding:6px 8px; vertical-align:top; text-align:left; }
+  .grid th { background:var(--card2); position:sticky; top:0; z-index:2; font-weight:700; white-space:nowrap; }
+  .grid th.today, .grid td.today { box-shadow:inset 0 0 0 1px var(--brand); }
+  .grid th:first-child, .grid td:first-child { position:sticky; left:0; background:var(--card2); z-index:3; min-width:96px; max-width:150px; font-weight:700; }
+  .grid th:first-child { z-index:4; }
+  .grid td:first-child small { display:block; color:var(--mute); font-weight:400; font-size:11px; line-height:1.3; margin-top:2px; }
+  .grid td.c { min-width:150px; max-width:190px; cursor:pointer; }
+  .grid td.c:hover { background:#20242e; }
+  .grid td.c .g { margin-right:3px; }
+  .grid td.c .h { color:var(--ink); }
+  .grid td.c .when { display:block; color:var(--mute); font-size:11px; margin-top:2px; }
+  .grid td.s-done { background:rgba(61,220,132,.10); } .grid td.s-blk { background:rgba(255,107,107,.14); } .grid td.s-chk { background:rgba(179,136,255,.12); }
+  .grid td.sum { color:var(--mute); white-space:nowrap; font-size:12px; }
+  .grid tr:last-child td { border-bottom:0; }
+
+  /* 2 막힘 */
+  ul.blk { margin:0; padding-left:18px; } ul.blk li { margin:0 0 6px; } ul.blk li b { color:var(--bad); }
+  .none { color:var(--mute); }
+
+  /* 3 작업자별 전문 */
+  .cards { display:grid; grid-template-columns:repeat(auto-fill, minmax(420px, 1fr)); gap:12px; }
+  .card h3 { margin:0 0 8px; font-size:15px; display:flex; justify-content:space-between; gap:8px; align-items:baseline; }
+  .card h3 small { color:var(--mute); font-weight:400; font-size:12px; white-space:nowrap; }
+  .card h3 .sub2 { display:block; color:var(--mute); font-weight:400; font-size:12px; }
+  .card ol { list-style:none; margin:0; padding:0; }
+  .card li { display:grid; grid-template-columns:16px 58px 1fr; gap:0 8px; padding:7px 0; border-top:1px solid var(--line); font-size:13px; line-height:1.5; }
+  .card li:first-child { border-top:0; }
+  .card li .d { color:var(--mute); white-space:nowrap; font-size:12.5px; }
+  .card li .t { word-break:break-word; }
+  .card li .t .meta { display:block; color:var(--mute); font-size:11.5px; margin-top:3px; word-break:break-all; }
+  .card li.s-done .t { color:#cfe9da; } .card li.s-blk .t { color:#ffd3d3; } .card li.s-chk .t { color:#e2d5ff; }
+  .card li:target, .card li.hit { background:rgba(90,162,255,.12); outline:1px solid var(--brand); border-radius:6px; padding-left:4px; padding-right:4px; }
+
+  /* 지난 판 */
+  details { margin-top:18px; }
+  details > summary { cursor:pointer; color:var(--mute); font-size:14px; padding:10px 14px; background:var(--card); border:1px solid var(--line); border-radius:12px; list-style:none; }
+  details > summary::-webkit-details-marker { display:none; }
+  details > summary::before { content:"▸ "; } details[open] > summary::before { content:"▾ "; }
+  details[open] > summary { border-radius:12px 12px 0 0; }
+  details .box { border-top:0; border-radius:0 0 12px 12px; }
+  table.old { border-collapse:collapse; width:max-content; min-width:100%; font-size:12px; }
+  .old th, .old td { border:1px solid var(--line); padding:5px 7px; vertical-align:top; text-align:left; min-width:160px; max-width:260px; }
+  .old th { background:var(--card2); position:sticky; top:0; }
+  .old th:first-child, .old td:first-child { position:sticky; left:0; background:var(--card2); min-width:90px; font-weight:700; z-index:1; }
+  .old .meta { display:block; color:var(--mute); font-size:11px; margin-top:2px; }
+  .old td.s-done { background:rgba(61,220,132,.10); } .old td.s-blk { background:rgba(255,107,107,.14); } .old td.s-chk { background:rgba(179,136,255,.12); }
+
+  .foot { color:var(--mute); font-size:12px; margin-top:22px; }
+  @media (max-width:760px) {
+    main { padding:12px 10px 50px; }
+    h1 { font-size:18px; }
+    .cards { grid-template-columns:1fr; }
+    .card li { grid-template-columns:16px 1fr; }
+    .card li .d { grid-column:2; }
+    .card li .t { grid-column:2; }
+    .grid td.c { min-width:132px; max-width:160px; }
+    .grid th:first-child, .grid td:first-child { min-width:78px; max-width:110px; font-size:12px; }
+    .legend .n { margin-left:0; width:100%; }
+  }
 </style>
 </head>
 <body>
 <main>
-  <h1>상황판 — 본부가 표시 · 작업자는 읽기만</h1>
-  <p class="sub">완료 신호는 지금처럼 통로(이슈 #14)에 끝 글 한 줄 → 본부가 CSV 에 표시하고 main 에 올리면 1분 안에 여기 보인다.</p>
+  <h1>상황판 <span id="span" class="pill">–</span></h1>
+  <p class="sub">본부만 표시 · 작업자는 읽기만. 완료 신호는 통로(이슈 #14)에 끝 글 한 줄 → 본부가 실물을 재고 CSV 에 표시 · main 에 올리면 1분 안에 여기 보인다.</p>
 
   <section id="login" class="box" hidden>
     <h2 style="font-size:16px;margin:0 0 10px">비밀번호</h2>
@@ -55,81 +111,151 @@
 
   <section id="board" hidden>
     <div class="bar">
-      <div><b>갱신</b> <span id="upd">–</span> <span class="tot" id="srv"></span> <span class="stale" id="stale"></span></div>
+      <div class="l">
+        <span><b>갱신</b> <span id="upd">–</span></span>
+        <span id="srv"></span>
+        <span id="src" class="pill"></span>
+        <span class="stale" id="stale"></span>
+        <span class="warn" id="ptr"></span>
+      </div>
       <div><button id="rbtn">새로고침</button> <button id="obtn">로그아웃</button></div>
     </div>
-    <div class="legend box" style="padding:8px 12px"><span>▫ 아직</span><span>✅ 끝</span><span>🔴 막힘</span><span>☑ 검증 끝</span> <span id="tot" class="tot"></span></div>
-    <div class="box wrap"><table id="tbl"></table></div>
-    <h2 style="font-size:16px;margin:18px 0 8px">작업자별 · 했음 ↔ 해야 함</h2>
+
+    <div class="legend box">
+      <span>▫ 아직</span><span>✅ 끝</span><span>🔴 막힘</span><span>☑ 검증 끝</span>
+      <span>격자 칸은 머리만 — 누르면 아래 전문으로</span>
+      <span class="n count" id="tot"></span>
+    </div>
+
+    <h2>1. 격자 <small>작업자 × 날짜 · 날짜는 CSV 차례</small></h2>
+    <div class="box wrap"><table class="grid" id="tbl"></table></div>
+
+    <h2>2. 막힘 줄</h2>
+    <div class="box"><ul class="blk" id="blk"></ul></div>
+
+    <h2>3. 작업자별 <small>전문 · 날짜 · 할일 전체 · 상태 · 표시시각 · 근거</small></h2>
     <div class="cards" id="cards"></div>
-    <div class="box" style="margin-top:16px"><h3 style="margin:0 0 6px;font-size:15px">막힘 줄</h3><ul class="blk" id="blk"></ul></div>
+
+    <h2>4. 수</h2>
+    <div class="box count" id="cnt"></div>
+
+    <details id="old" hidden>
+      <summary id="oldsum">지난 판</summary>
+      <div class="box wrap"><table class="old" id="oldtbl"></table></div>
+    </details>
+
+    <p class="foot">상태 글리프와 칸 머리 규칙은 ops <code>scripts/상황판_게시.py</code> 와 같다(short · cell · detail). 열은 id · 작업자 · 날짜 · 할일 · 상태 · 표시시각 · 근거 고정.</p>
   </section>
 </main>
 <script>
 (function () {
   var API = "https://cvlrphtupjmaefahodgz.supabase.co/functions/v1/hq-board";
   try { if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname) && localStorage.getItem("ds_hq_api")) API = localStorage.getItem("ds_hq_api"); } catch (e) {}
+  var FIELDS = ["id", "작업자", "날짜", "할일", "상태", "표시시각", "근거"];
   var GLYPH = { "": "▫", "끝": "✅", "막힘": "🔴", "검증": "☑" }, CLS = { "끝": "s-done", "막힘": "s-blk", "검증": "s-chk" };
-  var DONE = { "끝": 1, "검증": 1 };
+  var PTR_MSG = { fallback_missing: "가리킴 파일(상황판_현재.txt)이 없어 옛 판을 보입니다", fallback_empty: "가리킴 파일이 비어 옛 판을 보입니다", fallback_badname: "가리킴 파일의 이름 꼴이 틀려 옛 판을 보입니다", fallback_error: "가리킴 파일을 못 읽어 옛 판을 보입니다" };
   var $ = function (id) { return document.getElementById(id); };
   var TK = { get: function () { try { return localStorage.getItem("ds_hq_tk") || ""; } catch (e) { return ""; } }, set: function (t) { try { localStorage.setItem("ds_hq_tk", t); } catch (e) {} }, clear: function () { try { localStorage.removeItem("ds_hq_tk"); } catch (e) {} } };
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
 
-  /* RFC 4180 CSV — 따옴표 안의 쉼표 · 줄바꿈 · "" 을 다룬다 */
+  // CSV(RFC 4180 · 따옴표 안 줄바꿈 · "" 이스케이프) → 줄 객체. 머리 7열이 FIELDS 와 같아야 한다.
   function parseCsv(text) {
-    var rows = [], row = [], cell = "", q = false, i, c;
-    text = text.replace(/^﻿/, "");
+    var rows = [], row = [], cur = "", q = false, i, c;
+    text = String(text || "").replace(/^﻿/, "");
     for (i = 0; i < text.length; i++) {
       c = text[i];
-      if (q) { if (c === '"') { if (text[i + 1] === '"') { cell += '"'; i++; } else q = false; } else cell += c; }
+      if (q) { if (c === '"') { if (text[i + 1] === '"') { cur += '"'; i++; } else q = false; } else cur += c; }
       else if (c === '"') q = true;
-      else if (c === ",") { row.push(cell); cell = ""; }
-      else if (c === "\n") { row.push(cell); rows.push(row); row = []; cell = ""; }
-      else if (c !== "\r") cell += c;
+      else if (c === ",") { row.push(cur); cur = ""; }
+      else if (c === "\n" || c === "\r") { if (c === "\r" && text[i + 1] === "\n") i++; row.push(cur); rows.push(row); row = []; cur = ""; }
+      else cur += c;
     }
-    if (cell !== "" || row.length) { row.push(cell); rows.push(row); }
-    var head = rows.shift() || [];
-    return rows.filter(function (r) { return r.length > 1; }).map(function (r) { var o = {}; head.forEach(function (h, k) { o[h] = r[k] || ""; }); return o; });
+    if (cur !== "" || row.length) { row.push(cur); rows.push(row); }
+    rows = rows.filter(function (r) { return r.length > 1 || (r[0] || "").trim(); });
+    if (!rows.length) throw new Error("빈 CSV");
+    var head = rows[0].map(function (h) { return h.trim(); });
+    if (head.join(",") !== FIELDS.join(",")) throw new Error("열이 다름: " + head.join(","));
+    return rows.slice(1).map(function (r) { var o = {}; FIELDS.forEach(function (f, k) { o[f] = (r[k] || "").trim(); }); return o; });
   }
-
+  // 격자 칸 머리 — 상황판_게시.py short(): 첫 「 / 」 앞 · 첫 「 · 」 앞 · 28자
+  function short(txt, n) { n = n || 28; var h = String(txt).split(" / ")[0].split(" · ")[0].trim(); return h.length <= n ? h : h.slice(0, n - 1) + "…"; }
+  function tail(r) { return r["상태"] ? r["표시시각"] + (r["근거"] ? " · " + r["근거"] : "") : ""; }
+  function wname(w) { var i = w.indexOf("("); return i > 0 ? { n: w.slice(0, i).trim(), s: w.slice(i).trim() } : { n: w, s: "" }; }
+  function uniq(rows, k) { var out = []; rows.forEach(function (r) { if (out.indexOf(r[k]) < 0) out.push(r[k]); }); return out; }
+  function span(dates) { return dates.length ? dates[0].split(" ")[0] + "~" + dates[dates.length - 1].split(" ")[0] : "—"; }
+  function count(rows) { var n = { all: rows.length, done: 0, blk: 0, chk: 0, todo: 0 }; rows.forEach(function (r) { var s = r["상태"]; if (s === "끝") n.done++; else if (s === "막힘") n.blk++; else if (s === "검증") n.chk++; else n.todo++; }); return n; }
+  function countHtml(n) { return '<span class="all"><b>' + n.all + "</b>전체</span><span class=\"done\"><b>" + n.done + "</b>끝</span><span class=\"blk\"><b>" + n.blk + "</b>막힘</span><span class=\"chk\"><b>" + n.chk + "</b>검증</span><span class=\"todo\"><b>" + n.todo + "</b>아직</span>"; }
+  function todayKey() { var d = new Date(); return (d.getMonth() + 1) + "/" + d.getDate(); }
   function show(which) { $("login").hidden = which !== "login"; $("board").hidden = which !== "board"; }
 
-  function render(j) {
-    var rows = parseCsv(j.csv), workers = [], dates = [], by = {}, last = "";
-    rows.forEach(function (r) {
-      if (workers.indexOf(r["작업자"]) < 0) workers.push(r["작업자"]);
-      if (dates.indexOf(r["날짜"]) < 0) dates.push(r["날짜"]);
-      (by[r["작업자"]] = by[r["작업자"]] || {})[r["날짜"]] = r;
-      if (r["표시시각"] > last) last = r["표시시각"];
-    });
-    var n = { all: rows.length, done: 0, blk: 0, chk: 0, todo: 0 };
-    rows.forEach(function (r) { var s = r["상태"]; if (s === "끝") n.done++; else if (s === "막힘") n.blk++; else if (s === "검증") n.chk++; else n.todo++; });
+  function renderCurrent(rows) {
+    var workers = uniq(rows, "작업자"), dates = uniq(rows, "날짜"), by = {}, last = "", tk = todayKey();
+    rows.forEach(function (r) { (by[r["작업자"]] = by[r["작업자"]] || {})[r["날짜"]] = r; if (r["표시시각"] > last) last = r["표시시각"]; });
+    $("span").textContent = span(dates);
     $("upd").textContent = last ? last + " (마지막 표시)" : "표시 없음";
-    var ft = j.fetched_at ? new Date(j.fetched_at) : null;
-    $("srv").textContent = ft ? "· 서버 읽음 " + ft.toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" }) + (j.cache_age_s ? " (캐시 " + j.cache_age_s + "초)" : "") : "";
-    $("stale").textContent = j.stale ? "⚠ 원본을 못 읽어 묵은 판입니다" : "";
-    $("tot").textContent = "전체 " + n.all + " · 끝 " + n.done + " · 막힘 " + n.blk + " · 검증 " + n.chk + " · 아직 " + n.todo;
+    var n = count(rows);
+    $("tot").innerHTML = countHtml(n);
+    $("cnt").innerHTML = countHtml(n);
 
-    var h = "<thead><tr><th>작업자</th>" + dates.map(function (d) { return "<th>" + esc(d) + "</th>"; }).join("") + "<th>했음 / 해야 함</th></tr></thead><tbody>";
+    // 1 격자
+    var h = "<thead><tr><th>작업자</th>" + dates.map(function (d) { return '<th class="' + (d.split(" ")[0] === tk ? "today" : "") + '">' + esc(d) + "</th>"; }).join("") + "<th>끝/전체</th></tr></thead><tbody>";
     var cards = "", blk = "";
-    workers.forEach(function (w) {
-      var did = [], todo = [];
-      h += "<tr><td>" + esc(w) + "</td>";
+    workers.forEach(function (w, wi) {
+      var nm = wname(w), done = 0, all = 0, lines = "";
+      h += "<tr><td>" + esc(nm.n) + (nm.s ? "<small>" + esc(nm.s) + "</small>" : "") + "</td>";
       dates.forEach(function (d) {
         var r = by[w][d];
-        if (!r) { h += "<td></td>"; return; }
-        var s = r["상태"], tail = s ? r["표시시각"] + (r["근거"] ? " · " + r["근거"] : "") : "";
-        h += '<td class="' + (CLS[s] || "") + '"><span class="g">' + GLYPH[s] + "</span>" + esc(r["할일"]) + (tail ? '<span class="tail">' + esc(tail) + "</span>" : "") + "</td>";
-        var li = "<li><b>" + esc(d) + "</b> " + GLYPH[s] + " " + esc(r["할일"]) + (tail ? '<span class="tail">' + esc(tail) + "</span>" : "") + "</li>";
-        if (DONE[s]) did.push(li); else todo.push(li);
-        if (s === "막힘") blk += "<li><b>" + esc(w) + " · " + esc(d) + "</b> " + esc(r["할일"]) + '<span class="tail">' + esc(tail) + "</span></li>";
+        if (!r) { h += '<td class="c' + (d.split(" ")[0] === tk ? " today" : "") + '"></td>'; return; }
+        var s = r["상태"], t = tail(r), id = "r-" + esc(r["id"]);
+        all++; if (s === "끝" || s === "검증") done++;
+        h += '<td class="c ' + (CLS[s] || "") + (d.split(" ")[0] === tk ? " today" : "") + '" data-id="' + id + '" title="' + esc(r["할일"]) + '"><span class="g">' + GLYPH[s] + '</span><span class="h">' + esc(short(r["할일"])) + "</span>" + (t ? '<span class="when">' + esc(r["표시시각"]) + "</span>" : "") + "</td>";
+        lines += '<li id="' + id + '" class="' + (CLS[s] || "") + '"><span class="g">' + GLYPH[s] + '</span><span class="d">' + esc(d) + '</span><span class="t">' + esc(r["할일"]) + (t ? '<span class="meta">' + esc(t) + "</span>" : "") + "</span></li>";
+        if (s === "막힘") blk += "<li><b>" + esc(nm.n) + " · " + esc(d) + "</b> — " + esc(r["근거"] || "근거 없음") + '<span class="meta" style="display:block;color:var(--mute);font-size:12px">' + esc(r["id"]) + " · " + esc(short(r["할일"], 60)) + "</span></li>";
       });
-      h += '<td class="cnt">✅ ' + did.length + " / ▫ " + todo.length + "</td></tr>";
-      cards += '<div class="box card"><h3>' + esc(w) + "<small>했음 " + did.length + " · 해야 함 " + todo.length + '</small></h3><div class="two"><div><h4 class="d">했음</h4><ul>' + (did.join("") || "<li class='tot'>없음</li>") + '</ul></div><div><h4 class="t">해야 함</h4><ul>' + (todo.join("") || "<li class='tot'>없음</li>") + "</ul></div></div></div>";
+      h += '<td class="sum">' + done + "/" + all + "</td></tr>";
+      cards += '<div class="box card" id="w-' + wi + '"><h3><span>' + esc(nm.n) + (nm.s ? '<span class="sub2">' + esc(nm.s) + "</span>" : "") + "</span><small>끝 " + done + " / " + all + "</small></h3><ol>" + lines + "</ol></div>";
     });
     $("tbl").innerHTML = h + "</tbody>";
     $("cards").innerHTML = cards;
-    $("blk").innerHTML = blk || "<li class='tot' style='color:var(--mute)'>없음</li>";
+    $("blk").innerHTML = blk || "<li class='none'>없음</li>";
+  }
+
+  function renderOld(rows, name) {
+    var el = $("old");
+    if (!rows) { el.hidden = true; return; }
+    var workers = uniq(rows, "작업자"), dates = uniq(rows, "날짜"), by = {};
+    rows.forEach(function (r) { (by[r["작업자"]] = by[r["작업자"]] || {})[r["날짜"]] = r; });
+    var n = count(rows);
+    $("oldsum").textContent = "지난 판 " + span(dates) + " (그대로 둠 · " + name + " · 전체 " + n.all + " · 끝 " + n.done + " · 막힘 " + n.blk + " · 검증 " + n.chk + " · 아직 " + n.todo + ")";
+    var h = "<thead><tr><th>작업자</th>" + dates.map(function (d) { return "<th>" + esc(d) + "</th>"; }).join("") + "</tr></thead><tbody>";
+    workers.forEach(function (w) {
+      var nm = wname(w);
+      h += "<tr><td>" + esc(nm.n) + "</td>";
+      dates.forEach(function (d) {
+        var r = by[w][d];
+        if (!r) { h += "<td></td>"; return; }
+        var t = tail(r);
+        h += '<td class="' + (CLS[r["상태"]] || "") + '">' + GLYPH[r["상태"]] + " " + esc(r["할일"]) + (t ? '<span class="meta">' + esc(t) + "</span>" : "") + "</td>";
+      });
+      h += "</tr>";
+    });
+    $("oldtbl").innerHTML = h + "</tbody>";
+    el.hidden = false;
+  }
+
+  function render(j) {
+    var rows;
+    try { rows = parseCsv(j.csv); } catch (e) { show("board"); $("upd").textContent = "CSV 를 못 읽음: " + e.message; return; }
+    renderCurrent(rows);
+    var ft = j.fetched_at ? new Date(j.fetched_at) : null;
+    $("srv").textContent = ft ? "서버 읽음 " + ft.toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" }) + (j.cache_age_s ? " (캐시 " + j.cache_age_s + "초)" : "") : "";
+    $("src").textContent = j.csv_name ? j.csv_name : ((j.source && j.source.path) ? String(j.source.path).split("/").pop() : "");
+    $("stale").textContent = j.stale ? "⚠ 원본을 못 읽어 묵은 판입니다" : "";
+    var ps = j.pointer && j.pointer.status;
+    $("ptr").textContent = ps && PTR_MSG[ps] ? "⚠ " + PTR_MSG[ps] : "";
+    var old = null;
+    if (j.old_csv) { try { old = parseCsv(j.old_csv); } catch (e) { old = null; $("ptr").textContent += " · 지난 판 CSV 를 못 읽음(" + e.message + ")"; } }
+    renderOld(old, j.old_csv_name || "");
     show("board");
   }
 
@@ -154,6 +280,13 @@
   $("pw").addEventListener("keydown", function (e) { if (e.key === "Enter") login(); });
   $("rbtn").addEventListener("click", load);
   $("obtn").addEventListener("click", function () { TK.clear(); show("login"); });
+  // 격자 칸을 누르면 그 줄의 전문으로
+  $("tbl").addEventListener("click", function (e) {
+    var td = e.target.closest("td.c[data-id]"); if (!td) return;
+    var li = $(td.getAttribute("data-id")); if (!li) return;
+    Array.prototype.forEach.call(document.querySelectorAll(".card li.hit"), function (x) { x.classList.remove("hit"); });
+    li.classList.add("hit"); li.scrollIntoView({ block: "center" });
+  });
   load();
   setInterval(function () { if (TK.get() && !document.hidden) load(); }, 60000);
 })();
