@@ -255,7 +255,7 @@ function naesinP(c){
   var u=null;((c&&c.subjects)||[]).forEach(function(s){(s.units||[]).forEach(function(x){if(x.sku===m[1])u=x;(x.items||[]).concat(x.packs||[]).forEach(function(i){if(i.sku===m[1])u=i;});});});
   if(!u)return null;
   var f=m[2],n=(u.files||[]).filter(function(x){return x.fmt===f;}).length,pr=u.price&&u.price[f];
-  if(!pr||!u.taxFreeAmount||u.taxFreeAmount[f]==null||!u.saleFrom||!n)return null; /* 11-11: 맛보기(sample)는 팔 조건이 아니다(내신 화면 sellable 과 같이) */
+  if(!pr||!u.taxFreeAmount||u.taxFreeAmount[f]==null||!u.saleFrom||!u.sample||!n)return null; /* 11-11 본부 11/11 05: 맛보기(sample = 단원 무료 세트) 요구는 그대로 · F00 은 11/12 */
   var fn=f==="hwpx"?"한글(HWPX)":"PDF",fs=u.fileSets&&u.fileSets[f],cnt=fs&&fs.kind==="merged"&&n===1?fn+" 합본 1파일":fs&&fs.kind==="types"?fn+" 유형별 파일 "+n+"개":fn+" 파일 "+n+"개";
   return {name:u.name+(f==="hwpx"?" (한글)":" (PDF)"),price:pr,priceNote:"부가세 포함",comp:cnt+" · "+(u.kind?"":"단원 ")+"변형 문항",start:startText(n),only:fn+" 파일만 받습니다. "+(f==="hwpx"?"PDF는":"한글 파일은")+" 들어 있지 않습니다.",give:"결제 뒤 바로 내려받기",saleFrom:u.saleFrom,saleTo:u.saleTo||undefined,cards:(c.cards||[])};
 }

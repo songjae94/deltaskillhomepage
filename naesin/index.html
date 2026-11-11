@@ -299,7 +299,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     return null;
   }
   function sellable(u,f,now){
-    if(!u||!priceAt(u,f)||!u.taxFreeAmount||u.taxFreeAmount[f]==null||!u.saleFrom||!filesAt(u,f).length)return false; /* 11-11: 맛보기(sample)는 있는지만 보던 칸 · 값을 쓰는 곳 0 · 서버 complete() 도 안 봄 → 팔 조건에서 뺌 */
+    if(!u||!priceAt(u,f)||!u.taxFreeAmount||u.taxFreeAmount[f]==null||!u.saleFrom||!u.sample||!filesAt(u,f).length)return false; /* 11-11 본부 11/11 05: 맛보기(sample = 단원 무료 세트) 요구는 그대로(형 답 「07 무료 세트 같이 열기」) · F00 은 11/12 */
     if(now<Date.parse(u.saleFrom))return false;
     return !(u.saleTo&&now>=Date.parse(u.saleTo));
   }
