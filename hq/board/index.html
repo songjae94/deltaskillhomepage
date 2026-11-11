@@ -83,6 +83,30 @@
   .old .meta { display:block; color:var(--mute); font-size:11px; margin-top:2px; }
   .old td.s-done { background:rgba(61,220,132,.10); } .old td.s-blk { background:rgba(255,107,107,.14); } .old td.s-chk { background:rgba(179,136,255,.12); }
 
+  /* v3 · 판매 점검 · 지금 · 접음 */
+  .sale { display:flex; gap:8px; flex-wrap:wrap; padding:10px 12px; }
+  .sale .it { display:flex; gap:6px; align-items:baseline; padding:6px 10px; border:1px solid var(--line); border-radius:10px; background:var(--card2); font-size:13px; max-width:100%; }
+  .sale .it .d { color:var(--mute); white-space:nowrap; font-size:12px; }
+  .sale .it .t { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:340px; }
+  .chip { display:inline-block; padding:0 8px; border-radius:999px; font-size:12px; font-weight:700; white-space:nowrap; }
+  .chip.ok { background:rgba(61,220,132,.18); color:var(--ok); } .chip.no { background:#2a2f3a; color:#c7cdd8; } .chip.blk { background:rgba(255,107,107,.22); color:var(--bad); }
+  .sale .it.past .d { color:var(--bad); }
+  .grid th.grp { position:static; background:#13161d; color:var(--mute); font-size:12px; font-weight:700; padding:5px 8px; }
+  .grid th.grp span { position:sticky; left:8px; }
+  .grid td.now { min-width:190px; max-width:240px; }
+  .grid td.now .rt { display:block; font-size:11.5px; color:var(--mute); white-space:nowrap; }
+  .grid td.now .rt b { color:var(--ink); font-weight:700; }
+  .grid td.now .tx { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; word-break:break-all; }
+  .grid td.now.blk { background:rgba(255,107,107,.16); } .grid td.now.blk .rt b { color:var(--bad); }
+  .grid td.now.old .tx, .grid td.now.old .rt b { color:#b08a4a; } .grid td.now.old { background:rgba(176,138,74,.07); }
+  .grid td.now.none { color:var(--mute); }
+  .grid td.todo { min-width:140px; max-width:170px; }
+  .grid.v3 td.c { min-width:118px; max-width:150px; }
+  .grid.v3 th { white-space:nowrap; }
+  .grid td.c.empty { cursor:default; } .grid td.c.empty .mute { color:#4a5160; }
+  .grid td:first-child .memo { display:block; color:var(--mute); font-weight:400; font-size:10.5px; line-height:1.3; margin-top:2px; }
+  .nowst { font-size:12px; color:var(--mute); }
+  .nowst .bad { color:var(--bad); }
   .foot { color:var(--mute); font-size:12px; margin-top:22px; }
   @media (max-width:760px) {
     main { padding:12px 10px 50px; }
@@ -94,6 +118,10 @@
     .grid td.c { min-width:132px; max-width:160px; }
     .grid th:first-child, .grid td:first-child { min-width:78px; max-width:110px; font-size:12px; }
     .legend .n { margin-left:0; width:100%; }
+    .grid td.now { min-width:150px; max-width:170px; }
+    .grid td.todo { min-width:120px; max-width:150px; }
+    .sale { gap:5px; padding:8px; } .sale .it { width:100%; padding:4px 8px; } .sale .it .t { max-width:none; }
+    .grid.v3 td.c { min-width:112px; max-width:140px; }
   }
 </style>
 </head>
@@ -121,14 +149,25 @@
       <div><button id="rbtn">새로고침</button> <button id="obtn">로그아웃</button></div>
     </div>
 
+    <section id="salewrap" hidden>
+      <h2>판매 시작 점검 <small id="salesub">11/16(월) 엶까지 · 됨 · 안 됨 · 막힘</small></h2>
+      <div class="box sale" id="sale"></div>
+    </section>
+
     <div class="legend box">
       <span>▫ 아직</span><span>✅ 끝</span><span>🔴 막힘</span><span>☑ 검증 끝</span>
       <span>격자 칸은 머리만 — 누르면 아래 전문으로</span>
       <span class="n count" id="tot"></span>
     </div>
 
-    <h2>1. 격자 <small>작업자 × 날짜 · 날짜는 CSV 차례</small></h2>
+    <h2>1. 격자 <small id="gridsub">작업자 × 날짜 · 날짜는 CSV 차례</small></h2>
+    <div class="nowst" id="nowst"></div>
     <div class="box wrap"><table class="grid" id="tbl"></table></div>
+
+    <details id="fold" hidden>
+      <summary id="foldsum">접은 줄</summary>
+      <div class="box wrap"><table class="grid" id="foldtbl"></table></div>
+    </details>
 
     <h2>2. 막힘 줄</h2>
     <div class="box"><ul class="blk" id="blk"></ul></div>
@@ -144,7 +183,8 @@
       <div class="box wrap"><table class="old" id="oldtbl"></table></div>
     </details>
 
-    <p class="foot">상태 글리프와 칸 머리 규칙은 ops <code>scripts/상황판_게시.py</code> 와 같다(short · cell · detail). 열은 id · 작업자 · 날짜 · 할일 · 상태 · 표시시각 · 근거 고정.</p>
+    <p class="foot">상태 글리프와 칸 머리 규칙은 ops <code>scripts/상황판_게시.py</code> 와 같다(short · cell · detail). 열은 id · 작업자 · 날짜 · 할일 · 상태 · 표시시각 · 근거 고정.<br>
+    「지금」 칸은 기계가 채운다 — 통로 글 첫 줄과 ops main 커밋 제목(120자)만 · 본문은 싣지 않는다. 💬 통로 · ⎇ 커밋 · 빨강 = 막힘·물음·형판단 · 누런색 = 6시간 넘게 글 없음. 「할 일」과 날짜 칸은 본부가 CSV 로 적는다. 줄 설정은 ops <code>상황판/작업자.json</code>.</p>
   </section>
 </main>
 <script>
@@ -243,10 +283,149 @@
     el.hidden = false;
   }
 
+  // ---------- v3 (작업자별 보기 · 응답에 workers 가 있을 때만 · 없으면 위 renderCurrent 그대로) ----------
+  var LOCAL = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+  var WD = ["일", "월", "화", "수", "목", "금", "토"], STALE_H = 6, BLOCK_KINDS = ["막힘", "물음", "형판단"];
+  var ICON = { "통로": "💬", "커밋": "⎇" };
+  function pad2(n) { return (n < 10 ? "0" : "") + n; }
+  function kstToday(j) {
+    if (LOCAL) { var q = (location.search.match(/[?&]today=(\d{4}-\d{2}-\d{2})/) || [])[1]; if (q) return q; }
+    if (j && /^\d{4}-\d{2}-\d{2}$/.test(j.today || "")) return j.today;
+    var d = new Date(Date.now() + 9 * 3600 * 1000); return d.getUTCFullYear() + "-" + pad2(d.getUTCMonth() + 1) + "-" + pad2(d.getUTCDate());
+  }
+  // 어제 · 오늘 · 앞 닷새 — 월요일엔 그 주 일요일까지(backend/hq_board_v3.ts dayWindow 와 같은 규칙)
+  function dayWindow(ymd) {
+    var p = ymd.split("-"), base = Date.UTC(+p[0], +p[1] - 1, +p[2]), wd = new Date(base).getUTCDay(), ahead = Math.max(5, wd === 0 ? 0 : 7 - wd), out = [];
+    for (var i = -1; i <= ahead; i++) { var t = new Date(base + i * 86400000); out.push({ key: (t.getUTCMonth() + 1) + "/" + t.getUTCDate(), label: (t.getUTCMonth() + 1) + "/" + t.getUTCDate() + " " + WD[t.getUTCDay()], rel: i === -1 ? "어제" : i === 0 ? "오늘" : "" }); }
+    return out;
+  }
+  function relTime(iso) {
+    var ms = Date.now() - new Date(iso).getTime(); if (!isFinite(ms)) return "";
+    var m = Math.round(ms / 60000); if (m < 1) return "방금"; if (m < 60) return m + "분 전";
+    var h = Math.floor(m / 60); if (h < 24) return h + "시간 " + (m % 60 ? (m % 60) + "분 " : "") + "전";
+    return Math.floor(h / 24) + "일 " + (h % 24) + "시간 전";
+  }
+  function hhmm(iso) { var s = String(iso || ""); return s.length >= 16 ? s.slice(5, 10).replace("-", "/") + " " + s.slice(11, 16) : s; }
+  function latest(n) { if (!n) return null; var a = n["통로"], b = n["커밋"]; if (!a) return b || null; if (!b) return a; return new Date(a.at) >= new Date(b.at) ? a : b; }
+  function dkey(r) { return String(r["날짜"] || "").split(" ")[0]; }
+  // CSV 작업자 글 → 작업자 key (이름 · 표이름 · 「(」 앞 이름 차례로)
+  function aliasMap(ws) {
+    var m = {};
+    ws.forEach(function (w) { m[w["이름"]] = w.key; (w["표이름"] || []).forEach(function (a) { m[a] = w.key; }); });
+    return m;
+  }
+  function keyOf(am, ws, name) { if (am[name]) return am[name]; var n = wname(name).n; for (var i = 0; i < ws.length; i++) if (ws[i]["이름"] === n) return ws[i].key; return ""; }
+
+  function nowCell(ev) {
+    if (!ev) return '<td class="now none" title="3일 안 통로·커밋 글 없음">—</td>';
+    var old = (Date.now() - new Date(ev.at).getTime()) > STALE_H * 3600000;
+    var blk = ev["막힘"] === true || BLOCK_KINDS.indexOf(ev.kind) >= 0;
+    return '<td class="now' + (blk ? " blk" : "") + (old ? " old" : "") + '" title="' + esc(ev.src + " · " + ev.at + "\n" + ev.text) + '"><span class="rt">' + ICON[ev.src] + " <b>" + esc(relTime(ev.at)) + "</b> · " + esc(hhmm(ev.at)) + (ev.kind ? " · " + esc(ev.kind) : "") + '</span><span class="tx">' + esc(ev.text) + "</span></td>";
+  }
+  function dayCell(r, isToday) {
+    var tc = isToday ? " today" : "";
+    if (!r) return '<td class="c empty' + tc + '"><span class="mute">—</span></td>';
+    var s = r["상태"], id = "r-" + esc(r["id"]);
+    return '<td class="c ' + (CLS[s] || "") + tc + '" data-id="' + id + '" title="' + esc(r["할일"]) + '"><span class="g">' + GLYPH[s] + '</span><span class="h">' + esc(short(r["할일"])) + "</span>" + (s ? '<span class="when">' + esc(r["표시시각"]) + "</span>" : "") + "</td>";
+  }
+  function todoCell(r) {
+    if (!r) return '<td class="todo"><span style="color:#4a5160">—</span></td>';
+    return '<td class="todo" title="' + esc(r["할일"]) + '">' + GLYPH[r["상태"]] + " " + esc(short(r["할일"], 40)) + "</td>";
+  }
+  function head(days, tk) {
+    return "<thead><tr><th>작업자</th><th>지금</th><th>할 일 <small style=\"font-weight:400;color:var(--mute)\">오늘</small></th>" + days.map(function (d) { return '<th class="' + (d.key === tk ? "today" : "") + '">' + esc(d.label) + (d.rel ? ' <small style="font-weight:400;color:var(--mute)">' + d.rel + "</small>" : "") + "</th>"; }).join("") + "</tr></thead>";
+  }
+
+  function renderSale(j) {
+    var wrap = $("salewrap");
+    if (!j.sale || !j.sale.length) { wrap.hidden = !(j.sale_status && j.sale_status.status === "error"); $("sale").innerHTML = j.sale_status && j.sale_status.error ? '<span class="warn">판매 점검 표를 못 읽음: ' + esc(j.sale_status.error) + "</span>" : ""; return; }
+    var tk = kstToday(j).split("-"), tnum = (+tk[1]) * 100 + (+tk[2]);
+    $("sale").innerHTML = j.sale.map(function (s) {
+      var st = s["상태"], cls = st === "됨" ? "ok" : st === "막힘" ? "blk" : "no";
+      var dk = String(s["날짜"]).split(" ")[0].split("/"), dnum = (+dk[0]) * 100 + (+dk[1]);
+      var past = st !== "됨" && dnum < tnum;
+      return '<div class="it' + (past ? " past" : "") + '" title="' + esc(s["끝조건"] + (s["근거"] ? "\n근거: " + s["근거"] : "")) + '"><span class="d">' + esc(s["날짜"]) + '</span><span class="chip ' + cls + '">' + esc(st || "?") + (s["상태_틀림"] ? "?" : "") + '</span><span class="t">' + esc(s["끝조건"]) + "</span></div>";
+    }).join("");
+    wrap.hidden = false;
+  }
+
+  function renderV3(j, rows, prev) {
+    var ws = j.workers, am = aliasMap(ws), today = kstToday(j), days = dayWindow(today), tk = days[1].key;
+    var cell = {}, unknown = {}, now = j.now || {};
+    // 앞 주 표를 먼저 · 지금 표가 같은 칸을 덮는다
+    [prev || [], rows].forEach(function (list, li) {
+      list.forEach(function (r) {
+        var k = keyOf(am, ws, r["작업자"]);
+        if (!k) { (unknown[r["작업자"]] = unknown[r["작업자"]] || []).push(r); return; }
+        (cell[k] = cell[k] || {})[dkey(r)] = r;
+      });
+    });
+    var last = ""; rows.forEach(function (r) { if (r["표시시각"] > last) last = r["표시시각"]; });
+    $("span").textContent = days[0].label.split(" ")[0] + "~" + days[days.length - 1].label.split(" ")[0];
+    $("upd").textContent = last ? last + " (마지막 표시)" : "표시 없음";
+    $("gridsub").textContent = "작업자 × 날짜 · 어제 · 오늘 · 앞 닷새(월요일은 그 주 일요일까지) · 오늘 " + today + (LOCAL && /[?&]today=/.test(location.search) ? " (시험)" : "");
+    var n = count(rows); $("tot").innerHTML = countHtml(n); $("cnt").innerHTML = countHtml(n);
+
+    var open = ws.filter(function (w) { return !w["접음"]; }), folded = ws.filter(function (w) { return w["접음"]; });
+    function rowHtml(w) {
+      var c = cell[w.key] || {};
+      return '<tr class="w" data-key="' + esc(w.key) + '"><td title="' + esc(w["메모"] || "") + '">' + esc(w["이름"]) + (w["접음"] && w["메모"] ? '<span class="memo">' + esc(w["메모"]) + "</span>" : "") + "</td>" + nowCell(latest(now[w.key])) + todoCell(c[tk]) + days.map(function (d) { return dayCell(c[d.key], d.key === tk); }).join("") + "</tr>";
+    }
+    var ncol = 3 + days.length, h = head(days, tk) + "<tbody>", g = "";
+    open.forEach(function (w) { if (w["갈래"] !== g) { g = w["갈래"]; h += '<tr class="grp"><th class="grp" colspan="' + ncol + '"><span>' + esc(g) + "</span></th></tr>"; } h += rowHtml(w); });
+    $("tbl").innerHTML = h + "</tbody>"; $("tbl").classList.add("v3"); $("foldtbl").classList.add("v3");
+
+    // 접은 줄: 접음 작업자 + 설정에 없는 표 이름(옛 줄)
+    var fh = head(days, tk) + "<tbody>", nf = folded.length, nu = 0;
+    if (folded.length) { fh += '<tr class="grp"><th class="grp" colspan="' + ncol + '"><span>접은 작업자</span></th></tr>'; folded.forEach(function (w) { fh += rowHtml(w); }); }
+    var un = Object.keys(unknown);
+    if (un.length) {
+      fh += '<tr class="grp"><th class="grp" colspan="' + ncol + '"><span>옛 줄 (작업자.json 에 없는 표 이름)</span></th></tr>';
+      un.forEach(function (name) {
+        nu++; var c = {}; unknown[name].forEach(function (r) { c[dkey(r)] = r; });
+        var all = unknown[name].map(function (r) { return r["날짜"] + " " + short(r["할일"], 40); }).join("\n");
+        fh += '<tr class="u"><td title="' + esc(all) + '">' + esc(wname(name).n) + '<span class="memo">' + esc(wname(name).s) + " · " + unknown[name].length + "행</span></td>" + nowCell(null).replace("3일 안 통로·커밋 글 없음", "설정 밖 줄") + todoCell(c[tk]) + days.map(function (d) { return dayCell(c[d.key], d.key === tk); }).join("") + "</tr>";
+      });
+    }
+    $("foldtbl").innerHTML = fh + "</tbody>";
+    $("foldsum").textContent = "접은 줄 — 작업자 " + nf + " · 옛 줄 " + nu + " (글 없음 · s2 중계 · 설정 밖 이름)";
+    $("fold").hidden = !(nf + nu);
+
+    // 막힘: 지금 칸 막힘 + CSV 막힘
+    var blk = "";
+    ws.forEach(function (w) { var ev = latest(now[w.key]); if (ev && (ev["막힘"] === true)) blk += "<li><b>" + esc(w["이름"]) + " · 지금 " + esc(ev.kind) + "</b> — " + esc(relTime(ev.at)) + ' <span class="meta" style="display:block;color:var(--mute);font-size:12px">' + ICON[ev.src] + " " + esc(ev.text) + "</span></li>"; });
+    var cards = "";
+    open.concat(folded).forEach(function (w, wi) {
+      // 앞 주 표의 줄은 칸을 차지한 것(지금 표가 덮지 않은 날)만 · 그 뒤 지금 표 줄
+      var c0 = cell[w.key] || {}, wk = {}; days.forEach(function (d) { wk[d.key] = 1; });
+      var mine = (prev || []).filter(function (r) { return wk[dkey(r)] && c0[dkey(r)] === r; }).concat(rows.filter(function (r) { return keyOf(am, ws, r["작업자"]) === w.key; })), lines = "", done = 0;
+      mine.forEach(function (r) {
+        var s = r["상태"], t = tail(r), id = "r-" + esc(r["id"]); if (s === "끝" || s === "검증") done++;
+        lines += '<li id="' + id + '" class="' + (CLS[s] || "") + '"><span class="g">' + GLYPH[s] + '</span><span class="d">' + esc(r["날짜"]) + '</span><span class="t">' + esc(r["할일"]) + (t ? '<span class="meta">' + esc(t) + "</span>" : "") + "</span></li>";
+        if (s === "막힘") blk += "<li><b>" + esc(w["이름"]) + " · " + esc(r["날짜"]) + "</b> — " + esc(r["근거"] || "근거 없음") + '<span class="meta" style="display:block;color:var(--mute);font-size:12px">' + esc(r["id"]) + " · " + esc(short(r["할일"], 60)) + "</span></li>";
+      });
+      if (mine.length) cards += '<div class="box card" id="w-' + wi + '"><h3><span>' + esc(w["이름"]) + '<span class="sub2">' + esc(w["갈래"]) + "</span></span><small>끝 " + done + " / " + mine.length + "</small></h3><ol>" + lines + "</ol></div>";
+    });
+    $("cards").innerHTML = cards;
+    $("blk").innerHTML = blk || "<li class='none'>없음</li>";
+
+    // 지금 칸 출처 상태 · 셈 밖(빠진 것을 세는 눈)
+    var st = j.now_status || {}, parts = [];
+    ["통로", "커밋"].forEach(function (s) { var x = st[s]; if (!x) return; parts.push(x.status === "ok" ? ICON[s] + " " + s + " " + x.count + "건" : '<span class="bad">' + ICON[s] + " " + s + " " + esc(x.status) + (x.error ? " · " + esc(x.error) : "") + "</span>"); });
+    if (j.unmatched) parts.push("작업자에 안 걸린 머리: 통로 " + j.unmatched["통로"] + " · 커밋 " + j.unmatched["커밋"]);
+    if (j.workers_status && j.workers_status.regex_errors) parts.push('<span class="bad">작업자.json 정규식 틀림 ' + j.workers_status.regex_errors.length + "</span>");
+    if (j.prev_csv_name) parts.push("앞 주 표 " + esc(j.prev_csv_name));
+    parts.push("지금 줄 " + open.length + " · 접음 " + nf);
+    $("nowst").innerHTML = parts.join(" · ");
+  }
+
   function render(j) {
     var rows;
     try { rows = parseCsv(j.csv); } catch (e) { show("board"); $("upd").textContent = "CSV 를 못 읽음: " + e.message; return; }
-    renderCurrent(rows);
+    var prev = null;
+    if (j.prev_csv) { try { prev = parseCsv(j.prev_csv); } catch (e) { prev = null; } }
+    if (j.workers && j.workers.length) renderV3(j, rows, prev); else { $("tbl").classList.remove("v3"); renderCurrent(rows); $("fold").hidden = true; $("nowst").textContent = ""; }
+    renderSale(j);
     var ft = j.fetched_at ? new Date(j.fetched_at) : null;
     $("srv").textContent = ft ? "서버 읽음 " + ft.toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" }) + (j.cache_age_s ? " (캐시 " + j.cache_age_s + "초)" : "") : "";
     $("src").textContent = j.csv_name ? j.csv_name : ((j.source && j.source.path) ? String(j.source.path).split("/").pop() : "");
