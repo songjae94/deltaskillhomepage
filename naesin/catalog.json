@@ -736,7 +736,7 @@
      "name": "공통수학2 유리함수와 무리함수 내신 변형 문항",
      "composition": "C1",
      "textbook": "B1",
-     "count": null,
+     "count": 270,
      "pages": null,
      "price": {
       "pdf": 4000,
@@ -746,7 +746,7 @@
       "pdf": 0,
       "hwpx": 0
      },
-     "saleFrom": null,
+     "saleFrom": "2026-11-13T18:00+09:00",
      "saleTo": null,
      "sample": null,
      "fileSets": {
@@ -827,17 +827,33 @@
        "name": "공통수학2 07 유리함수와 무리함수 유리식 계산과 함숫값 내신 변형 문항",
        "composition": "TY",
        "textbook": "B1",
-       "count": null,
-       "pages": null,
-       "price": null,
+       "count": 6,
+       "pages": 4,
+       "price": {
+        "pdf": 500,
+        "hwpx": 1000
+       },
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": null,
+       "saleFrom": "2026-11-13T18:00+09:00",
        "saleTo": null,
        "sample": null,
-       "files": []
+       "files": [
+        {
+         "id": "NS-CM2-07-T001.pdf",
+         "fmt": "pdf",
+         "title": "공통수학2 07 유리함수와 무리함수 유리식 계산과 함숫값 내신 변형 문항 (PDF)",
+         "from": "2026-11-13T18:00+09:00"
+        },
+        {
+         "id": "NS-CM2-07-T001.hwpx",
+         "fmt": "hwpx",
+         "title": "공통수학2 07 유리함수와 무리함수 유리식 계산과 함숫값 내신 변형 문항 (한글)",
+         "from": "2026-11-13T18:00+09:00"
+        }
+       ]
       },
       {
        "sku": "NS-CM2-07-T002",
@@ -887,17 +903,33 @@
        "name": "공통수학2 07 유리함수와 무리함수 역수의 합 조건으로 식의 값 내신 변형 문항",
        "composition": "TY",
        "textbook": "B1",
-       "count": null,
-       "pages": null,
-       "price": null,
+       "count": 6,
+       "pages": 4,
+       "price": {
+        "pdf": 500,
+        "hwpx": 1000
+       },
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": null,
+       "saleFrom": "2026-11-13T18:00+09:00",
        "saleTo": null,
        "sample": null,
-       "files": []
+       "files": [
+        {
+         "id": "NS-CM2-07-T004.pdf",
+         "fmt": "pdf",
+         "title": "공통수학2 07 유리함수와 무리함수 역수의 합 조건으로 식의 값 내신 변형 문항 (PDF)",
+         "from": "2026-11-13T18:00+09:00"
+        },
+        {
+         "id": "NS-CM2-07-T004.hwpx",
+         "fmt": "hwpx",
+         "title": "공통수학2 07 유리함수와 무리함수 역수의 합 조건으로 식의 값 내신 변형 문항 (한글)",
+         "from": "2026-11-13T18:00+09:00"
+        }
+       ]
       },
       {
        "sku": "NS-CM2-07-T005",
@@ -945,17 +977,33 @@
        "name": "공통수학2 07 유리함수와 무리함수 표준형의 평행이동과 점근선 내신 변형 문항",
        "composition": "TY",
        "textbook": "B1",
-       "count": null,
-       "pages": null,
-       "price": null,
+       "count": 12,
+       "pages": 7,
+       "price": {
+        "pdf": 500,
+        "hwpx": 1000
+       },
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": null,
+       "saleFrom": "2026-11-13T18:00+09:00",
        "saleTo": null,
        "sample": null,
-       "files": []
+       "files": [
+        {
+         "id": "NS-CM2-07-T007.pdf",
+         "fmt": "pdf",
+         "title": "공통수학2 07 유리함수와 무리함수 표준형의 평행이동과 점근선 내신 변형 문항 (PDF)",
+         "from": "2026-11-13T18:00+09:00"
+        },
+        {
+         "id": "NS-CM2-07-T007.hwpx",
+         "fmt": "hwpx",
+         "title": "공통수학2 07 유리함수와 무리함수 표준형의 평행이동과 점근선 내신 변형 문항 (한글)",
+         "from": "2026-11-13T18:00+09:00"
+        }
+       ]
       },
       {
        "sku": "NS-CM2-07-T008",
@@ -964,17 +1012,68 @@
        "name": "공통수학2 07 유리함수와 무리함수 표준형으로 고쳐 구하는 평행이동 내신 변형 문항",
        "composition": "TY",
        "textbook": "B1",
-       "count": null,
-       "pages": null,
-       "price": null,
+       "count": 6,
+       "pages": 4,
+       "price": {
+        "pdf": 500,
+        "hwpx": 1000
+       },
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": null,
+       "saleFrom": "2026-11-13T18:00+09:00",
        "saleTo": null,
        "sample": null,
-       "files": []
+       "files": [
+        {
+         "id": "NS-CM2-07-T008.pdf",
+         "fmt": "pdf",
+         "title": "공통수학2 07 유리함수와 무리함수 표준형으로 고쳐 구하는 평행이동 내신 변형 문항 (PDF)",
+         "from": "2026-11-13T18:00+09:00"
+        },
+        {
+         "id": "NS-CM2-07-T008.hwpx",
+         "fmt": "hwpx",
+         "title": "공통수학2 07 유리함수와 무리함수 표준형으로 고쳐 구하는 평행이동 내신 변형 문항 (한글)",
+         "from": "2026-11-13T18:00+09:00"
+        }
+       ]
+      },
+      {
+       "sku": "NS-CM2-07-T009",
+       "kind": "T009",
+       "title": "공통수학2 07 유리함수와 무리함수 그래프로 유리함수의 계수 결정",
+       "name": "공통수학2 07 유리함수와 무리함수 그래프로 유리함수의 계수 결정 내신 변형 문항",
+       "composition": "TY",
+       "textbook": "B1",
+       "count": 3,
+       "pages": 3,
+       "price": {
+        "pdf": 500,
+        "hwpx": 1000
+       },
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
+       "saleFrom": "2026-11-13T18:00+09:00",
+       "saleTo": null,
+       "sample": null,
+       "files": [
+        {
+         "id": "NS-CM2-07-T009.pdf",
+         "fmt": "pdf",
+         "title": "공통수학2 07 유리함수와 무리함수 그래프로 유리함수의 계수 결정 내신 변형 문항 (PDF)",
+         "from": "2026-11-13T18:00+09:00"
+        },
+        {
+         "id": "NS-CM2-07-T009.hwpx",
+         "fmt": "hwpx",
+         "title": "공통수학2 07 유리함수와 무리함수 그래프로 유리함수의 계수 결정 내신 변형 문항 (한글)",
+         "from": "2026-11-13T18:00+09:00"
+        }
+       ]
       },
       {
        "sku": "NS-CM2-07-T010",
@@ -983,17 +1082,33 @@
        "name": "공통수학2 07 유리함수와 무리함수 점근선의 교점과 그래프의 대칭 내신 변형 문항",
        "composition": "TY",
        "textbook": "B1",
-       "count": null,
-       "pages": null,
-       "price": null,
+       "count": 6,
+       "pages": 4,
+       "price": {
+        "pdf": 500,
+        "hwpx": 1000
+       },
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": null,
+       "saleFrom": "2026-11-13T18:00+09:00",
        "saleTo": null,
        "sample": null,
-       "files": []
+       "files": [
+        {
+         "id": "NS-CM2-07-T010.pdf",
+         "fmt": "pdf",
+         "title": "공통수학2 07 유리함수와 무리함수 점근선의 교점과 그래프의 대칭 내신 변형 문항 (PDF)",
+         "from": "2026-11-13T18:00+09:00"
+        },
+        {
+         "id": "NS-CM2-07-T010.hwpx",
+         "fmt": "hwpx",
+         "title": "공통수학2 07 유리함수와 무리함수 점근선의 교점과 그래프의 대칭 내신 변형 문항 (한글)",
+         "from": "2026-11-13T18:00+09:00"
+        }
+       ]
       },
       {
        "sku": "NS-CM2-07-T011",
@@ -1002,17 +1117,33 @@
        "name": "공통수학2 07 유리함수와 무리함수 유리함수 그래프와 사분면 조건 내신 변형 문항",
        "composition": "TY",
        "textbook": "B1",
-       "count": null,
-       "pages": null,
-       "price": null,
+       "count": 6,
+       "pages": 4,
+       "price": {
+        "pdf": 500,
+        "hwpx": 1000
+       },
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": null,
+       "saleFrom": "2026-11-13T18:00+09:00",
        "saleTo": null,
        "sample": null,
-       "files": []
+       "files": [
+        {
+         "id": "NS-CM2-07-T011.pdf",
+         "fmt": "pdf",
+         "title": "공통수학2 07 유리함수와 무리함수 유리함수 그래프와 사분면 조건 내신 변형 문항 (PDF)",
+         "from": "2026-11-13T18:00+09:00"
+        },
+        {
+         "id": "NS-CM2-07-T011.hwpx",
+         "fmt": "hwpx",
+         "title": "공통수학2 07 유리함수와 무리함수 유리함수 그래프와 사분면 조건 내신 변형 문항 (한글)",
+         "from": "2026-11-13T18:00+09:00"
+        }
+       ]
       },
       {
        "sku": "NS-CM2-07-T012",
@@ -1021,17 +1152,33 @@
        "name": "공통수학2 07 유리함수와 무리함수 정의역이 구간인 유리함수 최대·최소 내신 변형 문항",
        "composition": "TY",
        "textbook": "B1",
-       "count": null,
-       "pages": null,
-       "price": null,
+       "count": 6,
+       "pages": 4,
+       "price": {
+        "pdf": 500,
+        "hwpx": 1000
+       },
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": null,
+       "saleFrom": "2026-11-13T18:00+09:00",
        "saleTo": null,
        "sample": null,
-       "files": []
+       "files": [
+        {
+         "id": "NS-CM2-07-T012.pdf",
+         "fmt": "pdf",
+         "title": "공통수학2 07 유리함수와 무리함수 정의역이 구간인 유리함수 최대·최소 내신 변형 문항 (PDF)",
+         "from": "2026-11-13T18:00+09:00"
+        },
+        {
+         "id": "NS-CM2-07-T012.hwpx",
+         "fmt": "hwpx",
+         "title": "공통수학2 07 유리함수와 무리함수 정의역이 구간인 유리함수 최대·최소 내신 변형 문항 (한글)",
+         "from": "2026-11-13T18:00+09:00"
+        }
+       ]
       },
       {
        "sku": "NS-CM2-07-T013",
@@ -1041,17 +1188,33 @@
        "name": "공통수학2 07 유리함수와 무리함수 유리함수와 직선 교점 수 조건 내신 변형 문항",
        "composition": "TY",
        "textbook": "B1",
-       "count": null,
-       "pages": null,
-       "price": null,
+       "count": 6,
+       "pages": 4,
+       "price": {
+        "pdf": 500,
+        "hwpx": 1000
+       },
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": null,
+       "saleFrom": "2026-11-13T18:00+09:00",
        "saleTo": null,
        "sample": null,
-       "files": []
+       "files": [
+        {
+         "id": "NS-CM2-07-T013.pdf",
+         "fmt": "pdf",
+         "title": "공통수학2 07 유리함수와 무리함수 유리함수와 직선 교점 수 조건 내신 변형 문항 (PDF)",
+         "from": "2026-11-13T18:00+09:00"
+        },
+        {
+         "id": "NS-CM2-07-T013.hwpx",
+         "fmt": "hwpx",
+         "title": "공통수학2 07 유리함수와 무리함수 유리함수와 직선 교점 수 조건 내신 변형 문항 (한글)",
+         "from": "2026-11-13T18:00+09:00"
+        }
+       ]
       },
       {
        "sku": "NS-CM2-07-T014",
@@ -1079,17 +1242,33 @@
        "name": "공통수학2 07 유리함수와 무리함수 유리함수 역함수의 식과 값 내신 변형 문항",
        "composition": "TY",
        "textbook": "B1",
-       "count": null,
-       "pages": null,
-       "price": null,
+       "count": 6,
+       "pages": 4,
+       "price": {
+        "pdf": 500,
+        "hwpx": 1000
+       },
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": null,
+       "saleFrom": "2026-11-13T18:00+09:00",
        "saleTo": null,
        "sample": null,
-       "files": []
+       "files": [
+        {
+         "id": "NS-CM2-07-T015.pdf",
+         "fmt": "pdf",
+         "title": "공통수학2 07 유리함수와 무리함수 유리함수 역함수의 식과 값 내신 변형 문항 (PDF)",
+         "from": "2026-11-13T18:00+09:00"
+        },
+        {
+         "id": "NS-CM2-07-T015.hwpx",
+         "fmt": "hwpx",
+         "title": "공통수학2 07 유리함수와 무리함수 유리함수 역함수의 식과 값 내신 변형 문항 (한글)",
+         "from": "2026-11-13T18:00+09:00"
+        }
+       ]
       },
       {
        "sku": "NS-CM2-07-T016",
@@ -1098,17 +1277,33 @@
        "name": "공통수학2 07 유리함수와 무리함수 유리함수 역함수의 합성과 그래프 내신 변형 문항",
        "composition": "TY",
        "textbook": "B1",
-       "count": null,
-       "pages": null,
-       "price": null,
+       "count": 12,
+       "pages": 7,
+       "price": {
+        "pdf": 500,
+        "hwpx": 1000
+       },
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": null,
+       "saleFrom": "2026-11-13T18:00+09:00",
        "saleTo": null,
        "sample": null,
-       "files": []
+       "files": [
+        {
+         "id": "NS-CM2-07-T016.pdf",
+         "fmt": "pdf",
+         "title": "공통수학2 07 유리함수와 무리함수 유리함수 역함수의 합성과 그래프 내신 변형 문항 (PDF)",
+         "from": "2026-11-13T18:00+09:00"
+        },
+        {
+         "id": "NS-CM2-07-T016.hwpx",
+         "fmt": "hwpx",
+         "title": "공통수학2 07 유리함수와 무리함수 유리함수 역함수의 합성과 그래프 내신 변형 문항 (한글)",
+         "from": "2026-11-13T18:00+09:00"
+        }
+       ]
       },
       {
        "sku": "NS-CM2-07-T017",
@@ -1174,6 +1369,42 @@
        "name": "공통수학2 07 유리함수와 무리함수 정의역·치역으로 무리함수 결정 내신 변형 문항",
        "composition": "TY",
        "textbook": "B1",
+       "count": 6,
+       "pages": 4,
+       "price": {
+        "pdf": 500,
+        "hwpx": 1000
+       },
+       "taxFreeAmount": {
+        "pdf": 0,
+        "hwpx": 0
+       },
+       "saleFrom": "2026-11-13T18:00+09:00",
+       "saleTo": null,
+       "sample": null,
+       "files": [
+        {
+         "id": "NS-CM2-07-T020.pdf",
+         "fmt": "pdf",
+         "title": "공통수학2 07 유리함수와 무리함수 정의역·치역으로 무리함수 결정 내신 변형 문항 (PDF)",
+         "from": "2026-11-13T18:00+09:00"
+        },
+        {
+         "id": "NS-CM2-07-T020.hwpx",
+         "fmt": "hwpx",
+         "title": "공통수학2 07 유리함수와 무리함수 정의역·치역으로 무리함수 결정 내신 변형 문항 (한글)",
+         "from": "2026-11-13T18:00+09:00"
+        }
+       ]
+      },
+      {
+       "sku": "NS-CM2-07-T021",
+       "kind": "T021",
+       "title": "공통수학2 07 유리함수와 무리함수 평행이동한 무리함수 그래프의 식",
+       "alias": "평행이동·대칭이동",
+       "name": "공통수학2 07 유리함수와 무리함수 평행이동한 무리함수 그래프의 식 내신 변형 문항",
+       "composition": "TY",
+       "textbook": "B1",
        "count": null,
        "pages": null,
        "price": null,
@@ -1187,11 +1418,10 @@
        "files": []
       },
       {
-       "sku": "NS-CM2-07-T021",
-       "kind": "T021",
-       "title": "공통수학2 07 유리함수와 무리함수 평행이동한 무리함수 그래프의 식",
-       "alias": "평행이동·대칭이동",
-       "name": "공통수학2 07 유리함수와 무리함수 평행이동한 무리함수 그래프의 식 내신 변형 문항",
+       "sku": "NS-CM2-07-T022",
+       "kind": "T022",
+       "title": "공통수학2 07 유리함수와 무리함수 그래프로 무리함수의 계수 결정",
+       "name": "공통수학2 07 유리함수와 무리함수 그래프로 무리함수의 계수 결정 내신 변형 문항",
        "composition": "TY",
        "textbook": "B1",
        "count": null,
@@ -1290,17 +1520,33 @@
        "name": "공통수학2 07 유리함수와 무리함수 무리함수 역함수의 식과 교점 내신 변형 문항",
        "composition": "TY",
        "textbook": "B1",
-       "count": null,
-       "pages": null,
-       "price": null,
+       "count": 6,
+       "pages": 4,
+       "price": {
+        "pdf": 500,
+        "hwpx": 1000
+       },
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": null,
+       "saleFrom": "2026-11-13T18:00+09:00",
        "saleTo": null,
        "sample": null,
-       "files": []
+       "files": [
+        {
+         "id": "NS-CM2-07-T027.pdf",
+         "fmt": "pdf",
+         "title": "공통수학2 07 유리함수와 무리함수 무리함수 역함수의 식과 교점 내신 변형 문항 (PDF)",
+         "from": "2026-11-13T18:00+09:00"
+        },
+        {
+         "id": "NS-CM2-07-T027.hwpx",
+         "fmt": "hwpx",
+         "title": "공통수학2 07 유리함수와 무리함수 무리함수 역함수의 식과 교점 내신 변형 문항 (한글)",
+         "from": "2026-11-13T18:00+09:00"
+        }
+       ]
       },
       {
        "sku": "NS-CM2-07-T028",

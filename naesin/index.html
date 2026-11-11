@@ -166,7 +166,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   <div id="app" aria-live="polite"><p class="lede">상품을 불러오는 중…</p></div>
   <noscript><p class="lede">이 화면은 자바스크립트를 켜야 고를 수 있습니다.</p></noscript>
   <div class="notice">
-    <p><b>판매 시작일은 추후 공지합니다.</b> <span id="sale-note">지금은 상품 안내만 볼 수 있고 결제는 열려 있지 않습니다.</span></p>
+    <p><b>준비된 단원부터 받을 수 있습니다.</b> <span id="sale-note">준비 안 된 단원은 고를 때 「준비 중입니다」로 보이고, 그 단원은 결제가 열리지 않습니다.</span></p>
     <p>표시한 값은 부가세 포함입니다. 정기결제(자동 결제)는 없고, 주문마다 한 번 결제합니다. <a href="/refund/">환불·청약철회 안내</a> · <a href="/minor/">미성년자 구매 안내</a></p>
   </div>
 </main>
@@ -193,7 +193,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
    손님 길: 과목 → 부교재 → 무료 세트 · 기본형 · 상세선택 → 받을 내용 확인 → /checkout/?sku=.
    상태는 주소 인수뿐이다(서버 저장 없음): who s b p c u from to n t f v. 고객 값(who)은 문구만 가르고 값은 가르지 않는다.
    값은 형식(f = pdf · hwpx)마다 다르다. 구매는 /checkout/?sku=<SKU>.<형식> 으로 가고 서버 표의 키도 같다.
-   값이 빈 칸이면 빈 칸 그대로 알린다. 고른 형식의 가격·면세값·파일과 판매일·맛보기가 다 차고 PAY_MODE 가 있어야 구매 버튼이 켜진다. */
+   값이 빈 칸이면 빈 칸 그대로 알린다. 고른 형식의 가격·면세값·파일과 판매일이 다 차고(11-11: 맛보기는 팔 조건 아님) PAY_MODE 가 있어야 구매 버튼이 켜진다. */
 (function(){
   var APP=document.getElementById("app"),CAT=null,CFG=null,compOpenList=false;
   function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e;}
@@ -299,7 +299,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     return null;
   }
   function sellable(u,f,now){
-    if(!u||!priceAt(u,f)||!u.taxFreeAmount||u.taxFreeAmount[f]==null||!u.saleFrom||!u.sample||!filesAt(u,f).length)return false;
+    if(!u||!priceAt(u,f)||!u.taxFreeAmount||u.taxFreeAmount[f]==null||!u.saleFrom||!u.sample||!filesAt(u,f).length)return false; /* 11-11 본부 11/11 05: 맛보기(sample = 단원 무료 세트) 요구는 그대로(형 답 「07 무료 세트 같이 열기」) · F00 은 11/12 */
     if(now<Date.parse(u.saleFrom))return false;
     return !(u.saleTo&&now>=Date.parse(u.saleTo));
   }
@@ -319,16 +319,16 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   /* 구성 카드의 값 줄 — 값이 있는 상품만 말한다. 값이 하나뿐이면 어느 단원 값인지 함께 적는다 */
   function priceLine(c,s){
     var has=linesOf(c,s).filter(function(x){return anyPrice(x.u);});
-    if(!has.length)return "가격 추후 공지";
+    if(!has.length)return "준비 중입니다";
     if(has.length===1)return "단원 "+has[0].no+" · "+twoPrices(has[0].u);
     return c.sku==="item"?"유형마다 값이 다릅니다":"단원마다 값이 다릅니다";
   }
   function pathPriced(p,s){return comps(function(x){return x.path===p&&linesOf(x,s).some(function(l){return anyPrice(l.u);});}).length>0;}
   /* 고른 형식의 파일 수(형 11-04: 한 주문은 한 형식 · 한글 값에 PDF 는 따라오지 않는다) */
   function fileUnits(u,f){var n=filesAt(u,f).length;if(n)return n;var s=setOf(u,f);return s&&s.count?s.count:0;}
-  /* 단원 전체의 형식별 파일 묶음(catalog fileSets): PDF = 합본 1파일 · 한글 = 유형별 파일 묶음. 파일 수를 모르면 0 → 「파일 수 추후 공지」 */
+  /* 단원 전체의 형식별 파일 묶음(catalog fileSets): PDF = 합본 1파일 · 한글 = 유형별 파일 묶음. 파일 수를 모르면 0 → 수 없이 「유형별 파일 묶음」(형 결정 7: 공지 글 없음) */
   function setOf(u,f){return (u&&u.fileSets&&u.fileSets[f])||null;}
-  function setLine(u,f){var s=setOf(u,f),n=fileUnits(u,f);if(!s)return "";if(s.kind==="merged"&&n===1)return "합본 1파일";return n?"유형별 파일 "+n+"개":"유형별 파일 묶음(파일 수 추후 공지)";}
+  function setLine(u,f){var s=setOf(u,f),n=fileUnits(u,f);if(!s)return "";if(s.kind==="merged"&&n===1)return "합본 1파일";return n?"유형별 파일 "+n+"개":"유형별 파일 묶음";}
   /* 받으면 제공 시작 — 약관 제11조 제8항 1 · 2 · 4호와 제5항에 맞춘 글. checkout/index.html 의 startText 와 글자가 같아야 한다(시험 합본_재기.mjs 가 잰다) */
   function startText(n,kind){
     if(n===1||(!n&&kind==="merged"))return "파일이 하나입니다. 내려받거나 사이트에서 열람하면 제공이 시작되어 그때부터 환불되지 않습니다(파일 오류 · 표시와 다른 경우는 제외). 받기 전이면 결제일로부터 7일 이내에 요청해 전액 환불받습니다.";
@@ -409,8 +409,8 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
       add(li,a);return li;
     }
     add(ul,card("free",free.name,free.desc+" "+FREE_RULE,tag(freeSets(b).length>0),"0원","받을 내용 보기 →"));
-    add(ul,card("basic","기본형","미리 만든 구성에서 고릅니다.",tag(pathOpen("basic",s)),pathPriced("basic",s)?"구성마다 값이 다릅니다":"가격 추후 공지","구성 보기 →"));
-    add(ul,card("detail","상세선택","단원과 구성을 직접 고릅니다.",tag(pathOpen("basic",s)||pathOpen("detail",s)),(pathPriced("basic",s)||pathPriced("detail",s))?"구성마다 값이 다릅니다":"가격 추후 공지","직접 고르기 →"));
+    add(ul,card("basic","기본형","미리 만든 구성에서 고릅니다.",tag(pathOpen("basic",s)),pathPriced("basic",s)?"구성마다 값이 다릅니다":"준비 중입니다","구성 보기 →"));
+    add(ul,card("detail","상세선택","단원과 구성을 직접 고릅니다.",tag(pathOpen("basic",s)||pathOpen("detail",s)),(pathPriced("basic",s)||pathPriced("detail",s))?"구성마다 값이 다릅니다":"준비 중입니다","직접 고르기 →"));
     add(f,ul,proNote(q));
     return f;
   }
@@ -580,25 +580,24 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     if(!nq&&c.perUnit){var k=unitsOf(q,s).length;nq=c.perUnit*k;nnote=c.perUnit+"문항 × "+k+"단원";}
     if(!nq&&c.pick==="unitsCount"){var m=counts(q);unitsOf(q,s).forEach(function(x){nq+=m[x.no]||0;});nnote="단원마다 적은 수의 합";}
     if(!nq&&c.pick==="unitsTotal"){nq=total(q);nnote="적은 수";}
-    if(nq)row(dl,"문항 수",nq+"문항",nnote);else row(dl,"문항 수","문항 수 추후 공지",null,"blank");
-    if(u&&u.pages)row(dl,"쪽 수",u.pages+"쪽",pickFmt0(c,u)?"PDF 기준":null);else if(freeSum(fss,"pages"))row(dl,"쪽 수",freeSum(fss,"pages")+"쪽");else row(dl,"쪽 수","쪽 수 추후 공지",null,"blank");
+    if(nq)row(dl,"문항 수",nq+"문항",nnote); /* 형 결정 7: 빈 값은 줄을 안 보인다(공지 글 없음) */
+    if(u&&u.pages)row(dl,"쪽 수",u.pages+"쪽",pickFmt0(c,u)?"PDF 기준":null);else if(freeSum(fss,"pages"))row(dl,"쪽 수",freeSum(fss,"pages")+"쪽");
     /* 미리 만든 유료 구성은 손님이 형식을 고른다 — 고른 형식의 값을 치르고 그 형식 파일을 받는다 */
     var pickFmt=pickFmt0(c,u),fm=fmtOf(q);
     var fu=pickFmt?fileUnits(u,fm):0,fset=pickFmt?setOf(u,fm):null,fstart=pickFmt?startText(fu,fset&&fset.kind):"",fnote=pickFmt?fmtName(fm)+(fset?(fset.kind==="merged"?" 합본":" 유형별 파일 묶음"):" 기준"):null;
-    if(fss.length)row(dl,"파일 수",fss.reduce(function(n,x){return n+x.files.length;},0)+"개","형식마다 따로 받습니다");else if(fu)row(dl,"파일 수",fu+"개",fnote);else row(dl,"파일 수","파일 수 추후 공지",fnote,"blank");
+    if(fss.length)row(dl,"파일 수",fss.reduce(function(n,x){return n+x.files.length;},0)+"개","형식마다 따로 받습니다");else if(fu)row(dl,"파일 수",fu+"개",fnote);
     if(pickFmt)row(dl,"파일 형식",fmtName(fm)+" 파일만",notIn(fm)+" · 아래에서 바꿉니다");
     else if(free)row(dl,"파일 형식","PDF · 한글(HWPX) 모두 0원");
     else if(c.make==="ready")row(dl,"파일 형식","PDF 또는 한글(HWPX) 가운데 한 형식");
-    else row(dl,"파일 형식","파일 형식 추후 공지",null,"blank");
     if(free)row(dl,"받는 조건","로그인한 회원",FREE_RULE);
-    if(fss.length)row(dl,"제공",authed()?"바로 내려받기":"로그인 뒤 바로 내려받기");else if(c.make==="ready")row(dl,"제공",u&&u.saleFrom?"결제 뒤 바로 내려받기":"제공일 추후 공지",null,u&&u.saleFrom?null:"blank");
-    else row(dl,"제공","주문 뒤 만들어 제공 · 제공일 추후 공지",null,"blank");
+    if(fss.length)row(dl,"제공",authed()?"바로 내려받기":"로그인 뒤 바로 내려받기");else if(c.make==="ready"){if(u&&u.saleFrom)row(dl,"제공","결제 뒤 바로 내려받기");}
+    else row(dl,"제공","주문 뒤 만들어 제공 · 준비 중입니다",null,"blank");
     if(fstart)row(dl,"제공 시작","받으면 제공이 시작됩니다",fstart);
     if(u)row(dl,"상품 번호",u.sku);else if(fss.length)row(dl,"상품 번호",fss.map(function(x){return x.sku;}).join(" · "));
     var d=el("div");add(d,el("dt",null,"값"));var dd=el("dd");
     if(free)add(dd,el("span","won","0원"));
     else if(pickFmt&&priceAt(u,fm)){add(dd,el("span","won",won(priceAt(u,fm))));add(dd,el("small",null,fmtName(fm)+" · 부가세 포함"));}
-    else{dd.className="blank";dd.textContent="가격 추후 공지";}
+    else{dd.className="blank";dd.textContent="준비 중입니다";}
     add(d,dd);dl.appendChild(d);
     add(f,dl);
     if(pickFmt){
@@ -606,7 +605,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
       var fl=el("ul","picks");
       FMTS.forEach(function(x){
         var li=el("li"),p=priceAt(u,x[0]);
-        var r=radioRow("fmt",x[0],fm===x[0],x[1]+" 파일만",(p?won(p)+" · 부가세 포함":"가격 추후 공지")+(setLine(u,x[0])?" · "+setLine(u,x[0]):"")+" · "+notIn(x[0]),null,function(){
+        var r=radioRow("fmt",x[0],fm===x[0],x[1]+" 파일만",(p?won(p)+" · 부가세 포함":"준비 중입니다")+(setLine(u,x[0])?" · "+setLine(u,x[0]):"")+" · "+notIn(x[0]),null,function(){
           var n={},y=window.scrollY;Object.keys(q).forEach(function(k){n[k]=q[k];});n.f=x[0];
           history.replaceState(history.state,"",url(n));draw(false);window.scrollTo(0,y);
           var e=document.querySelector('[data-fk="f-'+x[0]+'"]');if(e)e.focus();
@@ -622,7 +621,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
       else{add(act,loginBtn());fm0.textContent=(freeOut?"로그인이 풀렸어요. 다시 로그인하면 바로 받을 수 있습니다.":"무료 세트는 "+FREE_RULE)+" 로그인하면 이 화면으로 돌아옵니다.";add(fm0,el("br"),signupLink());}
     }
     else if(ok){var buy=el("a","btn buy","구매하기");buy.href="/checkout/?sku="+encodeURIComponent(u.sku+"."+fm);add(act,buy);}
-    else{var dis=el("button","btn dis",pickFmt&&priceAt(u,fm)&&filesAt(u,fm).length?"판매 시작일 추후 공지":"준비 중");dis.type="button";dis.disabled=true;add(act,dis);}
+    else{var dis=el("button","btn dis","준비 중입니다");dis.type="button";dis.disabled=true;add(act,dis);} /* 형 결정 7(11-11): 판매일을 공지하지 않는다 — 값 · 파일 · 판매일 · 맛보기 중 하나라도 비었거나 판매 시각 전이면 「준비 중입니다」 */
     var al=el("a","btn ghost","알림 받기");al.href="mailto:admin@deltaskill.co.kr?subject="+encodeURIComponent("내신 파일 알림 "+s.code+" "+c.id+(u?" "+u.sku:""));add(act,al);
     add(f,act);
     if(fss.length)add(f,fm0);
