@@ -249,13 +249,13 @@ var sku=(new URLSearchParams(location.search).get("sku")||"").trim();
 var P=Object.prototype.hasOwnProperty.call(CAT,sku)?CAT[sku]:null;
 var NS=sku.indexOf("NS-")===0;
 if(NS){var bs=document.getElementById("band-sale");if(bs)bs.remove();} /* 형 결정 7: 내신 주문서에는 판매일 공지 글을 두지 않는다(수능 글은 그대로) */
-/* 내신 상품은 /naesin/catalog.json 한 값에서 읽는다(서버 표와 같은 정본 · 게이트 scripts/홈페이지/내신상품표.py). 주소는 sku=<SKU>.<형식>(pdf · hwpx) — 그 형식의 가격·면세값·파일과 판매일·맛보기 중 하나라도 비면 주문서를 열지 않는다. */
+/* 내신 상품은 /naesin/catalog.json 한 값에서 읽는다(서버 표와 같은 정본 · 게이트 scripts/홈페이지/내신상품표.py). 주소는 sku=<SKU>.<형식>(pdf · hwpx) — 그 형식의 가격·면세값·파일과 판매일 중 하나라도 비면 주문서를 열지 않는다. */
 function naesinP(c){
   var m=/^(NS-[A-Z0-9-]+)\.(pdf|hwpx)$/.exec(sku);if(!m)return null;
   var u=null;((c&&c.subjects)||[]).forEach(function(s){(s.units||[]).forEach(function(x){if(x.sku===m[1])u=x;(x.items||[]).concat(x.packs||[]).forEach(function(i){if(i.sku===m[1])u=i;});});});
   if(!u)return null;
   var f=m[2],n=(u.files||[]).filter(function(x){return x.fmt===f;}).length,pr=u.price&&u.price[f];
-  if(!pr||!u.taxFreeAmount||u.taxFreeAmount[f]==null||!u.saleFrom||!u.sample||!n)return null;
+  if(!pr||!u.taxFreeAmount||u.taxFreeAmount[f]==null||!u.saleFrom||!n)return null; /* 11-11: 맛보기(sample)는 팔 조건이 아니다(내신 화면 sellable 과 같이) */
   var fn=f==="hwpx"?"한글(HWPX)":"PDF",fs=u.fileSets&&u.fileSets[f],cnt=fs&&fs.kind==="merged"&&n===1?fn+" 합본 1파일":fs&&fs.kind==="types"?fn+" 유형별 파일 "+n+"개":fn+" 파일 "+n+"개";
   return {name:u.name+(f==="hwpx"?" (한글)":" (PDF)"),price:pr,priceNote:"부가세 포함",comp:cnt+" · "+(u.kind?"":"단원 ")+"변형 문항",start:startText(n),only:fn+" 파일만 받습니다. "+(f==="hwpx"?"PDF는":"한글 파일은")+" 들어 있지 않습니다.",give:"결제 뒤 바로 내려받기",saleFrom:u.saleFrom,saleTo:u.saleTo||undefined,cards:(c.cards||[])};
 }
