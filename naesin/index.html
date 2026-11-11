@@ -166,7 +166,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   <div id="app" aria-live="polite"><p class="lede">상품을 불러오는 중…</p></div>
   <noscript><p class="lede">이 화면은 자바스크립트를 켜야 고를 수 있습니다.</p></noscript>
   <div class="notice">
-    <p><b>판매 시작일은 추후 공지합니다.</b> <span id="sale-note">지금은 상품 안내만 볼 수 있고 결제는 열려 있지 않습니다.</span></p>
+    <p><b>준비된 단원부터 받을 수 있습니다.</b> <span id="sale-note">준비 안 된 단원은 고를 때 「준비 중입니다」로 보이고, 그 단원은 결제가 열리지 않습니다.</span></p>
     <p>표시한 값은 부가세 포함입니다. 정기결제(자동 결제)는 없고, 주문마다 한 번 결제합니다. <a href="/refund/">환불·청약철회 안내</a> · <a href="/minor/">미성년자 구매 안내</a></p>
   </div>
 </main>
@@ -622,7 +622,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
       else{add(act,loginBtn());fm0.textContent=(freeOut?"로그인이 풀렸어요. 다시 로그인하면 바로 받을 수 있습니다.":"무료 세트는 "+FREE_RULE)+" 로그인하면 이 화면으로 돌아옵니다.";add(fm0,el("br"),signupLink());}
     }
     else if(ok){var buy=el("a","btn buy","구매하기");buy.href="/checkout/?sku="+encodeURIComponent(u.sku+"."+fm);add(act,buy);}
-    else{var dis=el("button","btn dis",pickFmt&&priceAt(u,fm)&&filesAt(u,fm).length?"판매 시작일 추후 공지":"준비 중");dis.type="button";dis.disabled=true;add(act,dis);}
+    else{var dis=el("button","btn dis","준비 중입니다");dis.type="button";dis.disabled=true;add(act,dis);} /* 형 결정 7(11-11): 판매일을 공지하지 않는다 — 값 · 파일 · 판매일 · 맛보기 중 하나라도 비었거나 판매 시각 전이면 「준비 중입니다」 */
     var al=el("a","btn ghost","알림 받기");al.href="mailto:admin@deltaskill.co.kr?subject="+encodeURIComponent("내신 파일 알림 "+s.code+" "+c.id+(u?" "+u.sku:""));add(act,al);
     add(f,act);
     if(fss.length)add(f,fm0);
