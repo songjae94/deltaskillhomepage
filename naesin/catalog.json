@@ -593,7 +593,7 @@
        "unit": "유리함수와 무리함수",
        "title": "공통수학2 07 유리함수와 무리함수 무료 세트",
        "count": 22,
-       "pages": null,
+       "pages": 10,
        "files": [
         {
          "id": "NS-CM2-07-F00.pdf",
@@ -760,7 +760,7 @@
      "composition": "C1",
      "textbook": "B1",
      "count": 270,
-     "pages": null,
+     "pages": 169,
      "price": {
       "pdf": 4000,
       "hwpx": 8000
@@ -974,6 +974,12 @@
        "fmt": "hwpx",
        "title": "공통수학2 유리함수와 무리함수 내신 변형 문항 (한글)",
        "from": "2026-11-13T18:00+09:00"
+      },
+      {
+       "id": "NS-CM2-07-ALL.pdf",
+       "fmt": "pdf",
+       "title": "공통수학2 유리함수와 무리함수 내신 변형 문항 (PDF)",
+       "from": "2026-11-13T18:00+09:00"
       }
      ],
      "types": [],
@@ -986,7 +992,7 @@
        "composition": "TY",
        "textbook": "B1",
        "count": 62,
-       "pages": 28,
+       "pages": 27,
        "price": {
         "pdf": 1550,
         "hwpx": 3100
@@ -1021,7 +1027,7 @@
        "composition": "TY",
        "textbook": "B1",
        "count": 10,
-       "pages": 8,
+       "pages": 7,
        "price": {
         "pdf": 500,
         "hwpx": 1000
@@ -1056,7 +1062,7 @@
        "composition": "TY",
        "textbook": "B1",
        "count": 11,
-       "pages": 8,
+       "pages": 7,
        "price": {
         "pdf": 500,
         "hwpx": 1000
@@ -1376,7 +1382,7 @@
        "composition": "TY",
        "textbook": "B1",
        "count": 3,
-       "pages": 3,
+       "pages": 4,
        "price": {
         "pdf": 500,
         "hwpx": 1000
@@ -1552,7 +1558,7 @@
        "composition": "TY",
        "textbook": "B1",
        "count": 8,
-       "pages": 5,
+       "pages": 4,
        "price": {
         "pdf": 500,
         "hwpx": 1000
@@ -1833,7 +1839,7 @@
        "composition": "TY",
        "textbook": "B1",
        "count": 3,
-       "pages": 4,
+       "pages": 5,
        "price": {
         "pdf": 500,
         "hwpx": 1000
@@ -2079,7 +2085,7 @@
        "composition": "TY",
        "textbook": "B1",
        "count": 6,
-       "pages": 5,
+       "pages": 4,
        "price": {
         "pdf": 500,
         "hwpx": 1000
@@ -2116,7 +2122,7 @@
        "composition": "C2",
        "textbook": "B1",
        "count": 80,
-       "pages": 32,
+       "pages": 31,
        "price": {
         "pdf": 2000,
         "hwpx": 4000
