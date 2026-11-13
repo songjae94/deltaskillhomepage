@@ -1,0 +1,40 @@
+:root{
+ --ink:#172b25;--deep:#154a3e;--acc:#174f40;--acc2:#235c4b;--mut:#52665c;
+ --line:#d9e1d7;--line2:#aebeb2;--bg:#f6f8f1;--card:#fff;--bad:#a42c26;--ok:#245d39;
+ color-scheme:light;font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+ color:var(--ink);background:var(--bg);font-synthesis:none;-webkit-text-size-adjust:100%
+}
+*{box-sizing:border-box}
+body{margin:0;min-height:100svh;line-height:1.55;word-break:keep-all}
+.wrap{width:min(100% - 40px,1080px);margin:0 auto;min-height:100svh;display:flex;align-items:center;flex-direction:column}
+.brandbar{width:100%;min-height:82px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
+.brand,.home-link{display:inline-flex;align-items:center;min-height:44px}
+.brand img{width:140px;height:auto;display:block}
+.home-link{font-size:14px;font-weight:650;text-decoration:none;gap:6px}
+a{color:var(--acc2);text-underline-offset:.18em}
+.card{border:1px solid var(--line);border-radius:24px;padding:clamp(24px,4vw,40px);width:min(100%,470px);background:white;margin:clamp(28px,7vh,70px) 0 0;box-shadow:0 10px 40px #18332708}
+h1,.done b{font-size:clamp(27px,4vw,36px);letter-spacing:-.055em;margin:0 0 7px;color:var(--deep);line-height:1.22}
+.desc,.hint,.timer,.foot,.or{color:var(--mut)}
+.desc{line-height:1.65;margin:0 0 20px;font-size:15px}
+.field{margin:15px 0}.field>label{display:block;font-weight:680;font-size:14px;margin-bottom:6px}
+input,button{font:inherit}
+input:not([type=checkbox]){display:block;width:100%;min-width:0;height:48px;padding:10px 13px;background:white;color:var(--ink);border:1px solid var(--line2);border-radius:9px;font-size:16px}
+input::placeholder{color:#69796e}
+button,.p{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:8px 14px;cursor:pointer;border:1px solid var(--line2);border-radius:9px;color:var(--ink);background:#fff;text-decoration:none}
+:focus-visible{outline:3px solid #558a47;outline-offset:2px}
+button:disabled,input:disabled{opacity:.55;cursor:default}
+.p,#d-go{background:var(--deep)!important;color:#fff!important;width:100%;min-height:48px;font-weight:720;margin-top:6px;border:0;text-align:center}
+#w-go{background:#9f322e!important}
+.row,.seg,.links{display:flex;gap:8px}.row input{flex:1}.row button{flex:none}
+.seg button{flex:1}.seg .on{background:#e0f1d0;color:#144a31;border:2px solid #356649;font-weight:700}
+.field.pw{position:relative}.field.pw input{padding-right:65px}.pwshow{position:absolute;right:2px;bottom:2px;background:transparent;border:0;font-size:13px;min-width:48px;color:var(--mut);padding:5px}
+.err,.ok,.hint,.timer,.consent{font-size:14px}.err{color:var(--bad);margin:5px 0}.err:empty{margin:0}.ok{color:var(--ok)}.hint{margin-top:4px}.timer{font-variant-numeric:tabular-nums}
+.consent{display:flex;align-items:flex-start;gap:9px;padding:4px 0;margin:5px 0;line-height:1.55}
+.consent input{width:19px;height:19px;flex:none;margin:2px 0 0;accent-color:var(--acc)}
+.links{justify-content:space-between;flex-wrap:wrap;margin:15px 0 -5px}.ghost{font-size:14px;background:none;border:0;color:var(--acc2);padding:4px 0;text-decoration:underline;text-underline-offset:.2em}
+.steps,.or{display:flex;gap:7px;align-items:center}.steps{margin:16px 0 18px}.steps i{height:4px;border-radius:4px;background:#e2e8df;flex:1}.steps .on{background:#538457}
+.or{gap:12px;font-size:13px;margin:16px 0 8px}.or:before,.or:after{content:"";height:1px;flex:1;background:var(--line)}
+.kakao,.naver{width:100%;gap:9px;border:0;font-weight:700;min-height:47px}.kakao{background:#fee500;color:#191919}.kakao svg{width:18px;height:18px}.naver{margin-top:8px;background:#03c75a;color:#102b1b}.naver b{font:900 18px Arial}
+.done{text-align:center}.done b{display:block;font-weight:750}.foot{margin:24px auto 40px;font-size:13px;text-align:center}.foot a{display:inline-flex;align-items:center;min-height:44px}
+[hidden]{display:none!important}
+@media(max-width:520px){.wrap{width:calc(100% - 28px)}.brandbar{min-height:64px}.brand img{width:117px}.card{border-radius:16px;margin-top:22px;padding:23px 18px}.foot{margin:10px auto 22px}}
