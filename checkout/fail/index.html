@@ -216,7 +216,11 @@ function renderOrder(box,o,cfg,email){
   var q=new URLSearchParams(location.search);
   var code=q.get("code")||"",m=q.get("message")||"",oid=q.get("orderId")||"";
   var saved={};try{saved=JSON.parse(sessionStorage.getItem("ds_order")||"{}")||{};}catch(_){}
-  if(saved.sku)$("again").href="/checkout/?sku="+encodeURIComponent(saved.sku);
+  if(Array.isArray(saved.skus)&&saved.skus.length>=2&&saved.skus.length<=3){
+    var retry=new URLSearchParams();
+    saved.skus.forEach(function(sku){retry.append("skus",sku);});
+    $("again").href="/checkout/?"+retry.toString();
+  }else if(saved.sku)$("again").href="/checkout/?sku="+encodeURIComponent(saved.sku);
   $("why").textContent=code==="PAY_PROCESS_CANCELED"?"결제를 취소했습니다.":"결제가 승인되지 않았습니다.";
   var dl=$("det");
   [["사유",m],["코드",code],["주문번호",oid]].forEach(function(r){if(!r[1])return;var d=document.createElement("div"),t=document.createElement("dt"),x=document.createElement("dd");t.textContent=r[0];x.textContent=r[1].slice(0,300);d.appendChild(t);d.appendChild(x);dl.appendChild(d);});

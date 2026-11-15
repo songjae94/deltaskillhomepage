@@ -117,6 +117,7 @@ select{width:100%}
 .bar p{margin:0;font-size:14px;color:var(--ink2);min-width:0;flex:1 1 240px}
 .conf{margin:0;padding:6px 20px;border-radius:18px;background:var(--card);box-shadow:inset 0 0 0 1.5px var(--line2)}
 .conf div{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--line)}
+.conf div[hidden]{display:none}
 .conf div:last-child{border-bottom:0}
 .conf dt{flex:none;width:92px;font-size:13.5px;font-weight:700;color:var(--muted)}
 .conf dd{margin:0;font-size:15.5px;font-weight:600;min-width:0}
@@ -156,7 +157,7 @@ html[data-theme="dark"] .btn.go2{background:var(--deepSoft);color:var(--ink);box
 footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 @media(max-width:640px){.hd-r a,.tg,.kick,.kick .n,.opt small,.opt .go,.tag,.pr,.mj,.pick .t small,.cnt,.conf dt,.conf dd small,.fine,.notice,.biz p,.biz a{font-size:14px}}   /* 1109 C3(점검표_개편판_1108): 640 아래 보조·가격·판매 안내 글 14px 이상 · 머리 링크 13→14 */
 </style>
-<link rel="stylesheet" href="/naesin/preparation.css"><script defer src="/naesin/preparation.js"></script>
+<link rel="stylesheet" href="/naesin/preparation.css"><script defer src="/naesin/preparation.js"></script><script defer src="/naesin/finals-order.js"></script>
 </head>
 <body>
 <header class="hdr"><div class="wrap">
@@ -173,8 +174,19 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     </section>
   <div class="notice">
     <p><b>준비된 단원부터 받을 수 있습니다.</b> <span id="sale-note">준비 안 된 단원은 고를 때 「준비 중입니다」로 보이고, 그 단원은 결제가 열리지 않습니다.</span></p>
+    <p><b>이번 기말 단원 구매</b> · 책 전체 묶음은 판매하지 않습니다. 한 번에 최대 3단원까지 담을 수 있습니다. 세 단원 합계가 59,000원을 넘으면 59,000원이 결제 금액입니다.</p>
+    <p>여러 단원을 한 번에 결제한 주문은 주문 단위 전액 환불만 가능합니다.</p>
     <p>표시한 값은 부가세 포함입니다. 정기결제(자동 결제)는 없고, 주문마다 한 번 결제합니다. <a href="/refund/">환불·청약철회 안내</a> · <a href="/minor/">미성년자 구매 안내</a></p>
   </div>
+<template id="finals-order-preview">
+    <section class="preparation" id="finals-order-summary" aria-labelledby="finals-order-title">
+      <h2 id="finals-order-title">기말 단원 예상 결제 금액</h2>
+      <p data-finals-status aria-live="polite"></p>
+      <dl><dt>선택 단원 합계</dt><dd data-finals-subtotal></dd>
+        <dt>결제 한도 조정</dt><dd data-finals-adjustment></dd>
+        <dt>예상 결제 금액</dt><dd data-finals-total></dd></dl>
+    </section>
+</template>
 </main>
 <footer class="sitefoot">
 <div class="biz" id="bizinfo">
@@ -276,7 +288,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   function freeSets(b){
     if(!b.freeSet||!CFG||typeof CFG.api!=="string"||!CFG.api)return [];
     var now=Date.now();
-    return b.freeSet.filter(function(x){return x.files.every(function(f){return !!f.from&&now>=Date.parse(f.from);});});
+    return b.freeSet.filter(function(x){return x.files.length>0&&x.files.every(function(f){return !!f.from&&now>=Date.parse(f.from);});});
   }
   function freeSum(fss,k){var n=0;for(var i=0;i<fss.length;i++){if(!fss[i][k])return 0;n+=fss[i][k];}return n;}
   function freeBtn(x,f,many,msg){
@@ -408,13 +420,13 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   function vPath(q,s,b){
     var f=document.createDocumentFragment(),base={who:q.who,s:q.s,b:q.b};
     add(f,backLink({who:q.who,s:q.s}),kick(3,q,s,b),h1(COPY.path[who(q)],"단원은 상세선택 화면에서 고릅니다."));
-    var free=comp("C0"),ul=el("ul","opts three");
+    var free=comp("C0"),ul=el("ul","opts three"),freeOpen=freeSets(b).length>0;
     function card(p,title,desc,tag,price,go){
       var li=el("li"),a=link("opt",Object.assign({p:p},base));
-      add(a,optTop(title,tag),el("small",null,desc),el("span","pr",price),el("span","go",go));
+      add(a,optTop(title,tag),el("small",null,desc),(price?el("span","pr",price):null),el("span","go",go));
       add(li,a);return li;
     }
-    add(ul,card("free",free.name,free.desc+" "+FREE_RULE,tag(freeSets(b).length>0),"0원","받을 내용 보기 →"));
+    add(ul,card("free",free.name,free.desc+" "+FREE_RULE,tag(freeOpen),freeOpen?"0원":null,"받을 내용 보기 →"));
     add(ul,card("basic","기본형","미리 만든 구성에서 고릅니다.",tag(pathOpen("basic",s)),pathPriced("basic",s)?"구성마다 값이 다릅니다":"준비 중입니다","구성 보기 →"));
     add(ul,card("detail","상세선택","단원과 구성을 직접 고릅니다.",tag(pathOpen("basic",s)||pathOpen("detail",s)),(pathPriced("basic",s)||pathPriced("detail",s))?"구성마다 값이 다릅니다":"준비 중입니다","직접 고르기 →"));
     add(f,ul,proNote(q));
@@ -565,7 +577,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   }
   /* ⑥ 받을 내용 확인 — 약관 제11조 제8항의 「받을 내용을 확인하는 화면」 · 파일 수 칸 포함 */
   function row(dl,k,v,small,cls){
-    var d=el("div");add(d,el("dt",null,k));var x=el("dd",cls||null);x.appendChild(document.createTextNode(v));if(small)add(x,el("small",null,small));add(d,x);dl.appendChild(d);
+    var d=el("div");add(d,el("dt",null,k));var x=el("dd",cls||null);x.appendChild(document.createTextNode(v));if(small)add(x,el("small",null,small));add(d,x);dl.appendChild(d);return d;
   }
   function pickFmt0(c,u){return c.path!=="free"&&c.make==="ready"&&!!u;}
   function vConfirm(q,s,b,c){
@@ -593,15 +605,15 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     var fu=pickFmt?fileUnits(u,fm):0,fset=pickFmt?setOf(u,fm):null,fstart=pickFmt?startText(fu,fset&&fset.kind):"",fnote=pickFmt?fmtName(fm)+(fset?(fset.kind==="merged"?" 합본":" 유형별 파일 묶음"):" 기준"):null;
     if(fss.length)row(dl,"파일 수",fss.reduce(function(n,x){return n+x.files.length;},0)+"개","형식마다 따로 받습니다");else if(fu)row(dl,"파일 수",fu+"개",fnote);
     if(pickFmt)row(dl,"파일 형식",fmtName(fm)+" 파일만",notIn(fm)+" · 아래에서 바꿉니다");
-    else if(free)row(dl,"파일 형식","PDF · 한글(HWPX) 모두 0원");
+    else if(fss.length)row(dl,"파일 형식","PDF · 한글(HWPX) 모두 0원");
     else if(c.make==="ready")row(dl,"파일 형식","PDF 또는 한글(HWPX) 가운데 한 형식");
     if(free)row(dl,"받는 조건","로그인한 회원",FREE_RULE);
     if(fss.length)row(dl,"제공",authed()?"바로 내려받기":"로그인 뒤 바로 내려받기");else if(c.make==="ready"){if(u&&u.saleFrom)row(dl,"제공","결제 뒤 바로 내려받기");}
     else row(dl,"제공","주문 뒤 만들어 제공 · 준비 중입니다",null,"blank");
-    if(fstart)row(dl,"제공 시작","받으면 제공이 시작됩니다",fstart);
+    var singlePolicy=fstart?row(dl,"제공 시작","받으면 제공이 시작됩니다",fstart):null;
     if(u)row(dl,"상품 번호",u.sku);else if(fss.length)row(dl,"상품 번호",fss.map(function(x){return x.sku;}).join(" · "));
     var d=el("div");add(d,el("dt",null,"값"));var dd=el("dd");
-    if(free)add(dd,el("span","won","0원"));
+    if(fss.length)add(dd,el("span","won","0원"));
     else if(pickFmt&&priceAt(u,fm)){add(dd,el("span","won",won(priceAt(u,fm))));add(dd,el("small",null,fmtName(fm)+" · 부가세 포함"));}
     else{dd.className="blank";dd.textContent="준비 중입니다";}
     add(d,dd);dl.appendChild(d);
@@ -626,7 +638,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
       if(authed()){freeOut=false;fss.forEach(function(x){x.files.forEach(function(ff){add(act,freeBtn(x,ff,fss.length>1,fm0));});});}
       else{add(act,loginBtn());fm0.textContent=(freeOut?"로그인이 풀렸어요. 다시 로그인하면 바로 받을 수 있습니다.":"무료 세트는 "+FREE_RULE)+" 로그인하면 이 화면으로 돌아옵니다.";add(fm0,el("br"),signupLink());}
     }
-    else if(ok){var buy=el("a","btn buy","구매하기");buy.href="/checkout/?sku="+encodeURIComponent(u.sku+"."+fm);add(act,buy);}
+    else if(ok){var buy=el("a","btn buy","구매하기");buy.href="/checkout/?sku="+encodeURIComponent(u.sku+"."+fm);if(c.sku==="unit")add(f,multiUnitPicker(s,u,fm,buy,singlePolicy));add(act,buy);}
     else{var dis=el("button","btn dis","준비 중입니다");dis.type="button";dis.disabled=true;add(act,dis);} /* 형 결정 7(11-11): 판매일을 공지하지 않는다 — 값 · 파일 · 판매일 · 맛보기 중 하나라도 비었거나 판매 시각 전이면 「준비 중입니다」 */
     var al=el("a","btn ghost","알림 받기");al.href="mailto:admin@deltaskill.co.kr?subject="+encodeURIComponent("내신 파일 알림 "+s.code+" "+c.id+(u?" "+u.sku:""));add(act,al);
     add(f,act);
@@ -638,6 +650,43 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     add(f,fine,proNote(q));
     if(ok&&CFG&&CFG.PAY_MODE==="test"){var nt=document.getElementById("sale-note");if(nt)nt.textContent="지금은 결제 연동 점검 기간입니다. 「구매하기」로 열리는 결제는 테스트 결제이며 실제로 청구되지 않고 자료도 제공되지 않습니다.";}
     return f;
+  }
+  function multiUnitPicker(subject, current, format, buy, singlePolicy){
+    var order=window.DeltaFinalsOrder,now=Date.now();
+    if(!order||!order.unitSku(current.sku+"."+format)||!order.unitPrice(current,format,now))return null;
+    var available=subject.units.filter(function(unit){
+      return unit!==current&&order.unitSku(unit.sku+"."+format)&&order.unitPrice(unit,format,now);
+    });
+    if(!available.length)return null;
+
+    var section=el("fieldset","sec"),choices=[],refund=el("p","fine",order.FULL_REFUND);
+    var panel=document.getElementById("finals-order-preview").content.firstElementChild.cloneNode(true);
+    add(section,el("legend",null,"같은 형식으로 다른 단원 추가"));
+    var list=el("ul","picks");
+    available.forEach(function(unit){
+      var input=el("input");input.type="checkbox";
+      var label=el("label","pick"),price=order.unitPrice(unit,format,now);
+      add(label,input,el("span","t",unit.unit+" · "+won(price)));
+      add(list,add(el("li"),label));
+      choices.push({unit:unit,input:input,price:price});
+    });
+    function update(){
+      var selected=choices.filter(function(choice){return choice.input.checked;});
+      choices.forEach(function(choice){choice.input.disabled=!choice.input.checked&&selected.length>=order.MAX_UNITS-1;});
+      var items=selected.length?[{unit:current,price:order.unitPrice(current,format,now)}].concat(selected):[];
+      var result=order.render(panel,items.map(function(row){
+        return {kind:"unit",eligible:true,unitId:row.unit.sku,price:row.price};
+      }));
+      refund.hidden=!selected.length;
+      if(singlePolicy)singlePolicy.hidden=!!selected.length;
+      buy.textContent=selected.length?"선택한 단원 주문하기":"구매하기";
+      if(result.error)buy.removeAttribute("href");
+      else buy.href=order.checkoutUrl([current].concat(selected.map(function(row){return row.unit;})).map(function(unit){return unit.sku+"."+format;}));
+    }
+    list.addEventListener("change",update);
+    add(section,list,panel,refund);
+    update();
+    return section;
   }
   /* ── 그리기 ── */
   var TITLES={subject:"과목 고르기",book:"부교재 고르기",path:"구성 고르기",basic:"기본형",detail:"상세선택",confirm:"받을 내용 확인"};
