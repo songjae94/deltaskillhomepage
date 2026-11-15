@@ -3,7 +3,6 @@
    DSAuth.get()/has()/phone() · set(token, phone) · clear() · logout() · requireLogin(next) · loginUrl(next, mode) · header() */
 (function () {
   var API = "https://cvlrphtupjmaefahodgz.supabase.co/functions/v1/api";
-  try { if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname) && localStorage.getItem("ds_api_dev")) API = localStorage.getItem("ds_api_dev"); } catch (e) {}
   function safeNext(n) { n = String(n || ""); return /^\/[A-Za-z0-9_\-./?#=&%]*$/.test(n) && n.indexOf("//") !== 0 ? n : "/my/"; }
   var A = {
     api: API,

@@ -1,0 +1,38 @@
+/* The introduction borrows its forest and blue tones from the lesson spreads. */
+#journey {
+  --hero-base: #123c34;
+  --hero-light: #29564a;
+  --hero-shade: #102f2c;
+  --hero-white: #fffdf5;
+  --hero-accent: #c4eccd;
+  --hero-body: #dde9e1;
+  --hero-line: #729589;
+  background: linear-gradient(115deg, var(--hero-base) 10%, var(--hero-light) 72%, var(--hero-shade));
+  color: var(--hero-white);
+}
+html[data-palette=ink] #journey {
+  --hero-base: #1c2f56;
+  --hero-light: #344e7a;
+  --hero-shade: #182641;
+  --hero-accent: #c5dbff;
+  --hero-body: #e1e8f6;
+  --hero-line: #849ac1;
+}
+#journey .stage { background: transparent; color: var(--hero-white); }
+#journey .intro #title em { color: var(--hero-accent); }
+#journey .brandline, #journey .brandline span, #journey .footline { color: var(--hero-body); }
+#journey .brandline i { background: var(--hero-accent); }
+#journey #desc { color: var(--hero-body); }
+#journey .footline i { background: var(--hero-line); }
+#journey .roles { background: var(--hero-shade); border-color: var(--hero-line); }
+#journey .roles button, #journey .exams button { color: var(--hero-body); }
+#journey .roles button:hover, #journey .exams button:hover { background: var(--hero-light); color: white; }
+#journey .roles button[aria-pressed=true], #journey .exams button[aria-pressed=true] {
+  background: var(--hero-accent); color: var(--hero-shade);
+}
+#journey #primary { background: var(--hero-accent); color: var(--hero-shade); }
+#journey #secondary { background: transparent; color: var(--hero-white); box-shadow: inset 0 0 0 1px var(--hero-line); }
+#journey #primary:hover { background: var(--hero-white); }
+#journey #secondary:hover { background: var(--hero-light); }
+#journey .season-jump, #journey #extra { color: var(--hero-white); }
+#journey :is(a,button):focus-visible { outline-color: var(--hero-accent); }

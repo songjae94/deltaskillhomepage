@@ -156,6 +156,7 @@ html[data-theme="dark"] .btn.go2{background:var(--deepSoft);color:var(--ink);box
 footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 @media(max-width:640px){.hd-r a,.tg,.kick,.kick .n,.opt small,.opt .go,.tag,.pr,.mj,.pick .t small,.cnt,.conf dt,.conf dd small,.fine,.notice,.biz p,.biz a{font-size:14px}}   /* 1109 C3(점검표_개편판_1108): 640 아래 보조·가격·판매 안내 글 14px 이상 · 머리 링크 13→14 */
 </style>
+<link rel="stylesheet" href="/naesin/preparation.css"><script defer src="/naesin/preparation.js"></script>
 </head>
 <body>
 <header class="hdr"><div class="wrap">
@@ -165,6 +166,11 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 <main class="wrap">
   <div id="app" aria-live="polite"><p class="lede">상품을 불러오는 중…</p></div>
   <noscript><p class="lede">이 화면은 자바스크립트를 켜야 고를 수 있습니다.</p></noscript>
+  <section id="final-handouts" class="preparation" aria-labelledby="final-handouts-title">
+      <h2 id="final-handouts-title">기말고사 대비 준비 중인 자료</h2>
+      <ul aria-label="준비 중인 자료 목록"></ul>
+      <p data-preparation-status aria-live="polite">준비 목록을 불러오는 중입니다.</p>
+    </section>
   <div class="notice">
     <p><b>준비된 단원부터 받을 수 있습니다.</b> <span id="sale-note">준비 안 된 단원은 고를 때 「준비 중입니다」로 보이고, 그 단원은 결제가 열리지 않습니다.</span></p>
     <p>표시한 값은 부가세 포함입니다. 정기결제(자동 결제)는 없고, 주문마다 한 번 결제합니다. <a href="/refund/">환불·청약철회 안내</a> · <a href="/minor/">미성년자 구매 안내</a></p>

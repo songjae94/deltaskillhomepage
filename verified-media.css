@@ -1,0 +1,2 @@
+#level-practice .chapterGrid, #prediction .chapterGrid, #wrong-note .chapterGrid, #instructor .chapterGrid { grid-template-columns: 1fr; }
+.lesson-proof img { max-width:100%; height:auto; display:block; margin:0 auto; }

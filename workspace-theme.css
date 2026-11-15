@@ -1,0 +1,18 @@
+/* Shared by the actual study and workbook pages, including homepage embeds. */
+:root,html[data-palette=ink]{--ink:#172f45;--muted:#627486;--line:#dce4eb;--soft:#f1f5f8;--lime:#dfedfa;--deep:#0966b4;--white:#fff;color:#172f45;background:#f5f7f9}
+html body,html[data-palette=ink] body{background:#f5f7f9;color:#172f45}
+html .action,html[data-palette=ink] .action,html #print,html[data-palette=ink] #print,html .toggle button[aria-pressed=true],html[data-palette=ink] .toggle button[aria-pressed=true]{background:#0966b4;color:white}
+html .box,html aside{background:#fff;border-color:#dce4eb}
+html .toggle{background:#edf2f6}html .label{color:#0966b4}
+html .brand,html header{border-color:#dce4eb}
+html .tablet-bar{background:#fff;color:#172f45;border-color:#dce4eb}
+html .tablet-bar a[aria-current=page]{background:#e5f0fb;color:#075392}
+html .sheet{background:#fff}
+@media print{html body,html[data-palette=ink] body{background:white}}
+html[data-palette] .tablet-bar,html.tablet .tablet-bar{background:#fff!important;border-color:#dce4eb!important;color:#172f45!important}
+html[data-palette] #answer-form>.action,html.tablet #answer-form>.action{background:#0966b4!important;border-color:#0966b4!important;color:#fff!important}
+html .levelPicker,html .question .condition,html .question .equation{background:#f3f6f8!important;border-color:#dce4eb!important}
+html .levelPicker a[aria-current=page]{background:#0966b4!important;color:#fff!important}
+html.tablet .tablet-bar nav [aria-current=page]{background:#e5f0fb!important;color:#075392!important}
+html .limitCases{background:#f3f6f8;border-color:#b9cddd}
+html[data-palette] .panel,html .panel,html .unit,html .round-preview{background:#fff;border-color:#dce4eb}

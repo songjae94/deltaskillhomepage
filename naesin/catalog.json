@@ -599,13 +599,13 @@
          "id": "NS-CM2-07-F00.pdf",
          "fmt": "pdf",
          "title": "공통수학2 07 유리함수와 무리함수 무료 세트 (PDF)",
-         "from": "2026-11-14T09:00+09:00"
+         "from": null
         },
         {
          "id": "NS-CM2-07-F00.hwpx",
          "fmt": "hwpx",
          "title": "공통수학2 07 유리함수와 무리함수 무료 세트 (한글)",
-         "from": "2026-11-14T09:00+09:00"
+         "from": null
         }
        ]
       }
@@ -761,15 +761,12 @@
      "textbook": "B1",
      "count": 270,
      "pages": 169,
-     "price": {
-      "pdf": 4000,
-      "hwpx": 8000
-     },
+     "price": null,
      "taxFreeAmount": {
       "pdf": 0,
       "hwpx": 0
      },
-     "saleFrom": "2026-11-14T09:00+09:00",
+     "saleFrom": null,
      "saleTo": null,
      "sample": "NS-CM2-07-F00",
      "fileSets": {
@@ -993,15 +990,12 @@
        "textbook": "B1",
        "count": 62,
        "pages": 27,
-       "price": {
-        "pdf": 1550,
-        "hwpx": 3100
-       },
+       "price": null,
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": "2026-11-14T09:00+09:00",
+       "saleFrom": null,
        "saleTo": null,
        "sample": "NS-CM2-07-F00",
        "files": [
@@ -1028,15 +1022,12 @@
        "textbook": "B1",
        "count": 10,
        "pages": 7,
-       "price": {
-        "pdf": 500,
-        "hwpx": 1000
-       },
+       "price": null,
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": "2026-11-14T09:00+09:00",
+       "saleFrom": null,
        "saleTo": null,
        "sample": "NS-CM2-07-F00",
        "files": [
@@ -1063,15 +1054,12 @@
        "textbook": "B1",
        "count": 11,
        "pages": 7,
-       "price": {
-        "pdf": 500,
-        "hwpx": 1000
-       },
+       "price": null,
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": "2026-11-14T09:00+09:00",
+       "saleFrom": null,
        "saleTo": null,
        "sample": "NS-CM2-07-F00",
        "files": [
@@ -1099,15 +1087,12 @@
        "textbook": "B1",
        "count": 6,
        "pages": 4,
-       "price": {
-        "pdf": 500,
-        "hwpx": 1000
-       },
+       "price": null,
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": "2026-11-14T09:00+09:00",
+       "saleFrom": null,
        "saleTo": null,
        "sample": "NS-CM2-07-F00",
        "files": [
@@ -1135,15 +1120,12 @@
        "textbook": "B1",
        "count": 6,
        "pages": 4,
-       "price": {
-        "pdf": 500,
-        "hwpx": 1000
-       },
+       "price": null,
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": "2026-11-14T09:00+09:00",
+       "saleFrom": null,
        "saleTo": null,
        "sample": "NS-CM2-07-F00",
        "files": [
@@ -1171,15 +1153,12 @@
        "textbook": "B1",
        "count": 6,
        "pages": 4,
-       "price": {
-        "pdf": 500,
-        "hwpx": 1000
-       },
+       "price": null,
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": "2026-11-14T09:00+09:00",
+       "saleFrom": null,
        "saleTo": null,
        "sample": "NS-CM2-07-F00",
        "files": [
@@ -1207,15 +1186,12 @@
        "textbook": "B1",
        "count": 6,
        "pages": 4,
-       "price": {
-        "pdf": 500,
-        "hwpx": 1000
-       },
+       "price": null,
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": "2026-11-14T09:00+09:00",
+       "saleFrom": null,
        "saleTo": null,
        "sample": "NS-CM2-07-F00",
        "files": [
@@ -1242,15 +1218,12 @@
        "textbook": "B1",
        "count": 6,
        "pages": 4,
-       "price": {
-        "pdf": 500,
-        "hwpx": 1000
-       },
+       "price": null,
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": "2026-11-14T09:00+09:00",
+       "saleFrom": null,
        "saleTo": null,
        "sample": "NS-CM2-07-F00",
        "files": [
@@ -1278,15 +1251,12 @@
        "textbook": "B1",
        "count": 6,
        "pages": 5,
-       "price": {
-        "pdf": 500,
-        "hwpx": 1000
-       },
+       "price": null,
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": "2026-11-14T09:00+09:00",
+       "saleFrom": null,
        "saleTo": null,
        "sample": "NS-CM2-07-F00",
        "files": [
@@ -1313,15 +1283,12 @@
        "textbook": "B1",
        "count": 12,
        "pages": 7,
-       "price": {
-        "pdf": 500,
-        "hwpx": 1000
-       },
+       "price": null,
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": "2026-11-14T09:00+09:00",
+       "saleFrom": null,
        "saleTo": null,
        "sample": "NS-CM2-07-F00",
        "files": [
@@ -1348,15 +1315,12 @@
        "textbook": "B1",
        "count": 6,
        "pages": 4,
-       "price": {
-        "pdf": 500,
-        "hwpx": 1000
-       },
+       "price": null,
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": "2026-11-14T09:00+09:00",
+       "saleFrom": null,
        "saleTo": null,
        "sample": "NS-CM2-07-F00",
        "files": [
@@ -1383,15 +1347,12 @@
        "textbook": "B1",
        "count": 3,
        "pages": 4,
-       "price": {
-        "pdf": 500,
-        "hwpx": 1000
-       },
+       "price": null,
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": "2026-11-14T09:00+09:00",
+       "saleFrom": null,
        "saleTo": null,
        "sample": "NS-CM2-07-F00",
        "files": [
@@ -1418,15 +1379,12 @@
        "textbook": "B1",
        "count": 6,
        "pages": 4,
-       "price": {
-        "pdf": 500,
-        "hwpx": 1000
-       },
+       "price": null,
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": "2026-11-14T09:00+09:00",
+       "saleFrom": null,
        "saleTo": null,
        "sample": "NS-CM2-07-F00",
        "files": [
@@ -1453,15 +1411,12 @@
        "textbook": "B1",
        "count": 6,
        "pages": 4,
-       "price": {
-        "pdf": 500,
-        "hwpx": 1000
-       },
+       "price": null,
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": "2026-11-14T09:00+09:00",
+       "saleFrom": null,
        "saleTo": null,
        "sample": "NS-CM2-07-F00",
        "files": [
@@ -1488,15 +1443,12 @@
        "textbook": "B1",
        "count": 6,
        "pages": 4,
-       "price": {
-        "pdf": 500,
-        "hwpx": 1000
-       },
+       "price": null,
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": "2026-11-14T09:00+09:00",
+       "saleFrom": null,
        "saleTo": null,
        "sample": "NS-CM2-07-F00",
        "files": [
@@ -1524,15 +1476,12 @@
        "textbook": "B1",
        "count": 6,
        "pages": 4,
-       "price": {
-        "pdf": 500,
-        "hwpx": 1000
-       },
+       "price": null,
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": "2026-11-14T09:00+09:00",
+       "saleFrom": null,
        "saleTo": null,
        "sample": "NS-CM2-07-F00",
        "files": [
@@ -1559,15 +1508,12 @@
        "textbook": "B1",
        "count": 8,
        "pages": 4,
-       "price": {
-        "pdf": 500,
-        "hwpx": 1000
-       },
+       "price": null,
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": "2026-11-14T09:00+09:00",
+       "saleFrom": null,
        "saleTo": null,
        "sample": "NS-CM2-07-F00",
        "files": [
@@ -1594,15 +1540,12 @@
        "textbook": "B1",
        "count": 6,
        "pages": 4,
-       "price": {
-        "pdf": 500,
-        "hwpx": 1000
-       },
+       "price": null,
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": "2026-11-14T09:00+09:00",
+       "saleFrom": null,
        "saleTo": null,
        "sample": "NS-CM2-07-F00",
        "files": [
@@ -1629,15 +1572,12 @@
        "textbook": "B1",
        "count": 12,
        "pages": 7,
-       "price": {
-        "pdf": 500,
-        "hwpx": 1000
-       },
+       "price": null,
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": "2026-11-14T09:00+09:00",
+       "saleFrom": null,
        "saleTo": null,
        "sample": "NS-CM2-07-F00",
        "files": [
@@ -1664,15 +1604,12 @@
        "textbook": "B1",
        "count": 6,
        "pages": 4,
-       "price": {
-        "pdf": 500,
-        "hwpx": 1000
-       },
+       "price": null,
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": "2026-11-14T09:00+09:00",
+       "saleFrom": null,
        "saleTo": null,
        "sample": "NS-CM2-07-F00",
        "files": [
@@ -1699,15 +1636,12 @@
        "textbook": "B1",
        "count": 6,
        "pages": 4,
-       "price": {
-        "pdf": 500,
-        "hwpx": 1000
-       },
+       "price": null,
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": "2026-11-14T09:00+09:00",
+       "saleFrom": null,
        "saleTo": null,
        "sample": "NS-CM2-07-F00",
        "files": [
@@ -1734,15 +1668,12 @@
        "textbook": "B1",
        "count": 6,
        "pages": 4,
-       "price": {
-        "pdf": 500,
-        "hwpx": 1000
-       },
+       "price": null,
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": "2026-11-14T09:00+09:00",
+       "saleFrom": null,
        "saleTo": null,
        "sample": "NS-CM2-07-F00",
        "files": [
@@ -1769,15 +1700,12 @@
        "textbook": "B1",
        "count": 6,
        "pages": 4,
-       "price": {
-        "pdf": 500,
-        "hwpx": 1000
-       },
+       "price": null,
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": "2026-11-14T09:00+09:00",
+       "saleFrom": null,
        "saleTo": null,
        "sample": "NS-CM2-07-F00",
        "files": [
@@ -1805,15 +1733,12 @@
        "textbook": "B1",
        "count": 12,
        "pages": 6,
-       "price": {
-        "pdf": 500,
-        "hwpx": 1000
-       },
+       "price": null,
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": "2026-11-14T09:00+09:00",
+       "saleFrom": null,
        "saleTo": null,
        "sample": "NS-CM2-07-F00",
        "files": [
@@ -1840,15 +1765,12 @@
        "textbook": "B1",
        "count": 3,
        "pages": 5,
-       "price": {
-        "pdf": 500,
-        "hwpx": 1000
-       },
+       "price": null,
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": "2026-11-14T09:00+09:00",
+       "saleFrom": null,
        "saleTo": null,
        "sample": "NS-CM2-07-F00",
        "files": [
@@ -1875,15 +1797,12 @@
        "textbook": "B1",
        "count": 5,
        "pages": 4,
-       "price": {
-        "pdf": 500,
-        "hwpx": 1000
-       },
+       "price": null,
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": "2026-11-14T09:00+09:00",
+       "saleFrom": null,
        "saleTo": null,
        "sample": "NS-CM2-07-F00",
        "files": [
@@ -1910,15 +1829,12 @@
        "textbook": "B1",
        "count": 6,
        "pages": 3,
-       "price": {
-        "pdf": 500,
-        "hwpx": 1000
-       },
+       "price": null,
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": "2026-11-14T09:00+09:00",
+       "saleFrom": null,
        "saleTo": null,
        "sample": "NS-CM2-07-F00",
        "files": [
@@ -1946,15 +1862,12 @@
        "textbook": "B1",
        "count": 6,
        "pages": 5,
-       "price": {
-        "pdf": 500,
-        "hwpx": 1000
-       },
+       "price": null,
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": "2026-11-14T09:00+09:00",
+       "saleFrom": null,
        "saleTo": null,
        "sample": "NS-CM2-07-F00",
        "files": [
@@ -1981,15 +1894,12 @@
        "textbook": "B1",
        "count": 6,
        "pages": 3,
-       "price": {
-        "pdf": 500,
-        "hwpx": 1000
-       },
+       "price": null,
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": "2026-11-14T09:00+09:00",
+       "saleFrom": null,
        "saleTo": null,
        "sample": "NS-CM2-07-F00",
        "files": [
@@ -2016,15 +1926,12 @@
        "textbook": "B1",
        "count": 6,
        "pages": 4,
-       "price": {
-        "pdf": 500,
-        "hwpx": 1000
-       },
+       "price": null,
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": "2026-11-14T09:00+09:00",
+       "saleFrom": null,
        "saleTo": null,
        "sample": "NS-CM2-07-F00",
        "files": [
@@ -2051,15 +1958,12 @@
        "textbook": "B1",
        "count": 6,
        "pages": 4,
-       "price": {
-        "pdf": 500,
-        "hwpx": 1000
-       },
+       "price": null,
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": "2026-11-14T09:00+09:00",
+       "saleFrom": null,
        "saleTo": null,
        "sample": "NS-CM2-07-F00",
        "files": [
@@ -2086,15 +1990,12 @@
        "textbook": "B1",
        "count": 6,
        "pages": 4,
-       "price": {
-        "pdf": 500,
-        "hwpx": 1000
-       },
+       "price": null,
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": "2026-11-14T09:00+09:00",
+       "saleFrom": null,
        "saleTo": null,
        "sample": "NS-CM2-07-F00",
        "files": [
@@ -2123,15 +2024,12 @@
        "textbook": "B1",
        "count": 80,
        "pages": 31,
-       "price": {
-        "pdf": 2000,
-        "hwpx": 4000
-       },
+       "price": null,
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": "2026-11-14T09:00+09:00",
+       "saleFrom": null,
        "saleTo": null,
        "sample": "NS-CM2-07-F00",
        "files": [
@@ -2158,15 +2056,12 @@
        "textbook": "B1",
        "count": 20,
        "pages": 10,
-       "price": {
-        "pdf": 500,
-        "hwpx": 1000
-       },
+       "price": null,
        "taxFreeAmount": {
         "pdf": 0,
         "hwpx": 0
        },
-       "saleFrom": "2026-11-14T09:00+09:00",
+       "saleFrom": null,
        "saleTo": null,
        "sample": "NS-CM2-07-F00",
        "files": [

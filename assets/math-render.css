@@ -1,0 +1,9 @@
+/* Shared mathematical notation; the surrounding page controls readable scale. */
+math{font-family:"STIX Two Math","Cambria Math","Latin Modern Math",math;font-size:1em;line-height:normal;math-style:normal}
+.question,.raceQuestion,.worked,.ai-guidance,.question-body{line-height:2;overflow-wrap:break-word}
+.question p,.raceQuestion p,.worked p{margin:.7em 0}
+.question math,.raceQuestion math,.worked math,.ai-guidance math{vertical-align:baseline;max-width:100%}
+.question math:has(msubsup),.question math:has(mfrac),.worked math:has(mfrac){margin-block:.18em}
+.limitCases mtable{row-gap:.55em}
+.choices,.raceChoices{row-gap:16px}
+@media(max-width:600px){.question,.raceQuestion{font-size:18px}.question p,.raceQuestion p{margin:.8em 0}.question math,.raceQuestion math{font-size:1em}}

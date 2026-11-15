@@ -150,7 +150,6 @@
 <script>
 (function () {
   var API = "https://cvlrphtupjmaefahodgz.supabase.co/functions/v1/hq-board";
-  try { if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname) && localStorage.getItem("ds_hq_api")) API = localStorage.getItem("ds_hq_api"); } catch (e) {}
   var FIELDS = ["id", "작업자", "날짜", "할일", "상태", "표시시각", "근거"];
   var GLYPH = { "": "▫", "끝": "✅", "막힘": "🔴", "검증": "☑" }, CLS = { "끝": "s-done", "막힘": "s-blk", "검증": "s-chk" };
   var PTR_MSG = { fallback_missing: "가리킴 파일(상황판_현재.txt)이 없어 옛 판을 보입니다", fallback_empty: "가리킴 파일이 비어 옛 판을 보입니다", fallback_badname: "가리킴 파일의 이름 꼴이 틀려 옛 판을 보입니다", fallback_error: "가리킴 파일을 못 읽어 옛 판을 보입니다" };

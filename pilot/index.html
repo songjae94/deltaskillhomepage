@@ -161,7 +161,6 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 /* ===== 서버 연결 설정: Supabase 프로젝트 만들면 아래 두 값만 채우면 실제 서버 저장됨 (비우면 데모=브라우저 저장) ===== */
 const CONFIG={ api:"https://cvlrphtupjmaefahodgz.supabase.co/functions/v1/api" };
 const DOC_VER = { privacy: "2026-11-14", terms: "2026-11-11" };   /* auth/index.html 과 같은 값 · 1107 B2: pilot 가입도 동의 기록에 방침 판을 싣는다(이 화면엔 약관 동의가 없어 terms 는 싣지 않는다) */
-try{if(/^(localhost|127\.0\.0\.1)$/.test(location.hostname)&&localStorage.getItem("ds_api_dev"))CONFIG.api=localStorage.getItem("ds_api_dev");}catch(_){}   /* 로컬 시험에서만 가짜 서버 — auth.js 와 같은 길 */
 const TK={get:()=>localStorage.getItem("ds_tk")||"",set:t=>localStorage.setItem("ds_tk",t),has:()=>!!localStorage.getItem("ds_tk"),clear:()=>{localStorage.removeItem("ds_tk");localStorage.removeItem("ds_tk_ph");}};
 async function api(path,opt){opt=opt||{};const method=opt.method||"GET";const auth=opt.auth!==false;const h={"Content-Type":"application/json"};if(auth){const t=TK.get();if(!t)throw new Error("no_token");h["Authorization"]="Bearer "+t;}
  /* 서버가 응답하지 않을 때 '저장 중...'에서 멈추지 않도록 타임아웃 */

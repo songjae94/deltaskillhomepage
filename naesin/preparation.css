@@ -1,0 +1,6 @@
+.preparation { margin: 24px 0; padding: clamp(16px, 4vw, 28px); border: 1px solid var(--line, #b6c6cf); border-radius: 12px; }
+.preparation h2 { margin: 0 0 10px; font-size: clamp(1.18rem, 4vw, 1.5rem); }
+.preparation p { margin: 10px 0 0; }
+.preparation ul { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(230px,100%),1fr)); gap: 0 20px; list-style: none; margin: 0; padding: 0; }
+.preparation li { display: grid; gap: 4px; padding: 12px 0; border-bottom: 1px solid var(--line, #b6c6cf); overflow-wrap: anywhere; }
+.preparation li span { font-size: .875rem; }

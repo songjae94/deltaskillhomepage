@@ -1,0 +1,26 @@
+#season-film{--season-ink:#edf1e5;--season-accent:#efd5a4;background:#192e29;color:var(--season-ink);scroll-margin-top:76px}
+#season-film[data-month=jan]{--season-accent:#bad6f2;background:#182c46}
+#season-film[data-month=mar]{--season-accent:#d0ebac;background:#24362a}
+.season-inner{max-width:1380px;margin:auto;padding:clamp(52px,7vw,100px) 5%;display:grid;grid-template-columns:minmax(205px,.66fr) minmax(0,1.34fr);gap:5%;align-items:center}
+.season-copy,.season-player{min-width:0}
+.season-copy .season-label{color:var(--season-accent);font-size:.875rem;font-weight:700}
+.season-copy h2{font-size:clamp(42px,4.8vw,76px);line-height:1.09;letter-spacing:-.06em;margin:20px 0 15px}
+#season-caption{line-height:1.65;color:#dde4df;max-width:24em;word-break:keep-all}
+.season-copy a{display:inline-flex;gap:.45em;align-items:center;min-height:42px;margin-top:14px;border-bottom:1px solid var(--season-accent);color:var(--season-accent);font-weight:650}
+.season-photo{position:relative;isolation:isolate;aspect-ratio:16/9;background:#10211b;border-radius:12px;overflow:hidden}
+.season-photo video{display:block;width:100%;height:100%;object-fit:contain}
+.season-direct{display:block;position:absolute;inset:0}
+.season-controls{display:flex;align-items:stretch;gap:12px;margin-top:12px}
+.season-months{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));flex:1;min-width:0;gap:5px}
+.season-months button{min-height:44px;background:transparent;color:#e0e5df;border:0;border-top:2px solid #ffffff45;text-align:left;padding:7px 3px;font-size:14px;line-height:1.4}
+.season-months button[aria-pressed=true]{border-color:var(--season-accent);font-weight:740;color:var(--season-accent)}
+#season-play{align-self:start;color:white;background:#12221d;border:1px solid #ffffff70;border-radius:22px;min-height:44px;min-width:74px;padding:6px 12px;white-space:nowrap;font-size:13px}
+#season-film :is(button,a):focus-visible{outline:2px solid var(--season-accent);outline-offset:3px}
+.footline .season-jump{font-size:12px;letter-spacing:0;white-space:nowrap;text-decoration:underline;text-underline-offset:3px;pointer-events:auto}
+@media(max-width:900px){.season-inner{grid-template-columns:minmax(180px,.55fr) minmax(0,1.45fr);gap:4%;padding-inline:4%}.season-months button span{display:block}.season-copy h2{font-size:40px}}
+@media(max-width:700px){
+ .season-inner{grid-template-columns:1fr;padding:43px 5% 38px;gap:20px}
+ .season-copy h2{font-size:clamp(32px,8vw,45px);margin:9px 0}.season-copy h2 br{display:none}
+ .season-copy a{margin-top:5px}.season-photo{border-radius:8px}
+ .season-controls{gap:8px;margin-top:9px}.season-months button{font-size:13px}.season-months button span{font-size:12px}
+}
