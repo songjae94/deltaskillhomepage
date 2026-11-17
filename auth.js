@@ -17,8 +17,8 @@
     requireLogin: function (next) { if (A.has()) return true; location.replace(A.loginUrl(next)); return false; },
     /* 서버 토큰도 지운다(이 기기만). 서버가 안 받아도 로컬은 지운다. */
     logout: function (to) {
-      var t = A.get(); A.clear(); A.forget();
-      var done = function () { location.href = to || "/"; };
+      var t = A.get(); A.clear(); A.forget(); A.header();
+      var done = function () { location.href = safeNext(to || "/"); };
       if (!t) return done();
       try {
         fetch(API + "/logout", { method: "POST", headers: { "Authorization": "Bearer " + t, "Content-Type": "application/json" }, body: "{}", keepalive: true }).catch(function () {}).then(done, done);
@@ -26,15 +26,39 @@
     },
     /* 헤더: #authnav(데스크톱 링크 묶음) · #mauth(모바일 단추) — 옛 인라인 조각과 같은 꼴 */
     header: function () {
-      var n = document.getElementById("authnav"), on = A.has(), back = (n && n.dataset.next) || location.pathname;   /* data-next: 로그인 뒤 갈 곳(메인은 /my/) */
+      var n = document.getElementById("authnav"), on = A.has(), back = (n && n.dataset.next) || (location.pathname + location.search + location.hash);
       document.documentElement.classList.toggle("authed", on);
-      var links = on ? [["/my/", "마이페이지", ""], ["#", "로그아웃", "dsout"]] : [[A.loginUrl(back), "로그인", ""], [A.loginUrl(back, "signup"), "회원가입", ""]];
-      if (n) n.innerHTML = links.map(function (l) { return '<a href="' + l[0] + '"' + (l[2] ? ' class="' + l[2] + '"' : '') + '>' + l[1] + '</a>'; }).join("");
+      function link(target, name, href, signOut) {
+        target.textContent = name;
+        target.href = href;
+        target.classList.toggle("dsout", signOut);
+        target.onclick = signOut ? function (event) {
+          event.preventDefault();
+          A.logout(location.pathname + location.search + location.hash);
+        } : null;
+      }
+      function slot(attribute) {
+        var anchor = n.querySelector("[" + attribute + "]");
+        if (!anchor) {
+          anchor = document.createElement("a");
+          anchor.setAttribute(attribute, "");
+          n.appendChild(anchor);
+        }
+        return anchor;
+      }
+      if (n) {
+        n.classList.add("ds-account-links");
+        link(slot("data-account-primary"), on ? "로그아웃" : "로그인", on ? "#" : A.loginUrl(back), on);
+        link(slot("data-account-secondary"), on ? "마이페이지" : "회원가입", on ? "/my/" : A.loginUrl(back, "signup"), false);
+      }
       var mb = document.getElementById("mauth");
-      if (mb) { if (on) { mb.textContent = "로그아웃"; mb.href = "#"; mb.className = "mauthbtn dsout"; } else { mb.textContent = "로그인"; mb.href = A.loginUrl(location.pathname); mb.className = "mauthbtn"; } }
-      [].forEach.call(document.querySelectorAll(".dsout"), function (o) { o.addEventListener("click", function (e) { e.preventDefault(); A.logout(location.pathname); }); });
+      if (mb) link(mb, on ? "로그아웃" : "로그인", on ? "#" : A.loginUrl(back), on);
     }
   };
   window.DSAuth = A;
-  if (document.getElementById("authnav") || document.getElementById("mauth")) A.header();
+  if (document.getElementById("authnav") || document.getElementById("mauth")) {
+    A.header();
+    window.addEventListener("pageshow", function (event) { if (event.persisted) A.header(); });
+    window.addEventListener("storage", function (event) { if (event.key === "ds_tk" || event.key === null) A.header(); });
+  }
 })();

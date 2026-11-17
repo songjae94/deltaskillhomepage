@@ -1,0 +1,37 @@
+.ds-account-links {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2px 8px;
+}
+.ds-account-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  white-space: nowrap;
+  color: inherit;
+  font-size: 14px;
+  font-weight: 700;
+}
+.ds-account-links a:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+@media (max-width: 500px) {
+  .top .ds-account-links { flex: 0 0 auto; }
+  .hd-r:has(.ds-account-links) { flex-wrap: wrap; justify-content: flex-end; }
+  .hd-r .ds-account-links a { padding-inline: 4px; }
+}
+[data-account-primary],
+[data-account-secondary],
+#mauth {
+  box-sizing: border-box;
+  inline-size: 6em;
+  flex: 0 0 auto;
+  justify-content: center;
+}
+.ds-header-with-account {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 12px;
+}
+.ds-header-with-account > .ds-account-links { margin-inline-start: auto; }
