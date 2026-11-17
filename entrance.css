@@ -96,3 +96,7 @@ body.launching .welcome{transform:translate(-50%,-43%);transition:opacity 300ms}
 .entrance {background:linear-gradient(150deg,#103b5b,#19709b);}
 
 .welcome .browse.pass-entry{margin-inline-start:14px;padding:10px 14px;border:1px solid #edf3ff;border-radius:7px;line-height:22px;color:#123e65;background:#edf3ff;text-shadow:none}
+
+.entrance .ds-account-links,
+.entrance #authnav { display: flex; align-items: center; gap: clamp(12px, 3vw, 28px); }
+.entrance #authnav a { display: inline-flex; align-items: center; min-height: 44px; white-space: nowrap; }

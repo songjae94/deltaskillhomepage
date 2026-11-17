@@ -35,3 +35,6 @@
   gap: 4px 12px;
 }
 .ds-header-with-account > .ds-account-links { margin-inline-start: auto; }
+
+html:not(.authed) .ds-checkout-account { display: none; }
+.ds-checkout-account { margin-inline-start: auto; }

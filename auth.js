@@ -4,6 +4,29 @@
 (function () {
   var API = "https://cvlrphtupjmaefahodgz.supabase.co/functions/v1/api";
   function safeNext(n) { n = String(n || ""); return /^\/[A-Za-z0-9_\-./?#=&%]*$/.test(n) && n.indexOf("//") !== 0 ? n : "/my/"; }
+  var signingOut = false;
+  var logoutEpochKey = "ds_logout_epoch";
+  var tabPrivateKeys = ["ds_order", "delta-pass-test-attempt", "ds_oauth", "ds_l2"];
+  var memberKeys = ["ds_phone", "ds_students", "ds_subs", "ds_subid", "ds_pw_old", "ds_pin_short"];
+  function clearTabData() {
+    try { tabPrivateKeys.forEach(function (key) { sessionStorage.removeItem(key); }); } catch (e) {}
+  }
+  // Only an account-free marker is shared. Each tab owns its own order and OAuth state.
+  function syncTabLogout() {
+    try {
+      var epoch = localStorage.getItem(logoutEpochKey);
+      if (sessionStorage.getItem(logoutEpochKey) === epoch) return;
+      clearTabData();
+      if (epoch) sessionStorage.setItem(logoutEpochKey, epoch);
+      else sessionStorage.removeItem(logoutEpochKey);
+    } catch (e) {}
+  }
+  function recordLogout() {
+    clearTabData();
+    try { localStorage.setItem(logoutEpochKey, String(Date.now()) + "-" + Math.random()); } catch (e) {}
+    syncTabLogout();
+  }
+
   var A = {
     api: API,
     get: function () { try { return localStorage.getItem("ds_tk") || ""; } catch (e) { return ""; } },
@@ -24,17 +47,24 @@
     set: function (t, ph) { try { localStorage.setItem("ds_tk", t); if (ph) { localStorage.setItem("ds_tk_ph", ph); localStorage.setItem("ds_phone", ph); } } catch (e) {} window.dispatchEvent(new Event("ds-auth-change")); },
     clear: function () { try { localStorage.removeItem("ds_tk"); localStorage.removeItem("ds_tk_ph"); sessionStorage.removeItem("ds_l2"); } catch (e) {} window.dispatchEvent(new Event("ds-auth-change")); },   /* ds_l2: 강사 페이지 값 — 로그아웃하면 이 탭에도 남기지 않는다 */
     /* 로그아웃 때만: 이 기기에 남긴 번호 · 이름 · 학원 · 기록표를 지운다(형 1105 — 공용 컴퓨터에서 다음 사람에게 보였다). 토큰이 풀렸을 뿐일 때(clear)는 남겨 다시 로그인을 쉽게 한다. */
-    forget: function () { try { ["ds_phone", "ds_students", "ds_subs", "ds_subid", "ds_pw_old", "ds_pin_short"].forEach(function (k) { localStorage.removeItem(k); }); } catch (e) {} },
+    forget: function () { try { memberKeys.forEach(function (k) { localStorage.removeItem(k); }); } catch (e) {} },
     loginUrl: function (next, mode) { return "/auth/?" + (mode ? "mode=" + mode + "&" : "") + "next=" + encodeURIComponent(safeNext(next || (location.pathname + location.search + location.hash))); },
     requireLogin: function (next) { if (A.has()) return true; location.replace(A.loginUrl(next)); return false; },
     /* 서버 토큰도 지운다(이 기기만). 서버가 안 받아도 로컬은 지운다. */
-    logout: function (to) {
-      var t = A.get(); A.clear(); A.forget(); A.header();
-      var done = function () { location.href = safeNext(to || "/"); };
-      if (!t) return done();
-      try {
-        fetch(API + "/logout", { method: "POST", headers: { "Authorization": "Bearer " + t, "Content-Type": "application/json" }, body: "{}", keepalive: true }).catch(function () {}).then(done, done);
-      } catch (e) { done(); }
+    logout: function () {
+      var t = A.get();
+      signingOut = true;
+      A.forget();
+      recordLogout();
+      A.clear();
+      signingOut = false;
+      A.header();
+      if (t) {
+        try {
+          fetch(API + "/logout", { method: "POST", headers: { "Authorization": "Bearer " + t, "Content-Type": "application/json" }, body: "{}", keepalive: true }).catch(function () {});
+        } catch (e) {}
+      }
+      location.replace("/");
     },
     /* 헤더: #authnav(데스크톱 링크 묶음) · #mauth(모바일 단추) — 옛 인라인 조각과 같은 꼴 */
     header: function () {
@@ -46,7 +76,7 @@
         target.classList.toggle("dsout", signOut);
         target.onclick = signOut ? function (event) {
           event.preventDefault();
-          A.logout(location.pathname + location.search + location.hash);
+          A.logout();
         } : null;
       }
       function slot(attribute) {
@@ -67,7 +97,20 @@
       if (mb) link(mb, on ? "로그아웃" : "로그인", on ? "#" : A.loginUrl(back), on);
     }
   };
+  syncTabLogout();
+  window.addEventListener("pageshow", syncTabLogout);
+  window.addEventListener("storage", function (event) {
+    if (event.storageArea !== localStorage) return;
+    if (event.key === logoutEpochKey || event.key === null) syncTabLogout();
+    if (event.key === "ds_tk" && event.oldValue && !event.newValue) clearTabData();
+  });
   window.DSAuth = A;
+  var leaveOnLogout = document.querySelector("[data-logout-next]");
+  if (leaveOnLogout) {
+    A.onChange(function (token) {
+      if (!token && !signingOut) location.replace(safeNext(leaveOnLogout.dataset.logoutNext));
+    });
+  }
   if (document.getElementById("authnav") || document.getElementById("mauth")) {
     A.header();
     window.addEventListener("pageshow", function (event) { if (event.persisted) A.header(); });

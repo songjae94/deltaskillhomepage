@@ -95,11 +95,13 @@ a:focus-visible,.btn:focus-visible,.chk input:focus-visible{outline:3px solid va
 .biz .copy{color:#8f9db3}
 footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 </style>
+<link rel="stylesheet" href="/assets/account-header.css?v=home-logout-1118">
 </head>
 <body>
 <header class="top">
   <a class="logo" href="/"><span class="mark"><svg viewBox="-1 -2 102 102" aria-hidden="true"><path fill="#fff" d="M47.17,10.29 Q50,5 52.83,10.29 L68.39,39.44 Q68.96,40.5 67.76,40.5 L45.86,40.5 Q41.45,40.5 41.45,44.91 L41.45,45.09 Q41.45,49.5 45.86,49.5 L72.57,49.5 Q73.77,49.5 74.33,50.56 L94.64,88.59 Q97,93 92,93 L8,93 Q3,93 5.36,88.59 L12.85,74.56 Q13.41,73.5 14.61,73.5 L59.26,73.5 Q63.67,73.5 63.67,69.09 L63.67,68.91 Q63.67,64.5 59.26,64.5 L19.42,64.5 Q18.22,64.5 18.79,63.44 Z"/></svg></span>델타스킬</a>
   <nav class="gnav" aria-label="주요 메뉴"><a href="/">메인</a><a href="/naesin/">내신 파일</a><a href="/store/">유형서 구매</a><a href="/orders/">주문 조회</a></nav>
+  <nav id="authnav" class="ds-checkout-account" data-logout-next="/" aria-label="계정"></nav>
 </header>
 <main>
   <p class="crumb"><a href="/">메인</a> › <a href="/store/">유형서 구매</a> › 결제 결과</p>
@@ -126,7 +128,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 </div>
 </footer>
 <script src="/naesin/finals-order.js"></script>
-<script src="/auth.js?v=pass-state-1117"></script>
+<script src="/auth.js?v=home-logout-r2-1118"></script>
 <script src="/pass/review-config.js"></script>
 <script>
 "use strict";
@@ -265,7 +267,7 @@ function renderOrder(box,o,cfg,email){
   var reviewAccount=review?DSAuth.get():"";
   var reviewReset=false;
   function sameAccount(){return !review||(!reviewReset&&DSAuth.get()===reviewAccount);}
-  if(review)DSAuth.onChange(function(){
+  if(review)DSAuth.onChange(function(token){
     reviewReset=true;
     if(saved.orderId===oid&&saved.sku==="REVIEW-S2.pdf") {
       try{sessionStorage.removeItem("ds_order");}catch(_){}
@@ -273,7 +275,7 @@ function renderOrder(box,o,cfg,email){
     $("ttl").textContent="테스트 결제 확인";
     box.textContent="";
     $("toOrders").href="/orders/";
-    location.replace("/checkout/?sku=REVIEW-S2.pdf");
+    if(token)location.replace("/checkout/?sku=REVIEW-S2.pdf");
   });
   if(oid)$("toOrders").href="/orders/?orderId="+encodeURIComponent(oid);
   loadCfg().then(function(cfg){

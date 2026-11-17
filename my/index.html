@@ -63,7 +63,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 </style>
 <link rel="stylesheet" href="/assets/account-header.css?v=pass-1117">
 </head>
-<body>
+<body data-logout-next="/">
 
 <!-- 로그인·회원가입은 /auth/ (1008) -->
 <!-- 결과 -->
@@ -77,7 +77,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   <div id="acct" class="k" style="margin-top:28px;display:flex;flex-wrap:wrap;gap:8px 18px"></div>
 </div>
 
-<script src="/auth.js"></script>
+<script src="/auth.js?v=home-logout-r2-1118"></script>
 <script>
 const API = window.DSAuth ? window.DSAuth.api : "https://cvlrphtupjmaefahodgz.supabase.co/functions/v1/api";
 /* 토큰은 항상 '어느 번호의 토큰인지'(ds_tk_ph)와 함께 다룬다 — 파일럿 저장 시 번호가 어긋나면 토큰이 폐기돼 저장이 막힌다 */
@@ -189,7 +189,7 @@ async function syncProfile(phone){
 
 /* ---- 로그인·회원가입·로그아웃 → /auth/ (1008 · 문자 인증 · 서버 토큰 폐기) ---- */
 function goAuth(mode){ location.replace("/auth/?"+(mode?"mode="+mode+"&":"")+"next="+encodeURIComponent("/my/")); }
-async function doLogout(){ if(window.DSAuth){DSAuth.logout("/");} else { TK.clear(); location.href="/"; } }
+async function doLogout(){ if(window.DSAuth){DSAuth.logout();} else { TK.clear(); location.replace("/"); } }
 
 function boot(){
   const has=!!TK.get(), wantSignup=location.search.indexOf("signup")>=0;
