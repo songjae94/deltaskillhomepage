@@ -5,6 +5,37 @@ const pendingKey = "delta-pass-test-attempt";
 const ttl = 10 * 60 * 1000;
 const auth = window.DSAuth;
 let sdk;
+let generation = 0;
+let billingPhase = "idle";
+let reviewReady = false;
+const singleLinks = document.querySelectorAll("[data-review-sku]");
+
+function renderControls() {
+  billingButton.disabled = !reviewReady || billingPhase !== "idle";
+  billingButton.textContent = {
+    opening: "카드 등록창 여는 중",
+    approving: "테스트 승인 확인 중",
+    approved: "테스트 결제 승인 완료",
+    unclear: "승인 결과 확인 필요"
+  }[billingPhase] ?? (auth.has() ? "토스 테스트 카드 등록 열기" : "로그인하고 카드 등록하기");
+  for (const link of singleLinks) {
+    const path = "/checkout/?sku=" + encodeURIComponent(link.dataset.reviewSku);
+    link.href = auth.has() ? path : auth.loginUrl(path);
+    link.hidden = !reviewReady;
+  }
+}
+
+function setPhase(phase) {
+  billingPhase = phase;
+  renderControls();
+}
+
+auth.onChange(() => {
+  generation += 1;
+  sessionStorage.removeItem(pendingKey);
+  billingStatus.textContent = "";
+  setPhase("idle");
+});
 
 function loadSdk() {
   if (typeof window.TossPayments === "function") return Promise.resolve(window.TossPayments);
@@ -28,18 +59,24 @@ function clearCallback() {
   window.dispatchEvent(new Event("hashchange"));
 }
 
-async function finishRegistration(url, api) {
-  const saved = sessionStorage.getItem(pendingKey);
-  const pending = saved ? JSON.parse(saved) : null;
+async function finishRegistration(url, api, accountGeneration) {
   const token = auth.get();
-  if (!token || !pending || pending.state !== url.searchParams.get("state") ||
+  if (!token) return;
+  const current = () => accountGeneration === generation && auth.get() === token;
+  const saved = sessionStorage.getItem(pendingKey);
+  let pending;
+  try { pending = JSON.parse(saved); } catch { sessionStorage.removeItem(pendingKey); }
+  if (!pending || pending.state !== url.searchParams.get("state") ||
       pending.owner !== await tokenDigest(token) || Date.now() - pending.started > ttl) {
+    if (!current()) return;
+    setPhase("idle");
     billingStatus.textContent = "카드 등록 요청을 확인할 수 없습니다. 상품 화면에서 확인해 주세요.";
     return;
   }
-  if (sessionStorage.getItem(pendingKey) !== saved) return;
+  if (!current() || sessionStorage.getItem(pendingKey) !== saved) return;
   sessionStorage.removeItem(pendingKey);
   if (url.searchParams.get("billing") === "fail") {
+    setPhase("idle");
     billingStatus.textContent = "테스트 카드 등록이 완료되지 않았습니다.";
     return;
   }
@@ -47,17 +84,22 @@ async function finishRegistration(url, api) {
   const customerKey = url.searchParams.get("customerKey");
   if (url.searchParams.get("billing") !== "success" || !authKey || authKey.length > 300 ||
       customerKey !== pending.customerKey) {
+    setPhase("idle");
     billingStatus.textContent = "카드 등록 응답을 대조할 수 없습니다.";
     return;
   }
   billingStatus.textContent = "토스 테스트 승인 결과를 확인하고 있습니다.";
   try {
     const result = await billingCall(api, token, {action:"approve",authKey,customerKey,state:pending.state});
+    if (!current()) return;
     if (result.status !== "DONE" || result.amount !== 10000 || result.orderId !== pending.orderId) {
       throw new Error("unverified");
     }
+    setPhase("approved");
     billingStatus.textContent = "토스 테스트 결제 10,000원 승인을 확인했습니다.";
   } catch {
+    if (!current()) return;
+    setPhase("unclear");
     billingStatus.textContent = "테스트 승인 결과를 확인하지 못했습니다. 다시 결제하기 전에 주문 상태를 확인해 주세요.";
   }
 }
@@ -76,7 +118,11 @@ async function openRegistration(config, api) {
     location.assign(auth.loginUrl(location.pathname + "#checkout-pass"));
     return;
   }
-  billingButton.disabled = true;
+  if (billingPhase !== "idle") return;
+  const accountGeneration = generation;
+  const current = () => accountGeneration === generation && auth.get() === token;
+  setPhase("opening");
+  billingStatus.textContent = "";
   try {
     const {status,customerKey,state,orderId,amount} = await billingCall(api, token, {action:"session"});
     if (status !== "READY" || amount !== 10000 ||
@@ -91,21 +137,27 @@ async function openRegistration(config, api) {
     success.searchParams.set("billing", "success");
     failure.searchParams.set("billing", "fail");
     const TossPayments = await loadSdk();
+    if (!current()) return;
     sessionStorage.setItem(pendingKey, JSON.stringify({state,customerKey,orderId,owner,started:Date.now()}));
     await TossPayments(config.clientKey).payment({customerKey}).requestBillingAuth({
       method:"CARD", successUrl:success.href, failUrl:failure.href, windowTarget:"self"
     });
   } catch {
+    if (!current()) return;
     sessionStorage.removeItem(pendingKey);
     billingStatus.textContent = "토스 테스트 카드 등록창을 열지 못했습니다.";
   } finally {
-    billingButton.disabled = false;
+    if (current()) setPhase("idle");
   }
 }
 
 const callback = new URL(location.href);
 const returning = callback.searchParams.has("billing");
-if (returning) clearCallback();
+const returnGeneration = generation;
+if (returning) {
+  clearCallback();
+  if (auth.has()) setPhase("approving");
+}
 try {
   const response = await fetch("/pay-config.json", {cache:"no-store", credentials:"same-origin", redirect:"error"});
   const config = response.ok ? await response.json() : null;
@@ -114,20 +166,17 @@ try {
     billingStatus.textContent = "심사용 테스트 결제를 사용할 수 없습니다.";
     singleStatus.textContent = billingStatus.textContent;
   } else {
-    for (const link of document.querySelectorAll("[data-review-sku]")) {
-      const path = "/checkout/?sku=" + encodeURIComponent(link.dataset.reviewSku);
-      link.href = auth.has() ? path : auth.loginUrl(path);
-      link.hidden = false;
-    }
     const billingApi = new URL("billing-test", api);
-    if (returning) await finishRegistration(callback, billingApi);
-    else {
-      billingButton.disabled = false;
-      billingButton.textContent = auth.has() ? "토스 테스트 카드 등록 열기" : "로그인하고 카드 등록하기";
-      billingButton.addEventListener("click", () => openRegistration(config, billingApi));
-    }
+    reviewReady = true;
+    renderControls();
+    billingButton.addEventListener("click", () => openRegistration(config, billingApi));
+    if (returning && returnGeneration === generation) await finishRegistration(callback, billingApi, returnGeneration);
   }
 } catch {
   billingStatus.textContent = "심사용 테스트 결제 설정을 확인해 주세요.";
   singleStatus.textContent = billingStatus.textContent;
+}
+if (!reviewReady) {
+  billingPhase = "idle";
+  renderControls();
 }

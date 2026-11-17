@@ -126,7 +126,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 </div>
 </footer>
 <script src="/naesin/finals-order.js"></script>
-<script src="/auth.js?v=pass-1117"></script>
+<script src="/auth.js?v=pass-state-1117"></script>
 <script src="/pass/review-config.js"></script>
 <script>
 "use strict";
@@ -262,8 +262,22 @@ function renderOrder(box,o,cfg,email){
   var saved={};try{saved=JSON.parse(sessionStorage.getItem("ds_order")||"{}")||{};}catch(_){}
   var email=(saved.orderId===oid)?saved.email:"";
   var review=q.get("review")==="pdf"||(saved.orderId===oid&&saved.sku==="REVIEW-S2.pdf");
+  var reviewAccount=review?DSAuth.get():"";
+  var reviewReset=false;
+  function sameAccount(){return !review||(!reviewReset&&DSAuth.get()===reviewAccount);}
+  if(review)DSAuth.onChange(function(){
+    reviewReset=true;
+    if(saved.orderId===oid&&saved.sku==="REVIEW-S2.pdf") {
+      try{sessionStorage.removeItem("ds_order");}catch(_){}
+    }
+    $("ttl").textContent="테스트 결제 확인";
+    box.textContent="";
+    $("toOrders").href="/orders/";
+    location.replace("/checkout/?sku=REVIEW-S2.pdf");
+  });
   if(oid)$("toOrders").href="/orders/?orderId="+encodeURIComponent(oid);
   loadCfg().then(function(cfg){
+    if(!sameAccount())return;
     if(cfg.PAY_MODE==="test")$("band").hidden=false;
     if(!pk||!oid||!amt){$("ttl").textContent="결제 결과를 찾을 수 없습니다";say("결제 정보가 없습니다. 결제를 마쳤다면 주문 조회 화면에서 이메일과 주문번호로 확인해 주세요.");return;}
     if(review&&(!DSReviewApi(cfg)||!DSAuth.has())){
@@ -286,12 +300,14 @@ function renderOrder(box,o,cfg,email){
       box.appendChild(b);
     }
     function attempt(){
+      if(!sameAccount())return;
       callApi(cfg,"confirm-payment",{paymentKey:pk,orderId:oid,amount:Number(amt)},review).then(function(r){
+        if(!sameAccount())return;
         if(again(r)){
           if(tries<WAIT.length){var w=WAIT[tries++];say("서버 응답을 받지 못해 "+(w/1000)+"초 뒤 같은 결제를 다시 확인합니다…");setTimeout(attempt,w);return;}
           retryBox(r);return;
         }
-        try{history.replaceState({},"","/checkout/success/?orderId="+encodeURIComponent(oid));}catch(_){}
+        try{history.replaceState({},"","/checkout/success/?"+(review?"review=pdf&":"")+"orderId="+encodeURIComponent(oid));}catch(_){}
         if(r&&r.order&&(r.ok||r.status==="waiting")){
           $("ttl").textContent=r.order.status==="paid"?"결제가 완료되었습니다":"주문이 접수되었습니다";
           renderOrder(box,r.order,cfg,email);

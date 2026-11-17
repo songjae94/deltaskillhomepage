@@ -158,7 +158,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 </div>
 </footer>
 <script src="/naesin/finals-order.js"></script>
-<script src="/auth.js?v=pass-1117"></script>
+<script src="/auth.js?v=pass-state-1117"></script>
 <script src="/pass/review-config.js"></script>
 <script>
 "use strict";
@@ -376,12 +376,22 @@ function payReq(r,email,name){
   return widgets.requestPayment(q);
 }
 function boot(){
+  var reviewAccount=reviewFormat?DSAuth.get():"";
+  var reviewReset=false;
+  function sameAccount(){return !reviewFormat||(!reviewReset&&DSAuth.get()===reviewAccount);}
+  if(reviewFormat)DSAuth.onChange(function(){
+    reviewReset=true;
+    $("f").hidden=true;
+    $("pay").disabled=true;
+    location.reload();
+  });
   amount=P?priceNow(P):0;
   if(!showProduct()){loadCfg().then(function(c){if(c&&c.PAY_MODE==="test")$("band").hidden=false;});return;}
   $("f").hidden=false;
   ["em","nm","c1","c2","c3","c4"].forEach(function(i){$(i).addEventListener("input",update);$(i).addEventListener("change",update);});
   $("ca").addEventListener("change",function(){var v=$("ca").checked;["c1","c2","c3","c4"].forEach(function(i){$(i).checked=v;});update();});
   loadCfg().then(function(c){
+    if(!sameAccount())return;
     cfg=c||{};
     var mode=cfg.PAY_MODE;
     if(reviewFormat&&!DSReviewApi(cfg)){
@@ -398,6 +408,7 @@ function boot(){
     if(mode==="live"&&NS&&!cart&&!onSale(P)){P=null;ready=false;$("pay").disabled=true;$("f").hidden=true;showProduct();return;} /* 형 결정 7(11-11): 내신은 판매일을 공지하지 않는다 — 판매 시각 전이면 값이 빈 상품과 같이 「이 상품은 준비 중입니다.」(내신 화면 단추와 같은 말) */
     if(mode==="live"&&!cart&&!onSale(P)){stop("지금은 이 상품의 판매 기간이 아닙니다. 제공: "+P.give);return;}
     loadSdk().then(function(){
+      if(!sameAccount())return;
       document.documentElement.setAttribute("data-toss-sdk","loaded");
       if(!cfg.clientKey){stop(NS?"결제 연동 준비 중입니다. 지금은 결제창이 열리지 않습니다.":"결제 연동 준비 중입니다. 지금은 결제창이 열리지 않습니다. 정식 판매 시작일은 추후 공지합니다.");$("pay").textContent="결제 연동 준비 중";return;}
       startWidget();
@@ -405,12 +416,13 @@ function boot(){
   });
   $("f").addEventListener("submit",function(ev){
     ev.preventDefault();
-    if($("pay").disabled)return;
+    if($("pay").disabled||!sameAccount())return;
     var email=$("em").value.trim(),name=$("nm").value.trim();
     busy=true;update();setMsg($("msg"),"주문을 만드는 중…");
     var body={email:email,name:name,method:pickMethod(),agree:{terms:$("c1").checked,privacy:$("c2").checked,digital:$("c3").checked,minor:$("c4").checked}};
     if(cart)body.skus=skus;else body.sku=sku;
     callApi(cfg,"create-order",body).then(function(r){
+      if(!sameAccount())return;
       if(!r||!r.ok)throw r||{};
       if(r.amount!==amount){
         if(cart||reviewFormat){busy=false;stop("결제 금액이 바뀌었습니다. 주문서를 새로고침하고 금액을 다시 확인해 주세요.");setMsg($("msg"),"");return;}
@@ -420,7 +432,7 @@ function boot(){
       try{sessionStorage.setItem("ds_order",JSON.stringify(cart?{orderId:r.orderId,email:email,skus:skus}:{orderId:r.orderId,email:email,sku:sku}));}catch(_){}
       setMsg($("msg"),"결제창을 여는 중…");
       return payReq(r,email,name);
-    }).catch(function(e){busy=false;update();setMsg($("msg"),errText(e),true);});
+    }).catch(function(e){if(sameAccount()){busy=false;update();setMsg($("msg"),errText(e),true);}});
   });
 }
 if(NS){var crumb=document.querySelector('.crumb a[href="/store/"]');if(crumb){crumb.href="/naesin/";crumb.textContent="내신 파일";}fetch("/naesin/catalog.json",{cache:"no-store"}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}).then(function(c){P=cart?cartProduct(c):naesinP(c,sku);boot();});}
