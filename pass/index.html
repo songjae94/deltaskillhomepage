@@ -1,21 +1,22 @@
 <!doctype html>
 <html lang="ko">
-<head><meta charset="utf-8"><meta name="referrer" content="no-referrer"><meta name="viewport" content="width=device-width,initial-scale=1"><title>변형문항 이용권 | 델타스킬 심사 준비</title>
+<head><meta charset="utf-8"><meta name="referrer" content="no-referrer"><meta name="viewport" content="width=device-width,initial-scale=1"><title>변형문항 이용권 | 델타스킬</title>
 <style>
 :root{font:16px/1.75 system-ui,sans-serif;color:#172b43;background:#f4f7fb;word-break:keep-all}*{box-sizing:border-box}[hidden]{display:none!important}body{margin:0}.wrap{width:min(720px,calc(100% - 32px));margin:auto}
 header{background:#fff;border-block:1px solid #d6dfeb;padding:16px 0}header a{font-weight:850;letter-spacing:.1em;text-decoration:none}header .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px}
 main{padding:28px 0 48px;min-height:67vh}.flag{background:#eaf0ff;padding:9px 12px;border-radius:6px;margin-bottom:16px;font-size:14px}
 section{background:#fff;border:1px solid #d6dfeb;border-radius:12px;padding:clamp(16px,4vw,32px)}h1{margin:0;font-size:clamp(32px,5vw,46px);letter-spacing:-.045em;line-height:1.2}h2{font-size:20px;margin:24px 0 6px}p{margin:8px 0}
 dl div{display:grid;grid-template-columns:minmax(92px,130px) 1fr;gap:8px;border-bottom:1px solid #d6dfeb;padding:7px 0}dt{font-weight:750}dd{margin:0}a{color:#19449f}a:focus-visible,button:focus-visible{outline:3px solid #407aff;outline-offset:4px}
-.action{min-height:46px;display:inline-flex;align-items:center;padding:9px 15px;border-radius:6px;background:#245bd6;color:#fff;text-decoration:none;font:inherit;font-weight:700;border:0}.action[disabled]{background:#dce3ee;color:#344760}.actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:18px}
+.action{min-height:46px;display:inline-flex;align-items:center;padding:9px 15px;border-radius:6px;background:#245bd6;color:#fff;text-decoration:none;font:inherit;font-weight:700;border:0}.action[disabled]{background:#dce3ee;color:#344760}.pass-agree{border:1px solid #d6dfeb;border-radius:8px;margin:18px 0 0;padding:10px 14px}.pass-agree legend{font-weight:750;padding:0 4px}.chk{display:flex;gap:8px;align-items:flex-start;margin:6px 0;font-size:15px}.chk input{width:18px;height:18px;margin-top:5px;flex:none}.chk.all{font-weight:750;border-bottom:1px solid #d6dfeb;padding-bottom:8px}
+.actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:18px}
 </style><link rel="stylesheet" href="/assets/business-footer.css"><link rel="stylesheet" href="/assets/account-header.css?v=02-9-slot"><script defer src="/auth.js?v=home-logout-r2-1118"></script><link rel="stylesheet" href="/assets/payment-flow.css">
 </head>
 <body class="payment-flow payment-pass">
 <header class="payment-header"><div class="top"><a class="logo" href="#login"><img src="/assets/main/deltaskill-ko-horizontal-white.svg" alt="델타스킬" width="120"></a><nav class="gnav" aria-label="주요 메뉴"><a href="/">메인</a><a href="/naesin/">내신 파일</a><a href="/store/">유형서 구매</a><a href="/orders/">주문 조회</a></nav><nav id="authnav" data-logout-next="/" class="ds-account-links" aria-label="계정"><a href="/auth/" data-account-primary>로그인</a><a href="/auth/?mode=signup" data-account-secondary>회원가입</a></nav></div></header>
 <main class="wrap"><p class="flag">지금은 테스트 결제 환경입니다 · 실제 결제는 일어나지 않습니다.</p>
 <section id="login" data-step>
-<h1>회원으로 시작하기</h1><p>이용권은 회원이 사용하는 상품입니다. 심사용 계정은 승인된 검수 환경에서만 입력합니다.</p>
-<div class="actions"><a data-review-login href="/auth/?next=%2Fpass%2F%23checkout-pass">심사용 로그인 →</a><a class="action" href="#product">변형문항 이용권 보기 →</a><a href="#single">변형 프린트 한 벌 보기 →</a></div>
+<h1>변형문항 이용권 · 개별구매</h1><p>같은 표현 변형문항과 같은 개념 표현변형 문항을 프린트로 받는 회원 상품입니다. 이용권은 월 10,000원(1개월 · 매월 자동 갱신), 개별구매는 변형 프린트 한 벌 단위로 결제합니다. 결제는 회원 로그인 뒤에 할 수 있습니다.</p>
+<div class="actions"><a class="action" href="#product">변형문항 이용권 보기 →</a><a href="#single">변형 프린트 한 벌 보기 →</a><a data-review-login href="/auth/?next=%2Fpass%2F%23checkout-pass">로그인 →</a></div>
 </section>
 <section id="product" data-step hidden>
 <h1>변형문항 이용권</h1><p>같은 표현 변형문항과 같은 개념 표현변형 문항을 골라 프린트로 받는 1개월 이용권입니다. 월 10,000원에 한 달 30벌까지 받을 수 있습니다.</p>
@@ -25,22 +26,29 @@ dl div{display:grid;grid-template-columns:minmax(92px,130px) 1fr;gap:8px;border-
 <div class="actions"><a class="action" href="#checkout-pass">이용권 결제 확인 →</a><a href="#single">개별구매 상품 보기</a></div>
 </section>
 <section id="single" data-step hidden>
-<h1>2단계 변형 프린트 한 벌</h1><p>2단계 변형 문항 20개와 정답·해설을 한 벌로 받는 개별구매 상품입니다.</p><p>구성 후보는 올림포스 유형편 공통수학2의 07 유리함수와 무리함수입니다. 판매 파일은 검수 중입니다.</p>
-<dl><div><dt>제공 자료</dt><dd>변형 문항 · 정답 · 해설</dd></div><div><dt>결제 방식</dt><dd>개별구매 · 한 번 결제</dd></div><div><dt>상품 가격</dt><dd><strong data-single-price>PDF 600원 · 한글(HWPX) 가격 확인 대기</strong></dd></div></dl>
-<h2>제공 방식</h2><p>한 번 결제한 주문에 포함된 변형 문항과 정답·해설은 검수가 끝나면 회원 자료함에서 받습니다. 한글을 선택한 경우 한컴 확인을 거칩니다.</p>
-<h2>취소·환불</h2><p>구매 전 제공 시작 시점과 환불 기준을 확인할 수 있습니다. 기존 개별구매 기준은 <a href="https://www.deltaskill.co.kr/refund/">환불·청약철회 안내</a>에서 확인할 수 있습니다.</p>
+<h1>2단계 변형 프린트 한 벌</h1><p>2단계 변형 문항 20개와 정답·해설을 한 벌로 받는 개별구매 상품입니다.</p><p>첫 구성은 올림포스 유형편 공통수학2의 07 유리함수와 무리함수 단원으로 준비하고 있으며, 파일 제공은 출시 예정입니다. 출시 전에 결제한 주문은 파일이 제공되지 않으며 전액 환불합니다.</p>
+<dl><div><dt>제공 자료</dt><dd>변형 문항 20개 · 정답 · 해설 한 벌(PDF)</dd></div><div><dt>제공 시작</dt><dd>출시 예정</dd></div><div><dt>결제 방식</dt><dd>개별구매 · 한 번 결제</dd></div><div><dt>상품 가격</dt><dd><strong data-single-price>PDF 600원 · 한글(HWPX) 출시 예정</strong></dd></div></dl>
+<h2>제공 방식</h2><p>출시 뒤에는 결제한 한 벌의 변형 문항과 정답·해설을 회원 자료함에서 받습니다. 받은 날부터 12개월 동안 다시 받을 수 있습니다.</p>
+<h2>취소·환불</h2><p>내려받기 전에는 결제일로부터 7일 이내 전액 환불하고, 제공 전 주문은 제공 전까지 언제든 전액 환불합니다. 내려받은 뒤에는 디지털콘텐츠라 청약철회가 제한됩니다. 자세히: <a href="/refund/">환불·청약철회 안내</a></p>
 <div class="actions"><a class="action" href="#checkout-single">개별구매 결제 확인 →</a><a href="#product">이용권 상품 보기</a></div>
 </section>
 <section id="checkout-pass" data-step hidden>
-<h1>결제 확인</h1><p>토스 테스트창을 열기 전에 주문 내용을 확인해 주세요.</p>
-<dl><div><dt>주문 상품</dt><dd>변형문항 이용권</dd></div><div><dt>결제 금액</dt><dd><strong data-confirmed-price>10,000원</strong></dd></div><div><dt>결제 방식</dt><dd>1개월 이용권 · 매월 자동 갱신</dd></div><div><dt>제공 위치</dt><dd>회원 자료함</dd></div><div><dt>자동 갱신 해지</dt><dd><a href="/my/">마이페이지</a> &gt; 이용권에서 자동 갱신을 해지할 수 있습니다. 종료일까지 쓰고 해지(환불 없음) 또는 지금 해지하고 남은 금액 바로 환불 가운데 고릅니다.</dd></div></dl>
-<div class="actions"><button class="action" type="button" data-toss-review="pass" disabled>결제 준비 중</button><a href="#product">상품 다시 보기</a></div>
+<h1>결제 확인</h1><p>카드를 등록하기 전에 주문 내용과 자동 결제 조건을 확인해 주세요.</p>
+<dl><div><dt>주문 상품</dt><dd>변형문항 이용권</dd></div><div><dt>결제 금액</dt><dd><strong data-confirmed-price>10,000원</strong></dd></div><div><dt>결제 방식</dt><dd>1개월 이용권 · 매월 자동 갱신(정기결제) · 카드 등록 뒤 첫 결제가 바로 승인됩니다</dd></div><div><dt>결제 주기</dt><dd>매월 · 결제 승인일과 같은 날짜에 10,000원</dd></div><div><dt>다음 결제일</dt><dd data-next-charge>결제 승인일로부터 1개월 뒤 같은 날짜</dd></div><div><dt>이용 한도</dt><dd>한 달 30벌 · 한 벌 20문항</dd></div><div><dt>제공 위치</dt><dd>회원 자료함</dd></div><div><dt>자동 갱신 해지</dt><dd><a href="/my/">마이페이지</a> &gt; 이용권에서 자동 갱신을 해지할 수 있습니다. 종료일까지 쓰고 해지(환불 없음) 또는 지금 해지하고 남은 금액 바로 환불 가운데 고릅니다.</dd></div><div><dt>환불</dt><dd>결제일로부터 7일 이내이고 한 벌도 받지 않았다면 전액 환불 · 그 밖에는 받지 않은 벌 수 비율로 환불(원 단위 내림) · <a href="/refund/" target="_blank" rel="noopener">환불·청약철회 안내</a></dd></div></dl>
+<fieldset class="pass-agree" data-pass-agree><legend>동의</legend>
+<label class="chk all"><input type="checkbox" data-agree-all> <span>아래 필수 항목에 모두 동의합니다.</span></label>
+<label class="chk"><input type="checkbox" data-agree> <span>[필수] <a href="/terms/" target="_blank" rel="noopener">이용약관</a>과 <a href="/refund/" target="_blank" rel="noopener">환불·청약철회 안내</a>에 동의합니다.</span></label>
+<label class="chk"><input type="checkbox" data-agree> <span>[필수] <a href="/privacy/" target="_blank" rel="noopener">개인정보처리방침</a>에 따른 개인정보 수집·이용과 결제대행 위탁(토스페이먼츠)에 동의합니다.</span></label>
+<label class="chk"><input type="checkbox" data-agree> <span>[필수] 해지하기 전까지 매월 결제 승인일과 같은 날짜에 등록한 카드로 10,000원이 자동 결제되는 정기결제에 동의합니다.</span></label>
+<label class="chk"><input type="checkbox" data-agree> <span>[필수] 이용권으로 받은 프린트는 디지털콘텐츠로, 받은 벌은 청약철회(환불)가 제한된다는 점을 확인했습니다. (만 19세 미만인 경우: 법정대리인의 동의를 받았습니다. <a href="/minor/" target="_blank" rel="noopener">미성년자 구매 안내</a>)</span></label>
+</fieldset>
+<div class="actions"><button class="action" type="button" data-toss-review="pass" disabled>결제 확인 중</button><a href="#product">상품 다시 보기</a></div>
 <p data-checkout-status role="status"></p>
 </section>
 <section id="checkout-single" data-step hidden>
-<h1>개별구매 결제 확인</h1><p>토스 테스트창을 열기 전에 주문 내용을 확인해 주세요.</p>
-<dl><div><dt>주문 상품</dt><dd>2단계 변형 프린트 20문항 한 벌</dd></div><div><dt>형식별 가격</dt><dd><strong data-single-price>PDF 600원 · 한글(HWPX) 가격 확인 대기</strong></dd></div><div><dt>결제 방식</dt><dd>개별구매 · 한 번 결제</dd></div><div><dt>제공 위치</dt><dd>회원 자료함</dd></div></dl>
-<div class="actions"><a class="action" data-review-sku="REVIEW-S2.pdf" hidden>PDF 600원 결제 확인</a><button type="button" disabled>한글 가격 확인 대기</button><a href="#single">상품 다시 보기</a></div>
+<h1>개별구매 결제 확인</h1><p>주문서로 가기 전에 주문 내용을 확인해 주세요.</p>
+<dl><div><dt>주문 상품</dt><dd>2단계 변형 프린트 20문항 한 벌</dd></div><div><dt>형식별 가격</dt><dd><strong data-single-price>PDF 600원 · 한글(HWPX) 출시 예정</strong></dd></div><div><dt>결제 방식</dt><dd>개별구매 · 한 번 결제</dd></div><div><dt>제공 위치</dt><dd>회원 자료함</dd></div></dl>
+<div class="actions"><a class="action" data-review-sku="REVIEW-S2.pdf" hidden>PDF 600원 결제 확인</a><button type="button" disabled>한글(HWPX) 출시 예정</button><a href="#single">상품 다시 보기</a></div>
 <p data-checkout-status role="status"></p>
 </section>
 </main>

@@ -163,7 +163,7 @@ var ERR={
   toss_confirm_failed:"결제 승인에 실패했습니다.",
   review:"결제 확인이 필요합니다. 아래 연락처로 주문번호를 알려 주세요.",
   not_found:"주문을 찾을 수 없습니다. 이메일과 주문번호를 확인해 주세요.",
-  test_mode:"테스트 결제라 자료가 제공되지 않습니다.",
+  test_mode:"테스트 결제 주문이라 파일 내려받기는 열리지 않습니다.",
   not_paid:"결제가 끝나지 않은 주문입니다.",
   expired:"다시 받을 수 있는 기간(구매일로부터 12개월)이 지났습니다.",
   not_yet:"아직 제공 전인 파일입니다.",
@@ -200,7 +200,7 @@ function renderOrder(box,o,cfg,email){
   box.appendChild(dl);
   if(multi&&policy){var refund=document.createElement("p");refund.className="hint";refund.textContent=policy.FULL_REFUND;box.appendChild(refund);}
   var h=document.createElement("h2");h.textContent="파일";h.style.marginTop="16px";box.appendChild(h);
-  if(o.mode==="test"){var n=document.createElement("p");n.className="notice";n.textContent="테스트 결제라 자료가 제공되지 않습니다. 실제로 청구되지 않습니다.";box.appendChild(n);return;}
+  if(o.mode==="test"){var n=document.createElement("p");n.className="notice";n.textContent="테스트 결제 주문이라 실제로 청구되지 않았고 파일 내려받기는 열리지 않습니다. 실제 결제 주문은 이 자리에 파일과 내려받기 단추가 나옵니다.";box.appendChild(n);return;}
   var w=document.createElement("p");w.className="hint";w.textContent=multi&&policy?policy.MULTI_DOWNLOAD:"내려받기(열람)를 시작한 파일은 청약철회(환불)가 제한됩니다. 내려받지 않은 파일은 결제일로부터 7일 이내(제공 예정 파일은 제공 전까지 언제든) 전액 환불됩니다.";box.appendChild(w);
   var ul=document.createElement("ul");ul.className="files";
   var msg=document.createElement("p");msg.className="msg";msg.setAttribute("role","status");
