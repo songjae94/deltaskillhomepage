@@ -49,7 +49,7 @@ input,select{font:inherit;padding:10px 12px;border:1px solid var(--line2);border
 @media print{.top,#reportBtn,#body>h2,#body>.cards,.sub,.det{display:none!important}#report:not(:empty){border:none;background:#fff}body{background:#fff;color:#111}h1,h2,.card b{color:#111}}
 #pass .row{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);padding:10px 12px;margin:6px 0;font-size:13.5px}
 #pass .row b{color:#fff}#pass .row .grow{flex:1;min-width:180px}#pass .tag{display:inline-block;font-size:11px;font-weight:700;border-radius:999px;padding:1px 8px;margin-left:6px;border:1px solid rgba(90,162,255,.45);color:var(--acc2)}#pass .tag.off{border-color:var(--line2);color:var(--mut)}
-dialog#passDlg{max-width:430px;width:calc(100% - 28px);background:var(--card);color:#e8eef7;border:1px solid var(--line2);border-radius:14px;padding:22px 20px}dialog#passDlg::backdrop{background:rgba(2,4,10,.72)}dialog#passDlg h3{margin:0 0 10px;font-size:16px;color:#fff}dialog#passDlg p{margin:6px 0;font-size:13.5px}dialog#passDlg .btns{display:flex;gap:8px;margin-top:16px}dialog#passDlg .btns button{flex:1}
+dialog#passDlg{max-width:430px;width:calc(100% - 28px);background:var(--card);color:#e8eef7;border:1px solid var(--line2);border-radius:14px;padding:22px 20px}dialog#passDlg::backdrop{background:rgba(2,4,10,.72)}dialog#passDlg h3{margin:0 0 10px;font-size:16px;color:#fff}dialog#passDlg p{margin:6px 0;font-size:13.5px}dialog#passDlg .btns{display:flex;gap:8px;margin-top:16px}dialog#passDlg .btns button{flex:1}dialog#passDlg .opt{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line2);border-radius:10px;padding:10px 12px;margin:8px 0;font-size:13.5px;cursor:pointer}dialog#passDlg .opt input{width:16px;height:16px;flex:0 0 16px;margin:3px 0 0;padding:0;accent-color:var(--acc)}dialog#passDlg .opt[hidden]{display:none}dialog#passDlg .opt.off{opacity:.55;cursor:default}dialog#passDlg button.p[disabled]{opacity:.5;cursor:default}
 </style>
 <style id="biz-css">
 .biz{display:block;box-sizing:border-box;background:#05060f;color:#aab7ca;font:400 13px/1.8 "Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;letter-spacing:0;text-align:left;padding:24px 16px 36px;border-top:1px solid rgba(186,215,247,.16)}
@@ -78,11 +78,13 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   <h1 id="hello">마이페이지</h1>
   <section id="pass" aria-labelledby="passH"><h2 id="passH">이용권</h2><div id="passBody"><p class="k">불러오는 중…</p></div></section>
   <dialog id="passDlg" aria-labelledby="passDlgH">
-    <h3 id="passDlgH">자동 갱신을 해지할까요?</h3>
-    <p>자동 갱신 구독을 해지하면 다음 결제가 중지됩니다. 이번 이용권은 종료일까지 쓸 수 있습니다. 환불은 별도로 신청합니다.</p>
-    <p class="k">이용 종료일 <b id="passDlgEnd"></b> · 환불 기준은 <a href="/refund/">환불·청약철회 안내</a>에서 확인할 수 있습니다.</p>
+    <h3 id="passDlgH">자동 갱신 해지</h3>
+    <p>해지 방법을 고르세요.</p>
+    <label class="opt" id="passOptA"><input type="radio" name="passMode" value="end_of_term"><span><b>이번 이용권 종료일까지 쓰고 해지</b><br><span class="k"><b id="passDlgEnd"></b>까지 이용하고 다음 자동 결제는 하지 않습니다. 환불은 없습니다.</span></span></label>
+    <label class="opt" id="passOptB"><input type="radio" name="passMode" value="refund_now"><span><b>지금 해지하고 남은 금액 환불</b><br><span class="k">이용권이 바로 끝나고 남은 금액을 결제 취소로 바로 환불합니다.</span><br><span id="passDlgQuote"></span></span></label>
+    <p class="k">환불액은 실제 결제금액에 전체 이용권에 포함된 벌 수 중 아직 받지 않은 벌 수의 비율을 곱해 계산합니다(원 단위 내림). 한 벌도 받지 않았다면 전액 환불합니다.</p>
     <p class="err" id="passDlgErr" role="alert"></p>
-    <div class="btns"><button type="button" id="passDlgNo">닫기</button><button type="button" class="p" id="passDlgYes">해지하기</button></div>
+    <div class="btns"><button type="button" id="passDlgNo">닫기</button><button type="button" class="p" id="passDlgYes" disabled>해지하기</button></div>
   </dialog>
   <div id="body"></div>
   <div id="acct" class="k" style="margin-top:28px;display:flex;flex-wrap:wrap;gap:8px 18px"></div>
@@ -214,22 +216,29 @@ function boot(){
 /* ---- 변형문항 이용권 · 자동 갱신 해지(형 1118 「마이페이지 단추」) — 상태 · 해지는 함수 billing-test 가 로그인 회원 것만 다룬다 ---- */
 const PASS_API = new URL("billing-test", new URL("..", (window.DSAuth ? DSAuth.api : API) + "/")).href;
 const passDay = v => { const d = new Date(v); return isNaN(d) ? "" : new Intl.DateTimeFormat("ko-KR",{timeZone:"Asia/Seoul",month:"long",day:"numeric"}).format(d); };
-async function passCall(action){
+async function passCall(action,extra){
   const t=TK.get(); if(!t) throw new Error("no_token");
-  const r=await fetch(PASS_API,{method:"POST",credentials:"omit",headers:{"Content-Type":"application/json","Authorization":"Bearer "+t},body:JSON.stringify({action})});
+  const r=await fetch(PASS_API,{method:"POST",credentials:"omit",headers:{"Content-Type":"application/json","Authorization":"Bearer "+t},body:JSON.stringify({action,...(extra||{})})});
   let j=null; try{j=await r.json();}catch(_){}
   if(r.status===401){TK.clear();boot();throw new Error("login_required");}
   if(!r.ok||!j) throw new Error((j&&j.error)||("HTTP "+r.status));
   return j;
 }
+const won = n => Number(n).toLocaleString("ko-KR") + "원";
+const passTime = v => { const d = new Date(v); return isNaN(d) ? "" : new Intl.DateTimeFormat("ko-KR",{timeZone:"Asia/Seoul",month:"long",day:"numeric",hour:"2-digit",minute:"2-digit",hour12:false}).format(d); };
 function passView(p){
   const box=document.getElementById("passBody");
-  const end=p&&passDay(p.endsAt);
+  const end=p&&passDay(p.endsAt), row=(tag,off,line)=>`<div class="row"><div class="grow"><b>변형문항 이용권</b><span class="tag${off?" off":""}">${tag}</span><div class="k">${line}</div></div>`;
   if(p&&p.status==="ACTIVE"&&end){
-    box.innerHTML=`<div class="row"><div class="grow"><b>변형문항 이용권</b><span class="tag">이용 중</span><div class="k">${esc(end)}까지 이용 · 매월 자동 갱신</div></div><button class="sm" id="passCancel">자동 갱신 해지</button></div>`;
+    box.innerHTML=row("이용 중",false,`${esc(end)}까지 이용 · 매월 자동 갱신 · 다음 결제 ${esc(passDay(p.nextChargeAt))}`)+`<button class="sm" id="passCancel">자동 갱신 해지</button></div>`;
     document.getElementById("passCancel").onclick=()=>passAsk(p);
-  }else if(p&&p.status==="CANCELED"&&end){
-    box.innerHTML=`<div class="row"><div class="grow"><b>변형문항 이용권</b><span class="tag off">해지됨</span><div class="k">${esc(end)}까지 이용 · 다음 결제 없음</div></div></div><p class="k">환불은 별도로 신청합니다. <a href="/refund/">환불·청약철회 안내 →</a></p>`;
+  }else if(p&&p.status==="CANCEL_SCHEDULED"&&end){
+    box.innerHTML=row("해지 예약",true,`${esc(end)}까지 이용 · 다음 결제 없음`)+(p.refundAmount>0?`<button class="sm" id="passCancel">지금 해지하고 환불받기</button>`:``)+`</div>`;
+    const b=document.getElementById("passCancel"); if(b) b.onclick=()=>passAsk(p);
+  }else if(p&&p.status==="REFUNDED"){
+    box.innerHTML=row("해지 · 환불됨",true,`환불 ${esc(won(p.refundAmount))} · ${esc(passTime(p.refundedAt))}`)+`</div>`;
+  }else if(p&&p.status==="REFUNDING"){
+    box.innerHTML=`<p class="k">환불을 확인하고 있습니다. 잠시 뒤 다시 확인해 주세요.</p>`;
   }else if(p&&p.status==="NONE"){
     box.innerHTML=`<p class="k">이용 중인 이용권이 없습니다. <a href="/pass/#product">변형문항 이용권 보기 →</a></p>`;
   }else{
@@ -241,15 +250,31 @@ async function passLine(){
 }
 function passAsk(p){
   const dlg=document.getElementById("passDlg"), yes=document.getElementById("passDlgYes"), no=document.getElementById("passDlgNo"), err=document.getElementById("passDlgErr");
-  document.getElementById("passDlgEnd").textContent=passDay(p.endsAt); err.textContent=""; yes.disabled=false; yes.textContent="해지하기";
+  const optA=document.getElementById("passOptA"), optB=document.getElementById("passOptB"), radios=[...dlg.querySelectorAll('input[name="passMode"]')];
+  document.getElementById("passDlgEnd").textContent=passDay(p.endsAt);
+  document.getElementById("passDlgQuote").innerHTML=p.refundAmount>0
+    ?`환불 예정 금액 <b>${esc(won(p.refundAmount))}</b> · 받은 벌 수 ${esc(p.setsReceived)} / 전체 ${esc(p.setsTotal)}`
+    :`<span class="bad">받지 않은 벌이 없어 환불할 금액이 없습니다.</span> 받은 벌 수 ${esc(p.setsReceived)} / 전체 ${esc(p.setsTotal)}`;
+  optA.hidden=p.status!=="ACTIVE";
+  radios.forEach(r=>{r.checked=false; r.disabled=r.value==="refund_now"&&!(p.refundAmount>0);});
+  optB.classList.toggle("off",!(p.refundAmount>0));
+  err.textContent=""; yes.disabled=true; yes.textContent="해지하기";
+  radios.forEach(r=>r.onchange=()=>{yes.disabled=false; yes.textContent=r.value==="refund_now"?`해지하고 ${won(p.refundAmount)} 환불`:"해지하기";});
   no.onclick=()=>dlg.close();
   yes.onclick=async()=>{
-    if(yes.disabled) return; yes.disabled=true; yes.textContent="해지하는 중…"; err.textContent="";
-    try{ const r=await passCall("cancel"); if(r.status!=="CANCELED") throw new Error("unverified"); dlg.close(); passView(r); }
-    catch(e){
+    const pick=radios.find(r=>r.checked); if(!pick||yes.disabled) return;
+    const mode=pick.value, label=yes.textContent; yes.disabled=true; yes.textContent=mode==="refund_now"?"환불하는 중…":"해지하는 중…"; err.textContent="";
+    try{
+      const r=await passCall("cancel",{mode});
+      if(mode==="end_of_term"?r.status!=="CANCEL_SCHEDULED":r.status!=="REFUNDED") throw new Error(r.status==="REFUNDING"?"refund_in_progress":"unverified");
+      dlg.close(); passView(r);
+    }catch(e){
       if(e.message==="login_required"){dlg.close();return;}
       if(e.message==="no_active_pass"){dlg.close();passLine();return;}
-      yes.disabled=false; yes.textContent="해지하기"; err.textContent="해지하지 못했어요. 자동 갱신은 아직 켜져 있습니다. 잠시 뒤 다시 시도해 주세요.";
+      yes.disabled=false; yes.textContent=label;
+      err.textContent = mode==="refund_now"
+        ? (e.message==="refund_in_progress"?"환불을 처리하고 있습니다. 잠시 뒤 이 화면을 새로 고쳐 확인해 주세요.":"환불하지 못했어요. 이용권은 그대로입니다. 잠시 뒤 다시 시도하시거나 admin@deltaskill.co.kr 로 문의해 주세요.")
+        : "해지하지 못했어요. 자동 갱신은 아직 켜져 있습니다. 잠시 뒤 다시 시도해 주세요.";
     }
   };
   dlg.showModal();
