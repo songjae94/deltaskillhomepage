@@ -2,14 +2,14 @@
 /* 31 창 1118: 사이트 디자인 통일 — DELTASKILL 글자 로고 · 한 머리 · 한 발 · 남색 + 파랑 (형 승인 값)
    모든 쪽에서 다른 css 뒤(</head> 바로 앞)에 건다. 입구 / · /home.html 은 html[data-ds-main] — 판은 그대로 두고 로고 · 머리 글꼴 · 단추 색만. */
 :root {
-  --ds-ink: #172B43;
-  --ds-ink2: #3C4A60;
-  --ds-sub: #5B6678;
+  --ds-ink: #192342;
+  --ds-ink2: #485365;
+  --ds-sub: #626c83;
   --ds-bg: #F7F8FC;
   --ds-card: #fff;
   --ds-line: #DFE3ED;
-  --ds-blue: #245BD6;
-  --ds-blue-h: #1D4DB8;
+  --ds-blue: #1b2d49;
+  --ds-blue-h: #101e33;
   --ds-foot: #0C1425;
   --ds-font: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
   color-scheme: light;
@@ -31,7 +31,7 @@
 .ds-logo .s { color: #245BD6 !important; }
 .ds-logo.ds-logo-inv .d { color: #fff !important; }
 .ds-logo.ds-logo-inv .s { color: #8FB0FF !important; }
-.ds-logo:focus-visible { outline: 2px solid #245BD6; outline-offset: 3px; border-radius: 4px; }
+.ds-logo:focus-visible { outline: 2px solid #1b2d49; outline-offset: 3px; border-radius: 4px; }
 
 /* ── 공통 머리 ── */
 header.ds-head {
@@ -45,7 +45,7 @@ header.ds-head {
   border: 0;
   border-bottom: 1px solid #E6E9F0;
   background: #fff;
-  color: #172B43;
+  color: #192342;
   font-family: var(--ds-font);
   letter-spacing: -.01em;
 }
@@ -74,7 +74,7 @@ header.ds-head {
   min-height: 40px;
   padding: 0 11px;
   border-radius: 10px;
-  color: #172B43;
+  color: #192342;
   background: transparent;
   font: 650 14.5px/1 var(--ds-font);
   letter-spacing: -.01em;
@@ -82,7 +82,7 @@ header.ds-head {
   white-space: nowrap;
 }
 .ds-head .ds-menu a:hover { background: #EEF2FA; }
-.ds-head .ds-menu a[aria-current="page"] { color: #245BD6; }
+.ds-head .ds-menu a[aria-current="page"] { color: #1b2d49; }
 .ds-head .ds-acct {
   display: flex;
   align-items: center;
@@ -92,10 +92,10 @@ header.ds-head {
   padding-left: 10px;
   border-left: 1px solid #E6E9F0;
 }
-.ds-head .ds-acct a[data-account-primary] { color: #3C4A60; }
-.ds-head .ds-acct a[data-account-secondary] { background: #245BD6; color: #fff; }
-.ds-head .ds-acct a[data-account-secondary]:hover { background: #1D4DB8; }
-.ds-head a:focus-visible { outline: 2px solid #245BD6; outline-offset: 2px; }
+.ds-head .ds-acct a[data-account-primary] { color: #485365; }
+.ds-head .ds-acct a[data-account-secondary] { background: #1b2d49; color: #fff; }
+.ds-head .ds-acct a[data-account-secondary]:hover { background: #101e33; }
+.ds-head a:focus-visible { outline: 2px solid #1b2d49; outline-offset: 2px; }
 @media (max-width: 640px) {
   .ds-head-in { height: auto; min-height: 64px; flex-wrap: wrap; padding: 0 14px; gap: 0 8px; }
   .ds-head .ds-logo { height: 56px; font-size: 20px; }
@@ -182,18 +182,18 @@ html:not([data-ds-main]) body {
 }
 html:not([data-ds-main]) body {
   font-family: var(--ds-font);
-  color: #172B43;
+  color: #192342;
 }
 html[data-ds-main] header,
 html[data-ds-main] footer { font-family: var(--ds-font); }
-html:not([data-ds-main]) main a:not([class]) { color: #245BD6; }
+html:not([data-ds-main]) main a:not([class]) { color: #1b2d49; }
 
 /* ── 단추 ── */
 html:not([data-ds-main]) body .btn.pri:not(:disabled):not([disabled]),
 html:not([data-ds-main]) body .action:not(:disabled):not([disabled]),
 html:not([data-ds-main]) body button.p:not(:disabled),
 html:not([data-ds-main]) body .p:not(:disabled) {
-  background: #245BD6;
+  background: #1b2d49;
   color: #fff;
   border: 0;
   border-radius: 10px;
@@ -202,11 +202,11 @@ html:not([data-ds-main]) body .p:not(:disabled) {
 html:not([data-ds-main]) body .btn.pri:not(:disabled):not([disabled]):hover,
 html:not([data-ds-main]) body .action:not(:disabled):not([disabled]):hover,
 html:not([data-ds-main]) body button.p:not(:disabled):hover,
-html:not([data-ds-main]) body .p:not(:disabled):hover { background: #1D4DB8; }
+html:not([data-ds-main]) body .p:not(:disabled):hover { background: #101e33; }
 html:not([data-ds-main]) body .btn.ghost {
   background: #fff;
-  color: #172B43;
-  box-shadow: inset 0 0 0 1px #172B43;
+  color: #192342;
+  box-shadow: inset 0 0 0 1px #192342;
   border-radius: 10px;
 }
 html:not([data-ds-main]) body .btn,
@@ -214,8 +214,8 @@ html:not([data-ds-main]) body .action { border-radius: 10px; }
 
 /* ── 결제 흐름 쪽(주문서 · 완료 · 실패 · 주문 조회 · 이용권 · 마이페이지) ── */
 html body.payment-flow {
-  --ink: #172B43;
-  --red: #245BD6;
+  --ink: #192342;
+  --red: #1b2d49;
   --line: #DFE3ED;
   --sky2: #F7F8FC;
   --card: #fff;
@@ -223,17 +223,17 @@ html body.payment-flow {
   letter-spacing: -.01em;
 }
 html body.payment-flow .card { border-radius: 16px; border: 1px solid #DFE3ED; box-shadow: none; }
-html body.payment-flow .band { box-shadow: none; border: 1px solid #C6D5F4; background: #EEF3FF; color: #172B43; border-radius: 10px; }
+html body.payment-flow .band { box-shadow: none; border: 1px solid #dfe3ed; background: #eef1f5; color: #192342; border-radius: 10px; }
 html body.payment-flow .msg.err { color: #B42318; }
-html body.payment-flow input { accent-color: #245BD6; }
-html body.payment-flow .in:focus { outline-color: #245BD6; }
+html body.payment-flow input { accent-color: #1b2d49; }
+html body.payment-flow .in:focus { outline-color: #1b2d49; }
 html body.payment-pass main section[data-step] { border-radius: 16px; border-color: #DFE3ED; }
-html body.payment-pass .flag { background: #EEF3FF; border: 1px solid #C6D5F4; border-radius: 10px; }
+html body.payment-pass .flag { background: #eef1f5; border: 1px solid #dfe3ed; border-radius: 10px; }
 
 /* ── 약관 · 환불 · 개인정보 · 미성년 · 공지 쪽(밝은 판) ── */
-html body.ds-doc .wrap { color: #172B43; }
+html body.ds-doc .wrap { color: #192342; }
 html body.ds-doc th { background: #EEF2FA; }
-html body.ds-doc .callout { background: #EEF3FF; border-color: #C6D5F4; color: #3C4A60; }
+html body.ds-doc .callout { background: #eef1f5; border-color: #dfe3ed; color: #485365; }
 
 /* ── 입구 / (파란 그림 위) · 메인 판 /home.html — 판은 그대로, 로고 · 머리 글꼴 · 단추 색만 ── */
 html[data-ds-main] .entrance header .ds-logo { font-size: 24px; }
@@ -297,3 +297,39 @@ html[data-ds-sub] footer.business-footer .business-info .copy { color: #8f9db3; 
 details.more > summary, details.agd > summary { gap: 10px; }
 details.more > summary::after, details.agd > summary::after { white-space: nowrap; flex: none; }
 header.ds-head .ds-logo span { display: inline !important; font: inherit; }
+
+/* ── 35 창 1118 r2: 이전 규칙(brand-ink.css 팔레트 · business-footer.css 밝은 발 · 각진 모서리 4~8)으로 되돌림 — 입구 / · 메인 판 /home.html 은 그대로 ── */
+html:not([data-ds-main]) footer.sitefoot,
+html:not([data-ds-main]) footer.sitefoot .biz { background: #fff; color: #626c83; }
+html:not([data-ds-main]) footer.sitefoot { border-top: 1px solid #dfe3ed; }
+html:not([data-ds-main]) footer.sitefoot .biz p { color: #626c83; }
+html:not([data-ds-main]) footer.sitefoot .biz a,
+html:not([data-ds-main]) footer.sitefoot .biz .policy a { color: #192342; }
+html:not([data-ds-main]) footer.sitefoot .biz .policy a:hover { background: #f0f2fa; }
+html:not([data-ds-main]) footer.sitefoot .biz .policy a.pp,
+html:not([data-ds-main]) footer.sitefoot .biz .policy a.pp b { color: #192342; }
+html:not([data-ds-main]) footer.sitefoot .biz .copy { color: #8b9bb1; }
+html[data-ds-sub] footer.business-footer { background: #fff; color: #626c83; border-top: 1px solid #dfe3ed; }
+html[data-ds-sub] footer.business-footer .footer-shortcuts { color: #192342; }
+html[data-ds-sub] footer.business-footer .footer-shortcuts a,
+html[data-ds-sub] footer.business-footer .business-info nav a,
+html[data-ds-sub] footer.business-footer .business-info nav a.pp,
+html[data-ds-sub] footer.business-footer .business-info nav a.pp b,
+html[data-ds-sub] footer.business-footer .business-info p a { color: #192342; }
+html[data-ds-sub] footer.business-footer .business-info nav a:hover,
+html[data-ds-sub] footer.business-footer .footer-shortcuts a:hover { background: #f0f2fa; }
+html[data-ds-sub] footer.business-footer .business-info p { color: #626c83; }
+html[data-ds-sub] footer.business-footer .business-info .copy { color: #8b9bb1; }
+.ds-head .ds-menu a, .ds-head .ds-acct a { border-radius: 6px; }
+.ds-head .ds-menu a:hover { background: #f0f2fa; }
+.ds-head .ds-menu a[aria-current="page"] { color: #192342; box-shadow: inset 0 -2px 0 #1b2d49; border-radius: 0; }
+html:not([data-ds-main]) body .btn,
+html:not([data-ds-main]) body .action,
+html:not([data-ds-main]) body .btn.pri,
+html:not([data-ds-main]) body .btn.ghost,
+html:not([data-ds-main]) body button.p { border-radius: 6px !important; }
+html body.payment-flow { --r: 8px; }
+html body.payment-flow .card,
+html body.payment-pass main section[data-step] { border-radius: 8px; }
+html body.payment-flow .band,
+html body.payment-pass .flag { border-radius: 6px; }

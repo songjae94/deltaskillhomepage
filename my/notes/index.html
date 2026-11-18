@@ -6,16 +6,16 @@
 <meta name="robots" content="noindex,nofollow">
 <title>델타스킬 · AI 오답노트</title>
 <style>
-:root{--acc:#245BD6;--acc2:#245BD6;--mut:#5B6678;--line:#DFE3ED;--line2:#C9D1E0;--bg:#F7F8FC;--card:#fff;--red:#245BD6}
+:root{--acc:#1b2d49;--acc2:#1b2d49;--mut:#626c83;--line:#DFE3ED;--line2:#C9D1E0;--bg:#F7F8FC;--card:#fff;--red:#1b2d49}
 *{box-sizing:border-box}
-body{font-family:Pretendard,'Malgun Gothic',-apple-system,sans-serif;margin:0;color:#172B43;line-height:1.55;background:var(--bg)}
+body{font-family:Pretendard,'Malgun Gothic',-apple-system,sans-serif;margin:0;color:#192342;line-height:1.55;background:var(--bg)}
 a{color:var(--acc2)}
 .wrap{max-width:560px;margin:0 auto;padding:16px 14px 70px}
 .top{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-bottom:6px}
 .brand{display:flex;align-items:center;gap:7px;font-weight:800;font-size:16px;text-decoration:none;color:#fff}
 .brand img{width:22px;height:22px}
-h1{font-size:19px;border-bottom:2px solid var(--acc);padding-bottom:8px;margin:10px 0 12px;color:#172B43}
-h2{font-size:15px;margin:20px 0 8px;border-left:4px solid var(--acc);padding-left:8px;color:#172B43}
+h1{font-size:19px;border-bottom:2px solid var(--acc);padding-bottom:8px;margin:10px 0 12px;color:#192342}
+h2{font-size:15px;margin:20px 0 8px;border-left:4px solid var(--acc);padding-left:8px;color:#192342}
 table{border-collapse:collapse;width:100%;font-size:13px;margin:6px 0;background:var(--card)}
 th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
 th{background:#EEF2FA}
@@ -24,11 +24,11 @@ th{background:#EEF2FA}
 .rxc ol.rxl{margin:6px 0 2px;padding-left:20px}.rxc li{margin:4px 0}.bad{color:#B42318;font-weight:600}.warn{background:#FFF6DB}
 .cards{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
 .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;flex:1;min-width:88px;text-align:center}
-.card b{font-size:22px;display:block;color:#172B43}
-button{font:inherit;padding:9px 14px;border:1px solid #172B43;border-radius:10px;background:#fff;color:#172B43;cursor:pointer}
+.card b{font-size:22px;display:block;color:#192342}
+button{font:inherit;padding:9px 14px;border:1px solid #192342;border-radius:10px;background:#fff;color:#192342;cursor:pointer}
 button.p{background:var(--acc);border-color:transparent;color:#fff;width:100%;font-weight:700}
 button.sm{padding:6px 12px;font-size:13px}
-input,select{font:inherit;padding:10px 12px;border:1px solid var(--line2);border-radius:8px;width:100%;margin:4px 0;background:#fff;color:#172B43}
+input,select{font:inherit;padding:10px 12px;border:1px solid var(--line2);border-radius:8px;width:100%;margin:4px 0;background:#fff;color:#192342}
 .card2{max-width:430px;margin:5vh auto;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px 22px}@media(max-width:480px){.card2{margin:10px;max-width:none;padding:20px 16px}}
 .err{color:#B42318;font-size:13px;min-height:18px;margin:4px 0}
 .lnk{color:var(--acc2);font-size:13px;background:none;border:none;padding:6px 0;cursor:pointer;text-decoration:underline}
@@ -39,12 +39,12 @@ input,select{font:inherit;padding:10px 12px;border:1px solid var(--line2);border
 .ph{max-width:120px;border:1px solid var(--line);border-radius:6px;margin:3px}
 .sub{border:1px solid var(--line);border-radius:10px;background:var(--card);padding:10px 12px;margin:6px 0;cursor:pointer}
 .sub:hover{background:#EEF2FA}
-.consent{display:flex;gap:9px;align-items:flex-start;font-size:12.5px;margin:9px 0;line-height:1.55;color:var(--mut)}.consent input[type=checkbox]{width:16px;height:16px;flex:0 0 16px;margin:2px 0 0;padding:0;accent-color:var(--acc)}.consent b{color:#172B43}
+.consent{display:flex;gap:9px;align-items:flex-start;font-size:12.5px;margin:9px 0;line-height:1.55;color:var(--mut)}.consent input[type=checkbox]{width:16px;height:16px;flex:0 0 16px;margin:2px 0 0;padding:0;accent-color:var(--acc)}.consent b{color:#192342}
 .ol{list-style:none;padding:0;margin:8px 0;counter-reset:s}
 .ol li{position:relative;padding:11px 12px 11px 42px;border:1px solid var(--line);border-radius:10px;background:var(--card);margin:6px 0;font-size:13.5px}
 .ol li:before{counter-increment:s;content:counter(s);position:absolute;left:10px;top:11px;width:24px;height:24px;border-radius:50%;background:var(--acc);color:#fff;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center}
 .rep-tag{display:inline-block;font-size:11px;font-weight:700;color:#8A5A00;border:1px solid #E5C77A;border-radius:999px;padding:1px 7px;margin-left:6px}
-.dir{border-left:3px solid var(--acc);background:#EEF3FF;border-radius:0 8px 8px 0;padding:9px 12px;margin:6px 0;font-size:13px}
+.dir{border-left:3px solid var(--acc);background:#eef1f5;border-radius:0 8px 8px 0;padding:9px 12px;margin:6px 0;font-size:13px}
 #report:not(:empty){border:1px solid var(--line2);border-radius:14px;padding:6px 14px 16px;margin:8px 0 14px;background:#fff}
 @media print{.top,#reportBtn,#body>h2,#body>.cards,.sub,.det{display:none!important}#report:not(:empty){border:none;background:#fff}body{background:#fff;color:#111}h1,h2,.card b{color:#111}}
 </style>
@@ -159,10 +159,10 @@ function scoreChart(points,subj){
   const X=i=>padL+i*(W-padL-padR)/(points.length-1);
   const Y=v=>padT+(1-(v-lo)/(hi-lo))*(H-padT-padB);
   let g="";
-  [[1,c[0]],[2,c[1]],[3,c[2]],[4,c[3]]].forEach(gr=>{const cv=gr[1];if(cv>lo&&cv<hi){const yy=Y(cv).toFixed(1);g+=`<line x1="${padL}" y1="${yy}" x2="${W-padR}" y2="${yy}" stroke="#DFE3ED" stroke-dasharray="3 3"/><text x="${W-padR+3}" y="${(Y(cv)+3).toFixed(1)}" fill="#5B6678" font-size="8.5">${gr[0]}등급</text>`;}});
+  [[1,c[0]],[2,c[1]],[3,c[2]],[4,c[3]]].forEach(gr=>{const cv=gr[1];if(cv>lo&&cv<hi){const yy=Y(cv).toFixed(1);g+=`<line x1="${padL}" y1="${yy}" x2="${W-padR}" y2="${yy}" stroke="#DFE3ED" stroke-dasharray="3 3"/><text x="${W-padR+3}" y="${(Y(cv)+3).toFixed(1)}" fill="#626c83" font-size="8.5">${gr[0]}등급</text>`;}});
   const d=points.map((p,i)=>`${i?'L':'M'}${X(i).toFixed(1)} ${Y(p.score).toFixed(1)}`).join(" ");
-  g+=`<path d="${d}" fill="none" stroke="#245BD6" stroke-width="2"/>`;
-  points.forEach((p,i)=>{const x=X(i).toFixed(1),y=Y(p.score).toFixed(1);g+=`<circle cx="${x}" cy="${y}" r="3.2" fill="#245BD6"/><text x="${x}" y="${(Y(p.score)-7).toFixed(1)}" fill="#172B43" font-size="9.5" text-anchor="middle">${p.score}</text><text x="${x}" y="${H-8}" fill="#5B6678" font-size="8.5" text-anchor="middle">${esc(p.short)}</text>`;});
+  g+=`<path d="${d}" fill="none" stroke="#1b2d49" stroke-width="2"/>`;
+  points.forEach((p,i)=>{const x=X(i).toFixed(1),y=Y(p.score).toFixed(1);g+=`<circle cx="${x}" cy="${y}" r="3.2" fill="#1b2d49"/><text x="${x}" y="${(Y(p.score)-7).toFixed(1)}" fill="#192342" font-size="9.5" text-anchor="middle">${p.score}</text><text x="${x}" y="${H-8}" fill="#626c83" font-size="8.5" text-anchor="middle">${esc(p.short)}</text>`;});
   return `<svg viewBox="0 0 ${W} ${H}" width="100%" style="max-width:440px;display:block;margin:6px auto;background:var(--card);border:1px solid var(--line);border-radius:10px" role="img" aria-label="회차별 자기채점 점수 추이">${g}</svg>`;
 }
 
