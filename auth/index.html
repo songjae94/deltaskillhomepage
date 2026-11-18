@@ -7,7 +7,7 @@
 <title>델타스킬 · 로그인</title>
 <meta name="theme-color" content="#FFFFFF">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
-<link rel="stylesheet" href="brand.css?v=1118n">
+<link rel="stylesheet" href="brand.css?v=1118p">
 <link rel="stylesheet" href="/assets/account-header.css?v=pass-1117">
 <link rel="stylesheet" href="/assets/business-footer.css">
 <link rel="stylesheet" href="/assets/site-unify.css?v=35">
@@ -28,9 +28,8 @@
     <div class="field"><label for="l-pin">비밀번호</label><input id="l-pin" type="password" maxlength="64" autocomplete="current-password" placeholder="비밀번호"></div>
     <div class="err" role="alert" id="l-err"></div>
     <button class="p" id="l-go">로그인</button>
-    <div class="or">또는</div>
-    <button type="button" class="kakao" data-oauth="kakao"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#191919" d="M12 3C6.5 3 2 6.4 2 10.6c0 2.7 1.8 5 4.5 6.4l-1 3.8c-.1.3.3.6.6.4l4.4-2.9c.5.1 1 .1 1.5.1 5.5 0 10-3.4 10-7.8S17.5 3 12 3z"/></svg>카카오로 시작하기</button>
-    <button type="button" class="naver" data-oauth="naver"><b>N</b>네이버로 시작하기</button>
+    <div class="or">간편 로그인</div>
+    <div class="sns"><button type="button" class="kakao" data-oauth="kakao" aria-label="카카오로 시작하기" title="카카오로 시작하기"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#191919" d="M12 3C6.5 3 2 6.4 2 10.6c0 2.7 1.8 5 4.5 6.4l-1 3.8c-.1.3.3.6.6.4l4.4-2.9c.5.1 1 .1 1.5.1 5.5 0 10-3.4 10-7.8S17.5 3 12 3z"/></svg></button><button type="button" class="naver" data-oauth="naver" aria-label="네이버로 시작하기" title="네이버로 시작하기"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="M16.273 12.845 7.376 0H0v24h7.726V11.156L16.624 24H24V0h-7.727v12.845Z"/></svg></button></div>
     <div class="links"><button class="ghost" data-go="reset">비밀번호를 잊었어요</button><button class="ghost" data-go="signup">처음이신가요? 회원가입</button></div>
   </section>
 
@@ -43,9 +42,8 @@
       <div class="field"><label for="s-phone">휴대폰 번호</label><input id="s-phone" inputmode="numeric" autocomplete="tel" placeholder="01000000000" maxlength="13"></div>
       <div class="err" role="alert" id="s-err1"></div>
       <button class="p" id="s-send">인증번호 받기</button>
-      <div class="or">또는</div>
-      <button type="button" class="kakao" data-oauth="kakao"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#191919" d="M12 3C6.5 3 2 6.4 2 10.6c0 2.7 1.8 5 4.5 6.4l-1 3.8c-.1.3.3.6.6.4l4.4-2.9c.5.1 1 .1 1.5.1 5.5 0 10-3.4 10-7.8S17.5 3 12 3z"/></svg>카카오로 시작하기</button>
-    <button type="button" class="naver" data-oauth="naver"><b>N</b>네이버로 시작하기</button>
+      <div class="or">간편 가입</div>
+      <div class="sns"><button type="button" class="kakao" data-oauth="kakao" aria-label="카카오로 시작하기" title="카카오로 시작하기"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#191919" d="M12 3C6.5 3 2 6.4 2 10.6c0 2.7 1.8 5 4.5 6.4l-1 3.8c-.1.3.3.6.6.4l4.4-2.9c.5.1 1 .1 1.5.1 5.5 0 10-3.4 10-7.8S17.5 3 12 3z"/></svg></button><button type="button" class="naver" data-oauth="naver" aria-label="네이버로 시작하기" title="네이버로 시작하기"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="M16.273 12.845 7.376 0H0v24h7.726V11.156L16.624 24H24V0h-7.727v12.845Z"/></svg></button></div>
     </div>
     <div id="s-step2" hidden>
       <p class="desc"><b id="s-phone-shown"></b> 로 보낸 인증번호 6자리를 입력하세요. <span class="timer" id="s-timer"></span></p>
