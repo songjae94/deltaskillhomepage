@@ -746,7 +746,7 @@
       "pdf": 0,
       "hwpx": 0
      },
-     "saleFrom": null,
+     "saleFrom": "2026-11-18T18:00:00+09:00",
      "saleTo": null,
      "sample": "NS-CM2-06-F00",
      "preview": {"url": "https://cvlrphtupjmaefahodgz.supabase.co/storage/v1/object/sign/shop/naesin/preview/NS-CM2-06-F00.pdf?token=eyJraWQiOiJmMTkzOGIwMC1kNTI5LTQ4OTEtOGExOS04M2E5MDQ1ZWJlNDkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJzaG9wL25hZXNpbi9wcmV2aWV3L05TLUNNMi0wNi1GMDAucGRmIiwic2NvcGUiOiJkb3dubG9hZCIsImlhdCI6MTc5NDk5NDk1MSwiZXhwIjoxODAyNzcwOTUxfQ.qLRO5aPPSGWfP6wEOq72A0Xd1KQNpPJU-aIihYJtt80", "pages": 3, "until": "2027-02-16"},
@@ -755,7 +755,7 @@
        "id": "NS-CM2-06-L1.pdf",
        "fmt": "pdf",
        "title": "공통수학2 단원 문제집 1권 · 06 함수 · 1문항 1쪽 (PDF)",
-       "from": null,
+       "from": "2026-11-18T18:00:00+09:00",
        "layout": "1문항 1쪽",
        "pages": 139
       },
@@ -763,7 +763,7 @@
        "id": "NS-CM2-06-L2.pdf",
        "fmt": "pdf",
        "title": "공통수학2 단원 문제집 1권 · 06 함수 · 2문항 2단 (PDF)",
-       "from": null,
+       "from": "2026-11-18T18:00:00+09:00",
        "layout": "2문항 2단",
        "pages": 90
       },
@@ -771,7 +771,7 @@
        "id": "NS-CM2-06-L4.pdf",
        "fmt": "pdf",
        "title": "공통수학2 단원 문제집 1권 · 06 함수 · 4문항 2단 (PDF)",
-       "from": null,
+       "from": "2026-11-18T18:00:00+09:00",
        "layout": "4문항 2단",
        "pages": 80
       }
