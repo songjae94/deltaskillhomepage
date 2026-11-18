@@ -66,6 +66,7 @@ label.f{display:block;font-size:13.5px;font-weight:700;color:var(--ink2);margin:
 .btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;border-radius:12px;font-size:14.5px;font-weight:700;text-decoration:none;font-family:inherit;border:0;cursor:pointer}
 .btn.pri{background:var(--red);color:#fff;width:100%;min-height:52px;font-size:16px}
 .btn.pri:disabled{background:#E3E8EF;color:#3A4A5F;cursor:not-allowed}
+#paywrap{cursor:not-allowed}#paywrap .btn.pri:disabled{pointer-events:none}.msg.why:empty{display:none}.msg.why{margin:10px 0 0}
 .btn.ghost{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
 .btn.sm{min-height:44px;padding:0 14px;font-size:14px}
 .acts{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0}
@@ -151,7 +152,8 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
       <p class="notice" id="paynote" hidden></p>
       <p class="msg" id="msg" role="status"></p>
       <p class="sum1" id="sum1">단건 결제(자동 결제 아님) · 받기 전이면 결제일부터 7일 안 전액 환불 · 일부 받았으면 받지 않은 파일 비율만큼 7일 안 환불 · 받은 파일은 청약철회 제한 · <a href="/refund/" target="_blank" rel="noopener">환불·청약철회 안내</a></p>
-      <button type="submit" class="btn pri" id="pay" disabled>결제하기</button>
+      <p class="msg err why" id="why" role="status"></p>
+      <div id="paywrap"><button type="submit" class="btn pri" id="pay" disabled>결제하기</button></div>
     </section>
   </form>
   <p class="fn">결제는 토스페이먼츠 결제창에서 진행됩니다. 결제가 끝나면 주문번호가 나옵니다 — <a href="/orders/">주문 조회</a>에서 이메일과 주문번호로 다시 확인할 수 있습니다. 환불 신청: admin@deltaskill.co.kr 또는 070-8065-2468로 상품명·주문번호·결제수단을 알려 주세요.</p>
@@ -184,6 +186,7 @@ function apiBase(cfg){return (cfg&&typeof cfg.api==="string"?cfg.api:"").replace
 function callApi(cfg,name,body){
   var headers={"Content-Type":"application/json"};
   var api=apiBase(cfg)+"/"+name;
+  if(window.DSAuth&&DSAuth.has())headers.Authorization="Bearer "+DSAuth.get(); /* 31 창 1118: 로그인 결제를 회원에 잇는다 */
   return fetch(api,{method:"POST",headers:headers,body:JSON.stringify(body),redirect:"follow"})
     .then(function(r){return r.json().catch(function(){return {ok:false,error:"server"};});})
     .catch(function(){return {ok:false,error:"network"};});
@@ -339,8 +342,18 @@ function showProduct(){
 }
 function okEmail(s){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);}
 function agreed(){return ["c1","c2","c3","c4"].every(function(i){return $(i).checked;});}
+var seen={};
+/* 31 창 1118: 결제 단추가 회색일 때 막는 까닭 한 줄 — 칸에서 벗어날 때 · 단추를 누를 때 보이고 다 맞으면 사라진다 */
+function whyText(){
+  if(seen.em&&!okEmail($("em").value.trim()))return "이메일을 확인해 주세요.";
+  if(seen.nm&&!$("nm").value.trim())return "이름을 적어 주세요.";
+  if(seen.ag&&!agreed())return "필수 항목에 동의해 주세요.";
+  return "";
+}
+function showWhy(){var w=$("why");if(w)w.textContent=whyText();}
 function update(){
   $("ca").checked=agreed();
+  showWhy();
   if($("mobhint"))$("mobhint").hidden=pickMethod()!=="MOBILE_PHONE";
   $("pay").disabled=!(ready&&apiBase(cfg)&&!busy&&okEmail($("em").value.trim())&&$("nm").value.trim()&&agreed());
 }
@@ -391,6 +404,8 @@ function boot(){
   if(!showProduct()){loadCfg().then(function(c){if(c&&c.PAY_MODE==="test")$("band").hidden=false;});return;}
   $("f").hidden=false;
   ["em","nm","c1","c2","c3","c4"].forEach(function(i){$(i).addEventListener("input",update);$(i).addEventListener("change",update);});
+  ["em","nm"].forEach(function(i){$(i).addEventListener("blur",function(){seen[i]=true;showWhy();});});
+  $("paywrap").addEventListener("click",function(){if(!$("pay").disabled)return;seen.em=seen.nm=seen.ag=true;showWhy();});
   $("ca").addEventListener("change",function(){var v=$("ca").checked;["c1","c2","c3","c4"].forEach(function(i){$(i).checked=v;});update();});
   /* 로그인 회원은 회원 정보의 이름을 미리 채운다(이메일은 회원 정보에 없어 직접 적음) */
   if(window.DSAuth&&DSAuth.has()){fetch(DSAuth.api+"/me",{headers:{Authorization:"Bearer "+DSAuth.get()},credentials:"omit"}).then(function(r){return r.ok?r.json():null;}).then(function(m){var n=m&&typeof m.name==="string"?m.name.trim().slice(0,40):"";if(n&&!$("nm").value){$("nm").value=n;update();}}).catch(function(){});}

@@ -148,6 +148,7 @@ function callApi(cfg,name,body,review){
     api=new URL(name,base).href;
     headers.Authorization="Bearer "+token;
   }
+  if(!headers.Authorization&&window.DSAuth&&DSAuth.has())headers.Authorization="Bearer "+DSAuth.get(); /* 31 창 1118: 로그인 결제를 회원에 잇는다 */
   return fetch(api,{method:"POST",headers:headers,body:JSON.stringify(body),redirect:review?"error":"follow"})
     .then(function(r){return r.json().catch(function(){return {ok:false,error:"server"};});})
     .catch(function(){return {ok:false,error:"network"};});
