@@ -1,142 +1,222 @@
 {
- "cards": [
-  "신한",
-  "롯데",
-  "농협",
-  "우리"
- ],
- "compositions": [
-  {
-   "id": "C1",
-   "no": 1,
-   "name": "단원 전체",
-   "desc": "한 단원의 문항을 모두 받습니다. PDF는 합본 1파일, 한글(HWPX)은 유형별 파일 묶음입니다.",
-   "path": "basic",
-   "pick": "unit",
-   "make": "ready",
-   "sku": "unit"
-  }
- ],
- "subjects": [
-  {
-   "subject": "공통수학2",
-   "code": "CM2",
-   "grade": "고1",
-   "textbooks": [
+  "cards": [
+    "신한",
+    "롯데",
+    "농협",
+    "우리"
+  ],
+  "compositions": [
     {
-     "id": "B1",
-     "name": "부교재 연습문항",
-     "label": "공통수학2 부교재 연습문항",
-     "edition": null,
-     "freeSet": null
+      "id": "C1",
+      "no": 1,
+      "name": "단원 전체",
+      "desc": "한 단원의 문항을 모두 받습니다. PDF는 합본 1파일, 한글(HWPX)은 유형별 파일 묶음입니다.",
+      "path": "basic",
+      "pick": "unit",
+      "make": "ready",
+      "sku": "unit"
     }
-   ],
-   "units": [
+  ],
+  "subjects": [
     {
-     "sku": "NS-CM2-06",
-     "no": "06",
-     "major": "Ⅲ 함수와 그래프",
-     "unit": "함수",
-     "name": "공통수학2 단원 문제집 1권 · 06 함수",
-     "composition": "C1",
-     "textbook": null,
-     "count": 101,
-     "pages": null,
-     "price": {
-      "pdf": 4000,
-      "hwpx": null
-     },
-     "taxFreeAmount": {
-      "pdf": 0,
-      "hwpx": 0
-     },
-     "saleFrom": "2026-11-18T18:00:00+09:00",
-     "saleTo": null,
-     "sample": "NS-CM2-06-F00",
-     "preview": {"url": "https://cvlrphtupjmaefahodgz.supabase.co/storage/v1/object/sign/shop/naesin/preview/NS-CM2-06-F00.pdf?token=eyJraWQiOiJmMTkzOGIwMC1kNTI5LTQ4OTEtOGExOS04M2E5MDQ1ZWJlNDkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJzaG9wL25hZXNpbi9wcmV2aWV3L05TLUNNMi0wNi1GMDAucGRmIiwic2NvcGUiOiJkb3dubG9hZCIsImlhdCI6MTc5NDk5NDk1MSwiZXhwIjoxODAyNzcwOTUxfQ.qLRO5aPPSGWfP6wEOq72A0Xd1KQNpPJU-aIihYJtt80", "pages": 3, "until": "2027-02-16"},
-     "files": [
-      {
-       "id": "NS-CM2-06-L1.pdf",
-       "fmt": "pdf",
-       "title": "공통수학2 단원 문제집 1권 · 06 함수 · 1문항 1쪽 (PDF)",
-       "from": "2026-11-18T18:00:00+09:00",
-       "layout": "1문항 1쪽",
-       "pages": 139
-      },
-      {
-       "id": "NS-CM2-06-L2.pdf",
-       "fmt": "pdf",
-       "title": "공통수학2 단원 문제집 1권 · 06 함수 · 2문항 2단 (PDF)",
-       "from": "2026-11-18T18:00:00+09:00",
-       "layout": "2문항 2단",
-       "pages": 90
-      },
-      {
-       "id": "NS-CM2-06-L4.pdf",
-       "fmt": "pdf",
-       "title": "공통수학2 단원 문제집 1권 · 06 함수 · 4문항 2단 (PDF)",
-       "from": "2026-11-18T18:00:00+09:00",
-       "layout": "4문항 2단",
-       "pages": 80
-      }
-     ],
-     "types": [],
-     "items": [],
-     "packs": []
+      "subject": "공통수학2",
+      "code": "CM2",
+      "grade": "고1",
+      "textbooks": [
+        {
+          "id": "B1",
+          "name": "부교재 연습문항",
+          "label": "공통수학2 부교재 연습문항",
+          "edition": null,
+          "freeSet": null
+        }
+      ],
+      "units": [
+        {
+          "sku": "NS-CM2-06",
+          "no": "06",
+          "major": "Ⅲ 함수와 그래프",
+          "unit": "함수",
+          "name": "공통수학2 단원 문제집 1권 · 06 함수",
+          "composition": "C1",
+          "textbook": null,
+          "count": 101,
+          "pages": null,
+          "price": {
+            "pdf": 4000,
+            "hwpx": null
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-18T18:00:00+09:00",
+          "saleTo": null,
+          "sample": "NS-CM2-06-F00",
+          "preview": {
+            "url": "https://cvlrphtupjmaefahodgz.supabase.co/storage/v1/object/sign/shop/naesin/preview/NS-CM2-06-F00.pdf?token=eyJraWQiOiJmMTkzOGIwMC1kNTI5LTQ4OTEtOGExOS04M2E5MDQ1ZWJlNDkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJzaG9wL25hZXNpbi9wcmV2aWV3L05TLUNNMi0wNi1GMDAucGRmIiwic2NvcGUiOiJkb3dubG9hZCIsImlhdCI6MTc5NDk5NDk1MSwiZXhwIjoxODAyNzcwOTUxfQ.qLRO5aPPSGWfP6wEOq72A0Xd1KQNpPJU-aIihYJtt80",
+            "pages": 3,
+            "until": "2027-02-16"
+          },
+          "files": [
+            {
+              "id": "NS-CM2-06-L1.pdf",
+              "fmt": "pdf",
+              "title": "공통수학2 단원 문제집 1권 · 06 함수 · 1문항 1쪽 (PDF)",
+              "from": "2026-11-18T18:00:00+09:00",
+              "layout": "1문항 1쪽",
+              "pages": 139
+            },
+            {
+              "id": "NS-CM2-06-L2.pdf",
+              "fmt": "pdf",
+              "title": "공통수학2 단원 문제집 1권 · 06 함수 · 2문항 2단 (PDF)",
+              "from": "2026-11-18T18:00:00+09:00",
+              "layout": "2문항 2단",
+              "pages": 90
+            },
+            {
+              "id": "NS-CM2-06-L4.pdf",
+              "fmt": "pdf",
+              "title": "공통수학2 단원 문제집 1권 · 06 함수 · 4문항 2단 (PDF)",
+              "from": "2026-11-18T18:00:00+09:00",
+              "layout": "4문항 2단",
+              "pages": 80
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
+        },
+        {
+          "sku": "NS-CM2-07",
+          "no": "07",
+          "major": "Ⅲ 함수와 그래프",
+          "unit": "유리함수와 무리함수",
+          "name": "공통수학2 단원 문제집 1권 · 07 유리함수와 무리함수",
+          "composition": "C1",
+          "textbook": null,
+          "count": 109,
+          "pages": null,
+          "price": {
+            "pdf": 5000,
+            "hwpx": null
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-19T00:00:00+09:00",
+          "saleTo": null,
+          "sample": "NS-CM2-07-F00",
+          "preview": {
+            "url": "https://cvlrphtupjmaefahodgz.supabase.co/storage/v1/object/sign/shop/naesin/preview/NS-CM2-07-F00.pdf?token=eyJraWQiOiJmMTkzOGIwMC1kNTI5LTQ4OTEtOGExOS04M2E5MDQ1ZWJlNDkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJzaG9wL25hZXNpbi9wcmV2aWV3L05TLUNNMi0wNy1GMDAucGRmIiwic2NvcGUiOiJkb3dubG9hZCIsImlhdCI6MTc5NTAxNDU1MiwiZXhwIjoxODAyNzkwNTUyfQ.ghldMoLuxgDzvZ3UawVh6qgBtiU1Ipy4dJR0ehsYxWQ",
+            "pages": 3,
+            "until": "2027-02-17"
+          },
+          "files": [
+            {
+              "id": "NS-CM2-07-L1.pdf",
+              "fmt": "pdf",
+              "title": "공통수학2 단원 문제집 1권 · 07 유리함수와 무리함수 · 1문항 1쪽 (PDF)",
+              "from": "2026-11-19T00:00:00+09:00",
+              "layout": "1문항 1쪽",
+              "pages": 124
+            },
+            {
+              "id": "NS-CM2-07-L2.pdf",
+              "fmt": "pdf",
+              "title": "공통수학2 단원 문제집 1권 · 07 유리함수와 무리함수 · 2문항 2단 (PDF)",
+              "from": "2026-11-19T00:00:00+09:00",
+              "layout": "2문항 2단",
+              "pages": 70
+            },
+            {
+              "id": "NS-CM2-07-L4.pdf",
+              "fmt": "pdf",
+              "title": "공통수학2 단원 문제집 1권 · 07 유리함수와 무리함수 · 4문항 2단 (PDF)",
+              "from": "2026-11-19T00:00:00+09:00",
+              "layout": "4문항 2단",
+              "pages": 58
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
+        }
+      ]
     },
     {
-     "sku": "NS-CM2-07",
-     "no": "07",
-     "major": "Ⅲ 함수와 그래프",
-     "unit": "유리함수와 무리함수",
-     "name": "공통수학2 단원 문제집 1권 · 07 유리함수와 무리함수",
-     "composition": "C1",
-     "textbook": null,
-     "count": 109,
-     "pages": null,
-     "price": {
-      "pdf": 5000,
-      "hwpx": null
-     },
-     "taxFreeAmount": {
-      "pdf": 0,
-      "hwpx": 0
-     },
-     "saleFrom": "2026-11-19T00:00:00+09:00",
-     "saleTo": null,
-     "sample": "NS-CM2-07-F00",
-     "preview": {"url": "https://cvlrphtupjmaefahodgz.supabase.co/storage/v1/object/sign/shop/naesin/preview/NS-CM2-07-F00.pdf?token=eyJraWQiOiJmMTkzOGIwMC1kNTI5LTQ4OTEtOGExOS04M2E5MDQ1ZWJlNDkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJzaG9wL25hZXNpbi9wcmV2aWV3L05TLUNNMi0wNy1GMDAucGRmIiwic2NvcGUiOiJkb3dubG9hZCIsImlhdCI6MTc5NTAxNDU1MiwiZXhwIjoxODAyNzkwNTUyfQ.ghldMoLuxgDzvZ3UawVh6qgBtiU1Ipy4dJR0ehsYxWQ", "pages": 3, "until": "2027-02-17"},
-     "files": [
-      {
-       "id": "NS-CM2-07-L1.pdf",
-       "fmt": "pdf",
-       "title": "공통수학2 단원 문제집 1권 · 07 유리함수와 무리함수 · 1문항 1쪽 (PDF)",
-       "from": "2026-11-19T00:00:00+09:00",
-       "layout": "1문항 1쪽",
-       "pages": 124
-      },
-      {
-       "id": "NS-CM2-07-L2.pdf",
-       "fmt": "pdf",
-       "title": "공통수학2 단원 문제집 1권 · 07 유리함수와 무리함수 · 2문항 2단 (PDF)",
-       "from": "2026-11-19T00:00:00+09:00",
-       "layout": "2문항 2단",
-       "pages": 70
-      },
-      {
-       "id": "NS-CM2-07-L4.pdf",
-       "fmt": "pdf",
-       "title": "공통수학2 단원 문제집 1권 · 07 유리함수와 무리함수 · 4문항 2단 (PDF)",
-       "from": "2026-11-19T00:00:00+09:00",
-       "layout": "4문항 2단",
-       "pages": 58
-      }
-     ],
-     "types": [],
-     "items": [],
-     "packs": []
+      "subject": "미적분Ⅰ 기초편",
+      "code": "MI1B",
+      "grade": "고2",
+      "textbooks": [
+        {
+          "id": "B1",
+          "name": "부교재 연습문항",
+          "label": "미적분Ⅰ 기초편 부교재 연습문항",
+          "edition": null,
+          "freeSet": null
+        }
+      ],
+      "units": [
+        {
+          "sku": "NS-MI1B-05",
+          "no": "05",
+          "major": "Ⅲ 적분",
+          "unit": "부정적분과 정적분",
+          "name": "미적분Ⅰ 단원 문제집 기초편 · 05 부정적분과 정적분",
+          "composition": "C1",
+          "textbook": null,
+          "count": 75,
+          "pages": null,
+          "price": {
+            "pdf": 3100,
+            "hwpx": null
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-19T08:44:00+09:00",
+          "saleTo": null,
+          "sample": "NS-MI1B-05-F00",
+          "preview": {
+            "url": "https://cvlrphtupjmaefahodgz.supabase.co/storage/v1/object/sign/shop/naesin/preview/NS-MI1B-05-F00.pdf?token=eyJraWQiOiJmMTkzOGIwMC1kNTI5LTQ4OTEtOGExOS04M2E5MDQ1ZWJlNDkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJzaG9wL25hZXNpbi9wcmV2aWV3L05TLU1JMUItMDUtRjAwLnBkZiIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3OTUwNDIyNDQsImV4cCI6MTgwMjgxODI0NH0.pMdQLSSqZn_XKDro2sksrCxd5HbNqMEAlqCw9N1Xpws",
+            "pages": 3,
+            "until": "2027-02-17"
+          },
+          "files": [
+            {
+              "id": "NS-MI1B-05-L1.pdf",
+              "fmt": "pdf",
+              "title": "미적분Ⅰ 단원 문제집 기초편 · 05 부정적분과 정적분 · 1문항 1쪽 (PDF)",
+              "from": "2026-11-19T08:44:00+09:00",
+              "layout": "1문항 1쪽",
+              "pages": 88
+            },
+            {
+              "id": "NS-MI1B-05-L2.pdf",
+              "fmt": "pdf",
+              "title": "미적분Ⅰ 단원 문제집 기초편 · 05 부정적분과 정적분 · 2문항 2단 (PDF)",
+              "from": "2026-11-19T08:44:00+09:00",
+              "layout": "2문항 2단",
+              "pages": 51
+            },
+            {
+              "id": "NS-MI1B-05-L4.pdf",
+              "fmt": "pdf",
+              "title": "미적분Ⅰ 단원 문제집 기초편 · 05 부정적분과 정적분 · 4문항 2단 (PDF)",
+              "from": "2026-11-19T08:44:00+09:00",
+              "layout": "4문항 2단",
+              "pages": 32
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
+        }
+      ]
     }
-   ]
-  }
- ]
+  ]
 }
