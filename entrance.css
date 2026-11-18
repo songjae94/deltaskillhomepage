@@ -90,7 +90,7 @@ body.launching header,body.launching #motionToggle{opacity:0;transition:opacity 
 .passage.open{opacity:1}
 .passage :is(iframe,.bloom,.door,.sky-veil){display:none!important;animation:none!important}
 body.launching .welcome{transform:translate(-50%,-43%);transition:opacity 300ms}
-.browse{color:#123e65;text-shadow:none;font-weight:600}
+.browse{color:#fff;text-shadow:0 1px 4px #064b8870;font-weight:600}
 @media(prefers-reduced-motion:reduce){.passage{transition:none}}
 
 .entrance {background:linear-gradient(150deg,#103b5b,#19709b);}
