@@ -206,7 +206,7 @@ function passView(p){
     box.innerHTML = row("이용 중", false, `${esc(end)}까지 이용 · 매월 자동 갱신 · 다음 결제 ${esc(passDay(p.nextChargeAt))}${p.amount ? " · " + esc(won(p.amount)) : ""}`) + `<button type="button" class="btn ghost sm" id="passCancel">자동 갱신 해지</button></div>`;
     $("passCancel").onclick = () => passAsk(p);
   }else if(p && p.status === "CANCEL_SCHEDULED" && end){
-    box.innerHTML = row("해지 예약", true, `${esc(end)}까지 이용 · 다음 결제 없음`) + (p.refundAmount > 0 ? `<button type="button" class="btn ghost sm" id="passCancel">지금 해지하고 환불받기</button>` : ``) + `</div>`;
+    box.innerHTML = row("해지 예약", true, `${esc(end)}까지 이용 · 다음 결제 없음`) + (p.refundAmount > 0 ? `<button type="button" class="btn ghost sm" id="passCancel">지금 해지하고 남은 금액 환불</button>` : ``) + `</div>`;
     const b = $("passCancel"); if(b) b.onclick = () => passAsk(p);
   }else if(p && p.status === "REFUNDED"){
     box.innerHTML = row("해지 · 환불됨", true, `환불 ${esc(won(p.refundAmount))} · ${esc(passTime(p.refundedAt))}`) + `</div>`;
