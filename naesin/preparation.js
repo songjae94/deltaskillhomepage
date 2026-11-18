@@ -23,7 +23,7 @@
       return entry;
     });
     list.replaceChildren(...entries);
-    hint.textContent = '미리보기와 자료받기는 자료 공개 후 이용할 수 있습니다.';
+    hint.textContent = '판매가 열린 자료는 내신 자료 목록에서 미리보기와 구매를 할 수 있습니다.';
   } catch {
     hint.textContent = '준비 목록을 불러오지 못했습니다. 잠시 뒤 다시 확인해 주세요.';
   }

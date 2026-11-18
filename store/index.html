@@ -68,6 +68,8 @@ dd{margin:0;font-size:14.5px;min-width:0}
 .fn{margin-top:26px;font-size:13px;color:var(--sub)}
 .sku>summary:focus-visible,.btn:focus-visible,a:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
 @media(max-width:560px){main{padding:0 14px 40px}.sku>summary{padding:12px 14px}.body{padding:2px 14px 16px}.pr{max-width:42%}.pr b{font-size:16px}dt{width:60px}}
+.act35{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 6px}
+details.more{margin:18px 0;border-radius:16px;background:#EEF2FA;padding:0 16px}details.more>summary{cursor:pointer;min-height:48px;display:flex;align-items:center;font-size:14.5px;font-weight:700}details.more>summary::-webkit-details-marker{display:none}details.more>summary::after{content:"펼치기 ▾";margin-left:auto;padding-left:10px;font-size:12.5px;font-weight:650;opacity:.75}details.more[open]>summary::after{content:"접기 ▴"}details.more[open]{padding-bottom:14px}
 </style>
 <style id="biz-css">
 .biz{display:block;box-sizing:border-box;background:#05060f;color:#aab7ca;font:400 13px/1.8 "Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;letter-spacing:0;text-align:left;padding:24px 16px 36px;border-top:1px solid rgba(186,215,247,.16)}
@@ -83,7 +85,7 @@ dd{margin:0;font-size:14.5px;min-width:0}
 footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 </style>
 <script defer src="/auth.js?v=home-logout-r2-1118"></script>
-<link rel="stylesheet" href="/assets/site-unify.css?v=31">
+<link rel="stylesheet" href="/assets/site-unify.css?v=35">
 </head>
 <body>
 <header class="ds-head"><div class="ds-head-in">
@@ -94,11 +96,13 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 <main>
   <p class="crumb"><a href="/">메인</a> › 유형서 구매</p>
   <h1>번호별 유형서</h1>
-  <p class="lede">보기·풀기는 무료 · 유형서 PDF 1권 3,900원(VAT 포함). 구매 전에 무료 미리보기로 내용과 난이도를 확인해 주세요.</p>
+  <p class="lede">수능 대비 번호별 유형서는 지금 판매하지 않습니다. 기말 내신 대비 파일은 내신 자료에서 살 수 있습니다.</p>
+  <p class="act35"><a class="btn pri" href="/naesin/">내신 자료 보기 →</a> <a class="btn ghost" href="/pass/">이용권 보기</a></p>
   <div class="notice">
-    <p><b>수능 대비 번호별 유형서는 지금 판매하지 않습니다.</b> <span id="sale-note">상품 안내와 미리보기만 볼 수 있고 결제 단추는 열려 있지 않습니다.</span> 변형문항 이용권은 <a href="/pass/">변형문항 이용권</a>, 내신 대비 파일은 <a href="/naesin/">내신 자료</a>에서 안내합니다. 내신 파일은 단원마다 출시된 뒤에 결제할 수 있습니다.</p>
+    <p><span id="sale-note">아래 목록은 상품 안내와 미리보기만 볼 수 있고 결제 단추는 열려 있지 않습니다.</span></p>
     <p>모든 가격은 VAT 포함입니다. 유형서는 정기결제(자동 결제)가 아닌 단건 결제로, 상품마다 한 번 결제합니다. <a href="/refund/">환불·청약철회 안내</a> · <a href="/minor/">미성년자 구매 안내</a></p>
   </div>
+  <details class="more" id="store-list"><summary>판매하지 않는 수능 유형서 목록(값 · 구성 안내)</summary>
   <section class="grp"><h2>공통 유형서 · 10권</h2><p class=gd>공통 9~15번, 20~22번.</p><div class="list"><details class="sku" id="sku-C09">
   <summary><span class="nm"><b>공통 9번 유형서</b><small>약 25문항</small></span><span class="pr"><b>3,900원</b><small>VAT 포함</small><span class="tag soon">판매하지 않음</span></span></summary>
   <div class="body">
@@ -361,6 +365,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     <div class="fix"><p>디지털콘텐츠(PDF)는 다운로드(열람)를 시작하면 청약철회(환불)가 제한됩니다(전자상거래법 제17조 제2항 제5호). 다운로드하지 않은 파일과 아직 제공되지 않은 파일은 결제일로부터 7일 이내(제공 예정 상품은 제공 전까지 언제든) 전액 환불됩니다. 구매 전에 무료 미리보기로 내용과 난이도를 확인해 주세요. 자세히: <a href="/refund/">환불·청약철회 안내</a></p><p>유료 PDF에는 기출 문항 원문이 들어 있지 않습니다. 델타스킬이 직접 만든 유형문항·해설·분석만 담고, 기출은 시험·번호로만 가리킵니다.</p><p>이 상품은 정기결제(자동 결제)가 아닌 단건 결제로, 한 번 결제합니다.</p></div>
   </div>
 </details></div></section>
+  </details>
   <div class="grp"><h2>모든 상품 공통 안내</h2>
     <div class="notice"><p>디지털콘텐츠(PDF)는 다운로드(열람)를 시작하면 청약철회(환불)가 제한됩니다(전자상거래법 제17조 제2항 제5호). 다운로드하지 않은 파일과 아직 제공되지 않은 파일은 결제일로부터 7일 이내(제공 예정 상품은 제공 전까지 언제든) 전액 환불됩니다. 구매 전에 무료 미리보기로 내용과 난이도를 확인해 주세요. 자세히: <a href="/refund/">환불·청약철회 안내</a></p><p>유료 PDF에는 기출 문항 원문이 들어 있지 않습니다. 델타스킬이 직접 만든 유형문항·해설·분석만 담고, 기출은 시험·번호로만 가리킵니다.</p><p>이 상품은 정기결제(자동 결제)가 아닌 단건 결제로, 한 번 결제합니다.</p></div>
   </div>
