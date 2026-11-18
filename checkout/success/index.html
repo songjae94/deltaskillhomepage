@@ -101,15 +101,15 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 <body class="payment-flow">
 <header class="payment-header"><div class="top">
   <a class="logo" href="/"><img src="/assets/main/deltaskill-ko-horizontal-white.svg" alt="델타스킬" width="120"></a>
-  <nav class="gnav" aria-label="주요 메뉴"><a href="/">메인</a><a href="/naesin/">내신 파일</a><a href="/store/">유형서 구매</a><a href="/orders/">주문 조회</a></nav>
+  <nav class="gnav" aria-label="주요 메뉴"><a href="/">메인</a><a href="/naesin/">내신 파일</a><a href="/orders/">주문 조회</a></nav>
   <nav id="authnav" class="ds-checkout-account" data-logout-next="/" aria-label="계정"></nav>
 </div></header>
 <main>
-  <p class="crumb"><a href="/">메인</a> › <a href="/store/">유형서 구매</a> › 결제 결과</p>
+  <p class="crumb"><a href="/">메인</a> › <a href="/orders/">주문 조회</a> › 결제 결과</p>
   <div class="band" id="band" role="note" hidden>지금은 테스트 결제 환경입니다 · 실제 결제는 일어나지 않습니다.</div>
   <h1 id="ttl">결제를 확인하고 있습니다</h1>
   <section class="card" id="res" aria-live="polite"><p class="msg">결제 승인을 요청하는 중…</p></section>
-  <div class="acts"><a class="btn ghost" href="/orders/" id="toOrders">주문 조회</a><a class="btn ghost" href="/store/">유형서 구매</a></div>
+  <div class="acts"><a class="btn ghost" href="/orders/" id="toOrders">주문 조회</a><a class="btn ghost" href="/naesin/">내신 파일</a></div>
   <p class="fn">환불 신청: admin@deltaskill.co.kr 또는 070-8065-2468로 상품명·주문번호·결제수단을 알려 주세요. <a href="/refund/">환불·청약철회 안내</a></p>
 </main>
 <footer class="sitefoot">
@@ -201,6 +201,7 @@ function renderOrder(box,o,cfg,email){
   row("결제수단",o.method);row("승인일시",o.approvedAt?kst(o.approvedAt):"");
   row("다시 받기",o.redownloadUntil?(kst(o.redownloadUntil)+"까지"):"");
   box.appendChild(dl);
+  if(o.status==="paid"&&o.mode!=="test"){var keep=document.createElement("p");keep.className="notice";keep.textContent="주문번호와 결제할 때 적은 이메일을 적어 두세요. 주문 조회에서 결제일부터 12개월 동안 다시 받을 때 둘 다 필요합니다.";box.appendChild(keep);} /* 22 창 1118 걸음 8: 비회원 받는 길 */
   if(multi&&policy){var refund=document.createElement("p");refund.className="hint";refund.textContent=policy.FULL_REFUND;box.appendChild(refund);}
   var h=document.createElement("h2");h.textContent="파일";h.style.marginTop="16px";box.appendChild(h);
   if(o.mode==="test"){var n=document.createElement("p");n.className="notice";n.textContent="테스트 결제 주문이라 실제로 청구되지 않았고 파일 내려받기는 열리지 않습니다. 실제 결제 주문은 이 자리에 파일과 내려받기 단추가 나옵니다.";box.appendChild(n);return;}
