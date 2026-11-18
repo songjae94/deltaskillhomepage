@@ -83,6 +83,18 @@ label.f{display:block;font-size:13.5px;font-weight:700;color:var(--ink2);margin:
 .fn{margin-top:22px;font-size:13px;color:var(--sub)}
 .fn a{color:var(--ink);text-decoration:underline}
 a:focus-visible,.btn:focus-visible,.chk input:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+/* 30 창 1118: 결제 간결 — 자세히 접기 · 일괄 동의 한 줄 */
+details.more{margin:12px 0 0;border-top:1px solid var(--line);padding-top:2px}
+details.more>summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-size:13.5px;font-weight:700;color:var(--ink2)}
+details.agd{margin:0 0 4px}
+details.agd>summary{cursor:pointer;min-height:40px;display:flex;align-items:center;font-size:13px;font-weight:650;color:var(--ink2);padding-left:32px}
+details.more>summary::-webkit-details-marker,details.agd>summary::-webkit-details-marker{display:none}
+details.more>summary::after,details.agd>summary::after{content:"펼치기 ▾";margin-left:auto;padding-left:10px;font-size:12.5px;font-weight:650;opacity:.75}
+details.more[open]>summary::after,details.agd[open]>summary::after{content:"접기 ▴"}
+details.more>summary,details.agd>summary{list-style:none}
+.sum1{font-size:13px;line-height:1.6;color:var(--ink2);margin:10px 0 0}
+.sum1 a{color:var(--ink);font-weight:650;text-decoration:underline}
+.pline{font-size:14px;color:var(--ink2);margin:4px 0 0}
 @media(max-width:560px){.top{padding:10px 14px}main{padding:0 14px 40px}.card{padding:16px 14px}dt{width:60px}}
 </style>
 <style id="biz-css">
@@ -122,23 +134,22 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
       <input id="nm" type="text" autocomplete="name" maxlength="40" required class="in">
     </section>
     <section class="card">
-      <h2>동의</h2>
-      <label class="chk all"><input type="checkbox" id="ca"> <span>아래 필수 항목에 모두 동의합니다.</span></label>
+      <h2>결제</h2>
+      <div id="payment-method"></div>
+      <p class="hint" id="mobhint" hidden>휴대폰 결제는 통신사 한도·미성년자 차단 정책에 따라 안 될 수 있어요. 그럴 땐 다른 결제수단을 써 주세요.</p>
+      <label class="chk all"><input type="checkbox" id="ca"> <span>필수 항목에 모두 동의합니다.<br><small class="hint">이용약관 · 개인정보 수집·이용 · 디지털콘텐츠 청약철회 제한 · 미성년자 구매 안내</small></span></label>
+      <details class="agd"><summary>필수 항목 4개 펼쳐 보기</summary>
       <label class="chk"><input type="checkbox" class="ag" id="c1"> <span>[필수] <a href="/terms/" target="_blank" rel="noopener">이용약관</a>에 동의합니다.</span></label>
       <label class="chk"><input type="checkbox" class="ag" id="c2"> <span>[필수] <a href="/privacy/" target="_blank" rel="noopener">개인정보처리방침</a>에 따른 개인정보 수집·이용에 동의합니다.</span></label>
       <p class="pi">수집 항목: 주문자 이메일·이름, 주문번호, 상품, 결제금액, 결제수단, 승인일시, 다운로드 기록(카드번호 등 결제정보는 토스페이먼츠가 처리, 회사는 저장하지 않음) · 목적: 상품 판매: 주문·결제·환불 처리, 디지털콘텐츠 다운로드 제공 · 보유: 5년(전자상거래법 시행령 제6조)</p>
       <label class="chk"><input type="checkbox" class="ag" id="c3"> <span>[필수] 이 상품은 디지털콘텐츠로, 다운로드(열람) 후에는 청약철회(환불)가 제한된다는 점을 확인했습니다. 다운로드 전에는 7일 이내 전액 환불이 가능합니다. <a href="/refund/" target="_blank" rel="noopener">환불·청약철회 안내</a></span></label>
       <p class="pi"><b>미성년자 구매 안내</b><br>만 19세 미만 미성년자가 구매할 때 법정대리인(부모 등)이 동의하지 않으면, 미성년자 본인 또는 법정대리인이 구매 계약을 취소할 수 있습니다. 구매 전에 보호자에게 알리고 동의를 받아 주세요.</p>
       <label class="chk"><input type="checkbox" class="ag" id="c4"> <span>[필수] 확인했습니다. (만 19세 미만인 경우: 법정대리인의 동의를 받았습니다.) <a href="/minor/" target="_blank" rel="noopener">미성년자 구매 안내</a></span></label>
-    </section>
-    <section class="card">
-      <h2>결제</h2>
-      <div id="payment-method"></div>
+      </details>
       <div id="agreement"></div>
       <p class="notice" id="paynote" hidden></p>
       <p class="msg" id="msg" role="status"></p>
-      <p class="hint">이 주문은 단건 결제 · 한 번 결제</p>
-      <p class="hint">휴대폰 결제는 통신사 한도·미성년자 차단 정책에 따라 안 될 수 있어요. 그럴 땐 다른 결제수단을 써 주세요.</p>
+      <p class="sum1" id="sum1">단건 결제(한 번 결제 · 자동 결제 아님) · 내려받기(열람)를 시작한 파일은 청약철회(환불)가 제한되고, 받지 않은 파일은 결제일로부터 7일 이내 전액 환불됩니다 · <a href="/refund/" target="_blank" rel="noopener">환불·청약철회 안내</a></p>
       <button type="submit" class="btn pri" id="pay" disabled>결제하기</button>
     </section>
   </form>
@@ -315,11 +326,13 @@ function showProduct(){
     ? cartProducts.items.map(function(item,index){return [String(index+1)+". "+item.name,won(item.price)];})
       .concat([["단원 합계",won(cartProducts.subtotal)],["결제 한도 조정",won(cartProducts.adjustment)],["제공",P.give]])
     : [["SKU",sku],["구성",P.comp]].concat(P.only?[["파일 형식",P.only]]:[],[["제공",P.give]],P.start?[["제공 시작",P.start]]:[]);
-  var dl=el("dl");rows.forEach(function(r){var d=el("div");d.appendChild(el("dt",null,r[0]));d.appendChild(el("dd",null,r[1]));dl.appendChild(d);});box.appendChild(dl);
+  var dl=el("dl");rows.forEach(function(r){var d=el("div");d.appendChild(el("dt",null,r[0]));d.appendChild(el("dd",null,r[1]));dl.appendChild(d);});
+  var host=box;if(!cart){box.appendChild(el("p","pline",[P.comp,P.give].filter(Boolean).join(" · ")));host=el("details","more");host.appendChild(el("summary",null,"상품 · 제공 · 환불 자세히"));box.appendChild(host);} /* 30 창 1118: 글은 그대로 · 접기만 */
+  host.appendChild(dl);
   if(cart)box.appendChild(el("p","hint",window.DeltaFinalsOrder.FULL_REFUND));
-  if(P.course)box.appendChild(el("p","course",P.course));
-  if(P.cards&&P.cards.length)box.appendChild(el("p","hint","결제창에서 사용할 수 있는 카드가 표시됩니다.")); /* 본부 1118 ③: 라이브 계약 카드 확인 전에는 목록을 적지 않음 */
-  var fx=el("div","fix");fx.innerHTML=cart?'<p>파일을 내려받거나 열람하면 청약철회가 제한됩니다. <a href="/refund/">환불·청약철회 안내</a></p>':NS?FIX.replace("디지털콘텐츠(PDF)","디지털콘텐츠(고른 형식의 파일)").replace(P&&P.noOrigClaim?/<p>유료 PDF에는[^<]*<\/p>/:"유료 PDF에는",P&&P.noOrigClaim?"":"유료 파일에는"):FIX;box.appendChild(fx);
+  if(P.course)host.appendChild(el("p","course",P.course));
+  if(P.cards&&P.cards.length)host.appendChild(el("p","hint","결제창에서 사용할 수 있는 카드가 표시됩니다.")); /* 본부 1118 ③: 라이브 계약 카드 확인 전에는 목록을 적지 않음 */
+  var fx=el("div","fix");fx.innerHTML=cart?'<p>파일을 내려받거나 열람하면 청약철회가 제한됩니다. <a href="/refund/">환불·청약철회 안내</a></p>':NS?FIX.replace("디지털콘텐츠(PDF)","디지털콘텐츠(고른 형식의 파일)").replace(P&&P.noOrigClaim?/<p>유료 PDF에는[^<]*<\/p>/:"유료 PDF에는",P&&P.noOrigClaim?"":"유료 파일에는"):FIX;host.appendChild(fx);
   $("pay").textContent=won(amount)+" 결제하기";
   return true;
 }
@@ -327,6 +340,7 @@ function okEmail(s){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);}
 function agreed(){return ["c1","c2","c3","c4"].every(function(i){return $(i).checked;});}
 function update(){
   $("ca").checked=agreed();
+  if($("mobhint"))$("mobhint").hidden=pickMethod()!=="MOBILE_PHONE";
   $("pay").disabled=!(ready&&apiBase(cfg)&&!busy&&okEmail($("em").value.trim())&&$("nm").value.trim()&&agreed());
 }
 function stop(text){ready=false;var n=$("paynote");n.textContent=text;n.hidden=false;$("pay").disabled=true;}
@@ -357,7 +371,7 @@ function drawMethods(){
   var h=el("p","pm-t","결제수단");box.appendChild(h);
   [["CARD","카드"],["TRANSFER","계좌이체"],["MOBILE_PHONE","휴대폰"]].filter(function(m){return m[0]!=="TRANSFER"||amount>=TRANSFER_MIN;}).forEach(function(m,i){
     var l=el("label","chk pm");var r=document.createElement("input");r.type="radio";r.name="pm";r.value=m[0];if(i===0)r.checked=true;
-    l.appendChild(r);l.appendChild(el("span",null,m[1]));box.appendChild(l);
+    r.addEventListener("change",update);l.appendChild(r);l.appendChild(el("span",null,m[1]));box.appendChild(l);
   });
   if(amount<TRANSFER_MIN)box.appendChild(el("p","hint","계좌이체는 1,000원 이상 결제에서 쓸 수 있습니다."));
 }
