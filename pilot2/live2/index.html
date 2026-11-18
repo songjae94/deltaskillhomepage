@@ -233,11 +233,23 @@ border-radius:5px;padding:1px 6px;margin-right:5px}
 .rc p{margin:4px 0 0;font-size:11.5px;color:var(--mut2);line-height:1.65}
 .foot{margin-top:34px;padding-top:14px;border-top:1px solid var(--line);color:var(--mut2);font-size:11px;line-height:1.8}
 </style>
-</head>
+<style id="ds-light-37">/* 잠금 화면만 밝게 — 열리면 #gate 가 지워지므로 안쪽(암호화된 리포트) 판은 그대로 */
+html:has(#gate),html:has(#gate) body{background:#F7F8FC;color-scheme:light}
+#gate{background:#F7F8FC;color:#172B43}
+#gate .gbox{background:#fff;border:1px solid #DFE3ED;border-radius:16px;padding:28px 24px}
+#gate .gbox h1{color:#172B43}
+#gate .gbox p,#gate .glock{color:#5B6678}
+#gate .glock b{color:#3C4A60}
+#gate #pw{background:#fff;border:1px solid #B9C2D3;color:#172B43;min-height:44px;border-radius:10px}
+#gate #pw::placeholder{color:#5B6678}
+#gate #pw:focus{border-color:#245BD6}
+#gate #go{background:#245BD6;color:#fff;min-height:44px;border-radius:10px}
+#gate #go:hover{background:#1D4DB8}
+#gate #err{color:#B42318}</style></head>
 <body>
 <div id="gate">
   <div class="gbox">
-    <img src="/logo-dark-192.png" alt="델타스킬">
+    <img src="/logo-192.png" alt="델타스킬">
     <h1>단과 강사 주간 리포트</h1>
     <p>열람 권한이 있는 분만 볼 수 있습니다.</p>
     <form class="gf" id="gf">

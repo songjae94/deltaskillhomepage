@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#05060f">
+<meta name="theme-color" content="#F7F8FC">
 <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <title>델타스킬 · AI 오답노트</title>
 <meta name="description" content="모의고사 본 뒤 5분 오답노트 체크로 나에게 맞는 학습 처방을 받는 델타스킬 AI 오답노트.">
@@ -13,35 +13,35 @@
 <meta property="og:image" content="https://www.deltaskill.co.kr/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
 <style>
-:root{--bg:#05060f;--panel:rgba(255,255,255,.028);--panel2:rgba(255,255,255,.05);--line:rgba(186,215,247,.12);--line2:rgba(186,215,247,.22);--ink:#fff;--mut:rgba(209,228,250,.62);--mut2:rgba(209,228,250,.40);--brand:#5aa2ff;--brand2:#a8cbff;--brandInk:#a8cbff;--brandSoft:rgba(90,162,255,.16);--brandSoft2:rgba(90,162,255,.24);--ok:#5fd39a;--no:#f0806c;--amber:#f0806c;--r:20px;--ease:cubic-bezier(.16,1,.3,1)}
+:root{--bg:#F7F8FC;--panel:#fff;--panel2:#F7F8FC;--line:#DFE3ED;--line2:#B9C2D3;--ink:#172B43;--mut:#3C4A60;--mut2:#5B6678;--brand:#245BD6;--brand2:#1D4DB8;--brandInk:#1D4DB8;--brandSoft:#EEF3FF;--brandSoft2:#DCE6FA;--ok:#1E6B45;--no:#B42318;--amber:#B42318;--r:20px;--ease:cubic-bezier(.16,1,.3,1)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html{background:var(--bg);color-scheme:dark}
+html{background:var(--bg);color-scheme:light}
 body{font-family:"Pretendard Variable",Pretendard,system-ui,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}
 .app{max-width:480px;margin:0 auto;min-height:100vh;padding-bottom:104px;position:relative}
-.app:before{content:"";position:fixed;top:0;left:50%;transform:translateX(-50%);width:540px;height:440px;background:radial-gradient(58% 60% at 50% 0,rgba(40,86,214,.20),transparent 72%);pointer-events:none;z-index:0}
-.top{position:sticky;top:0;z-index:20;background:rgba(5,6,15,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:13px 16px}
+.app:before{content:"";position:fixed;top:0;left:50%;transform:translateX(-50%);width:540px;height:440px;background:radial-gradient(58% 60% at 50% 0,rgba(36,91,214,.20),transparent 72%);pointer-events:none;z-index:0}
+.top{position:sticky;top:0;z-index:20;background:rgba(247,248,252,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:13px 16px}
 .brand{font-weight:800;font-size:16px;letter-spacing:-.3px}.brand span{color:var(--brand)}
 .sub{font-size:12px;color:var(--mut2);margin-top:1px}
-.prog{height:4px;background:rgba(255,255,255,.07);border-radius:9px;margin-top:11px;overflow:hidden}.prog>i{display:block;height:100%;background:linear-gradient(90deg,#3d7fe0,#7cb6ff);width:0;transition:width .35s var(--ease);box-shadow:0 0 12px rgba(90,162,255,.5)}
+.prog{height:4px;background:rgba(23,43,67,.07);border-radius:9px;margin-top:11px;overflow:hidden}.prog>i{display:block;height:100%;background:linear-gradient(90deg,#245BD6,#245BD6);width:0;transition:width .35s var(--ease);box-shadow:0 0 12px rgba(36,91,214,.5)}
 .pad{padding:20px 16px;position:relative;z-index:1}.h{font-size:23px;font-weight:800;letter-spacing:-.5px;margin:6px 0 6px;line-height:1.26}.desc{font-size:13.5px;color:var(--mut);margin-bottom:20px;line-height:1.6}
 .field{margin-bottom:15px}.field label{font-size:12.5px;font-weight:600;color:var(--mut);display:block;margin-bottom:7px}
-input.txt{width:100%;padding:14px 15px;border:1.5px solid rgba(90,162,255,.42);border-radius:13px;font-size:16px;background:rgba(90,162,255,.06);color:var(--ink)}input.txt::placeholder{color:rgba(209,228,250,.6)}input.txt:focus{outline:none;border-color:var(--brand);background:rgba(90,162,255,.1)}input:-webkit-autofill,input:-webkit-autofill:focus,input:-webkit-autofill:hover,.numin:-webkit-autofill{-webkit-text-fill-color:var(--ink);-webkit-box-shadow:0 0 0 1000px #0b1020 inset;caret-color:var(--ink);border-color:var(--line2)}
-.seg{display:flex;gap:8px}.seg button{flex:1;padding:13px 6px;border:1px solid var(--line);background:var(--panel);border-radius:13px;font-size:14px;font-weight:600;color:var(--mut);transition:all .2s var(--ease)}.seg button.on{border-color:rgba(90,162,255,.55);background:rgba(90,162,255,.14);color:var(--brand2)}
-.acg{display:grid;grid-template-columns:1fr 1fr;gap:8px}.acg button{padding:13px 6px;border:1px solid var(--line);background:var(--panel);border-radius:13px;font-size:13.5px;font-weight:600;color:var(--mut);transition:all .2s var(--ease)}.acg button.on{border-color:rgba(90,162,255,.55);background:rgba(90,162,255,.14);color:var(--brand2)}.acg button.full{grid-column:1/-1}
-.btn{width:100%;padding:16px;border:none;border-radius:14px;background:var(--brand);color:#04101f;font-size:15.5px;font-weight:700;letter-spacing:-.2px;transition:all .25s var(--ease)}.btn:not(:disabled):hover{background:#7cb6ff;transform:translateY(-1px)}.btn:disabled{background:rgba(255,255,255,.08);color:var(--mut2)}.btn.ghost{background:transparent;color:var(--brand2);border:1px solid var(--line)}.btn.ghost:hover{background:rgba(255,255,255,.04);border-color:var(--line2)}
+input.txt{width:100%;padding:14px 15px;border:1.5px solid rgba(36,91,214,.42);border-radius:13px;font-size:16px;background:rgba(36,91,214,.06);color:var(--ink)}input.txt::placeholder{color:#3C4A60}input.txt:focus{outline:none;border-color:var(--brand);background:rgba(36,91,214,.1)}input:-webkit-autofill,input:-webkit-autofill:focus,input:-webkit-autofill:hover,.numin:-webkit-autofill{-webkit-text-fill-color:var(--ink);-webkit-box-shadow:0 0 0 1000px #fff inset;caret-color:var(--ink);border-color:var(--line2)}
+.seg{display:flex;gap:8px}.seg button{flex:1;padding:13px 6px;border:1px solid var(--line);background:var(--panel);border-radius:13px;font-size:14px;font-weight:600;color:var(--mut);transition:all .2s var(--ease)}.seg button.on{border-color:rgba(36,91,214,.55);background:rgba(36,91,214,.14);color:var(--brand2)}
+.acg{display:grid;grid-template-columns:1fr 1fr;gap:8px}.acg button{padding:13px 6px;border:1px solid var(--line);background:var(--panel);border-radius:13px;font-size:13.5px;font-weight:600;color:var(--mut);transition:all .2s var(--ease)}.acg button.on{border-color:rgba(36,91,214,.55);background:rgba(36,91,214,.14);color:var(--brand2)}.acg button.full{grid-column:1/-1}
+.btn{width:100%;padding:16px;border:none;border-radius:14px;background:var(--brand);color:#fff;font-size:15.5px;font-weight:700;letter-spacing:-.2px;transition:all .25s var(--ease)}.btn:not(:disabled):hover{background:#245BD6;transform:translateY(-1px)}.btn:disabled{background:rgba(23,43,67,.08);color:var(--mut2)}.btn.ghost{background:transparent;color:var(--brand2);border:1px solid var(--line)}.btn.ghost:hover{background:rgba(23,43,67,.04);border-color:var(--line2)}
 .fab{position:fixed;left:0;right:0;bottom:0;max-width:480px;margin:0 auto;padding:14px 16px calc(14px + env(safe-area-inset-bottom));background:linear-gradient(180deg,transparent,var(--bg) 26%);z-index:20}
-.consent{display:flex;gap:11px;align-items:flex-start;background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:14px;margin:7px 0 4px;transition:all .2s var(--ease)}.consent.on{border-color:rgba(90,162,255,.5);background:rgba(90,162,255,.07)}.consent input{width:20px;height:20px;margin-top:1px;flex-shrink:0;accent-color:var(--brand)}.consent .ct{font-size:12.5px;color:var(--mut)}.consent .ct b{color:var(--ink);font-weight:700}
+.consent{display:flex;gap:11px;align-items:flex-start;background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:14px;margin:7px 0 4px;transition:all .2s var(--ease)}.consent.on{border-color:rgba(36,91,214,.5);background:rgba(36,91,214,.07)}.consent input{width:20px;height:20px;margin-top:1px;flex-shrink:0;accent-color:var(--brand)}.consent .ct{font-size:12.5px;color:var(--mut)}.consent .ct b{color:var(--ink);font-weight:700}
 .legalbox{font-size:11px;color:var(--mut2);background:rgba(0,0,0,.3);border:1px solid var(--line);border-radius:11px;padding:11px 13px;max-height:124px;overflow:auto;margin-bottom:9px;line-height:1.75}.legalbox b{color:var(--mut)}
-.sechd{font-size:11.5px;font-weight:700;color:var(--mut2);margin:22px 2px 10px;letter-spacing:.05em;display:flex;align-items:center;gap:7px}.sechd:before{content:"";width:5px;height:5px;border-radius:50%;background:var(--brand);box-shadow:0 0 9px 1px rgba(90,162,255,.75)}
+.sechd{font-size:11.5px;font-weight:700;color:var(--mut2);margin:22px 2px 10px;letter-spacing:.05em;display:flex;align-items:center;gap:7px}.sechd:before{content:"";width:5px;height:5px;border-radius:50%;background:var(--brand);box-shadow:0 0 9px 1px rgba(36,91,214,.75)}
 .q{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:15px;margin-bottom:11px;color:var(--ink);transition:border-color .2s var(--ease)}
 .qh{display:flex;align-items:center;gap:9px;margin-bottom:12px}.qno{font-weight:800;font-size:15px;min-width:24px;color:var(--ink)}.qmeta{font-size:11.5px;color:var(--mut2);flex:1;line-height:1.5}.qmeta b{color:var(--mut);font-weight:600}
-.badge{font-size:10.5px;font-weight:700;padding:4px 10px;border-radius:20px;letter-spacing:.02em}.badge.o{background:rgba(95,211,154,.13);color:var(--ok)}.badge.x{background:rgba(240,128,108,.14);color:var(--no)}
-.chips{display:flex;gap:7px;flex-wrap:wrap}.chip{padding:11px 0;min-width:44px;flex:1;text-align:center;border:1px solid var(--line);border-radius:12px;background:var(--panel2);font-size:15px;font-weight:700;color:var(--mut);transition:all .18s var(--ease)}.chip.on{border-color:rgba(90,162,255,.6);background:rgba(90,162,255,.18);color:#dcebff;box-shadow:inset 0 0 0 1px rgba(90,162,255,.25)}
-.numin{width:120px;padding:12px;border:1px solid var(--line);border-radius:12px;font-size:16px;text-align:center;font-weight:700;background:var(--panel2);color:var(--ink)}.numrow{display:flex;gap:8px;align-items:stretch}.numrow .numin{flex:0 0 130px}.numgo{padding:0 20px;border:1px solid rgba(90,162,255,.6);border-radius:12px;background:rgba(90,162,255,.18);color:#dcebff;font-size:14.5px;font-weight:800;cursor:pointer;transition:all .18s var(--ease)}.numgo:disabled{opacity:.35;cursor:default}.numgo.done{border-color:var(--line);background:var(--panel2);color:var(--mut2)}body.qlight .numgo{color:#1c4fa0;background:rgba(90,162,255,.15);border-color:rgba(90,162,255,.5)}body.qlight .numgo.done{background:var(--panel2);color:var(--mut2);border-color:var(--line)}.numin::placeholder{color:var(--mut2)}.numin:focus{outline:none;border-color:var(--brand)}
+.badge{font-size:10.5px;font-weight:700;padding:4px 10px;border-radius:20px;letter-spacing:.02em}.badge.o{background:rgba(30,107,69,.13);color:var(--ok)}.badge.x{background:rgba(180,35,24,.14);color:var(--no)}
+.chips{display:flex;gap:7px;flex-wrap:wrap}.chip{padding:11px 0;min-width:44px;flex:1;text-align:center;border:1px solid var(--line);border-radius:12px;background:var(--panel2);font-size:15px;font-weight:700;color:var(--mut);transition:all .18s var(--ease)}.chip.on{border-color:rgba(36,91,214,.6);background:rgba(36,91,214,.18);color:#172B43;box-shadow:inset 0 0 0 1px rgba(36,91,214,.25)}
+.numin{width:120px;padding:12px;border:1px solid var(--line);border-radius:12px;font-size:16px;text-align:center;font-weight:700;background:var(--panel2);color:var(--ink)}.numrow{display:flex;gap:8px;align-items:stretch}.numrow .numin{flex:0 0 130px}.numgo{padding:0 20px;border:1px solid rgba(36,91,214,.6);border-radius:12px;background:rgba(36,91,214,.18);color:#172B43;font-size:14.5px;font-weight:800;cursor:pointer;transition:all .18s var(--ease)}.numgo:disabled{opacity:.35;cursor:default}.numgo.done{border-color:var(--line);background:var(--panel2);color:var(--mut2)}body.qlight .numgo{color:#1c4fa0;background:rgba(36,91,214,.15);border-color:rgba(36,91,214,.5)}body.qlight .numgo.done{background:var(--panel2);color:var(--mut2);border-color:var(--line)}.numin::placeholder{color:var(--mut2)}.numin:focus{outline:none;border-color:var(--brand)}
 .diag{margin-top:13px;padding-top:13px;border-top:1px dashed var(--line)}.dlab{font-size:11.5px;color:var(--mut2);margin:2px 0 8px;font-weight:600}
-.rchips{display:flex;gap:6px;flex-wrap:wrap}.rchip{padding:8px 12px;border:1px solid var(--line);border-radius:20px;background:var(--panel);font-size:12.5px;color:var(--mut);transition:all .18s var(--ease)}.rchip.on{border-color:rgba(240,128,108,.5);background:rgba(240,128,108,.13);color:var(--amber);font-weight:600}
-.rchip.dqok{border-color:var(--ok);background:rgba(95,211,154,.13);color:var(--ok);font-weight:600}
-.rchip.dqno{border-color:var(--no,#f0806c);background:rgba(240,128,108,.10);color:var(--no,#f0806c)}
+.rchips{display:flex;gap:6px;flex-wrap:wrap}.rchip{padding:8px 12px;border:1px solid var(--line);border-radius:20px;background:var(--panel);font-size:12.5px;color:var(--mut);transition:all .18s var(--ease)}.rchip.on{border-color:rgba(180,35,24,.5);background:rgba(180,35,24,.13);color:var(--amber);font-weight:600}
+.rchip.dqok{border-color:var(--ok);background:rgba(30,107,69,.13);color:var(--ok);font-weight:600}
+.rchip.dqno{border-color:var(--no,#B42318);background:rgba(180,35,24,.10);color:var(--no,#B42318)}
 .dqwhy{font-size:12.5px;color:var(--mut);line-height:1.6;margin:0 2px 10px;padding:9px 12px;border-left:2px solid var(--brandInk);background:var(--panel2);border-radius:0 10px 10px 0}
 /* ── 오답만 체크 화면 (채점 없이 틀린 문항만 고르기) ── */
 .gwrap{display:grid;grid-template-columns:repeat(6,1fr);gap:7px}
@@ -50,9 +50,9 @@ input.txt{width:100%;padding:14px 15px;border:1.5px solid rgba(90,162,255,.42);b
  display:flex;flex-direction:column;align-items:center;gap:1px;transition:all .15s var(--ease);-webkit-tap-highlight-color:transparent}
 .gn b{font-size:15.5px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.15}
 .gn s{text-decoration:none;font-size:9.5px;color:var(--mut2)}
-.gn.x{background:rgba(240,128,108,.2);border-color:rgba(240,128,108,.24);color:var(--no)}
+.gn.x{background:rgba(180,35,24,.2);border-color:rgba(180,35,24,.24);color:var(--no)}
 .gn.x s{color:var(--no);opacity:.8}
-.gn.g{background:transparent;border-color:rgba(240,128,108,.85);border-width:2px;color:var(--amber)}
+.gn.g{background:transparent;border-color:rgba(180,35,24,.85);border-width:2px;color:var(--amber)}
 .gn.g s{color:var(--amber);opacity:.85}
 .scoretop{position:sticky;top:93px;z-index:6;background:var(--panel);border:1px solid var(--line2);border-radius:16px;
  padding:11px 15px;margin:2px 0 12px;display:flex;align-items:center;gap:13px;
@@ -65,16 +65,16 @@ input.txt{width:100%;padding:14px 15px;border:1.5px solid rgba(90,162,255,.42);b
 .legend{display:flex;gap:13px;font-size:11.5px;color:var(--mut2);margin:9px 2px 14px;flex-wrap:wrap}
 .legend em{font-style:normal;display:inline-flex;align-items:center;gap:5px}
 .legend i{display:inline-block;width:12px;height:12px;border-radius:4px;border:1px solid var(--line)}
-.legend i.x{background:rgba(240,128,108,.3);border-color:rgba(240,128,108,.62)}
-.legend i.g{background:transparent;border-color:rgba(240,128,108,.85);border-width:2px}
-.q.gs{border-color:rgba(240,128,108,.45)}
-.badge.g{background:transparent;box-shadow:inset 0 0 0 1px rgba(240,128,108,.75);color:var(--amber)}
+.legend i.x{background:rgba(180,35,24,.3);border-color:rgba(180,35,24,.62)}
+.legend i.g{background:transparent;border-color:rgba(180,35,24,.85);border-width:2px}
+.q.gs{border-color:rgba(180,35,24,.45)}
+.badge.g{background:transparent;box-shadow:inset 0 0 0 1px rgba(180,35,24,.75);color:var(--amber)}
 .empty{text-align:center;color:var(--mut2);font-size:12.5px;padding:22px 10px;border:1px dashed var(--line);border-radius:16px}
 /* 입력 끝난 문항은 한 줄로 접힌다 — 탭하면 다시 열려 수정 */
 .nsum{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line);border-radius:14px;
  padding:11px 14px;margin-bottom:9px;cursor:pointer;font-size:13px;transition:border-color .15s var(--ease);-webkit-tap-highlight-color:transparent}
 .nsum:hover{border-color:var(--line2)}
-.nsum.gs{border-color:rgba(240,128,108,.42)}
+.nsum.gs{border-color:rgba(180,35,24,.42)}
 .nsum b{font-weight:800;min-width:22px;font-variant-numeric:tabular-nums}
 .nsum .t{color:var(--mut);font-size:12.5px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .nsum .ck{font-size:11.5px;font-weight:700;color:var(--ok);flex:none}
@@ -83,8 +83,8 @@ input.txt{width:100%;padding:14px 15px;border:1.5px solid rgba(90,162,255,.42);b
 .stat{display:flex;gap:7px;margin:10px 0 13px}
 .stat button{flex:1;border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:10px 6px;
  font-family:inherit;font-size:12.5px;color:var(--mut);cursor:pointer;font-weight:600;transition:all .15s var(--ease)}
-.stat button.on{border-color:rgba(240,128,108,.62);background:rgba(240,128,108,.13);color:var(--no)}
-.stat button.gon{border-color:rgba(240,128,108,.85);border-width:2px;background:transparent;color:var(--amber)}
+.stat button.on{border-color:rgba(180,35,24,.62);background:rgba(180,35,24,.13);color:var(--no)}
+.stat button.gon{border-color:rgba(180,35,24,.85);border-width:2px;background:transparent;color:var(--amber)}
 .ndone{display:flex;gap:8px;margin-top:14px}
 /* 카드 안 단계 버튼 — 최종 저장 버튼보다 한 단계 낮춘 톤 (같은 파랑 계열) */
 .ndone .ib{flex:1;background:var(--brandSoft);color:var(--brandInk);border:0;border-radius:13px;padding:12px;font-family:inherit;
@@ -94,21 +94,21 @@ input.txt{width:100%;padding:14px 15px;border:1.5px solid rgba(90,162,255,.42);b
  font-family:inherit;font-size:12.5px;cursor:pointer}
 .hint{font-size:11.5px;color:var(--mut2);margin:9px 2px 14px;line-height:1.6}
 .hint i{display:inline-block;width:11px;height:11px;border-radius:4px;border:1px solid var(--line);vertical-align:-1px;margin:0 3px 0 7px}
-.hint i.x{background:rgba(240,128,108,.32);border-color:rgba(240,128,108,.62)}
-.hint i.g{background:transparent;border-color:rgba(240,128,108,.85);border-width:2px}
+.hint i.x{background:rgba(180,35,24,.32);border-color:rgba(180,35,24,.62)}
+.hint i.g{background:transparent;border-color:rgba(180,35,24,.85);border-width:2px}
 /* 인트로에서 바로 누르는 선택 카드 (하단 버튼 대신) */
-.pick{display:block;width:100%;text-align:left;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.34);border-radius:18px;
+.pick{display:block;width:100%;text-align:left;background:rgba(23,43,67,.02);border:1px solid rgba(23,43,67,.34);border-radius:18px;
  padding:17px 44px 17px 18px;margin-bottom:11px;position:relative;font-family:inherit;color:var(--ink);cursor:pointer;
  transition:border-color .18s var(--ease),background .18s var(--ease),transform .1s var(--ease);-webkit-tap-highlight-color:transparent}
-.pick:hover,.pick:active{border-color:var(--brand);background:rgba(90,162,255,.09);box-shadow:inset 0 0 0 1px var(--brand)}
+.pick:hover,.pick:active{border-color:var(--brand);background:rgba(36,91,214,.09);box-shadow:inset 0 0 0 1px var(--brand)}
 .pick:hover .pa,.pick:active .pa{color:var(--brand)}
-.pick:hover .pt,.pick:active .pt{color:#fff}
+.pick:hover .pt,.pick:active .pt{color:#172B43}
 .pick:active{transform:scale(.993)}
 .pick:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
 .pick:disabled{opacity:.45;cursor:default;transform:none;box-shadow:none}
 .pick .pt{display:block;font-size:15.5px;font-weight:800;letter-spacing:-.022em;margin-bottom:4px;color:var(--ink)}
 .pick .pd{display:block;font-size:12.5px;color:var(--mut);line-height:1.6}
-.pick .pa{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:20px;color:rgba(255,255,255,.5);font-weight:700;line-height:1;transition:color .18s var(--ease)}
+.pick .pa{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:20px;color:rgba(23,43,67,.5);font-weight:700;line-height:1;transition:color .18s var(--ease)}
 /* 두 선택지는 대등 — 색으로 위계를 만들지 않는다 */
 .metaline{font-size:12.5px;color:var(--mut2);margin:15px 2px 0;line-height:1.6}
 .metaline b{color:var(--mut)}
@@ -116,30 +116,42 @@ input.txt{width:100%;padding:14px 15px;border:1.5px solid rgba(90,162,255,.42);b
 .memo{width:100%;margin-top:9px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;font-size:13px;background:var(--panel);color:var(--ink)}.memo::placeholder{color:var(--mut2)}.memo:focus{outline:none;border-color:var(--brand)}
 .kpirow{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:14px}.kpi{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:17px}.kpi .v{font-size:28px;font-weight:800;color:var(--ink);letter-spacing:-.5px;font-variant-numeric:tabular-nums}.kpi .l{font-size:11.5px;color:var(--mut2);margin-top:3px}
 .bar{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px 17px;margin-bottom:11px}.bar h4{font-size:12.5px;font-weight:700;margin-bottom:13px;color:var(--mut)}
-.row{display:flex;align-items:center;gap:11px;margin:9px 0;font-size:12.5px}.row .nm{width:106px;color:var(--mut);flex:none}.row .tr{flex:1;height:7px;background:rgba(255,255,255,.08);border-radius:6px;overflow:hidden}.row .tr>i{display:block;height:100%;border-radius:6px;transition:width 1s var(--ease)}.row .pc{width:40px;text-align:right;color:var(--mut2);font-variant-numeric:tabular-nums}
-.seclabel{font-size:11.5px;font-weight:700;color:var(--mut2);margin:24px 2px 12px;letter-spacing:.05em;display:flex;align-items:center;gap:7px}.seclabel:before{content:"";width:5px;height:5px;border-radius:50%;background:var(--brand);box-shadow:0 0 9px 1px rgba(90,162,255,.75)}
+.row{display:flex;align-items:center;gap:11px;margin:9px 0;font-size:12.5px}.row .nm{width:106px;color:var(--mut);flex:none}.row .tr{flex:1;height:7px;background:rgba(23,43,67,.08);border-radius:6px;overflow:hidden}.row .tr>i{display:block;height:100%;border-radius:6px;transition:width 1s var(--ease)}.row .pc{width:40px;text-align:right;color:var(--mut2);font-variant-numeric:tabular-nums}
+.seclabel{font-size:11.5px;font-weight:700;color:var(--mut2);margin:24px 2px 12px;letter-spacing:.05em;display:flex;align-items:center;gap:7px}.seclabel:before{content:"";width:5px;height:5px;border-radius:50%;background:var(--brand);box-shadow:0 0 9px 1px rgba(36,91,214,.75)}
 .presc{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px 17px;margin-bottom:11px}.pu{font-weight:800;font-size:15px;color:var(--ink);letter-spacing:-.2px}.pw{font-size:11px;color:var(--no);font-weight:700;margin-left:8px}.pr{font-size:12.5px;color:var(--mut);margin:6px 0 10px}
-.pl{display:flex;gap:11px;padding:11px 0;border-top:1px solid var(--line);font-size:12.5px;line-height:1.55;color:var(--mut)}.pl:before{content:"";flex:none;width:5px;height:5px;border-radius:50%;background:var(--brand);margin-top:7px;box-shadow:0 0 8px 1px rgba(90,162,255,.55)}.pl b{font-weight:700;color:var(--ink)}.pl .ic{display:none}.pl.up:before{background:var(--no);box-shadow:0 0 8px 1px rgba(240,128,108,.55)}.pl.up{color:var(--mut)}.pl.up b{color:var(--amber)}
+.pl{display:flex;gap:11px;padding:11px 0;border-top:1px solid var(--line);font-size:12.5px;line-height:1.55;color:var(--mut)}.pl:before{content:"";flex:none;width:5px;height:5px;border-radius:50%;background:var(--brand);margin-top:7px;box-shadow:0 0 8px 1px rgba(36,91,214,.55)}.pl b{font-weight:700;color:var(--ink)}.pl .ic{display:none}.pl.up:before{background:var(--no);box-shadow:0 0 8px 1px rgba(180,35,24,.55)}.pl.up{color:var(--mut)}.pl.up b{color:var(--amber)}
 .lock{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px;text-align:center}.lock .lg{display:none}.lock h4{margin:0 0 6px;font-size:14.5px;color:var(--ink);font-weight:700}.lock p{font-size:12.5px;color:var(--mut);line-height:1.6}
-.dots{display:flex;gap:6px;justify-content:center;margin:14px 0}.dots i{width:26px;height:5px;border-radius:6px;background:rgba(255,255,255,.1)}.dots i.on{background:var(--brand);box-shadow:0 0 8px rgba(90,162,255,.6)}
-.step{display:flex;gap:12px;align-items:flex-start;padding:13px 0;border-bottom:1px solid var(--line)}.step:last-child{border:none}.stepn{width:26px;height:26px;border-radius:50%;background:rgba(90,162,255,.16);border:1px solid rgba(90,162,255,.5);color:var(--brand2);font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}.step .st{font-size:13.5px;color:var(--ink)}.step .st b{font-weight:700}.step .stt{font-size:11.5px;color:var(--mut2);margin-top:2px}
-.saved{display:flex;gap:10px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:13px 14px;font-size:12.5px;color:var(--mut);margin-bottom:16px}.saved:before{content:"";flex:none;width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 9px 1px rgba(95,211,154,.6)}.saved.demo:before{background:var(--amber);box-shadow:0 0 9px 1px rgba(240,128,108,.5)}
+.dots{display:flex;gap:6px;justify-content:center;margin:14px 0}.dots i{width:26px;height:5px;border-radius:6px;background:rgba(23,43,67,.1)}.dots i.on{background:var(--brand);box-shadow:0 0 8px rgba(36,91,214,.6)}
+.step{display:flex;gap:12px;align-items:flex-start;padding:13px 0;border-bottom:1px solid var(--line)}.step:last-child{border:none}.stepn{width:26px;height:26px;border-radius:50%;background:rgba(36,91,214,.16);border:1px solid rgba(36,91,214,.5);color:var(--brand2);font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}.step .st{font-size:13.5px;color:var(--ink)}.step .st b{font-weight:700}.step .stt{font-size:11.5px;color:var(--mut2);margin-top:2px}
+.saved{display:flex;gap:10px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:13px 14px;font-size:12.5px;color:var(--mut);margin-bottom:16px}.saved:before{content:"";flex:none;width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 9px 1px rgba(30,107,69,.6)}.saved.demo:before{background:var(--amber);box-shadow:0 0 9px 1px rgba(180,35,24,.5)}
 .note{font-size:11.5px;color:var(--mut2);text-align:center;margin-top:18px}.center{text-align:center;padding:44px 20px;color:var(--mut)}
-body.qlight{--bg:#f5f7fb;--panel:#fff;--panel2:#eef2f8;--line:rgba(23,43,77,.13);--line2:rgba(23,43,77,.22);--ink:#0c1322;--mut:rgba(16,28,50,.82);--mut2:rgba(16,28,50,.62);--ok:#0f9d58;--no:#c14933;--brandInk:#1c4fa0;--brandSoft:#e4eeff;--brandSoft2:#d6e6ff;--amber:#c14933;color-scheme:light}body.qlight .top{background:rgba(245,247,251,.82)}body.qlight .prog{background:rgba(23,43,77,.10)}body.qlight .app:before{background:radial-gradient(58% 60% at 50% 0,rgba(90,162,255,.10),transparent 72%)}body.qlight .chip.on{color:#1c4fa0;background:rgba(90,162,255,.15);border-color:rgba(90,162,255,.5);box-shadow:inset 0 0 0 1px rgba(90,162,255,.22)}body.qlight .rchip{background:var(--panel2)}body.qlight .rchip.dqok{color:#0b7d46;border-color:#0b7d46;background:rgba(15,157,88,.10)}body.qlight .memo{background:var(--panel2)}body.qlight .numin:-webkit-autofill{-webkit-box-shadow:0 0 0 1000px #eef2f8 inset}</style><style id="biz-css">
-.biz{display:block;box-sizing:border-box;background:#05060f;color:#aab7ca;font:400 13px/1.8 "Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;letter-spacing:0;text-align:left;padding:24px 16px 36px;border-top:1px solid rgba(186,215,247,.16)}
+body.qlight{--bg:#F7F8FC;--panel:#fff;--panel2:#F7F8FC;--line:#DFE3ED;--line2:#B9C2D3;--ink:#172B43;--mut:#3C4A60;--mut2:#5B6678;--ok:#1E6B45;--no:#B42318;--brandInk:#1D4DB8;--brandSoft:#EEF3FF;--brandSoft2:#DCE6FA;--amber:#B42318;color-scheme:light}body.qlight .top{background:rgba(245,247,251,.82)}body.qlight .prog{background:rgba(23,43,77,.10)}body.qlight .app:before{background:radial-gradient(58% 60% at 50% 0,rgba(36,91,214,.10),transparent 72%)}body.qlight .chip.on{color:#1c4fa0;background:rgba(36,91,214,.15);border-color:rgba(36,91,214,.5);box-shadow:inset 0 0 0 1px rgba(36,91,214,.22)}body.qlight .rchip{background:var(--panel2)}body.qlight .rchip.dqok{color:#0b7d46;border-color:#0b7d46;background:rgba(15,157,88,.10)}body.qlight .memo{background:var(--panel2)}body.qlight .numin:-webkit-autofill{-webkit-box-shadow:0 0 0 1000px #eef2f8 inset}</style><style id="biz-css">
+.biz{display:block;box-sizing:border-box;background:#F7F8FC;color:#aab7ca;font:400 13px/1.8 "Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;letter-spacing:0;text-align:left;padding:24px 16px 36px;border-top:1px solid rgba(23,43,67,.16)}
 .biz>*{max-width:1080px;margin-left:auto;margin-right:auto}
 .biz p{margin:0 auto 6px;font-size:13px;line-height:1.8;color:#aab7ca;word-break:keep-all;overflow-wrap:anywhere}
 .biz a{color:#d1e4fa;text-decoration:underline;text-underline-offset:2px}
 .biz .policy{display:flex;flex-wrap:wrap;gap:4px 6px;margin-bottom:12px}
 .biz .policy a{display:inline-flex;align-items:center;min-height:44px;padding:0 12px;font-size:14px;text-decoration:none;border-radius:8px}
-.biz .policy a.pp{background:transparent;color:#fff}
+.biz .policy a.pp{background:transparent;color:#172B43}
 .biz b{color:inherit}
-.biz .policy a.pp b{font-weight:700;color:#fff}
+.biz .policy a.pp b{font-weight:700;color:#172B43}
 .biz .copy{color:#8f9db3}
-footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
+footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#F7F8FC}
 </style>
-</head><body><div class="app">
-<div class="top"><a class="brand" href="/" style="text-decoration:none;color:inherit;cursor:pointer" title="델타스킬 홈으로">델타<span>스킬</span></a><div class="sub" id="subttl">AI 오답노트</div><div class="prog"><i id="pbar"></i></div></div>
+<link rel="stylesheet" href="/assets/site-unify.css?v=35"><style id="ds-light-37">#screen .pad>div>a[href="/"]{display:inline-block;padding:13px 0;margin:-13px 0}
+.rchip{min-height:44px;display:inline-flex;align-items:center;justify-content:center}
+.chip{min-height:44px}
+.memo,.numin{min-height:44px}
+input.txt{background:#fff;border:1px solid #B9C2D3;border-radius:10px}
+input.txt:focus{background:#fff;border-color:#245BD6}
+input.txt::placeholder{color:#5B6678}
+.legalbox{background:#F7F8FC;color:#3C4A60}
+.legalbox b{color:#172B43}
+.btn,.ndone .ib,.ndone .rm,.numgo{border-radius:10px}
+.q,.pick,.kpi,.bar,.presc,.lock,.scoretop,.empty{border-radius:16px}
+.btn:disabled{background:#E6E9F0;color:#5B6678}
+.pick .pa{color:#5B6678}</style><script defer src="/auth.js?v=home-logout-r2-1118"></script></head><body><header class="ds-head"><div class="ds-head-in"><a class="ds-logo" href="/" aria-label="델타스킬 메인"><span class="d">DELTA</span><span class="s">SKILL</span></a><nav class="ds-menu" aria-label="주요 메뉴"><a href="/naesin/">내신 자료</a><a href="/pass/">이용권</a><a href="/orders/">주문 조회</a></nav><nav id="authnav" class="ds-acct" aria-label="계정"><a href="/auth/" data-account-primary>로그인</a><a href="/auth/?mode=signup" data-account-secondary>회원가입</a></nav></div></header><div class="app">
+<div class="top"><div class="sub" id="subttl">AI 오답노트</div><div class="prog"><i id="pbar"></i></div></div>
 <div id="screen"></div><div class="fab" id="fab"></div></div>
 <footer class="sitefoot" style="padding-bottom:96px">
 <div class="biz" id="bizinfo">
@@ -234,8 +246,8 @@ function setProg(){const m=S.screen==="note"?markedItems().length:0;
 function render(){setProg();const lightScr=S.screen==='quiz'||S.screen==='note';
  document.body.classList.toggle('qlight',lightScr);
  /* 루트에도 같이 알려준다 — 브라우저 다크 모드가 밝은 화면을 강제로 어둡게 칠해 색이 뭉개지는 것을 막는다 */
- document.documentElement.style.colorScheme=lightScr?'light':'dark';
- const tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content',lightScr?'#f5f7fb':'#05060f');const custS=["custom","cdone"].includes(S.screen);el("subttl").textContent=(["login","signup","profile","exam"].includes(S.screen)?"AI 오답노트":custS?"모의고사 직접입력 · AI 오답노트":EXAM.title+" · AI 오답노트")+(S.profile&&curSubject()&&!["login","signup","profile","exam","custom","cdone"].includes(S.screen)?` · ${curSubject()}`:"");({login:login,signup:signup,profile:profileScreen,exam:examSelect,intro:intro,quiz:quiz,note:noteScreen,result:result,custom:customForm,cdone:customResult}[S.screen])();
+ document.documentElement.style.colorScheme='light';
+ const tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#F7F8FC');const custS=["custom","cdone"].includes(S.screen);el("subttl").textContent=(["login","signup","profile","exam"].includes(S.screen)?"AI 오답노트":custS?"모의고사 직접입력 · AI 오답노트":EXAM.title+" · AI 오답노트")+(S.profile&&curSubject()&&!["login","signup","profile","exam","custom","cdone"].includes(S.screen)?` · ${curSubject()}`:"");({login:login,signup:signup,profile:profileScreen,exam:examSelect,intro:intro,quiz:quiz,note:noteScreen,result:result,custom:customForm,cdone:customResult}[S.screen])();
  /* 하단 고정 버튼이 없는 화면은 아래 여백을 줄인다 */
  const app=document.querySelector(".app");if(app)app.classList.toggle("nofab",!el("fab").innerHTML.trim());
  syncHist();}
@@ -314,7 +326,7 @@ function profileScreen(){
 }
 
 /* ---------- 로그인 ---------- */
-function login(){el("screen").innerHTML=`<div class="pad"><div style="margin-bottom:8px"><a href="/" style="color:#94a3b8;font-size:13px;text-decoration:none">← 델타스킬 홈</a></div><div class="h">AI 오답노트 작성</div>
+function login(){el("screen").innerHTML=`<div class="pad"><div style="margin-bottom:8px"><a href="/" style="color:#5B6678;font-size:13px;text-decoration:none">← 델타스킬 홈</a></div><div class="h">AI 오답노트 작성</div>
  <div class="desc">모의고사 본 뒤 5분 오답노트 체크로, 나에게 맞는 학습 처방을 받아요. 휴대폰 번호로 시작하세요.</div>
  <div class="field"><label>휴대폰 번호</label><input class="txt" id="ph" inputmode="numeric" placeholder="01000000000" value="${S.phone}"></div></div>`;
  el("ph").oninput=e=>S.phone=e.target.value.replace(/[^0-9]/g,"");
@@ -374,7 +386,7 @@ function signup(){const p=S.profile||{name:"",academy:"",school:"",grade:""};S._
 /* ---------- 시험 선택 ---------- */
 function examSelect(){
  if(S.catSel==null){
-  el("screen").innerHTML=`<div class="pad"><div style="margin-bottom:8px"><a href="/" style="color:#94a3b8;font-size:13px;text-decoration:none">← 델타스킬 홈</a> · <span class="rchip" onclick="location.href='/my/'" style="cursor:pointer">내 오답노트</span> · <span class="rchip" data-prof="1" style="cursor:pointer">⚙︎ 내 정보</span> · <span class="rchip" data-relogin="1" style="cursor:pointer">다른 번호로 로그인</span></div><div class="h">어떤 시험인가요?</div>
+  el("screen").innerHTML=`<div class="pad"><div style="margin-bottom:8px"><a href="/" style="color:#5B6678;font-size:13px;text-decoration:none">← 델타스킬 홈</a> · <span class="rchip" onclick="location.href='/my/'" style="cursor:pointer">내 오답노트</span> · <span class="rchip" data-prof="1" style="cursor:pointer">⚙︎ 내 정보</span> · <span class="rchip" data-relogin="1" style="cursor:pointer">다른 번호로 로그인</span></div><div class="h">어떤 시험인가요?</div>
  <div class="desc">응시한 모의고사의 분류를 먼저 선택하세요. 이전에 본 시험도 입력할 수 있어요.</div>`+
   CATS.map((c,i)=>{const n=c.exams.filter(e=>e.ex!=null).length;const sub=c.custom?"내가 본 다른 모의고사를 직접 기록해요":`${c.desc} · 입력 가능 ${n}개${n<c.exams.length?` / 준비 중 ${c.exams.length-n}개`:''}`;return `<button class="q" style="width:100%;text-align:left;cursor:pointer" data-cat="${i}"><div class="qh" style="margin-bottom:2px"><span style="font-weight:800;font-size:15.5px">${c.name}</span><span style="margin-left:auto;color:var(--mut2)">${c.custom?'✏️':'→'}</span></div><div style="font-size:12px;color:var(--mut)">${sub}</div></button>`;}).join("")+`</div>`;
   const pf=document.querySelector("[data-prof]");if(pf)pf.onclick=()=>{S._pp=null;S.screen="profile";render();window.scrollTo(0,0);};
@@ -387,7 +399,7 @@ function examSelect(){
  <div class="desc">${c.desc} — 회차를 선택하세요.</div>`+
  c.exams.map((e,j)=>{
   if(e.ex!=null){const ex=EXAMS[e.ex];return `${e.month?`<h2 style="font-size:16px;margin:22px 0 10px">${esc(e.month)} <span style="font-size:12px;font-weight:400;color:var(--mut)">${esc(e.year||"")}</span></h2>`:""}<button class="q" style="width:100%;text-align:left;cursor:pointer" data-ex="${e.ex}"><div class="qh" style="margin-bottom:2px"><span style="font-weight:800;font-size:15.5px">${ex.title}</span><span style="margin-left:auto;color:var(--mut2)">→</span></div><div style="font-size:12px;color:var(--mut)">${ex.desc}</div></button>`;}
-  return `${e.month?`<h2 style="font-size:16px;margin:22px 0 10px">${esc(e.month)} <span style="font-size:12px;font-weight:400;color:var(--mut)">${esc(e.year||"")}</span></h2>`:""}<div class="q" style="width:100%;opacity:.55"><div class="qh" style="margin-bottom:2px"><span style="font-weight:800;font-size:15.5px;color:var(--mut)">${e.title}</span><span class="badge" style="margin-left:auto;background:rgba(255,255,255,.06);color:var(--mut2)">준비 중</span></div><div style="font-size:12px;color:var(--mut)">${e.note||"준비 중 — 곧 열려요"}</div></div>`;
+  return `${e.month?`<h2 style="font-size:16px;margin:22px 0 10px">${esc(e.month)} <span style="font-size:12px;font-weight:400;color:var(--mut)">${esc(e.year||"")}</span></h2>`:""}<div class="q" style="width:100%;opacity:.55"><div class="qh" style="margin-bottom:2px"><span style="font-weight:800;font-size:15.5px;color:var(--mut)">${e.title}</span><span class="badge" style="margin-left:auto;background:rgba(23,43,67,.06);color:var(--mut2)">준비 중</span></div><div style="font-size:12px;color:var(--mut)">${e.note||"준비 중 — 곧 열려요"}</div></div>`;
  }).join("")+`</div>`;
  document.querySelectorAll("[data-back]").forEach(b=>b.onclick=()=>{history.back();});
  document.querySelectorAll("[data-ex]").forEach(b=>b.onclick=async()=>{EXAM=EXAMS[+b.dataset.ex];await injectSteps();S.attempt=await calcAttempt(EXAM.code);S.savedSubId=null;S.savedExam=null;S.saveMode=null;S._forceNew=false;S._updWarn=null;S._editMode=false;S._subjOv=null;S.mode=null;S.mark={};S.open=null;S.ans={};S.reason={};S.conf={};S.memo={};S.step={};S.dq={};S.photo={};S.screen="intro";render();window.scrollTo(0,0);});
@@ -650,7 +662,7 @@ function errMsg(code){const c=(""+(code||"")).trim();
  return c;}
 function saveStatusUI(){const apiOn=!!CONFIG.api,saved=S.saveMode==="server",failed=apiOn&&S.saveMode&&!saved,needPin=failed&&!TK.has();
  if(saved)return{html:`<div class="saved">✅ 델타스킬 서버에 저장됐어요 · 매주 쌓여 학습 경로가 됩니다${S._updWarn?`<div style="font-size:11.5px;color:var(--mut2);margin-top:4px">(수정 반영은 실패해 새 회차로 저장했어요 · ${esc(S._updWarn)})</div>`:``}${S._syncWarn?`<div style="font-size:11.5px;color:var(--no);margin-top:4px">⚠ 저장은 됐지만 ${esc(S._syncWarn)}</div>`:``}</div>`,saved:true};
- if(failed)return{html:`<div class="saved demo" style="border-color:rgba(240,128,108,.6);align-items:flex-start"><div style="flex:1;line-height:1.6">⚠️ <b>${S.savedSubId?"수정 내용이 반영되지 않았어요.":"아직 저장되지 않았어요."}</b> ${S.savedSubId?"아래 <b>저장하기</b>로 다시 시도해 주세요. (중복 회차는 생기지 않아요)":"아래 <b>저장하기</b> 버튼을 눌러 주세요."}${(S.saveMode&&(""+S.saveMode).indexOf("error:")===0)?`<div style="font-size:11.5px;color:var(--mut2);margin-top:4px">${esc(errMsg((""+S.saveMode).slice(6)))}${S._saveTries?` · ${S._saveTries}번째 시도 실패 ${esc(S._lastTry||"")}`:``}</div>`:``}${needPin?`<div style="margin-top:8px;font-size:12.5px">저장 확인용 <b>비밀번호</b>를 입력하세요<input class="txt" id="savePin" type="password" maxlength="64" placeholder="비밀번호" value="${esc(S._pin||'')}" style="margin-top:6px;width:100%"></div>`:``}</div></div>`,saved:false};
+ if(failed)return{html:`<div class="saved demo" style="border-color:rgba(180,35,24,.6);align-items:flex-start"><div style="flex:1;line-height:1.6">⚠️ <b>${S.savedSubId?"수정 내용이 반영되지 않았어요.":"아직 저장되지 않았어요."}</b> ${S.savedSubId?"아래 <b>저장하기</b>로 다시 시도해 주세요. (중복 회차는 생기지 않아요)":"아래 <b>저장하기</b> 버튼을 눌러 주세요."}${(S.saveMode&&(""+S.saveMode).indexOf("error:")===0)?`<div style="font-size:11.5px;color:var(--mut2);margin-top:4px">${esc(errMsg((""+S.saveMode).slice(6)))}${S._saveTries?` · ${S._saveTries}번째 시도 실패 ${esc(S._lastTry||"")}`:``}</div>`:``}${needPin?`<div style="margin-top:8px;font-size:12.5px">저장 확인용 <b>비밀번호</b>를 입력하세요<input class="txt" id="savePin" type="password" maxlength="64" placeholder="비밀번호" value="${esc(S._pin||'')}" style="margin-top:6px;width:100%"></div>`:``}</div></div>`,saved:false};
  return{html:`<div class="saved demo">저장 완료(데모=브라우저)</div>`,saved:false};}
 function saveFab(saved,onSave,onEdit){
  if(saved&&S._editMode){/* 수정 모드 저장 완료 — 완료 버튼만. 마이페이지에서 온 경우 마이페이지로 복귀 */
@@ -672,7 +684,7 @@ function noteTry(mode){if((""+mode).indexOf("error")===0){S._saveTries=(S._saveT
 async function retrySaveDiag(){grabSavePin();
  /* 비밀번호 칸이 떠 있는데 비어 있으면 — 서버에 보내기 전에 입력부터 요청(헛된 '시도 실패' 방지) */
  if(CONFIG.api&&!TK.has()&&(S._pin||"").length<4){const pe=el("savePin");
-   if(pe){pe.focus();pe.placeholder="비밀번호를 입력해 주세요";pe.style.borderColor="rgba(240,128,108,.85)";}
+   if(pe){pe.focus();pe.placeholder="비밀번호를 입력해 주세요";pe.style.borderColor="rgba(180,35,24,.85)";}
    return;}
  const b=el("saveBtn");if(b){b.disabled=true;b.textContent="저장 중...";}
  const t0=Date.now();let mode="demo";try{mode=await saveAll(buildResult());}catch(e){mode="error:"+(e&&e.message||e);}
@@ -766,7 +778,7 @@ function pathLocked(){const on=Math.min(S.attempt,3);return `<div class="lock"><
 function pathUnlocked(weak){const steps=weak.map(w=>w[0]).sort((a,b)=>ORDER.indexOf(a)-ORDER.indexOf(b));const body=steps.map((u,i)=>{const b=BANK[u]||{};return `<div class="step"><div class="stepn">${i+1}</div><div><div class="st"><b>${u}</b></div><div class="stt">${b.up?'상류 먼저 · ':''}${b.type||''}</div></div></div>`;}).join("");return `<div class="bar"><div style="font-size:11.5px;color:var(--ok);font-weight:700;margin-bottom:6px;letter-spacing:.03em">3회 누적 가정 · 반복 결손 기준</div><h4 style="margin-bottom:4px">${esc(S.profile.name)}님 학습 경로</h4><div style="font-size:12px;color:var(--mut);margin-bottom:8px">상류(기초)부터 순서대로.</div>${body||'<div class="stt">약점이 뚜렷하지 않아요 — 유지 학습!</div>'}<div style="font-size:11px;color:var(--mut);margin-top:10px">* 예시 화면. 실제로는 여러 주간 반복 결손으로 자동 생성·매주 갱신됩니다.</div></div>`;}
 function result(){const its=items();const done=its.filter(q=>graded(q)!=null);const correct=done.filter(q=>graded(q)==="o");const score=correct.reduce((s,q)=>s+q.jum,0);
  const areas={};its.forEach(q=>{const g=graded(q);if(g==null)return;areas[q.area]=areas[q.area]||{o:0,n:0};areas[q.area].n++;if(g==="o")areas[q.area].o++;});
- const areaRows=Object.entries(areas).map(([k,v])=>{const p=Math.round(v.o/v.n*100);const col=p>=70?"linear-gradient(90deg,#3d7fe0,#7cb6ff)":p>=45?"linear-gradient(90deg,#b3604f,#f0a08e)":"linear-gradient(90deg,#c25a45,#f0806c)";return `<div class="row"><span class="nm">${k}</span><span class="tr"><i style="width:${p}%;background:${col}"></i></span><span class="pc">${p}%</span></div>`;}).join("");
+ const areaRows=Object.entries(areas).map(([k,v])=>{const p=Math.round(v.o/v.n*100);const col=p>=70?"linear-gradient(90deg,#245BD6,#245BD6)":p>=45?"linear-gradient(90deg,#B42318,#B42318)":"linear-gradient(90deg,#B42318,#B42318)";return `<div class="row"><span class="nm">${k}</span><span class="tr"><i style="width:${p}%;background:${col}"></i></span><span class="pc">${p}%</span></div>`;}).join("");
  const uinfo={};its.forEach(q=>{const g=graded(q);if(g==null)return;const u=uinfo[q.unit]=uinfo[q.unit]||{n:0,wrong:[],reasons:{}};u.n++;if(g==="x"){u.wrong.push(q.no);const r=S.reason[q.no];if(r)u.reasons[r]=(u.reasons[r]||0)+1;}});
  const weak=Object.entries(uinfo).filter(([k,v])=>v.wrong.length>0).sort((a,b)=>(b[1].wrong.length-a[1].wrong.length)||(ORDER.indexOf(a[0])-ORDER.indexOf(b[0]))).slice(0,3);
  const presc=weak.map(([u,v])=>{const tr=Object.entries(v.reasons).sort((a,b)=>b[1]-a[1])[0];const rl=tr?tr[0]:null;const fix=rl?REASONFIX[rl]:"유형별 대표문항으로 감 잡기";const b=BANK[u]||{type:u,gichul:[]};return `<div class="presc"><div class="pu">${u}<span class="pw">${v.wrong.length}문항 틀림</span></div>${rl?`<div class="pr">주 원인: <b>${rl}</b></div>`:''}<div class="pl"><span class="ic">🎯</span><div><b>유형 학습</b> · ${b.type}<br>→ ${fix}</div></div><div class="pl"><span class="ic">🔁</span><div><b>이번 시험 다시 풀 문제</b><br>${EXAM.title} ${v.wrong.map(n=>n+'번').join(', ')}</div></div><div class="pl"><span class="ic">📚</span><div><b>기출 복습</b><br>${b.gichul.join(' / ')}</div></div>${b.up?`<div class="pl up"><span class="ic">⬆️</span><div><b>먼저 볼 것(상류 결손)</b><br>${b.up}</div></div>`:''}</div>`;}).join("")||`<div class="presc"><div class="pl"><span class="ic">🎉</span><div>틀린 문항이 거의 없어요! 유지 학습으로 충분해요.</div></div></div>`;
@@ -794,7 +806,7 @@ function result(){const its=items();const done=its.filter(q=>graded(q)!=null);co
  el("screen").innerHTML=`<div class="pad">${savedUI}<div class="h">${esc(S.profile.name)}님 오답노트 결과</div><div class="desc">${EXAM.title} · ${esc(curSubject())} · ${S.attempt}회차</div>
   <div class="kpirow"><div class="kpi"><div class="v">${score}<span style="font-size:14px;color:var(--mut2)">점</span></div><div class="l">자기채점 원점수 (100)</div></div><div class="kpi"><div class="v">${correct.length}<span style="font-size:14px;color:var(--mut2)">/${done.length}</span></div><div class="l">맞은 문항</div></div></div>
   <div class="bar"><h4>영역별 정답률</h4>${areaRows}</div>
-  ${SOL_EXAMS[EXAM.code]?`<div class="bar" style="text-align:center"><div style="margin-bottom:10px"><b>이 시험의 해설이 열려 있어요</b> — 틀린 문항 풀이를 바로 확인하세요.</div><a href="/sol/" style="display:inline-flex;align-items:center;justify-content:center;height:46px;padding:0 26px;border-radius:13px;background:var(--brand);color:#04122b;font-weight:800;font-size:15px;text-decoration:none">📖 문제·해설 보기</a></div>`:""}
+  ${SOL_EXAMS[EXAM.code]?`<div class="bar" style="text-align:center"><div style="margin-bottom:10px"><b>이 시험의 해설이 열려 있어요</b> — 틀린 문항 풀이를 바로 확인하세요.</div><a href="/sol/" style="display:inline-flex;align-items:center;justify-content:center;height:46px;padding:0 26px;border-radius:13px;background:var(--brand);color:#fff;font-weight:800;font-size:15px;text-decoration:none">📖 문제·해설 보기</a></div>`:""}
   <div class="seclabel">이번 주 나의 처방</div>${presc}
   ${guessSec}
   ${patSec?`<div class="seclabel">묶어서 연습할 기술</div>`+patSec:""}

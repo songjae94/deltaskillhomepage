@@ -7,17 +7,17 @@
 <link rel="icon" href="/favicon-32.png" sizes="32x32">
 <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
-:root{--bg:#05060f;--panel:rgba(255,255,255,.028);--panel2:rgba(255,255,255,.055);--line:rgba(186,215,247,.13);--line2:rgba(186,215,247,.24);
---ink:#e9eff8;--mut:rgba(209,228,250,.6);--mut2:rgba(209,228,250,.38);--acc:#5aa2ff;--acc2:#a8cbff;--ok:#5fd39a;--warn:#f0806c;--no:#f0806c;--r:14px}
+:root{--bg:#F7F8FC;--panel:#fff;--panel2:#F7F8FC;--line:#DFE3ED;--line2:#B9C2D3;
+--ink:#172B43;--mut:#3C4A60;--mut2:#5B6678;--acc:#245BD6;--acc2:#1D4DB8;--ok:#1E6B45;--warn:#B42318;--no:#B42318;--r:14px}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
 font-size:14px;line-height:1.65;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
 .wrap{max-width:960px;margin:0 auto;padding:24px 18px 70px}
 a{color:var(--acc2);text-decoration:none}
 .top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.brand{display:flex;align-items:center;gap:7px;font-weight:800;font-size:15px;color:#fff}
+.brand{display:flex;align-items:center;gap:7px;font-weight:800;font-size:15px;color:#172B43}
 .brand img{width:22px;height:22px}
-.demo{font-size:10.5px;font-weight:700;color:var(--warn);border:1px solid rgba(240,128,108,.4);border-radius:999px;padding:2px 9px;margin-left:auto}
+.demo{font-size:10.5px;font-weight:700;color:var(--warn);border:1px solid rgba(180,35,24,.4);border-radius:999px;padding:2px 9px;margin-left:auto}
 h1{font-size:21px;letter-spacing:-.025em;margin:16px 0 2px;font-weight:800}
 .sub{color:var(--mut2);font-size:12.5px;margin:0 0 14px}
 .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}
@@ -31,7 +31,7 @@ h2{font-size:14.5px;margin:22px 0 8px;font-weight:700;border-left:3px solid var(
 @media(max-width:520px){.cls{grid-template-columns:1fr}}
 .c{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:13px 15px;cursor:pointer;transition:border-color .15s}
 .c:hover{border-color:var(--acc)}
-.c.on{border-color:var(--warn);background:rgba(240,128,108,.05)}
+.c.on{border-color:var(--warn);background:rgba(180,35,24,.05)}
 .c .nm{font-weight:800;font-size:14px}
 .c .t{font-size:11px;color:var(--mut2);margin:1px 0 8px}
 .c .row{display:flex;justify-content:space-between;font-size:11.5px;color:var(--mut);margin:2px 0}
@@ -42,37 +42,39 @@ table{width:100%;min-width:600px;border-collapse:collapse;font-size:12.5px}
 th{font-size:10.5px;color:var(--mut2);font-weight:600;text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);background:var(--panel);white-space:nowrap}
 td{padding:8px 12px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
 tr:last-child td{border-bottom:0}
-.bar{display:inline-block;width:80px;height:8px;background:rgba(186,214,247,.08);border-radius:99px;overflow:hidden;vertical-align:middle;margin-right:6px}
-.bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#c98a3a,#f0806c)}
+.bar{display:inline-block;width:80px;height:8px;background:rgba(23,43,67,.08);border-radius:99px;overflow:hidden;vertical-align:middle;margin-right:6px}
+.bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#B42318,#B42318)}
 .pill{display:inline-block;font-size:10px;font-weight:700;border-radius:999px;padding:1px 8px}
-.pill.g1,.pill.g2{color:#04122b;background:var(--acc)}
-.pill.g3{color:#04122b;background:var(--acc2)}
-.pill.g4,.pill.g5{color:var(--warn);border:1px solid rgba(240,128,108,.5)}
-.pill.no{color:var(--no);border:1px solid rgba(240,128,108,.45)}
-.note{border-left:2px solid var(--warn);background:rgba(240,128,108,.06);border-radius:0 10px 10px 0;padding:9px 13px;margin:12px 0;font-size:12.5px;color:var(--mut)}
+.pill.g1,.pill.g2{color:#fff;background:var(--acc)}
+.pill.g3{color:#fff;background:var(--acc2)}
+.pill.g4,.pill.g5{color:var(--warn);border:1px solid rgba(180,35,24,.5)}
+.pill.no{color:var(--no);border:1px solid rgba(180,35,24,.45)}
+.note{border-left:2px solid var(--warn);background:rgba(180,35,24,.06);border-radius:0 10px 10px 0;padding:9px 13px;margin:12px 0;font-size:12.5px;color:var(--mut)}
 .note b{color:var(--ink)}
 .sm{font-size:11px;color:var(--mut2)}
 .btn{display:inline-block;border:1px solid var(--line2);border-radius:8px;color:var(--acc2);font-size:11px;padding:3px 10px;cursor:pointer;background:none;font-family:inherit}
 footer{margin-top:36px;font-size:11.5px;color:var(--mut2)}
 </style>
 <style id="biz-css">
-.biz{display:block;box-sizing:border-box;background:#05060f;color:#aab7ca;font:400 13px/1.8 "Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;letter-spacing:0;text-align:left;padding:24px 16px 36px;border-top:1px solid rgba(186,215,247,.16)}
+.biz{display:block;box-sizing:border-box;background:#F7F8FC;color:#aab7ca;font:400 13px/1.8 "Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;letter-spacing:0;text-align:left;padding:24px 16px 36px;border-top:1px solid rgba(23,43,67,.16)}
 .biz>*{max-width:1080px;margin-left:auto;margin-right:auto}
 .biz p{margin:0 auto 6px;font-size:13px;line-height:1.8;color:#aab7ca;word-break:keep-all;overflow-wrap:anywhere}
 .biz a{color:#d1e4fa;text-decoration:underline;text-underline-offset:2px}
 .biz .policy{display:flex;flex-wrap:wrap;gap:4px 6px;margin-bottom:12px}
 .biz .policy a{display:inline-flex;align-items:center;min-height:44px;padding:0 12px;font-size:14px;text-decoration:none;border-radius:8px}
-.biz .policy a.pp{background:transparent;color:#fff}
+.biz .policy a.pp{background:transparent;color:#172B43}
 .biz b{color:inherit}
-.biz .policy a.pp b{font-weight:700;color:#fff}
+.biz .policy a.pp b{font-weight:700;color:#172B43}
 .biz .copy{color:#8f9db3}
-footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
+footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#F7F8FC}
 </style>
-</head>
-<body>
+<link rel="stylesheet" href="/assets/site-unify.css?v=35"><style id="ds-light-37">:root{--r:16px}
+.top .brand{min-height:44px}
+.btn{border-radius:10px;min-height:44px;display:inline-flex;align-items:center}</style><script defer src="/auth.js?v=home-logout-r2-1118"></script></head>
+<body><header class="ds-head"><div class="ds-head-in"><a class="ds-logo" href="/" aria-label="델타스킬 메인"><span class="d">DELTA</span><span class="s">SKILL</span></a><nav class="ds-menu" aria-label="주요 메뉴"><a href="/naesin/">내신 자료</a><a href="/pass/">이용권</a><a href="/orders/">주문 조회</a></nav><nav id="authnav" class="ds-acct" aria-label="계정"><a href="/auth/" data-account-primary>로그인</a><a href="/auth/?mode=signup" data-account-secondary>회원가입</a></nav></div></header>
 <div class="wrap">
   <div class="top">
-    <a href="/pilot2/" class="brand"><img src="/logo-dark-192.png" alt="">델타스킬 <span style="color:var(--mut2);font-weight:400;font-size:12px">· 파일럿2</span></a>
+    <a href="/pilot2/" class="brand">델타스킬 <span style="color:var(--mut2);font-weight:400;font-size:12px">· 파일럿2</span></a>
     <span class="demo">데모 · 예시 데이터</span>
   </div>
 
@@ -94,26 +96,12 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   <h2 id="stuTitle">학생 목록</h2>
   <div class="tw"><table id="stu"></table></div>
 
-  <div class="note" style="border-color:var(--acc);background:rgba(90,162,255,.06)">
+  <div class="note" style="border-color:var(--acc);background:rgba(36,91,214,.06)">
     <b>권한 분리</b> — 이 화면은 원장 전용입니다. 각 선생님 계정으로 로그인하면 <b>자기 반만</b> 보입니다.
     학생 개인 리포트(점수 추이·공부 순서·방향)는 행의 「리포트」로 열람합니다.
   </div>
 
   <footer>본 데모의 학원·선생님·학생·수치는 전부 가상입니다 · <a href="/pilot2/">← 유형 선택으로</a>
-<div class="biz" id="bizinfo">
-  <nav class="policy" aria-label="정책">
-    <a href="/terms/">이용약관</a>
-    <a class="pp" href="/privacy/"><b>개인정보처리방침</b></a>
-    <a href="/refund/">환불·청약철회 안내</a>
-    <a href="/minor/">미성년자 구매 안내</a>
-    <a href="/naesin/">내신 자료</a>
-  </nav>
-  <p>상호 델타스킬 · 대표 송재형 · 사업자등록번호 345-62-00876 <a href="https://www.ftc.go.kr/bizCommPop.do?wrkr_no=3456200876" target="_blank" rel="noopener">사업자정보확인</a> · 통신판매업신고 제2026-서울서초-3410호</p>
-  <p>주소 서울특별시 서초구 마방로10길 18-16, 4층(양재동, 진우빌딩) · 전화 070-8065-2468 · 이메일 <a href="mailto:admin@deltaskill.co.kr">admin@deltaskill.co.kr</a></p>
-  <p>개인정보보호책임자 송재형 · 호스팅 제공자 GitHub, Inc.(GitHub Pages) · Supabase, Inc.(결제·다운로드 서버)</p>
-  <p class="src">자료 출처: 평가원 공개 자료 + EBSi 공개 채점 자료 · 판매 PDF는 델타스킬이 직접 제작한 콘텐츠입니다 · 디지털콘텐츠 환불(받기 전이면 결제일부터 7일 안 전액 환불 · 일부 받았으면 받지 않은 파일 비율만큼 7일 안 환불 · 받은 파일은 청약철회 제한) · 변형문항 이용권은 매월 자동 갱신(정기결제) · 그 밖의 상품은 단건 결제</p>
-  <p class="copy">© 2026 델타스킬. All rights reserved.</p>
-</div>
 </footer>
 </div>
 
@@ -159,5 +147,20 @@ function render(){
 }
 render();
 </script>
+<footer class="sitefoot"><div class="biz" id="bizinfo">
+  <nav class="policy" aria-label="정책">
+    <a href="/terms/">이용약관</a>
+    <a class="pp" href="/privacy/"><b>개인정보처리방침</b></a>
+    <a href="/refund/">환불·청약철회 안내</a>
+    <a href="/minor/">미성년자 구매 안내</a>
+    <a href="/naesin/">내신 자료</a>
+  </nav>
+  <p>상호 델타스킬 · 대표 송재형 · 사업자등록번호 345-62-00876 <a href="https://www.ftc.go.kr/bizCommPop.do?wrkr_no=3456200876" target="_blank" rel="noopener">사업자정보확인</a> · 통신판매업신고 제2026-서울서초-3410호</p>
+  <p>주소 서울특별시 서초구 마방로10길 18-16, 4층(양재동, 진우빌딩) · 전화 070-8065-2468 · 이메일 <a href="mailto:admin@deltaskill.co.kr">admin@deltaskill.co.kr</a></p>
+  <p>개인정보보호책임자 송재형 · 호스팅 제공자 GitHub, Inc.(GitHub Pages) · Supabase, Inc.(결제·다운로드 서버)</p>
+  <p class="src">자료 출처: 평가원 공개 자료 + EBSi 공개 채점 자료 · 판매 PDF는 델타스킬이 직접 제작한 콘텐츠입니다 · 디지털콘텐츠 환불(받기 전이면 결제일부터 7일 안 전액 환불 · 일부 받았으면 받지 않은 파일 비율만큼 7일 안 환불 · 받은 파일은 청약철회 제한) · 변형문항 이용권은 매월 자동 갱신(정기결제) · 그 밖의 상품은 단건 결제</p>
+  <p class="copy">© 2026 델타스킬. All rights reserved.</p>
+</div>
+</footer>
 </body>
 </html>
