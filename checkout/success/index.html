@@ -167,7 +167,7 @@ var ERR={
   not_found:"주문을 찾을 수 없습니다. 이메일과 주문번호를 확인해 주세요.",
   test_mode:"테스트 결제 주문이라 파일 내려받기는 열리지 않습니다.",
   not_paid:"결제가 끝나지 않은 주문입니다.",
-  expired:"다시 받을 수 있는 기간(구매일로부터 12개월)이 지났습니다.",
+  expired:"다시 받을 수 있는 기간(구매일(결제 완료일)로부터 12개월)이 지났습니다.",
   not_yet:"아직 제공 전인 파일입니다.",
   canceled:"취소·환불된 결제입니다.",
   bad_file:"이 주문에 없는 파일입니다.",
@@ -201,7 +201,7 @@ function renderOrder(box,o,cfg,email){
   row("결제수단",o.method);row("승인일시",o.approvedAt?kst(o.approvedAt):"");
   row("다시 받기",o.redownloadUntil?(kst(o.redownloadUntil)+"까지"):"");
   box.appendChild(dl);
-  if(o.status==="paid"&&o.mode!=="test"){var keep=document.createElement("p");keep.className="notice";keep.textContent="주문번호와 결제할 때 적은 이메일을 적어 두세요. 주문 조회에서 결제일부터 12개월 동안 다시 받을 때 둘 다 필요합니다.";box.appendChild(keep);} /* 22 창 1118 걸음 8: 비회원 받는 길 */
+  if(o.status==="paid"&&o.mode!=="test"){var keep=document.createElement("p");keep.className="notice";keep.textContent="주문번호와 결제할 때 적은 이메일을 적어 두세요. 주문 조회에서 구매일(결제 완료일)로부터 12개월 동안 다시 받을 때 둘 다 필요합니다.";box.appendChild(keep);} /* 22 창 1118 걸음 8: 비회원 받는 길 */
   if(multi&&policy){var refund=document.createElement("p");refund.className="hint";refund.textContent=policy.FULL_REFUND;box.appendChild(refund);}
   var h=document.createElement("h2");h.textContent="파일";h.style.marginTop="16px";box.appendChild(h);
   if(o.mode==="test"){var n=document.createElement("p");n.className="notice";n.textContent="테스트 결제 주문이라 실제로 청구되지 않았고 파일 내려받기는 열리지 않습니다. 실제 결제 주문은 이 자리에 파일과 내려받기 단추가 나옵니다.";box.appendChild(n);return;}
@@ -277,7 +277,7 @@ function renderOrder(box,o,cfg,email){
     $("ttl").textContent="결제 확인";
     box.textContent="";
     $("toOrders").href="/orders/";
-    if(token)location.replace("/checkout/?sku=REVIEW-S2.pdf");
+    if(token)location.replace("/pass/"); /* 1118 N1: 낱개 시험 상품 주문서는 닫힘 — 이미 시작된 시험 주문 확인 길만 남김 */
   });
   if(oid)$("toOrders").href="/orders/?orderId="+encodeURIComponent(oid);
   loadCfg().then(function(cfg){

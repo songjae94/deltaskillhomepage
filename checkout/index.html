@@ -162,7 +162,6 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 </footer>
 <script src="/naesin/finals-order.js"></script>
 <script src="/auth.js?v=home-logout-r2-1118"></script>
-<script src="/pass/review-config.js"></script>
 <script>
 "use strict";
 function $(id){return document.getElementById(id);}
@@ -173,13 +172,7 @@ function apiBase(cfg){return (cfg&&typeof cfg.api==="string"?cfg.api:"").replace
 function callApi(cfg,name,body){
   var headers={"Content-Type":"application/json"};
   var api=apiBase(cfg)+"/"+name;
-  if(body.sku==="REVIEW-S2.pdf"){
-    var base=DSReviewApi(cfg), token=DSAuth.get();
-    if(!base||!token)return Promise.resolve({ok:false,error:"review_access_denied"});
-    api=new URL(name,base).href;
-    headers.Authorization="Bearer "+token;
-  }
-  return fetch(api,{method:"POST",headers:headers,body:JSON.stringify(body),redirect:body.sku==="REVIEW-S2.pdf"?"error":"follow"})
+  return fetch(api,{method:"POST",headers:headers,body:JSON.stringify(body),redirect:"follow"})
     .then(function(r){return r.json().catch(function(){return {ok:false,error:"server"};});})
     .catch(function(){return {ok:false,error:"network"};});
 }
@@ -204,7 +197,7 @@ var ERR={
   not_found:"주문을 찾을 수 없습니다. 이메일과 주문번호를 확인해 주세요.",
   test_mode:"테스트 결제 주문이라 파일 내려받기는 열리지 않습니다.",
   not_paid:"결제가 끝나지 않은 주문입니다.",
-  expired:"다시 받을 수 있는 기간(구매일로부터 12개월)이 지났습니다.",
+  expired:"다시 받을 수 있는 기간(구매일(결제 완료일)로부터 12개월)이 지났습니다.",
   not_yet:"아직 제공 전인 파일입니다.",
   canceled:"취소·환불된 결제입니다.",
   bad_file:"이 주문에 없는 파일입니다.",
@@ -265,9 +258,8 @@ var FIX="<p>디지털콘텐츠(PDF)는 다운로드(열람)를 시작하면 청�
 var SDK="https://js.tosspayments.com/v2/standard";
 var query=new URLSearchParams(location.search),cart=query.has("skus"),skus=query.getAll("skus");
 var sku=(query.get("sku")||"").trim(),cartError="",cartProducts=null;
-var reviewFormat=sku==="REVIEW-S2.pdf"?"PDF":"";
+var reviewClosed=/^REVIEW-/i.test(sku); /* 1118 재점검 N1: 낱개 시험 상품(REVIEW-S2 · 600원)은 test 에서도 판매하지 않는다 — 주문서를 열지 않음 */
 var P=Object.prototype.hasOwnProperty.call(CAT,sku)?CAT[sku]:null;
-if(reviewFormat&&!cart)P={name:"2단계 변형 프린트 한 벌 · "+reviewFormat,price:600,priceNote:"개별구매 · 한 번 결제",comp:"변형 문항 20개 · 정답 · 해설",give:"출시 예정 · 출시 전 주문은 파일 제공 없이 전액 환불"};
 var NS=cart||sku.indexOf("NS-")===0;
 if(NS){var bs=document.getElementById("band-sale");if(bs)bs.remove();} /* 형 결정 7: 내신 주문서에는 판매일 공지 글을 두지 않는다(수능 글은 그대로) */
 /* 내신 상품은 /naesin/catalog.json 한 값에서 읽는다(서버 표와 같은 정본 · 게이트 scripts/홈페이지/내신상품표.py). 주소는 sku=<SKU>.<형식>(pdf · hwpx) — 그 형식의 가격·면세값·파일과 판매일 중 하나라도 비면 주문서를 열지 않는다. */
@@ -316,7 +308,7 @@ function absUrl(u,d){try{return new URL(u||d,location.origin).href;}catch(_){ret
 function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e;}
 function showProduct(){
   var box=$("prod");box.textContent="";
-  if(!P){box.appendChild(el("p","msg err",cartError?ERR[cartError]:NS?"이 상품은 출시 예정입니다.":"상품을 찾을 수 없습니다."));var a=el("a","btn ghost",NS?"내신 파일로 돌아가기":"유형서 구매로 돌아가기");a.href=NS?"/naesin/":"/store/";var d=el("div","acts");d.appendChild(a);box.appendChild(d);return false;}
+  if(!P){box.appendChild(el("p","msg err",cartError?ERR[cartError]:reviewClosed?"이 상품은 판매하지 않습니다.":NS?"이 상품은 출시 예정입니다.":"상품을 찾을 수 없습니다."));var a=el("a","btn ghost",reviewClosed?"변형문항 이용권으로 돌아가기":NS?"내신 파일로 돌아가기":"유형서 구매로 돌아가기");a.href=reviewClosed?"/pass/":NS?"/naesin/":"/store/";var d=el("div","acts");d.appendChild(a);box.appendChild(d);return false;}
   box.appendChild(el("p","pname",P.name));
   var pr=el("p","price");pr.appendChild(el("b",null,won(amount)));pr.appendChild(el("small",null,P.priceNote));box.appendChild(pr);
   var rows=cart
@@ -327,7 +319,7 @@ function showProduct(){
   if(cart)box.appendChild(el("p","hint",window.DeltaFinalsOrder.FULL_REFUND));
   if(P.course)box.appendChild(el("p","course",P.course));
   if(P.cards&&P.cards.length)box.appendChild(el("p","hint","결제창에서 사용할 수 있는 카드가 표시됩니다.")); /* 본부 1118 ③: 라이브 계약 카드 확인 전에는 목록을 적지 않음 */
-  var fx=el("div","fix");fx.innerHTML=cart?'<p>파일을 내려받거나 열람하면 청약철회가 제한됩니다. <a href="/refund/">환불·청약철회 안내</a></p>':NS?FIX.replace("디지털콘텐츠(PDF)","디지털콘텐츠(고른 형식의 파일)").replace(P&&P.noOrigClaim?/<p>유료 PDF에는[^<]*<\/p>/:"유료 PDF에는",P&&P.noOrigClaim?"":"유료 파일에는"):reviewFormat?FIX.replace(" 구매 전에 무료 미리보기로 내용과 난이도를 확인해 주세요."," 구매 전에 <a href=\"/pass/#single\">상품 안내</a>에서 받는 내용을 확인해 주세요."):FIX;box.appendChild(fx);
+  var fx=el("div","fix");fx.innerHTML=cart?'<p>파일을 내려받거나 열람하면 청약철회가 제한됩니다. <a href="/refund/">환불·청약철회 안내</a></p>':NS?FIX.replace("디지털콘텐츠(PDF)","디지털콘텐츠(고른 형식의 파일)").replace(P&&P.noOrigClaim?/<p>유료 PDF에는[^<]*<\/p>/:"유료 PDF에는",P&&P.noOrigClaim?"":"유료 파일에는"):FIX;box.appendChild(fx);
   $("pay").textContent=won(amount)+" 결제하기";
   return true;
 }
@@ -363,31 +355,23 @@ function startWidget(){
 function drawMethods(){
   var box=$("payment-method");box.textContent="";
   var h=el("p","pm-t","결제수단");box.appendChild(h);
-  [["CARD","카드"],["TRANSFER","계좌이체"],["MOBILE_PHONE","휴대폰"]].filter(function(m){return reviewFormat?m[0]==="CARD":m[0]!=="TRANSFER"||amount>=TRANSFER_MIN;}).forEach(function(m,i){
+  [["CARD","카드"],["TRANSFER","계좌이체"],["MOBILE_PHONE","휴대폰"]].filter(function(m){return m[0]!=="TRANSFER"||amount>=TRANSFER_MIN;}).forEach(function(m,i){
     var l=el("label","chk pm");var r=document.createElement("input");r.type="radio";r.name="pm";r.value=m[0];if(i===0)r.checked=true;
     l.appendChild(r);l.appendChild(el("span",null,m[1]));box.appendChild(l);
   });
-  if(!reviewFormat&&amount<TRANSFER_MIN)box.appendChild(el("p","hint","계좌이체는 1,000원 이상 결제에서 쓸 수 있습니다."));
+  if(amount<TRANSFER_MIN)box.appendChild(el("p","hint","계좌이체는 1,000원 이상 결제에서 쓸 수 있습니다."));
 }
 function pickMethod(){var r=document.querySelector('input[name="pm"]:checked');return r?r.value:"CARD";}
 function payReq(r,email,name){
   var m=pickMethod();
-  var q={method:m,amount:{currency:"KRW",value:amount},orderId:r.orderId,orderName:r.orderName,successUrl:absUrl(reviewFormat?"/checkout/success/?review=pdf":cfg.successUrl,"/checkout/success/"),failUrl:absUrl(reviewFormat?"/checkout/fail/":cfg.failUrl,"/checkout/fail/"),customerEmail:email,customerName:name};
+  var q={method:m,amount:{currency:"KRW",value:amount},orderId:r.orderId,orderName:r.orderName,successUrl:absUrl(cfg.successUrl,"/checkout/success/"),failUrl:absUrl(cfg.failUrl,"/checkout/fail/"),customerEmail:email,customerName:name};
   if(typeof r.taxFreeAmount==="number")q.taxFreeAmount=r.taxFreeAmount; /* 면세 금액은 서버 상품표 값만 넣는다 · 값이 없으면 안 넘긴다 */
   if(m==="CARD")q.card={useEscrow:false,flowMode:"DEFAULT",useCardPoint:false,useAppCardOnly:false};
   if(m==="TRANSFER")q.transfer={cashReceipt:{type:"소득공제"},useEscrow:false};
   return widgets.requestPayment(q);
 }
 function boot(){
-  var reviewAccount=reviewFormat?DSAuth.get():"";
-  var reviewReset=false;
-  function sameAccount(){return !reviewFormat||(!reviewReset&&DSAuth.get()===reviewAccount);}
-  if(reviewFormat)DSAuth.onChange(function(token){
-    reviewReset=true;
-    $("f").hidden=true;
-    $("pay").disabled=true;
-    if(token)location.reload();
-  });
+  function sameAccount(){return true;} /* 회원 전용 시험 낱개 길을 닫아(1118 N1) 계정 바뀜 대조가 드는 주문서가 없음 */
   amount=P?priceNow(P):0;
   if(!showProduct()){loadCfg().then(function(c){if(c&&c.PAY_MODE==="test")$("band").hidden=false;});return;}
   $("f").hidden=false;
@@ -399,17 +383,9 @@ function boot(){
     if(!sameAccount())return;
     cfg=c||{};
     var mode=cfg.PAY_MODE;
-    if(reviewFormat&&!DSReviewApi(cfg)){
-      stop("지금은 이 상품의 결제를 사용할 수 없습니다. 잠시 뒤 다시 시도해 주세요.");return;
-    }
-    if(reviewFormat&&!DSAuth.has()){
-      stop("이 상품은 회원 상품입니다. 로그인한 뒤 주문할 수 있습니다.");
-      var login=el("a","btn ghost","로그인");login.href=DSAuth.loginUrl(location.pathname+location.search);$("prod").appendChild(login);
-      return;
-    }
     if(mode==="test")$("band").hidden=false;
     if(mode!=="test"&&mode!=="live"){stop("결제가 아직 열려 있지 않습니다.");return;}
-    if(!NS&&!reviewFormat&&cfg.SUNEUNG_SALE_OPEN!==true){suneungClosed();return;}
+    if(!NS&&cfg.SUNEUNG_SALE_OPEN!==true){suneungClosed();return;}
     if(mode==="live"&&NS&&!cart&&!onSale(P)){P=null;ready=false;$("pay").disabled=true;$("f").hidden=true;showProduct();return;} /* 형 결정 7(11-11): 내신은 판매일을 공지하지 않는다 — 판매 시각 전이면 값이 빈 상품과 같이 「이 상품은 준비 중입니다.」(내신 화면 단추와 같은 말) */
     if(mode==="live"&&!cart&&!onSale(P)){stop("지금은 이 상품의 판매 기간이 아닙니다. 제공: "+P.give);return;}
     loadSdk().then(function(){
@@ -430,7 +406,7 @@ function boot(){
       if(!sameAccount())return;
       if(!r||!r.ok)throw r||{};
       if(r.amount!==amount){
-        if(cart||reviewFormat){busy=false;stop("결제 금액이 바뀌었습니다. 주문서를 새로고침하고 금액을 다시 확인해 주세요.");setMsg($("msg"),"");return;}
+        if(cart){busy=false;stop("결제 금액이 바뀌었습니다. 주문서를 새로고침하고 금액을 다시 확인해 주세요.");setMsg($("msg"),"");return;}
         amount=r.amount;showProduct();drawMethods();
         busy=false;update();setMsg($("msg"),"가격이 바뀌어 다시 계산했습니다. 금액을 확인하고 다시 눌러 주세요.",true);return;
       }
@@ -440,7 +416,7 @@ function boot(){
     }).catch(function(e){if(sameAccount()){busy=false;update();setMsg($("msg"),errText(e),true);}});
   });
 }
-if(reviewFormat){var rc=document.querySelector('.crumb a[href="/store/"]');if(rc){rc.href="/pass/#single";rc.textContent="변형문항 이용권 · 개별구매";}}
+if(reviewClosed){var rc=document.querySelector('.crumb a[href="/store/"]');if(rc){rc.href="/pass/";rc.textContent="변형문항 이용권";}}
 if(NS){var crumb=document.querySelector('.crumb a[href="/store/"]');if(crumb){crumb.href="/naesin/";crumb.textContent="내신 파일";}fetch("/naesin/catalog.json",{cache:"no-store"}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}).then(function(c){P=cart?cartProduct(c):naesinP(c,sku);boot();});}
 else boot();
 </script>

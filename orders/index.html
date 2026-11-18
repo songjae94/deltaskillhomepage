@@ -107,7 +107,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 <main>
   <p class="crumb"><a href="/">메인</a> › 주문 조회</p>
   <h1>주문 조회</h1>
-  <p class="lede">결제할 때 적은 이메일과 주문번호로 주문 상태를 보고, 구매한 파일을 다시 내려받을 수 있습니다(구매일로부터 12개월).</p>
+  <p class="lede">결제할 때 적은 이메일과 주문번호로 주문 상태를 보고, 구매한 파일을 다시 내려받을 수 있습니다(구매일(결제 완료일)로부터 12개월).</p>
   <form class="card" id="f" novalidate>
     <label class="f" for="em">이메일</label>
     <input id="em" type="email" autocomplete="email" inputmode="email" maxlength="254" required class="in">
@@ -165,7 +165,7 @@ var ERR={
   not_found:"주문을 찾을 수 없습니다. 이메일과 주문번호를 확인해 주세요.",
   test_mode:"테스트 결제 주문이라 파일 내려받기는 열리지 않습니다.",
   not_paid:"결제가 끝나지 않은 주문입니다.",
-  expired:"다시 받을 수 있는 기간(구매일로부터 12개월)이 지났습니다.",
+  expired:"다시 받을 수 있는 기간(구매일(결제 완료일)로부터 12개월)이 지났습니다.",
   not_yet:"아직 제공 전인 파일입니다.",
   canceled:"취소·환불된 결제입니다.",
   bad_file:"이 주문에 없는 파일입니다.",

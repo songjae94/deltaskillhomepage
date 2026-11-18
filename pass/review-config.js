@@ -10,7 +10,7 @@
     } catch { /* No verified configuration. */ }
     return null;
   }
-  /* 낱개 시험 상품(REVIEW-S2) 길 — 낱개가 test 일 때만 산다. 낱개 live 면 사라진다. */
+  /* 낱개 시험 상품(REVIEW-S2) 길 — 1118 재점검 N1 로 판매(주문서 · /pass/ 단추)는 test 에서도 닫음. 이미 시작된 시험 주문의 승인 확인(/checkout/success/)에만 남는다. */
   window.DSReviewApi = function (config) {
     if (config?.PAY_MODE !== "test" || !TEST_CK.test(config.clientKey ?? "")) return null;
     return verifiedBase(config);

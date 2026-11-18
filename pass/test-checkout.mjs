@@ -1,6 +1,5 @@
 const billingButton = document.querySelector('[data-toss-review="pass"]');
 const billingStatus = document.querySelector("#checkout-pass [data-checkout-status]");
-const singleStatus = document.querySelector("#checkout-single [data-checkout-status]");
 const pendingKey = "delta-pass-test-attempt";
 const ttl = 10 * 60 * 1000;
 const auth = window.DSAuth;
@@ -8,8 +7,7 @@ let sdk;
 let generation = 0;
 let billingPhase = "idle";
 let reviewReady = false; /* 이용권 카드 등록 길(DSBillingApi) */
-let singleReady = false; /* 낱개 시험 상품 길(DSReviewApi · 낱개 test 일 때만) */
-const singleLinks = document.querySelectorAll("[data-review-sku]");
+/* 1118 재점검 N1: 낱개 시험 상품(REVIEW-S2 · 600원) 길은 test 에서도 닫음 — 이 쪽은 이용권 카드 등록 길만 쓴다 */
 const loginLinks = document.querySelectorAll("[data-review-login]");
 const agreeAll = document.querySelector("[data-agree-all]");
 const agrees = [...document.querySelectorAll("[data-agree]")];
@@ -49,11 +47,6 @@ function renderControls() {
     unclear: "승인 결과 확인 필요"
   }[billingPhase] ?? (!agreed() ? "필수 항목에 동의해 주세요" : auth.has() ? "카드 등록하고 10,000원 결제" : "로그인하고 카드 등록하기");
   for (const link of loginLinks) link.hidden = auth.has();
-  for (const link of singleLinks) {
-    const path = "/checkout/?sku=" + encodeURIComponent(link.dataset.reviewSku);
-    link.href = auth.has() ? path : auth.loginUrl(path);
-    link.hidden = !singleReady;
-  }
 }
 
 function setPhase(phase) {
@@ -193,17 +186,9 @@ if (returning) {
 try {
   const response = await fetch("/pay-config.json", {cache:"no-store", credentials:"same-origin", redirect:"error"});
   const config = response.ok ? await response.json() : null;
-  singleReady = !!window.DSReviewApi(config);
-  if (!singleReady) { /* 22 창 1118 걸음 8: 낱개 live 면 시험 상품(600원) 대신 내신 파일 개별구매로 */
-    for (const link of document.querySelectorAll('a[href="#single"]')) { link.href = "/naesin/"; link.textContent = "개별구매(내신 파일) 보기 →"; }
-    const intro = document.querySelector("[data-single-intro]");
-    if (intro) intro.textContent = "개별구매는 내신 파일에서 단원 파일 단위로 한 번 결제하며, 로그인 없이도 살 수 있습니다. 이용권 결제는 회원 로그인 뒤에 할 수 있습니다.";
-    if (location.hash === "#single" || location.hash === "#checkout-single") location.replace("/naesin/");
-  }
   const api = window.DSBillingApi(config);
   if (!api) {
     billingStatus.textContent = "지금은 결제를 사용할 수 없습니다. 잠시 뒤 다시 시도해 주세요.";
-    singleStatus.textContent = billingStatus.textContent;
   } else {
     const billingApi = new URL("billing-test", api);
     reviewReady = true;
@@ -213,7 +198,6 @@ try {
   }
 } catch {
   billingStatus.textContent = "결제 설정을 불러오지 못했습니다. 잠시 뒤 다시 시도해 주세요.";
-  singleStatus.textContent = billingStatus.textContent;
 }
 if (!reviewReady) {
   billingPhase = "idle";
