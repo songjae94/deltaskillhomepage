@@ -736,7 +736,7 @@
      "name": "공통수학2 단원 문제집 1권 · 06 함수",
      "composition": "C1",
      "textbook": null,
-     "count": null,
+     "count": 101,
      "pages": null,
      "price": {
       "pdf": 4000,
@@ -756,7 +756,7 @@
        "title": "공통수학2 단원 문제집 1권 · 06 함수 · 1문항 1쪽 (PDF)",
        "from": null,
        "layout": "1문항 1쪽",
-       "pages": 267
+       "pages": 139
       },
       {
        "id": "NS-CM2-06-L2.pdf",
@@ -764,7 +764,7 @@
        "title": "공통수학2 단원 문제집 1권 · 06 함수 · 2문항 2단 (PDF)",
        "from": null,
        "layout": "2문항 2단",
-       "pages": 165
+       "pages": 90
       },
       {
        "id": "NS-CM2-06-L4.pdf",
@@ -772,7 +772,7 @@
        "title": "공통수학2 단원 문제집 1권 · 06 함수 · 4문항 2단 (PDF)",
        "from": null,
        "layout": "4문항 2단",
-       "pages": 142
+       "pages": 80
       }
      ],
      "types": [],
