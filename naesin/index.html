@@ -190,7 +190,7 @@ html main .chips a[aria-current="true"]{background:#172B43;border-color:#172B43;
 footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 @media(max-width:640px){.hd-r a,.tg,.kick,.kick .n,.opt small,.opt .go,.tag,.pr,.mj,.pick .t small,.cnt,.conf dt,.conf dd small,.fine,.notice,.biz p,.biz a{font-size:14px}}   /* 1109 C3(점검표_개편판_1108): 640 아래 보조·가격·판매 안내 글 14px 이상 · 머리 링크 13→14 */
 </style>
-<link rel="stylesheet" href="/naesin/preparation.css"><script defer src="/naesin/preparation.js?v=s35"></script><script defer src="/naesin/finals-order.js"></script>
+<link rel="stylesheet" href="/naesin/preparation.css"><script defer src="/naesin/finals-order.js"></script>
 <link rel="stylesheet" href="/assets/account-header.css?v=pass-1117">
 <link rel="stylesheet" href="/assets/site-unify.css?v=35">
 </head>
@@ -203,14 +203,9 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 <main class="wrap">
   <div id="app" aria-live="polite"><p class="lede">상품을 불러오는 중…</p></div>
   <noscript><p class="lede">이 화면은 자바스크립트를 켜야 고를 수 있습니다.</p></noscript>
-  <details class="more" id="naesin-more"><summary>출시 예정 자료 · 구매 안내(단건 결제 · 부가세 · 환불)</summary>
-  <section id="final-handouts" class="preparation" aria-labelledby="final-handouts-title">
-      <h2 id="final-handouts-title">기말고사 대비 출시 예정 자료</h2>
-      <ul aria-label="출시 예정 자료 목록"></ul>
-      <p data-preparation-status aria-live="polite">준비 목록을 불러오는 중입니다.</p>
-    </section>
+  <details class="more" id="naesin-more"><summary>구매 안내(단건 결제 · 부가세 · 환불)</summary>
   <div class="notice">
-    <p><b>기말고사 대비 내신 파일은 단원별로 출시합니다.</b> <span id="sale-note">출시 전 단원은 「출시 예정」으로 보이며 결제 단추가 열리지 않습니다.</span></p>
+    <p><b>기말고사 대비 내신 파일은 단원별로 판매합니다.</b> <span id="sale-note"></span></p>
     <p><b>이번 기말은 단원별로 구매합니다.</b> 책 전체 묶음은 판매하지 않습니다. 상품 하나를 한 번에 결제합니다.</p>
     <p>환불: 받기 전이면 결제일부터 7일 안 전액 환불 · 일부 받았으면 받지 않은 파일 비율만큼 7일 안 환불 · 받은 파일은 청약철회 제한.</p>
     <p>표시한 값은 부가세 포함입니다. 내신 파일 주문은 정기결제(자동 결제)가 아닌 단건 결제로, 주문마다 한 번 결제합니다. <a href="/refund/">환불·청약철회 안내</a> · <a href="/minor/">미성년자 구매 안내</a></p>
@@ -376,7 +371,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   /* 구성 카드의 값 줄 — 값이 있는 상품만 말한다. 값이 하나뿐이면 어느 단원 값인지 함께 적는다 */
   function priceLine(c,s){
     var has=linesOf(c,s).filter(function(x){return anyPrice(x.u);});
-    if(!has.length)return "출시 예정입니다";
+    if(!has.length)return null; /* 형 1119: 값 없는 구성은 화면에 두지 않는다 */
     if(has.length===1)return "단원 "+has[0].no+" · "+twoPrices(has[0].u);
     return c.sku==="item"?"유형마다 값이 다릅니다":"단원마다 값이 다릅니다";
   }
@@ -414,12 +409,12 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     p.appendChild(document.createTextNode("로 알려 주세요."));
     return p;
   }
-  /* 이 과목에서 지금 살 수 있는 상품이 있는 구성인가 — 켜지면 「준비 중」 표가 저절로 걷힌다 */
+  /* 이 과목에서 지금 살 수 있는 상품이 있는 구성인가 — 형 1119: 안 파는 구성은 화면에 두지 않는다(표 글 없음) */
   function compOpen(c,s){
     return linesOf(c,s).some(function(l){return canBuyAny(l.u);});
   }
   function pathOpen(p,s){return comps(function(x){return x.path===p&&compOpen(x,s);}).length>0;}
-  function tag(open){return el("span",open?"tag now":"tag",open?"받을 수 있음":"출시 예정");}
+  function tag(open){return open?el("span","tag now","받을 수 있음"):null;}
   function optTop(title,tag){var t=el("span","top");add(t,el("b",null,title),tag);return t;}
   /* ① 목록 — 31 창 1118(형 「타 사이트 중 가장 간결 · 교재가 다 올라간 상황의 페이지」): 물음 화면 없이 판매 중 상품을 한 목록에.
      과목 칩으로 좁히고(?s=) · 단원 머리 아래 상품 카드(무엇 · 문항 수 · 파일 · 값 · 구매하기). 안 파는 것은 목록에 없다(막다른 길 0). */
@@ -456,7 +451,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
       });
       add(f,nav);
     }
-    if(!list.length){add(f,el("p","lede","지금 살 수 있는 자료가 없습니다. 출시되면 이 자리에 보입니다."));return f;}
+    if(!list.length){add(f,el("p","lede","지금 살 수 있는 자료가 없습니다."));return f;}
     var key=null,box=null;
     list.forEach(function(p){
       var k=p.s.code+p.u.no;
@@ -478,7 +473,6 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
       add(a,el("b",null,b.label),el("small",null,bookNote(b)),el("span","go","구성 고르기 →"));
       add(li,a);add(ul,li);
     });
-    var li=el("li"),sl=el("span","opt slot");add(sl,optTop("다른 부교재",el("span","tag","출시 예정")),el("small",null,"늘어나면 이 자리에 보입니다."));add(li,sl);add(ul,li);
     add(f,ul,proNote(q));
     return f;
   }
@@ -486,15 +480,15 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   function vPath(q,s,b){
     var f=document.createDocumentFragment(),base={who:q.who,s:q.s,b:q.b};
     add(f,backLink({who:q.who,s:q.s}),kick(3,q,s,b),h1(COPY.path[who(q)],"단원은 상세선택 화면에서 고릅니다."));
-    var free=comp("C0"),ul=el("ul","opts three"),freeOpen=freeSets(b).length>0;
+    var free=comp("C0"),ul=el("ul","opts three"),freeOpen=!!free&&freeSets(b).length>0;
     function card(p,title,desc,tag,price,go){
       var li=el("li"),a=link("opt",Object.assign({p:p},base));
       add(a,optTop(title,tag),el("small",null,desc),(price?el("span","pr",price):null),el("span","go",go));
       add(li,a);return li;
     }
     if(freeOpen)add(ul,card("free",free.name,free.desc+" "+FREE_RULE,tag(freeOpen),"0원","받을 내용 보기 →")); /* 형 1116: 무료 세트 없앰 — 열린 세트가 없으면 칸을 두지 않는다 */
-    add(ul,card("basic","기본형","미리 만든 구성에서 고릅니다.",tag(pathOpen("basic",s)),pathPriced("basic",s)?"구성마다 값이 다릅니다":"출시 예정입니다","구성 보기 →"));
-    add(ul,card("detail","상세선택","단원과 구성을 직접 고릅니다.",tag(pathOpen("basic",s)||pathOpen("detail",s)),(pathPriced("basic",s)||pathPriced("detail",s))?"구성마다 값이 다릅니다":"출시 예정입니다","직접 고르기 →"));
+    if(pathOpen("basic",s))add(ul,card("basic","기본형","미리 만든 구성에서 고릅니다.",tag(true),pathPriced("basic",s)?"구성마다 값이 다릅니다":null,"구성 보기 →"));
+    if(pathOpen("basic",s)||pathOpen("detail",s))add(ul,card("detail","상세선택","단원과 구성을 직접 고릅니다.",tag(true),(pathPriced("basic",s)||pathPriced("detail",s))?"구성마다 값이 다릅니다":null,"직접 고르기 →"));
     add(f,ul,proNote(q));
     return f;
   }
@@ -503,7 +497,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     var f=document.createDocumentFragment(),base={who:q.who,s:q.s,b:q.b};
     add(f,backLink(base),kick(4,q,s,b),h1("기본형","미리 만든 구성입니다. 구성을 고른 뒤 단원을 고릅니다. 파일은 PDF와 한글(HWPX) 가운데 한 형식을 고르며, 고른 형식의 파일만 받습니다."));
     var ul=el("ul","opts");
-    comps(function(c){return c.path==="basic";}).forEach(function(c){
+    comps(function(c){return c.path==="basic"&&compOpen(c,s);}).forEach(function(c){
       var li=el("li"),a=link("opt",Object.assign({p:"detail",c:c.id},base));
       var t=el("span","top"),tb=el("b");if(c.no!=null)add(tb,el("span","num",String(c.no)));tb.appendChild(document.createTextNode(c.name));add(t,tb,tag(compOpen(c,s)));
       add(a,t,el("small",null,c.desc),el("span","pr",priceLine(c,s)),el("span","go","단원 고르기 →"));
@@ -520,7 +514,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   }
   function vDetail(q,s,b){
     var f=document.createDocumentFragment(),base={who:q.who,s:q.s,b:q.b};
-    var c=comp(q.c);if(c&&c.path==="free")c=null;
+    var c=comp(q.c);if(c&&(c.path==="free"||!compOpen(c,s)))c=null;
     var came=history.state&&history.state.prev,up=came&&/[?&]p=basic(&|$)/.test(came)?Object.assign({p:"basic"},base):base;
     add(f,backLink(up),kick(4,q,s,b),h1("상세선택","구성을 고르고 단원을 고릅니다. 값 · 문항 수 · 쪽 수는 다음 화면에 함께 보입니다. 미리 만든 구성은 다음 화면에서 한 형식을 고르고, 고른 형식의 파일만 받습니다."));
     var st={};Object.keys(q).forEach(function(k){st[k]=q[k];});st.p="detail";delete st.v;
@@ -550,9 +544,10 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
       var one0=el("div","picks cols");add(one0,compRow(c,true));add(fs,one0,chg);
     }else{
       [["ready","미리 만든 구성"],["order","주문 뒤 만드는 구성"]].forEach(function(g){
+        var gl=comps(function(x){return x.make===g[0]&&x.path!=="free"&&compOpen(x,s);});if(!gl.length)return;
         add(fs,el("p","mj",g[1]));
         var ul=el("ul","picks");
-        comps(function(x){return x.make===g[0]&&x.path!=="free";}).forEach(function(x){var li=el("li");add(li,compRow(x,!!c&&c.id===x.id));add(ul,li);});
+        gl.forEach(function(x){var li=el("li");add(li,compRow(x,!!c&&c.id===x.id));add(ul,li);});
         add(fs,ul);
       });
     }
@@ -618,16 +613,16 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
           one[0].items.forEach(function(i){var o=el("option",null,withAlias(i,i.title.replace(s.subject+" ","").replace(one[0].no+" "+one[0].unit+" ","")));o.value=i.kind;if(st.t===i.kind)o.selected=true;add(sel,o);});
           sel.addEventListener("change",function(){upd({t:sel.value||null},false);});
           add(l,sel);add(ts,l);
-        }else add(ts,el("p","empty",one.length===1?"이 단원의 유형 목록은 출시 예정입니다.":"단원을 고르면 유형이 보입니다."));
+        }else add(ts,el("p","empty",one.length===1?"이 단원은 고를 수 있는 유형이 없습니다.":"단원을 고르면 유형이 보입니다."));
         add(f,ts);
       }
       if(c.pick==="unitItems"||c.pick==="unitsTotal"){
         var tys=el("fieldset","sec");add(tys,el("legend",null,"유형"));
-        add(tys,el("p","empty","유형 목록은 출시 예정입니다."));add(f,tys);
+        add(tys,el("p","empty","고를 수 있는 유형이 없습니다."));add(f,tys);
       }
       if(c.pick==="unitItems"){
         var its=el("fieldset","sec");add(its,el("legend",null,"문항"));
-        add(its,el("p","empty","문항 고르기는 출시 예정입니다."));add(f,its);
+        add(its,el("p","empty","고를 수 있는 문항이 없습니다."));add(f,its);
       }
       if(c.pick==="unitsTotal"){
         var cs=el("fieldset","sec");add(cs,el("legend",null,"문항 수"));
@@ -672,9 +667,9 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     if(c.pick==="range"){var rg=rangeOf(q,s);row(dl,"시험범위",rg[0].no+" "+rg[0].unit+" ~ "+rg[rg.length-1].no+" "+rg[rg.length-1].unit);}
     else if(fss.length)row(dl,fss.length>1?"단원 "+fss.length+"개":"단원",fss.map(function(x){return x.no+" "+x.unit;}).join(" · "));
     else if(!free){var us=unitsOf(q,s);row(dl,us.length>1?"단원 "+us.length+"개":"단원",us.map(function(x){return x.no+" "+x.unit;}).join(" · "));}
-    if(c.pick==="type"){var it=itemOf(q,s);row(dl,"유형",it?withAlias(it,it.title):"유형 목록 출시 예정",null,it?null:"blank");}
-    if(c.pick==="unitItems"||c.pick==="unitsTotal")row(dl,"유형","유형 목록 출시 예정",null,"blank");
-    if(c.pick==="unitItems")row(dl,"문항","문항 고르기 출시 예정",null,"blank");
+    if(c.pick==="type"){var it=itemOf(q,s);row(dl,"유형",it?withAlias(it,it.title):"고를 수 있는 유형 없음",null,it?null:"blank");}
+    if(c.pick==="unitItems"||c.pick==="unitsTotal")row(dl,"유형","고를 수 있는 유형 없음",null,"blank");
+    if(c.pick==="unitItems")row(dl,"문항","고를 수 있는 문항 없음",null,"blank");
     /* 문항 수 — 정본 값 · 구성 정의(단원당 20) · 손님이 적은 수만. 그 밖은 빈 칸 */
     var nq=u&&u.count?u.count:freeSum(fss,"count"),nnote=null;
     if(!nq&&c.perUnit){var k=unitsOf(q,s).length;nq=c.perUnit*k;nnote=c.perUnit+"문항 × "+k+"단원";}
@@ -685,6 +680,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     /* 미리 만든 유료 구성은 손님이 형식을 고른다 — 고른 형식의 값을 치르고 그 형식 파일을 받는다 */
     var pickFmt=pickFmt0(c,u),fm=fmtOf(q),fmtsOn=pickFmt?FMTS.filter(function(x){return priceAt(u,x[0]);}):[];
     if(pickFmt&&!q.f&&fmtsOn.length===1)fm=fmtsOn[0][0]; /* 30 창 1118: 값 있는 형식이 하나면 고르는 칸 없이 그 형식 */
+    if(pickFmt&&fmtsOn.length&&!priceAt(u,fm))fm=fmtsOn[0][0]; /* 형 1119: 값 없는 형식 주소(?f=)로 와도 파는 형식을 보인다 */
     var fu=pickFmt?fileUnits(u,fm):0,fset=pickFmt?setOf(u,fm):null,fstart=pickFmt?startText(fu,fset&&fset.kind):"",fnote=pickFmt?fmtName(fm)+(fset?(fset.kind==="merged"?" 합본":" 유형별 파일 묶음"):" 기준"):null;
     if(fss.length)row(dl,"파일 수",fss.reduce(function(n,x){return n+x.files.length;},0)+"개","형식마다 따로 받습니다");else if(fu)row(dl,"파일 수",fu+"개",fnote);
     if(pickFmt)row(dl,"파일 형식",fmtName(fm)+" 파일만",notIn(fm)+(fmtsOn.length>1?" · 아래에서 바꿉니다":""));
@@ -692,13 +688,13 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     else if(c.make==="ready")row(dl,"파일 형식","PDF 또는 한글(HWPX) 가운데 한 형식");
     if(free)row(dl,"받는 조건","로그인한 회원",FREE_RULE);
     if(fss.length)row(dl,"제공",authed()?"바로 내려받기":"로그인 뒤 바로 내려받기");else if(c.make==="ready"){if(u&&u.saleFrom)row(dl,"제공","결제 뒤 바로 내려받기","결제 결과 화면에서 받고, 주문 조회(이메일 + 주문번호)에서 구매일(결제 완료일)로부터 12개월 동안 다시 받을 수 있습니다");}
-    else row(dl,"제공","주문 뒤 만들어 제공 · 출시 예정입니다",null,"blank");
+    else row(dl,"제공","지금 판매하지 않습니다",null,"blank");
     var singlePolicy=fstart?row(dl,"제공 시작","받으면 제공이 시작됩니다",fstart):null;
     if(u)row(dl,"상품 번호",u.sku);else if(fss.length)row(dl,"상품 번호",fss.map(function(x){return x.sku;}).join(" · "));
     var d=el("div");add(d,el("dt",null,"값"));var dd=el("dd");
     if(fss.length)add(dd,el("span","won","0원"));
     else if(pickFmt&&priceAt(u,fm)){add(dd,el("span","won",won(priceAt(u,fm))));add(dd,el("small",null,fmtName(fm)+" · 부가세 포함"));}
-    else{dd.className="blank";dd.textContent="출시 예정입니다";}
+    else{dd.className="blank";dd.textContent="지금 판매하지 않습니다";}
     add(d,dd);dl.appendChild(d);
     add(f,dl);
     if(u&&u.preview&&u.preview.url)add(f,previewBox(u.preview)); /* 24 창 1118: 미리보기 = 저장 자리 PDF 몇 쪽을 화면에만 그림(pdf.js · 받기 단추 없음) */
@@ -708,7 +704,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
       var fl=el("ul","picks");
       FMTS.forEach(function(x){
         var li=el("li"),p=priceAt(u,x[0]);
-        var r=radioRow("fmt",x[0],fm===x[0],x[1]+" 파일만",(p?won(p)+" · 부가세 포함":"출시 예정입니다")+(setLine(u,x[0])?" · "+setLine(u,x[0]):"")+" · "+notIn(x[0]),null,function(){
+        var r=radioRow("fmt",x[0],fm===x[0],x[1]+" 파일만",(p?won(p)+" · 부가세 포함":"판매하지 않음")+(setLine(u,x[0])?" · "+setLine(u,x[0]):"")+" · "+notIn(x[0]),null,function(){
           var n={},y=window.scrollY;Object.keys(q).forEach(function(k){n[k]=q[k];});n.f=x[0];
           history.replaceState(history.state,"",url(n));draw(false);window.scrollTo(0,y);
           var e=document.querySelector('[data-fk="f-'+x[0]+'"]');if(e)e.focus();
@@ -724,8 +720,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
       else{add(act,loginBtn());fm0.textContent=(freeOut?"로그인이 풀렸어요. 다시 로그인하면 바로 받을 수 있습니다.":"무료 세트는 "+FREE_RULE)+" 로그인하면 이 화면으로 돌아옵니다.";add(fm0,el("br"),signupLink());}
     }
     else if(ok){var buy=el("a","btn buy","구매하기");buy.href="/checkout/?sku="+encodeURIComponent(u.sku+"."+fm);/* 31 창 1118: 다른 단원 함께 담기 뺌 — 상품 하나 = 결제 하나(가장 간결 · 환불도 파일마다 한 가지) */add(act,buy);}
-    else{var dis=el("button","btn dis","출시 예정입니다");dis.type="button";dis.disabled=true;add(act,dis);} /* 형 결정 7(11-11): 판매일을 공지하지 않는다 — 값 · 파일 · 판매일 · 맛보기 중 하나라도 비었거나 판매 시각 전이면 「준비 중입니다」 */
-    var al=el("a","btn ghost","알림 받기");al.href="mailto:admin@deltaskill.co.kr?subject="+encodeURIComponent("내신 파일 알림 "+s.code+" "+c.id+(u?" "+u.sku:""));add(act,al);
+    else{var dis=el("button","btn dis","지금 구매할 수 없습니다");dis.type="button";dis.disabled=true;add(act,dis);} /* 형 1119: 「출시 예정」 글 · 「알림 받기」 없음 — 안 파는 상품은 draw() 가 목록으로 돌린다 */
     add(f,act);
     if(fss.length)add(f,fm0);
     var fine=el("p","fine");
@@ -737,7 +732,6 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
       var CORE={"단원":1,"문항 수":1,"값":1},hasLay=[].some.call(dl.children,function(d){return d.firstChild.textContent==="쪽 구성";});CORE[hasLay?"쪽 구성":"파일 수"]=1;
       var more=el("dl","conf");[].slice.call(dl.children).forEach(function(d){var k=d.firstChild.textContent;if(!CORE[k]&&!/^단원 \d+개$/.test(k))more.appendChild(d);else if(k==="단원")d.lastChild.firstChild.textContent=s.subject+" · "+d.lastChild.firstChild.textContent;});
       ["단원","문항 수","쪽 구성","파일 수","값"].forEach(function(k){[].slice.call(dl.children).forEach(function(d){if(d.firstChild.textContent===k||(k==="단원"&&/^단원 \d+개$/.test(d.firstChild.textContent)))dl.appendChild(d);});}); /* 핵심 줄 차례: 무엇 → 몇 문항 → 파일 → 값 */
-      if(ok&&al.parentNode)al.remove(); /* 살 수 있으면 「알림 받기」는 뺌 */
       var det=el("details","more");add(det,el("summary",null,"자세히 · 부교재 · 구성 · 제공 · 환불 · 상품 번호"),more);
       f.insertBefore(act,dl.nextSibling);
       if(ok){var sm=el("p","sum1","단건 결제 · 결제 뒤 바로 내려받기 · 받기 전이면 결제일부터 7일 안 전액 환불 · 일부 받았으면 받지 않은 파일 비율만큼 7일 안 환불 · 받은 파일은 청약철회 제한 · ");var ra=el("a",null,"환불 안내");ra.href="/refund/";add(sm,ra);f.insertBefore(sm,act);}
@@ -788,11 +782,11 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   var TITLES={subject:"내신 자료",book:"부교재 고르기",path:"구성 고르기",basic:"기본형",detail:"상세선택",confirm:"받을 내용 확인"};
   function draw(focus){
     var q=readQ(),s=subj(q),b=s?book(s,q):null,v,node,c=comp(q.c);
-    if(!s||!b){v="subject";node=vList(q);}
-    else if(q.p==="free"){v="confirm";node=vConfirm(q,s,b,comp("C0"));}
+    if(!s||!b||!products(s.code).length){v="subject";node=vList(s?{}:q);} /* 형 1119: 파는 상품이 없는 과목 · 없는 과목 주소는 목록으로 */
+    else if(q.p==="free"){if(comp("C0")&&freeSets(b).length){v="confirm";node=vConfirm(q,s,b,comp("C0"));}else{v="subject";node=vList({s:q.s});}}
     else if(q.p==="basic"&&!c){v="basic";node=vBasic(q,s,b);}
     else if(q.p==="detail"||q.p==="basic"){
-      if(q.v==="confirm"&&c&&c.path!=="free"&&picked(c,q,s)){v="confirm";node=vConfirm(q,s,b,c);}
+      if(q.v==="confirm"&&c&&c.path!=="free"&&picked(c,q,s)){if(product(c,q,s)&&canBuyAny(product(c,q,s))){v="confirm";node=vConfirm(q,s,b,c);}else{v="subject";node=vList({s:q.s});}} /* 형 1119: 안 파는 상품 확인 쪽은 열지 않는다 */
       else{v="detail";node=vDetail(q,s,b);}
     }else{v="path";node=vPath(q,s,b);}
     APP.textContent="";APP.dataset.view=v;APP.appendChild(node);
