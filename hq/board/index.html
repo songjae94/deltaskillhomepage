@@ -6,20 +6,20 @@
 <meta name="robots" content="noindex, nofollow">
 <title>상황판 · 델타스킬 운영</title>
 <style>
-  :root { --bg:#0f1115; --card:#171a21; --card2:#1d2130; --line:#2a2f3a; --ink:#e8ebf1; --mute:#9aa3b2; --brand:#5aa2ff; --ok:#3ddc84; --bad:#ff6b6b; --chk:#b388ff; }
+  :root { --bg:#F7F8FC; --card:#fff; --card2:#F0F2F7; --line:#DFE3ED; --ink:#172B43; --mute:#5B6678; --brand:#245BD6; --ok:#1F7A45; --bad:#B42318; --chk:#6B4FD8; }
   * { box-sizing:border-box; }
   html { scroll-behavior:smooth; }
-  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.5 -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; -webkit-text-size-adjust:100%; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.5 "Pretendard Variable", Pretendard, -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; -webkit-text-size-adjust:100%; }
   main { max-width:1360px; margin:0 auto; padding:18px 16px 60px; }
   h1 { font-size:20px; margin:0 0 4px; }
   h2 { font-size:16px; margin:22px 0 8px; display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; }
   h2 small { color:var(--mute); font-weight:400; font-size:12.5px; }
   .sub { color:var(--mute); font-size:13px; margin:0 0 14px; }
-  .box { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 16px; margin:0 0 12px; }
+  .box { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:14px 16px; margin:0 0 12px; }
   #login { max-width:380px; margin:60px auto; }
-  input { width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:8px; background:#0c0e12; color:var(--ink); font-size:16px; }
-  button { padding:8px 13px; border:1px solid var(--line); border-radius:8px; background:#20242e; color:var(--ink); font-size:14px; cursor:pointer; }
-  button.p { background:var(--brand); border-color:var(--brand); color:#06101f; font-weight:700; }
+  input { width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink); font-size:16px; }
+  button { padding:8px 13px; border:1px solid var(--line); border-radius:10px; background:#fff; color:var(--ink); font-size:14px; min-height:44px; cursor:pointer; }
+  button.p { background:var(--brand); border-color:var(--brand); color:#fff; font-weight:700; }
   .err { color:var(--bad); font-size:13px; min-height:18px; margin-top:8px; }
   .bar { display:flex; gap:8px; flex-wrap:wrap; align-items:center; justify-content:space-between; margin-bottom:10px; }
   .bar .l { display:flex; gap:6px 14px; flex-wrap:wrap; align-items:baseline; font-size:13px; color:var(--mute); }
@@ -43,7 +43,7 @@
   .grid th:first-child { z-index:4; }
   .grid td:first-child small { display:block; color:var(--mute); font-weight:400; font-size:11px; line-height:1.3; margin-top:2px; }
   .grid td.c { min-width:150px; max-width:190px; cursor:pointer; }
-  .grid td.c:hover { background:#20242e; }
+  .grid td.c:hover { background:#EEF3FF; }
   .grid td.c .g { margin-right:3px; }
   .grid td.c .h { color:var(--ink); }
   .grid td.c .when { display:block; color:var(--mute); font-size:11px; margin-top:2px; }
@@ -66,7 +66,7 @@
   .card li .d { color:var(--mute); white-space:nowrap; font-size:12.5px; }
   .card li .t { word-break:break-word; }
   .card li .t .meta { display:block; color:var(--mute); font-size:11.5px; margin-top:3px; word-break:break-all; }
-  .card li.s-done .t { color:#cfe9da; } .card li.s-blk .t { color:#ffd3d3; } .card li.s-chk .t { color:#e2d5ff; }
+  .card li.s-done .t { color:#1F4D33; } .card li.s-blk .t { color:#7A1F17; } .card li.s-chk .t { color:#3F2E85; }
   .card li:target, .card li.hit { background:rgba(90,162,255,.12); outline:1px solid var(--brand); border-radius:6px; padding-left:4px; padding-right:4px; }
 
   /* 지난 판 */
@@ -96,6 +96,7 @@
     .legend .n { margin-left:0; width:100%; }
   }
 </style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 </head>
 <body>
 <main>

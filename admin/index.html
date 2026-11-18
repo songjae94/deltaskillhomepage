@@ -6,19 +6,19 @@
 <meta name="robots" content="noindex,nofollow">
 <title>델타스킬 관리자</title>
 <style>
-:root{--red:#c00}
+:root{--red:#245BD6}
 *{box-sizing:border-box}
-body{font-family:'Malgun Gothic',Pretendard,sans-serif;margin:0;color:#1a1a1a;line-height:1.55;background:#fafafa}
+body{font-family:"Pretendard Variable",Pretendard,-apple-system,sans-serif;margin:0;color:#172B43;line-height:1.55;background:#F7F8FC}
 .wrap{max-width:920px;margin:0 auto;padding:20px 16px}
 h1{font-size:20px;border-bottom:3px solid var(--red);padding-bottom:8px;margin:6px 0 14px}
 h2{font-size:15px;margin:24px 0 8px;border-left:4px solid var(--red);padding-left:8px}
 table{border-collapse:collapse;width:100%;font-size:13px;margin:6px 0;background:#fff}
 th,td{border:1px solid #ddd;padding:5px 8px;text-align:left}
 th{background:#f6f6f6}
-tr.click{cursor:pointer} tr.click:hover td{background:#fff5f5}
+tr.click{cursor:pointer} tr.click:hover td{background:#EEF3FF}
 .k{color:#777;font-size:12px}
 .cand{display:inline-block;font-size:10px;font-weight:700;color:#06c;border:1px solid #9cc4ec;border-radius:999px;padding:0 6px;white-space:nowrap}
-.bad{color:var(--red);font-weight:600}.warn{background:#fff3cd}
+.bad{color:#B42318;font-weight:600}.warn{background:#fff3cd}
 .bar{display:inline-block;height:10px;background:var(--red);vertical-align:middle}
 .gray{display:inline-block;height:10px;background:#bbb;vertical-align:middle}
 .tag{display:inline-block;background:#eee;border-radius:4px;padding:1px 7px;font-size:12px;margin:1px}
@@ -26,21 +26,22 @@ tr.click{cursor:pointer} tr.click:hover td{background:#fff5f5}
 .cards{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
 .card{background:#fff;border:1px solid #e5e5e5;border-radius:8px;padding:10px 16px;min-width:120px}
 .card b{font-size:20px;display:block}
-button{font:inherit;padding:7px 14px;border:1px solid #ccc;border-radius:6px;background:#fff;cursor:pointer}
+button{font:inherit;min-height:44px;padding:7px 14px;border:1px solid #172B43;border-radius:10px;background:#fff;color:#172B43;cursor:pointer}
 button.p{background:var(--red);border-color:var(--red);color:#fff}
-input{font:inherit;padding:7px 10px;border:1px solid #ccc;border-radius:6px}
+input{font:inherit;min-height:44px;padding:7px 10px;border:1px solid #DFE3ED;border-radius:10px}
 .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-#login{max-width:340px;margin:12vh auto;background:#fff;border:1px solid #e5e5e5;border-radius:10px;padding:24px}
+#login{max-width:340px;margin:12vh auto;background:#fff;border:1px solid #DFE3ED;border-radius:16px;padding:24px}
 #login input{width:100%;margin:5px 0}
-.err{color:var(--red);font-size:13px;min-height:18px}
+.err{color:#B42318;font-size:13px;min-height:18px}
 .top{display:flex;justify-content:space-between;align-items:center}
 button.sel{background:var(--red);border-color:var(--red);color:#fff}
 select{font:inherit;padding:6px 10px;border:1px solid #ccc;border-radius:6px;background:#fff}
 label.chk{display:inline-flex;align-items:center;gap:4px;font-size:13px;border:1px solid #ddd;border-radius:6px;padding:4px 9px;background:#fff;cursor:pointer}
-label.chk input{width:auto;margin:0;padding:0}
+label.chk input{width:auto;min-height:0;margin:0;padding:0}
 td.num{text-align:right;font-variant-numeric:tabular-nums}
 @media print{.noprint{display:none}body{background:#fff}.wrap{max-width:100%}}
 </style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 </head>
 <body>
 
@@ -177,7 +178,7 @@ async function loadMain() {
 
   // 성실도 배지 — 누적 제출 횟수로. 반복·누적이 델타스킬의 핵심이라 그걸 보상한다.
   const tier = n => n >= 10 ? { m: "👑", t: "마스터", c: "#8a6d00" }
-    : n >= 5 ? { m: "🔥", t: "열공", c: "#c00" }
+    : n >= 5 ? { m: "🔥", t: "열공", c: "#245BD6" }
     : n >= 3 ? { m: "⭐", t: "성실", c: "#c67" }
     : n >= 1 ? { m: "🌱", t: "새싹", c: "#690" } : null;
   const reward = studs.filter(s => cnt(s) >= 3).length;   // 보상 대상(3회 이상)
@@ -190,7 +191,7 @@ async function loadMain() {
     <div class="card"><b>${j.submissions.length}</b>누적 제출</div>
     <div class="card"><b>${last7}</b>이번 주 제출</div>
     <div class="card"><b class="${noSub ? "bad" : ""}">${noSub}</b>가입만 하고 미제출</div>
-    <div class="card"><b style="color:#c00">${reward}</b>보상 대상(3회+)</div>
+    <div class="card"><b style="color:#245BD6">${reward}</b>보상 대상(3회+)</div>
   </div>
   <div class="row noprint"><input id="q" placeholder="이름·연락처·학원 검색" style="flex:1"
     oninput="filterRows()">

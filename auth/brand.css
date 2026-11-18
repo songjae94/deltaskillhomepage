@@ -39,3 +39,4 @@ button:disabled,input:disabled{opacity:.55;cursor:default}
 .done{text-align:center}.done b{display:block;font-weight:750}.foot{margin:24px auto 40px;font-size:13px;text-align:center}.foot a{display:inline-flex;align-items:center;min-height:44px}
 [hidden]{display:none!important}
 @media(max-width:520px){.wrap{width:calc(100% - 28px)}.brandbar{min-height:64px}.brand img{width:117px}.card{border-radius:16px;margin-top:22px;padding:23px 18px}.foot{margin:10px auto 22px}}
+.links a{display:inline-flex;align-items:center;min-height:44px;font-size:14px}

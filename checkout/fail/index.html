@@ -89,7 +89,7 @@ a:focus-visible,.btn:focus-visible,.chk input:focus-visible{outline:3px solid va
 .biz a{color:#d1e4fa;text-decoration:underline;text-underline-offset:2px}
 .biz .policy{display:flex;flex-wrap:wrap;gap:4px 6px;margin-bottom:12px}
 .biz .policy a{display:inline-flex;align-items:center;min-height:44px;padding:0 12px;font-size:14px;text-decoration:none;border-radius:8px}
-.biz .policy a.pp{background:#D8281C;color:#fff}
+.biz .policy a.pp{background:transparent;color:#fff}
 .biz b{color:inherit}
 .biz .policy a.pp b{font-weight:700;color:#fff}
 .biz .copy{color:#8f9db3}
@@ -112,7 +112,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   <section class="card" aria-live="polite">
     <p class="msg" id="why">결제가 승인되지 않았습니다.</p>
     <dl id="det"></dl>
-    <div class="acts"><a class="btn ghost" id="again" href="/naesin/">다시 주문하기</a><a class="btn ghost" href="/naesin/">내신 자료</a></div>
+    <div class="acts"><a class="btn pri" id="again" href="/naesin/">다시 주문하기</a><a class="btn ghost" id="toNaesin" href="/naesin/">내신 자료</a></div>
   </section>
   <p class="fn">문의: admin@deltaskill.co.kr · 070-8065-2468 · <a href="/refund/">환불·청약철회 안내</a></p>
 </main>
@@ -226,6 +226,7 @@ function renderOrder(box,o,cfg,email){
     saved.skus.forEach(function(sku){retry.append("skus",sku);});
     $("again").href="/checkout/?"+retry.toString();
   }else if(saved.sku)$("again").href="/checkout/?sku="+encodeURIComponent(saved.sku);
+  if($("again").getAttribute("href")==="/naesin/")$("toNaesin").style.display="none";
   $("why").textContent=code==="PAY_PROCESS_CANCELED"?"결제를 취소했습니다.":"결제가 승인되지 않았습니다.";
   var dl=$("det");
   [["사유",m],["코드",code],["주문번호",oid]].forEach(function(r){if(!r[1])return;var d=document.createElement("div"),t=document.createElement("dt"),x=document.createElement("dd");t.textContent=r[0];x.textContent=r[1].slice(0,300);d.appendChild(t);d.appendChild(x);dl.appendChild(d);});

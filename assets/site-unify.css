@@ -71,7 +71,7 @@ header.ds-head {
   align-items: center;
   justify-content: center;
   inline-size: auto;
-  min-height: 40px;
+  min-height: 44px;
   padding: 0 11px;
   border-radius: 10px;
   color: #172B43;
@@ -100,7 +100,7 @@ header.ds-head {
   .ds-head-in { height: auto; min-height: 64px; flex-wrap: wrap; padding: 0 14px; gap: 0 8px; }
   .ds-head .ds-logo { height: 56px; font-size: 20px; }
   .ds-head .ds-acct { order: 2; margin-left: auto; border-left: 0; padding-left: 0; gap: 4px; }
-  .ds-head .ds-acct a { padding: 0 9px; font-size: 14px; min-height: 38px; }
+  .ds-head .ds-acct a { padding: 0 9px; font-size: 14px; min-height: 44px; }
   .ds-head .ds-menu {
     order: 3;
     flex: 1 1 100%;
@@ -110,7 +110,7 @@ header.ds-head {
     justify-content: flex-start;
     border-top: 1px solid #F0F2F7;
   }
-  .ds-head .ds-menu a { padding: 0 9px; min-height: 42px; font-size: 14px; }
+  .ds-head .ds-menu a { padding: 0 9px; min-height: 44px; font-size: 14px; }
 }
 
 /* ── 공통 발 ── */
@@ -297,3 +297,12 @@ html[data-ds-sub] footer.business-footer .business-info .copy { color: #8f9db3; 
 details.more > summary, details.agd > summary { gap: 10px; }
 details.more > summary::after, details.agd > summary::after { white-space: nowrap; flex: none; }
 header.ds-head .ds-logo span { display: inline !important; font: inherit; }
+
+/* ── 남김없이 1118: 자료받기 딸린 쪽(materials/style.css) 단추 · 칸 · 바탕을 1118 규칙으로 ── */
+html[data-ds-sub] body { background: #F7F8FC; color: #172B43; }
+html[data-ds-sub] main .button { border-radius: 10px; background: #fff; color: #172B43; border: 1px solid #172B43; box-shadow: none; }
+html[data-ds-sub] main .button.primary { background: #245BD6; border-color: #245BD6; color: #fff; }
+html[data-ds-sub] main .button.primary:hover { background: #1D4DB8; border-color: #1D4DB8; }
+html[data-ds-sub] main .panel { border-radius: 16px; border-color: #DFE3ED; }
+html[data-ds-sub] main .round-preview select { min-height: 44px; border: 1px solid #DFE3ED; border-radius: 10px; padding: 0 12px; background: #fff; }
+html[data-ds-sub] .intro h1 { color: #172B43; }
