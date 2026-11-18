@@ -89,6 +89,9 @@ dialog#passDlg{max-width:440px;width:calc(100% - 28px);border:0;border-radius:18
 dialog#passDlg h3{margin:0 0 8px;font-size:18px}dialog#passDlg p{margin:6px 0;font-size:14px}dialog#passDlg .btns{display:flex;gap:8px;margin-top:16px}dialog#passDlg .btns .btn{flex:1;width:auto;min-height:48px;font-size:15px}
 dialog#passDlg .opt{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line2);border-radius:12px;padding:12px;margin:8px 0;font-size:14px;cursor:pointer}dialog#passDlg .opt input{width:20px;height:20px;flex:0 0 20px;margin:2px 0 0;accent-color:var(--red)}
 dialog#passDlg .opt[hidden]{display:none}dialog#passDlg .opt.off{opacity:.55;cursor:default}
+.pp{padding:4px 0 14px;margin:0 0 6px;border-bottom:1px solid var(--line)}.pp h3{margin:4px 0 4px;font-size:16px}.ppn{font-size:15px;font-weight:750}
+.ppsel{display:flex;flex-wrap:wrap;gap:8px 14px;margin:10px 0 0}.ppsel label{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:650}
+.ppsel select{min-height:44px;border:1px solid var(--line2);border-radius:10px;padding:0 10px;font:inherit;font-weight:500;background:#fff;color:var(--ink);max-width:240px}
 </style>
 <style id="biz-css">
 .biz{display:block;box-sizing:border-box;background:#05060f;color:#aab7ca;font:400 13px/1.8 "Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;letter-spacing:0;text-align:left;padding:24px 16px 36px;border-top:1px solid rgba(186,215,247,.16)}
@@ -141,6 +144,17 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 
   <section class="card" id="library" aria-labelledby="libH">
     <h2 id="libH">회원 자료함</h2>
+    <div class="pp" id="pprint" aria-labelledby="ppH">
+      <h3 id="ppH">이용권 프린트</h3>
+      <div id="ppHead"><p class="msg">불러오는 중…</p></div>
+      <div class="ppsel" id="ppSel" hidden>
+        <label>과목 <select id="ppSubj"></select></label>
+        <label>단원 <select id="ppUnit"></select></label>
+      </div>
+      <ul class="files" id="ppList"></ul>
+      <p class="msg" id="ppMsg" role="status"></p>
+      <div id="ppGot" hidden><p class="lname">받은 프린트</p><ul class="files" id="ppGotList"></ul></div>
+    </div>
     <p class="hint">로그인한 상태에서 결제한 자료가 여기에 담깁니다. 구매일로부터 12개월 동안 다시 받을 수 있습니다. 내려받기(열람)를 시작한 파일은 청약철회(환불)가 제한됩니다.</p>
     <div id="libBody"><p class="msg">불러오는 중…</p></div>
     <p class="msg" id="libMsg" role="status"></p>
@@ -322,6 +336,69 @@ async function libLine(){
   catch(e){ if(e.message === "login_required") return;
     $("payBody").innerHTML = $("libBody").innerHTML = `<p class="msg err">불러오지 못했어요. 잠시 뒤 다시 시도해 주세요.</p>`; }
 }
+/* ---- 이용권 프린트(벌) 받기 (11-18 · 25 창) — member-library pass_sets · pass_download ---- */
+const PP_ERR = { no_active_pass:"이용 중인 이용권이 없어 새 프린트를 받을 수 없습니다. 받은 프린트는 다시 받을 수 있습니다.", sets_full:"이번 달 받을 수 있는 30벌을 모두 받았습니다. 다음 결제일부터 다시 받을 수 있습니다.",
+  renew_in_progress:"자동 결제를 처리하고 있습니다. 잠시 뒤 다시 시도해 주세요.", test_mode:"이 이용권으로는 지금 프린트를 받을 수 없습니다.", not_yet:"아직 제공 전인 프린트입니다.",
+  bad_set:"이 프린트를 찾을 수 없습니다.", file_not_ready:"파일을 준비하고 있습니다. 잠시 뒤 다시 시도해 주세요.", network:"서버에 연결하지 못했습니다. 잠시 뒤 다시 시도해 주세요." };
+let ppData = null;
+function ppView(d){
+  ppData = d; const p = d.pass || {}, live = p.state === "live", head = $("ppHead");
+  const left = live ? Math.max(0, p.setsTotal - p.setsReceived) : 0;
+  if(live) head.innerHTML = `<p class="ppn">이번 달 남은 프린트 ${esc(left)} / ${esc(p.setsTotal)}벌</p><p class="sub">1벌 = 우리 변형문항 20문항 프린트(PDF · 문제와 정답 · 해설) · ${esc(passDay(p.endsAt))}까지 · 받지 않은 벌은 다음 달로 넘어가지 않습니다.</p>`;
+  else if(p.state === "renewing") head.innerHTML = `<p class="msg">자동 결제를 처리하고 있습니다. 잠시 뒤 새로고침해 주세요.</p>`;
+  else if(p.state === "mode") head.innerHTML = `<p class="msg">이 이용권으로는 지금 프린트를 받을 수 없습니다. admin@deltaskill.co.kr 또는 070-8065-2468로 알려 주세요.</p>`;
+  else head.innerHTML = `<p class="msg">이용 중인 이용권이 없습니다. <a href="/pass/#product">변형문항 이용권 보기 →</a></p>`;
+  const sets = live ? (d.sets || []) : [];
+  $("ppSel").hidden = !sets.length;
+  if(live && !sets.length) $("ppList").innerHTML = `<li><span>지금 받을 수 있는 프린트를 준비하고 있습니다.</span></li>`;
+  const subj = $("ppSubj"), unit = $("ppUnit"), keepS = subj.value, keepU = unit.value;
+  const subjects = [...new Set(sets.map(s => s.subject))];
+  subj.innerHTML = subjects.map(s => `<option>${esc(s)}</option>`).join("");
+  if(subjects.includes(keepS)) subj.value = keepS;
+  const fillUnits = () => { const us = [...new Map(sets.filter(s => s.subject === subj.value).map(s => [s.unitCode, s.unitName])).entries()];
+    unit.innerHTML = `<option value="">전체 단원</option>` + us.map(([c, n]) => `<option value="${esc(c)}">${esc(n)}</option>`).join(""); };
+  fillUnits(); if([...unit.options].some(o => o.value === keepU)) unit.value = keepU;
+  subj.onchange = () => { fillUnits(); ppList(); }; unit.onchange = ppList;
+  if(sets.length) ppList();
+  else if(!live) $("ppList").textContent = "";
+  const got = d.received || [];
+  $("ppGot").hidden = !got.length; $("ppGotList").textContent = "";
+  got.forEach(g => $("ppGotList").appendChild(ppRow(g, true)));
+}
+function ppList(){
+  const s = $("ppSubj").value, u = $("ppUnit").value, ul = $("ppList"); ul.textContent = "";
+  (ppData.sets || []).filter(x => x.subject === s && (!u || x.unitCode === u)).forEach(x => ul.appendChild(ppRow(x, false)));
+}
+function ppRow(x, got){
+  const li = document.createElement("li"), sp = document.createElement("span");
+  const meta = [x.unitName, x.typeRange, x.items ? x.items + "문항" : "", x.pages ? x.pages + "쪽" : ""].filter(Boolean).map(esc).join(" · ");
+  sp.innerHTML = `${esc(x.title || x.setId)}${!got && x.received ? ` <span class="tag">받음</span>` : ``}<small>${meta}${got ? (meta ? " · " : "") + "받은 날 " + esc(day(x.firstAt)) + " · " + (x.redownloadable ? esc(day(x.redownloadUntil)) + "까지 다시 받기" : "다시 받기 기간 지남") : ""}</small>`;
+  li.appendChild(sp);
+  const again = got || x.received;
+  if(got ? x.redownloadable : true){
+    const b = document.createElement("button"); b.type = "button"; b.className = "btn ghost sm"; b.textContent = again ? "다시 받기" : "받기";
+    b.onclick = () => ppTake(x.setId, again, b); li.appendChild(b);
+  }
+  return li;
+}
+async function ppTake(setId, again, b){
+  if(!again && !confirm("받으면 1벌이 차감되고 지금 해지 때 환불액이 줄어듭니다. 내려받은 벌은 청약철회가 제한됩니다. 받을까요?")) return;
+  const m = $("ppMsg"); b.disabled = true; m.className = "msg"; m.textContent = "내려받기 주소를 받는 중…";
+  try{
+    const r = await fnCall("member-library", {action:"pass_download", setId});
+    if(!r.url) throw new Error("server");
+    m.textContent = r.charged ? `내려받기를 시작합니다. 이번 달 ${r.setsReceived} / ${r.setsTotal}벌을 받았습니다.` : "내려받기를 시작합니다(다시 받기 · 차감 없음).";
+    location.href = r.url;
+    setTimeout(() => { ppLine(); if(r.charged) passLine(); }, 1500);
+  }catch(e){
+    if(e.message === "login_required") return;
+    m.className = "msg err"; m.textContent = (PP_ERR[e.message] || "받지 못했습니다.") + (PP_ERR[e.message] ? "" : " 계속되면 admin@deltaskill.co.kr 또는 070-8065-2468로 알려 주세요.");
+  }finally{ b.disabled = false; }
+}
+async function ppLine(){
+  try{ ppView(await fnCall("member-library", {action:"pass_sets"})); }
+  catch(e){ if(e.message !== "login_required") $("ppHead").innerHTML = `<p class="msg err">불러오지 못했어요. 잠시 뒤 다시 시도해 주세요.</p>`; }
+}
 async function roleLine(){
   try{
     const r = await fetch(((window.DSAuth && DSAuth.api) || "") + "/me", {headers:{"Authorization":"Bearer " + tok()}});
@@ -331,7 +408,7 @@ async function roleLine(){
 function boot(){
   if(!tok()){ goLogin(); return; }
   $("app").hidden = false;
-  passLine(); libLine(); roleLine();
+  passLine(); libLine(); ppLine(); roleLine();
 }
 boot();
 </script>
