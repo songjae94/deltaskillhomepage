@@ -89,7 +89,7 @@ a:focus-visible,.btn:focus-visible,.chk input:focus-visible{outline:3px solid va
 .biz a{color:#d1e4fa;text-decoration:underline;text-underline-offset:2px}
 .biz .policy{display:flex;flex-wrap:wrap;gap:4px 6px;margin-bottom:12px}
 .biz .policy a{display:inline-flex;align-items:center;min-height:44px;padding:0 12px;font-size:14px;text-decoration:none;border-radius:8px}
-.biz .policy a.pp{background:#D8281C;color:#fff}
+.biz .policy a.pp{background:transparent;color:#fff}
 .biz b{color:inherit}
 .biz .policy a.pp b{font-weight:700;color:#fff}
 .biz .copy{color:#8f9db3}
@@ -97,7 +97,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 </style>
 <link rel="stylesheet" href="/assets/account-header.css?v=home-logout-1118">
 <link rel="stylesheet" href="/assets/payment-flow.css">
-<link rel="stylesheet" href="/assets/site-unify.css?v=31">
+<link rel="stylesheet" href="/assets/site-unify.css?v=35">
 </head>
 <body class="payment-flow">
 <header class="ds-head"><div class="ds-head-in">
@@ -112,7 +112,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   <section class="card" aria-live="polite">
     <p class="msg" id="why">결제가 승인되지 않았습니다.</p>
     <dl id="det"></dl>
-    <div class="acts"><a class="btn ghost" id="again" href="/naesin/">다시 주문하기</a><a class="btn ghost" href="/naesin/">내신 자료</a></div>
+    <div class="acts"><a class="btn pri" id="again" href="/naesin/">다시 주문하기</a><a class="btn ghost" id="toNaesin" href="/naesin/">내신 자료</a></div>
   </section>
   <p class="fn">문의: admin@deltaskill.co.kr · 070-8065-2468 · <a href="/refund/">환불·청약철회 안내</a></p>
 </main>
@@ -128,7 +128,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   <p>상호 델타스킬 · 대표 송재형 · 사업자등록번호 345-62-00876 <a href="https://www.ftc.go.kr/bizCommPop.do?wrkr_no=3456200876" target="_blank" rel="noopener">사업자정보확인</a> · 통신판매업신고 제2026-서울서초-3410호</p>
   <p>주소 서울특별시 서초구 마방로10길 18-16, 4층(양재동, 진우빌딩) · 전화 070-8065-2468 · 이메일 <a href="mailto:admin@deltaskill.co.kr">admin@deltaskill.co.kr</a></p>
   <p>개인정보보호책임자 송재형 · 호스팅 제공자 GitHub, Inc.(GitHub Pages) · Supabase, Inc.(결제·다운로드 서버)</p>
-  <p class="src">자료 출처: 평가원 공개 자료 + EBSi 공개 채점 자료 · 판매 PDF는 델타스킬이 직접 제작한 콘텐츠입니다 · 디지털콘텐츠는 다운로드(열람) 후 청약철회가 제한됩니다(다운로드 전 7일 이내 전액 환불) · 변형문항 이용권은 매월 자동 갱신(정기결제) · 그 밖의 상품은 단건 결제</p>
+  <p class="src">자료 출처: 평가원 공개 자료 + EBSi 공개 채점 자료 · 판매 PDF는 델타스킬이 직접 제작한 콘텐츠입니다 · 디지털콘텐츠 환불(받기 전이면 결제일부터 7일 안 전액 환불 · 일부 받았으면 받지 않은 파일 비율만큼 7일 안 환불 · 받은 파일은 청약철회 제한) · 변형문항 이용권은 매월 자동 갱신(정기결제) · 그 밖의 상품은 단건 결제</p>
   <p class="copy">© 2026 델타스킬. All rights reserved.</p>
 </div>
 </footer>
@@ -146,7 +146,7 @@ function callApi(cfg,name,body){
     .catch(function(){return {ok:false,error:"network"};});
 }
 var ERR={
-  unknown_sku:"상품을 찾을 수 없습니다. 유형서 구매 화면에서 다시 골라 주세요.",
+  unknown_sku:"상품을 찾을 수 없습니다. 내신 자료에서 다시 골라 주세요.",
   bad_buyer:"이메일과 이름을 확인해 주세요.",
   consent_required:"필수 동의를 모두 체크해 주세요.",
   not_on_sale:"지금은 이 상품의 판매 기간이 아닙니다.",
@@ -190,7 +190,7 @@ function renderOrder(box,o,cfg,email){
   box.appendChild(dl);
   var h=document.createElement("h2");h.textContent="파일";h.style.marginTop="16px";box.appendChild(h);
   if(o.mode==="test"){var n=document.createElement("p");n.className="notice";n.textContent="테스트 결제 주문이라 실제로 청구되지 않았고 파일 내려받기는 열리지 않습니다. 실제 결제 주문은 이 자리에 파일과 내려받기 단추가 나옵니다.";box.appendChild(n);return;}
-  var w=document.createElement("p");w.className="hint";w.textContent="내려받기(열람)를 시작한 파일은 청약철회(환불)가 제한됩니다. 내려받지 않은 파일은 결제일로부터 7일 이내(제공 예정 파일은 제공 전까지 언제든) 전액 환불됩니다.";box.appendChild(w);
+  var w=document.createElement("p");w.className="hint";w.textContent="받기 전이면 결제일부터 7일 안 전액 환불 · 일부 받았으면 받지 않은 파일 비율만큼 7일 안 환불 · 받은 파일은 청약철회 제한.";box.appendChild(w);
   var ul=document.createElement("ul");ul.className="files";
   var msg=document.createElement("p");msg.className="msg";msg.setAttribute("role","status");
   (o.files||[]).forEach(function(f){
@@ -226,6 +226,7 @@ function renderOrder(box,o,cfg,email){
     saved.skus.forEach(function(sku){retry.append("skus",sku);});
     $("again").href="/checkout/?"+retry.toString();
   }else if(saved.sku)$("again").href="/checkout/?sku="+encodeURIComponent(saved.sku);
+  if($("again").getAttribute("href")==="/naesin/")$("toNaesin").style.display="none";
   $("why").textContent=code==="PAY_PROCESS_CANCELED"?"결제를 취소했습니다.":"결제가 승인되지 않았습니다.";
   var dl=$("det");
   [["사유",m],["코드",code],["주문번호",oid]].forEach(function(r){if(!r[1])return;var d=document.createElement("div"),t=document.createElement("dt"),x=document.createElement("dd");t.textContent=r[0];x.textContent=r[1].slice(0,300);d.appendChild(t);d.appendChild(x);dl.appendChild(d);});

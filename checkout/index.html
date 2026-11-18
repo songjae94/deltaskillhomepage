@@ -105,7 +105,7 @@ details.more>summary,details.agd>summary{list-style:none}
 .biz a{color:#d1e4fa;text-decoration:underline;text-underline-offset:2px}
 .biz .policy{display:flex;flex-wrap:wrap;gap:4px 6px;margin-bottom:12px}
 .biz .policy a{display:inline-flex;align-items:center;min-height:44px;padding:0 12px;font-size:14px;text-decoration:none;border-radius:8px}
-.biz .policy a.pp{background:#D8281C;color:#fff}
+.biz .policy a.pp{background:transparent;color:#fff}
 .biz b{color:inherit}
 .biz .policy a.pp b{font-weight:700;color:#fff}
 .biz .copy{color:#8f9db3}
@@ -113,7 +113,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 </style>
 <link rel="stylesheet" href="/assets/account-header.css?v=home-logout-1118">
 <link rel="stylesheet" href="/assets/payment-flow.css">
-<link rel="stylesheet" href="/assets/site-unify.css?v=31">
+<link rel="stylesheet" href="/assets/site-unify.css?v=35">
 </head>
 <body class="payment-flow">
 <header class="ds-head"><div class="ds-head-in">
@@ -122,7 +122,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   <nav id="authnav" class="ds-acct" data-logout-next="/" aria-label="계정"><a href="/auth/" data-account-primary>로그인</a><a href="/auth/?mode=signup" data-account-secondary>회원가입</a></nav>
 </div></header>
 <main>
-  <p class="crumb"><a href="/">메인</a> › <a href="/store/">유형서 구매</a> › 주문서</p>
+  <p class="crumb"><a href="/">메인</a> › <a href="/naesin/">내신 자료</a> › 주문서</p>
   <div class="band" id="band" role="note" hidden>지금은 테스트 결제 환경입니다 · 실제 결제는 일어나지 않습니다.<span id="band-sale"></span></div>
   <h1>주문서</h1>
   <section class="card" id="prod" aria-live="polite"><p class="msg">상품을 불러오는 중…</p></section>
@@ -170,7 +170,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   <p>상호 델타스킬 · 대표 송재형 · 사업자등록번호 345-62-00876 <a href="https://www.ftc.go.kr/bizCommPop.do?wrkr_no=3456200876" target="_blank" rel="noopener">사업자정보확인</a> · 통신판매업신고 제2026-서울서초-3410호</p>
   <p>주소 서울특별시 서초구 마방로10길 18-16, 4층(양재동, 진우빌딩) · 전화 070-8065-2468 · 이메일 <a href="mailto:admin@deltaskill.co.kr">admin@deltaskill.co.kr</a></p>
   <p>개인정보보호책임자 송재형 · 호스팅 제공자 GitHub, Inc.(GitHub Pages) · Supabase, Inc.(결제·다운로드 서버)</p>
-  <p class="src">자료 출처: 평가원 공개 자료 + EBSi 공개 채점 자료 · 판매 PDF는 델타스킬이 직접 제작한 콘텐츠입니다 · 디지털콘텐츠는 다운로드(열람) 후 청약철회가 제한됩니다(다운로드 전 7일 이내 전액 환불) · 변형문항 이용권은 매월 자동 갱신(정기결제) · 그 밖의 상품은 단건 결제</p>
+  <p class="src">자료 출처: 평가원 공개 자료 + EBSi 공개 채점 자료 · 판매 PDF는 델타스킬이 직접 제작한 콘텐츠입니다 · 디지털콘텐츠 환불(받기 전이면 결제일부터 7일 안 전액 환불 · 일부 받았으면 받지 않은 파일 비율만큼 7일 안 환불 · 받은 파일은 청약철회 제한) · 변형문항 이용권은 매월 자동 갱신(정기결제) · 그 밖의 상품은 단건 결제</p>
   <p class="copy">© 2026 델타스킬. All rights reserved.</p>
 </div>
 </footer>
@@ -241,7 +241,7 @@ function renderOrder(box,o,cfg,email){
   box.appendChild(dl);
   var h=document.createElement("h2");h.textContent="파일";h.style.marginTop="16px";box.appendChild(h);
   if(o.mode==="test"){var n=document.createElement("p");n.className="notice";n.textContent="테스트 결제 주문이라 실제로 청구되지 않았고 파일 내려받기는 열리지 않습니다. 실제 결제 주문은 이 자리에 파일과 내려받기 단추가 나옵니다.";box.appendChild(n);return;}
-  var w=document.createElement("p");w.className="hint";w.textContent="내려받기(열람)를 시작한 파일은 청약철회(환불)가 제한됩니다. 내려받지 않은 파일은 결제일로부터 7일 이내(제공 예정 파일은 제공 전까지 언제든) 전액 환불됩니다.";box.appendChild(w);
+  var w=document.createElement("p");w.className="hint";w.textContent="받기 전이면 결제일부터 7일 안 전액 환불 · 일부 받았으면 받지 않은 파일 비율만큼 7일 안 환불 · 받은 파일은 청약철회 제한.";box.appendChild(w);
   var ul=document.createElement("ul");ul.className="files";
   var msg=document.createElement("p");msg.className="msg";msg.setAttribute("role","status");
   (o.files||[]).forEach(function(f){
@@ -269,7 +269,7 @@ function renderOrder(box,o,cfg,email){
   box.appendChild(ul);box.appendChild(msg);
 }
 var CAT={"C09":{"name":"공통 9번 유형서","price":3900,"priceNote":"VAT 포함","comp":"PDF 1개 · 약 25문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함","give":"지금 판매하지 않음","saleFrom":"2026-10-20T19:00:00+09:00"},"C10":{"name":"공통 10번 유형서","price":3900,"priceNote":"VAT 포함","comp":"PDF 1개 · 약 25문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함","give":"지금 판매하지 않음","saleFrom":"2026-10-20T19:00:00+09:00"},"C11":{"name":"공통 11번 유형서","price":3900,"priceNote":"VAT 포함","comp":"PDF 1개 · 약 25문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함","give":"지금 판매하지 않음","saleFrom":"2026-10-20T19:00:00+09:00"},"C12":{"name":"공통 12번 유형서","price":3900,"priceNote":"VAT 포함","comp":"PDF 1개 · 약 25문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함","give":"지금 판매하지 않음","saleFrom":"2026-10-20T19:00:00+09:00"},"C13":{"name":"공통 13번 유형서","price":3900,"priceNote":"VAT 포함","comp":"PDF 1개 · 약 25문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함","give":"지금 판매하지 않음","saleFrom":"2026-10-20T19:00:00+09:00"},"C14":{"name":"공통 14번 유형서","price":3900,"priceNote":"VAT 포함","comp":"PDF 1개 · 약 25문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함","give":"지금 판매하지 않음","saleFrom":"2026-10-20T19:00:00+09:00"},"C15":{"name":"공통 15번 유형서","price":3900,"priceNote":"VAT 포함","comp":"PDF 1개 · 약 20문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함","give":"지금 판매하지 않음","saleFrom":"2026-10-20T19:00:00+09:00"},"C20":{"name":"공통 20번 유형서","price":3900,"priceNote":"VAT 포함","comp":"PDF 1개 · 약 20문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함","give":"지금 판매하지 않음","saleFrom":"2026-10-20T19:00:00+09:00"},"C21":{"name":"공통 21번 유형서","price":3900,"priceNote":"VAT 포함","comp":"PDF 1개 · 약 20문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함","give":"지금 판매하지 않음","saleFrom":"2026-10-20T19:00:00+09:00"},"C22":{"name":"공통 22번 유형서","price":3900,"priceNote":"VAT 포함","comp":"PDF 1개 · 약 20문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함","give":"지금 판매하지 않음","saleFrom":"2026-10-20T19:00:00+09:00"},"H27":{"name":"확률과 통계 27번 유형서","price":3900,"priceNote":"VAT 포함","comp":"PDF 1개 · 약 25문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함","give":"지금 판매하지 않음","saleFrom":"2026-10-20T19:00:00+09:00"},"H28":{"name":"확률과 통계 28번 유형서","price":3900,"priceNote":"VAT 포함","comp":"PDF 1개 · 약 20문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함","give":"지금 판매하지 않음","saleFrom":"2026-10-20T19:00:00+09:00"},"H29":{"name":"확률과 통계 29번 유형서","price":3900,"priceNote":"VAT 포함","comp":"PDF 1개 · 약 20문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함","give":"지금 판매하지 않음","saleFrom":"2026-10-20T19:00:00+09:00"},"H30":{"name":"확률과 통계 30번 유형서","price":3900,"priceNote":"VAT 포함","comp":"PDF 1개 · 약 20문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함","give":"지금 판매하지 않음","saleFrom":"2026-10-20T19:00:00+09:00"},"M27":{"name":"미적분 27번 유형서","price":3900,"priceNote":"VAT 포함","comp":"PDF 1개 · 약 25문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함","give":"지금 판매하지 않음","saleFrom":"2026-10-20T19:00:00+09:00"},"M28":{"name":"미적분 28번 유형서","price":3900,"priceNote":"VAT 포함","comp":"PDF 1개 · 약 20문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함","give":"지금 판매하지 않음","saleFrom":"2026-10-20T19:00:00+09:00"},"M29":{"name":"미적분 29번 유형서","price":3900,"priceNote":"VAT 포함","comp":"PDF 1개 · 약 20문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함","give":"지금 판매하지 않음","saleFrom":"2026-10-20T19:00:00+09:00"},"M30":{"name":"미적분 30번 유형서","price":3900,"priceNote":"VAT 포함","comp":"PDF 1개 · 약 20문항 · 델타스킬 자체 유형문항+해설 · 기출 원문 미포함","give":"지금 판매하지 않음","saleFrom":"2026-10-20T19:00:00+09:00"},"SET-H":{"name":"선택과목 세트 · 확률과 통계 (14권)","price":24900,"priceNote":"VAT 포함","comp":"공통 10권 + 선택 27~30 4권 · 약 315문항 · PDF 14개","give":"지금 판매하지 않음","saleFrom":"2026-10-20T19:00:00+09:00"},"SET-M":{"name":"선택과목 세트 · 미적분 (14권)","price":24900,"priceNote":"VAT 포함","comp":"공통 10권 + 선택 27~30 4권 · 약 315문항 · PDF 14개","give":"지금 판매하지 않음","saleFrom":"2026-10-20T19:00:00+09:00"},"FIN":{"name":"수능 직전 점검 모음","price":9900,"priceNote":"VAT 포함","comp":"PDF · 약 60문항","give":"지금 판매하지 않음","saleFrom":"2026-10-20T19:00:00+09:00"},"PRE-H-43":{"name":"파이널의 파이널 등급별 코스 · 확률과 통계 · 4→3","price":59000,"priceNote":"VAT 포함","comp":"선택과목 유형서 14권 코스 순서 + 직전 점검 모음 + D-10 하루 계획표","give":"지금 판매하지 않음","saleFrom":"2026-11-09T00:00:00+09:00","course":"점수나 등급을 약속하지 않습니다. 고를 번호와 순서를 정리해 고민을 줄여 드리는 자료입니다.","saleTo":"2026-11-13T00:00:00+09:00"},"PRE-H-32":{"name":"파이널의 파이널 등급별 코스 · 확률과 통계 · 3→2","price":59000,"priceNote":"VAT 포함","comp":"선택과목 유형서 14권 코스 순서 + 직전 점검 모음 + D-10 하루 계획표","give":"지금 판매하지 않음","saleFrom":"2026-11-09T00:00:00+09:00","course":"점수나 등급을 약속하지 않습니다. 고를 번호와 순서를 정리해 고민을 줄여 드리는 자료입니다.","saleTo":"2026-11-13T00:00:00+09:00"},"PRE-H-21":{"name":"파이널의 파이널 등급별 코스 · 확률과 통계 · 2→1","price":59000,"priceNote":"VAT 포함","comp":"선택과목 유형서 14권 코스 순서 + 직전 점검 모음 + D-10 하루 계획표 · 킬러 심화편 포함","give":"지금 판매하지 않음","saleFrom":"2026-11-09T00:00:00+09:00","course":"점수나 등급을 약속하지 않습니다. 고를 번호와 순서를 정리해 고민을 줄여 드리는 자료입니다.","saleTo":"2026-11-13T00:00:00+09:00"},"PRE-H-1K":{"name":"파이널의 파이널 등급별 코스 · 확률과 통계 · 1등급 굳히기","price":59000,"priceNote":"VAT 포함","comp":"선택과목 유형서 14권 코스 순서 + 직전 점검 모음 + D-10 하루 계획표 · 킬러 심화편 포함","give":"지금 판매하지 않음","saleFrom":"2026-11-09T00:00:00+09:00","course":"점수나 등급을 약속하지 않습니다. 고를 번호와 순서를 정리해 고민을 줄여 드리는 자료입니다.","saleTo":"2026-11-13T00:00:00+09:00"},"PRE-M-43":{"name":"파이널의 파이널 등급별 코스 · 미적분 · 4→3","price":59000,"priceNote":"VAT 포함","comp":"선택과목 유형서 14권 코스 순서 + 직전 점검 모음 + D-10 하루 계획표","give":"지금 판매하지 않음","saleFrom":"2026-11-09T00:00:00+09:00","course":"점수나 등급을 약속하지 않습니다. 고를 번호와 순서를 정리해 고민을 줄여 드리는 자료입니다.","saleTo":"2026-11-13T00:00:00+09:00"},"PRE-M-32":{"name":"파이널의 파이널 등급별 코스 · 미적분 · 3→2","price":59000,"priceNote":"VAT 포함","comp":"선택과목 유형서 14권 코스 순서 + 직전 점검 모음 + D-10 하루 계획표","give":"지금 판매하지 않음","saleFrom":"2026-11-09T00:00:00+09:00","course":"점수나 등급을 약속하지 않습니다. 고를 번호와 순서를 정리해 고민을 줄여 드리는 자료입니다.","saleTo":"2026-11-13T00:00:00+09:00"},"PRE-M-21":{"name":"파이널의 파이널 등급별 코스 · 미적분 · 2→1","price":59000,"priceNote":"VAT 포함","comp":"선택과목 유형서 14권 코스 순서 + 직전 점검 모음 + D-10 하루 계획표 · 킬러 심화편 포함","give":"지금 판매하지 않음","saleFrom":"2026-11-09T00:00:00+09:00","course":"점수나 등급을 약속하지 않습니다. 고를 번호와 순서를 정리해 고민을 줄여 드리는 자료입니다.","saleTo":"2026-11-13T00:00:00+09:00"},"PRE-M-1K":{"name":"파이널의 파이널 등급별 코스 · 미적분 · 1등급 굳히기","price":59000,"priceNote":"VAT 포함","comp":"선택과목 유형서 14권 코스 순서 + 직전 점검 모음 + D-10 하루 계획표 · 킬러 심화편 포함","give":"지금 판매하지 않음","saleFrom":"2026-11-09T00:00:00+09:00","course":"점수나 등급을 약속하지 않습니다. 고를 번호와 순서를 정리해 고민을 줄여 드리는 자료입니다.","saleTo":"2026-11-13T00:00:00+09:00"}};
-var FIX="<p>디지털콘텐츠(PDF)는 다운로드(열람)를 시작하면 청약철회(환불)가 제한됩니다(전자상거래법 제17조 제2항 제5호). 다운로드하지 않은 파일과 아직 제공되지 않은 파일은 결제일로부터 7일 이내(제공 예정 상품은 제공 전까지 언제든) 전액 환불됩니다. 구매 전에 무료 미리보기로 내용과 난이도를 확인해 주세요. 자세히: <a href=\"/refund/\">환불·청약철회 안내</a></p><p>유료 PDF에는 기출 문항 원문이 들어 있지 않습니다. 델타스킬이 직접 만든 유형문항·해설·분석만 담고, 기출은 시험·번호로만 가리킵니다.</p><p>이 상품은 정기결제(자동 결제)가 아닌 단건 결제로, 한 번 결제합니다.</p>";
+var FIX="<p>디지털콘텐츠(PDF)는 받기 전이면 결제일부터 7일 안 전액 환불 · 일부 받았으면 받지 않은 파일 비율만큼 7일 안 환불 · 받은 파일은 청약철회 제한(전자상거래법 제17조 제2항 제5호). 구매 전에 무료 미리보기로 내용과 난이도를 확인해 주세요. 자세히: <a href=\"/refund/\">환불·청약철회 안내</a></p><p>유료 PDF에는 기출 문항 원문이 들어 있지 않습니다. 델타스킬이 직접 만든 유형문항·해설·분석만 담고, 기출은 시험·번호로만 가리킵니다.</p><p>이 상품은 정기결제(자동 결제)가 아닌 단건 결제로, 한 번 결제합니다.</p>";
 var SDK="https://js.tosspayments.com/v2/standard";
 var query=new URLSearchParams(location.search),cart=query.has("skus"),skus=query.getAll("skus");
 var sku=(query.get("sku")||"").trim(),cartError="",cartProducts=null;
@@ -323,7 +323,7 @@ function absUrl(u,d){try{return new URL(u||d,location.origin).href;}catch(_){ret
 function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e;}
 function showProduct(){
   var box=$("prod");box.textContent="";
-  if(!P){box.appendChild(el("p","msg err",cartError?ERR[cartError]:reviewClosed?"이 상품은 판매하지 않습니다.":NS?"이 상품은 출시 예정입니다.":"상품을 찾을 수 없습니다."));var a=el("a","btn ghost",reviewClosed?"변형문항 이용권으로 돌아가기":NS?"내신 자료로 돌아가기":"유형서 구매로 돌아가기");a.href=reviewClosed?"/pass/":NS?"/naesin/":"/store/";var d=el("div","acts");d.appendChild(a);box.appendChild(d);return false;}
+  if(!P){box.appendChild(el("p","msg err",cartError?ERR[cartError]:reviewClosed?"이 상품은 판매하지 않습니다.":NS?"이 상품은 출시 예정입니다.":"상품을 찾을 수 없습니다."));var a=el("a","btn ghost",reviewClosed?"변형문항 이용권으로 돌아가기":NS?"내신 자료로 돌아가기":"수능 유형서로 돌아가기");a.href=reviewClosed?"/pass/":NS?"/naesin/":"/store/";var d=el("div","acts");d.appendChild(a);box.appendChild(d);return false;}
   box.appendChild(el("p","pname",P.name));
   var pr=el("p","price");pr.appendChild(el("b",null,won(amount)));pr.appendChild(el("small",null,P.priceNote));box.appendChild(pr);
   var rows=cart
@@ -362,7 +362,7 @@ function stop(text){ready=false;var n=$("paynote");n.textContent=text;n.hidden=f
 function suneungClosed(){
   ready=false;$("pay").disabled=true;$("f").hidden=true;
   var box=$("prod");box.appendChild(el("p","notice","이 상품은 지금 판매하지 않습니다. 상품 안내만 볼 수 있고 결제는 열려 있지 않습니다."));
-  var a=el("a","btn ghost","유형서 구매로 돌아가기");a.href="/store/";var d=el("div","acts");d.appendChild(a);box.appendChild(d);
+  var a=el("a","btn ghost","수능 유형서로 돌아가기");a.href="/store/";var d=el("div","acts");d.appendChild(a);box.appendChild(d);
 }
 function loadSdk(){return new Promise(function(ok,no){
   if(window.TossPayments){ok();return;}
@@ -446,7 +446,7 @@ function boot(){
     }).catch(function(e){if(sameAccount()){busy=false;update();setMsg($("msg"),errText(e),true);}});
   });
 }
-if(reviewClosed){var rc=document.querySelector('.crumb a[href="/store/"]');if(rc){rc.href="/pass/";rc.textContent="변형문항 이용권";}}
+if(reviewClosed){var rc=document.querySelector('.crumb a[href="/naesin/"]');if(rc){rc.href="/pass/";rc.textContent="변형문항 이용권";}}
 if(NS){var crumb=document.querySelector('.crumb a[href="/store/"]');if(crumb){crumb.href="/naesin/";crumb.textContent="내신 자료";}fetch("/naesin/catalog.json",{cache:"no-store"}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}).then(function(c){P=cart?cartProduct(c):naesinP(c,sku);boot();});}
 else boot();
 </script>

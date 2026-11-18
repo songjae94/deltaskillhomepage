@@ -5,9 +5,11 @@
   const context=new URLSearchParams({exam,audience});
   if(source.has('palette'))context.set('palette',source.get('palette'));
   document.querySelector('#home-return').href='../home.html?'+context+'#instructor';
-  const headerLinks=document.querySelectorAll('header a');
+  const headerLinks=document.querySelectorAll('header:not(.ds-head) a');
+  if(headerLinks.length>1){
   headerLinks[0].href='../index.html?'+context;
   headerLinks[1].href='../guide/index.html?'+context;
   headerLinks[1].textContent=audience==='student'?'학생 이용 안내 →':'수업 자료 이용 안내 →';
+  }
   context.set('from','teacher');document.querySelector('#variation').href='variation.html?'+context;
 })();

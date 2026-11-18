@@ -71,7 +71,7 @@ header.ds-head {
   align-items: center;
   justify-content: center;
   inline-size: auto;
-  min-height: 40px;
+  min-height: 44px;
   padding: 0 11px;
   border-radius: 10px;
   color: #172B43;
@@ -100,7 +100,7 @@ header.ds-head {
   .ds-head-in { height: auto; min-height: 64px; flex-wrap: wrap; padding: 0 14px; gap: 0 8px; }
   .ds-head .ds-logo { height: 56px; font-size: 20px; }
   .ds-head .ds-acct { order: 2; margin-left: auto; border-left: 0; padding-left: 0; gap: 4px; }
-  .ds-head .ds-acct a { padding: 0 9px; font-size: 14px; min-height: 38px; }
+  .ds-head .ds-acct a { padding: 0 9px; font-size: 14px; min-height: 44px; }
   .ds-head .ds-menu {
     order: 3;
     flex: 1 1 100%;
@@ -110,7 +110,7 @@ header.ds-head {
     justify-content: flex-start;
     border-top: 1px solid #F0F2F7;
   }
-  .ds-head .ds-menu a { padding: 0 9px; min-height: 42px; font-size: 14px; }
+  .ds-head .ds-menu a { padding: 0 9px; min-height: 44px; font-size: 14px; }
 }
 
 /* ── 공통 발 ── */
@@ -255,3 +255,54 @@ html[data-ds-main] .mast .ds-logo { font-size: 21px; }
 @media (max-width: 420px) {
   html[data-ds-main] .mast .ds-logo { font-size: 14px; }
 }
+
+/* ── 35 창 1118: 메인 판 딸린 쪽(이용 안내 · 자료받기 · 공부하기 · 기능 소개 · 교재 만들기 · 분석) — 쪽 판은 그대로, 머리 · 발 · 글꼴만 한 벌 ── */
+html[data-ds-sub] body { font-family: var(--ds-font); }
+html[data-ds-sub] body > header.ds-head { position: relative; top: auto; margin: 0; }
+html[data-ds-sub] header .brand.ds-logo { font-size: 20px !important; min-height: 44px; padding: 0; border: 0; background: none; }
+html[data-ds-sub] header .brand.ds-logo img { display: none; }
+html[data-ds-sub] footer.business-footer {
+  display: block;
+  width: 100%;
+  max-width: none;
+  margin: 40px 0 0;
+  padding: 26px max(20px, calc((100% - 1080px) / 2)) 40px;
+  border: 0;
+  background: #0C1425;
+  color: #aab7ca;
+  font: 400 13px/1.8 var(--ds-font);
+}
+html[data-ds-sub] footer.business-footer .footer-shortcuts { color: #fff; font-weight: 700; margin-bottom: 6px; }
+html[data-ds-sub] footer.business-footer .footer-shortcuts a,
+html[data-ds-sub] footer.business-footer .business-info nav a {
+  display: inline-flex; align-items: center; min-height: 44px; padding: 0 10px; border-radius: 8px;
+  color: #d1e4fa; font-size: 14px; font-weight: 400; text-decoration: none;
+  border: 0; background: transparent;
+}
+html[data-ds-sub] header.ds-head nav a { border: 0; }
+html[data-ds-sub] header.ds-head .ds-menu a { background: transparent; }
+html[data-ds-sub] footer.business-footer .business-info nav { gap: 4px 6px; margin: 0 0 10px -10px; }
+html[data-ds-sub] footer.business-footer .business-info nav a.pp,
+html[data-ds-sub] footer.business-footer .business-info nav a.pp b { color: #fff; font-weight: 800; }
+html[data-ds-sub] footer.business-footer .business-info nav a:hover,
+html[data-ds-sub] footer.business-footer .footer-shortcuts a:hover { background: #1A2740; }
+html[data-ds-sub] footer.business-footer .business-info p { margin: 0 0 6px; color: #aab7ca; word-break: keep-all; overflow-wrap: anywhere; }
+html[data-ds-sub] footer.business-footer .business-info p a { color: #d1e4fa; }
+html[data-ds-sub] footer.business-footer .business-info .copy { color: #8f9db3; }
+@media (max-width: 640px) {
+  html[data-ds-sub] footer.business-footer .business-info p { font-size: 14px; }
+}
+
+/* ── 35 창: 접기 줄(펼치기)이 좁은 폭에서 두 줄로 깨지지 않게 ── */
+details.more > summary, details.agd > summary { gap: 10px; }
+details.more > summary::after, details.agd > summary::after { white-space: nowrap; flex: none; }
+header.ds-head .ds-logo span { display: inline !important; font: inherit; }
+
+/* ── 남김없이 1118: 자료받기 딸린 쪽(materials/style.css) 단추 · 칸 · 바탕을 1118 규칙으로 ── */
+html[data-ds-sub] body { background: #F7F8FC; color: #172B43; }
+html[data-ds-sub] main .button { border-radius: 10px; background: #fff; color: #172B43; border: 1px solid #172B43; box-shadow: none; }
+html[data-ds-sub] main .button.primary { background: #245BD6; border-color: #245BD6; color: #fff; }
+html[data-ds-sub] main .button.primary:hover { background: #1D4DB8; border-color: #1D4DB8; }
+html[data-ds-sub] main .panel { border-radius: 16px; border-color: #DFE3ED; }
+html[data-ds-sub] main .round-preview select { min-height: 44px; border: 1px solid #DFE3ED; border-radius: 10px; padding: 0 12px; background: #fff; }
+html[data-ds-sub] .intro h1 { color: #172B43; }
