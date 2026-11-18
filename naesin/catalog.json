@@ -749,6 +749,7 @@
      "saleFrom": null,
      "saleTo": null,
      "sample": "NS-CM2-06-F00",
+     "preview": {"url": "https://cvlrphtupjmaefahodgz.supabase.co/storage/v1/object/sign/shop/naesin/preview/NS-CM2-06-F00.pdf?token=eyJraWQiOiJmMTkzOGIwMC1kNTI5LTQ4OTEtOGExOS04M2E5MDQ1ZWJlNDkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJzaG9wL25hZXNpbi9wcmV2aWV3L05TLUNNMi0wNi1GMDAucGRmIiwic2NvcGUiOiJkb3dubG9hZCIsImlhdCI6MTc5NDk5NDk1MSwiZXhwIjoxODAyNzcwOTUxfQ.qLRO5aPPSGWfP6wEOq72A0Xd1KQNpPJU-aIihYJtt80", "pages": 3, "until": "2027-02-16"},
      "files": [
       {
        "id": "NS-CM2-06-L1.pdf",

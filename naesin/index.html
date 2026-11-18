@@ -577,6 +577,19 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     return f;
   }
   /* ⑥ 받을 내용 확인 — 약관 제11조 제8항의 「받을 내용을 확인하는 화면」 · 파일 수 칸 포함 */
+  function previewBox(pv){
+    var box=el("section","sec pvbox");add(box,el("h2",null,"미리보기"));
+    add(box,el("p","fine","산 뒤 받는 파일의 앞 문항 쪽과 해설 쪽 "+(pv.pages||"")+"쪽을 화면에서만 봅니다."));
+    var btn=el("button","btn ghost","미리보기 열기");btn.type="button";var area=el("div","pvpages");
+    btn.onclick=function(){btn.disabled=true;btn.textContent="불러오는 중";
+      import("/assets/pdfjs/pdf.min.mjs").then(function(lib){lib.GlobalWorkerOptions.workerSrc="/assets/pdfjs/pdf.worker.min.mjs";return lib.getDocument({url:pv.url}).promise;})
+      .then(function(doc){var ch=Promise.resolve();for(var i=1;i<=doc.numPages;i++)(function(n){ch=ch.then(function(){return doc.getPage(n).then(function(pg){
+        var w=Math.min(area.clientWidth||600,720),v0=pg.getViewport({scale:1}),r=window.devicePixelRatio||1,vp=pg.getViewport({scale:w/v0.width*r});
+        var c=document.createElement("canvas");c.width=vp.width;c.height=vp.height;c.style.width=w+"px";c.style.height=(vp.height/r)+"px";c.style.display="block";c.style.margin="0 auto 12px";c.style.border="1px solid var(--line,#ddd)";c.setAttribute("aria-label","미리보기 "+n+"쪽");
+        c.oncontextmenu=function(e){e.preventDefault();};area.appendChild(c);return pg.render({canvasContext:c.getContext("2d"),viewport:vp}).promise;});});})(i);
+        return ch;}).then(function(){btn.remove();},function(){btn.disabled=false;btn.textContent="미리보기를 열지 못했습니다 · 다시 열기";});};
+    add(box,btn,area);return box;
+  }
   function row(dl,k,v,small,cls){
     var d=el("div");add(d,el("dt",null,k));var x=el("dd",cls||null);x.appendChild(document.createTextNode(v));if(small)add(x,el("small",null,small));add(d,x);dl.appendChild(d);return d;
   }
@@ -621,6 +634,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     else{dd.className="blank";dd.textContent="출시 예정입니다";}
     add(d,dd);dl.appendChild(d);
     add(f,dl);
+    if(u&&u.preview&&u.preview.url)add(f,previewBox(u.preview)); /* 24 창 1118: 미리보기 = 저장 자리 PDF 몇 쪽을 화면에만 그림(pdf.js · 받기 단추 없음) */
     if(pickFmt){
       var fs=el("fieldset","sec");add(fs,el("legend",null,"파일 형식 고르기"));
       var fl=el("ul","picks");
