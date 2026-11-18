@@ -176,6 +176,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 </footer>
 <script src="/naesin/finals-order.js"></script>
 <script src="/auth.js?v=home-logout-r2-1118"></script>
+<script src="/assets/textbook-name.js?v=38-1119"></script>
 <script>
 "use strict";
 function $(id){return document.getElementById(id);}
@@ -325,6 +326,7 @@ function showProduct(){
   var box=$("prod");box.textContent="";
   if(!P){box.appendChild(el("p","msg err",cartError?ERR[cartError]:reviewClosed?"이 상품은 판매하지 않습니다.":NS?"이 상품은 출시 예정입니다.":"상품을 찾을 수 없습니다."));var a=el("a","btn ghost",reviewClosed?"변형문항 이용권으로 돌아가기":NS?"내신 자료로 돌아가기":"수능 유형서로 돌아가기");a.href=reviewClosed?"/pass/":NS?"/naesin/":"/store/";var d=el("div","acts");d.appendChild(a);box.appendChild(d);return false;}
   box.appendChild(el("p","pname",P.name));
+  if(NS&&!cart&&window.DSTextbook)box.appendChild(DSTextbook.line(sku)); /* 38 창 1119: 원 교재 이름은 로그인 뒤에만 */
   var pr=el("p","price");pr.appendChild(el("b",null,won(amount)));pr.appendChild(el("small",null,P.priceNote));box.appendChild(pr);
   var rows=cart
     ? cartProducts.items.map(function(item,index){return [String(index+1)+". "+item.name,won(item.price)];})

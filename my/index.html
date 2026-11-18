@@ -192,6 +192,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 </div>
 </footer>
 <script src="/auth.js?v=home-logout-r2-1118"></script>
+<script src="/assets/textbook-name.js?v=38-1119"></script>
 <script>
 "use strict";
 /* 마이페이지(11-18 · 21 창) — 이용권(billing-test) · 결제 내역 · 회원 자료함(member-library). 서버가 로그인 회원 것만 돌려준다. */
@@ -306,6 +307,8 @@ function libView(list){
     const d = document.createElement("div"); d.className = "lib";
     d.innerHTML = `<p class="lname">${esc(o.orderName)}${o.mode === "test" ? ` <span class="tag off">테스트 결제</span>` : ``}</p>`
       + `<p class="sub">결제 ${esc(day(o.approvedAt))} · ${o.redownloadUntil ? esc(day(o.redownloadUntil)) + "까지 다시 받기" : ""}${o.reason ? " · " + esc(LIB_ERR[o.reason] || "") : ""}</p>`;
+    { const m = !o.isMultiUnit && /^(NS-[A-Z0-9]+-\d\d)-/.exec(((o.files || [])[0] || {}).id || ""); /* 38 창 1119: 원 교재 이름은 로그인 뒤에만 */
+      if(m && window.DSTextbook) d.querySelector(".lname").after(DSTextbook.line(m[1])); }
     const ul = document.createElement("ul"); ul.className = "files";
     (o.files || []).forEach(f => {
       const li = document.createElement("li"), s = document.createElement("span");

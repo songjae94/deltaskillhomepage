@@ -798,7 +798,7 @@
       "pdf": 0,
       "hwpx": 0
      },
-     "saleFrom": null,
+     "saleFrom": "2026-11-19T00:00:00+09:00",
      "saleTo": null,
      "sample": "NS-CM2-07-F00",
      "preview": {"url": "https://cvlrphtupjmaefahodgz.supabase.co/storage/v1/object/sign/shop/naesin/preview/NS-CM2-07-F00.pdf?token=eyJraWQiOiJmMTkzOGIwMC1kNTI5LTQ4OTEtOGExOS04M2E5MDQ1ZWJlNDkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJzaG9wL25hZXNpbi9wcmV2aWV3L05TLUNNMi0wNy1GMDAucGRmIiwic2NvcGUiOiJkb3dubG9hZCIsImlhdCI6MTc5NTAxNDU1MiwiZXhwIjoxODAyNzkwNTUyfQ.ghldMoLuxgDzvZ3UawVh6qgBtiU1Ipy4dJR0ehsYxWQ", "pages": 3, "until": "2027-02-17"},
@@ -807,7 +807,7 @@
        "id": "NS-CM2-07-L1.pdf",
        "fmt": "pdf",
        "title": "공통수학2 단원 문제집 1권 · 07 유리함수와 무리함수 · 1문항 1쪽 (PDF)",
-       "from": null,
+       "from": "2026-11-19T00:00:00+09:00",
        "layout": "1문항 1쪽",
        "pages": 124
       },
@@ -815,7 +815,7 @@
        "id": "NS-CM2-07-L2.pdf",
        "fmt": "pdf",
        "title": "공통수학2 단원 문제집 1권 · 07 유리함수와 무리함수 · 2문항 2단 (PDF)",
-       "from": null,
+       "from": "2026-11-19T00:00:00+09:00",
        "layout": "2문항 2단",
        "pages": 70
       },
@@ -823,7 +823,7 @@
        "id": "NS-CM2-07-L4.pdf",
        "fmt": "pdf",
        "title": "공통수학2 단원 문제집 1권 · 07 유리함수와 무리함수 · 4문항 2단 (PDF)",
-       "from": null,
+       "from": "2026-11-19T00:00:00+09:00",
        "layout": "4문항 2단",
        "pages": 58
       }

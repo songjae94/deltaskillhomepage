@@ -243,6 +243,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 </div>
 </footer>
 <script src="/auth.js"></script>
+<script src="/assets/textbook-name.js?v=38-1119"></script>
 <script>
 "use strict";
 /* 내신 상품 — /naesin/catalog.json 한 값에서 그린다(서버 표와 같은 정본 · 게이트 ops scripts/홈페이지/내신상품표.py).
@@ -433,7 +434,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   function buyCard(p,q){
     var s=p.s,u=p.u,x=p.x,fm=p.fm,lay=filesAt(x,fm).filter(function(f){return f.layout;}),nf=fileUnits(x,fm);
     var card=el("article","buycard"),b=s.textbooks[0];
-    add(card,el("h3",null,x.name||(s.subject+" · "+u.no+" "+u.unit)));
+    add(card,el("h3",null,x.name||(s.subject+" · "+u.no+" "+u.unit)));if(window.DSTextbook)add(card,DSTextbook.line(x.sku)); /* 38 창 1119: 원 교재 이름은 로그인 뒤에만 */
     add(card,el("p","m",(x.count?x.count+"문항 · ":"")+fmtName(fm)+" "+nf+"파일"+(lay.length?" · 쪽 구성 "+lay.map(function(f){return f.layout;}).join(" · "):"")));
     var row=el("div","row2"),pr=el("p","pr2");add(pr,el("b",null,won(priceAt(x,fm))));
     var act=el("div","act"),buy=el("a","btn buy","구매하기");buy.href="/checkout/?sku="+encodeURIComponent(x.sku+"."+fm);
@@ -662,6 +663,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     var f=document.createDocumentFragment(),base={who:q.who,s:q.s,b:q.b};
     var free=c.path==="free",u=product(c,q,s),back=Object.assign({},q),fss=free?freeSets(b):[];delete back.v;
     add(f,backLink(free?base:(q.p==="detail"&&q.v==="confirm"?{s:q.s}:back)),h1(product(c,q,s)&&product(c,q,s).name||"받을 내용을 확인하세요"));
+    if(u&&window.DSTextbook)add(f,DSTextbook.line(u.sku)); /* 38 창 1119: 원 교재 이름은 로그인 뒤에만 */
     var dl=el("dl","conf");
     row(dl,"부교재",b.label,filesAt(u,"pdf").some(function(x){return x.layout;})?(b.edition?b.edition+" 기준":null):bookNote(b)); /* 본부 1118 ②: A06 1권은 원문항 여부 확인 전 「원문 없음」 글을 안 붙임 */
     var lay=filesAt(u,"pdf").filter(function(x){return x.layout;}); /* 22 창 1118 걸음 8: 같은 문항 쪽 구성 여러 꼴(A06 1권) */
