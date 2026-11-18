@@ -50,4 +50,4 @@ dl div{display:grid;grid-template-columns:minmax(92px,130px) 1fr;gap:8px;border-
 const steps=[...document.querySelectorAll("[data-step]")];
 function renderStep(event){if(location.hash==="#single"||location.hash==="#checkout-single"){location.replace("/naesin/");return;} /* 1118 재점검 N1: 낱개 시험 상품(600원) 닫음 — 옛 주소는 내신 파일로 */const next=steps.find(step=>"#"+step.id===location.hash)||steps[0];for(const step of steps)step.hidden=step!==next;if(event){const heading=next.querySelector("h1");heading.tabIndex=-1;heading.focus();}}
 window.addEventListener("hashchange",renderStep);renderStep();
-</script><script defer src="./review-config.js?v=billing-split-1118"></script><script type="module" src="./test-checkout.mjs?v=billing-split-1118"></script></body></html>
+</script><script defer src="./review-config.js?v=recheck-1118"></script><script type="module" src="./test-checkout.mjs?v=recheck-1118"></script></body></html>
