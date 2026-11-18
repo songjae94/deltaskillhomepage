@@ -9,7 +9,7 @@
 <link rel="canonical" href="https://www.deltaskill.co.kr/my/" />
 <link rel="icon" href="/favicon-32.png" sizes="32x32" />
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-<meta name="theme-color" content="#E6F3FC" />
+<meta name="theme-color" content="#FFFFFF" />
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
 <style>
@@ -108,12 +108,13 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 </style>
 <link rel="stylesheet" href="/assets/account-header.css?v=home-logout-1118">
 <link rel="stylesheet" href="/assets/payment-flow.css">
+<link rel="stylesheet" href="/assets/site-unify.css?v=31">
 </head>
 <body class="payment-flow" data-logout-next="/">
-<header class="payment-header"><div class="top">
-  <a class="logo" href="/"><img src="/assets/main/deltaskill-ko-horizontal-white.svg" alt="델타스킬" width="120"></a>
-  <nav class="gnav" aria-label="주요 메뉴"><a href="/">메인</a><a href="/naesin/">내신 파일</a><a href="/store/">유형서 구매</a><a href="/orders/">주문 조회</a></nav>
-  <nav id="authnav" class="ds-checkout-account" data-logout-next="/" aria-label="계정"></nav>
+<header class="ds-head"><div class="ds-head-in">
+  <a class="ds-logo" href="/" aria-label="델타스킬 메인"><span class="d">DELTA</span><span class="s">SKILL</span></a>
+  <nav class="ds-menu" aria-label="주요 메뉴"><a href="/naesin/">내신 자료</a><a href="/pass/">이용권</a><a href="/orders/">주문 조회</a></nav>
+  <nav id="authnav" class="ds-acct" data-logout-next="/" aria-label="계정"><a href="/auth/" data-account-primary>로그인</a><a href="/auth/?mode=signup" data-account-secondary>회원가입</a></nav>
 </div></header>
 <main id="app" hidden>
   <p class="crumb"><a href="/">메인</a> › 마이페이지</p>
@@ -180,7 +181,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     <a class="pp" href="/privacy/"><b>개인정보처리방침</b></a>
     <a href="/refund/">환불·청약철회 안내</a>
     <a href="/minor/">미성년자 구매 안내</a>
-    <a href="/store/">유형서 구매</a>
+    <a href="/naesin/">내신 파일</a>
   </nav>
   <p>상호 델타스킬 · 대표 송재형 · 사업자등록번호 345-62-00876 <a href="https://www.ftc.go.kr/bizCommPop.do?wrkr_no=3456200876" target="_blank" rel="noopener">사업자정보확인</a> · 통신판매업신고 제2026-서울서초-3410호</p>
   <p>주소 서울특별시 서초구 마방로10길 18-16, 4층(양재동, 진우빌딩) · 전화 070-8065-2468 · 이메일 <a href="mailto:admin@deltaskill.co.kr">admin@deltaskill.co.kr</a></p>

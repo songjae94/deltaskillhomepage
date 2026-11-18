@@ -5,15 +5,20 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <title>델타스킬 · 로그인</title>
-<meta name="theme-color" content="#f5f7ed">
+<meta name="theme-color" content="#FFFFFF">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="stylesheet" href="brand.css?v=1113">
 <link rel="stylesheet" href="/assets/account-header.css?v=pass-1117">
 <link rel="stylesheet" href="/assets/business-footer.css">
+<link rel="stylesheet" href="/assets/site-unify.css?v=31">
 </head>
 <body>
+<header class="ds-head"><div class="ds-head-in">
+  <a class="ds-logo" href="/" aria-label="델타스킬 메인"><span class="d">DELTA</span><span class="s">SKILL</span></a>
+  <nav class="ds-menu" aria-label="주요 메뉴"><a href="/naesin/">내신 자료</a><a href="/pass/">이용권</a><a href="/orders/">주문 조회</a></nav>
+  <nav id="authnav" class="ds-acct" data-next="/my/" aria-label="계정"><a href="/auth/" data-account-primary>로그인</a><a href="/auth/?mode=signup" data-account-secondary>회원가입</a></nav>
+</div></header>
 <div class="wrap">
-  <header class="brandbar"><a href="/" class="brand"><img src="brand.svg" width="140" height="38" alt="델타스킬 홈"></a><a href="/" class="home-link">홈으로 <span aria-hidden="true">↗</span></a></header>
 
   <!-- 로그인 -->
   <section class="card" id="v-login" hidden>
@@ -175,13 +180,22 @@
   <section class="card done" id="v-done" hidden><b id="d-title"></b><p class="desc" id="d-desc"></p><a class="p" id="d-go">계속</a></section>
 
 </div>
-<footer class="business-footer"><div class="business-info"><nav aria-label="이용 정책"><a href="https://www.deltaskill.co.kr/terms/">이용약관</a>
-    <a class="pp" href="https://www.deltaskill.co.kr/privacy/"><b>개인정보처리방침</b></a>
-    <a href="https://www.deltaskill.co.kr/refund/">환불·청약철회 안내</a>
-    </nav><p>상호 델타스킬 · 대표 송재형 · 사업자등록번호 345-62-00876 <a href="https://www.ftc.go.kr/bizCommPop.do?wrkr_no=3456200876" target="_blank" rel="noopener">사업자정보확인</a> · 통신판매업신고 제2026-서울서초-3410호</p>
+<footer class="sitefoot">
+<div class="biz" id="bizinfo">
+  <nav class="policy" aria-label="정책">
+    <a href="/terms/">이용약관</a>
+    <a class="pp" href="/privacy/"><b>개인정보처리방침</b></a>
+    <a href="/refund/">환불·청약철회 안내</a>
+    <a href="/minor/">미성년자 구매 안내</a>
+    <a href="/naesin/">내신 파일</a>
+  </nav>
+  <p>상호 델타스킬 · 대표 송재형 · 사업자등록번호 345-62-00876 <a href="https://www.ftc.go.kr/bizCommPop.do?wrkr_no=3456200876" target="_blank" rel="noopener">사업자정보확인</a> · 통신판매업신고 제2026-서울서초-3410호</p>
   <p>주소 서울특별시 서초구 마방로10길 18-16, 4층(양재동, 진우빌딩) · 전화 070-8065-2468 · 이메일 <a href="mailto:admin@deltaskill.co.kr">admin@deltaskill.co.kr</a></p>
   <p>개인정보보호책임자 송재형 · 호스팅 제공자 GitHub, Inc.(GitHub Pages) · Supabase, Inc.(결제·다운로드 서버)</p>
-  </div></footer>
+  <p class="src">자료 출처: 평가원 공개 자료 + EBSi 공개 채점 자료 · 판매 PDF는 델타스킬이 직접 제작한 콘텐츠입니다 · 디지털콘텐츠는 다운로드(열람) 후 청약철회가 제한됩니다(다운로드 전 7일 이내 전액 환불) · 변형문항 이용권은 매월 자동 갱신(정기결제) · 그 밖의 상품은 단건 결제</p>
+  <p class="copy">© 2026 델타스킬. All rights reserved.</p>
+</div>
+</footer>
 
 <script src="/auth.js"></script>
 <script>
