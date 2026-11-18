@@ -733,20 +733,48 @@
      "no": "06",
      "major": "Ⅲ 함수와 그래프",
      "unit": "함수",
-     "name": "공통수학2 함수 내신 변형 문항",
+     "name": "공통수학2 단원 문제집 1권 · 06 함수",
      "composition": "C1",
      "textbook": null,
      "count": null,
      "pages": null,
-     "price": null,
+     "price": {
+      "pdf": 4000,
+      "hwpx": null
+     },
      "taxFreeAmount": {
       "pdf": 0,
       "hwpx": 0
      },
      "saleFrom": null,
      "saleTo": null,
-     "sample": null,
-     "files": [],
+     "sample": "NS-CM2-06-F00",
+     "files": [
+      {
+       "id": "NS-CM2-06-L1.pdf",
+       "fmt": "pdf",
+       "title": "공통수학2 단원 문제집 1권 · 06 함수 · 1문항 1쪽 (PDF)",
+       "from": null,
+       "layout": "1문항 1쪽",
+       "pages": 267
+      },
+      {
+       "id": "NS-CM2-06-L2.pdf",
+       "fmt": "pdf",
+       "title": "공통수학2 단원 문제집 1권 · 06 함수 · 2문항 2단 (PDF)",
+       "from": null,
+       "layout": "2문항 2단",
+       "pages": 165
+      },
+      {
+       "id": "NS-CM2-06-L4.pdf",
+       "fmt": "pdf",
+       "title": "공통수학2 단원 문제집 1권 · 06 함수 · 4문항 2단 (PDF)",
+       "from": null,
+       "layout": "4문항 2단",
+       "pages": 142
+      }
+     ],
      "types": [],
      "items": [],
      "packs": []
