@@ -447,7 +447,7 @@ function boot(){
   });
 }
 if(reviewClosed){var rc=document.querySelector('.crumb a[href="/store/"]');if(rc){rc.href="/pass/";rc.textContent="변형문항 이용권";}}
-if(NS){var crumb=document.querySelector('.crumb a[href="/store/"]');if(crumb){crumb.href="/naesin/";crumb.textContent="내신 파일";}fetch("/naesin/catalog.json",{cache:"no-store"}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}).then(function(c){P=cart?cartProduct(c):naesinP(c,sku);boot();});}
+if(NS){var crumb=document.querySelector('.crumb a[href="/store/"]');if(crumb){crumb.href="/naesin/";crumb.textContent="내신 자료";}fetch("/naesin/catalog.json",{cache:"no-store"}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}).then(function(c){P=cart?cartProduct(c):naesinP(c,sku);boot();});}
 else boot();
 </script>
 </body>
