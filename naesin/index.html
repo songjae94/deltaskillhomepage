@@ -420,7 +420,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
       var pr=el("p","pr2");add(pr,el("b",null,won(priceAt(u,fm))),el("small",null,"부가세 포함 · 단건 결제(자동 결제 아님)"));add(card,pr);
       var act=el("div","act"),buy=el("a","btn buy","구매하기");buy.href="/checkout/?sku="+encodeURIComponent(u.sku+"."+fm);
       add(act,buy,link("btn ghost",{who:q.who,s:s.code,b:b.id,p:"detail",c:c1.id,u:u.no,v:"confirm",f:fm},u.preview&&u.preview.url?"미리보기 · 자세히":"자세히"));add(card,act);
-      var fn=el("p","fine","결제 뒤 바로 내려받기 · 받기 전이면 7일 안 전액 환불 · 받은 파일은 청약철회 제한 · ");var r=el("a",null,"환불 안내");r.href="/refund/";add(fn,r);add(card,fn);
+      var fn=el("p","fine","결제 뒤 바로 내려받기 · 받기 전이면 결제일부터 7일 안 전액 환불 · 일부 받았으면 받지 않은 파일 비율만큼 7일 안 환불 · 받은 파일은 청약철회 제한 · ");var r=el("a",null,"환불 안내");r.href="/refund/";add(fn,r);add(card,fn);
       add(box,card);n++;
     });});
     return n?box:null;
@@ -717,7 +717,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
       if(ok&&al.parentNode)al.remove(); /* 살 수 있으면 「알림 받기」는 뺌 */
       var det=el("details","more");add(det,el("summary",null,"자세히 · 부교재 · 구성 · 제공 · 환불 · 상품 번호"),more);
       f.insertBefore(act,dl.nextSibling);
-      if(ok){var sm=el("p","sum1","단건 결제 · 결제 뒤 바로 내려받기 · 받기 전이면 7일 안 전액 환불 · 받은 파일은 청약철회 제한 · ");var ra=el("a",null,"환불 안내");ra.href="/refund/";add(sm,ra);f.insertBefore(sm,act);}
+      if(ok){var sm=el("p","sum1","단건 결제 · 결제 뒤 바로 내려받기 · 받기 전이면 결제일부터 7일 안 전액 환불 · 일부 받았으면 받지 않은 파일 비율만큼 7일 안 환불 · 받은 파일은 청약철회 제한 · ");var ra=el("a",null,"환불 안내");ra.href="/refund/";add(sm,ra);f.insertBefore(sm,act);}
       if(typeof mup!=="undefined"&&mup)f.insertBefore(mup,act);
       f.insertBefore(det,fine);det.appendChild(fine);
     }
