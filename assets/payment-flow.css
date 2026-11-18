@@ -1,0 +1,171 @@
+/* Entrance masthead and interior surfaces used by the payment flow. */
+body.payment-flow {
+  --ink: #192342;
+  --ink2: #2e4264;
+  --sub: #505b73;
+  --line: #dfe3ed;
+  --line2: #aab6cb;
+  --sky1: #eef3ff;
+  --sky2: #f7f8fc;
+  --card: #fff;
+  --red: #a32225;
+  --r: 16px;
+  margin: 0;
+  background: var(--sky2);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard Variable", "Noto Sans KR", sans-serif;
+  letter-spacing: -.018em;
+  line-height: 1.6;
+}
+.payment-flow .payment-header {
+  padding: 0;
+  border: 0;
+  background: #0c1425;
+  color: #f7f9ff;
+}
+.payment-flow .payment-header .top {
+  width: min(1120px, 90%);
+  min-height: 76px;
+  margin: auto;
+  padding: 6px 0;
+  display: grid;
+  grid-template-columns: minmax(120px, 1fr) auto minmax(120px, 1fr);
+  align-items: center;
+  gap: 0 24px;
+}
+.payment-flow .payment-header .logo { display: flex; align-items: center; min-height: 44px; }
+.payment-flow .payment-header .logo img { display: block; width: 120px; height: auto; }
+.payment-flow .payment-header nav { display: flex; flex-wrap: wrap; gap: 0 4px; }
+.payment-flow .payment-header .ds-account-links { justify-self: end; }
+.payment-flow .payment-header nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 10px;
+  border-radius: 7px;
+  color: #d1d9e8;
+  background: transparent;
+  box-shadow: none;
+  font-size: 14px;
+  font-weight: 650;
+  letter-spacing: 0;
+  text-decoration: none;
+}
+.payment-flow .payment-header nav a:hover,
+.payment-flow .payment-header nav a.on { background: #233858; color: #fff; }
+.payment-flow .payment-header a:focus-visible { outline-color: #a7c5ff; }
+.payment-pass .payment-header .ds-account-links a { inline-size: auto; }
+
+.payment-flow main {
+  width: min(760px, calc(100% - 40px));
+  max-width: none;
+  margin: 0 auto;
+  padding: 30px 0 52px;
+}
+.payment-flow main h1 {
+  margin: 0 0 8px;
+  color: var(--ink);
+  font-size: clamp(30px, 5vw, 42px);
+  line-height: 1.18;
+  letter-spacing: -.045em;
+}
+.payment-flow .crumb { margin: 0 0 14px; }
+.payment-flow .band,
+.payment-flow .flag {
+  margin: 0 0 20px;
+  padding: 12px 16px;
+  border: 1px solid #c6d5f4;
+  border-radius: 10px;
+  background: var(--sky1);
+  box-shadow: none;
+  color: #243f6b;
+  font-size: 14px;
+  font-weight: 650;
+}
+.payment-flow .card,
+.payment-pass main section[data-step] {
+  padding: clamp(18px, 4vw, 30px);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: var(--card);
+  box-shadow: 0 10px 28px -23px #243e6847;
+}
+.payment-flow .card dl div,
+.payment-pass main dl div { padding-block: 9px; border-bottom: 1px solid var(--line); }
+.payment-flow .card dt,
+.payment-pass main dt { color: var(--sub); }
+.payment-flow .price b,
+.payment-pass main dl strong { color: var(--ink); }
+.payment-flow .btn,
+.payment-flow .action,
+.payment-pass .actions button {
+  min-height: 46px;
+  border-radius: 7px;
+  font-weight: 700;
+}
+.payment-flow .btn.pri,
+.payment-flow .action {
+  background: #172b4b;
+  color: #f7f9ff;
+}
+.payment-flow .btn.pri:not(:disabled):hover,
+.payment-flow .action:not(:disabled):hover { background: #233858; }
+.payment-flow .btn.ghost {
+  background: #edf3ff;
+  color: #172b4b;
+  box-shadow: inset 0 0 0 1px #c6d5f4;
+}
+.payment-flow .btn:disabled,
+.payment-flow .action:disabled,
+.payment-pass .actions button:disabled {
+  border: 0;
+  background: #e6eaf2;
+  color: #414d64;
+  cursor: default;
+}
+.payment-pass .actions button { padding: 9px 15px; }
+.payment-pass .actions a:not(.action) {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--ink2);
+  text-underline-offset: 3px;
+}
+.payment-pass [data-checkout-status]:not(:empty) {
+  margin-top: 16px;
+  padding: 12px 15px;
+  border-radius: 10px;
+  background: var(--sky1);
+  color: #243f6b;
+  font-weight: 650;
+}
+.payment-flow .in { border-radius: 8px; }
+.payment-flow input { accent-color: #172b4b; }
+.payment-flow .sitefoot,
+.payment-flow .biz { background: #0c1425; }
+.payment-flow footer.business-footer {
+  width: 100%;
+  margin: 0;
+  padding: 24px 0 36px;
+  border: 0;
+  background: #0c1425;
+  color: #aab7ca;
+}
+.payment-flow .business-footer .business-info { width: min(1080px, calc(100% - 32px)); margin: auto; }
+.payment-flow .business-footer a { color: #d1e4fa; }
+@media (max-width: 640px) {
+  .payment-flow .payment-header .top {
+    width: calc(100% - 32px);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  .payment-flow .payment-header .logo img { width: 100px; }
+  .payment-flow .payment-header .gnav { flex: 1 1 100%; order: 2; justify-content: flex-start; margin-left: -8px; }
+  .payment-flow .payment-header nav a { padding-inline: 8px; }
+  .payment-flow main { width: calc(100% - 32px); padding-top: 20px; }
+  .payment-pass main dl div { grid-template-columns: 82px minmax(0, 1fr); }
+}
+
+html:not(.authed) .payment-flow .payment-header .ds-checkout-account { display: none; }
+.payment-flow .payment-header .ds-checkout-account a { inline-size: auto; }
