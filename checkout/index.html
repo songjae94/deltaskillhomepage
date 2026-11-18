@@ -278,7 +278,7 @@ function naesinP(c,sku){
   var f=m[2],n=(u.files||[]).filter(function(x){return x.fmt===f;}).length,pr=u.price&&u.price[f];
   if(!pr||!u.taxFreeAmount||u.taxFreeAmount[f]==null||!u.saleFrom||!u.sample||!n)return null; /* 11-11 본부 11/11 05: 맛보기(sample = 단원 무료 세트) 요구는 그대로 · F00 은 11/12 */
   var fn=f==="hwpx"?"한글(HWPX)":"PDF",fs=u.fileSets&&u.fileSets[f],cnt=fs&&fs.kind==="merged"&&n===1?fn+" 합본 1파일":fs&&fs.kind==="types"?fn+" 유형별 파일 "+n+"개":fn+" 파일 "+n+"개";
-  return {name:u.name+(f==="hwpx"?" (한글)":" (PDF)"),price:pr,priceNote:"부가세 포함",comp:cnt+" · "+(u.kind?"":"단원 ")+"변형 문항",start:startText(n),only:fn+" 파일만 받습니다. "+(f==="hwpx"?"PDF는":"한글 파일은")+" 들어 있지 않습니다.",give:"결제 뒤 바로 내려받기",saleFrom:u.saleFrom,saleTo:u.saleTo||undefined,cards:(c.cards||[])};
+  return {noOrigClaim:(u.files||[]).some(function(x){return x.layout;}),name:u.name+(f==="hwpx"?" (한글)":" (PDF)"),price:pr,priceNote:"부가세 포함",comp:cnt+" · "+(u.kind?"":"단원 ")+"변형 문항",start:startText(n),only:fn+" 파일만 받습니다. "+(f==="hwpx"?"PDF는":"한글 파일은")+" 들어 있지 않습니다.",give:"결제 뒤 바로 내려받기",saleFrom:u.saleFrom,saleTo:u.saleTo||undefined,cards:(c.cards||[])};
 }
 function cartProduct(c){
   var order=window.DeltaFinalsOrder,now=Date.now();
@@ -326,8 +326,8 @@ function showProduct(){
   var dl=el("dl");rows.forEach(function(r){var d=el("div");d.appendChild(el("dt",null,r[0]));d.appendChild(el("dd",null,r[1]));dl.appendChild(d);});box.appendChild(dl);
   if(cart)box.appendChild(el("p","hint",window.DeltaFinalsOrder.FULL_REFUND));
   if(P.course)box.appendChild(el("p","course",P.course));
-  if(P.cards&&P.cards.length)box.appendChild(el("p","hint","지금 결제할 수 있는 카드: "+P.cards.join(" · ")));
-  var fx=el("div","fix");fx.innerHTML=cart?'<p>파일을 내려받거나 열람하면 청약철회가 제한됩니다. <a href="/refund/">환불·청약철회 안내</a></p>':NS?FIX.replace("디지털콘텐츠(PDF)","디지털콘텐츠(고른 형식의 파일)").replace("유료 PDF에는","유료 파일에는"):reviewFormat?FIX.replace(" 구매 전에 무료 미리보기로 내용과 난이도를 확인해 주세요."," 구매 전에 <a href=\"/pass/#single\">상품 안내</a>에서 받는 내용을 확인해 주세요."):FIX;box.appendChild(fx);
+  if(P.cards&&P.cards.length)box.appendChild(el("p","hint","결제창에서 사용할 수 있는 카드가 표시됩니다.")); /* 본부 1118 ③: 라이브 계약 카드 확인 전에는 목록을 적지 않음 */
+  var fx=el("div","fix");fx.innerHTML=cart?'<p>파일을 내려받거나 열람하면 청약철회가 제한됩니다. <a href="/refund/">환불·청약철회 안내</a></p>':NS?FIX.replace("디지털콘텐츠(PDF)","디지털콘텐츠(고른 형식의 파일)").replace(P&&P.noOrigClaim?/<p>유료 PDF에는[^<]*<\/p>/:"유료 PDF에는",P&&P.noOrigClaim?"":"유료 파일에는"):reviewFormat?FIX.replace(" 구매 전에 무료 미리보기로 내용과 난이도를 확인해 주세요."," 구매 전에 <a href=\"/pass/#single\">상품 안내</a>에서 받는 내용을 확인해 주세요."):FIX;box.appendChild(fx);
   $("pay").textContent=won(amount)+" 결제하기";
   return true;
 }

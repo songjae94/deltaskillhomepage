@@ -586,7 +586,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     var free=c.path==="free",u=product(c,q,s),back=Object.assign({},q),fss=free?freeSets(b):[];delete back.v;
     add(f,backLink(free?base:back),kick(5,q,s,b),h1("받을 내용을 확인하세요"));
     var dl=el("dl","conf");
-    row(dl,"부교재",b.label,bookNote(b));
+    row(dl,"부교재",b.label,filesAt(u,"pdf").some(function(x){return x.layout;})?(b.edition?b.edition+" 기준":null):bookNote(b)); /* 본부 1118 ②: A06 1권은 원문항 여부 확인 전 「원문 없음」 글을 안 붙임 */
     var lay=filesAt(u,"pdf").filter(function(x){return x.layout;}); /* 22 창 1118 걸음 8: 같은 문항 쪽 구성 여러 꼴(A06 1권) */
     row(dl,"구성",c.name,lay.length?"같은 문항을 쪽 구성 "+lay.length+"가지 PDF로 담아 한 값에 모두 받습니다.":c.desc);
     if(lay.length)row(dl,"쪽 구성",lay.map(function(x){return x.layout+(x.pages?" "+x.pages+"쪽":"");}).join(" · "),"PDF "+lay.length+"파일");
