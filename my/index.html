@@ -47,6 +47,9 @@ input,select{font:inherit;padding:10px 12px;border:1px solid var(--line2);border
 .dir{border-left:3px solid var(--acc);background:rgba(90,162,255,.07);border-radius:0 8px 8px 0;padding:9px 12px;margin:6px 0;font-size:13px}
 #report:not(:empty){border:1px solid var(--line2);border-radius:14px;padding:6px 14px 16px;margin:8px 0 14px;background:rgba(10,16,32,.5)}
 @media print{.top,#reportBtn,#body>h2,#body>.cards,.sub,.det{display:none!important}#report:not(:empty){border:none;background:#fff}body{background:#fff;color:#111}h1,h2,.card b{color:#111}}
+#pass .row{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);padding:10px 12px;margin:6px 0;font-size:13.5px}
+#pass .row b{color:#fff}#pass .row .grow{flex:1;min-width:180px}#pass .tag{display:inline-block;font-size:11px;font-weight:700;border-radius:999px;padding:1px 8px;margin-left:6px;border:1px solid rgba(90,162,255,.45);color:var(--acc2)}#pass .tag.off{border-color:var(--line2);color:var(--mut)}
+dialog#passDlg{max-width:430px;width:calc(100% - 28px);background:var(--card);color:#e8eef7;border:1px solid var(--line2);border-radius:14px;padding:22px 20px}dialog#passDlg::backdrop{background:rgba(2,4,10,.72)}dialog#passDlg h3{margin:0 0 10px;font-size:16px;color:#fff}dialog#passDlg p{margin:6px 0;font-size:13.5px}dialog#passDlg .btns{display:flex;gap:8px;margin-top:16px}dialog#passDlg .btns button{flex:1}
 </style>
 <style id="biz-css">
 .biz{display:block;box-sizing:border-box;background:#05060f;color:#aab7ca;font:400 13px/1.8 "Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;letter-spacing:0;text-align:left;padding:24px 16px 36px;border-top:1px solid rgba(186,215,247,.16)}
@@ -73,6 +76,14 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     <div><button class="sm" id="btnNote" onclick="location.href='/pilot/'">오답노트 쓰기</button> <button class="sm" id="btnInfo" onclick="location.href='/pilot/?profile=1'">내 정보</button> <button class="sm" onclick="location.href='/auth/?mode=phone'">번호 바꾸기</button> <button class="sm" onclick="location.href='/auth/?mode=password'">비밀번호 변경</button> <button class="sm" onclick="doLogout()">로그아웃</button></div>
   </div>
   <h1 id="hello">마이페이지</h1>
+  <section id="pass" aria-labelledby="passH"><h2 id="passH">이용권</h2><div id="passBody"><p class="k">불러오는 중…</p></div></section>
+  <dialog id="passDlg" aria-labelledby="passDlgH">
+    <h3 id="passDlgH">자동 갱신을 해지할까요?</h3>
+    <p>자동 갱신 구독을 해지하면 다음 결제가 중지됩니다. 이번 이용권은 종료일까지 쓸 수 있습니다. 환불은 별도로 신청합니다.</p>
+    <p class="k">이용 종료일 <b id="passDlgEnd"></b> · 환불 기준은 <a href="/refund/">환불·청약철회 안내</a>에서 확인할 수 있습니다.</p>
+    <p class="err" id="passDlgErr" role="alert"></p>
+    <div class="btns"><button type="button" id="passDlgNo">닫기</button><button type="button" class="p" id="passDlgYes">해지하기</button></div>
+  </dialog>
   <div id="body"></div>
   <div id="acct" class="k" style="margin-top:28px;display:flex;flex-wrap:wrap;gap:8px 18px"></div>
 </div>
@@ -197,8 +208,53 @@ function boot(){
   document.getElementById("app").hidden=false;
   try{ if(localStorage.getItem("ds_pw_old")){ const n=document.createElement("div"); n.className="dir"; n.innerHTML="비밀번호를 영문과 숫자를 섞어 <b>8자 이상</b>으로 바꿔 주세요. <a href=\"/auth/?mode=password\">비밀번호 변경 →</a>"; document.getElementById("hello").after(n);} }catch(_){}
   /* 이미 로그인돼 있어도 로컬 프로필을 한 번 맞춰 둔다 — 예전 로그인은 이걸 저장하지 않았다 */
-  load(); syncProfile();
+  load(); syncProfile(); passLine();
 }
+
+/* ---- 변형문항 이용권 · 자동 갱신 해지(형 1118 「마이페이지 단추」) — 상태 · 해지는 함수 billing-test 가 로그인 회원 것만 다룬다 ---- */
+const PASS_API = new URL("billing-test", new URL("..", (window.DSAuth ? DSAuth.api : API) + "/")).href;
+const passDay = v => { const d = new Date(v); return isNaN(d) ? "" : new Intl.DateTimeFormat("ko-KR",{timeZone:"Asia/Seoul",month:"long",day:"numeric"}).format(d); };
+async function passCall(action){
+  const t=TK.get(); if(!t) throw new Error("no_token");
+  const r=await fetch(PASS_API,{method:"POST",credentials:"omit",headers:{"Content-Type":"application/json","Authorization":"Bearer "+t},body:JSON.stringify({action})});
+  let j=null; try{j=await r.json();}catch(_){}
+  if(r.status===401){TK.clear();boot();throw new Error("login_required");}
+  if(!r.ok||!j) throw new Error((j&&j.error)||("HTTP "+r.status));
+  return j;
+}
+function passView(p){
+  const box=document.getElementById("passBody");
+  const end=p&&passDay(p.endsAt);
+  if(p&&p.status==="ACTIVE"&&end){
+    box.innerHTML=`<div class="row"><div class="grow"><b>변형문항 이용권</b><span class="tag">이용 중</span><div class="k">${esc(end)}까지 이용 · 매월 자동 갱신</div></div><button class="sm" id="passCancel">자동 갱신 해지</button></div>`;
+    document.getElementById("passCancel").onclick=()=>passAsk(p);
+  }else if(p&&p.status==="CANCELED"&&end){
+    box.innerHTML=`<div class="row"><div class="grow"><b>변형문항 이용권</b><span class="tag off">해지됨</span><div class="k">${esc(end)}까지 이용 · 다음 결제 없음</div></div></div><p class="k">환불은 별도로 신청합니다. <a href="/refund/">환불·청약철회 안내 →</a></p>`;
+  }else if(p&&p.status==="NONE"){
+    box.innerHTML=`<p class="k">이용 중인 이용권이 없습니다. <a href="/pass/#product">변형문항 이용권 보기 →</a></p>`;
+  }else{
+    box.innerHTML=`<p class="bad">이용권 상태를 불러오지 못했어요. 다시 시도해 주세요.</p>`;
+  }
+}
+async function passLine(){
+  try{ passView(await passCall("status")); }catch(e){ if(e.message!=="login_required") passView(null); }
+}
+function passAsk(p){
+  const dlg=document.getElementById("passDlg"), yes=document.getElementById("passDlgYes"), no=document.getElementById("passDlgNo"), err=document.getElementById("passDlgErr");
+  document.getElementById("passDlgEnd").textContent=passDay(p.endsAt); err.textContent=""; yes.disabled=false; yes.textContent="해지하기";
+  no.onclick=()=>dlg.close();
+  yes.onclick=async()=>{
+    if(yes.disabled) return; yes.disabled=true; yes.textContent="해지하는 중…"; err.textContent="";
+    try{ const r=await passCall("cancel"); if(r.status!=="CANCELED") throw new Error("unverified"); dlg.close(); passView(r); }
+    catch(e){
+      if(e.message==="login_required"){dlg.close();return;}
+      if(e.message==="no_active_pass"){dlg.close();passLine();return;}
+      yes.disabled=false; yes.textContent="해지하기"; err.textContent="해지하지 못했어요. 자동 갱신은 아직 켜져 있습니다. 잠시 뒤 다시 시도해 주세요.";
+    }
+  };
+  dlg.showModal();
+}
+/* ---- 이용권 끝 ---- */
 
 /* ---- 강사 화면(1105) — 역할과 페이지 연결은 별개. 연결된 강사에게만 서버가 값을 준다 ---- */
 function acctLinks(role){
