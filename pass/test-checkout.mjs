@@ -7,7 +7,8 @@ const auth = window.DSAuth;
 let sdk;
 let generation = 0;
 let billingPhase = "idle";
-let reviewReady = false;
+let reviewReady = false; /* 이용권 카드 등록 길(DSBillingApi) */
+let singleReady = false; /* 낱개 시험 상품 길(DSReviewApi · 낱개 test 일 때만) */
 const singleLinks = document.querySelectorAll("[data-review-sku]");
 const loginLinks = document.querySelectorAll("[data-review-login]");
 const agreeAll = document.querySelector("[data-agree-all]");
@@ -51,7 +52,7 @@ function renderControls() {
   for (const link of singleLinks) {
     const path = "/checkout/?sku=" + encodeURIComponent(link.dataset.reviewSku);
     link.href = auth.has() ? path : auth.loginUrl(path);
-    link.hidden = !reviewReady;
+    link.hidden = !singleReady;
   }
 }
 
@@ -169,7 +170,7 @@ async function openRegistration(config, api) {
     const [TossPayments, customerName] = await Promise.all([loadSdk(), memberName(token)]);
     if (!current()) return;
     sessionStorage.setItem(pendingKey, JSON.stringify({state,customerKey,orderId,owner,started:Date.now()}));
-    await TossPayments(config.clientKey).payment({customerKey}).requestBillingAuth({
+    await TossPayments(window.DSBillingKey(config)).payment({customerKey}).requestBillingAuth({
       method:"CARD", successUrl:success.href, failUrl:failure.href, windowTarget:"self",
       ...(customerName ? {customerName} : {})
     });
@@ -192,7 +193,8 @@ if (returning) {
 try {
   const response = await fetch("/pay-config.json", {cache:"no-store", credentials:"same-origin", redirect:"error"});
   const config = response.ok ? await response.json() : null;
-  const api = window.DSReviewApi(config);
+  singleReady = !!window.DSReviewApi(config);
+  const api = window.DSBillingApi(config);
   if (!api) {
     billingStatus.textContent = "지금은 결제를 사용할 수 없습니다. 잠시 뒤 다시 시도해 주세요.";
     singleStatus.textContent = billingStatus.textContent;

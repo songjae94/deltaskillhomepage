@@ -63,4 +63,4 @@ dl div{display:grid;grid-template-columns:minmax(92px,130px) 1fr;gap:8px;border-
 const steps=[...document.querySelectorAll("[data-step]")];
 function renderStep(event){const next=steps.find(step=>"#"+step.id===location.hash)||steps[0];for(const step of steps)step.hidden=step!==next;if(event){const heading=next.querySelector("h1");heading.tabIndex=-1;heading.focus();}}
 window.addEventListener("hashchange",renderStep);renderStep();
-</script><script defer src="./review-config.js"></script><script type="module" src="./test-checkout.mjs?v=pass-state-1117"></script></body></html>
+</script><script defer src="./review-config.js?v=billing-split-1118"></script><script type="module" src="./test-checkout.mjs?v=billing-split-1118"></script></body></html>
