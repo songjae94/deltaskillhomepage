@@ -210,6 +210,17 @@ function passView(p){
     const b = $("passCancel"); if(b) b.onclick = () => passAsk(p);
   }else if(p && p.status === "REFUNDED"){
     box.innerHTML = row("해지 · 환불됨", true, `환불 ${esc(won(p.refundAmount))} · ${esc(passTime(p.refundedAt))}`) + `</div>`;
+  }else if(p && p.status === "RENEW_RETRY"){
+    box.innerHTML = row("결제 다시 시도 중", true, `${esc(end)}에 이용 기간이 끝났고 이번 달 자동 결제가 되지 않았습니다 · 다음 시도 ${esc(passTime(p.nextChargeAt))} · 등록한 카드를 확인해 주세요`) + `<button type="button" class="btn ghost sm" id="passStop">자동 결제 멈추기</button></div>`;
+    $("passStop").onclick = async () => {
+      if(!confirm("자동 결제 다시 시도를 멈춥니다. 이용권은 다시 결제하기 전까지 쓸 수 없습니다. 계속할까요?")) return;
+      try{ await passCall("cancel", {mode:"end_of_term"}); }catch(e){ if(e.message === "login_required") return; alert("멈추지 못했어요. 잠시 뒤 다시 시도해 주세요."); }
+      passLine(); libLine();
+    };
+  }else if(p && p.status === "RENEW_FAILED"){
+    box.innerHTML = row("자동 결제 안 됨 · 끝남", true, `자동 결제가 되지 않아 ${esc(end)}에 이용권이 끝났습니다 · 다시 이용하려면 새로 결제해 주세요`) + `</div><p class="msg"><a href="/pass/#product">변형문항 이용권 보기 →</a></p>`;
+  }else if(p && p.status === "RENEWING"){
+    box.innerHTML = `<p class="msg">이번 달 자동 결제를 처리하고 있습니다. 잠시 뒤 새로 고쳐 확인해 주세요.</p>`;
   }else if(p && p.status === "REFUNDING"){
     box.innerHTML = `<p class="msg">환불을 확인하고 있습니다. 잠시 뒤 다시 확인해 주세요.</p>`;
   }else if(p && p.status === "NONE"){
@@ -253,7 +264,8 @@ function passAsk(p){
 
 /* ---- 결제 내역 · 회원 자료함 ---- */
 const PAY_STATUS = { paid:"결제 완료", waiting:"입금 대기", canceled:"취소 · 환불", review:"확인 중",
-  active:"이용 중 · 자동 갱신", cancel_scheduled:"해지 예약", refunding:"환불 처리 중", refunded:"해지 · 환불" };
+  active:"이용 중 · 자동 갱신", cancel_scheduled:"해지 예약", refunding:"환불 처리 중", refunded:"해지 · 환불",
+  renewing:"자동 결제 처리 중", renewed:"결제 완료 · 다음 달로 갱신됨", renew_failed:"자동 결제 안 됨 · 끝남" };
 const LIB_ERR = { not_found:"이 주문을 찾을 수 없습니다.", not_paid:"결제가 끝나지 않은 주문입니다.", test_mode:"테스트 결제 주문이라 이 파일은 제공되지 않습니다.",
   expired:"다시 받을 수 있는 기간(구매일로부터 12개월)이 지났습니다.", not_yet:"아직 제공 전인 파일입니다.", canceled:"취소 · 환불된 결제입니다.",
   bad_file:"이 주문에 없는 파일입니다.", file_not_ready:"파일을 준비하고 있습니다. 잠시 뒤 다시 시도해 주세요.", network:"서버에 연결하지 못했습니다. 잠시 뒤 다시 시도해 주세요." };
@@ -261,8 +273,8 @@ function payView(list){
   const box = $("payBody");
   if(!list.length){ box.innerHTML = `<p class="msg">아직 결제 내역이 없습니다.</p>`; return; }
   box.innerHTML = `<div class="tbl"><table><thead><tr><th>결제일</th><th>상품</th><th>금액</th><th>상태</th></tr></thead><tbody>` + list.map(p => {
-    let st = esc(PAY_STATUS[p.status] || p.status);
-    if(p.kind === "pass" && p.status === "active" && p.nextChargeAt) st += `<small>다음 결제 ${esc(day(p.nextChargeAt))}</small>`;
+    let st = esc(p.retrying ? "결제 다시 시도 중" : (PAY_STATUS[p.status] || p.status));
+    if(p.kind === "pass" && p.status === "active" && p.nextChargeAt) st += `<small>${p.retrying ? "다음 시도" : "다음 결제"} ${esc(day(p.nextChargeAt))}</small>`;
     if(p.kind === "pass" && p.status === "cancel_scheduled" && p.endsAt) st += `<small>${esc(day(p.endsAt))}까지 이용</small>`;
     if(p.refundAmount) st += `<small>환불 ${esc(won(p.refundAmount))}${p.refundedAt ? " · " + esc(day(p.refundedAt)) : ""}</small>`;
     return `<tr><td>${esc(day(p.at))}</td><td>${esc(p.name)}${p.mode === "test" ? ` <span class="tag off">테스트 결제</span>` : ``}<small>주문번호 ${esc(p.orderId)}${p.method ? " · " + esc(p.method) : ""}</small></td><td class="num">${esc(won(p.amount))}</td><td>${st}</td></tr>`;
