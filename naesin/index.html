@@ -312,6 +312,12 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   var FREE_RULE="로그인한 회원만 받을 수 있습니다.",freeOut=false;
   function authed(){return !!(window.DSAuth&&window.DSAuth.has());}
   function loginHref(){var n=location.pathname+location.search;return window.DSAuth?window.DSAuth.loginUrl(n):"/auth/?next="+encodeURIComponent(n);}
+  /* 형 1119 「회원 가입후 사는 것으로」: 비회원 결제 닫음 — 로그인 안 된 「구매하기」는 로그인 쪽으로, 로그인 뒤 그 주문서로 돌아온다(next = 같은 사이트 경로만 · DSAuth.loginUrl 의 safeNext). 주문서(/checkout/)도 같은 문지기를 둔다. */
+  document.addEventListener("click",function(ev){
+    var a=ev.target&&ev.target.closest?ev.target.closest('a.btn.buy[href^="/checkout/"]'):null;
+    if(!a||authed()||!window.DSAuth)return;
+    ev.preventDefault();location.assign(window.DSAuth.loginUrl(a.getAttribute("href")));
+  });
   function loginBtn(){var a=el("a","btn buy","로그인하고 무료로 받기");a.href=loginHref();a.dataset.fk="free-login";return a;}
   /* 1107 B6(판정 무료세트 e): 손님에게 회원가입 바로 가기 — /auth/ 가입 탭 · 돌아올 주소는 loginHref 와 같은 next(DSAuth.loginUrl 의 safeNext) */
   function signupLink(){var n=location.pathname+location.search,a=el("a",null,"처음이시면 회원가입");a.href=window.DSAuth?window.DSAuth.loginUrl(n,"signup"):"/auth/?mode=signup&next="+encodeURIComponent(n);a.dataset.fk="free-signup";return a;}

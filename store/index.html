@@ -130,6 +130,12 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   "use strict";
   var SALE=Date.parse("2026-10-20T19:00:00+09:00"),PRE0=Date.parse("2026-11-09T00:00:00+09:00"),PRE1=Date.parse("2026-11-13T00:00:00+09:00");
   function open(sku,t){return sku.indexOf("PRE-")===0?(t>=PRE0&&t<PRE1):t>=SALE;}
+  /* 형 1119 「회원 가입후 사는 것으로」: 로그인 안 된 「구매하기」는 로그인 쪽으로 · 로그인 뒤 그 주문서로 돌아온다(DSAuth.loginUrl 의 safeNext = 같은 사이트 경로만) */
+  document.addEventListener("click",function(ev){
+    var a=ev.target&&ev.target.closest?ev.target.closest('a.btn.buy[href^="/checkout/"]'):null;
+    if(!a||!window.DSAuth||window.DSAuth.has())return;
+    ev.preventDefault();location.assign(window.DSAuth.loginUrl(a.getAttribute("href")));
+  });
   fetch("/pay-config.json",{cache:"no-store"}).then(function(r){return r.ok?r.json():null;}).then(function(c){
     if(!c||(c.PAY_MODE!=="test"&&c.PAY_MODE!=="live"))return;
     var t=Date.now(),sn=c.SUNEUNG_SALE_OPEN===true;
