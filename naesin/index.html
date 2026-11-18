@@ -587,7 +587,9 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     add(f,backLink(free?base:back),kick(5,q,s,b),h1("받을 내용을 확인하세요"));
     var dl=el("dl","conf");
     row(dl,"부교재",b.label,bookNote(b));
-    row(dl,"구성",c.name,c.desc);
+    var lay=filesAt(u,"pdf").filter(function(x){return x.layout;}); /* 22 창 1118 걸음 8: 같은 문항 쪽 구성 여러 꼴(A06 1권) */
+    row(dl,"구성",c.name,lay.length?"같은 문항을 쪽 구성 "+lay.length+"가지 PDF로 담아 한 값에 모두 받습니다.":c.desc);
+    if(lay.length)row(dl,"쪽 구성",lay.map(function(x){return x.layout+(x.pages?" "+x.pages+"쪽":"");}).join(" · "),"PDF "+lay.length+"파일");
     if(c.pick==="range"){var rg=rangeOf(q,s);row(dl,"시험범위",rg[0].no+" "+rg[0].unit+" ~ "+rg[rg.length-1].no+" "+rg[rg.length-1].unit);}
     else if(fss.length)row(dl,fss.length>1?"단원 "+fss.length+"개":"단원",fss.map(function(x){return x.no+" "+x.unit;}).join(" · "));
     else if(!free){var us=unitsOf(q,s);row(dl,us.length>1?"단원 "+us.length+"개":"단원",us.map(function(x){return x.no+" "+x.unit;}).join(" · "));}
@@ -609,7 +611,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     else if(fss.length)row(dl,"파일 형식","PDF · 한글(HWPX) 모두 0원");
     else if(c.make==="ready")row(dl,"파일 형식","PDF 또는 한글(HWPX) 가운데 한 형식");
     if(free)row(dl,"받는 조건","로그인한 회원",FREE_RULE);
-    if(fss.length)row(dl,"제공",authed()?"바로 내려받기":"로그인 뒤 바로 내려받기");else if(c.make==="ready"){if(u&&u.saleFrom)row(dl,"제공","결제 뒤 바로 내려받기");}
+    if(fss.length)row(dl,"제공",authed()?"바로 내려받기":"로그인 뒤 바로 내려받기");else if(c.make==="ready"){if(u&&u.saleFrom)row(dl,"제공","결제 뒤 바로 내려받기","결제 결과 화면에서 받고, 주문 조회(이메일 + 주문번호)에서 결제일부터 12개월 동안 다시 받을 수 있습니다");}
     else row(dl,"제공","주문 뒤 만들어 제공 · 출시 예정입니다",null,"blank");
     var singlePolicy=fstart?row(dl,"제공 시작","받으면 제공이 시작됩니다",fstart):null;
     if(u)row(dl,"상품 번호",u.sku);else if(fss.length)row(dl,"상품 번호",fss.map(function(x){return x.sku;}).join(" · "));
