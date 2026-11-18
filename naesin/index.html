@@ -22,16 +22,16 @@
 <style>
 /* 색 토큰 — 로고 2색(번개 #D8281C · 기준선 #0B1F3A) + 중립 + 상태 초록 하나(시안 e/색.css · 형 답 11-04 「로고 색」) */
 :root{
-  --bg:#ffffff;--bg2:#f6f5f2;--bg3:#efede8;--card:#ffffff;
-  --ink:#0B0E14;--ink2:#3b3d44;--muted:#5f6269;--line:#e4e3e0;--line2:#cfcdc8;
-  --accent:#D8281C;--accentH:#b4211a;--accentT:#B4211A;--accentSoft:#fdf0ee;
+  --bg:#F7F8FC;--bg2:#F1F3F9;--bg3:#E9EDF5;--card:#ffffff;
+  --ink:#172B43;--ink2:#3A4A60;--muted:#5D6B80;--line:#DFE3ED;--line2:#C9D0DE;
+  --accent:#245BD6;--accentH:#1D4DB8;--accentT:#245BD6;--accentSoft:#EAF0FD;
   --deep:#0B1F3A;--deepT:#0B1F3A;--deepSoft:#e9eef6;
   --ok:#0D5A2E;--okSoft:#e3f6ea;
   --focus:#0B1F3A;
   --hdr:rgba(255,255,255,.9);
   color-scheme:light;
 }
-html[data-theme="dark"]{
+html[data-theme="dark-off"]{
   --bg:#121419;--bg2:#1a1d24;--bg3:#232733;--card:#1a1d24;
   --ink:#e8e6e1;--ink2:#c9c7c1;--muted:#a3a39d;--line:#2b2f38;--line2:#3a3f4b;
   --accent:#c9241a;--accentH:#D8281C;--accentT:#ff8a80;--accentSoft:#2a1a19;
@@ -143,15 +143,6 @@ html[data-theme="dark"] .btn.go2{background:var(--deepSoft);color:var(--ink);box
 @media(max-width:640px){.wrap{width:calc(100% - 32px)}.hdr .wrap{min-height:56px}.brand img{height:24px}.hd-r a{padding:0 6px;font-size:13px}.tg{padding:6px 10px}main{padding-top:18px}.picks,.fields{grid-template-columns:minmax(0,1fr)}.conf{padding:4px 16px}.conf div{flex-direction:column;gap:2px;padding:10px 0}.conf dt{width:auto}.act .btn{flex:1 1 100%}.bar .btn{width:100%}}
 @media(prefers-reduced-motion:reduce){a.opt{transition:none}a.opt:hover,a.opt:focus-visible{transform:none}}
 /* 30 창 1118: 결제 간결 — 지금 살 수 있는 자료 카드 · 자세히 접기 */
-.buycard{margin:18px 0 0;padding:20px;border-radius:20px;background:var(--card);box-shadow:inset 0 0 0 2px var(--accent)}
-.buycard .k{margin:0;font-size:13.5px;font-weight:700;color:var(--muted)}
-.buycard h2{margin:4px 0 0;font-size:clamp(20px,2.4vw,24px);letter-spacing:-.03em;line-height:1.3}
-.buycard .m{margin:6px 0 0;font-size:14.5px;line-height:1.55;color:var(--ink2)}
-.buycard .pr2{display:flex;align-items:baseline;gap:4px 8px;flex-wrap:wrap;margin:12px 0 0}
-.buycard .pr2 b{font-size:26px;font-weight:800;letter-spacing:-.03em;color:var(--accentT)}
-.buycard .pr2 small{font-size:13px;color:var(--muted)}
-.buycard .act{margin-top:14px}.buycard .act .btn{flex:1 1 140px}
-.buycard .fine{margin-top:12px}
 .h2q{margin:36px 0 0;font-size:18px;letter-spacing:-.02em;line-height:1.4}
 details.more{margin:16px 0 0;border-radius:16px;background:var(--bg2);padding:0 16px}
 details.more>summary{cursor:pointer;min-height:48px;display:flex;align-items:center;font-size:14px;font-weight:700;color:var(--ink2)}
@@ -163,6 +154,26 @@ details.more[open]>summary::after,details.agd[open]>summary::after{content:"접�
 details.more>summary,details.agd>summary{list-style:none}
 .sum1{margin:14px 0 0;font-size:13.5px;line-height:1.6;color:var(--ink2)}
 .sum1 a{color:var(--deepT);font-weight:650;text-underline-offset:2px}
+
+/* 31 창 1118 — 목록(과목 칩 · 단원 머리 · 상품 카드) */
+.chips{display:flex;gap:8px;overflow-x:auto;margin:0 0 22px;padding:2px 0 6px;scrollbar-width:none}
+.chips a{flex:none;display:inline-flex;align-items:center;min-height:40px;padding:0 16px;border-radius:999px;border:1px solid var(--line2);background:var(--card);font-size:14px;font-weight:700;color:var(--ink2);text-decoration:none;white-space:nowrap}
+.chips a[aria-current="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.unitgrp{margin:0 0 26px}
+.unitgrp h2{font-size:15px;font-weight:800;color:var(--muted);margin:0 0 10px;letter-spacing:-.01em}
+.cards{display:grid;gap:12px}
+@media (min-width:760px){.cards{grid-template-columns:1fr 1fr}}
+.buycard{display:flex;flex-direction:column;gap:6px;padding:18px 20px;border-radius:16px;border:1px solid var(--line);background:var(--card)}
+.buycard h3{margin:0;font-size:17px;font-weight:800;line-height:1.4;color:var(--ink)}
+.buycard .m{margin:0;font-size:13.5px;color:var(--muted)}
+.buycard .row2{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:6px}
+.buycard .pr2{margin:0}
+.buycard .pr2 b{font-size:20px;font-weight:800;color:var(--ink)}
+.buycard .act{display:flex;gap:8px;margin:0}
+.buycard .act .btn{flex:none;min-height:42px;padding:0 16px;border-radius:10px;font-size:14.5px}
+.buycard .row2{margin-top:auto;padding-top:8px}
+.pro2{margin-top:6px}
+@media (max-width:420px){.buycard .act{width:100%}.buycard .act .btn{flex:1}}
 </style>
 <style id="biz-css">
 .biz{display:block;box-sizing:border-box;background:#05060f;color:#aab7ca;font:400 13px/1.8 "Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;letter-spacing:0;text-align:left;padding:24px 16px 36px;border-top:1px solid rgba(186,215,247,.16)}
@@ -406,46 +417,53 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   function pathOpen(p,s){return comps(function(x){return x.path===p&&compOpen(x,s);}).length>0;}
   function tag(open){return el("span",open?"tag now":"tag",open?"받을 수 있음":"출시 예정");}
   function optTop(title,tag){var t=el("span","top");add(t,el("b",null,title),tag);return t;}
-  /* ① 과목(인수 없음 · who=pro) */
-  function saleCards(q){
-    if(!CFG||!(CFG.PAY_MODE==="test"||CFG.PAY_MODE==="live"))return null;
-    var box=el("div","now"),n=0,c1=comp("C1");
-    if(!c1)return null;
-    CAT.subjects.forEach(function(s){(s.units||[]).forEach(function(u){
-      var fm=canBuy(u,"pdf")?"pdf":canBuy(u,"hwpx")?"hwpx":"";if(!fm||!s.textbooks.length)return;
-      var b=s.textbooks[0],lay=filesAt(u,fm).filter(function(x){return x.layout;}),nf=fileUnits(u,fm);
-      var card=el("article","buycard");
-      add(card,el("p","k",s.grade+" · "+(b.label.indexOf(s.subject)===0?b.label:s.subject+" · "+b.label)),el("h2",null,u.no+" "+u.unit+" · 변형 문항 + 해설"));
-      add(card,el("p","m",(u.count?u.count+"문항 · ":"")+fmtName(fm)+" "+nf+"파일"+(lay.length?" · 쪽 구성 "+lay.length+"가지("+lay.map(function(x){return x.layout;}).join(" · ")+")를 한 값에":"")));
-      var pr=el("p","pr2");add(pr,el("b",null,won(priceAt(u,fm))),el("small",null,"부가세 포함 · 단건 결제(자동 결제 아님)"));add(card,pr);
-      var act=el("div","act"),buy=el("a","btn buy","구매하기");buy.href="/checkout/?sku="+encodeURIComponent(u.sku+"."+fm);
-      add(act,buy,link("btn ghost",{who:q.who,s:s.code,b:b.id,p:"detail",c:c1.id,u:u.no,v:"confirm",f:fm},u.preview&&u.preview.url?"미리보기 · 자세히":"자세히"));add(card,act);
-      var fn=el("p","fine","결제 뒤 바로 내려받기 · 받기 전이면 결제일부터 7일 안 전액 환불 · 일부 받았으면 받지 않은 파일 비율만큼 7일 안 환불 · 받은 파일은 청약철회 제한 · ");var r=el("a",null,"환불 안내");r.href="/refund/";add(fn,r);add(card,fn);
-      add(box,card);n++;
+  /* ① 목록 — 31 창 1118(형 「타 사이트 중 가장 간결 · 교재가 다 올라간 상황의 페이지」): 물음 화면 없이 판매 중 상품을 한 목록에.
+     과목 칩으로 좁히고(?s=) · 단원 머리 아래 상품 카드(무엇 · 문항 수 · 파일 · 값 · 구매하기). 안 파는 것은 목록에 없다(막다른 길 0). */
+  function bySubj(){return CAT.subjects.slice().sort(function(a,b){return a.grade<b.grade?-1:a.grade>b.grade?1:0;});}
+  function products(sc){
+    var o=[];
+    bySubj().forEach(function(s){if(sc&&s.code!==sc)return;(s.units||[]).forEach(function(u){
+      [u].concat(u.packs||[]).forEach(function(x){var fm=canBuy(x,"pdf")?"pdf":canBuy(x,"hwpx")?"hwpx":"";if(fm)o.push({s:s,u:u,x:x,fm:fm,c:x===u?(u.composition||"C1"):x.composition});});
     });});
-    return n?box:null;
+    return o;
   }
-  function vSubject(q){
-    var f=document.createDocumentFragment();
-    var sale=saleCards(q); /* 30 창 1118: 지금 살 수 있는 자료를 맨 위에 — 카드 구매하기 → 주문서 */
-    if(sale)add(f,h1("지금 살 수 있는 자료"),sale,el("h2","h2q",COPY.subj[who(q)].replace("\n"," ")));
-    else add(f,h1(COPY.subj[who(q)]));
-    var w=el("div","who");w.setAttribute("role","group");w.setAttribute("aria-label","누가 받나요");
-    [["학생/학부모",{}],["학원/선생님",{who:"pro"}]].forEach(function(x){
-      var a=el("a",null,x[0]);a.href=url(x[1]);a.setAttribute("aria-current",(x[1].who||"")===(q.who==="pro"?"pro":"")?"true":"false");
-      a.addEventListener("click",function(e){if(e.metaKey||e.ctrlKey||e.shiftKey||e.altKey||e.button)return;e.preventDefault();go(x[1],"replace");var n=APP.querySelector('.who a[aria-current="true"]');if(n)n.focus();});
-      add(w,a);
+  function buyCard(p,q){
+    var s=p.s,u=p.u,x=p.x,fm=p.fm,lay=filesAt(x,fm).filter(function(f){return f.layout;}),nf=fileUnits(x,fm);
+    var card=el("article","buycard"),b=s.textbooks[0];
+    add(card,el("h3",null,x.name||(s.subject+" · "+u.no+" "+u.unit)));
+    add(card,el("p","m",(x.count?x.count+"문항 · ":"")+fmtName(fm)+" "+nf+"파일"+(lay.length?" · 쪽 구성 "+lay.map(function(f){return f.layout;}).join(" · "):"")));
+    var row=el("div","row2"),pr=el("p","pr2");add(pr,el("b",null,won(priceAt(x,fm))));
+    var act=el("div","act"),buy=el("a","btn buy","구매하기");buy.href="/checkout/?sku="+encodeURIComponent(x.sku+"."+fm);
+    var more=b?link("btn ghost",{s:s.code,b:b.id,p:"detail",c:p.c,u:u.no,v:"confirm",f:fm},x.preview&&x.preview.url?"미리보기":"자세히"):null;
+    add(act,more,buy);add(row,pr,act);add(card,row);
+    return card;
+  }
+  function vList(q){
+    var f=document.createDocumentFragment(),all=products(null),sc=q.s&&subj(q)?q.s:null,list=sc?products(sc):all;
+    add(f,h1("내신 자료","단원별 변형 문항 + 해설 PDF · 결제 뒤 바로 내려받기 · 값은 부가세 포함 단건 결제"));
+    var has={};all.forEach(function(p){has[p.s.code]=1;});
+    var subs=bySubj().filter(function(s){return has[s.code];});
+    if(subs.length>1){
+      var nav=el("nav","chips");nav.setAttribute("aria-label","과목");
+      [[null,"전체"]].concat(subs.map(function(s){return [s.code,s.grade+" "+s.subject];})).forEach(function(c){
+        var a=el("a",null,c[1]);a.href=url(c[0]?{s:c[0]}:{});a.setAttribute("aria-current",String((c[0]||null)===sc));
+        a.addEventListener("click",function(e){if(e.metaKey||e.ctrlKey||e.shiftKey||e.altKey||e.button)return;e.preventDefault();go(c[0]?{s:c[0]}:{},"replace");});
+        add(nav,a);
+      });
+      add(f,nav);
+    }
+    if(!list.length){add(f,el("p","lede","지금 살 수 있는 자료가 없습니다. 출시되면 이 자리에 보입니다."));return f;}
+    var key=null,box=null;
+    list.forEach(function(p){
+      var k=p.s.code+p.u.no;
+      if(k!==key){key=k;var g=el("section","unitgrp");add(g,el("h2",null,p.s.grade+" "+p.s.subject+" · "+p.u.no+" "+p.u.unit));box=el("div","cards");add(g,box);add(f,g);}
+      add(box,buyCard(p,q));
     });
-    add(f,w);
-    var ul=el("ul","opts");
-    CAT.subjects.slice().sort(function(a,b){return a.grade<b.grade?-1:1;}).forEach(function(s){
-      var li=el("li"),a=link("opt",{who:q.who,s:s.code});
-      add(a,el("b",null,s.grade+" · "+s.subject),el("small",null,s.units.length+"단원 · 변형 문항 + 해설"),el("span","go","부교재 고르기 →"));
-      add(li,a);add(ul,li);
-    });
-    add(f,ul,proNote(q));
+    var fn=el("p","fine",refundLine()+" · ");var r=el("a",null,"환불 안내");r.href="/refund/";add(fn,r);add(f,fn);
+    var pro=el("p","fine pro2");pro.appendChild(document.createTextNode("학원 · 선생님: 수업에서 쓰는 범위는 "));var t=el("a",null,"이용약관");t.href="/terms/";add(pro,t);pro.appendChild(document.createTextNode(" · 여러 반 도입은 "));var d=el("a",null,"도입 문의");d.href="/partners/";add(pro,d);add(f,pro);
     return f;
   }
+  function refundLine(){return "받기 전이면 결제일부터 7일 안 전액 환불 · 일부 받았으면 받지 않은 파일 비율만큼 7일 안 환불 · 받은 파일은 청약철회 제한";}
   /* ② 부교재(?s=CM2 · ?s=MI1) */
   function vBook(q,s){
     var f=document.createDocumentFragment();
@@ -640,7 +658,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   function vConfirm(q,s,b,c){
     var f=document.createDocumentFragment(),base={who:q.who,s:q.s,b:q.b};
     var free=c.path==="free",u=product(c,q,s),back=Object.assign({},q),fss=free?freeSets(b):[];delete back.v;
-    add(f,backLink(free?base:back),kick(5,q,s,b),h1("받을 내용을 확인하세요"));
+    add(f,backLink(free?base:(q.p==="detail"&&q.v==="confirm"?{s:q.s}:back)),h1(product(c,q,s)&&product(c,q,s).name||"받을 내용을 확인하세요"));
     var dl=el("dl","conf");
     row(dl,"부교재",b.label,filesAt(u,"pdf").some(function(x){return x.layout;})?(b.edition?b.edition+" 기준":null):bookNote(b)); /* 본부 1118 ②: A06 1권은 원문항 여부 확인 전 「원문 없음」 글을 안 붙임 */
     var lay=filesAt(u,"pdf").filter(function(x){return x.layout;}); /* 22 창 1118 걸음 8: 같은 문항 쪽 구성 여러 꼴(A06 1권) */
@@ -700,7 +718,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
       if(authed()){freeOut=false;fss.forEach(function(x){x.files.forEach(function(ff){add(act,freeBtn(x,ff,fss.length>1,fm0));});});}
       else{add(act,loginBtn());fm0.textContent=(freeOut?"로그인이 풀렸어요. 다시 로그인하면 바로 받을 수 있습니다.":"무료 세트는 "+FREE_RULE)+" 로그인하면 이 화면으로 돌아옵니다.";add(fm0,el("br"),signupLink());}
     }
-    else if(ok){var buy=el("a","btn buy","구매하기");buy.href="/checkout/?sku="+encodeURIComponent(u.sku+"."+fm);if(c.sku==="unit"){var mup=multiUnitPicker(s,u,fm,buy,singlePolicy);add(f,mup);}add(act,buy);}
+    else if(ok){var buy=el("a","btn buy","구매하기");buy.href="/checkout/?sku="+encodeURIComponent(u.sku+"."+fm);/* 31 창 1118: 다른 단원 함께 담기 뺌 — 상품 하나 = 결제 하나(가장 간결 · 환불도 파일마다 한 가지) */add(act,buy);}
     else{var dis=el("button","btn dis","출시 예정입니다");dis.type="button";dis.disabled=true;add(act,dis);} /* 형 결정 7(11-11): 판매일을 공지하지 않는다 — 값 · 파일 · 판매일 · 맛보기 중 하나라도 비었거나 판매 시각 전이면 「준비 중입니다」 */
     var al=el("a","btn ghost","알림 받기");al.href="mailto:admin@deltaskill.co.kr?subject="+encodeURIComponent("내신 파일 알림 "+s.code+" "+c.id+(u?" "+u.sku:""));add(act,al);
     add(f,act);
@@ -762,11 +780,10 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     return section;
   }
   /* ── 그리기 ── */
-  var TITLES={subject:"과목 고르기",book:"부교재 고르기",path:"구성 고르기",basic:"기본형",detail:"상세선택",confirm:"받을 내용 확인"};
+  var TITLES={subject:"내신 자료",book:"부교재 고르기",path:"구성 고르기",basic:"기본형",detail:"상세선택",confirm:"받을 내용 확인"};
   function draw(focus){
     var q=readQ(),s=subj(q),b=s?book(s,q):null,v,node,c=comp(q.c);
-    if(!s){v="subject";node=vSubject(q);}
-    else if(!b){v="book";node=vBook(q,s);}
+    if(!s||!b){v="subject";node=vList(q);}
     else if(q.p==="free"){v="confirm";node=vConfirm(q,s,b,comp("C0"));}
     else if(q.p==="basic"&&!c){v="basic";node=vBasic(q,s,b);}
     else if(q.p==="detail"||q.p==="basic"){
@@ -774,7 +791,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
       else{v="detail";node=vDetail(q,s,b);}
     }else{v="path";node=vPath(q,s,b);}
     APP.textContent="";APP.dataset.view=v;APP.appendChild(node);
-    document.title=TITLES[v]+" | 내신 자료 받기 | 델타스킬";
+    document.title=(v==="subject"?"내신 자료":TITLES[v]+" | 내신 자료")+" | 델타스킬";
     if(focus){window.scrollTo(0,0);var h=APP.querySelector("h1");if(h)h.focus({preventScroll:true});}
   }
   /* 옛 주소 #sku-NS-MI1-06(-T003) — 새 길의 상세선택으로 옮긴다 */
