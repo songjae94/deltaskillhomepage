@@ -54,9 +54,9 @@
           "saleTo": null,
           "sample": "NS-CM2-06-F00",
           "preview": {
-            "url": "https://cvlrphtupjmaefahodgz.supabase.co/storage/v1/object/sign/shop/naesin/preview/NS-CM2-06-F00.pdf?token=eyJraWQiOiJmMTkzOGIwMC1kNTI5LTQ4OTEtOGExOS04M2E5MDQ1ZWJlNDkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJzaG9wL25hZXNpbi9wcmV2aWV3L05TLUNNMi0wNi1GMDAucGRmIiwic2NvcGUiOiJkb3dubG9hZCIsImlhdCI6MTc5NDk5NDk1MSwiZXhwIjoxODAyNzcwOTUxfQ.qLRO5aPPSGWfP6wEOq72A0Xd1KQNpPJU-aIihYJtt80",
+            "url": "https://cvlrphtupjmaefahodgz.supabase.co/storage/v1/object/sign/shop/naesin/preview/NS-CM2-06-F00.pdf?token=eyJraWQiOiJmMTkzOGIwMC1kNTI5LTQ4OTEtOGExOS04M2E5MDQ1ZWJlNDkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJzaG9wL25hZXNpbi9wcmV2aWV3L05TLUNNMi0wNi1GMDAucGRmIiwic2NvcGUiOiJkb3dubG9hZCIsImlhdCI6MTc5NTA0Nzc4NywiZXhwIjoxODAyODIzNzg3fQ.TXl8kEPdmr5k6_utms5i_UYyIm54ILyG1AM5pJMWegg",
             "pages": 3,
-            "until": "2027-02-16"
+            "until": "2027-02-17"
           },
           "files": [
             {
@@ -65,7 +65,7 @@
               "title": "공통수학2 단원 문제집 1권 · 06 함수 · 1문항 1쪽 (PDF)",
               "from": "2026-11-18T18:00:00+09:00",
               "layout": "1문항 1쪽",
-              "pages": 139
+              "pages": 136
             },
             {
               "id": "NS-CM2-06-L2.pdf",
@@ -73,7 +73,7 @@
               "title": "공통수학2 단원 문제집 1권 · 06 함수 · 2문항 2단 (PDF)",
               "from": "2026-11-18T18:00:00+09:00",
               "layout": "2문항 2단",
-              "pages": 90
+              "pages": 87
             },
             {
               "id": "NS-CM2-06-L4.pdf",
@@ -81,7 +81,7 @@
               "title": "공통수학2 단원 문제집 1권 · 06 함수 · 4문항 2단 (PDF)",
               "from": "2026-11-18T18:00:00+09:00",
               "layout": "4문항 2단",
-              "pages": 80
+              "pages": 75
             }
           ],
           "types": [],
@@ -110,7 +110,7 @@
           "saleTo": null,
           "sample": "NS-CM2-07-F00",
           "preview": {
-            "url": "https://cvlrphtupjmaefahodgz.supabase.co/storage/v1/object/sign/shop/naesin/preview/NS-CM2-07-F00.pdf?token=eyJraWQiOiJmMTkzOGIwMC1kNTI5LTQ4OTEtOGExOS04M2E5MDQ1ZWJlNDkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJzaG9wL25hZXNpbi9wcmV2aWV3L05TLUNNMi0wNy1GMDAucGRmIiwic2NvcGUiOiJkb3dubG9hZCIsImlhdCI6MTc5NTAxNDU1MiwiZXhwIjoxODAyNzkwNTUyfQ.ghldMoLuxgDzvZ3UawVh6qgBtiU1Ipy4dJR0ehsYxWQ",
+            "url": "https://cvlrphtupjmaefahodgz.supabase.co/storage/v1/object/sign/shop/naesin/preview/NS-CM2-07-F00.pdf?token=eyJraWQiOiJmMTkzOGIwMC1kNTI5LTQ4OTEtOGExOS04M2E5MDQ1ZWJlNDkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJzaG9wL25hZXNpbi9wcmV2aWV3L05TLUNNMi0wNy1GMDAucGRmIiwic2NvcGUiOiJkb3dubG9hZCIsImlhdCI6MTc5NTA0Nzc4MywiZXhwIjoxODAyODIzNzgzfQ.VzflY4vYzQDBGjSfE0Pgkx8DJQgYleB8oZbjIOU6978",
             "pages": 3,
             "until": "2027-02-17"
           },
