@@ -9,6 +9,8 @@
   const pow = (base,k) => '<msup>'+r(base)+n(k)+'</msup>';
   const frac = (a,b) => '<mfrac>'+r(a)+r(b)+'</mfrac>';
   const gcd = (a,b) => b ? gcd(b,a%b) : Math.abs(a);
+  // Coefficient before a variable: 1 is omitted and −1 becomes a bare minus sign.
+  const k = value => value===1 ? '' : value===-1 ? '<mo>−</mo>' : n(value);
   const q = (a,b=1) => { const d=gcd(a,b); a/=d;b/=d; return b===1?n(a):frac(n(a),n(b)); };
   const m = body => '<math xmlns="http://www.w3.org/1998/Math/MathML"><mstyle displaystyle="true">'+r(body)+'</mstyle></math>';
   const x=v('x'),t=v('t'), y=v('y'), eq=o('='),plus=o('+'),minus=o('−');
@@ -42,28 +44,28 @@
   const timed=[];
   // Eight distinct items in each of three families. Exact rational arithmetic only.
   for(let c=1;c<=8;c++){
-    const polynomial=n(c)+pow(x,2)+plus+n(c+1)+x;
+    const polynomial=k(c)+pow(x,2)+plus+k(c+1)+x;
     const answerNumerator=8*c+6*(c+1), answerDenominator=3;
     const options=[-6,-3,0,3,6].map(d=>q(answerNumerator+d,answerDenominator));
     timed.push(make('다항함수의 정적분','시간 연습 '+(timed.length+1),m(integral(n(0),n(2),p(polynomial)))+'의 값은?',options,2,[
-      line('구하는 값은 '+m(frac(n(8*c),n(3))+plus+n(2*(c+1))+eq+q(answerNumerator,answerDenominator))+'이다.')
+      line('구하는 값은 '+m(q(8*c,3)+plus+n(2*(c+1))+eq+q(answerNumerator,answerDenominator))+'이다.')
     ]));
   }
   for(let a=2;a<=9;a++){
-    const polynomial=n(a)+x+minus+pow(x,2), numer=a*a*a;
+    const polynomial=k(a)+x+minus+pow(x,2), numer=a*a*a;
     const options=[-4,-2,0,2,4].map(d=>q(numer+d,6));
     timed.push(make('곡선과 좌표축 사이의 넓이','시간 연습 '+(timed.length+1),
       '곡선 '+m(y+eq+polynomial)+'과 '+m(x)+'축으로 둘러싸인 부분의 넓이는?',options,2,[
-      line(m(n(0)+o('≤')+x+o('≤')+n(a))+'에서 '+m(n(a)+x+minus+pow(x,2)+o('≥')+n(0))+'이다.'),
+      line(m(n(0)+o('≤')+x+o('≤')+n(a))+'에서 '+m(k(a)+x+minus+pow(x,2)+o('≥')+n(0))+'이다.'),
       line('구하는 넓이는 '+m(integral(n(0),n(a),p(polynomial))+eq+q(numer,6))+'이다.')
     ]));
   }
   for(let c=1;c<=8;c++){
     const answer=2*c+2;
     timed.push(make('적분으로 정의된 함수의 미분','시간 연습 '+(timed.length+1),
-      '함수 '+m(fn('F')+eq+integral(n(0),x,p(x+minus+t)+p(n(c)+t+plus+n(1)),t))+'에 대하여 '+m(v('F')+o('′')+p(n(2)))+'의 값은?',
+      '함수 '+m(fn('F')+eq+integral(n(0),x,p(x+minus+t)+p(k(c)+t+plus+n(1)),t))+'에 대하여 '+m(v('F')+o('′')+p(n(2)))+'의 값은?',
       [-2,-1,0,1,2].map(d=>n(answer+d)),2,[
-        line('적분식을 전개하여 미분하면 '+m(v('F')+o('′')+p(x)+eq+integral(n(0),x,p(n(c)+t+plus+n(1)),t)+eq+frac(n(c)+pow(x,2),n(2))+plus+x)+'이다.'),
+        line('적분식을 전개하여 미분하면 '+m(v('F')+o('′')+p(x)+eq+integral(n(0),x,p(k(c)+t+plus+n(1)),t)+eq+(c%2===0 ? k(c/2)+pow(x,2) : frac(k(c)+pow(x,2),n(2)))+plus+x)+'이다.'),
         line('따라서 구하는 값은 '+m(v('F')+o('′')+p(n(2))+eq+n(answer))+'이다.')
       ]));
   }
