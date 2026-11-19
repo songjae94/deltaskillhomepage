@@ -182,7 +182,7 @@
           "saleTo": null,
           "sample": "NS-CM2B-06-F00",
           "preview": {
-            "url": "https://cvlrphtupjmaefahodgz.supabase.co/storage/v1/object/sign/shop/naesin/preview/NS-CM2B-06-F00.pdf?token=eyJraWQiOiJmMTkzOGIwMC1kNTI5LTQ4OTEtOGExOS04M2E5MDQ1ZWJlNDkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJzaG9wL25hZXNpbi9wcmV2aWV3L05TLUNNMkItMDYtRjAwLnBkZiIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3OTUwNTIzODYsImV4cCI6MTgwMjgyODM4Nn0.zvqzDojHEmjF5jyTeQ6pcClF3X7L_YRbIW97biWReUQ",
+            "url": "https://cvlrphtupjmaefahodgz.supabase.co/storage/v1/object/sign/shop/naesin/preview/NS-CM2B-06-F00.pdf?token=eyJraWQiOiJmMTkzOGIwMC1kNTI5LTQ4OTEtOGExOS04M2E5MDQ1ZWJlNDkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJzaG9wL25hZXNpbi9wcmV2aWV3L05TLUNNMkItMDYtRjAwLnBkZiIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3OTUwNjI4MjksImV4cCI6MTgwMjgzODgyOX0.EPyfJS9YU1yWHqduVTssGxnjVQqbOCVmGJOLAyGGaBU",
             "pages": 3,
             "until": "2027-02-17"
           },
@@ -201,7 +201,7 @@
               "title": "공통수학2 단원 문제집 기초편 · 06 함수 · 2문항 2단 (PDF)",
               "from": "2026-11-19T10:40:00+09:00",
               "layout": "2문항 2단",
-              "pages": 54
+              "pages": 48
             },
             {
               "id": "NS-CM2B-06-L4.pdf",
@@ -209,7 +209,7 @@
               "title": "공통수학2 단원 문제집 기초편 · 06 함수 · 4문항 2단 (PDF)",
               "from": "2026-11-19T10:40:00+09:00",
               "layout": "4문항 2단",
-              "pages": 55
+              "pages": 37
             }
           ],
           "types": [],
