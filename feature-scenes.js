@@ -83,7 +83,7 @@
     const features = document.querySelector('#features');
     const educator = currentAudience !== 'student';
     studio.hidden=!educator;
-    if(educator){const a=document.createElement('a');a.href='#lesson-studio';a.textContent='교재 만들기';nav.insertBefore(a,nav.children[1]||null);const m=document.createElement('a');m.href='features/academy-plan.html';m.textContent='학원 관리 · 구성안';nav.append(m);}
+    if(educator){const a=document.createElement('a');a.href='#lesson-studio';a.textContent='쪽 구성';nav.insertBefore(a,nav.children[1]||null);} /* 39 창 1119: 학원 관리 쪽 바로가기 뺌(쪽 파일은 남김) */
     if (educator && season === 'teaching') features.before(studio);
     else if (educator && season === 'school') sections.get('books').after(studio);
     else features.after(studio);

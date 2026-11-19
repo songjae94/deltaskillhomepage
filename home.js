@@ -2,8 +2,8 @@ const one = selector => document.querySelector(selector);
 const roles = {
   visitor: {title:'등급을 올리는<br><em>델타스킬.</em>', desc:'학생은 막힌 조건을 찾아 다시 풀고, 선생님과 학원은 수업에 맞는 교재를 만듭니다. 내신부터 수능까지, 델타스킬 AI와 함께하세요.', work:'델타스킬 기능 소개', enter:'단원별 공부 열기'},
   student: {title:'등급을 올리는<br><em>델타스킬.</em>', desc:'내 풀이가 어디서 막히는지 찾아요. 델타스킬 AI가 어려운 부분을 콕 집어, 나에게 맞는 문제로 다시 연습할 수 있게 도와줘요.', work:'델타스킬 기능 소개', enter:'단원별 공부 열기'},
-  teacher: {title:'수업 자료부터<br><em>학생별 맞춤 수업까지.</em>', desc:'수업과 반별 진도에 맞춰 단원과 문항 수를 고르세요. 한 쪽 2문항 또는 4문항으로 구성하고, 문제와 해설을 받아 수업에 활용하세요.', work:'수업 교재 구성', enter:'이 교재 구성하기'},
-  academy: {title:'반별 교재와<br><em>학생별 맞춤 수업.</em>', desc:'반별 진도에 맞춰 단원과 문항 수를 정하세요. 수업용 교재를 미리 보고, 반에 나눠 줄 PDF를 받을 수 있어요.', work:'학원 교재 구성', enter:'우리 반 교재 구성하기'}
+  teacher: {title:'수업 자료부터<br><em>학생별 맞춤 수업까지.</em>', desc:'단원별 변형 문제집을 고르고 지면을 미리 본 뒤 바로 받으세요. 한 값에 1문항 1쪽 · 2문항 2단 · 4문항 2단 PDF를 모두 받습니다.', work:'내신 변형 문제집', enter:'문제집 고르기'},
+  academy: {title:'반별 교재와<br><em>학생별 맞춤 수업.</em>', desc:'단원별 변형 문제집을 고르고 지면을 미리 본 뒤 바로 받으세요. 한 값에 1문항 1쪽 · 2문항 2단 · 4문항 2단 PDF를 모두 받습니다.', work:'내신 변형 문제집', enter:'문제집 고르기'}
 };
 const journey=one('#journey'), stage=one('.stage'), canvas=one('.canvas'), intro=one('.intro'), tablet=one('.tablet'),screenFrame=one('#screen');
 const compact=matchMedia('(max-width:760px), (min-width:761px) and (max-width:1024px) and (orientation:portrait)'), reduced=matchMedia('(prefers-reduced-motion: reduce)');
@@ -21,7 +21,7 @@ function showsServiceTour(){return role==='visitor'||role==='student'}
 function setFilmLink() {
   const link = one('#filmStudy');
   link.href = showsServiceTour() ? studyUrl() : educatorDestination(role, exam);
-  link.querySelector('span').textContent = showsServiceTour() ? '단원별 공부 열기 ↗' : '공개 문항 지면 보기 ↗';
+  link.querySelector('span').textContent = showsServiceTour() ? '단원별 공부 열기 ↗' : '내신 변형 문제집 고르기 ↗';
 }
 
 function distance(){return Math.max(1,journey.offsetHeight-stage.offsetHeight)}
@@ -51,8 +51,9 @@ function connectStudyScenes() {
   section.querySelector('.chapterLink').href = 'study/index.html?exam='+exam+'&item=middle#practice';
   for (const link of section.querySelectorAll('[data-level]')) link.href = 'study/index.html?exam='+exam+'&item='+link.dataset.level+'#practice';
 }
-function educatorDestination(audience, exam) {
-  return 'assets/sample-picker.html?' + new URLSearchParams({exam, audience});
+/* 39 창 1119: 선생님 · 학원 길은 공개 문항 지면(수능 옛 그림)이 아니라 내신 변형 문제집 고르기 한 자리로 */
+function educatorDestination() {
+  return '/naesin/';
 }
 function setScreen(remember){
   connectStudyScenes();
@@ -71,8 +72,8 @@ function setScreen(remember){
   one('#enter span').textContent=enterText+' ↗';
   one('#enter').setAttribute('aria-label',enterText);
   const primary=one('#primary'),secondary=one('#secondary'),extra=one('#extra');
-  primary.textContent=common?'학생 공부창 열기 ↗':student?'공부하기 ↗':role==='academy'?'반별 교재 만들기 →':'수업 교재 만들기 →';
-  secondary.textContent=common?'공개 문항 지면 보기 →':student?'자료받기 →':'자료실 바로가기 ↗';
+  primary.textContent=common?'학생 공부창 열기 ↗':student?'공부하기 ↗':'내신 변형 문제집 고르기 →';
+  secondary.textContent=common?'내신 변형 문제집 고르기 →':student?'자료받기 →':'자료실 바로가기 ↗';
   primary.href=showsServiceTour()?studyUrl():'#workspace';
   secondary.href=common?educatorDestination('teacher',exam):materialsUrl();
   extra.textContent=student?(exam==='csat'?'수능 100분 실전 풀기 ↗':'내신 50분 실전 풀기 ↗'):'수업 자료 이용 안내 ↗';

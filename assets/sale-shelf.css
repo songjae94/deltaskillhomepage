@@ -1,0 +1,15 @@
+/* 39 창 1119: 메인 판매 책 카드 줄 · 쪽 구성 칸 지면 — 색은 #172B43 · #5B6678 · #fff · #DFE3ED · #245BD6 · #EEF3FF 만 · 카드 16 · 누름 44 */
+.sale-shelf{display:flex;gap:12px;overflow-x:auto;margin:18px 0 6px;padding:2px 2px 10px;scroll-snap-type:x proximity}
+.sale-shelf[hidden]{display:none}
+.sale-card{flex:0 0 220px;display:flex;flex-direction:column;gap:10px;padding:12px;border:1px solid #DFE3ED;border-radius:16px;background:#fff;color:#172B43;text-decoration:none;scroll-snap-align:start;min-height:44px;font-family:"Pretendard Variable",Pretendard,-apple-system,sans-serif}
+.sale-card:hover,.sale-card:focus-visible{border-color:#245BD6}
+.sale-sheet{display:block;width:100%;aspect-ratio:210/297;background:#fff;box-shadow:0 0 0 1px #DFE3ED;overflow:hidden}
+.sale-sheet img{display:block;width:100%;height:100%;object-fit:cover;object-position:top}
+.sale-sheet img.ds-sheet:not(.on){visibility:hidden}
+.sale-tx strong{display:block;font-size:14px;font-weight:700;line-height:1.4;letter-spacing:-.01em;color:#172B43}
+.sale-tx small{display:block;margin-top:4px;font-size:13px;color:#5B6678}
+#library .library-free a{display:inline-flex;align-items:center;min-height:44px;font-weight:700;color:#245BD6}
+.lesson-proof a{display:flex;flex-direction:column;gap:10px;text-decoration:none}
+.lesson-sheet{width:min(380px,100%);margin:0 auto}
+@media(max-width:600px){.sale-card{flex-basis:170px}}
+#lesson-studio .lesson-proof a{padding:18px;align-items:center;color:#172B43;font-weight:700}

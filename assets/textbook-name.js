@@ -31,5 +31,6 @@
     st.textContent = ".tbname{margin:4px 0 0;font-size:13px;line-height:1.5;color:#5B6678;font-weight:500}";
     document.head.appendChild(st);
   }
-  window.DSTextbook = { line: line };
+  /* 39 창 1119: 교재 고르기(/naesin/)가 이름표 전체를 받아 같은 이름의 책을 묶는다 — 로그인 전 · 오류면 {} */
+  window.DSTextbook = { line: line, names: names, authed: function () { return !!tok(); } };
 })();

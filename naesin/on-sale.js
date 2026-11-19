@@ -19,7 +19,7 @@
         var b=(s.textbooks||[])[0],q=new URLSearchParams({s:s.code});
         if(b){q.set("b",b.id);q.set("p","detail");q.set("c",u.composition||"C1");q.set("u",u.no);q.set("f",f);q.set("v","confirm");}
         o.push({sku:u.sku,name:u.name||(s.subject+" · "+u.no+" "+u.unit),grade:s.grade,subject:s.subject,count:u.count||0,
-          price:u.price[f],fmt:f,nfiles:files(u,f).length,layouts:files(u,f).map(function(x){return x.layout;}).filter(Boolean),href:"/naesin/?"+q});
+          price:u.price[f],fmt:f,preview:u.preview&&u.preview.url||"",unit:u.no+" "+u.unit,nfiles:files(u,f).length,layouts:files(u,f).map(function(x){return x.layout;}).filter(Boolean),href:"/naesin/?"+q});
       });
     });
     return o;
