@@ -134,7 +134,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     <p>해지 방법을 고르세요.</p>
     <label class="opt" id="passOptA"><input type="radio" name="passMode" value="end_of_term"><span><b>이번 이용권 종료일까지 쓰고 해지</b><br><span class="k"><b id="passDlgEnd"></b>까지 이용하고 다음 자동 결제는 하지 않습니다. 환불은 없습니다.</span></span></label>
     <label class="opt" id="passOptB"><input type="radio" name="passMode" value="refund_now"><span><b>지금 해지하고 남은 금액 환불</b><br><span class="k">이용권이 바로 끝나고 남은 금액을 결제 취소로 바로 환불합니다.</span><br><span id="passDlgQuote"></span></span></label>
-    <p class="k">환불액은 실제 결제금액에 전체 이용권에 포함된 벌 수 중 아직 받지 않은 벌 수의 비율을 곱해 계산합니다(원 단위 내림). 한 벌도 받지 않았다면 전액 환불합니다.</p>
+    <p class="k">환불액은 실제 결제금액에서 이번 이용 기간에 받은 벌의 1벌 값 합계(사용한 금액)를 뺀 금액입니다. 1벌 값은 이용권 프린트 목록에 벌마다 표시한 금액입니다. 같은 벌을 다시 받으면 한 번만 계산하고, 사용한 금액이 결제금액 이상이면 환불액은 없습니다. 한 벌도 받지 않았다면 전액 환불합니다.</p>
     <p class="err" id="passDlgErr" role="alert"></p>
     <div class="btns"><button type="button" class="btn ghost" id="passDlgNo">닫기</button><button type="button" class="btn pri" id="passDlgYes" disabled>해지하기</button></div>
   </dialog>
@@ -225,7 +225,7 @@ function passView(p){
     box.innerHTML = row("이용 중", false, `${esc(end)}까지 이용 · 매월 자동 갱신 · 다음 결제 ${esc(passDay(p.nextChargeAt))}${p.amount ? " · " + esc(won(p.amount)) : ""}`) + `<button type="button" class="btn ghost sm" id="passCancel">자동 갱신 해지</button></div>`;
     $("passCancel").onclick = () => passAsk(p);
   }else if(p && p.status === "CANCEL_SCHEDULED" && end){
-    box.innerHTML = row("해지 예약", true, `${esc(end)}까지 이용 · 다음 결제 없음`) + (p.refundAmount > 0 ? `<button type="button" class="btn ghost sm" id="passCancel">지금 해지하고 남은 금액 환불</button>` : ``) + `</div>`;
+    box.innerHTML = row("해지 예약", true, `${esc(end)}까지 이용 · 다음 결제 없음`) + (p.refundAmount > 0 || p.quoteProblem ? `<button type="button" class="btn ghost sm" id="passCancel">지금 해지하고 남은 금액 환불</button>` : ``) + `</div>`;
     const b = $("passCancel"); if(b) b.onclick = () => passAsk(p);
   }else if(p && p.status === "REFUNDED"){
     box.innerHTML = row("해지 · 환불됨", true, `환불 ${esc(won(p.refundAmount))} · ${esc(passTime(p.refundedAt))}`) + `</div>`;
@@ -253,9 +253,13 @@ function passAsk(p){
   const dlg = $("passDlg"), yes = $("passDlgYes"), no = $("passDlgNo"), err = $("passDlgErr");
   const optA = $("passOptA"), optB = $("passOptB"), radios = [...dlg.querySelectorAll('input[name="passMode"]')];
   $("passDlgEnd").textContent = passDay(p.endsAt);
+  const used = p.usedAmount == null ? "" : `사용한 금액(받은 벌의 1벌 값 합계) ${esc(won(p.usedAmount))}${p.usedAmountAtLeast ? " 이상" : ""} · `;
+  const sets = `받은 벌 ${esc(p.setsReceived)} / ${esc(p.setsTotal)}`;
   $("passDlgQuote").innerHTML = p.refundAmount > 0
-    ? `환불 예정 금액 <b>${esc(won(p.refundAmount))}</b> · 받은 벌 수 ${esc(p.setsReceived)} / 전체 ${esc(p.setsTotal)}`
-    : `<span class="err">받지 않은 벌이 없어 환불할 금액이 없습니다.</span> 받은 벌 수 ${esc(p.setsReceived)} / 전체 ${esc(p.setsTotal)}`;
+    ? `결제금액 ${esc(won(p.amount))} · ${used}환불 예정 금액 <b>${esc(won(p.refundAmount))}</b> · ${sets}`
+    : p.refundAmount === 0
+      ? `<span class="err">사용한 금액이 결제금액 이상이어서 환불할 금액이 없습니다.</span> 결제금액 ${esc(won(p.amount))} · ${used}${sets}`
+      : `<span class="err">환불 예정 금액을 확인하지 못했습니다. admin@deltaskill.co.kr 로 문의해 주세요.</span> ${sets}`;
   optA.hidden = p.status !== "ACTIVE";
   radios.forEach(r => { r.checked = false; r.disabled = r.value === "refund_now" && !(p.refundAmount > 0); });
   optB.classList.toggle("off", !(p.refundAmount > 0));
@@ -274,7 +278,9 @@ function passAsk(p){
       if(e.message === "no_active_pass"){ dlg.close(); passLine(); return; }
       yes.disabled = false; yes.textContent = label;
       err.textContent = mode === "refund_now"
-        ? (e.message === "refund_in_progress" ? "환불을 처리하고 있습니다. 잠시 뒤 이 화면을 새로 고쳐 확인해 주세요." : "환불하지 못했어요. 이용권은 그대로입니다. 잠시 뒤 다시 시도하시거나 admin@deltaskill.co.kr 로 문의해 주세요.")
+        ? (e.message === "refund_in_progress" ? "환불을 처리하고 있습니다. 잠시 뒤 이 화면을 새로 고쳐 확인해 주세요."
+          : e.message === "no_refund_due" ? "사용한 금액이 결제금액 이상이어서 환불할 금액이 없습니다. 이용권은 그대로입니다."
+          : "환불하지 못했어요. 이용권은 그대로입니다. 잠시 뒤 다시 시도하시거나 admin@deltaskill.co.kr 로 문의해 주세요.")
         : "해지하지 못했어요. 자동 갱신은 아직 켜져 있습니다. 잠시 뒤 다시 시도해 주세요.";
     }
   };
@@ -376,18 +382,18 @@ function ppList(){
 }
 function ppRow(x, got){
   const li = document.createElement("li"), sp = document.createElement("span");
-  const meta = [x.unitName, x.typeRange, x.items ? x.items + "문항" : "", x.pages ? x.pages + "쪽" : ""].filter(Boolean).map(esc).join(" · ");
+  const meta = [x.unitName, x.typeRange, x.items ? x.items + "문항" : "", x.pages ? x.pages + "쪽" : "", x.price > 0 ? "1벌 값 " + won(x.price) : ""].filter(Boolean).map(esc).join(" · ");
   sp.innerHTML = `${esc(x.title || x.setId)}${!got && x.received ? ` <span class="tag">받음</span>` : ``}<small>${meta}${got ? (meta ? " · " : "") + "받은 날 " + esc(day(x.firstAt)) + " · " + (x.redownloadable ? esc(day(x.redownloadUntil)) + "까지 다시 받기" : "다시 받기 기간 지남") : ""}</small>`;
   li.appendChild(sp);
   const again = got || x.received;
   if(got ? x.redownloadable : true){
     const b = document.createElement("button"); b.type = "button"; b.className = "btn ghost sm"; b.textContent = again ? "다시 받기" : "받기";
-    b.onclick = () => ppTake(x.setId, again, b); li.appendChild(b);
+    b.onclick = () => ppTake(x.setId, again, b, x.price); li.appendChild(b);
   }
   return li;
 }
-async function ppTake(setId, again, b){
-  if(!again && !confirm("받으면 1벌이 차감되고 지금 해지 때 환불액이 줄어듭니다. 내려받은 벌은 청약철회가 제한됩니다. 받을까요?")) return;
+async function ppTake(setId, again, b, price){
+  if(!again && !confirm(`받으면 1벌이 차감되고 지금 해지할 때 환불액이 ${price > 0 ? "이 벌의 1벌 값 " + won(price) + "만큼" : "이 벌의 1벌 값만큼"} 줄어듭니다. 내려받은 벌은 청약철회가 제한됩니다. 받을까요?`)) return;
   const m = $("ppMsg"); b.disabled = true; m.className = "msg"; m.textContent = "내려받기 주소를 받는 중…";
   try{
     const r = await fnCall("member-library", {action:"pass_download", setId});
