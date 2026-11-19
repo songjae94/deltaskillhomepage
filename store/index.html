@@ -71,6 +71,15 @@ dd{margin:0;font-size:14.5px;min-width:0}
 .act35{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 6px}
 details.more{margin:18px 0;border-radius:16px;background:#EEF2FA;padding:0 16px}details.more>summary{cursor:pointer;min-height:48px;display:flex;align-items:center;font-size:14.5px;font-weight:700}details.more>summary::-webkit-details-marker{display:none}details.more>summary::after{content:"펼치기 ▾";margin-left:auto;padding-left:10px;font-size:12.5px;font-weight:650;opacity:.75}details.more[open]>summary::after{content:"접기 ▴"}details.more[open]{padding-bottom:14px}
 </style>
+<style id="sale-css">
+/* 38 창 1119: 판매 중 내신 자료(naesin/on-sale.js · catalog.json 에서 그림) — 카드 16 · 글 #172B43 · 옅은 글 #5B6678 · 파랑 #245BD6 · 테두리 #DFE3ED */
+.sale-books{list-style:none;margin:12px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:12px}
+.sale-books a{display:grid;gap:6px;align-content:start;min-height:44px;height:100%;box-sizing:border-box;padding:18px 20px;border:1px solid #DFE3ED;border-radius:16px;background:#fff;color:#172B43;text-decoration:none}
+.sale-books a:hover{background:#EEF3FF}
+.sale-books strong{font-size:17px;line-height:1.4;font-weight:800}
+.sale-books span{font-size:14px;color:#5B6678}
+.sale-books em{font-style:normal;font-size:14px;font-weight:700;color:#245BD6;margin-top:4px}
+</style>
 <style id="biz-css">
 .biz{display:block;box-sizing:border-box;background:#05060f;color:#aab7ca;font:400 13px/1.8 "Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;letter-spacing:0;text-align:left;padding:24px 16px 36px;border-top:1px solid rgba(186,215,247,.16)}
 .biz>*{max-width:1080px;margin-left:auto;margin-right:auto}
@@ -94,10 +103,11 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   <nav id="authnav" class="ds-acct" aria-label="계정"><a href="/auth/" data-account-primary>로그인</a><a href="/auth/?mode=signup" data-account-secondary>회원가입</a></nav>
 </div></header>
 <main>
-  <p class="crumb"><a href="/">메인</a> › <a href="/naesin/">내신 자료</a> › 수능 유형서</p>
+  <p class="crumb"><a href="/">메인</a> › 수능 유형서</p>
   <h1>번호별 유형서</h1>
   <p class="lede">수능 대비 번호별 유형서는 지금 판매하지 않습니다. 기말 내신 대비 파일은 내신 자료에서 살 수 있습니다.</p>
   <p class="act35"><a class="btn pri" href="/naesin/">내신 자료 보기 →</a> <a class="btn ghost" href="/pass/">이용권 보기</a></p>
+  <section class="grp sale-now" id="sale-now" hidden aria-labelledby="sale-now-h"><h2 id="sale-now-h">지금 판매 중인 내신 자료</h2><ul class="sale-books" id="sale-books"></ul></section>
   <div class="notice">
     <p>모든 가격은 VAT 포함입니다. 유형서는 정기결제(자동 결제)가 아닌 단건 결제로, 상품마다 한 번 결제합니다. <a href="/refund/">환불·청약철회 안내</a> · <a href="/minor/">미성년자 구매 안내</a></p>
   </div>
@@ -122,6 +132,25 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   <p class="copy">© 2026 델타스킬. All rights reserved.</p>
 </div>
 </footer>
+<script src="/naesin/on-sale.js?v=38-1119"></script>
+<script>
+/* 38 창 1119: 판매 중 내신 자료를 위에 — 없으면 칸을 숨긴 채 둔다 */
+(function(){
+  var box=document.getElementById("sale-now"),ul=document.getElementById("sale-books");
+  if(!box||!ul||!window.DSOnSale)return;
+  DSOnSale.load().then(function(items){
+    if(!items.length)return;
+    items.forEach(function(p){
+      var li=document.createElement("li"),a=document.createElement("a");a.href=p.href;
+      var n=document.createElement("strong");n.textContent=p.name;
+      var m=document.createElement("span");m.textContent=p.grade+" "+p.subject+" · "+DSOnSale.meta(p);
+      var g=document.createElement("em");g.textContent="미리보기 · 구매하기 →";
+      a.appendChild(n);a.appendChild(m);a.appendChild(g);li.appendChild(a);ul.appendChild(li);
+    });
+    box.hidden=false;
+  });
+})();
+</script>
 <script>
 /* 1007 결제 점검: /pay-config.json 의 PAY_MODE 가 test 면 「구매하기」를 켠다(판매 시작 단추는 그대로 둠).
    live 면 판매 기간 안의 상품만 「구매하기」를 켜고 그 상품의 판매 시작 단추를 숨긴다. 설정을 못 읽으면 아무것도 바꾸지 않는다.

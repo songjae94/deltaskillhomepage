@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ko" data-ds-main data-ds-sub><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#103b35"><title>자료받기 · 델타스킬</title><link rel="icon" href="/favicon-32.png"><link rel="stylesheet" href="style.css"><script src="../site-config.js?v=1"></script><script defer src="app.js?v=static1115"></script><link rel="stylesheet" href="../alternate-palette.css?v=editorial17"><script src="../palette.js?v=editorial17"></script><link rel="stylesheet" href="../assets/business-footer.css"><link rel="stylesheet" href="../brand-ink.css?v=17"><script src="../surface-theme.js?v=17"></script><script defer src="/assets/legal-notice.js"></script><link rel="stylesheet" href="/naesin/preparation.css"><link rel="stylesheet" href="/assets/site-unify.css?v=35"><script defer src="/auth.js?v=home-logout-r2-1118"></script></head>
+<html lang="ko" data-ds-main data-ds-sub><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#103b35"><title>자료받기 · 델타스킬</title><link rel="icon" href="/favicon-32.png"><link rel="stylesheet" href="style.css?v=38-1119b"><script src="../site-config.js?v=1"></script><script defer src="/naesin/on-sale.js?v=38-1119"></script><script defer src="app.js?v=sale38-1119"></script><link rel="stylesheet" href="../alternate-palette.css?v=editorial17"><script src="../palette.js?v=editorial17"></script><link rel="stylesheet" href="../assets/business-footer.css"><link rel="stylesheet" href="../brand-ink.css?v=17"><script src="../surface-theme.js?v=17"></script><script defer src="/assets/legal-notice.js"></script><link rel="stylesheet" href="/naesin/preparation.css"><link rel="stylesheet" href="/assets/site-unify.css?v=35"><script defer src="/auth.js?v=home-logout-r2-1118"></script></head>
 <body><a class="skip" href="#content">본문 바로가기</a><header class="ds-head"><div class="ds-head-in"><a class="ds-logo" href="/" aria-label="델타스킬 메인"><span class="d">DELTA</span><span class="s">SKILL</span></a><nav class="ds-menu" aria-label="주요 메뉴"><a href="/naesin/">내신 자료</a><a href="/pass/">이용권</a><a href="/orders/">주문 조회</a></nav><nav id="authnav" class="ds-acct" aria-label="계정"><a href="/auth/" data-account-primary>로그인</a><a href="/auth/?mode=signup" data-account-secondary>회원가입</a></nav></div></header>
 <main id="content">
   <div class="intro"><div><p>델타스킬 자료실</p><h1>자료받기</h1></div><nav id="exams" aria-label="시험 선택"><a href="/materials/?exam=school" data-exam-tab="school">내신 자료</a><a href="/materials/?exam=csat" data-exam-tab="csat">수능 자료</a></nav></div>
@@ -13,8 +13,9 @@
   </section>
   <div id="school-materials">
     <section id="free-round" class="panel round-preview" aria-labelledby="round-title">
-      <p class="path-meta">지금 판매 중</p><h2 id="round-title">공통수학2 단원 문제집 1권 · 06 함수</h2>
-      <div class="actions"><a class="button primary" href="/naesin/">미리보기 · 구매하기</a></div>
+      <p class="path-meta">지금 판매 중</p><h2 id="round-title">내신 단원 문제집</h2>
+      <ul id="sale-books" class="sale-books" hidden></ul>
+      <div class="actions" id="sale-fallback"><a class="button primary" href="/naesin/">미리보기 · 구매하기</a></div>
     </section>
   </div>
   <section id="csat-materials" class="panel round-preview" aria-labelledby="analysis-title">
@@ -26,18 +27,20 @@
       <a class="button" href="/features/variation.html">고2 9월 학력평가 원문·변형 사례</a>
     </div>
   </section>
-  <section class="panel round-preview" aria-labelledby="paper-build">
-    <p class="path-meta">준비 중 · 파일 검수 중</p><h2 id="paper-build">내 교재 구성 안내</h2>
-    <div class="actions">
-      <a class="button" href="/composer/?mode=book" data-compose-mode="book">교재 한 권 만들기</a>
-      <a class="button" href="/composer/?mode=handout" data-compose-mode="handout">수업 프린트 만들기</a>
-    </div>
-  </section>
 </main>
-<footer class="business-footer"><div class="footer-shortcuts">델타스킬 <a href="../index.html">홈으로 돌아가기 ↑</a></div><div class="business-info"><nav aria-label="이용 정책"><a href="https://www.deltaskill.co.kr/terms/">이용약관</a>
-    <a class="pp" href="https://www.deltaskill.co.kr/privacy/"><b>개인정보처리방침</b></a>
-    <a href="https://www.deltaskill.co.kr/refund/">환불·청약철회 안내</a>
-    </nav><p>상호 델타스킬 · 대표 송재형 · 사업자등록번호 345-62-00876 <a href="https://www.ftc.go.kr/bizCommPop.do?wrkr_no=3456200876" target="_blank" rel="noopener">사업자정보확인</a> · 통신판매업신고 제2026-서울서초-3410호</p>
+<footer class="sitefoot">
+<div class="biz" id="bizinfo">
+  <nav class="policy" aria-label="정책">
+    <a href="/terms/">이용약관</a>
+    <a class="pp" href="/privacy/"><b>개인정보처리방침</b></a>
+    <a href="/refund/">환불·청약철회 안내</a>
+    <a href="/minor/">미성년자 구매 안내</a>
+    <a href="/naesin/">내신 자료</a>
+  </nav>
+  <p>상호 델타스킬 · 대표 송재형 · 사업자등록번호 345-62-00876 <a href="https://www.ftc.go.kr/bizCommPop.do?wrkr_no=3456200876" target="_blank" rel="noopener">사업자정보확인</a> · 통신판매업신고 제2026-서울서초-3410호</p>
   <p>주소 서울특별시 서초구 마방로10길 18-16, 4층(양재동, 진우빌딩) · 전화 070-8065-2468 · 이메일 <a href="mailto:admin@deltaskill.co.kr">admin@deltaskill.co.kr</a></p>
   <p>개인정보보호책임자 송재형 · 호스팅 제공자 GitHub, Inc.(GitHub Pages) · Supabase, Inc.(결제·다운로드 서버)</p>
-  </div></footer></body></html>
+  <p class="src">자료 출처: 평가원 공개 자료 + EBSi 공개 채점 자료 · 판매 PDF는 델타스킬이 직접 제작한 콘텐츠입니다 · 디지털콘텐츠 환불(받기 전이면 결제일부터 7일 안 전액 환불 · 일부 받았으면 받지 않은 파일 비율만큼 7일 안 환불 · 받은 파일은 청약철회 제한) · 변형문항 이용권은 매월 자동 갱신(정기결제) · 그 밖의 상품은 단건 결제</p>
+  <p class="copy">© 2026 델타스킬. All rights reserved.</p>
+</div>
+</footer></body></html>

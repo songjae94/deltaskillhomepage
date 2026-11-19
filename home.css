@@ -69,3 +69,6 @@ html[data-palette=ink] #filmStudy span{background:#182142e6}
 .stage .desk{opacity:1}
 .stage.active .canvas .tablet{border-radius:0;overflow:visible}
 .stage.active .canvas .tablet{will-change:opacity}
+
+/* 38 창 1119: 머리 메뉴 누름 자리 44px(규칙 · 점검 #11) */
+.mast nav a{display:inline-flex;align-items:center;min-height:44px}

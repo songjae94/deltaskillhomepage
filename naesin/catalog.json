@@ -147,6 +147,78 @@
       ]
     },
     {
+      "subject": "공통수학2 기초편",
+      "code": "CM2B",
+      "grade": "고1",
+      "textbooks": [
+        {
+          "id": "B1",
+          "name": "부교재 연습문항",
+          "label": "공통수학2 기초편 부교재 연습문항",
+          "edition": null,
+          "freeSet": null
+        }
+      ],
+      "units": [
+        {
+          "sku": "NS-CM2B-06",
+          "no": "06",
+          "major": "Ⅲ 함수와 그래프",
+          "unit": "함수",
+          "name": "공통수학2 단원 문제집 기초편 · 06 함수",
+          "composition": "C1",
+          "textbook": null,
+          "count": 54,
+          "pages": null,
+          "price": {
+            "pdf": 2200,
+            "hwpx": null
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-19T10:40:00+09:00",
+          "saleTo": null,
+          "sample": "NS-CM2B-06-F00",
+          "preview": {
+            "url": "https://cvlrphtupjmaefahodgz.supabase.co/storage/v1/object/sign/shop/naesin/preview/NS-CM2B-06-F00.pdf?token=eyJraWQiOiJmMTkzOGIwMC1kNTI5LTQ4OTEtOGExOS04M2E5MDQ1ZWJlNDkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJzaG9wL25hZXNpbi9wcmV2aWV3L05TLUNNMkItMDYtRjAwLnBkZiIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3OTUwNTIzODYsImV4cCI6MTgwMjgyODM4Nn0.zvqzDojHEmjF5jyTeQ6pcClF3X7L_YRbIW97biWReUQ",
+            "pages": 3,
+            "until": "2027-02-17"
+          },
+          "files": [
+            {
+              "id": "NS-CM2B-06-L1.pdf",
+              "fmt": "pdf",
+              "title": "공통수학2 단원 문제집 기초편 · 06 함수 · 1문항 1쪽 (PDF)",
+              "from": "2026-11-19T10:40:00+09:00",
+              "layout": "1문항 1쪽",
+              "pages": 75
+            },
+            {
+              "id": "NS-CM2B-06-L2.pdf",
+              "fmt": "pdf",
+              "title": "공통수학2 단원 문제집 기초편 · 06 함수 · 2문항 2단 (PDF)",
+              "from": "2026-11-19T10:40:00+09:00",
+              "layout": "2문항 2단",
+              "pages": 54
+            },
+            {
+              "id": "NS-CM2B-06-L4.pdf",
+              "fmt": "pdf",
+              "title": "공통수학2 단원 문제집 기초편 · 06 함수 · 4문항 2단 (PDF)",
+              "from": "2026-11-19T10:40:00+09:00",
+              "layout": "4문항 2단",
+              "pages": 55
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
+        }
+      ]
+    },
+    {
       "subject": "미적분Ⅰ 기초편",
       "code": "MI1B",
       "grade": "고2",

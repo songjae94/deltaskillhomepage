@@ -3,9 +3,9 @@
   const original = heading.textContent;
   const intro = document.createElement('div');
   intro.className = 'teacher-print-intro';
-  intro.innerHTML = '<p><strong>구성 미리보기 · 검수 중</strong><br>수업, 숙제, 시험 대비에 필요한 단원과 유형을 골라 지면을 구성할 수 있습니다. 한글(HWPX) 파일과 출력 결과를 검수 중입니다.</p><a href="/composer/?mode=handout">수업 프린트 구성 시작 ↗</a>';
+  intro.innerHTML = '<p><strong>수업 프린트 구성</strong><br>수업, 숙제, 시험 대비에 필요한 단원과 유형을 골라 지면을 구성할 수 있습니다. 지금 판매 중인 자료는 <a href="/naesin/">내신 자료</a>에서 받습니다.</p><a href="/composer/?mode=handout">수업 프린트 구성 시작 ↗</a>';
   document.querySelector('#library .shelfTop').after(intro);
-  const compose = intro.querySelector('a');
+  const compose = intro.querySelector('a[href^="/composer/"]');
 
   function sync() {
     const teacher = role === 'teacher';

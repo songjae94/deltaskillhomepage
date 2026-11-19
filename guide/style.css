@@ -8,3 +8,6 @@
 #guide-kicker{color:var(--sub);font-weight:650;font-size:14px;margin-bottom:8px}
 #guide-actions a{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #bbc9be;text-decoration:none;padding:12px 4px;gap:14px}#guide-actions a:last-child{border-bottom:0}#guide-actions a:hover strong{text-decoration:underline}#guide-actions small{display:block;color:var(--sub)}
 @media(max-width:690px){.guide-path{grid-template-columns:1fr;gap:12px}}
+
+/* 38 창 1119: 「주문 조회 →」 누름 자리 44px(규칙 · 점검 #11) */
+.orderlink{min-height:44px}

@@ -19,7 +19,7 @@
       ['forecast','수능예측','#prediction']
     ];
     routes.replaceChildren();
-    const details={materials:teacher?'구성 미리보기 · 검수 중':'시험 범위별 자료와 무료 회차',build:'구성 미리보기 · 검수 중',teacher:'수업 소개와 자료를 한곳에',management:'반·진도·과제 운영 구성안',timed:'제한 시간 안에 정확하게',note:'틀린 문제를 다시 내 것으로',practice:'기초부터 수능형까지',forecast:'남은 기간 준비할 유형 확인'};
+    const details={materials:'단원별 변형 문항 · 해설 PDF',build:'단원과 유형을 골라 구성',teacher:'수업 소개와 자료를 한곳에',management:'반·진도·과제 운영 구성안',timed:'제한 시간 안에 정확하게',note:'틀린 문제를 다시 내 것으로',practice:'기초부터 수능형까지',forecast:'남은 기간 준비할 유형 확인'};
     for(const [index,item] of items.entries()){
       const link=document.createElement('a');link.href=item[2];link.className='hero-route';link.dataset.view=item[0];
       link.innerHTML='<span class="route-index" aria-hidden="true">'+String(index+1).padStart(2,'0')+'</span><span class="route-copy"><strong>'+item[1]+'</strong><small>'+details[item[0]]+'</small></span><span class="route-arrow" aria-hidden="true">↗</span>';

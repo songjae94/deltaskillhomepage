@@ -157,13 +157,15 @@ details.more>summary,details.agd>summary{list-style:none}
 
 /* 31 창 1118 — 목록(과목 칩 · 단원 머리 · 상품 카드) */
 .chips{display:flex;gap:8px;overflow-x:auto;margin:0 0 22px;padding:2px 0 6px;scrollbar-width:none}
-.chips a{flex:none;display:inline-flex;align-items:center;min-height:40px;padding:0 16px;border-radius:999px;border:1px solid var(--line2);background:var(--card);font-size:14px;font-weight:700;color:var(--ink2);text-decoration:none;white-space:nowrap}
+.chips a{flex:none;display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--line2);background:var(--card);font-size:14px;font-weight:700;color:var(--ink2);text-decoration:none;white-space:nowrap}
 html main .chips a{color:#3A4A60!important}
 html main .chips a[aria-current="true"]{background:#172B43;border-color:#172B43;color:#fff!important}
 .unitgrp{margin:0 0 26px}
 .unitgrp h2{font-size:15px;font-weight:800;color:var(--muted);margin:0 0 10px;letter-spacing:-.01em}
 .cards{display:grid;gap:12px}
 @media (min-width:760px){.cards{grid-template-columns:1fr 1fr}}
+.grps{display:block}
+@media (min-width:760px){.grps{display:grid;grid-template-columns:1fr 1fr;gap:0 16px;align-items:start}.grps .cards{grid-template-columns:1fr}} /* 38 창 1119: 단원마다 카드 하나라 오른쪽이 비던 것 — 넓은 폭은 단원 묶음을 2단으로 */
 .buycard{display:flex;flex-direction:column;gap:6px;padding:18px 20px;border-radius:16px;border:1px solid var(--line);background:var(--card)}
 .buycard h3{margin:0;font-size:17px;font-weight:800;line-height:1.4;color:var(--ink)}
 .buycard .m{margin:0;font-size:13.5px;color:var(--muted)}
@@ -171,7 +173,7 @@ html main .chips a[aria-current="true"]{background:#172B43;border-color:#172B43;
 .buycard .pr2{margin:0}
 .buycard .pr2 b{font-size:20px;font-weight:800;color:var(--ink)}
 .buycard .act{display:flex;gap:8px;margin:0}
-.buycard .act .btn{flex:none;min-height:42px;padding:0 16px;border-radius:10px;font-size:14.5px}
+.buycard .act .btn{flex:none;min-height:44px;padding:0 16px;border-radius:10px;font-size:14.5px}
 .buycard .row2{margin-top:auto;padding-top:8px}
 .pro2{margin-top:6px}
 @media (max-width:420px){.buycard .act{width:100%}.buycard .act .btn{flex:1}}
@@ -458,10 +460,10 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
       add(f,nav);
     }
     if(!list.length){add(f,el("p","lede","지금 살 수 있는 자료가 없습니다."));return f;}
-    var key=null,box=null;
+    var key=null,box=null,grps=el("div","grps");add(f,grps);
     list.forEach(function(p){
       var k=p.s.code+p.u.no;
-      if(k!==key){key=k;var g=el("section","unitgrp");add(g,el("h2",null,p.s.grade+" "+p.s.subject+" · "+p.u.no+" "+p.u.unit));box=el("div","cards");add(g,box);add(f,g);}
+      if(k!==key){key=k;var g=el("section","unitgrp");add(g,el("h2",null,p.s.grade+" "+p.s.subject+" · "+p.u.no+" "+p.u.unit));box=el("div","cards");add(g,box);add(grps,g);}
       add(box,buyCard(p,q));
     });
     var fn=el("p","fine",refundLine()+" · ");var r=el("a",null,"환불 안내");r.href="/refund/";add(fn,r);add(f,fn);
@@ -788,7 +790,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   var TITLES={subject:"내신 자료",book:"부교재 고르기",path:"구성 고르기",basic:"기본형",detail:"상세선택",confirm:"받을 내용 확인"};
   function draw(focus){
     var q=readQ(),s=subj(q),b=s?book(s,q):null,v,node,c=comp(q.c);
-    if(!s||!b||!products(s.code).length){v="subject";node=vList(s?{}:q);} /* 형 1119: 파는 상품이 없는 과목 · 없는 과목 주소는 목록으로 */
+    if(!s||!b||!products(s.code).length){v="subject";node=vList(s&&products(s.code).length?{s:q.s}:{});} /* 형 1119: 파는 상품이 없는 과목 · 없는 과목 주소는 목록으로 · 38 창 1119: 과목 칩(?s= 만)은 그 과목으로 거른다 */
     else if(q.p==="free"){if(comp("C0")&&freeSets(b).length){v="confirm";node=vConfirm(q,s,b,comp("C0"));}else{v="subject";node=vList({s:q.s});}}
     else if(q.p==="basic"&&!c){v="basic";node=vBasic(q,s,b);}
     else if(q.p==="detail"||q.p==="basic"){

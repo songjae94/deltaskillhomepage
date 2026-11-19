@@ -16,5 +16,24 @@
   }
   document.querySelector('#design-samples').href = '/assets/sample-picker.html?' + context;
   for (const link of document.querySelectorAll('[data-compose-mode]')) link.href = window.deltaComposerUrl(link.dataset.composeMode);
+  /* 38 창 1119: 「지금 판매 중」은 catalog.json 에서 그린다(naesin/on-sale.js · 내신 목록과 같은 잣대) — 새 책은 저절로 선다 · 판매 중이 없으면 칸을 숨긴다 */
+  const saleBox = document.querySelector('#free-round');
+  const saleList = document.querySelector('#sale-books');
+  if (saleBox && saleList && window.DSOnSale) {
+    window.DSOnSale.load().then((items) => {
+      if (!items.length) { saleBox.hidden = true; return; }
+      saleList.replaceChildren(...items.map((p) => {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = p.href;
+        const name = document.createElement('strong'); name.textContent = p.name;
+        const meta = document.createElement('span'); meta.textContent = p.grade + ' ' + p.subject + ' · ' + window.DSOnSale.meta(p);
+        const go = document.createElement('em'); go.textContent = '미리보기 · 구매하기 →';
+        a.append(name, meta, go); li.append(a); return li;
+      }));
+      saleList.hidden = false;
+      const fb = document.querySelector('#sale-fallback'); if (fb) fb.remove();
+    });
+  }
 
 })();

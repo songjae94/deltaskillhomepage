@@ -279,6 +279,8 @@ var FIX="<p>디지털콘텐츠(PDF)는 받기 전이면 결제일부터 7일 안
 var SDK="https://js.tosspayments.com/v2/standard";
 var query=new URLSearchParams(location.search),cart=query.has("skus"),skus=query.getAll("skus");
 var sku=(query.get("sku")||"").trim(),cartError="",cartProducts=null;
+/* 38 창 1119: 형식 없는 내신 주소(?sku=NS-CM2-06 · 옛 고리 · 밖 공유 고리)는 PDF 로 채워 받는다 — 주소도 같은 꼴로 고친다 */
+if(/^NS-[A-Z0-9]+(?:-[A-Z0-9]+)*$/.test(sku)){sku+=".pdf";try{query.set("sku",sku);history.replaceState(history.state,"",location.pathname+"?"+query.toString()+location.hash);}catch(_){}}
 var reviewClosed=/^REVIEW-/i.test(sku); /* 1118 재점검 N1: 낱개 시험 상품(REVIEW-S2 · 600원)은 test 에서도 판매하지 않는다 — 주문서를 열지 않음 */
 var P=Object.prototype.hasOwnProperty.call(CAT,sku)?CAT[sku]:null;
 var NS=cart||sku.indexOf("NS-")===0;
