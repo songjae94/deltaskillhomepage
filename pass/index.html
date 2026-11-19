@@ -28,7 +28,7 @@ details.agd>summary{cursor:pointer;min-height:40px;display:flex;align-items:cent
   <nav class="ds-menu" aria-label="주요 메뉴"><a href="/naesin/">내신 자료</a><a href="/pass/" aria-current="page">이용권</a><a href="/orders/">주문 조회</a></nav>
   <nav id="authnav" class="ds-acct" data-logout-next="/" aria-label="계정"><a href="/auth/" data-account-primary>로그인</a><a href="/auth/?mode=signup" data-account-secondary>회원가입</a></nav>
 </div></header>
-<main class="wrap"><p class="flag">지금은 테스트 결제 환경입니다 · 실제 결제는 일어나지 않습니다.</p>
+<main class="wrap"><p class="flag" data-test-flag hidden>지금은 테스트 결제 환경입니다 · 실제 결제는 일어나지 않습니다.</p>
 <section id="login" data-step>
 <h1>변형문항 이용권</h1>
 <p class="big"><strong>월 10,000원</strong> · 매월 자동 결제(정기결제)</p>
@@ -82,4 +82,4 @@ details.agd>summary{cursor:pointer;min-height:40px;display:flex;align-items:cent
 const steps=[...document.querySelectorAll("[data-step]")];
 function renderStep(event){if(location.hash==="#single"||location.hash==="#checkout-single"){location.replace("/naesin/");return;} /* 1118 재점검 N1: 낱개 시험 상품(600원) 닫음 — 옛 주소는 내신 파일로 */const next=steps.find(step=>"#"+step.id===location.hash)||steps[0];for(const step of steps)step.hidden=step!==next;if(event){const heading=next.querySelector("h1");heading.tabIndex=-1;heading.focus();}}
 window.addEventListener("hashchange",renderStep);renderStep();
-</script><script defer src="./review-config.js?v=recheck-1118"></script><script type="module" src="./test-checkout.mjs?v=done-1118"></script></body></html>
+</script><script defer src="./review-config.js?v=live-1119"></script><script type="module" src="./test-checkout.mjs?v=live-1119"></script></body></html>

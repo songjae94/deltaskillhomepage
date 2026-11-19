@@ -227,6 +227,8 @@ try {
   const response = await fetch("/pay-config.json", {cache:"no-store", credentials:"same-origin", redirect:"error"});
   const config = response.ok ? await response.json() : null;
   const api = window.DSBillingApi(config);
+  const testFlag = document.querySelector("[data-test-flag]"); /* 라이브 전환 1119 43: 테스트 띠는 빌링 모드가 test 일 때만 */
+  if (testFlag) testFlag.hidden = window.DSBillingMode(config) !== "test";
   if (!api) {
     billingStatus.textContent = "지금은 결제를 사용할 수 없습니다. 잠시 뒤 다시 시도해 주세요.";
   } else {

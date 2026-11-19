@@ -15,11 +15,18 @@
     if (config?.PAY_MODE !== "test" || !TEST_CK.test(config.clientKey ?? "")) return null;
     return verifiedBase(config);
   };
-  /* 이용권 카드 등록(빌링) 길 — 낱개 스위치에서 뗌(11-18 걸음 7). billingClientKey 가 있으면 그것, 없으면 낱개 test 일 때 clientKey. 테스트 키만 받는다(서버는 BILLING_PAY_MODE 로 따로 판단). */
+  /* 이용권 카드 등록(빌링) 길 — 낱개 스위치에서 뗌(11-18 걸음 7). 라이브 전환 1119 43: 빌링 모드 = BILLING_PAY_MODE(없으면 PAY_MODE) ·
+     키 종류가 그 모드와 같을 때만 연다(test ↔ test_ck · live ↔ live_ck · 어긋나면 닫음). 서버는 BILLING_PAY_MODE 로 따로 판단한다. */
+  const BILLING_CK = { test: TEST_CK, live: /^live_ck_[A-Za-z0-9_-]+$/ };
+  window.DSBillingMode = function (config) {
+    const mode = config?.BILLING_PAY_MODE ?? config?.PAY_MODE;
+    return mode === "test" || mode === "live" ? mode : null;
+  };
   window.DSBillingKey = function (config) {
-    if (!config) return null;
-    const key = config.billingClientKey ?? (config.PAY_MODE === "test" ? config.clientKey : null);
-    return TEST_CK.test(key ?? "") ? key : null;
+    const mode = window.DSBillingMode(config);
+    if (!mode) return null;
+    const key = config.billingClientKey ?? (config.PAY_MODE === mode ? config.clientKey : null);
+    return BILLING_CK[mode].test(key ?? "") ? key : null;
   };
   window.DSBillingApi = function (config) {
     return window.DSBillingKey(config) ? verifiedBase(config) : null;
