@@ -82,6 +82,7 @@ function row(href,title,subtitle,external=false){
 function officialLinks(){
  if (embedded) return '';
  return '<div class="strip">'+(exam==='csat'?row('../features/prediction.html','수능 번호별 예상 분석','자주 출제되는 주제와 예상 분석서'): '')+row(materials,examName+' 자료받기',exam==='csat'?'수능 대비 교재와 자료':'과목·단원별 자료와 파일 형식')+
+ (exam==='csat'?row('https://www.deltaskill.co.kr/exam/sn27/','2027 수능 채점·오답노트','11월 19일 시행 · 평가원 가답안 채점 · 새 창',true):'')+
  (exam==='csat'?row('https://www.deltaskill.co.kr/exam/m09/','9월 모의평가 학습관','기존 서비스 · 채점·문제·해설 · 새 창',true):'')+
  row('https://www.deltaskill.co.kr/pilot/','내 계정의 오답노트','이 브라우저 기록과 별개입니다. 로그인 필요 · 새 창',true)+'</div>';
 }
