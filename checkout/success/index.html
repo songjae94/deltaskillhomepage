@@ -75,6 +75,7 @@ label.f{display:block;font-size:13.5px;font-weight:700;color:var(--ink2);margin:
 .files{list-style:none;margin:10px 0 0;padding:0}
 .files li{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:10px 0;border-bottom:1px dashed var(--line);font-size:14.5px}
 .files li span{min-width:0}
+.files li.bk{display:block;padding:14px 0 6px;border-bottom:1px solid var(--line);font-size:15px;font-weight:700} /* 39 1119: 여러 권 주문은 책마다 한 줄 */
 .files small{display:block;font-size:12.5px;color:var(--sub)}
 .tag{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:999px;font-size:11.5px;font-weight:700;background:var(--sky1);color:var(--ink)}
 .fn{margin-top:22px;font-size:13px;color:var(--sub)}
@@ -86,13 +87,13 @@ a:focus-visible,.btn:focus-visible,.chk input:focus-visible{outline:3px solid va
 .biz{display:block;box-sizing:border-box;background:#05060f;color:#aab7ca;font:400 13px/1.8 "Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;letter-spacing:0;text-align:left;padding:24px 16px 36px;border-top:1px solid rgba(186,215,247,.16)}
 .biz>*{max-width:1080px;margin-left:auto;margin-right:auto}
 .biz p{margin:0 auto 6px;font-size:13px;line-height:1.8;color:#aab7ca;word-break:keep-all;overflow-wrap:anywhere}
-.biz a{color:#d1e4fa;text-decoration:underline;text-underline-offset:2px}
+.biz a{color:#EEF3FF;text-decoration:underline;text-underline-offset:2px}
 .biz .policy{display:flex;flex-wrap:wrap;gap:4px 6px;margin-bottom:12px}
 .biz .policy a{display:inline-flex;align-items:center;min-height:44px;padding:0 12px;font-size:14px;text-decoration:none;border-radius:8px}
 .biz .policy a.pp{background:transparent;color:#fff}
 .biz b{color:inherit}
 .biz .policy a.pp b{font-weight:700;color:#fff}
-.biz .copy{color:#8f9db3}
+.biz .copy{color:#aab7ca}
 footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 </style>
 <link rel="stylesheet" href="/assets/account-header.css?v=home-logout-1118">
@@ -125,7 +126,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   <p>상호 델타스킬 · 대표 송재형 · 사업자등록번호 345-62-00876 <a href="https://www.ftc.go.kr/bizCommPop.do?wrkr_no=3456200876" target="_blank" rel="noopener">사업자정보확인</a> · 통신판매업신고 제2026-서울서초-3410호</p>
   <p>주소 서울특별시 서초구 마방로10길 18-16, 4층(양재동, 진우빌딩) · 전화 070-8065-2468 · 이메일 <a href="mailto:admin@deltaskill.co.kr">admin@deltaskill.co.kr</a></p>
   <p>개인정보보호책임자 송재형 · 호스팅 제공자 GitHub, Inc.(GitHub Pages) · Supabase, Inc.(결제·다운로드 서버)</p>
-  <p class="src">자료 출처: 평가원 공개 자료 + EBSi 공개 채점 자료 · 판매 PDF는 델타스킬이 직접 제작한 콘텐츠입니다 · 디지털콘텐츠 환불(받기 전이면 결제일부터 7일 안 전액 환불 · 일부 받았으면 받지 않은 파일 비율만큼 7일 안 환불 · 받은 파일은 청약철회 제한) · 변형문항 이용권은 매월 자동 갱신(정기결제) · 그 밖의 상품은 단건 결제</p>
+  <p class="src">자료 출처: 평가원 공개 자료 + EBSi 공개 채점 자료 · 판매 PDF는 델타스킬이 직접 제작한 콘텐츠입니다 · 디지털콘텐츠 환불(받기 전이면 결제일부터 7일 안 전액 환불 · 일부 받았으면 받은 파일 값을 뺀 만큼 7일 안 환불 · 받은 파일은 청약철회 제한) · 변형문항 이용권은 매월 자동 갱신(정기결제) · 그 밖의 상품은 단건 결제</p>
   <p class="copy">© 2026 델타스킬. All rights reserved.</p>
 </div>
 </footer>
@@ -194,6 +195,7 @@ function renderOrder(box,o,cfg,email){
   var dl=document.createElement("dl");
   function row(k,v){if(v==null||v==="")return;var d=document.createElement("div"),t=document.createElement("dt"),x=document.createElement("dd");t.textContent=k;x.textContent=v;d.appendChild(t);d.appendChild(x);dl.appendChild(d);}
   row("주문번호",o.orderId);row("상품",o.orderName);
+  if(multi){var nb={};(o.files||[]).forEach(function(f){var m=/^(NS-[A-Z0-9]+-\d\d)-/.exec(f.id||"");if(m)nb[m[1]]=1;});var nbc=Object.keys(nb).length;if(nbc>1)row("담은 책",nbc+"권 · 파일 "+(o.files||[]).length+"개");}
   /* 내신 주문은 한 형식(형 11-04) — 주문한 형식만 들어 있다는 것을 다시 적는다. 수능 유형서 줄은 그대로 */
   var ns=(o.files||[]).filter(function(f){return /^NS-/.test(f.id);});
   if(ns.some(function(f){return f.fmt==="hwpx";})&&ns.some(function(f){return f.fmt==="pdf";}))row("파일 형식","PDF · 한글(HWPX)");
@@ -207,10 +209,13 @@ function renderOrder(box,o,cfg,email){
   if(multi&&policy){var refund=document.createElement("p");refund.className="hint";refund.textContent=policy.FULL_REFUND;box.appendChild(refund);}
   var h=document.createElement("h2");h.textContent="파일";h.style.marginTop="16px";box.appendChild(h);
   if(o.mode==="test"){var n=document.createElement("p");n.className="notice";n.textContent="테스트 결제 주문이라 실제로 청구되지 않았고 파일 내려받기는 열리지 않습니다. 실제 결제 주문은 이 자리에 파일과 내려받기 단추가 나옵니다.";box.appendChild(n);return;}
-  var w=document.createElement("p");w.className="hint";w.textContent=multi&&policy?policy.MULTI_DOWNLOAD:"받기 전이면 결제일부터 7일 안 전액 환불 · 일부 받았으면 받지 않은 파일 비율만큼 7일 안 환불 · 받은 파일은 청약철회 제한.";box.appendChild(w);
+  var w=document.createElement("p");w.className="hint";w.textContent=multi&&policy?policy.MULTI_DOWNLOAD:(ns.length?"받기 전이면 결제일부터 7일 안 전액 환불 · 일부 받았으면 결제금액에서 받은 파일 값(파일 하나 = 그 책 값의 3분의 1)을 뺀 만큼 7일 안 환불 · 받은 파일은 청약철회 제한.":"받기 전이면 결제일부터 7일 안 전액 환불 · 일부 받았으면 받은 파일 값을 뺀 만큼 7일 안 환불 · 받은 파일은 청약철회 제한.");box.appendChild(w);
   var ul=document.createElement("ul");ul.className="files";
   var msg=document.createElement("p");msg.className="msg";msg.setAttribute("role","status");
+  var lastBk=null;
   (o.files||[]).forEach(function(f){
+    var bk=multi&&/^(NS-[A-Z0-9]+-\d\d)-/.exec(f.id||"");
+    if(bk&&bk[1]!==lastBk){lastBk=bk[1];var hb=document.createElement("li");hb.className="bk";hb.textContent=String(f.title||bk[1]).replace(/ · [^·]*$/,"");ul.appendChild(hb);} /* 39 1119: 여러 권 주문은 책 이름 한 줄 + 그 책 파일 */
     var li=document.createElement("li"),s=document.createElement("span");
     s.textContent=f.title;
     if(f.downloaded){var g=document.createElement("span");g.className="tag";g.textContent="내려받음";s.appendChild(g);}
@@ -292,7 +297,7 @@ function renderOrder(box,o,cfg,email){
       say("로그인 상태를 확인한 뒤 주문 조회에서 확인해 주세요.",true);
       return;
     }
-    if(!apiBase(cfg)){$("ttl").textContent="결제 서버 연동 준비 중";say("결제 승인 서버가 아직 연결되지 않아 승인 요청을 보낼 수 없습니다. 주문번호: "+oid+HELP,true);return;}
+    if(!apiBase(cfg)){$("ttl").textContent="결제 서버에 연결할 수 없음";say("결제 승인 서버가 아직 연결되지 않아 승인 요청을 보낼 수 없습니다. 주문번호: "+oid+HELP,true);return;}
     /* 1106 나-22: 응답이 안 닿음(network) · 서버 오류(server) · 처리 중(busy) · 알 수 없는 응답은 승인이 이미 됐을 수 있다.
        이때는 주소의 결제 값을 지우지 않고 같은 값으로 다시 부른다 — 서버는 paid+같은 결제 키면 그 결과를, confirming+같은 결제 키면 토스 조회로 되살린다(confirm-payment 83-102).
        주문이 돌아왔거나(paid · waiting · review) 서버가 확정 오류를 주면 그때 결제 값을 지운다. */

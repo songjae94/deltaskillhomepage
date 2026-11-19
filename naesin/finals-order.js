@@ -4,8 +4,8 @@
   const UNIT_SKU = /^(NS-[A-Z0-9]+-\d{2})\.(pdf|hwpx)$/;
   const MAX_UNITS = 3;
   const MAX_CHARGE = 59000;
-  const FULL_REFUND = "여러 단원을 한 번에 결제한 주문은 주문 단위 전액 환불만 가능합니다.";
-  const MULTI_DOWNLOAD = "내려받기나 열람을 시작하면 주문 전체의 청약철회가 제한될 수 있습니다.";
+  const FULL_REFUND = "여러 권을 한 번에 결제한 주문도 받은 파일만 뺍니다. 환불액은 결제금액에서 받은 파일 값의 합(파일 하나 = 그 책 값의 3분의 1 · 원 아래 버림)을 뺀 금액입니다.";
+  const MULTI_DOWNLOAD = "내려받거나 열람한 파일은 청약철회가 제한되고, 받지 않은 파일 몫은 결제일부터 7일 안에 환불받을 수 있습니다.";
   const won = new Intl.NumberFormat("ko-KR");
   const money = amount => won.format(amount) + "원";
 

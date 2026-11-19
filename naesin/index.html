@@ -22,8 +22,8 @@
 <style>
 /* 색 토큰 — 로고 2색(번개 #D8281C · 기준선 #0B1F3A) + 중립 + 상태 초록 하나(시안 e/색.css · 형 답 11-04 「로고 색」) */
 :root{
-  --bg:#F7F8FC;--bg2:#F1F3F9;--bg3:#E9EDF5;--card:#ffffff;
-  --ink:#172B43;--ink2:#3A4A60;--muted:#5D6B80;--line:#DFE3ED;--line2:#C9D0DE;
+  --bg:#F7F8FC;--bg2:#F7F8FC;--bg3:#E9EDF5;--card:#ffffff;
+  --ink:#172B43;--ink2:#3C4A60;--muted:#5D6B80;--line:#DFE3ED;--line2:#C9D0DE;
   --accent:#245BD6;--accentH:#1D4DB8;--accentT:#245BD6;--accentSoft:#EAF0FD;
   --deep:#0B1F3A;--deepT:#0B1F3A;--deepSoft:#e9eef6;
   --ok:#0D5A2E;--okSoft:#e3f6ea;
@@ -158,7 +158,7 @@ details.more>summary,details.agd>summary{list-style:none}
 /* 31 창 1118 — 목록(과목 칩 · 단원 머리 · 상품 카드) */
 .chips{display:flex;gap:8px;overflow-x:auto;margin:0 0 22px;padding:2px 0 6px;scrollbar-width:none}
 .chips a{flex:none;display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--line2);background:var(--card);font-size:14px;font-weight:700;color:var(--ink2);text-decoration:none;white-space:nowrap}
-html main .chips a{color:#3A4A60!important}
+html main .chips a{color:#3C4A60!important}
 html main .chips a[aria-current="true"]{background:#172B43;border-color:#172B43;color:#fff!important}
 .unitgrp{margin:0 0 26px}
 .unitgrp h2{font-size:15px;font-weight:800;color:var(--muted);margin:0 0 10px;letter-spacing:-.01em}
@@ -239,24 +239,58 @@ a.btn.buy.pk-go:hover{background:#1D4DB8}
 .pk-item .pk-thumb{width:100%}
 .pk-item b{display:block;font-size:14px;line-height:1.35}.pk-item small{display:block;font-size:12.5px;color:#5B6678}.pk-item strong{display:block;font-size:16px;font-weight:800;margin-top:2px}
 .pk .fine{margin-top:18px}
+/* 담기(사본 · 39 1119) — 곁단추 = 흰 바탕 + 남색 안쪽 테두리 · 주 단추는 쪽마다 「구매하기」 / 「한 번에 결제」 */
+.pk-acts{display:flex;gap:8px;align-items:center;flex-wrap:nowrap}
+button.pk-add{min-height:48px;padding:0 16px;border-radius:10px;border:0;background:#fff;color:#172B43;box-shadow:inset 0 0 0 1px #172B43;font-size:15px;font-weight:700;cursor:pointer;white-space:nowrap}
+button.pk-add:hover{background:#EEF3FF}
+button.pk-add[aria-pressed="true"]{background:#EEF3FF;color:#245BD6;box-shadow:inset 0 0 0 1px #245BD6}
+button.pk-add.sm{min-height:44px;font-size:14px;padding:0 12px;width:100%}
+button.pk-add[aria-disabled="true"]{background:#F7F8FC;color:#5B6678;box-shadow:inset 0 0 0 1px #DFE3ED;cursor:not-allowed}
+.pk-cart .pk-full{color:#3C4A60;font-weight:650}.pk-cart .pk-full.on{color:#172B43}
+.pk-cartbar .pk-fullbar{font-weight:700;color:#172B43}
+.pk-itemw{display:flex;flex-direction:column;gap:8px;min-width:0}
+.pk-cart{margin-top:16px;padding:16px;border:1px solid #DFE3ED;border-radius:16px;background:#F7F8FC}
+.pk-cart h2{display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:700;color:#172B43;margin:0 0 8px}
+.pk-cart ul{list-style:none;margin:0;padding:0}
+.pk-cart li{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid #DFE3ED;font-size:13.5px;color:#172B43}
+.pk-cart li .nm{flex:1;min-width:0;line-height:1.4}
+.pk-cart li .pr{font-weight:700;white-space:nowrap}
+.pk-cart li button{min-height:44px;min-width:44px;padding:0 10px;border:0;border-radius:10px;background:transparent;color:#3C4A60;font-size:13px;font-weight:650;cursor:pointer}
+.pk-cart li button:hover{background:#EEF3FF;color:#245BD6}
+.pk-cart .tot{display:flex;justify-content:space-between;align-items:baseline;margin:10px 0 0;font-size:14px;color:#3C4A60}
+.pk-cart .tot b{font-size:20px;font-weight:800;color:#172B43}
+.pk-cart .pay{display:flex;width:100%;margin-top:10px;min-height:48px;border-radius:10px;justify-content:center;align-items:center;background:#245BD6;color:#fff;font-size:15px;font-weight:700;text-decoration:none}
+.pk-cart .pay:hover{background:#1D4DB8}
+.pk-cart .pay[aria-disabled="true"]{background:#DFE3ED;color:#3C4A60;pointer-events:none}
+.pk-cart .pk-note{margin-top:8px}
+.pk-cartbar{display:none}
 @media(max-width:860px){.pk-grid{grid-template-columns:minmax(0,1fr);gap:16px}.pk-view{order:-1}.pk-card{padding:16px}
   .pk-buy{position:fixed;left:0;right:0;bottom:0;z-index:25;margin:0;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:#fff;border-top:1px solid #DFE3ED;box-shadow:0 -4px 12px rgba(23,43,67,.08)}
   .pk-price{font-size:21px}
   main.wrap{padding-bottom:96px}
   .pk-sheet{padding:12px}
-  .pk-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  .pk-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pk-buy{flex-wrap:wrap;row-gap:8px}
+  .pk-buy .pk-acts{gap:6px}
+  .pk-buy button.pk-add{padding:0 12px;font-size:14px}
+  a.btn.buy.pk-go{padding:0 16px}
+  .pk-cartbar{display:flex;flex:1 1 100%;align-items:center;justify-content:space-between;gap:8px;font-size:13px;color:#3C4A60;border-top:1px solid #DFE3ED;padding-top:8px}
+  .pk-cartbar b{color:#172B43}
+  .pk-cartbar a.pk-paybar{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:10px;background:#245BD6;color:#fff;font-weight:700;text-decoration:none;white-space:nowrap}
+  .pk-cartbar a.pk-paybar[aria-disabled="true"]{background:#DFE3ED;color:#3C4A60;pointer-events:none}
+  html.has-cart main.wrap{padding-bottom:150px}}
 </style>
 <style id="biz-css">
 .biz{display:block;box-sizing:border-box;background:#05060f;color:#aab7ca;font:400 13px/1.8 "Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;letter-spacing:0;text-align:left;padding:24px 16px 36px;border-top:1px solid rgba(186,215,247,.16)}
 .biz>*{max-width:1080px;margin-left:auto;margin-right:auto}
 .biz p{margin:0 auto 6px;font-size:13px;line-height:1.8;color:#aab7ca;word-break:keep-all;overflow-wrap:anywhere}
-.biz a{color:#d1e4fa;text-decoration:underline;text-underline-offset:2px}
+.biz a{color:#EEF3FF;text-decoration:underline;text-underline-offset:2px}
 .biz .policy{display:flex;flex-wrap:wrap;gap:4px 6px;margin-bottom:12px}
 .biz .policy a{display:inline-flex;align-items:center;min-height:44px;padding:0 12px;font-size:14px;text-decoration:none;border-radius:8px}
 .biz .policy a.pp{background:transparent;color:#fff}
 .biz b{color:inherit}
 .biz .policy a.pp b{font-weight:700;color:#fff}
-.biz .copy{color:#8f9db3}
+.biz .copy{color:#aab7ca}
 footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 @media(max-width:640px){.hd-r a,.tg,.kick,.kick .n,.opt small,.opt .go,.tag,.pr,.mj,.pick .t small,.cnt,.conf dt,.conf dd small,.fine,.notice,.biz p,.biz a{font-size:14px}}   /* 1109 C3(점검표_개편판_1108): 640 아래 보조·가격·판매 안내 글 14px 이상 · 머리 링크 13→14 */
 </style>
@@ -276,8 +310,8 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   <details class="more" id="naesin-more"><summary>구매 안내(단건 결제 · 부가세 · 환불)</summary>
   <div class="notice">
     <p><b>기말고사 대비 내신 파일은 단원별로 판매합니다.</b> <span id="sale-note"></span></p>
-    <p><b>이번 기말은 단원별로 구매합니다.</b> 책 전체 묶음은 판매하지 않습니다. 상품 하나를 한 번에 결제합니다.</p>
-    <p>환불: 받기 전이면 결제일부터 7일 안 전액 환불 · 일부 받았으면 받지 않은 파일 비율만큼 7일 안 환불 · 받은 파일은 청약철회 제한.</p>
+    <p><b>이번 기말은 단원별로 구매합니다.</b> 책 전체 묶음은 판매하지 않습니다. 한 주문에 3권까지 담아 한 번에 결제할 수 있습니다.</p>
+    <p>환불: 받기 전이면 결제일부터 7일 안 전액 환불 · 일부 받았으면 결제금액에서 받은 파일 값(파일 하나 = 그 책 값의 3분의 1)을 뺀 만큼 7일 안 환불 · 받은 파일은 청약철회 제한.</p>
     <p>표시한 값은 부가세 포함입니다. 내신 파일 주문은 정기결제(자동 결제)가 아닌 단건 결제로, 주문마다 한 번 결제합니다. <a href="/refund/">환불·청약철회 안내</a> · <a href="/minor/">미성년자 구매 안내</a></p>
   </div>
   </details>
@@ -303,7 +337,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   <p>상호 델타스킬 · 대표 송재형 · 사업자등록번호 345-62-00876 <a href="https://www.ftc.go.kr/bizCommPop.do?wrkr_no=3456200876" target="_blank" rel="noopener">사업자정보확인</a> · 통신판매업신고 제2026-서울서초-3410호</p>
   <p>주소 서울특별시 서초구 마방로10길 18-16, 4층(양재동, 진우빌딩) · 전화 070-8065-2468 · 이메일 <a href="mailto:admin@deltaskill.co.kr">admin@deltaskill.co.kr</a></p>
   <p>개인정보보호책임자 송재형 · 호스팅 제공자 GitHub, Inc.(GitHub Pages) · Supabase, Inc.(결제·다운로드 서버)</p>
-  <p class="src">자료 출처: 평가원 공개 자료 + EBSi 공개 채점 자료 · 판매 PDF는 델타스킬이 직접 제작한 콘텐츠입니다 · 디지털콘텐츠 환불(받기 전이면 결제일부터 7일 안 전액 환불 · 일부 받았으면 받지 않은 파일 비율만큼 7일 안 환불 · 받은 파일은 청약철회 제한) · 변형문항 이용권은 매월 자동 갱신(정기결제) · 그 밖의 상품은 단건 결제</p>
+  <p class="src">자료 출처: 평가원 공개 자료 + EBSi 공개 채점 자료 · 판매 PDF는 델타스킬이 직접 제작한 콘텐츠입니다 · 디지털콘텐츠 환불(받기 전이면 결제일부터 7일 안 전액 환불 · 일부 받았으면 받은 파일 값을 뺀 만큼 7일 안 환불 · 받은 파일은 청약철회 제한) · 변형문항 이용권은 매월 자동 갱신(정기결제) · 그 밖의 상품은 단건 결제</p>
   <p class="copy">© 2026 델타스킬. All rights reserved.</p>
 </div>
 </footer>
@@ -461,7 +495,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   /* 받으면 제공 시작 — 약관 제11조 제8항 1 · 2 · 4호와 제5항에 맞춘 글. checkout/index.html 의 startText 와 글자가 같아야 한다(시험 합본_재기.mjs 가 잰다) */
   function startText(n,kind){
     if(n===1||(!n&&kind==="merged"))return "파일이 하나입니다. 내려받거나 사이트에서 열람하면 제공이 시작되어 그때부터 환불되지 않습니다(파일 오류 · 표시와 다른 경우는 제외). 받기 전이면 결제일로부터 7일 이내에 요청해 전액 환불받습니다.";
-    if(n>1||kind==="types")return "파일마다 따로 봅니다. 내려받거나 사이트에서 열람한 파일은 제공이 시작된 것으로 보고, 결제일로부터 7일 이내에 요청하면 받은 파일을 뺀 비율만큼 환불합니다(약관 제11조 제8항 4호). 기준값은 결제 때 상품 화면에 표시한 구성 단위별 금액으로 하고, 표시하지 않은 경우에는 문항 수로 합니다. 하나도 받기 전이면 전액 환불합니다.";
+    if(n>1||kind==="types")return "파일마다 따로 봅니다. 내려받거나 사이트에서 열람한 파일은 제공이 시작된 것으로 보고, 결제일로부터 7일 이내에 요청하면 결제금액에서 받은 파일 값의 합을 뺀 금액을 환불합니다(약관 제11조 제8항 4호). 파일 값은 그 책 값을 그 책의 파일 수로 나눈 금액(PDF 3파일이면 3분의 1)으로 하고, 받은 파일 값의 합에서 원 단위 미만은 버립니다. 하나도 받기 전이면 전액 환불합니다.";
     return "";
   }
   /* 그 형식 주문에 들어 있지 않은 것 — 고르기 · 확인 · 주문서 · 주문 조회가 같은 말을 쓴다 */
@@ -552,6 +586,35 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     /* 좁은 폭은 지면 칸이 고르기 칸 위에 있다 — 고르기 칸에서 누르면 바뀐 지면 칸을 바로 보이게 올린다 */
     if(side&&matchMedia("(max-width:860px)").matches){var v=APP.querySelector(".pk-view");if(v){var r=v.getBoundingClientRect();if(r.top<0||r.top>innerHeight*.5)v.scrollIntoView({block:"start",behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});}}
   }
+  /* 담기 — 이 브라우저에만 적어 둠(localStorage ds_cart_v1 · 책 SKU 와 형식) · 판매 중인 책만 남김 · 한 주문 최대 권 수는 주문서(finals-order.js)와 같은 값 */
+  var CART_KEY="ds_cart_v1";
+  function cartMax(){return (window.DeltaFinalsOrder&&window.DeltaFinalsOrder.MAX_UNITS)||3;}
+  function cartGet(bs){var a=[];try{a=JSON.parse(localStorage.getItem(CART_KEY)||"[]");}catch(_){a=[];}if(!Array.isArray(a))a=[];
+    var ok={};(bs||[]).forEach(function(b){ok[b.sku]=b;});return a.filter(function(k,i){return typeof k==="string"&&ok[k]&&a.indexOf(k)===i;}).slice(0,cartMax()).map(function(k){return ok[k];});}
+  var cartWarn=false; /* 4권째를 누르면 담지 않고 한 줄만 보임 */
+  function cartSave(list){try{localStorage.setItem(CART_KEY,JSON.stringify(list.map(function(b){return b.sku;})));}catch(_){}}
+  function cartToggle(bs,b){var l=cartGet(bs),i=-1;l.forEach(function(x,j){if(x.sku===b.sku)i=j;});if(i>=0){l.splice(i,1);cartWarn=false;}else if(l.length>=cartMax()){cartWarn=true;redraw();return;}else{l.push(b);cartWarn=false;}cartSave(l);redraw();}
+  function cartFull(bs){return cartGet(bs).length>=cartMax();}
+  function cartFullLine(){return cartMax()+"권까지 담을 수 있어요";}
+  function cartHref(l){var k=l.map(function(b){return b.sku+"."+b.fm;});if(window.DeltaFinalsOrder)return window.DeltaFinalsOrder.checkoutUrl(k);var q=new URLSearchParams();k.forEach(function(x){q.append(k.length===1?"sku":"skus",x);});return "/checkout/?"+q;}
+  function addBtn(bs,b,sm,fk){var on=cartGet(bs).some(function(x){return x.sku===b.sku;}),a=pkBtn("pk-add"+(sm?" sm":""),fk,on);a.textContent=on?"담음 · 빼기":"담기";if(!on&&cartFull(bs)){a.setAttribute("aria-disabled","true");a.title=cartFullLine();}a.setAttribute("aria-label",(on?"담은 책에서 빼기: ":"담기: ")+bookTitle(b));a.addEventListener("click",function(e){e.stopPropagation();cartToggle(bs,b);});return a;}
+  function cartPanel(bs){
+    var l=cartGet(bs);document.documentElement.classList.toggle("has-cart",l.length>0);if(!l.length)return null;
+    var box=el("section","pk-cart"),h=el("h2");box.setAttribute("aria-label","담은 책");h.appendChild(document.createTextNode("담은 책 · "+l.length+" / "+cartMax()+"권"));add(box,h);
+    var ul=el("ul"),sum=0;
+    l.forEach(function(b){sum+=b.price;var li=el("li");add(li,el("span","nm",bookTitle(b)),el("span","pr",won(b.price)));var rm=pkBtn("","rm-"+b.sku,null);rm.textContent="빼기";rm.setAttribute("aria-label","빼기: "+bookTitle(b));rm.addEventListener("click",function(){cartToggle(bs,b);});add(li,rm);add(ul,li);});
+    add(box,ul);var tot=el("p","tot");tot.appendChild(document.createTextNode("합계 · PDF "+l.length*3+"파일"));add(tot,el("b",null,won(sum)));add(box,tot);
+    var over=l.length>cartMax(),pay=el("a","pay",l.length>1?"한 번에 결제":"구매하기");pay.dataset.fk="pk-payall";
+    if(over){pay.setAttribute("aria-disabled","true");pay.removeAttribute("href");}else pay.href=cartHref(l);
+    add(box,pay);if(over||cartWarn||l.length>=cartMax()){var w=el("p","pk-note pk-full"+(cartWarn?" on":""),cartFullLine());w.setAttribute("role","status");add(box,w);}
+    return box;
+  }
+  function cartBar(bs){
+    var l=cartGet(bs);if(!l.length)return null;var sum=0;l.forEach(function(b){sum+=b.price;});
+    var bar=el("div","pk-cartbar"),t=el("span");if(cartWarn){t.className="pk-fullbar";t.setAttribute("role","status");t.appendChild(document.createTextNode(cartFullLine()));}else{t.appendChild(document.createTextNode("담은 책 "));add(t,el("b",null,l.length+"권 · "+won(sum)));}
+    var a=el("a","pk-paybar",l.length>1?"한 번에 결제":"구매하기");a.dataset.fk="pk-paybar";if(l.length>cartMax()){a.setAttribute("aria-disabled","true");}else a.href=cartHref(l);
+    add(bar,t,a);return bar;
+  }
   function pkBtn(cls,fk,on){var b=el("button",cls||null);b.type="button";b.dataset.fk=fk;if(on!=null)b.setAttribute("aria-pressed",String(!!on));return b;}
   /* 쪽 구성 첫 쪽 그림(리포 naesin/preview/<sku>-L1·L2·L4.png · 판매 판 PDF 첫 문항 쪽) — 없으면 미리보기 PDF 첫 쪽(2문항 2단)으로 */
   function layImg(b,k,alt,onFail){
@@ -622,9 +685,9 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     add(s4,c4,el("p","pk-note","세 쪽 구성 PDF 가 한 값에 모두 들어 있습니다."));add(side,s4);
     /* 값 + 구매하기 */
     var buy=el("div","pk-buy");
-    if(st.x){var pr=el("div","pk-price",won(st.x.price));add(pr,el("small",null,fmtName(st.x.fm)+" "+st.x.nf+"파일 · 부가세 포함"));var go1=el("a","btn buy pk-go","구매하기");go1.href="/checkout/?sku="+encodeURIComponent(st.x.sku+"."+st.x.fm);go1.dataset.fk="pk-buy";add(buy,pr,go1);}
+    if(st.x){var pr=el("div","pk-price",won(st.x.price));add(pr,el("small",null,fmtName(st.x.fm)+" "+st.x.nf+"파일 · 부가세 포함"));var go1=el("a","btn buy pk-go","구매하기");go1.href="/checkout/?sku="+encodeURIComponent(st.x.sku+"."+st.x.fm);go1.dataset.fk="pk-buy";var acts=el("div","pk-acts");add(acts,addBtn(bs,st.x,false,"pk-add"),go1);add(buy,pr,acts);}
     else add(buy,el("div","pk-price wait","책을 고르면 값이 보입니다."));
-    add(side,buy);
+    add(buy,cartBar(bs));add(side,buy,cartPanel(bs));
     if(st.x){var mo=el("p","pk-more"),bk=st.x.p.s.textbooks[0];if(bk){add(mo,link(null,{s:st.x.p.s.code,b:bk.id,p:"detail",c:st.x.p.c,u:st.x.no,v:"confirm",f:st.x.fm},"받을 내용 · 환불 자세히 →"));add(side,mo);}}
     /* 오른쪽 — 덜 골랐으면 그 범위의 책 묶음, 하나로 좁혀지면 그 책 지면 + 값 */
     if(st.x){
@@ -644,7 +707,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
       var list=st.p3.length?st.p3:st.p2.length?st.p2:st.pool,label=st.uk?list[0].sn+" "+list[0].no+" "+list[0].unit:st.g?st.g.name+" 변형 문제집":st.sc?list[0].sn:"지금 파는 책";
       add(view,el("h2",null,label+" · "+list.length+"종"),el("p","pk-sum","책을 누르면 지면과 값이 이 자리에 섭니다."));
       var ul=el("div","pk-list");
-      list.forEach(function(b){var it=pkBtn("pk-item","li-"+b.sku,null),tx=el("span","tx");add(tx,el("b",null,b.sn+" "+b.no+" "+b.unit),el("small",null,(b.ed?b.ed+" · ":"")+b.count+"문항"),el("strong",null,won(b.price)));add(it,thumb(b,bookTitle(b)+" 첫 쪽"),tx);it.addEventListener("click",function(){setPick({g:q.g,s:b.sc,u:b.no,x:b.sku,l:q.l});});add(ul,it);});
+      list.forEach(function(b){var it=pkBtn("pk-item","li-"+b.sku,null),tx=el("span","tx");add(tx,el("b",null,b.sn+" "+b.no+" "+b.unit),el("small",null,(b.ed?b.ed+" · ":"")+b.count+"문항"),el("strong",null,won(b.price)));add(it,thumb(b,bookTitle(b)+" 첫 쪽"),tx);it.addEventListener("click",function(){setPick({g:q.g,s:b.sc,u:b.no,x:b.sku,l:q.l});});var w=el("div","pk-itemw");add(w,it,addBtn(bs,b,true,"ad-"+b.sku));add(ul,w);});
       add(view,ul);
     }
     var fn=el("p","fine",refundLine()+" · ");var r=el("a",null,"환불 안내");r.href="/refund/";add(fn,r);add(wrap,fn);
@@ -652,7 +715,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     if(CFG&&CFG.PAY_MODE==="test"){var nt=document.getElementById("sale-note");if(nt)nt.textContent="지금은 결제 연동 점검 기간입니다. 「구매하기」로 열리는 결제는 테스트 결제이며 실제로 청구되지 않고 자료도 제공되지 않습니다.";}
     return f;
   }
-  function refundLine(){return "받기 전이면 결제일부터 7일 안 전액 환불 · 일부 받았으면 받지 않은 파일 비율만큼 7일 안 환불 · 받은 파일은 청약철회 제한";}
+  function refundLine(){return "받기 전이면 결제일부터 7일 안 전액 환불 · 일부 받았으면 결제금액에서 받은 파일 값(파일 하나 = 그 책 값의 3분의 1)을 뺀 만큼 7일 안 환불 · 받은 파일은 청약철회 제한";}
   /* ② 부교재(?s=CM2 · ?s=MI1) */
   function vBook(q,s){
     var f=document.createDocumentFragment();
@@ -924,7 +987,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
       ["단원","문항 수","쪽 구성","파일 수","값"].forEach(function(k){[].slice.call(dl.children).forEach(function(d){if(d.firstChild.textContent===k||(k==="단원"&&/^단원 \d+개$/.test(d.firstChild.textContent)))dl.appendChild(d);});}); /* 핵심 줄 차례: 무엇 → 몇 문항 → 파일 → 값 */
       var det=el("details","more");add(det,el("summary",null,"자세히 · 부교재 · 구성 · 제공 · 환불 · 상품 번호"),more);
       f.insertBefore(act,dl.nextSibling);
-      if(ok){var sm=el("p","sum1","단건 결제 · 결제 뒤 바로 내려받기 · 받기 전이면 결제일부터 7일 안 전액 환불 · 일부 받았으면 받지 않은 파일 비율만큼 7일 안 환불 · 받은 파일은 청약철회 제한 · ");var ra=el("a",null,"환불 안내");ra.href="/refund/";add(sm,ra);f.insertBefore(sm,act);}
+      if(ok){var sm=el("p","sum1","단건 결제 · 결제 뒤 바로 내려받기 · 받기 전이면 결제일부터 7일 안 전액 환불 · 일부 받았으면 결제금액에서 받은 파일 값(파일 하나 = 그 책 값의 3분의 1)을 뺀 만큼 7일 안 환불 · 받은 파일은 청약철회 제한 · ");var ra=el("a",null,"환불 안내");ra.href="/refund/";add(sm,ra);f.insertBefore(sm,act);}
       if(typeof mup!=="undefined"&&mup)f.insertBefore(mup,act);
       f.insertBefore(det,fine);det.appendChild(fine);
     }

@@ -190,7 +190,7 @@
   <p>상호 델타스킬 · 대표 송재형 · 사업자등록번호 345-62-00876 <a href="https://www.ftc.go.kr/bizCommPop.do?wrkr_no=3456200876" target="_blank" rel="noopener">사업자정보확인</a> · 통신판매업신고 제2026-서울서초-3410호</p>
   <p>주소 서울특별시 서초구 마방로10길 18-16, 4층(양재동, 진우빌딩) · 전화 070-8065-2468 · 이메일 <a href="mailto:admin@deltaskill.co.kr">admin@deltaskill.co.kr</a></p>
   <p>개인정보보호책임자 송재형 · 호스팅 제공자 GitHub, Inc.(GitHub Pages) · Supabase, Inc.(결제·다운로드 서버)</p>
-  <p class="src">자료 출처: 평가원 공개 자료 + EBSi 공개 채점 자료 · 판매 PDF는 델타스킬이 직접 제작한 콘텐츠입니다 · 디지털콘텐츠 환불(받기 전이면 결제일부터 7일 안 전액 환불 · 일부 받았으면 받지 않은 파일 비율만큼 7일 안 환불 · 받은 파일은 청약철회 제한) · 변형문항 이용권은 매월 자동 갱신(정기결제) · 그 밖의 상품은 단건 결제</p>
+  <p class="src">자료 출처: 평가원 공개 자료 + EBSi 공개 채점 자료 · 판매 PDF는 델타스킬이 직접 제작한 콘텐츠입니다 · 디지털콘텐츠 환불(받기 전이면 결제일부터 7일 안 전액 환불 · 일부 받았으면 받은 파일 값을 뺀 만큼 7일 안 환불 · 받은 파일은 청약철회 제한) · 변형문항 이용권은 매월 자동 갱신(정기결제) · 그 밖의 상품은 단건 결제</p>
   <p class="copy">© 2026 델타스킬. All rights reserved.</p>
 </div>
 </footer>
@@ -205,7 +205,7 @@
 const A = window.DSAuth, API = A.api, Q = new URLSearchParams(location.search);
 const weakPin = p => /^(\d)\1+$/.test(p) || "0123456789012345".includes(p) || "9876543210987654".includes(p);
 const pwNew = p => /^[\x21-\x7e]{8,64}$/.test(p) && /[A-Za-z]/.test(p) && /\d/.test(p);   // 서버 api_v11 pwNew 와 같다
-const DOC_VER = { privacy: "2026-11-14", terms: "2026-11-11" };
+const DOC_VER = { privacy: "2026-11-14", terms: "2026-11-19" }; /* 39 1119: 약관 개정판 시행일과 같게 */
 /* 카카오 간편 로그인(앱 ID 1601933 · REST API 키 = OAuth client_id · 공개값 · 도메인·리다이렉트 URI 로 잠김). 열쇠는 휴대폰 계정 — 카카오는 입구. */
 const KAKAO_CLIENT_ID = "0f1a0a20f693cd43efaea989b8c01156", KAKAO_REDIRECT = location.origin + "/auth/";
 /* 네이버 로그인(Client ID = 공개값 · 비밀값은 서버만). 비어 있으면 단추가 「준비 중」 안내. */
@@ -306,7 +306,7 @@ const so = otp("s", "enroll", () => $("s-phone").value, () => { $("s-step2").hid
 $("s-send").onclick = async () => {
   const r = await so.send($("s-send"), $("s-err1"));
   if (r === true) { $("s-step1").hidden = true; $("s-step2").hidden = false; $("st2").classList.add("on"); $("s-code").focus(); }
-  else if (r === "nosms") { S.nosms = true; so.T.phone = PH($("s-phone").value); $("s-step1").hidden = true; $("s-step3").hidden = false; $("st2").classList.add("on"); $("st3").classList.add("on"); $("s-verified").textContent = "휴대폰 문자 인증은 준비 중이에요 — 번호 " + fmt(so.T.phone) + " 로 가입합니다."; $("s-verified").className = "desc"; }
+  else if (r === "nosms") { S.nosms = true; so.T.phone = PH($("s-phone").value); $("s-step1").hidden = true; $("s-step3").hidden = false; $("st2").classList.add("on"); $("st3").classList.add("on"); $("s-verified").textContent = "휴대폰 문자 인증을 지금 쓸 수 없어요 — 번호 " + fmt(so.T.phone) + " 로 가입합니다."; $("s-verified").className = "desc"; }
 };
 $("s-check").onclick = () => so.check($("s-check"), $("s-err2"));
 $("s-back1").onclick = () => { $("s-step2").hidden = true; $("s-step1").hidden = false; $("st2").classList.remove("on"); };
@@ -407,7 +407,7 @@ const K = { link: "", nickname: "", role: "", grade: "", p: "kakao" };
 roleSeg("k-role", "k-stu", K);
 document.querySelectorAll("[data-oauth]").forEach(b => b.onclick = () => {
   const p = b.dataset.oauth;
-  if (p === "naver" && !NAVER_CLIENT_ID) { alert("네이버 로그인은 준비 중이에요. 카카오 또는 휴대폰 번호로 로그인해 주세요."); return; }
+  if (p === "naver" && !NAVER_CLIENT_ID) { alert("네이버 로그인은 지금 쓸 수 없어요. 카카오 또는 휴대폰 번호로 로그인해 주세요."); return; }
   const st = Array.from(crypto.getRandomValues(new Uint8Array(12)), x => x.toString(16).padStart(2, "0")).join("");
   try { sessionStorage.setItem("ds_oauth", JSON.stringify({ p, state: st, next })); } catch (_) {}
   location.href = p === "naver"
@@ -464,7 +464,7 @@ async function oauthCallback(code, state) {
     $("v-kakao").querySelector("h1").textContent = name + " 계정 연결";
     $("k-desc").textContent = (K.nickname ? K.nickname + " 님, " : "") + name + " 인증이 끝났어요. 처음 한 번만 휴대폰 번호를 확인하면, 다음부터는 " + name + " 단추 하나로 로그인됩니다.";
     show("kakao"); $("k-phone").focus();
-  } catch (e) { $("l-err").textContent = /not_deployed|_misconfig$/.test(String(e.message)) ? name + " 로그인은 준비 중이에요. 휴대폰 번호로 로그인해 주세요." : msg(e); }
+  } catch (e) { $("l-err").textContent = /not_deployed|_misconfig$/.test(String(e.message)) ? name + " 로그인은 지금 쓸 수 없어요. 휴대폰 번호로 로그인해 주세요." : msg(e); }
 }
 
 /* ── 비밀번호 보기 단추 ── */

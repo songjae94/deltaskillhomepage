@@ -108,7 +108,7 @@ header.ds-head {
     padding: 0 0 6px;
     gap: 0;
     justify-content: flex-start;
-    border-top: 1px solid #F0F2F7;
+    border-top: 1px solid #E6E9F0;
   }
   .ds-head .ds-menu a { padding: 0 9px; min-height: 44px; font-size: 14px; }
 }
@@ -138,7 +138,7 @@ footer.sitefoot .biz {
 }
 footer.sitefoot .biz > * { max-width: 1080px; margin-left: auto; margin-right: auto; }
 footer.sitefoot .biz p { margin: 0 auto 6px; font-size: 13px; line-height: 1.8; color: #aab7ca; word-break: keep-all; overflow-wrap: anywhere; }
-footer.sitefoot .biz a { color: #d1e4fa; text-decoration: underline; text-underline-offset: 2px; }
+footer.sitefoot .biz a { color: #EEF3FF; text-decoration: underline; text-underline-offset: 2px; }
 footer.sitefoot .biz .policy { display: flex; flex-wrap: wrap; gap: 4px 6px; margin-bottom: 12px; padding: 0; }
 footer.sitefoot .biz .policy a {
   display: inline-flex;
@@ -149,13 +149,13 @@ footer.sitefoot .biz .policy a {
   text-decoration: none;
   border-radius: 8px;
   background: transparent;
-  color: #d1e4fa;
+  color: #EEF3FF;
 }
 footer.sitefoot .biz .policy a:hover { background: #1A2740; }
 footer.sitefoot .biz .policy a.pp { background: transparent; color: #fff; margin: 0; padding: 0 12px; border: 0; border-bottom: 0; }
 footer.sitefoot .biz .policy a.pp b { font-weight: 800; color: #fff; }
 footer.sitefoot .biz b { color: inherit; }
-footer.sitefoot .biz .copy { color: #8f9db3; }
+footer.sitefoot .biz .copy { color: #aab7ca; }
 footer.sitefoot .ds-foot-short {
   box-sizing: border-box;
   max-width: 1120px;
@@ -169,7 +169,7 @@ footer.sitefoot .ds-foot-short {
   font: 400 14px/1.6 var(--ds-font);
 }
 footer.sitefoot .ds-foot-short nav { display: flex; flex-wrap: wrap; gap: 2px 16px; }
-footer.sitefoot .ds-foot-short nav a { display: inline-flex; align-items: center; min-height: 44px; color: #d1e4fa; text-decoration: none; }
+footer.sitefoot .ds-foot-short nav a { display: inline-flex; align-items: center; min-height: 44px; color: #EEF3FF; text-decoration: none; }
 footer.sitefoot .ds-foot-short + .biz { padding-top: 10px; }
 @media (max-width: 640px) {
   footer.sitefoot .biz p, footer.sitefoot .biz a { font-size: 14px; }
@@ -223,17 +223,17 @@ html body.payment-flow {
   letter-spacing: -.01em;
 }
 html body.payment-flow .card { border-radius: 16px; border: 1px solid #DFE3ED; box-shadow: none; }
-html body.payment-flow .band { box-shadow: none; border: 1px solid #C6D5F4; background: #EEF3FF; color: #172B43; border-radius: 10px; }
+html body.payment-flow .band { box-shadow: none; border: 1px solid #DFE3ED; background: #EEF3FF; color: #172B43; border-radius: 10px; }
 html body.payment-flow .msg.err { color: #B42318; }
 html body.payment-flow input { accent-color: #245BD6; }
 html body.payment-flow .in:focus { outline-color: #245BD6; }
 html body.payment-pass main section[data-step] { border-radius: 16px; border-color: #DFE3ED; }
-html body.payment-pass .flag { background: #EEF3FF; border: 1px solid #C6D5F4; border-radius: 10px; }
+html body.payment-pass .flag { background: #EEF3FF; border: 1px solid #DFE3ED; border-radius: 10px; }
 
 /* ── 약관 · 환불 · 개인정보 · 미성년 · 공지 쪽(밝은 판) ── */
 html body.ds-doc .wrap { color: #172B43; }
 html body.ds-doc th { background: #EEF2FA; }
-html body.ds-doc .callout { background: #EEF3FF; border-color: #C6D5F4; color: #3C4A60; }
+html body.ds-doc .callout { background: #EEF3FF; border-color: #DFE3ED; color: #3C4A60; }
 
 /* ── 입구 / (파란 그림 위) · 메인 판 /home.html — 판은 그대로, 로고 · 머리 글꼴 · 단추 색만 ── */
 html[data-ds-main] .entrance header .ds-logo { font-size: 24px; }
@@ -276,7 +276,7 @@ html[data-ds-sub] footer.business-footer .footer-shortcuts { color: #fff; font-w
 html[data-ds-sub] footer.business-footer .footer-shortcuts a,
 html[data-ds-sub] footer.business-footer .business-info nav a {
   display: inline-flex; align-items: center; min-height: 44px; padding: 0 10px; border-radius: 8px;
-  color: #d1e4fa; font-size: 14px; font-weight: 400; text-decoration: none;
+  color: #EEF3FF; font-size: 14px; font-weight: 400; text-decoration: none;
   border: 0; background: transparent;
 }
 html[data-ds-sub] header.ds-head nav a { border: 0; }
@@ -287,8 +287,8 @@ html[data-ds-sub] footer.business-footer .business-info nav a.pp b { color: #fff
 html[data-ds-sub] footer.business-footer .business-info nav a:hover,
 html[data-ds-sub] footer.business-footer .footer-shortcuts a:hover { background: #1A2740; }
 html[data-ds-sub] footer.business-footer .business-info p { margin: 0 0 6px; color: #aab7ca; word-break: keep-all; overflow-wrap: anywhere; }
-html[data-ds-sub] footer.business-footer .business-info p a { color: #d1e4fa; }
-html[data-ds-sub] footer.business-footer .business-info .copy { color: #8f9db3; }
+html[data-ds-sub] footer.business-footer .business-info p a { color: #EEF3FF; }
+html[data-ds-sub] footer.business-footer .business-info .copy { color: #aab7ca; }
 @media (max-width: 640px) {
   html[data-ds-sub] footer.business-footer .business-info p { font-size: 14px; }
 }
@@ -306,3 +306,24 @@ html[data-ds-sub] main .button.primary:hover { background: #1D4DB8; border-color
 html[data-ds-sub] main .panel { border-radius: 16px; border-color: #DFE3ED; }
 html[data-ds-sub] main .round-preview select { min-height: 44px; border: 1px solid #DFE3ED; border-radius: 10px; padding: 0 12px; background: #fff; }
 html[data-ds-sub] .intro h1 { color: #172B43; }
+html[data-ds-sub] .hero .intro h1 { color: #fff; } /* 39 1119: 남색 hero 위 제목이 같은 남색이라 안 보이던 것(features teacher · prediction) */
+
+/* ── 39 1119 전 화면 점검: 예상 분석 hero 오른쪽 칸의 흰 글 링크가 옅은 바탕 위라 안 보이던 것 ── */
+html[data-ds-sub] .hero .paperCover.paper-text { color: #172B43; align-items: center; padding: 32px 20px; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+
+/* ── 39 1119 전 화면 점검: 누름 자리 44px(메인 · 공부하기 · 분석 · 기능 소개 · 안내 · 도입 · 리포트 · 주문서) ── */
+.live-home .toolbar .roles button, .live-home .toolbar .exams button { min-height: 44px; min-width: 44px; }
+.live-home .season-jump, .live-home .case-route, .live-home #allBooks, .live-home nav#chapters a { display: inline-flex; align-items: center; min-height: 44px; }
+.live-home .featureNav select, .live-home .timedModes button { min-height: 44px; }
+html[data-ds-sub] .crumb a { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px; }
+html[data-ds-sub] #views button, html[data-ds-sub] #steps button, html[data-ds-sub] .h-actions button { min-height: 44px; }
+html[data-ds-sub] footer.wide a, footer .footer-shortcuts a { display: inline-flex; align-items: center; min-height: 44px; }
+.flinks a { display: inline-flex; align-items: center; min-height: 44px; }
+html[data-ds-sub] p.studio a, html[data-ds-sub] .variant a.ref, html[data-ds-sub] .next-step { display: inline-flex; align-items: center; min-height: 44px; }
+html[data-ds-sub] .routes .btn, html[data-ds-sub] .return-nav a { display: flex; align-items: center; min-height: 44px; box-sizing: border-box; }
+html[data-ds-sub] details.caseAnswer > summary { padding-top: 9px; padding-bottom: 9px; }
+details.agd > summary { min-height: 44px; }
+.live-home nav.level-start a { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; }
+html[data-ds-sub] .comparison nav a, html[data-ds-sub] nav.seg a { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; }
+html[data-ds-sub] #study-nav a, .flinks a { min-width: 44px; justify-content: center; }
+#acct a { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px; }
