@@ -15,12 +15,14 @@
     }
   }
 
-  function sheet(box, url, alt) {
-    if (!url || !window.DSSheet) return;
-    const fill = () => box.append(window.DSSheet.img(url, 1, alt));
-    if (!('IntersectionObserver' in window)) { fill(); return; }
-    const io = new IntersectionObserver((seen) => { if (seen.some((e) => e.isIntersecting)) { io.disconnect(); fill(); } }, { rootMargin: '300px' });
-    io.observe(box);
+  /* 지면 첫 쪽 = 리포 그림 naesin/preview/<sku>-L2.png(판매 판 2문항 2단 첫 쪽) · 없으면 미리보기 PDF 첫 쪽을 pdf.js 로 */
+  function sheet(box, sku, url, alt) {
+    if (!box) return;
+    const i = document.createElement('img');
+    i.alt = alt; i.decoding = 'async'; i.loading = 'lazy'; i.draggable = false; i.className = 'ds-sheet on';
+    i.addEventListener('error', () => { i.remove(); if (url && window.DSSheet) box.append(window.DSSheet.img(url, 1, alt)); }, { once: true });
+    i.src = '/naesin/preview/' + encodeURIComponent(sku) + '-L2.png?v=39-1119';
+    box.append(i);
   }
 
   if (shelf && window.DSOnSale) {
@@ -35,13 +37,13 @@
         const name = document.createElement('strong'); name.textContent = p.name;
         const meta = document.createElement('small'); meta.textContent = p.grade + ' · ' + (p.count ? p.count + '문항 · ' : '') + p.price.toLocaleString('ko-KR') + '원';
         tx.append(name, meta); a.append(pic, tx);
-        sheet(pic, p.preview, p.name + ' 첫 쪽');
+        sheet(pic, p.sku, p.preview, p.name + ' 첫 쪽');
         return a;
       }));
       shelf.hidden = false;
       if (proof) {
         proof.href = '/naesin/?x=' + encodeURIComponent(items[0].sku);
-        sheet(proof.querySelector('.lesson-sheet'), items[0].preview, items[0].name + ' 첫 쪽');
+        sheet(proof.querySelector('.lesson-sheet'), items[0].sku, items[0].preview, items[0].name + ' 첫 쪽');
       }
     });
   }

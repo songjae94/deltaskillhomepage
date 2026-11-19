@@ -1,32 +1,32 @@
 html #journey{
- --hero-base:#f7faff;--hero-light:#e9f1ff;--hero-shade:#eef3fb;
- --hero-white:#1b2b43;--hero-accent:#315cac;--hero-body:#4a607a;--hero-line:#afbed2;
- background:linear-gradient(115deg,#fff 12%,#f2f7ff 65%,#e8f0fc);
- color:#1b2b43;
+ --hero-base:#F7F8FC;--hero-light:#EEF3FF;--hero-shade:#EEF3FF;
+ --hero-white:#172B43;--hero-accent:#245BD6;--hero-body:#5B6678;--hero-line:#DFE3ED;
+ background:linear-gradient(115deg,#fff 12%,#F7F8FC 65%,#EEF3FF);
+ color:#172B43;
 }
 html[data-palette=ink] #journey{
- --hero-base:#f9faff;--hero-light:#edf0ff;--hero-shade:#f0f2fc;
- --hero-white:#242e4a;--hero-accent:#4256ac;--hero-body:#515e7b;--hero-line:#b8bfd8;
- background:linear-gradient(115deg,#fff 12%,#f5f6ff 65%,#e9eeff);
+ --hero-base:#F7F8FC;--hero-light:#EEF3FF;--hero-shade:#EEF3FF;
+ --hero-white:#172B43;--hero-accent:#245BD6;--hero-body:#5B6678;--hero-line:#DFE3ED;
+ background:linear-gradient(115deg,#fff 12%,#F7F8FC 65%,#EEF3FF);
 }
 html #journey .roles{background:#fff;border-color:var(--hero-line)}
 html #journey :is(.roles,.exams) button[aria-pressed=true]{background:var(--hero-light);color:var(--hero-white)}
 html #journey #primary{background:var(--hero-accent);color:#fff}
 html #journey #secondary{background:#fff;color:var(--hero-white)}
-html #journey #primary:hover{background:#244589}
+html #journey #primary:hover{background:#1D4DB8}
 html #journey .roles button:hover{color:var(--hero-white)}
 
 /* Same clear blue as the entrance, on a bright reading surface. */
 html #journey,html[data-palette=ink] #journey{
- --hero-base:#f7fbff;--hero-light:#e6f2ff;--hero-shade:#edf6ff;
- --hero-white:#14334f;--hero-accent:#0966b4;--hero-body:#49647b;--hero-line:#c1d8ea;
- background:linear-gradient(115deg,#fff 12%,#f2f9ff 65%,#e8f4ff);color:#14334f;
+ --hero-base:#F7F8FC;--hero-light:#EEF3FF;--hero-shade:#EEF3FF;
+ --hero-white:#172B43;--hero-accent:#245BD6;--hero-body:#5B6678;--hero-line:#DFE3ED;
+ background:linear-gradient(115deg,#fff 12%,#F7F8FC 65%,#EEF3FF);color:#172B43;
 }
-body>header{background:#fff;border-bottom-color:#dae8f2;color:#14334f}
+body>header{background:#fff;border-bottom-color:#DFE3ED;color:#172B43}
 .mast img{width:132px;height:auto}.colorSwitch{display:none}
-html #journey #primary:hover{background:#075392}
-html #journey .exams button:hover{background:#e6f2ff;color:#14334f}
+html #journey #primary:hover{background:#1D4DB8}
+html #journey .exams button:hover{background:#EEF3FF;color:#172B43}
 @media(max-width:600px){.mast img{width:112px}}
 
 html body .mast .colorSwitch{display:none}
-html #journey :is(#filmToggle,#filmStudy span){background:#075392;color:#fff}
+html #journey :is(#filmToggle,#filmStudy span){background:#1D4DB8;color:#fff}

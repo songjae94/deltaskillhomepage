@@ -79,7 +79,7 @@ function setScreen(remember){
   extra.textContent=student?(exam==='csat'?'수능 100분 실전 풀기 ↗':'내신 50분 실전 풀기 ↗'):'수업 자료 이용 안내 ↗';
   const guide='guide/index.html?'+new URLSearchParams({exam,audience:role});
   extra.href=student?'study/index.html?exam='+exam+'&minutes='+(exam==='csat'?100:50)+'#timed':guide;
-  one('#navStudy').href=studyUrl();one('#navBooks').href=materialsUrl();one('#navGuide').href=guide;
+  for(const [q,h] of [['#navStudy',studyUrl()],['#navBooks',materialsUrl()],['#navGuide',guide]]){const n=one(q);if(n)n.href=h;} /* 39 1119: 메인 머리 = 다른 쪽과 같은 ds-head(내신 자료 · 이용권 · 주문 조회 · 계정) — 옛 칸은 없을 수 있음 */
   one('#allBooks').href=materialsUrl();one('#schoolBooks').href=materialsUrl('school');one('#csatBooks').href=materialsUrl('csat');
   const example=one('#educator-preview');
   example.hidden=common||student;
@@ -109,6 +109,7 @@ if(legacyTeacher||['#workspace','#story'].includes(location.hash))window.addEven
 
 const account=one('#member-account');
 function updateLoginReturn(){
+  if(!account)return; /* 계정 칸은 /auth.js 가 #authnav 로 채움 */
   account.href='/auth/?next='+encodeURIComponent(location.pathname+location.search+location.hash);
 }
 window.addEventListener('delta-view', updateLoginReturn);

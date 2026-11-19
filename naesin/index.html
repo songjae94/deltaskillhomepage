@@ -507,7 +507,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
      왼쪽에서 무엇을 누르든 오른쪽이 그 자리에서 바뀐다(형 「교재를 고르면 오른쪽에 보여져야 한다」): 덜 골랐으면 그 범위의 책 묶음 · 책 하나로 좁혀지면 그 책 지면 + 값.
      교재 이름은 공개 파일에 없다 — 로그인 뒤 서버 이름표(DSTextbook.names · member-library textbooks)로만 묶는다. 이름 기록이 없는 책은 「교재 없이 고르기」로만 보인다.
      고른 상태는 주소 인수 g(교재 · 0 = 교재 없이) · s(과목) · u(단원) · x(책) · l(쪽 구성)에 남긴다(뒤로 가기 됨). 구매하기는 지금과 같은 /checkout/?sku= 길 · 받을 내용 확인(상세) 쪽은 그대로. */
-  var TB=null,TBwait=false,PG={sku:null,n:1};
+  var TB=null,TBwait=false,PG={sku:null,n:0}; /* n 0 = 고른 쪽 구성의 첫 쪽 그림 · 1.. = 미리보기 PDF 쪽 */
   function tbLoad(){
     if(TB||TBwait||!authed()||!window.DSTextbook||!DSTextbook.names)return;
     TBwait=true;DSTextbook.names().then(function(n){TB=n||{};TBwait=false;if(APP.dataset.view==="subject")redraw();});
@@ -553,7 +553,14 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     if(side&&matchMedia("(max-width:860px)").matches){var v=APP.querySelector(".pk-view");if(v){var r=v.getBoundingClientRect();if(r.top<0||r.top>innerHeight*.5)v.scrollIntoView({block:"start",behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});}}
   }
   function pkBtn(cls,fk,on){var b=el("button",cls||null);b.type="button";b.dataset.fk=fk;if(on!=null)b.setAttribute("aria-pressed",String(!!on));return b;}
-  function thumb(b,alt){var t=el("span","pk-thumb");if(b.pv&&window.DSSheet)add(t,DSSheet.img(b.pv.url,1,alt||""));return t;}
+  /* 쪽 구성 첫 쪽 그림(리포 naesin/preview/<sku>-L1·L2·L4.png · 판매 판 PDF 첫 문항 쪽) — 없으면 미리보기 PDF 첫 쪽(2문항 2단)으로 */
+  function layImg(b,k,alt,onFail){
+    var i=document.createElement("img");i.alt=alt||"";i.decoding="async";i.draggable=false;i.className="ds-sheet on";
+    i.addEventListener("contextmenu",function(e){e.preventDefault();});
+    i.addEventListener("error",function(){if(onFail)onFail();if(b.pv&&window.DSSheet){var r=DSSheet.img(b.pv.url,1,alt||"");if(i.parentNode)i.parentNode.replaceChild(r,i);}else i.classList.remove("on");},{once:true});
+    i.src="/naesin/preview/"+encodeURIComponent(b.sku)+"-L"+k+".png?v=39-1119";return i;
+  }
+  function thumb(b,alt){var t=el("span","pk-thumb");add(t,layImg(b,"2",alt||""));return t;}
   function bookTitle(b){return b.sn+" "+b.no+" "+b.unit+(b.ed?" · "+b.ed:"");}
   function step(n,title){var sec=el("section","pk-step"),h=el("h2");add(h,el("i","pk-n",String(n)));h.appendChild(document.createTextNode(title));add(sec,h);return sec;}
   function vPick(q){
@@ -611,7 +618,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     lays.forEach(function(lf){var k=layKey(lf),c=pkBtn("","l-"+k,!!st.x&&!!cl&&layKey(cl)===k),m=el("span","pk-mini"+(k==="2"?" l2":k==="4"?" l4":""));
       for(var i=0;i<(k==="4"?4:k==="2"?2:1);i++)add(m,el("i"));
       add(c,m);c.appendChild(document.createTextNode(lf.layout));if(st.x&&lf.pages)add(c,el("small",null,lf.pages+"쪽"));
-      c.addEventListener("click",function(){setPick(nq({l:k}),1);});add(c4,c);});
+      c.addEventListener("click",function(){PG.n=0;setPick(nq({l:k}),1);});add(c4,c);});
     add(s4,c4,el("p","pk-note","세 쪽 구성 PDF 가 한 값에 모두 들어 있습니다."));add(side,s4);
     /* 값 + 구매하기 */
     var buy=el("div","pk-buy");
@@ -622,14 +629,17 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     /* 오른쪽 — 덜 골랐으면 그 범위의 책 묶음, 하나로 좁혀지면 그 책 지면 + 값 */
     if(st.x){
       var x=st.x,hd=el("div","pk-vh"),ht=el("div");add(ht,el("h2",null,bookTitle(x)),el("p","pk-sum",x.count+"문항 · "+fmtName(x.fm)+" "+x.nf+"파일"+(TB&&TB[x.sku]?" · "+TB[x.sku]:"")));add(hd,ht,el("strong","pk-vp",won(x.price)));add(view,hd);
-      if(PG.sku!==x.sku){PG.sku=x.sku;PG.n=1;}
-      var sh=el("div","pk-sheet"),pg=el("div","pk-page");
-      if(x.pv&&window.DSSheet)add(pg,DSSheet.img(x.pv.url,PG.n,bookTitle(x)+" 미리보기 "+PG.n+"쪽"));
+      if(PG.sku!==x.sku){PG.sku=x.sku;PG.n=0;}
+      var lk2=cl?layKey(cl):"2",sh=el("div","pk-sheet"),pg=el("div","pk-page"),meta=el("p","pk-meta"),lname=cl?cl.layout:"2문항 2단";
+      function metaLay(){meta.textContent="A4 · "+lname+(cl&&cl.pages?" "+cl.pages+"쪽":"")+" · 첫 쪽";}
+      if(PG.n===0){add(pg,layImg(x,lk2,bookTitle(x)+" "+lname+" 첫 쪽",function(){meta.textContent="A4 · "+lname+(cl&&cl.pages?" "+cl.pages+"쪽":"")+" · 그림은 2문항 2단 첫 쪽";}));metaLay();}
+      else{if(x.pv&&window.DSSheet)add(pg,DSSheet.img(x.pv.url,PG.n,bookTitle(x)+" 미리보기 "+PG.n+"쪽"));meta.textContent="A4 · 2문항 2단 미리보기 "+PG.n+"쪽(화면에서만)";}
       add(sh,pg);add(view,sh);
-      if(x.pv&&x.pv.pages>1&&window.DSSheet){var th=el("div","pk-thumbs");th.setAttribute("aria-label","미리보기 쪽");
-        for(var n=1;n<=x.pv.pages;n++)(function(n){var t=pkBtn("","pg-"+n,PG.n===n);t.setAttribute("aria-label","미리보기 "+n+"쪽");add(t,DSSheet.img(x.pv.url,n,""));t.addEventListener("click",function(){PG.n=n;redraw();});add(th,t);})(n);
-        add(view,th);}
-      add(view,el("p","pk-meta","A4"+(cl?" · "+cl.layout+(cl.pages?" "+cl.pages+"쪽":""):"")+(x.pv?" · 미리보기 "+x.pv.pages+"쪽(화면에서만)":"")));
+      var th=el("div","pk-thumbs");th.setAttribute("aria-label","미리보기 쪽");
+      var t0=pkBtn("","pg-0",PG.n===0);t0.setAttribute("aria-label",lname+" 첫 쪽");add(t0,layImg(x,lk2,""));t0.addEventListener("click",function(){PG.n=0;redraw();});add(th,t0);
+      if(x.pv&&x.pv.pages>1&&window.DSSheet)for(var n=2;n<=x.pv.pages;n++)(function(n){var t=pkBtn("","pg-"+n,PG.n===n);t.setAttribute("aria-label","미리보기 "+n+"쪽");add(t,DSSheet.img(x.pv.url,n,""));t.addEventListener("click",function(){PG.n=n;redraw();});add(th,t);})(n);
+      if(th.children.length>1)add(view,th);
+      add(view,meta);
     }else{
       var list=st.p3.length?st.p3:st.p2.length?st.p2:st.pool,label=st.uk?list[0].sn+" "+list[0].no+" "+list[0].unit:st.g?st.g.name+" 변형 문제집":st.sc?list[0].sn:"지금 파는 책";
       add(view,el("h2",null,label+" · "+list.length+"종"),el("p","pk-sum","책을 누르면 지면과 값이 이 자리에 섭니다."));

@@ -11,7 +11,7 @@
     const selector=document.querySelector('#paletteChoice');
     if(selector)selector.value=value;
     const meta=document.querySelector('meta[name="theme-color"]');
-    if(meta)meta.content=value==='ink'?'#f8f7fc':'#fbfaf5';
+    if(meta)meta.content='#fff';
   }
   const initial='ink';
   apply(initial);

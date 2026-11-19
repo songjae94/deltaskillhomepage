@@ -13,3 +13,6 @@
 .lesson-sheet{width:min(380px,100%);margin:0 auto}
 @media(max-width:600px){.sale-card{flex-basis:170px}}
 #lesson-studio .lesson-proof a{padding:18px;align-items:center;color:#172B43;font-weight:700}
+/* 39 1119: 판매 책 줄이 든 칸은 줄 폭(가로 밀기)에 칸이 늘지 않게 — 375 에서 .chapterStage 격자 열이 720px 로 커져 오른쪽이 잘리던 것 */
+#library .chapterStage{grid-template-columns:minmax(0,1fr)}
+.sale-shelf{min-width:0}

@@ -3,6 +3,7 @@
   const toggle = document.querySelector('#menu-toggle');
   const mobile = matchMedia('(max-width: 760px)');
 
+  if (menu && toggle) { /* 39 1119: 메인 머리가 ds-head 로 바뀌어 옛 「전체 메뉴」 칸이 없으면 건너뜀 */
   function setMenu(open) {
     toggle.setAttribute('aria-expanded', String(mobile.matches && open));
     menu.hidden = mobile.matches && !open;
@@ -20,6 +21,7 @@
     }
   });
   setMenu(false);
+  }
 
   function syncLinks() {
     for (const link of document.querySelectorAll('[data-free-round]')) {
@@ -34,7 +36,7 @@
     }
   }
 
-  document.querySelector('#paletteChoice').addEventListener('change', syncLinks);
+  document.querySelector('#paletteChoice')?.addEventListener('change', syncLinks);
   window.addEventListener('delta-view', syncLinks);
   syncLinks();
 })();

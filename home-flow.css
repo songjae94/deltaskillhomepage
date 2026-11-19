@@ -1,20 +1,20 @@
 #menu-toggle { display: none; }
 #more-menu { display: flex; gap: inherit; }
 #more-menu[hidden] { display: none; }
-.lesson-availability, #lesson-example-note { max-width: 33em; font-size: 14px; line-height: 1.55; color: #e0e6f2; }
+.lesson-availability, #lesson-example-note { max-width: 33em; font-size: 14px; line-height: 1.55; color: #DFE3ED; }
 .lesson-availability { margin-top: 16px; }
 .lesson-availability strong { color: #fff; }
 .lesson-availability a, .library-free a { text-decoration: underline; text-underline-offset: 4px; }
 #lesson-example-note { margin-bottom: 14px; }
 .library-free { margin: 12px 0; font-size: 15px; }
 #proof-open { position: relative; padding: 0; background: transparent; cursor: zoom-in; }
-#proof-open span { position: absolute; bottom: 10px; right: 10px; background: #fff; color: #1b2d49; border: 1px solid #bcc8dc; border-radius: 8px; padding: 8px 12px; line-height: 1.4; font-size: 14px; font-weight: 700; }
-#proof-dialog { width: min(860px, 96vw); max-width: none; max-height: 92dvh; padding: 0; background: #f0f3f8; color: #1b2d49; border: 1px solid #bac7d7; border-radius: 12px; }
-#proof-dialog::backdrop { background: #102237cc; }
-.proof-modal-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; padding: 8px 12px; background: #fff; border-bottom: 1px solid #bac7d7; }
+#proof-open span { position: absolute; bottom: 10px; right: 10px; background: #fff; color: #172B43; border: 1px solid #DFE3ED; border-radius: 10px; padding: 8px 12px; line-height: 1.4; font-size: 14px; font-weight: 700; }
+#proof-dialog { width: min(860px, 96vw); max-width: none; max-height: 92dvh; padding: 0; background: #EEF3FF; color: #172B43; border: 1px solid #DFE3ED; border-radius: 12px; }
+#proof-dialog::backdrop { background: #172b43cc; }
+.proof-modal-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; padding: 8px 12px; background: #fff; border-bottom: 1px solid #DFE3ED; }
 .proof-modal-head [role=group] { display: flex; gap: 4px; }
-.proof-modal-head button { min-height: 44px; padding: 6px 12px; background: #e9eef5; border-radius: 6px; }
-.proof-modal-head button[aria-pressed=true] { background: #1b2d49; color: #fff; }
+.proof-modal-head button { min-height: 44px; padding: 6px 12px; background: #EEF3FF; border-radius: 10px; }
+.proof-modal-head button[aria-pressed=true] { background: #172B43; color: #fff; }
 .proof-scroll { overflow: auto; max-height: calc(92dvh - 105px); }
 #proof-large { display: block; margin: 0 auto; width: 800px; max-width: none; height: auto; }
 @media (max-width: 760px) {
@@ -22,8 +22,8 @@
   .live-home .mast nav { align-items: center; gap: 5px; font-size: 13px; white-space: nowrap; }
   .live-home .mast img { width: 76px; }
   .live-home .mast nav a, #menu-toggle { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 7px; }
-  #menu-toggle { border: 1px solid var(--line); border-radius: 8px; background: #fff; }
-  #more-menu { position: absolute; z-index: 10; top: 100%; right: 0; min-width: 128px; flex-direction: column; gap: 0; padding: 4px; background: #fff; border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 5px 20px #142b4824; }
+  #menu-toggle { border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+  #more-menu { position: absolute; z-index: 10; top: 100%; right: 0; min-width: 128px; flex-direction: column; gap: 0; padding: 4px; background: #fff; border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 5px 20px #172b4324; }
   .lesson-proof .proof-head button { min-height: 44px; }
   #proof-large { width: 650px; }
 }
@@ -32,4 +32,8 @@
   .live-home .mast nav a, #menu-toggle { padding-inline: 5px; }
 }
 
-.proof-scroll-hint{margin:0;padding:8px 14px;font-size:13px;color:#52647e;background:#f2f5fa}
+.proof-scroll-hint{margin:0;padding:8px 14px;font-size:13px;color:#5B6678;background:#EEF3FF}
+
+/* 39 1119: 메인 머리 = 다른 쪽과 같은 ds-head(site-unify) — 메인 판 폭에 맞춰 로고 · 메뉴 끝을 본문과 같은 줄에 */
+.live-home header.ds-head .ds-head-in { max-width: none; width: min(1400px, calc(100% - 7vw)); padding: 0; }
+@media (max-width: 760px) { .live-home header.ds-head .ds-head-in { width: calc(100% - 32px); } }

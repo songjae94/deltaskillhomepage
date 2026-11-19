@@ -1,4 +1,4 @@
-html .live-home #journey{height:auto;min-height:0;background:#fff;--hero-white:#172f45;--hero-body:#627486;--hero-accent:#0966b4;--hero-light:#e8f2fc;--hero-line:#dce4eb}
+html .live-home #journey{height:auto;min-height:0;background:#fff;--hero-white:#172B43;--hero-body:#5B6678;--hero-accent:#245BD6;--hero-light:#EEF3FF;--hero-line:#DFE3ED}
 html .live-home #journey .stage{position:relative;top:auto;height:auto;max-height:none;min-height:0;padding:22px 0 24px;background:#fff}
 html .live-home #journey .canvas{display:grid;grid-template-columns:minmax(290px,.78fr) minmax(0,1.35fr);gap:48px;align-items:center;height:auto;min-height:640px;overflow:visible;position:relative}
 html .live-home #journey .intro{position:static!important;transform:none!important;opacity:1!important;width:auto!important;max-width:none;padding:25px 0;visibility:visible!important}
@@ -7,13 +7,13 @@ html .live-home #journey #desc{font-size:16px;line-height:1.8;max-width:380px}
 html .live-home #journey .canvas>:is(.desk,#filmStudy,#filmToggle,.tablet,.workLabel){display:none!important}
 html .live-home #journey .actions,html .live-home #journey #extra{display:none}
 .hero-routes{display:grid;gap:10px;margin-top:28px;max-width:370px}
-.hero-route{display:flex;align-items:center;justify-content:space-between;text-align:left;padding:16px 18px;background:#fff;border:1px solid #dce4eb;border-radius:12px;color:#172f45;font-size:16px;font-weight:650;cursor:pointer}
-.hero-route[aria-pressed=true]{border-color:#0966b4;background:#edf5fd;color:#075392}.hero-route span{font-size:19px}
-.live-workspace{min-width:0;background:#f3f6f8;padding:12px;border:1px solid #e0e7ed;border-radius:20px;box-shadow:0 12px 36px #17334d08}
-.workspace-top{display:flex;justify-content:space-between;align-items:center;padding:5px 7px 13px;font-size:13px;color:#63798a}.workspace-top strong{color:#263e53;font-weight:650}
-.live-workspace iframe{display:block;width:100%;height:535px;border:1px solid #e0e7ed;border-radius:12px;background:#f5f7f9}
-.workspace-bottom{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:14px 5px 3px;font-size:12px;color:#627486}
-.workspace-open{display:inline-flex;align-items:center;gap:16px;padding:12px 17px;border-radius:9px;color:#fff;background:#0966b4;font-size:14px;font-weight:650;white-space:nowrap}
+.hero-route{display:flex;align-items:center;justify-content:space-between;text-align:left;padding:16px 18px;background:#fff;border:1px solid #DFE3ED;border-radius:12px;color:#172B43;font-size:16px;font-weight:650;cursor:pointer}
+.hero-route[aria-pressed=true]{border-color:#245BD6;background:#EEF3FF;color:#1D4DB8}.hero-route span{font-size:19px}
+.live-workspace{min-width:0;background:#F7F8FC;padding:12px;border:1px solid #DFE3ED;border-radius:20px;box-shadow:0 12px 36px #172b4308}
+.workspace-top{display:flex;justify-content:space-between;align-items:center;padding:5px 7px 13px;font-size:13px;color:#5B6678}.workspace-top strong{color:#172B43;font-weight:650}
+.live-workspace iframe{display:block;width:100%;height:535px;border:1px solid #DFE3ED;border-radius:12px;background:#F7F8FC}
+.workspace-bottom{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:14px 5px 3px;font-size:12px;color:#5B6678}
+.workspace-open{display:inline-flex;align-items:center;gap:16px;padding:12px 17px;border-radius:10px;color:#fff;background:#245BD6;font-size:14px;font-weight:650;white-space:nowrap}
 html .live-home #journey .footline{position:static;margin-top:24px}
 @media(max-width:900px){html .live-home #journey .canvas{grid-template-columns:1fr;gap:24px;min-height:0}html .live-home #journey .intro{padding:15px 0 0}html .live-home #journey #title{font-size:34px;margin:14px 0}html .live-home #journey #desc{max-width:550px}.hero-routes{max-width:none;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:20px}.hero-route{padding:14px 10px;font-size:14px}.hero-route span{display:none}.live-workspace iframe{height:540px}}
 @media(max-width:600px){html .live-home #journey .stage{width:calc(100% - 32px);padding-top:14px}html .live-home #journey #title{font-size:31px}html .live-home #journey #desc{font-size:14px}.live-workspace{padding:8px;border-radius:15px}.live-workspace iframe{height:490px}.workspace-bottom{align-items:flex-start;flex-direction:column;gap:10px}.workspace-open{justify-content:center;width:100%}.workspace-top{font-size:12px}.hero-routes{grid-template-columns:repeat(3,1fr)}html .live-home .roles button{padding:8px 12px}.live-home .mast nav{gap:12px;font-size:12px}.live-home .mast img{width:104px}}

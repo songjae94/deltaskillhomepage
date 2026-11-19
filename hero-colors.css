@@ -1,22 +1,22 @@
 /* The introduction borrows its forest and blue tones from the lesson spreads. */
 #journey {
-  --hero-base: #123c34;
-  --hero-light: #29564a;
-  --hero-shade: #102f2c;
-  --hero-white: #fffdf5;
-  --hero-accent: #c4eccd;
-  --hero-body: #dde9e1;
-  --hero-line: #729589;
+  --hero-base: #172B43;
+  --hero-light: #3C4A60;
+  --hero-shade: #172B43;
+  --hero-white: #fff;
+  --hero-accent: #DFE3ED;
+  --hero-body: #DFE3ED;
+  --hero-line: #5B6678;
   background: linear-gradient(115deg, var(--hero-base) 10%, var(--hero-light) 72%, var(--hero-shade));
   color: var(--hero-white);
 }
 html[data-palette=ink] #journey {
-  --hero-base: #1c2f56;
-  --hero-light: #344e7a;
-  --hero-shade: #182641;
-  --hero-accent: #c5dbff;
-  --hero-body: #e1e8f6;
-  --hero-line: #849ac1;
+  --hero-base: #172B43;
+  --hero-light: #1D4DB8;
+  --hero-shade: #172B43;
+  --hero-accent: #DFE3ED;
+  --hero-body: #DFE3ED;
+  --hero-line: #5B6678;
 }
 #journey .stage { background: transparent; color: var(--hero-white); }
 #journey .intro #title em { color: var(--hero-accent); }

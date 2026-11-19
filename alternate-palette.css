@@ -2,20 +2,20 @@
    and illustration surrounds; photographic assets and printed pages retain their colours. */
 html[data-palette="ink"] {
   --paper: #f7f8fc;
-  --ink: #182142;
-  --muted: #51586f;
-  --line: #d4d4e0;
-  --soft: #f0f2fa;
+  --ink: #172B43;
+  --muted: #5B6678;
+  --line: #DFE3ED;
+  --soft: #EEF3FF;
   --sub: var(--muted);
-  --deep: #192342;
-  --pine: #1b2d49;
-  --green: #1b2d49;
-  --lime: #e5e9ef;
-  --ink-cobalt: #1b2d49;
-  --ink-cobalt-hover: #101e33;
-  --ink-on-dark: #eeecff;
-  --ink-lavender: #e5e9ef;
-  --ink-lilac-text: #34445b;
+  --deep: #172B43;
+  --pine: #172B43;
+  --green: #172B43;
+  --lime: #DFE3ED;
+  --ink-cobalt: #172B43;
+  --ink-cobalt-hover: #172B43;
+  --ink-on-dark: #EEF3FF;
+  --ink-lavender: #DFE3ED;
+  --ink-lilac-text: #3C4A60;
   color: var(--ink);
   background-color: var(--paper);
   accent-color: var(--ink-cobalt);
@@ -24,27 +24,27 @@ html[data-palette="ink"] {
   & header { color: var(--ink); background-color: #ffffff; border-color: var(--line); }
   & :is(button,input,select,textarea) { accent-color: var(--ink-cobalt); }
   & :is(select,textarea,input[type="text"],#book,.field input,.featureNav select) {
-    color: var(--ink); background-color: #fff; border-color: #9294ab;
+    color: var(--ink); background-color: #fff; border-color: #5B6678;
   }
   & :is(button,a,select,summary,textarea,input):focus-visible,
   & .type-pick summary:focus-visible, & .technology summary:focus-visible,
   & #library[data-shelf-motion] .book:focus-visible,
-  & .seg input:focus-visible + span { outline-color: #7453c4; }
-  & :is(.brandline,.kicker,.card small,.featureNav label) { color: #3944a0; }
+  & .seg input:focus-visible + span { outline-color: #245BD6; }
+  & :is(.brandline,.kicker,.card small,.featureNav label) { color: #1D4DB8; }
   & .brandline i { background-color: var(--ink-cobalt); }
-  & .brandline span { color: #696785; }
+  & .brandline span { color: #5B6678; }
   & :is(.intro > p:not(.brandline),.footline,.technology small,.book small,.book p,.card em,.eyeline,.tablet-name,figcaption,header span,#selection) {
     color: var(--muted);
   }
-  & .footline i { background-color: #bcc0d2; }
+  & .footline i { background-color: #DFE3ED; }
 
   /* Entry controls and the underside of the white tablet. */
-  & .roles { background-color: #f0eef6; border-color: #cbc9db; }
+  & .roles { background-color: #EEF3FF; border-color: #DFE3ED; }
   & .roles button, & .exams button { color: var(--ink); }
   & .roles button[aria-pressed="true"] { background-color: var(--ink); color: #fff; }
   & .exams button[aria-pressed="true"] { background-color: var(--ink-lavender); color: var(--ink-lilac-text); }
   & #rolePicker .roles { background-color: transparent; }
-  & #rolePicker button { background-color: #f5f2fc; border-color: #aaa6c3; color: var(--ink); }
+  & #rolePicker button { background-color: #EEF3FF; border-color: #DFE3ED; color: var(--ink); }
   & #rolePicker button:hover { background-color: var(--ink-lavender); border-color: var(--ink-cobalt); }
   & #rolePicker small { color: var(--muted); }
   & .canvas #title em { color: var(--ink-cobalt); }
@@ -54,24 +54,24 @@ html[data-palette="ink"] {
   & .actions #secondary, & .workLabel button {
     background-color: var(--ink-lavender); color: var(--ink-lilac-text);
   }
-  & #library { background-color: #eeedf6; border-color: #d4d1df; }
-  & #library .book { border-color: #d4d2df; }
+  & #library { background-color: #EEF3FF; border-color: #DFE3ED; }
+  & #library .book { border-color: #DFE3ED; }
   & #library[data-shelf-motion] .book { border-color: transparent; }
-  & #library[data-shelf-motion] .book::before { background-color: #ffffff; border-color: #d4d2df; }
-  & .cover.c1 { background-color: #d3d9f4; }
-  & .cover.c2 { background-color: #e3daf2; }
-  & .featureChooser, & .technology { background-color: #f6f3fa; border-color: var(--line); }
+  & #library[data-shelf-motion] .book::before { background-color: #ffffff; border-color: #DFE3ED; }
+  & .cover.c1 { background-color: #DFE3ED; }
+  & .cover.c2 { background-color: #DFE3ED; }
+  & .featureChooser, & .technology { background-color: #EEF3FF; border-color: var(--line); }
   & .technology :is(details,li), & .featureNav nav a { border-color: var(--line); }
 
   /* Alternating full-bleed scenes keep their photographic content untouched. */
   & .predictionChapter, & .hero, & .feature, & .order {
     background-color: var(--deep); color: #fff;
   }
-  & .teacherChapter { background-color: #e7ebfc; color: var(--ink); }
-  & .notesChapter { background-color: #f1ebfb; color: var(--ink); }
-  & .paperShot { background-color: #535d91; }
-  & .teacherShot { background-color: #bdc8e5; }
-  & .noteShot { background-color: #d8cdec; }
+  & .teacherChapter { background-color: #EEF3FF; color: var(--ink); }
+  & .notesChapter { background-color: #EEF3FF; color: var(--ink); }
+  & .paperShot { background-color: #5B6678; }
+  & .teacherShot { background-color: #DFE3ED; }
+  & .noteShot { background-color: #DFE3ED; }
   & .chapterLink, & #notePlay {
     background-color: var(--ink-cobalt); color: #fff;
   }
@@ -79,16 +79,16 @@ html[data-palette="ink"] {
     background-color: var(--ink-lavender); color: var(--ink-lilac-text);
   }
   & .predictionChapter :is(.brandline,.kicker), & .hero .kicker, & .eyebrow {
-    color: #d2cbff;
+    color: #DFE3ED;
   }
-  & .hero p:not(.kicker), & .feature p, & .order p { color: #e5e6f5; }
-  & .paperCover, & .image { background-color: #d9def4; }
-  & .hero.teacher { background-color: #202d55; }
-  & .orderlink { color: #e0d8ff; }
-  & .fileicon, & .fileicon::after { border-color: #c6bcff; }
+  & .hero p:not(.kicker), & .feature p, & .order p { color: #DFE3ED; }
+  & .paperCover, & .image { background-color: #DFE3ED; }
+  & .hero.teacher { background-color: #172B43; }
+  & .orderlink { color: #DFE3ED; }
+  & .fileicon, & .fileicon::after { border-color: #DFE3ED; }
   & .choice, & .card, & .book, & .box, & .panel { border-color: var(--line); }
   & .card:hover, & .btn:hover { border-color: var(--ink-cobalt); }
-  & .shelf .book:hover { background-color: #f5f3ff; }
+  & .shelf .book:hover { background-color: #EEF3FF; }
   & .receipt, & .timerBand, & .tag, & .hint, & .equation { background-color: var(--soft); }
   & .tag, & .hint { color: var(--ink-lilac-text); }
   & .choice:has(:checked), & .design:has(input:checked) {
@@ -103,28 +103,28 @@ html[data-palette="ink"] {
     background-color: var(--ink-cobalt-hover); border-color: var(--ink-cobalt-hover); color: #fff;
   }
   & .action.secondary, & .button.bright, & .hero .action {
-    background-color: var(--ink-lavender); color: var(--ink-lilac-text); border-color: #c6bee9;
+    background-color: var(--ink-lavender); color: var(--ink-lilac-text); border-color: #DFE3ED;
   }
-  & .action.secondary:hover, & .button.bright:hover, & .hero .action:hover { background-color: #cec5fa; color: #262055; }
-  & .paper, & .sheet { border-color: #d5d2df; }
+  & .action.secondary:hover, & .button.bright:hover, & .hero .action:hover { background-color: #DFE3ED; color: #172B43; }
+  & .paper, & .sheet { border-color: #DFE3ED; }
   & .paperhead { border-color: var(--ink); }
   & .sample small { color: var(--muted); }
-  & .sample .line, & .space { border-color: #c6c4d1; }
-  & .tools, & .workspace figure { background-color: #efedf8; border-color: var(--line); }
-  & #enlarge { background-color: #f7f8fc; border-color: #c2bfd3; box-shadow: 0 3px 9px #24244a19; }
+  & .sample .line, & .space { border-color: #DFE3ED; }
+  & .tools, & .workspace figure { background-color: #EEF3FF; border-color: var(--line); }
+  & #enlarge { background-color: #f7f8fc; border-color: #DFE3ED; box-shadow: 0 3px 9px #172b4319; }
   & #enlarge span { background-color: white; color: var(--ink); border-color: var(--line); }
-  & .seg { background-color: #f0eef7; border-color: var(--line); }
+  & .seg { background-color: #EEF3FF; border-color: var(--line); }
   & .seg :checked + span, & .seg [aria-current="true"] { background-color: var(--ink-cobalt); color: #fff; }
   & .feedback { border-color: var(--ink-cobalt); }
 
   /* The learning embed uses the tablet class on the document element. */
   &.tablet, &.tablet body, &.tablet .sheet { background-color: #fff; }
-  &.tablet .tablet-bar { background-color: #eef1f5; border-color: #d8d5e5; }
+  &.tablet .tablet-bar { background-color: #EEF3FF; border-color: #DFE3ED; }
   &.tablet .tablet-name, &.tablet .question { color: var(--ink); }
   &.tablet .tablet-bar nav [aria-current] { color: var(--ink-cobalt); background-color: #fff; }
   &.tablet .kicker, &.tablet .choice span { color: var(--muted); }
-  &.tablet .equation { background-color: #f6f7f9; border-color: var(--line); }
+  &.tablet .equation { background-color: #F7F8FC; border-color: var(--line); }
   &.tablet .choice:has(:checked) { background-color: var(--ink-lavender); border-color: var(--ink-cobalt); }
-  &.tablet .choice:focus-within { outline-color: #7453c4; }
+  &.tablet .choice:focus-within { outline-color: #245BD6; }
   &.tablet #answer-form > .action { background-color: var(--ink-cobalt); border-color: var(--ink-cobalt); color: #fff; }
 }
