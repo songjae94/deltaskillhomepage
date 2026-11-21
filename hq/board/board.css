@@ -94,6 +94,7 @@ body{overflow-wrap:anywhere}
 .login input,.edit input,.edit select{box-sizing:border-box;width:100%;min-height:44px}
 .login button,.edit button{min-height:44px}
 .login button.p{width:100%;margin-top:14px}
+#login-form details{display:none}
 .edit{margin:8px 0 0}
 .edit summary{cursor:pointer;color:#1d4ed8}
 .edit select,.edit input{border:1px solid #a0aab9;border-radius:6px;padding:7px 10px;font:inherit;background:white;color:#172137}
