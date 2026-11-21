@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; connect-src https://cvlrphtupjmaefahodgz.supabase.co; base-uri 'none'; form-action 'none'; object-src 'none'">
+  <title>상황판 · 델타스킬</title>
+  <link rel="stylesheet" href="./board.css">
+  <script src="./board.js" defer></script>
+</head>
+<body>
+<main>
+  <h1>상황판 <span id="period" class="pill" hidden></span></h1>
+  <section id="login" class="login box">
+    <form id="login-form" method="post">
+      <label for="password">상황판 비밀번호</label>
+      <input id="password" type="password" autocomplete="current-password" required maxlength="200">
+      <details id="worker-login">
+        <summary>내 작업 상태도 수정하기</summary>
+        <label for="worker-id">작업자 아이디</label>
+        <input id="worker-id" name="username" autocomplete="username" maxlength="40" autocapitalize="off" spellcheck="false">
+        <label for="worker-password">작업자 비밀번호</label>
+        <input id="worker-password" type="password" autocomplete="current-password" maxlength="256">
+      </details>
+      <button class="p" type="submit">들어가기</button>
+      <p id="login-error" class="err" role="status"></p>
+    </form>
+  </section>
+  <section id="board" hidden>
+    <div class="bar">
+      <p id="updated"></p>
+      <div><button id="refresh" type="button">새로고침</button> <button id="logout" type="button">로그아웃</button></div>
+    </div>
+    <p id="feedback" role="status"></p>
+    <div class="legend box">✅ 끝 · 🔎 점검 대기 · ⛔ 막힘 · ⬜ 할 일</div>
+    <h2>한눈에 <span id="totals" class="pill"></span></h2>
+    <div class="box wrap" tabindex="0" aria-label="가로로 스크롤할 수 있는 주간 격자"><table class="grid" id="grid"></table></div>
+    <h2>날짜별</h2>
+    <div id="days"></div>
+    <h2>작업자별 남은 차례</h2>
+    <ul class="box remaining" id="remaining"></ul>
+  </section>
+</main>
+</body>
+</html>
