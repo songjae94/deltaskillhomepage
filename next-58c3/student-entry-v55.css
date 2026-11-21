@@ -1,0 +1,58 @@
+/* Subject > unit: graphite book spine, paper keys, and an untouched white question sheet. */
+.sl54-shell{--sl55-charcoal:#283036;--sl55-silver:#a8b1b8;--sl55-paper:#f9f9f5}
+.sl54-shell .sl54-heading h1{font-size:clamp(30px,3vw,38px)!important;line-height:1.24!important;letter-spacing:-.055em!important;text-wrap:balance;max-width:18ch}
+.sl54-shell .sl54-entry-grid{grid-template-columns:286px minmax(0,1fr);gap:26px;align-items:start}
+.sl54-shell .sl54-unit-side{position:relative;isolation:isolate;min-width:0;padding:22px 17px 19px 23px;border:1px solid #171e24;border-top-color:#657078;border-left:5px solid #151d24;border-radius:5px 9px 9px 5px;background:linear-gradient(105deg,#1c252d 0,#343d44 6%,#2a333a 13%,#242d34 100%);box-shadow:inset 1px 0 0 #76818a66,inset 0 1px 0 #ffffff24,2px 3px 0 #151e27,0 12px 22px #1927351b;color:#f0f3f5}
+.sl54-shell .sl54-unit-side:before{content:'';position:absolute;inset:0;z-index:-1;border-radius:inherit;background:url('assets/textures/graphite-weave-v50.svg') repeat;background-size:150px;opacity:.12;pointer-events:none;mix-blend-mode:soft-light}
+.sl54-shell .sl54-unit-side:after{content:'';position:absolute;top:18px;bottom:18px;left:8px;width:1px;background:linear-gradient(transparent,#b4bdc244 15%,#b4bdc244 85%,transparent);pointer-events:none}
+.sl54-shell .sl55-subjects{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;padding:4px;margin:0 0 22px;background:#131c23;border:1px solid #151e25;border-bottom-color:#5f6a7355;border-radius:4px;box-shadow:inset 0 2px 4px #0c131c70}
+.sl54-shell .sl55-subjects button{display:flex;align-items:center;justify-content:center;min-height:44px;min-width:0;padding:8px 3px;border:1px solid transparent;border-radius:2px;background:none;color:#bbc5cd;font-size:11px;font-weight:600;letter-spacing:-.055em;line-height:1.5;white-space:normal;word-break:keep-all;overflow-wrap:anywhere;box-shadow:none}
+.sl54-shell .sl55-subjects button:hover{color:#fff;background:#34434e}
+.sl54-shell .sl55-subjects button[aria-pressed=true]{color:#243442;border-color:#f3f4f3 #b7c0c5 #8d9aa4;background:linear-gradient(#fff,#e9eeef);box-shadow:0 2px 1px #080e155c,inset 0 1px 0 #fff;text-shadow:0 1px #fff}
+.sl54-shell .sl54-small-heading{padding:0 2px 13px;border-bottom-color:#73808a4d;font-size:12px;color:#e7ecef}
+.sl54-shell .sl54-small-heading strong{font-weight:550;letter-spacing:-.02em}
+.sl54-shell .sl54-small-heading span{color:#b0bec8;font-size:10px}
+.sl54-shell .sl54-units{display:flex;flex-direction:column;gap:10px;margin-top:15px}
+.sl54-shell .sl54-units>button{position:relative;min-width:0;min-height:79px;padding:15px 12px;gap:10px;align-items:center;border:1px solid #f8f9f6;border-bottom:3px solid #aeb9bf;border-radius:4px;background:linear-gradient(115deg,#fff,#edf0ef);box-shadow:inset 0 1px 0 #fff,0 2px 0 #131e28,0 5px 8px #10192036;color:#35424d}
+.sl54-shell .sl54-units>button>span:not(.sl54-unit-no){min-width:0}
+.sl54-shell .sl54-units strong{font-size:15px;font-weight:700;letter-spacing:-.045em;line-height:1.5;overflow-wrap:anywhere}
+.sl54-shell .sl54-units small{color:#697784;font-size:10px;line-height:1.6;margin-top:4px}
+.sl54-shell .sl54-unit-no{font-size:10px;color:#71808a;align-self:center;padding-top:0}
+.sl54-shell .sl54-units i{color:#71808a;font-size:16px;flex-shrink:0}
+.sl54-shell .sl54-units>button:hover{background:linear-gradient(#fff,#f3f5f3);transform:translateY(-1px)}
+.sl54-shell .sl54-units>button[aria-pressed=true]{color:#192d40;border-color:#fff;border-bottom-color:#7c8e9c;background:linear-gradient(110deg,#fff 65%,#e9eff2);box-shadow:inset 3px 0 0 #405a70,inset 0 1px 0 #fff,0 2px 0 #111c26,0 6px 10px #10192045}
+.sl54-shell .sl54-units>button[aria-pressed=true] .sl54-unit-no,.sl54-shell .sl54-units>button[aria-pressed=true] i{color:#344f65}
+.sl54-shell .sl54-units>button:active{transform:translateY(2px);box-shadow:inset 0 2px 4px #1b293b15,0 1px 0 #111c26}
+.sl54-shell .sl54-source-note{padding:17px 2px 0;color:#b0bac2;font-size:10px;line-height:1.8}
+.sl54-shell .sl54-start-card{min-width:0;border-radius:6px;border-color:#bec9cf;box-shadow:0 2px 0 #d7dde0,0 15px 30px #26354a0b}
+.sl54-shell .sl54-start-heading{background:linear-gradient(120deg,#fff,#f3f5f5)}
+.sl54-shell .sl54-start-heading>div{min-width:0}
+.sl54-shell .sl54-start-heading h2{overflow-wrap:anywhere}
+.sl54-shell .sl54-paper-desk{background:linear-gradient(115deg,#dde3e6,#eef0f0)}
+.sl54-shell .sl54-paper-desk:before{background:none}
+.sl54-shell .sl54-paper-preview{border-color:#c5cbd0;border-radius:0;box-shadow:2px 2px 0 #fcfcfa,3px 3px 0 #c2cbd1,5px 5px 0 #f9faf8,6px 6px 0 #c9d1d6,0 12px 24px #23344220}
+/* One small binder clip on the margin; it never crosses the question or equations. */
+.sl54-shell[data-sl-view=entry] .sl54-paper-preview:after{content:'';position:absolute;z-index:2;right:18px;top:-9px;width:33px;height:16px;border:1px solid #17232d;border-top:4px solid #aab4ba;border-bottom:3px solid #131d25;border-radius:3px 3px 5px 5px;background:linear-gradient(90deg,#202a32,#53616c 46%,#27343e);box-shadow:inset 0 1px 0 #c7d0d777,1px 3px 3px #162a3e33;pointer-events:none}
+.sl54-shell .sl54-start-footer{background:#fcfdfc}
+.sl54-shell .sl54-primary:not(:disabled){border-color:#172633;border-top-color:#647580;border-bottom-color:#101d28;background:linear-gradient(135deg,#344753dd,#182c3bed),url('assets/textures/teacher-key-surface-v50.svg') center/320px 270px;color:#fff;box-shadow:inset 0 1px 0 #d7e0e733,inset 1px 0 0 #ffffff16,0 3px 0 #101e2a,0 7px 13px #2137492b}
+.sl54-shell .sl54-primary:not(:disabled):active{box-shadow:inset 0 2px 4px #08121b77,0 1px 0 #101e2a}
+.sl54-shell .sl54-primary>span{color:#e4edf2}
+.sl54-shell .sl54-unit-side button:focus-visible{outline:3px solid #e2ecf3;outline-offset:4px}
+/* Completed attempts: question and solution keep their own white paper column. */
+.sl54-shell .sl55-next-actions{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;margin:20px 0}
+.sl54-shell .sl55-next-actions>*{min-width:0;max-width:100%}
+.sl54-shell .sl55-learn-layout{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;align-items:start;min-width:0;margin:22px 0}
+.sl54-shell .sl55-learn-layout>*{min-width:0;max-width:100%}
+.sl54-shell .sl55-learn-layout>.sl54-solution{margin:0;padding:24px;border:1px solid #c9d0da;border-radius:4px;background:#fff;box-shadow:0 3px 0 #e1e5eb,0 12px 30px #26374d0b}
+.sl54-shell .sl55-learn-layout .sl54-source{max-width:100%}
+.sl54-shell .sl55-question-tabs{display:flex;gap:8px;overflow-x:auto;max-width:100%;min-width:0;margin:20px 0;padding:4px 2px 10px;scrollbar-width:thin;scroll-padding-inline:5px;overscroll-behavior-inline:contain}
+.sl54-shell .sl55-question-tabs button{flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px;min-width:72px;padding:10px 14px;border:1px solid #c8d1d8;border-bottom:2px solid #a6b4bf;border-radius:4px;background:linear-gradient(#fff,#edf0f2);box-shadow:inset 0 1px #fff;color:#405669;font-size:12px;line-height:1.5}
+.sl54-shell .sl55-question-tabs button[aria-selected=true],.sl54-shell .sl55-question-tabs button[aria-pressed=true],.sl54-shell .sl55-question-tabs button.is-current{color:#fff;border-color:#293e50;border-bottom-color:#142738;background:linear-gradient(#40596c,#2b4255);box-shadow:inset 0 1px #ffffff35}
+.sl54-shell .sl55-question-tabs button small{font-size:10px;opacity:.8}
+.sl54-shell .sl55-study-prompt{margin:22px 0 0;padding:15px 0 0;border-top:1px solid #d9dfe4;color:#657486;font-size:12px;line-height:1.8}
+.sl54-shell .sl55-learn-footer{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:18px 0 8px;border-top:1px solid #cbd4dc}
+.sl54-shell .sl55-learn-footer>span{font-size:11px;line-height:1.7;color:#6b7a89}
+@media(max-width:700px){.sl54-shell .sl55-learn-footer{flex-direction:column;align-items:stretch;gap:14px}.sl54-shell .sl55-learn-footer .sl54-primary{width:100%}.sl54-shell .sl54-units{grid-template-columns:1fr}}
+@media(min-width:701px) and (max-width:1000px){.sl54-shell .sl54-entry-grid{grid-template-columns:250px minmax(0,1fr);gap:20px}.sl54-shell .sl54-unit-side{padding-left:19px;padding-right:13px}.sl54-shell .sl55-subjects{gap:2px}.sl54-shell .sl55-subjects button{font-size:10px}.sl54-shell .sl55-learn-layout{grid-template-columns:1fr}}
+@media(max-width:700px){.sl54-shell .sl54-heading{position:relative;display:block;padding-right:0}.sl54-shell .sl54-heading h1{font-size:30px!important;max-width:17ch;line-height:1.26!important;margin-top:9px!important}.sl54-shell .sl54-heading p{max-width:none;padding-right:0}.sl54-shell .sl54-history-link{display:inline-flex;align-items:center;gap:7px;min-height:36px;margin-top:9px;padding:6px 0;font-size:11px}.sl54-shell .sl54-entry-grid{grid-template-columns:minmax(0,1fr);gap:21px}.sl54-shell .sl54-unit-side{padding:17px 14px 15px 20px;border-radius:4px 7px 7px 4px}.sl54-shell .sl55-subjects{margin-bottom:18px;gap:5px}.sl54-shell .sl55-subjects button{font-size:12px;min-height:44px;letter-spacing:-.04em;padding:8px 4px}.sl54-shell .sl54-small-heading{padding-bottom:11px;font-size:11px}.sl54-shell .sl54-units{gap:9px;margin-top:12px}.sl54-shell .sl54-units>button{min-height:65px;padding:11px 13px;gap:12px}.sl54-shell .sl54-units strong{font-size:15px}.sl54-shell .sl54-units small{font-size:10px;margin-top:3px}.sl54-shell .sl54-unit-no{font-size:10px}.sl54-shell .sl54-source-note{padding-top:13px;font-size:9px}.sl54-shell .sl54-start-heading{flex-wrap:wrap;gap:10px;padding:18px}.sl54-shell .sl54-count-badge{font-size:10px;padding:7px 9px}.sl54-shell .sl54-start-footer{padding:5px 18px 19px;gap:0}.sl54-shell .sl54-start-footer .sl54-primary{width:100%;min-width:0;min-height:50px}.sl54-shell .sl54-paper-desk{padding:23px 16px 24px}.sl54-shell .sl54-paper-preview{padding:16px 15px 13px}.sl54-shell .sl55-learn-layout{grid-template-columns:minmax(0,1fr);gap:20px}.sl54-shell .sl55-learn-layout>.sl54-solution{padding:20px 17px}.sl54-shell .sl55-next-actions{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}.sl54-shell .sl55-next-actions .sl54-primary{min-width:0;width:100%}.sl54-shell .sl55-question-tabs{margin-top:16px}.sl54-shell .sl55-question-tabs button{padding:9px 12px;min-width:67px;font-size:11px}}
+@media(prefers-reduced-motion:reduce){.sl54-shell .sl54-units>button{transition:none;transform:none}}

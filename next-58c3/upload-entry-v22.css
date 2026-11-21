@@ -1,0 +1,37 @@
+@media screen {
+  html[data-interior="v12"] body[data-page="upload"] {background:#f7f8fa;}
+  .upr22 {--upr-ink:#323347;--upr-muted:#737787;--upr-tint:#f2f1f6;--upr-accent:#5a5075;--upr-line:#dadee5;}
+  .upr22-heading {margin-bottom:30px;}
+  .upr22-heading h1 {font-size:clamp(30px,4vw,44px);font-weight:600;line-height:1.35;letter-spacing:-.055em;}
+  .upr22-heading p {font-size:12px;margin-top:10px;}
+  .upr22-form {gap:25px 32px;align-items:stretch;}
+  .upr22-form>.upr22-sheet:first-child {background-color:#eceef2;background-image:var(--mi21-fibre),linear-gradient(135deg,#ffffff99,transparent);border-color:#d6dae2;box-shadow:inset 0 1px 0 #fff,0 2px 0 #cdd1dc;}
+  .upr22-file-field {min-height:178px;align-content:center;gap:15px;padding:23px 18px;background-color:#fff;background-image:var(--mi21-fibre);border:1px solid #e0e3e8;border-top-color:#fff;border-radius:2px;box-shadow:0 1px 0 #c9ced6,1px 3px 0 #fff,2px 4px 0 #d9dde5,5px 10px 16px #2e344514;}
+  .upr22-file-field>span {font-weight:550;font-size:17px;}
+  .upr22-file-field input::file-selector-button {border-radius:4px;border-top-color:#fff;color:#50556b;box-shadow:0 2px 0 #c8ccd5,inset 0 1px 0 #fff;font-weight:550;}
+  .upr22-form>.upr22-sheet:nth-child(2) {background:transparent;border:0;border-top:1px solid #ced3dd;padding-inline:0;}
+  .upr22-sheet h2 {font-size:22px;font-weight:550;letter-spacing:-.04em;margin-bottom:21px;}
+  .upr22-note {font-size:12px;line-height:1.85;}
+  .upr22-fields label,.upr22-source-field {font-weight:500;gap:8px;}
+  .upr22-fields :is(input,select,textarea),.upr22-source-field input {border-color:#ced3dd;border-top-color:#bbc3d0;border-radius:4px;box-shadow:inset 0 1px 3px #25334a07,0 1px 0 #fff;}
+  .upr22-contribute {border:0;border-block:1px solid #d5d9e2;background:transparent;border-radius:0;padding-inline:0;}
+  .upr22-contribute h2 {font-size:19px;margin-bottom:10px;}
+  .upr22-primary {font-size:14px;font-weight:550;min-height:48px;border:1px solid #433954;border-top-color:#8b819e;border-radius:5px;background:linear-gradient(#6c6085,#514563);box-shadow:0 3px 0 #3b314a,2px 7px 11px #2522351b;}
+  .upr22-primary:active {transform:translateY(2px);box-shadow:0 1px 0 #3b314a,inset 0 1px 3px #25223533;}
+  .upr22-summary {background-image:var(--mi21-fibre);box-shadow:var(--mi21-paper-edge);}
+  .upload-entry-v22 {display:inline-flex;align-items:center;justify-content:space-between;gap:18px;min-height:44px;font-size:12px;line-height:1.6;color:#625875;text-decoration:none;}
+  .upload-entry-v22:focus-visible {outline:3px solid #8575c9;outline-offset:4px;}
+  .nv20-collections>.upload-entry-v22 {margin-left:auto;font-size:12px;}
+  html[data-interior="v12"] .creator-top-links {flex-wrap:wrap;}
+  html[data-interior="v12"] .creator-top-links>.upload-entry-v22 {font-size:12px;}
+  @media(max-width:660px) {
+    html[data-interior="v12"] body[data-page="teacher"] .creator-heading {align-items:stretch;gap:14px;min-height:0;padding-bottom:0;margin-bottom:24px;}
+    html[data-interior="v12"] body[data-page="teacher"] .creator-heading>div:first-child {display:block;width:100%;}
+    html[data-interior="v12"] body[data-page="teacher"] .creator-eyebrow {display:block;writing-mode:horizontal-tb;white-space:nowrap;letter-spacing:0;line-height:1.5;margin-bottom:8px;}
+    html[data-interior="v12"] body[data-page="teacher"] .creator-top-links {display:flex;flex-direction:row;align-self:stretch;align-items:center;justify-content:flex-start;gap:10px 22px;margin:0;}
+    html[data-interior="v12"] body[data-page="teacher"] .creator-top-links>a {width:auto;min-height:44px;}
+    .nv20-collections {flex-wrap:wrap;}
+    .nv20-collections>.upload-entry-v22 {flex:0 0 100%;margin:0;padding:0 0 10px;}
+    html[data-interior="v12"] .creator-top-links>.upload-entry-v22 {font-size:11px;gap:8px;}
+  }
+}

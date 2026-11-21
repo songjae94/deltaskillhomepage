@@ -1,0 +1,99 @@
+/* Screen materials, one focal object per room. No changes to canonical print pages. */
+@media screen {
+html[data-design="b"][data-interior="v12"] body.working-body {
+  --mi21-fibre: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.86' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath fill='%23354151' opacity='.035' filter='url(%23n)' d='M0 0h160v160H0z'/%3E%3C/svg%3E");
+  --mi21-paper-edge: 0 1px 0 #bfc4cc, 1px 3px 0 #fff, 2px 4px 0 #d3d6dd, 3px 7px 0 #f9fafc, 4px 8px 0 #d8dbe1, 9px 18px 28px #2630440f;
+}
+/* Study: the question is the object. Fine edge light and a clean stack of paper. */
+html[data-design="b"][data-interior="v12"] body:is([data-page="student"],[data-page="timed"],[data-page="diagnostic-run"]) .quick-paper {
+  position:relative; background-color:#fff; background-image:var(--mi21-fibre);
+  border:1px solid #dde1e7; border-top-color:#fff; border-left-color:#e9ebee; border-radius:2px;
+  box-shadow:var(--mi21-paper-edge);
+}
+html[data-design="b"][data-interior="v12"] body[data-page="student"] .paper-count b {color:#35334f; font-weight:520; letter-spacing:-.065em;}
+html[data-design="b"][data-interior="v12"] body[data-page="student"] .paper-heading {border-bottom:1px solid #d6d9df; box-shadow:0 1px 0 #fff;}
+html[data-design="b"][data-interior="v12"] body[data-page="student"] .quick-question {color:#232937;}
+html[data-design="b"][data-interior="v12"] body[data-page="student"] .editorial-tablet {
+  border:1px solid #d3d7dc; border-top-color:#f5f6f8; border-radius:2px; padding:5px;
+  background:linear-gradient(135deg,#f9fafc,#dfe3e8); box-shadow:0 2px 0 #c3cbd4,4px 7px 15px #2a344312;
+}
+html[data-design="b"][data-interior="v12"] body[data-page="student"] .editorial-material>img {border:1px solid #fff; box-shadow:0 1px 0 #d1ccc6;}
+/* Timed work: a quiet, legible instrument beside the real question sheet. */
+html[data-design="b"][data-interior="v12"] .ta-top-v18 time {
+  padding:10px 18px; border:1px solid #1f283d; border-top-color:#8992a1; border-radius:5px;
+  background:linear-gradient(120deg,#ffffff12,transparent 58%),#293348; color:#f3f6fc;
+  box-shadow:0 2px 0 #c2c9d1,inset 0 2px 6px #11172566,inset 0 -1px 0 #ffffff24;
+  font-weight:500; letter-spacing:.035em; text-shadow:0 0 10px #d8e8ff35;
+}
+html[data-design="b"][data-interior="v12"] .ta-answer-sheet-v18 {
+  border:1px solid #d8dce2; border-top:3px solid #84859f; background-color:#f3f4f7;
+  background-image:var(--mi21-fibre); box-shadow:0 2px 0 #d2d7df,inset 0 1px 0 #fff;
+}
+/* Library: photographic pieces sit in a thin gallery frame, not a coloured card. */
+html[data-design="b"][data-interior="v12"] body[data-page="library"] .library-v12-exhibit:has(.library-v13-exhibit-photo) {
+  border:6px solid #fff; outline:1px solid #e7e5e2; border-radius:1px;
+  box-shadow:0 2px 0 #d1cec8,6px 14px 24px #312e2b13;
+}
+html[data-design="b"][data-interior="v12"] body[data-page="library"] .material-art {
+  border:1px solid #e7e4df; border-bottom-color:#c9c6c1; border-radius:2px;
+  box-shadow:0 2px 0 #dad6d0,4px 8px 17px #2c303b10;
+}
+html[data-design="b"][data-interior="v12"] body[data-page="library"] .material-card {background:transparent;}
+/* CSAT: a large, matted still life, and an inset reading/work area. */
+html[data-design="b"][data-interior="v12"] .cl20-photo {
+  border:7px solid #fff; outline:1px solid #e4e3df; box-shadow:0 2px 0 #cececa,7px 16px 25px #34364313;
+}
+html[data-design="b"][data-interior="v12"] .cl20-photo figcaption {
+  background-color:#fdfdfc; background-image:var(--mi21-fibre); color:#373946;
+  border-top:2px solid #7c748d; box-shadow:1px 2px 0 #dededb,4px 7px 13px #252a3421;
+}
+html[data-design="b"][data-interior="v12"] .cl20-course-work {
+  background:linear-gradient(115deg,#f6f7f9,#edf0f4); border:1px solid #d9dde3; border-top-color:#cdd2db;
+  box-shadow:inset 0 2px 4px #28364a08,0 1px 0 #fff; border-radius:3px;
+}
+/* My page: documents remain the focal point, with a real stack edge and a shelf rule. */
+html[data-design="b"][data-interior="v12"] .account-polish-v19 .ap19-masthead-photo {border:5px solid #fff; outline:1px solid #e0e0e1;}
+html[data-design="b"][data-interior="v12"] .account-polish-v19 .ap19-material-paper {
+  background-color:#fff; background-image:var(--mi21-fibre); border-left-color:#7b778e;
+  box-shadow:1px 1px 0 #c8cbd2,2px 3px 0 #fff,3px 4px 0 #d3d5dc,5px 7px 0 #f8f9fa,7px 11px 16px #30334317;
+}
+html[data-design="b"][data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-material-bundle {border-top-color:#cfd2d8; box-shadow:inset 0 1px 0 #fff;}
+/* Login: a single porcelain-white panel, with the brand pressed into it. */
+html[data-design="b"][data-interior="v12"] body[data-page="login"] .account-login-panel {
+  background-color:#fcfcfd; background-image:var(--mi21-fibre); border:1px solid #d9dce4;
+  border-top-color:#fff; border-left-color:#eef0f4; border-radius:7px;
+  box-shadow:0 3px 0 #d1d4df,4px 12px 24px #252a4510,11px 27px 50px #252a4509;
+}
+html[data-design="b"][data-interior="v12"] body[data-page="login"] .account-wordmark {text-shadow:0 1px 0 #fff,0 -1px 0 #1b16382b; letter-spacing:-.06em;}
+/* Diagnostics/class management: the result is a readable report, never a fake score. */
+html[data-design="b"][data-interior="v12"] .diagnostic-start-card {
+  border:1px solid #d2cedd; border-top-color:#f9f8fc; border-radius:5px;
+  background:linear-gradient(130deg,#faf9fc,#eae7f0); box-shadow:0 2px 0 #c4c0d0,inset 0 1px 0 #fff;
+}
+html[data-design="b"][data-interior="v12"] .diagnostic-start-card>strong {color:#423b58; font-weight:500; font-variant-numeric:tabular-nums; text-shadow:0 1px 0 #fff;}
+html[data-design="b"][data-interior="v12"] .classroom-sheet {
+  background-color:#fff; background-image:var(--mi21-fibre); border:1px solid #dce0e5;
+  border-top:3px solid #7f7996; border-radius:3px; box-shadow:0 1px 0 #cdd1db,2px 4px 0 #fff,3px 5px 0 #e0e2e7,6px 12px 20px #27334908;
+}
+/* Technology: matte midnight type and a book-like comparison spread. */
+html[data-design="b"][data-interior="v12"] .techv20-hero {
+  background-color:#25243f; background-image:var(--mi21-fibre),linear-gradient(115deg,#ffffff09,transparent 58%);
+  border:1px solid #201e36; border-top-color:#59576f; border-radius:5px;
+  box-shadow:0 3px 0 #18182c,5px 12px 25px #20203517;
+}
+html[data-design="b"][data-interior="v12"] .techv20-spread {border-radius:2px; box-shadow:var(--mi21-paper-edge);}
+html[data-design="b"][data-interior="v12"] .techv20-original {background-color:#fff; background-image:var(--mi21-fibre);}
+html[data-design="b"][data-interior="v12"] .techv20-variant {background-color:#faf9fc; background-image:var(--mi21-fibre),linear-gradient(90deg,#2523370b,transparent 14px);}
+/* Information pages have one typographic anchor, not more cards. */
+html[data-design="b"][data-interior="v12"] body[data-page="help"] .help-faq {border-top:3px solid #706582;}
+html[data-design="b"][data-interior="v12"] body[data-page="help"] .help-faq details {background-image:var(--mi21-fibre); box-shadow:0 1px 0 #fff;}
+html[data-design="b"][data-interior="v12"] .benefits-heading {border-left:3px solid #7b7097; padding-left:24px;}
+html[data-design="b"][data-interior="v12"] .benefits-policy {background-color:#fff; background-image:var(--mi21-fibre); box-shadow:var(--mi21-paper-edge); border-radius:2px;}
+@media(max-width:660px) {
+ html[data-design="b"][data-interior="v12"] body:is([data-page="student"],[data-page="timed"],[data-page="diagnostic-run"]) .quick-paper {box-shadow:0 1px 0 #cbd0d8,1px 3px 0 #fff,2px 4px 0 #d5d9e0,4px 9px 17px #2630440c;}
+ html[data-design="b"][data-interior="v12"] .cl20-photo {border-width:5px;}
+ html[data-design="b"][data-interior="v12"] .ta-top-v18 time {padding:8px 12px;}
+ html[data-design="b"][data-interior="v12"] .cl20-photo figcaption {left:17px; bottom:17px;}
+ html[data-design="b"][data-interior="v12"] .techv20-variant {background-image:var(--mi21-fibre);}
+}
+}

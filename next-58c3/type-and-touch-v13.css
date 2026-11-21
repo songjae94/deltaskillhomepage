@@ -1,0 +1,64 @@
+/* Hierarchy follows the job of each label. Depth signals a control, not decoration everywhere. */
+@media screen{
+html[data-interior="v12"] body.working-body{--ui-muted:#656b76}
+html[data-interior="v12"] body[data-page="material"]{--button-depth:#263d75}
+html[data-interior="v12"] body[data-page="teacher"]{--button-depth:#293750}
+html[data-interior="v12"] body.working-body :is(.page-kicker,.eyebrow){font-size:12px;line-height:1.55;font-weight:500;letter-spacing:.025em}
+html[data-interior="v12"] body.working-body :is(.primary,.secondary,.account-primary){font-size:14px;font-weight:600;letter-spacing:-.012em;line-height:1.4}
+html[data-interior="v12"] body.working-body .study-picker select{font-size:13px;min-height:44px;color:#4e5667;line-height:1.5}
+html[data-interior="v12"] body.working-body .study-picker label>span{font-size:12px;color:#727987}
+html[data-interior="v12"] body[data-page="student"] .quick-question .question-no{font-size:12px;line-height:1.6;letter-spacing:.015em;color:#737987}
+html[data-interior="v12"] body[data-page="student"] .quick-question .question-stem{line-height:1.9;letter-spacing:0;word-break:keep-all;overflow-wrap:break-word}
+html[data-interior="v12"] body[data-page="student"] .paper-count b{font-variant-numeric:tabular-nums lining-nums;letter-spacing:-.06em}
+html[data-interior="v12"] body[data-page="student"] .editorial-time .feature-heading>span,
+html[data-interior="v12"] body[data-page="student"] .editorial-material>div>span:last-child{font-size:12px;color:#68717e}
+html[data-interior="v12"] body[data-page="library"] .material-caption h2{font-size:clamp(17px,1.75vw,22px);line-height:1.4;font-weight:600;letter-spacing:-.03em;text-wrap:balance}
+html[data-interior="v12"] body[data-page="library"] :is(.material-card-bottom,.material-preview-tag,.material-caption small,.material-caption>span,.library-result-meta){font-size:12px;line-height:1.55;color:#686b73}
+html[data-interior="v12"] body[data-page="library"] .library-heading p{font-size:15px;line-height:1.85;color:#606771}
+html[data-interior="v12"] body[data-page="library"] .library-v12-exhibit-link{font-size:12px;line-height:1.5;min-height:40px;display:flex;align-items:center;padding:9px 13px;background:#242a32d9;border:1px solid #ffffff38;border-radius:3px;box-shadow:0 2px 5px #0002}
+html[data-interior="v12"] body[data-page="material"] .material-info h1{font-weight:600;line-height:1.17;text-wrap:balance;letter-spacing:-.045em}
+html[data-interior="v12"] body[data-page="csat"] .cv7-intro-copy h2{font-weight:450;letter-spacing:-.045em;line-height:1.55}
+html[data-interior="v12"] body[data-page="csat"] .cv7-intro-copy>p,
+html[data-interior="v12"] body[data-page="csat"] .editorial-csat>p{font-size:14px;line-height:1.85;color:#5f6570}
+html[data-interior="v12"] body[data-page="csat"] .editorial-csat>small{font-size:12px;line-height:1.6;color:#5f6570;margin-top:7px}
+html[data-interior="v12"] body[data-page="csat"] .editorial-csat .cv7-feature-top{font-size:12px;line-height:1.6}
+html[data-interior="v12"] body[data-page="login"] .account-v7 .account-login-links a{font-size:13px;line-height:1.5;min-height:44px}
+html[data-interior="v12"] body[data-page="account"] .account-material-title>span{font-size:12px;line-height:1.6}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-start-card>strong,
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-start-card>strong small{font-family:inherit;font-variant-numeric:tabular-nums lining-nums}
+html[data-interior="v12"] body.working-body :is(.primary,.account-primary):not(:disabled),
+html[data-interior="v12"] body[data-page="login"] .account-v7 .account-form .account-primary:not(:disabled){background-image:linear-gradient(to bottom,#ffffff14,#00000008);border:1px solid #28224436;border-top-color:#ffffff48;border-radius:6px;box-shadow:0 3px 0 var(--button-depth,#362b66),0 6px 12px #372c6318,inset 0 1px 0 #ffffff26;transform:translateY(0);transition:transform .12s ease,box-shadow .12s ease,filter .15s ease}
+html[data-interior="v12"] body.working-body :is(.primary,.account-primary):not(:disabled):hover,
+html[data-interior="v12"] body[data-page="login"] .account-v7 .account-form .account-primary:not(:disabled):hover{filter:brightness(1.045);box-shadow:0 4px 0 var(--button-depth,#362b66),0 8px 16px #372c6320,inset 0 1px 0 #ffffff26;transform:translateY(-1px)}
+html[data-interior="v12"] body.working-body :is(.primary,.account-primary):not(:disabled):active,
+html[data-interior="v12"] body[data-page="login"] .account-v7 .account-form .account-primary:not(:disabled):active{transform:translateY(2px);box-shadow:0 1px 0 var(--button-depth,#362b66),0 2px 4px #372c6312,inset 0 1px 2px #00000018;filter:brightness(.98)}
+html[data-interior="v12"] body.working-body .secondary:not(:disabled){background-image:linear-gradient(#fff,#f6f7fa);border-color:#c9ced7;border-radius:6px;box-shadow:0 2px 0 #d1d6df,0 4px 8px #23354d08,inset 0 1px #fff;transition:transform .12s ease,box-shadow .12s ease}
+html[data-interior="v12"] body.working-body .secondary:not(:disabled):active{transform:translateY(2px);box-shadow:0 0 0 #d1d6df,inset 0 1px 2px #23354d0c}
+html[data-interior="v12"] body.working-body :is(.primary,.secondary,.account-primary):disabled{background-image:none;box-shadow:none;transform:none;border:1px solid #e3e6ec}
+html[data-interior="v12"] body[data-page="student"] .quick-answers label>span{background:linear-gradient(#fff,#f7f8fa);border:1px solid #dce1e7;border-radius:6px;box-shadow:0 2px 0 #dde2e8,0 4px 6px #25385304;transition:transform .12s ease,box-shadow .12s ease,border-color .15s ease;min-height:62px}
+html[data-interior="v12"] body[data-page="student"] .quick-answers label:hover>span{border-color:#9b9fba;box-shadow:0 2px 0 #cbd0df,0 5px 8px #2538530a}
+html[data-interior="v12"] body[data-page="student"] .quick-answers label:active>span{transform:translateY(2px);box-shadow:inset 0 1px 3px #27395712}
+html[data-interior="v12"] body[data-page="student"] .quick-answers label:has(input:checked)>span{background:#f2f1fb;border-color:#7568b7;box-shadow:inset 0 0 0 1px #7568b7,inset 0 2px 4px #30255f0d;transform:translateY(1px)}
+html[data-interior="v12"] body[data-page="library"] .resource-filters .work-tabs button[aria-pressed="true"]{background-image:linear-gradient(#ffffff12,#00000009);border:1px solid #493f8a;border-top-color:#9185d2;box-shadow:0 2px 0 #3d3375,inset 0 1px 0 #ffffff20;border-radius:5px}
+html[data-interior="v12"] body[data-page="library"] .resource-filters .work-tabs button[aria-pressed="true"]:active{transform:translateY(1px);box-shadow:0 1px 0 #3d3375}
+html[data-interior="v12"] body[data-page="teacher"] .creator-config{background-image:linear-gradient(125deg,#ffffff08,#00000004);border:1px solid #182735;border-top-color:#566575;box-shadow:inset 0 1px 0 #ffffff09,0 5px 12px #27364515}
+html[data-interior="v12"] body[data-page="teacher"] .layout-picker button{border-radius:5px;box-shadow:0 2px 0 #172737,inset 0 1px #ffffff12;transition:transform .12s ease,box-shadow .12s ease}
+html[data-interior="v12"] body[data-page="teacher"] .layout-picker button:active{transform:translateY(2px);box-shadow:inset 0 1px 2px #0003}
+html[data-interior="v12"] body[data-page="library"] .library-v12-exhibit,
+html[data-interior="v12"] body[data-page="student"] .editorial-tablet,
+html[data-interior="v12"] body[data-page="csat"] .editorial-csat>a.editorial-csat-image{box-shadow:inset 0 0 0 1px #26384a0b,0 5px 14px #27354508}
+html[data-interior="v12"] body.working-body :is(button,a,input,select,textarea):focus-visible{outline:3px solid #8575c9;outline-offset:4px}
+@media(max-width:660px){
+html[data-interior="v12"] body[data-page="material"] .material-info h1{font-size:clamp(32px,7.6vw,41px)}
+html[data-interior="v12"] body[data-page="library"] .material-caption h2{font-size:17px;line-height:1.4}
+html[data-interior="v12"] body.working-body .study-picker select{font-size:13px;min-height:44px}
+}
+@media(max-width:400px){
+html[data-interior="v12"] body[data-page="diagnostic-result"] .diagnostic-result-metrics{grid-template-columns:1fr 1fr}
+html[data-interior="v12"] body[data-page="diagnostic-result"] .diagnostic-result-metrics>div:last-child{grid-column:1/-1;border-left:0;border-top:1px solid #dedfe9;padding-top:18px}
+}
+@media(prefers-reduced-motion:reduce){
+html[data-interior="v12"] body.working-body :is(.primary,.secondary,.account-primary),
+html[data-interior="v12"] body[data-page="student"] .quick-answers label>span{transition:none}
+}
+}

@@ -1,0 +1,12 @@
+.hp44-real{padding:0!important;background:#f7f7fa!important}.hp44-real>iframe{width:100%;height:100%;border:0;display:block;background:#f7f7fa}
+#hp44-paper-modal{width:min(860px,96vw);height:min(90vh,1160px);padding:0;border:1px solid #bdb7c6;border-radius:12px;background:#eeecf0;box-shadow:0 30px 100px #0005}#hp44-paper-modal::backdrop{background:#16192199;backdrop-filter:blur(7px)}#hp44-paper-modal>header{height:58px;display:flex;justify-content:space-between;align-items:center;padding:0 22px;background:#fff}#hp44-paper-modal>header button{border:0;background:none;font-size:30px;cursor:pointer}#hp44-paper-modal>iframe{display:block;border:0;width:100%;height:calc(100% - 58px);background:#fff}
+
+.hp44-real{isolation:isolate}.hp44-real>iframe{opacity:1;transition:opacity .2s}.hp44-real[data-loading=true]>iframe{opacity:0}.hp45-loading{position:absolute;inset:0;display:grid;place-items:center;background:#f7f7fa;color:#51465f;font:700 30px/1.4 "Pretendard Variable",sans-serif;transition:opacity .2s;pointer-events:none}.hp44-real[data-loading=false] .hp45-loading{opacity:0}.hp44-real[data-loading=error] .hp45-loading{font-size:20px}
+
+html[data-design="b"] body.home-body .cinema[data-scene="1"] .hd40-product{transition:none;opacity:1}html[data-design="b"] body.home-body .cinema[data-scene="1"]:has(.hp44-real[data-loading="true"]) .hd40-product{opacity:1}@media(prefers-reduced-motion:reduce){html[data-design="b"] body.home-body .cinema[data-scene="1"] .hd40-product{transition:none}}
+
+/* Exact first-frame capture holds the screen while its live renderer initializes. */
+.hp45-loading>img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:fill}.hp45-loading-message{display:none}.hp44-real[data-loading=error] .hp45-loading-message{position:absolute;bottom:12px;left:12px;right:12px;display:block;padding:10px;background:#fff;color:#29364a;font-size:14px}.hp45-loading{transition:none}.hp44-real>iframe{transition:none}
+
+/* The first frame is the live selected draft; no stale photograph of another unit. */
+.hp44-real[data-loading=true]>iframe{opacity:1}.hp45-loading{background:transparent;display:block}.hp45-loading-message{position:absolute;bottom:12px;right:12px;display:block;padding:7px 10px;border:1px solid #c9d0da;border-radius:5px;background:#fffffff2;color:#526078;font:12px/1.4 sans-serif}

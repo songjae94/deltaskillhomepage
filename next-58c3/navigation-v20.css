@@ -1,0 +1,10 @@
+@media screen {
+.nv20-collections{display:flex;align-items:center;gap:32px;border-bottom:1px solid #d8d8df;margin:6px 0 28px;scroll-margin-top:100px}
+.nv20-collections button{position:relative;min-height:58px;padding:12px 1px;background:none;border:0;border-radius:0;box-shadow:none;color:#85838e;font:inherit;font-size:19px;line-height:1.5;font-weight:650;white-space:nowrap}
+.nv20-collections button[aria-pressed="true"]{color:#353047}
+.nv20-collections button[aria-pressed="true"]:after{content:"";position:absolute;bottom:-1px;left:0;right:0;height:3px;background:#514096}
+.nv20-collections button:focus-visible{outline:3px solid #8172b2;outline-offset:4px}
+.nv20-library .lf19-finder{margin-top:0}
+.nv20-exam-materials{padding:12px 0 30px}
+}
+@media screen and (max-width:660px){.nv20-collections{gap:28px;margin-bottom:22px;scroll-margin-top:124px}.nv20-collections button{font-size:17px;min-height:53px}}

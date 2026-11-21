@@ -1,0 +1,11 @@
+/* Screen gallery only. Measured sizes/scales are correct; avoid tiny Batang
+   glyph rasterization in the two serif thumbnails. Actual A4 is untouched. */
+@media screen {
+  .pd16-thumb .pd16-thumb-scale .pc14-page:is([data-print-design="exam"],[data-print-design="editorial"]) {
+    font-family:"Noto Serif KR","Noto Serif CJK KR","Malgun Gothic",serif;
+    text-rendering:geometricPrecision;
+  }
+  .pd16-thumb .pd16-thumb-scale .pc14-page:is([data-print-design="exam"],[data-print-design="editorial"]) .pc14-titleline h1 {
+    font-family:inherit;
+  }
+}

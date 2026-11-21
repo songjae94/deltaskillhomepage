@@ -1,0 +1,115 @@
+html body.working-body[data-page="technology-about"] {
+  background: #fff;
+}
+
+.to25 {
+  --to25-ink: #28242e;
+  --to25-text: #5d5661;
+  --to25-accent: #514166;
+  --to25-rule: #e5dfe5;
+  width: min(91%, 1110px);
+  margin: clamp(34px, 7.4vw, 97px) auto clamp(60px, 9vw, 120px);
+  color: var(--to25-ink);
+  word-break: keep-all;
+}
+
+.to25 h1, .to25 h2, .to25 h3, .to25 p, .to25 figure { margin: 0; }
+
+.to25-hero, .to25-section {
+  display: grid;
+  grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr);
+  gap: clamp(30px, 6vw, 83px);
+}
+
+.to25-hero { align-items: center; }
+
+.to25-intro h1 {
+  margin-bottom: 19px;
+  font-size: clamp(36px, 5.35vw, 73px);
+  line-height: 1.12;
+  letter-spacing: -.075em;
+  font-weight: 765;
+}
+
+.to25-intro p {
+  max-width: 24em;
+  color: var(--to25-text);
+  font-size: clamp(15px, 1.65vw, 20px);
+  line-height: 1.7;
+}
+
+.to25-intro p + p { margin-top: 12px; font-size: clamp(13px, 1.2vw, 15px); }
+.to25-intro strong { color: var(--to25-ink); }
+
+.to25-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 25px;
+  min-height: 44px;
+  margin-top: 20px;
+  border-bottom: 1px solid #a89bb5;
+  color: var(--to25-accent);
+  font-size: 15px;
+  font-weight: 650;
+}
+
+.to25 :is(a, summary):focus-visible { outline: 2px solid var(--to25-accent); outline-offset: 4px; }
+.to25-action:hover { border-bottom-color: var(--to25-accent); }
+
+.to25-photo {
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  aspect-ratio: 1.34;
+  padding: 8% 14%;
+  background: #e9e0d4 url("assets/editorial/paper-flatlay-v15.png") center 35% / cover no-repeat;
+}
+
+.to25-paper {
+  width: 100%;
+  min-width: 0;
+  padding: 5.5% 6%;
+  background: #fffdf9;
+  box-shadow: 2px 4px 15px #34291f38;
+}
+
+.to25-paper > div + div { margin-top: 4%; padding-top: 4%; border-top: 1px solid #d7cfc4; }
+.to25-paper p { margin-bottom: 1%; font-size: clamp(10px, 1.05vw, 13px); font-weight: 650; line-height: 1.35; }
+.to25-paper img { display: block; width: 100%; height: auto; mix-blend-mode: multiply; }
+.to25-sample figcaption { margin-top: 10px; color: var(--to25-text); font-size: 13px; line-height: 1.55; }
+
+.to25-section {
+  align-items: start;
+  margin-top: clamp(35px, 6vw, 80px);
+  padding-top: clamp(18px, 3.4vw, 41px);
+  border-top: 1px solid var(--to25-rule);
+}
+
+.to25-section h2 {
+  max-width: 12em;
+  margin-bottom: 10px;
+  font-size: clamp(22px, 3vw, 39px);
+  line-height: 1.24;
+  letter-spacing: -.06em;
+}
+
+.to25-section p { color: var(--to25-text); font-size: 15px; line-height: 1.65; }
+.to25-section > div > p { max-width: 24em; }
+.to25-list { margin: 0; padding: 0; list-style: none; }
+.to25-list li + li { margin-top: 19px; padding-top: 19px; border-top: 1px solid var(--to25-rule); }
+.to25-list h3 { font-size: clamp(18px, 1.8vw, 23px); letter-spacing: -.035em; line-height: 1.3; }
+.to25-list .to25-number { margin: 4px 0 7px; color: var(--to25-accent); font-size: 12px; }
+.to25-number span { margin-left: .4em; font-variant-numeric: tabular-nums; }
+.to25-patent { margin-top: 2px; color: var(--to25-accent); font-size: 13px; }
+.to25-patent summary { width: fit-content; min-height: 44px; padding: 12px 5px 12px 0; cursor: pointer; }
+.to25-patent p { padding-left: 12px; border-left: 2px solid var(--to25-rule); font-size: 13px; }
+
+@media (max-width: 720px) {
+  .to25-hero, .to25-section { grid-template-columns: minmax(0, 1fr); gap: 23px; }
+  .to25-intro h1 { margin-bottom: 12px; }
+  .to25-intro p { max-width: 30em; }
+  .to25-action { margin-top: 12px; }
+  .to25-photo { padding-inline: 11%; }
+  .to25-section h2 { max-width: none; }
+  .to25-section > div > p { max-width: 36em; }
+}

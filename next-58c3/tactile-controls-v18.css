@@ -1,0 +1,104 @@
+/* v18 tactile controls. Append last. Screen only; original design A and print surfaces stay intact. */
+@media screen {
+html[data-design="b"][data-interior="v12"] body.working-body[data-page]{--tc18-paint:#36475a;--tc18-edge:#1d2c3d;--tc18-shadow:#17283c2b}
+html[data-design="b"][data-interior="v12"] body.working-body[data-page="student"],
+html[data-design="b"][data-interior="v12"] body.working-body[data-page="login"],
+html[data-design="b"][data-interior="v12"] body.working-body[data-page="account"]{--tc18-paint:#564c78;--tc18-edge:#332947}
+html[data-design="b"][data-interior="v12"] body.working-body[data-page="library"]{--tc18-paint:#514970;--tc18-edge:#312b48}
+/* Painted controls: left/top bevel, restrained matte reflection, visible lower edge. */
+html[data-design="b"][data-interior="v12"] body.working-body[data-page] :is(.primary,.account-primary,.sn27-primary,.pd16-save):not(:disabled):not([aria-disabled="true"]){
+ min-height:44px;background-color:var(--tc18-paint);color:#fff;
+ background-image:linear-gradient(130deg,#ffffff0c,transparent 42%),linear-gradient(180deg,#ffffff13 0%,#ffffff04 38%,#0000000d 100%);
+ border:1px solid #16273c78;border-top-color:#ffffff50;border-left-color:#ffffff24;border-bottom-color:var(--tc18-edge);border-radius:6px;
+ box-shadow:0 3px 0 var(--tc18-edge),1px 5px 3px #15223824,3px 9px 14px var(--tc18-shadow),inset 0 1px 0 #ffffff2b,inset 1px 0 0 #ffffff0a,inset -1px -1px 0 #00000014;
+ text-shadow:0 -1px 0 #00000052,0 1px 0 #ffffff10;filter:none;transform:translateY(0);
+ transition:transform .13s ease,box-shadow .13s ease,filter .13s ease;
+}
+/* Ceramic controls retain a firm edge rather than a large diffuse halo. */
+html[data-design="b"][data-interior="v12"] body.working-body[data-page] :is(.secondary,.pd17-card-actions button:not(.primary):not([data-cloud-delete]),.pd16-preview-actions button):not(:disabled):not([aria-disabled="true"]){
+ min-height:44px;background-color:#f7f8fa;color:#36465b;
+ background-image:linear-gradient(130deg,#ffffffde,transparent 48%),linear-gradient(180deg,#fff 0%,#f8f9fb 51%,#e9edf2 100%);
+ border:1px solid #bcc5d0;border-top-color:#fff;border-left-color:#e3e7ed;border-bottom-color:#a8b4c2;border-radius:6px;
+ box-shadow:0 3px 0 #b5bfcc,1px 5px 3px #20324b12,3px 8px 12px #21364f12,inset 0 1px 0 #fff,inset -1px -1px 0 #ffffffb3;
+ text-shadow:0 1px 0 #fff;filter:none;transform:translateY(0);transition:transform .13s ease,box-shadow .13s ease,filter .13s ease;
+}
+html[data-design="b"][data-interior="v12"] body.working-body[data-page] :is(.primary,.account-primary,.sn27-primary,.pd16-save):not(:disabled):not([aria-disabled="true"]):active{
+ transform:translateY(2px);filter:brightness(.98);box-shadow:0 1px 0 var(--tc18-edge),1px 2px 3px #17283c23,inset 0 2px 4px #101c3029,inset 0 -1px 0 #ffffff15;
+}
+html[data-design="b"][data-interior="v12"] body.working-body[data-page] :is(.secondary,.pd17-card-actions button:not(.primary):not([data-cloud-delete]),.pd16-preview-actions button):not(:disabled):not([aria-disabled="true"]):active{
+ transform:translateY(2px);box-shadow:0 1px 0 #aab6c5,0 2px 4px #20324b12,inset 0 2px 4px #283b5215;filter:brightness(.99);
+}
+/* Settings are a shallow machined panel; paper preview and its text receive no treatment. */
+html[data-design="b"][data-interior="v12"] body.working-body[data-page] .pd16-settings{
+ border-color:#cbd3dd;border-top-color:#fdfefe;border-left-color:#e5eaf0;background:#fff;
+ box-shadow:0 2px 0 #cdd5df,2px 7px 18px #23354b10,inset 0 1px 0 #fff;
+}
+html[data-design="b"][data-interior="v12"] body.working-body[data-page] .pd16-options summary{min-height:44px}
+html[data-design="b"][data-interior="v12"] body.working-body[data-page] :is(.work-tabs button,.work-tabs a,.pd16-paper-tabs button){
+ min-height:44px;transition:box-shadow .13s ease,transform .13s ease;
+}
+html[data-design="b"][data-interior="v12"] body.working-body[data-page] :is(.work-tabs button[aria-pressed="true"],.work-tabs a[aria-current="page"],.pd16-paper-tabs button[aria-pressed="true"]){
+ background-image:linear-gradient(180deg,#0000000b,#ffffff06);border-top-color:#00000029;border-bottom-color:#ffffff50;
+ box-shadow:inset 0 2px 4px #17283c23,inset 0 -1px 0 #ffffff28,0 1px 0 #fff;text-shadow:0 1px 0 #ffffff12;border-radius:5px;
+}
+/* Restrict title relief to editorial headings, never learning content or equations. */
+html[data-design="b"][data-interior="v12"] body.working-body[data-page] :is(.work-heading>h1,.library-heading h1,.account-heading h1,.sn27-heading h1,.pd16-heading h1){text-shadow:0 1px 0 #ffffffd9,0 -1px 0 #25324a0a}
+html[data-design="b"] body.home-body .cinema-copy h1{text-shadow:0 1px 0 #ffffff12,0 3px 10px #10182c20}
+/* Opening: white ceramic and clear smoked glass, with the same upper-left light. */
+html[data-design="b"] body.home-body .role-dock a{
+ min-height:53px;border:1px solid #ffffff6b;border-top-color:#ffffffe6;border-left-color:#ffffffb3;border-bottom-color:#16243f6e;
+ background:linear-gradient(130deg,#ffffff32,transparent 52%),linear-gradient(180deg,#ffffff26,#ffffff12 48%,#162b4930);
+ color:#fff;box-shadow:0 3px 0 #14213860,1px 5px 3px #0b142c22,3px 9px 17px #0d173a33,inset 0 1px 0 #ffffff3d,inset -1px -1px 0 #ffffff12;
+ backdrop-filter:blur(18px) saturate(1.15);-webkit-backdrop-filter:blur(18px) saturate(1.15);
+ text-shadow:0 1px 2px #14213b88;filter:none;transform:translateY(0);transition:transform .13s ease,box-shadow .13s ease,filter .13s ease;
+}
+html[data-design="b"] body.home-body .role-dock a:first-child{
+ background:linear-gradient(130deg,#fff,transparent 65%),linear-gradient(180deg,#fff 0%,#f7f8fc 48%,#dfe5ee 100%);
+ border-color:#d5dce7;border-top-color:#fff;border-left-color:#fff;border-bottom-color:#b7c1d1;color:#253249;
+ box-shadow:0 3px 0 #a6b2c6,1px 5px 3px #121f3433,3px 9px 17px #101d3d33,inset 0 1px 0 #fff,inset -1px -1px 0 #ffffffb3;
+ text-shadow:0 1px 0 #fff;backdrop-filter:none;
+}
+html[data-design="b"] body.home-body .role-dock a:active{transform:translateY(2px);filter:brightness(.99);box-shadow:0 1px 0 #14213870,0 2px 5px #0b142c26,inset 0 2px 4px #15223b28}
+html[data-design="b"] body.home-body .role-dock a:first-child:active{color:#253249;box-shadow:0 1px 0 #a6b2c6,0 2px 5px #0b142c26,inset 0 2px 4px #293b541a}
+/* Disabled controls cannot lift or appear available. */
+html[data-design="b"][data-interior="v12"] body.working-body[data-page] :is(.primary,.account-primary,.sn27-primary,.pd16-save,.secondary,.pd17-card-actions button,.pd16-preview-actions button):is(:disabled,[aria-disabled="true"]){
+ background:#e8ebef;color:#7b8491;border:1px solid #d6dce4;box-shadow:inset 0 1px 2px #273b500b;transform:none;filter:none;text-shadow:none;opacity:1;cursor:default;transition:none;
+}
+html[data-design="b"] body.home-body .role-dock a:focus-visible,
+html[data-design="b"][data-interior="v12"] body.working-body[data-page] :is(.primary,.account-primary,.sn27-primary,.pd16-save,.secondary,.pd17-card-actions button,.pd16-preview-actions button,.work-tabs button,.work-tabs a):focus-visible{outline:3px solid #9381d5;outline-offset:6px}
+@media(hover:hover) and (pointer:fine){
+ html[data-design="b"][data-interior="v12"] body.working-body[data-page] :is(.primary,.account-primary,.sn27-primary,.pd16-save,.secondary,.pd17-card-actions button:not([data-cloud-delete]),.pd16-preview-actions button):not(:disabled):not([aria-disabled="true"]):hover{filter:brightness(1.045)}
+ html[data-design="b"] body.home-body .role-dock a:hover{filter:brightness(1.07);transform:translateY(-1px);color:#fff;background:linear-gradient(130deg,#ffffff3b,transparent 52%),linear-gradient(180deg,#ffffff31,#ffffff17 48%,#162b4930)}
+ html[data-design="b"] body.home-body .role-dock a:first-child:hover{color:#253249;background:linear-gradient(130deg,#fff,transparent 65%),linear-gradient(180deg,#fff,#fafbfe 48%,#e5eaf2)}
+ html[data-design="b"] body.home-body .role-dock a:active{transform:translateY(2px)}
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-design="b"] body.home-body .role-dock a,
+ html[data-design="b"][data-interior="v12"] body.working-body[data-page] :is(.primary,.secondary,.account-primary,.sn27-primary,.pd16-save,.pd17-card-actions button,.pd16-preview-actions button,.work-tabs button,.work-tabs a){transition:none;animation:none}
+ html[data-design="b"] body.home-body .role-dock a:hover{transform:none}
+}
+}
+@media screen {
+html[data-design="b"][data-interior="v12"] body.working-body[data-page] :is(.primary,.account-primary,.sn27-primary,.pd16-save,.secondary,.pd17-card-actions button,.pd16-preview-actions button):is(:disabled,[aria-disabled="true"]){min-height:44px}
+html[data-design="b"] body.home-body .role-dock a[aria-disabled="true"]{background:#d5dce5;color:#717e90;border:1px solid #abb8ca;box-shadow:none;transform:none;filter:none;text-shadow:none;backdrop-filter:none;pointer-events:none}
+}
+
+@media screen {
+html[data-design="b"] .ta-modes-v18 button {
+ background:linear-gradient(130deg,#fff,transparent 65%),linear-gradient(#fff,#f3f5f8 65%,#e3e8ee);
+ color:#43516a;border:1px solid #c7d0db;border-top-color:#fff;border-radius:9px;
+ box-shadow:0 3px 0 #b5c0ce,1px 5px 3px #1d2c401a,3px 9px 15px #26395112,inset 0 1px #fff;
+ text-shadow:0 1px #fff;transition:transform .13s,box-shadow .13s;
+}
+html[data-design="b"] .ta-modes-v18 button[aria-pressed="true"] {
+ background:linear-gradient(135deg,#ffffff14,transparent 55%),linear-gradient(#465972,#34465e);
+ color:#fff;border-color:#2b3b51;border-top-color:#7f91a9;
+ box-shadow:0 1px 0 #1d3048,inset 0 2px 5px #0d1e363d,inset 0 -1px #ffffff18;
+ text-shadow:0 -1px #15264080;transform:translateY(2px);
+}
+html[data-design="b"] .ta-modes-v18 button:not(:disabled):active{transform:translateY(3px);box-shadow:0 0 0 #b5c0ce,inset 0 2px 5px #18335326}
+html[data-design="b"] .ta-work-v18 .ta-numbers-v18 button{min-height:44px;border-radius:5px;background:linear-gradient(#fff,#f4f6fa);box-shadow:0 2px 0 #c7d1dc,0 3px 4px #22395312,inset 0 1px #fff;text-shadow:0 1px #fff}
+html[data-design="b"] .ta-work-v18 .ta-numbers-v18 button.is-answered{background:linear-gradient(#d7e2ed,#e7eef4);box-shadow:inset 0 1px 3px #3d557c20,0 1px #fff;transform:translateY(1px)}
+html[data-design="b"] .ta-work-v18 .ta-numbers-v18 button:active{transform:translateY(2px);box-shadow:inset 0 2px 3px #24344b20}
+@media(prefers-reduced-motion:reduce){html[data-design="b"] .ta-modes-v18 button{transition:none}}
+}

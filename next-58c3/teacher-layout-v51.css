@@ -1,0 +1,19 @@
+/* v51: compact setup tools, readable material summary; no document or math changes. */
+@media screen{
+html[data-design="b"] body:is([data-page="teacher"],:has(.hp45-panel)) .creator-config .creator-material-meta{padding:16px;margin-top:18px;border-left-width:1px;border-radius:6px}
+html[data-design="b"] body:is([data-page="teacher"],:has(.hp45-panel)) .creator-config .creator-material-meta>span{display:block;font-size:11px;line-height:1.4;letter-spacing:.01em;color:#bdcbdc}
+html[data-design="b"] body:is([data-page="teacher"],:has(.hp45-panel)) .creator-config .creator-material-meta>strong{font-size:21px;font-weight:680;line-height:1.4;letter-spacing:-.03em;white-space:normal;word-break:keep-all;overflow-wrap:anywhere;margin:7px 0 0}
+html[data-design="b"] body:is([data-page="teacher"],:has(.hp45-panel)) .creator-config .creator-material-meta>div{display:flex;flex-direction:column;align-items:flex-start;gap:9px;margin-top:17px;padding-top:13px;border-top:1px solid #bdcbdc29}
+html[data-design="b"] body:is([data-page="teacher"],:has(.hp45-panel)) .creator-config .creator-material-meta b{font-size:24px;line-height:1.1;font-weight:650;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+html[data-design="b"] body:is([data-page="teacher"],:has(.hp45-panel)) .creator-config .creator-material-meta small{font-size:11px;margin-left:6px;font-weight:450}
+html[data-design="b"] body:is([data-page="teacher"],:has(.hp45-panel)) .creator-config .creator-material-meta>div>span{font-size:11px;line-height:1.4;letter-spacing:0;color:#c7d3e2}
+html[data-design="b"] body:is([data-page="teacher"],:has(.hp45-panel)) :is(.tb36-setup,.tb36-workspace){grid-template-columns:320px minmax(0,1fr);align-items:start;gap:20px}
+html[data-design="b"] body:is([data-page="teacher"],:has(.hp45-panel)) .tb36-setup{border:0;border-radius:0;overflow:visible;background:transparent;box-shadow:none}
+html[data-design="b"] body:is([data-page="teacher"],:has(.hp45-panel)) .tb36-conditions{padding:24px;border-radius:9px;min-width:0}
+html[data-design="b"] body:is([data-page="teacher"],:has(.hp45-panel)) .tb36-section-title{gap:10px;align-items:baseline;margin-bottom:24px}
+html[data-design="b"] body:is([data-page="teacher"],:has(.hp45-panel)) .tb36-section-title h2{font-size:19px!important;line-height:1.4;word-break:keep-all}
+html[data-design="b"] body:is([data-page="teacher"],:has(.hp45-panel)) .tb36-count input{max-width:92px}
+html[data-design="b"] body:is([data-page="teacher"],:has(.hp45-panel)) .tb36-setup>.ds48-canvas{border:1px solid #c4ccd7;border-radius:7px;overflow:hidden;min-width:0}
+@media(max-width:1000px) and (min-width:761px){html[data-design="b"] body:is([data-page="teacher"],:has(.hp45-panel)) :is(.tb36-setup,.tb36-workspace){grid-template-columns:280px minmax(0,1fr);gap:16px}html[data-design="b"] body:is([data-page="teacher"],:has(.hp45-panel)) .tb36-conditions{padding:22px 20px}}
+@media(max-width:760px){html[data-design="b"] body:is([data-page="teacher"],:has(.hp45-panel)) :is(.tb36-setup,.tb36-workspace){grid-template-columns:minmax(0,1fr);gap:22px}html[data-design="b"] body:is([data-page="teacher"],:has(.hp45-panel)) .tb36-conditions{padding:24px}html[data-design="b"] body:is([data-page="teacher"],:has(.hp45-panel)) .tb36-section-title h2{font-size:20px!important}}
+}

@@ -1,0 +1,34 @@
+/* Same workbench styles, viewed in a 1024px tablet viewport. */
+html,body{margin:0!important;padding:0!important;min-width:0!important;min-height:100%!important;background:#f7f7fa!important;overflow-x:hidden;color:#292634}
+body{font-family:"Pretendard Variable",Pretendard,"Malgun Gothic",sans-serif}
+#content{margin:0!important;padding:0 24px 22px!important;width:100%!important;max-width:none!important;min-height:0!important}
+.tb36-surface{width:100%!important;max-width:none!important;padding-bottom:20px!important}.tb36-surface>footer{display:none}
+.tb36-modes{margin-bottom:14px}.tb36-heading{margin-bottom:14px}.tb36-steps{margin-bottom:16px}
+.tb36-canvas .creator-paper-stage{height:388px!important;min-height:0!important;max-height:none!important;padding:20px!important;overflow:auto!important;display:block!important}
+.tb36-canvas .creator-canvas-toolbar{padding:13px 17px!important}.tb36-pages{padding:10px 12px}.tb36-canvas .creator-canvas-footer{padding:9px 17px!important}
+.tb36-review-list{margin-bottom:14px}.tb36-review-heading{padding-top:14px}.tb36-review-heading p{line-height:1.5}
+.tb36-canvas #sheet{margin:auto!important;max-width:none!important;transform:none!important}
+.tb36-canvas .pc14-preview-scale{max-width:none!important;margin:0!important;}
+.hp44-action{animation:hp44-action 1s ease-out}@keyframes hp44-action{0%,30%{outline:3px solid #9d85b5;outline-offset:3px;box-shadow:0 0 0 6px #bca8cd22}100%{outline-color:transparent}}
+
+.tb36-canvas #sheet{position:relative!important}.tb36-canvas .pc14-preview-scale{position:absolute!important;left:0!important;top:0!important}
+
+/* Fixed viewport: every shot occupies the same pixels. */
+html,body{width:1024px!important;height:724px!important;overflow:hidden!important}#content{position:relative!important;width:1024px!important;height:724px!important;padding:0!important;overflow:hidden!important}.hp45-panel{position:absolute;inset:0;padding:0 24px 18px;opacity:0;pointer-events:none;transition:opacity .18s linear;overflow:hidden;isolation:isolate}.hp45-panel.is-active{opacity:1;z-index:1;pointer-events:auto}.hp45-panel .tb36-surface{padding-top:10px!important}.hp45-panel .tb36-modes{margin-bottom:14px}.hp45-panel .tb36-heading{margin-bottom:14px}.hp45-panel .tb36-steps{margin-bottom:16px}.hp45-panel .tb36-review-heading{padding:13px 0 8px}.hp45-panel .tb36-review-heading p{margin:5px 0;font-size:10px}.hp45-panel .tb36-review-list>article{padding:10px 0}.hp45-panel .tb36-row-top small{margin-top:3px}.hp45-panel .tb36-review-panel .tb36-primary{padding:12px 15px}.hp45-panel .tb36-composed{padding:18px 0 15px}.hp45-panel .tb36-composed>button{margin-top:10px}.hp45-panel .tb36-canvas .creator-paper-stage{height:360px!important}.hp45-focus{outline:2px solid #9c82b1!important;outline-offset:3px}.hp45-pressed{transform:translateY(1px);filter:brightness(.94)}
+@media(prefers-reduced-motion:reduce){.hp45-panel{transition:none}}
+
+html[data-review=true] .hp45-panel{transition:none}
+
+.hp45-panel .tb36-review-list>article{padding:8px 0}.hp45-panel .tb36-composed{padding:15px 0 12px}.hp45-panel .tb36-review-heading{padding:10px 0 7px}
+
+body[data-manual=true] .hp45-panel.is-active{overflow-y:auto;scrollbar-width:thin}
+
+/* Native workbench paper: same photographed desk and original two-column sheet. */
+.hp45-panel .ds48-canvas .creator-paper-stage{height:360px!important;padding:0!important;overflow:auto!important}
+.hp45-panel .ds48-canvas .ds48-paper-position>#sheet{position:relative!important;width:100%!important;aspect-ratio:210/297;margin:0!important;padding:0!important;transform:none!important}
+.hp45-panel .ds48-paper-position .pc14-preview-scale{position:relative!important;transform:none!important;max-width:none!important}
+.hp45-panel .ds48-preview-toolbar{min-height:48px;padding:13px 17px}.hp45-panel .ds48-reference-note{font-size:10px!important;padding:9px 13px;line-height:1.5}
+.hp45-panel .tb36-setup>.ds48-canvas{max-height:462px}.hp45-panel .tb36-setup>.ds48-canvas .ds48-paper-scene{aspect-ratio:4/5}
+
+/* Keep unchanged type and rules single, including during the initial field changes. */
+.hp45-panel{transition:none}

@@ -1,0 +1,57 @@
+/* Screen UI only. Canonical question frames and printable paper retain their own renderer. */
+@media screen {
+ html[data-interior="v12"] body.working-body{--ink:#202d3c;--muted:#536174;--ui-muted:#536174;--line:#b3bfcc;font-weight:500;-webkit-font-smoothing:auto;-moz-osx-font-smoothing:auto;text-rendering:optimizeLegibility}
+ body.working-body :is(.header,.work-surface,.account-v7,.library-surface,.classroom-v3){text-shadow:none}
+ body.working-body .header{border-bottom-color:#a9b6c4}
+ body.working-body .header nav{color:#46566a;font-weight:550}
+ body.working-body .header :is(.login,.role-switch,.meta){font-weight:550}
+ html[data-interior="v12"] body.working-body :is(.page-kicker,.eyebrow,.muted,.tagline,.notice,.library-result-meta,.material-caption small,.material-caption>span,.material-card-bottom,.account-material-title>span,.creator-heading h1 span){color:#526174;font-weight:500}
+ html[data-interior="v12"] body.working-body :is(.page-kicker,.eyebrow,.notice,.library-result-meta,.material-caption small,.material-caption>span,.material-card-bottom,.account-material-title>span){font-size:12px;line-height:1.6}
+ html[data-interior="v12"] body.working-body :is(.primary,.secondary,.account-primary,.work-tabs button,.resource-filters button,.study-picker select){font-weight:650;text-shadow:none;-webkit-font-smoothing:auto}
+ html[data-interior="v12"] body.working-body :is(.secondary,.study-picker select){border-color:#97a7ba}
+ .sl54-shell :is(.sl54-heading p,.sl54-eyebrow,.sl54-section-tag,.sl54-count-badge,.sl54-storage-note,.sl54-problem-heading small,.sl54-answer-options legend,.sl54-confidence,.sl54-next-study p,.sl54-next-study>small,.sl54-result-paper>p,.sl54-start-footer div>span,.sl54-bottom-tools small){color:#53657c;font-weight:500}
+ .sl54-shell :is(.sl54-eyebrow,.sl54-section-tag,.sl54-storage-note,.sl54-problem-heading small,.sl54-answer-options legend,.sl54-confidence,.sl54-next-study>small,.sl54-result-paper>p,.sl54-start-footer div>span,.sl54-bottom-tools small){font-size:12px;line-height:1.65}
+ .sl54-shell :is(.sl54-start-card,.sl54-problem-card,.sl54-bottom-tools>a,.sl54-result-paper,.sl54-next-study,.sl54-coach){border-color:#99aabd}
+ .sl54-shell :is(.sl54-start-heading,.sl54-question-actions,.sl54-answer-options,.sl54-result-paper li,.sl54-start-footer){border-color:#adbaca}
+ .sl54-coach :is(p,li,.sl54-hint){color:#485d77;font-weight:500}.sl54-coach>small{color:#53657c;font-size:12px}
+ .rv56-path{color:#526379}.rv56-eyebrow{color:#526379;font-size:12px}.rv56-options button{color:#34485d;font-weight:550;border-color:#92a6b8}
+ .rv56-path b{border-color:#91a2b5}.rv56-coach{border-color:#99aabd}
+ .tb36-surface :is(.tb36-heading>div>span,.tb36-heading>a,.tb36-modes small,.tb36-steps li,.tb36-steps small,.tb36-count>span,.tb36-conditions label>small,.tb44-preview-label span,.tb36-composed p,.tb36-review-heading p,.tb36-row-top small){color:#594b68;font-weight:550}
+ .tb36-surface :is(.tb36-modes small,.tb36-steps small,.tb36-count>span,.tb36-conditions label>small,.tb44-preview-label span,.tb36-row-top small){font-size:12px;line-height:1.6}
+ .tb36-surface :is(.tb36-modes,.tb36-steps,.tb36-setup,.tb36-review-panel,.tb36-finish-panel,.tb36-review-list>article){border-color:#a79ab7}
+ .tb36-surface :is(input,select){font-weight:550}
+ /* Readable type on every working route; keep hierarchy, original math, and paper composition. */
+ body.working-body #content :is(h1,h2,h3,h4):not(:where(.a4 *,.katex *,.creator-paper *,.paper-page *)){font-weight:700!important;text-shadow:none}
+ body.working-body #content :is(button,input,select,textarea){font-weight:600}
+ body.working-body #content :is(.account-muted,.account-empty p,.account-state p,.pd17-library-top p,.pd17-card-body p,.pd17-card-body small,.ap19-role,.ap19-sub-nav button,.ap19-sub-nav a,.ap19-sub-nav small,.account-unit-evaluations label,.sa55-title>span,.sa55-continue>small,.sa55-metrics dt,.sa55-metrics dd small,.sa55-count-note,.sa55-recent-heading>span,.sa55-record-main>small,.lg23-rubric>p,.lg23-rubric>summary>span,.lg23-rubric small,.lg23-scale-label){color:#526174!important;font-weight:500!important}
+ body.working-body #content :is(.ap19-role,.ap19-sub-nav button,.ap19-sub-nav a,.ap19-sub-nav small,.pd17-card-body small,.sa55-title>span,.sa55-continue>small,.sa55-metrics dt,.sa55-metrics dd small,.sa55-count-note,.sa55-recent-heading>span,.sa55-record-main>small,.lg23-rubric>p,.lg23-rubric>summary>span,.lg23-rubric small,.lg23-scale-label){font-size:12px!important;line-height:1.6}
+ body.working-body #content :is(.cl20-hero-copy p,.cl20-course-copy p,.cl20-course-note,.cl20-source-note,.cl20-review p,.cl20-review-note,.cl20-course-tabs button){color:#4c6072;font-weight:500}
+ body.working-body #content .cl20-course-copy p{font-size:14px}
+ body.working-body #content :is(.lf19-fields input,.lf19-fields select){font-weight:550;border-color:#9aa7b4}
+ body.working-body #content .lf19-modes button{color:#51495e}
+ body.working-body #content .nv20-collections>:not([aria-pressed=true]){color:#5a5166}
+ body.working-body #content .nv20-collections{border-color:#a3a0ad}
+ body.working-body #content :is(.lf19-fields,.lf19-material-card){border-color:#b2b8bf}
+ body.working-body #content .tb36-modes small{font-size:12px!important;line-height:1.6}
+ body.working-body #content .tb36-modes>button:not([aria-pressed=true]) small{color:#506176!important}
+ body.working-body #content .tb36-modes>button[aria-pressed=true] small{color:#dce6ed!important}
+ body.working-body #content :is(.ds48-preview-toolbar small,.ds48-reference-note){font-size:12px!important;color:#4d6075!important;font-weight:500}
+ body.working-body #content :is(.tb36-conditions input,.tb36-conditions select){font-weight:550!important}
+ body.working-body #content .work-footer{color:#566175;font-size:12px;font-weight:500}
+ body.working-body #content .work-footer :is(small,button,a){color:#566175;font-size:12px;font-weight:500}
+ body.working-body #content .fv57-shell h1{font-weight:800!important}
+ body.working-body .header .login{font-size:12px;color:#405167}
+ body.working-body[data-page="login"] #content :is(.account-login-links a,.login-return a){font-size:13px;color:#514b65;font-weight:550}
+ body.working-body[data-page="login"] #content .account-login-links{border-top-color:#b1b8c5}
+ body.working-body[data-page="login"] #content .account-form :is(input,select){border-color:#99a7b9}
+ body.working-body #content .classroom-surface{--classroom-muted:#514b5e;--classroom-rule:#b4aabd}
+ body.working-body #content .classroom-unit-title{color:#5d516c;border-top-color:#b8afc1}
+ body.working-body #content .classroom-assessments>div:first-child :is(strong,p,.muted,.eyebrow){color:#e9eeff}
+ body.working-body #content .upr22 :is(.upr22-note,.upr22-fields small,.upr22-source-field small,.upr22-estimate small,.upr22-summary dt){font-size:12px;color:#514b62;font-weight:500}
+ body.working-body #content .upr22 :is(.upr22-file-field,.upr22-fields input,.upr22-fields select,.upr22-fields textarea,.upr22-source-field input){border-color:#9da9bb}
+ body.working-body #content .upr22-summary dl>div{border-color:#b3bac7}
+ body.working-body #content :is(.th48-nav span,.th48-legend,.th48-paper>header small,.th48-stage>header small){font-size:12px;color:#506176;font-weight:550;white-space:normal}
+ body.working-body #content :is(.ta-eyebrow-v18,.ta-launch-v18 .ta-launch-note-v18,.ta-top-v18>span){font-size:12px;color:#506176;font-weight:550}
+ body.working-body #content :is(.ta-answer-sheet-v18>p,.ta-answer-sheet-v18>small,.ta-answer-heading-v18>span){font-size:12px;color:#4e6173;font-weight:500}
+ body.working-body #content :is(.ta-launch-v18,.ta-top-v18,.ta-question-actions-v18){border-color:#adb9c6}
+}

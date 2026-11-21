@@ -1,0 +1,91 @@
+/* Natural light, honest materials, spacious typography. Photographic compositions are screen-only. */
+@media screen{
+html[data-interior="v12"] body.working-body{font-family:'Pretendard Variable',Pretendard,'Malgun Gothic',sans-serif;-webkit-font-smoothing:antialiased}
+html[data-interior="v12"] body.working-body :is(h1,h2,h3){letter-spacing:-.04em}
+html[data-interior="v12"] body.working-body .header nav a{font-size:14px;font-weight:500;letter-spacing:-.01em}
+html[data-interior="v12"] body.working-body #header{border-bottom:1px solid #ececee}
+html[data-interior="v12"] body[data-page="student"]{background:#f8fafb}
+html[data-interior="v12"] body[data-page="student"] .student-work{grid-template-columns:minmax(0,1fr) 290px;gap:32px}
+html[data-interior="v12"] body[data-page="student"] .study-heading h1{font-weight:600;font-size:34px}
+html[data-interior="v12"] body[data-page="student"] .quick-paper{border-radius:1px;border-color:#e3e6e9;box-shadow:0 3px 12px #24354105,2px 2px #fff,3px 3px #e3e5e8}
+html[data-interior="v12"] body[data-page="student"] .paper-count b{color:#394464;font-weight:500}
+html[data-interior="v12"] body[data-page="student"] .paper-heading{border-color:#e3e5e8}
+html[data-interior="v12"] body[data-page="student"] .quick-answers label>span{background:#fafbfc;border-color:#e2e5e9;border-radius:4px}
+html[data-interior="v12"] body[data-page="student"] .work-shortcuts{gap:27px}
+html[data-interior="v12"] body[data-page="student"] .time-feature.editorial-time{background:transparent;border:0;border-radius:0;box-shadow:none;padding:0;overflow:visible;min-height:0}
+html[data-interior="v12"] body[data-page="student"] .time-feature.editorial-time:before,html[data-interior="v12"] body[data-page="student"] .time-feature.editorial-time:after{content:none}
+html[data-interior="v12"] body[data-page="student"] .editorial-tablet{display:block;position:relative;aspect-ratio:1.5;overflow:hidden;background:#e8edf0;width:100%;padding:0;border:0;border-radius:0;cursor:pointer}
+html[data-interior="v12"] body[data-page="student"] .editorial-tablet>img{display:block;width:100%;height:100%;object-fit:cover}
+html[data-interior="v12"] body[data-page="student"] .editorial-tablet-screen{position:absolute;left:42%;top:25%;width:45%;height:40%;display:flex;flex-direction:column;align-items:center;justify-content:center;transform:rotate(2.4deg) skewX(-9deg);color:#fff;text-shadow:0 1px 2px #0008;gap:5px;pointer-events:none}
+html[data-interior="v12"] body[data-page="student"] .editorial-tablet-screen small{font-size:6px;letter-spacing:.22em;color:#ccd5e1}
+html[data-interior="v12"] body[data-page="student"] .editorial-tablet-screen strong{font-size:32px;font-weight:450;line-height:1.1;letter-spacing:-1.5px;font-variant-numeric:tabular-nums}
+html[data-interior="v12"] body[data-page="student"] .editorial-tablet-screen i{display:block;width:72%;height:1px;background:linear-gradient(to right,#cbd9fb 35%,#ffffff50 35%);margin-top:6px}
+html[data-interior="v12"] body[data-page="student"] .editorial-time .feature-heading{padding:16px 0 0;margin:0;align-items:center;gap:10px}
+html[data-interior="v12"] body[data-page="student"] .editorial-time .feature-heading h2{font-size:21px;font-weight:600;color:#30394b}
+html[data-interior="v12"] body[data-page="student"] .editorial-time .feature-heading>span{font-size:11px;color:#778190}
+html[data-interior="v12"] body[data-page="student"] .editorial-time .time-feature-bottom{margin:12px 0 0;gap:9px;align-items:center}
+html[data-interior="v12"] body[data-page="student"] .editorial-time .time-feature-bottom p{font-size:12px;color:#6d7684}
+html[data-interior="v12"] body[data-page="student"] .editorial-time .time-feature-bottom button{background:transparent;color:#404f72;border:0;border-bottom:1px solid #647397;border-radius:0;padding:8px 0;min-height:40px;font-size:12px;font-weight:600}
+html[data-interior="v12"] body[data-page="student"] .material-feature.editorial-material{display:block;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;min-height:0;overflow:hidden}
+html[data-interior="v12"] body[data-page="student"] .editorial-material>img{display:block;width:100%;height:auto;aspect-ratio:1.75;object-fit:cover;transition:transform .45s ease}
+html[data-interior="v12"] body[data-page="student"] .editorial-material:hover>img{transform:scale(1.025)}
+html[data-interior="v12"] body[data-page="student"] .editorial-material>.mini-books{display:none}
+html[data-interior="v12"] body[data-page="student"] .editorial-material>div:not(.mini-books){padding:15px 0 0}
+html[data-interior="v12"] body[data-page="student"] .editorial-material .page-kicker{font-size:10px;color:#7f7065}
+html[data-interior="v12"] body[data-page="student"] .editorial-material h2{font-size:21px;font-weight:600;color:#3e3935;margin:6px 0}
+html[data-interior="v12"] body[data-page="student"] .editorial-material>div>span:last-child{font-size:11px;color:#79736d}
+html[data-interior="v12"] body[data-page="student"] .study-next-row{border-color:#e3e6e9;margin-top:36px}
+html[data-interior="v12"] body[data-page="teacher"]{background:#f4f5f6}
+html[data-interior="v12"] body[data-page="teacher"] .creator-heading{margin-bottom:33px}
+html[data-interior="v12"] body[data-page="teacher"] .creator-heading h1{font-size:49px;font-weight:600;letter-spacing:-.045em}
+html[data-interior="v12"] body[data-page="teacher"] .creator-heading h1 span{font-weight:350;color:#78818d}
+html[data-interior="v12"] body[data-page="teacher"] .creator-config{background:#283847;border-radius:2px;box-shadow:0 8px 25px #28323c0c}
+html[data-interior="v12"] body[data-page="teacher"] .creator-mode{background:#1f2d3a}
+html[data-interior="v12"] body[data-page="teacher"] .creator-canvas{border-color:#dce0e4;border-radius:2px;background:#e9edf0}
+html[data-interior="v12"] body[data-page="teacher"] .creator-paper-stage{background:linear-gradient(125deg,#f2f4f5,#e5e9ec);box-shadow:inset 0 2px 5px #23364703}
+html[data-interior="v12"] body[data-page="teacher"] .creator-canvas-toolbar{background:#fafbfc;border-bottom:1px solid #dce2e7}
+html[data-interior="v12"] body[data-page="teacher"] .creator-paper-stage #sheet{box-shadow:1px 1px 0 #d0d5d8,4px 4px 0 #fff,5px 5px 0 #cbd0d4,11px 16px 25px #1e304b16}
+html[data-interior="v12"] body[data-page="csat"]{background:#fff;--room-ground:#fff;--room-ink:#2d3136;--room-muted:#777b81;--room-accent:#49546c;--room-line:#e2e4e7}
+html[data-interior="v12"] body[data-page="csat"] .cv7-heading{margin-bottom:37px}
+html[data-interior="v12"] body[data-page="csat"] .cv7-heading h1{font-size:43px;font-weight:600}
+html[data-interior="v12"] body[data-page="csat"] .cv7-intro{grid-template-columns:.65fr 1fr;gap:45px;border:0;background:transparent;margin-bottom:55px}
+html[data-interior="v12"] body[data-page="csat"] .cv7-intro-copy{padding:32px 0;background:transparent;align-self:center}
+html[data-interior="v12"] body[data-page="csat"] .cv7-intro-copy h2{font-size:33px;font-weight:500;line-height:1.5;color:#34383f}
+html[data-interior="v12"] body[data-page="csat"] .cv7-intro-copy>p{font-size:13px;color:#767b83;line-height:1.9;margin-top:20px}
+html[data-interior="v12"] body[data-page="csat"] .cv7-feature.editorial-csat{padding:0;display:block;background:transparent;border:0;border-radius:0;min-height:0;overflow:visible;color:#34383f}
+html[data-interior="v12"] body[data-page="csat"] .editorial-csat .csat-v12-number{display:none}
+html[data-interior="v12"] body[data-page="csat"] .editorial-csat-photo{display:block;width:100%;height:auto;aspect-ratio:1.65;object-fit:cover}
+html[data-interior="v12"] body[data-page="csat"] .editorial-csat .cv7-feature-top{margin-top:18px;color:#737780;font-size:11px}
+html[data-interior="v12"] body[data-page="csat"] .editorial-csat .cv7-feature-top>span:last-child{color:#737780}
+html[data-interior="v12"] body[data-page="csat"] .editorial-csat>a.editorial-csat-image{display:block;margin:0;padding:0;border:0;border-radius:0;background:transparent;width:100%;height:auto;overflow:hidden}
+html[data-interior="v12"] body[data-page="csat"] .editorial-csat .cv7-free{background:#eff1f3;color:#525c69;padding:4px 8px}
+html[data-interior="v12"] body[data-page="csat"] .editorial-csat h3{font-size:23px;line-height:1.3;color:#30343b;font-weight:550;margin-top:13px}
+html[data-interior="v12"] body[data-page="csat"] .editorial-csat h3 br{display:none}
+html[data-interior="v12"] body[data-page="csat"] .editorial-csat>p{font-size:13px;color:#777d87;line-height:1.8;margin-top:9px}
+html[data-interior="v12"] body[data-page="csat"] .editorial-csat>p br{display:none}
+html[data-interior="v12"] body[data-page="csat"] .editorial-csat>a{display:inline-flex;padding:9px 0;background:transparent;border-bottom:1px solid #788395;color:#465269;min-height:40px;margin:8px 0 3px;border-radius:0;font-size:13px}
+html[data-interior="v12"] body[data-page="csat"] .editorial-csat>small{display:block;color:#858a92;font-size:10px}
+html[data-interior="v12"] body[data-page="csat"] .cv7-practice{background:#f3f5f7;border-color:#b0b9c5}
+html[data-interior="v12"] body[data-page="csat"] .cv7-section-heading h2{font-size:24px;font-weight:550}
+@media(max-width:800px){
+html[data-interior="v12"] body[data-page="student"] .student-work{grid-template-columns:1fr}
+html[data-interior="v12"] body[data-page="student"] .work-shortcuts{display:grid;grid-template-columns:1fr 1fr;gap:23px}
+html[data-interior="v12"] body[data-page="student"] .editorial-time .feature-heading{flex-wrap:wrap}
+html[data-interior="v12"] body[data-page="student"] .editorial-time .time-feature-bottom{align-items:start;flex-direction:column;gap:0}
+html[data-interior="v12"] body[data-page="student"] .editorial-tablet-screen strong{font-size:28px}
+html[data-interior="v12"] body[data-page="csat"] .cv7-intro{grid-template-columns:1fr;gap:20px}
+html[data-interior="v12"] body[data-page="csat"] .cv7-intro-copy{padding:0}
+html[data-interior="v12"] body[data-page="csat"] .cv7-intro-copy h2{font-size:27px}
+}
+@media(max-width:500px){
+html[data-interior="v12"] body[data-page="student"] .study-heading h1{font-size:28px}
+html[data-interior="v12"] body[data-page="student"] .work-shortcuts{grid-template-columns:1fr;gap:28px}
+html[data-interior="v12"] body[data-page="student"] .editorial-time .feature-heading{flex-wrap:nowrap}
+html[data-interior="v12"] body[data-page="student"] .editorial-time .time-feature-bottom{align-items:center;flex-direction:row;gap:10px}
+html[data-interior="v12"] body[data-page="student"] .editorial-tablet-screen strong{font-size:39px}
+html[data-interior="v12"] body[data-page="teacher"] .creator-heading h1{font-size:34px}
+html[data-interior="v12"] body[data-page="csat"] .cv7-heading h1{font-size:34px}
+html[data-interior="v12"] body[data-page="csat"] .cv7-heading{margin-bottom:27px}
+}
+@media(prefers-reduced-motion:reduce){html[data-interior="v12"] body[data-page="student"] .editorial-material>img{transition:none}}
+}

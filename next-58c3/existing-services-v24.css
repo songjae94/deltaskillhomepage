@@ -1,0 +1,4 @@
+.existing-services-v24 { display: flex; align-items: center; flex-wrap: wrap; gap: 0 15px; margin-top: 10px; }
+.existing-services-v24 a { display: inline-flex; align-items: center; gap: 4px; min-height: 40px; padding: 2px 0; color: #53466b; font-size: 13px; font-weight: 650; text-underline-offset: 4px; }
+.existing-services-v24 a:hover { text-decoration: underline; }
+.existing-services-v24 a:focus-visible { outline: 2px solid #604ab0; outline-offset: 3px; }

@@ -1,0 +1,9 @@
+/* Real silent footage, with the same face-safe framing as the original hero. */
+html[data-design="b"] .home-body .cinema .hp27-portrait{animation:none!important;transform:none}
+html[data-design="b"] .home-body .hp27-film{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;object-position:65% 35%;pointer-events:none}
+@media(max-width:800px){
+ html[data-design="b"] .home-body .hp27-film{object-position:64% 35%}
+ /* Reserve the full two-row entrance height, including the question action. */
+ html[data-design="b"] .home-body .cinema[data-scene="0"] .cinema-copy{bottom:198px}
+ html[data-design="b"] .home-body .cinema:is([data-scene="1"],[data-scene="2"]) .cinema-copy h1 br{display:block}
+}

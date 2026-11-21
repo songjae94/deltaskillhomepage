@@ -1,0 +1,107 @@
+/* Screen surroundings only. No A4 internals, math rules, positions or fonts. */
+@media screen {
+  /* Study is warm white paper, not a grey dashboard. */
+  html[data-design="b"][data-interior="v12"] body.working-body:is([data-page="student"],[data-page="timed"],[data-page="practice"]) { background:#fbfaf7; }
+  html[data-design="b"][data-interior="v12"] body.working-body:is([data-page="student"],[data-page="timed"]) .student-v7 { background:transparent; border:0; box-shadow:none; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="student"] .work-shortcuts .time-feature.editorial-time { padding:0; background:none; border:0; border-radius:0; box-shadow:none; overflow:visible; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="student"] .work-shortcuts .time-feature.editorial-time>button.editorial-tablet { position:relative!important; inset:auto!important; display:block!important; width:100%; height:auto; min-height:0; aspect-ratio:1.5; padding:0; margin:0; border:5px solid #fff; border-radius:2px; background:#dbe2e5; box-shadow:0 1px 0 #d0d3ce,3px 7px 15px #333d4312; overflow:hidden; transform:none; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="student"] .work-shortcuts .editorial-tablet>img { display:block!important; visibility:visible; opacity:1!important; filter:none!important; width:100%; height:100%; object-fit:contain; transform:none; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="student"] .work-shortcuts .editorial-tablet-screen { left:43%; top:24%; width:43%; height:43%; padding:7px; color:#f8fafb; background:#15212bd9; border:1px solid #dde6ec22; border-radius:3px; text-shadow:0 1px 1px #0008; pointer-events:none; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="student"] .work-shortcuts .editorial-tablet-screen strong { font-size:26px; font-weight:500; color:#fff; line-height:1.2; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="student"] .work-shortcuts .editorial-tablet-screen small { display:none; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="student"] .work-shortcuts .editorial-time .feature-heading { align-items:baseline; gap:10px; padding-top:18px; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="student"] .work-shortcuts .editorial-time .feature-heading h2 { color:#384450; font-size:21px; font-weight:550; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="student"] .work-shortcuts .editorial-time .feature-heading>span { color:#6a7681; font-size:12px; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="student"] .work-shortcuts .editorial-time .time-feature-bottom { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px; margin:12px 0 0; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="student"] .work-shortcuts .editorial-time .time-feature-bottom p { color:#697580; font-size:13px; margin:0; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="student"] .work-shortcuts .editorial-time .time-feature-bottom button { position:static!important; inset:auto!important; width:auto; min-height:44px; margin:0; padding:10px 14px; border:1px solid #bec8cf; border-bottom:2px solid #9eacb8; background:linear-gradient(#fff,#eef1f3); color:#425a70; border-radius:4px; font-size:12px; box-shadow:0 2px 0 #d7dde1; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="student"] .editorial-material { background:none; border:0; padding:0; box-shadow:none; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="student"] .editorial-material>img { display:block; width:100%; height:auto; aspect-ratio:1.5; object-fit:contain; border:5px solid #fff; box-shadow:0 1px 0 #d5d0c7; }
+
+  /* Library: real linked public pages on the blank photographic paper. */
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="library"] { background:#faf8f3; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="library"] .library-v12-exhibit { background:none; border:0; border-radius:0; box-shadow:none; overflow:visible; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="library"] .library-v12-exhibit::before { display:none; }
+  .ie24-document-still-life { position:relative; display:block; width:100%; aspect-ratio:1.45; overflow:hidden; background:#e8dfd0; border:5px solid #fff; box-shadow:0 1px 0 #d4cfc4,5px 12px 22px #3a3c4012; }
+  .ie24-document-still-life>.ie24-desk { position:absolute; inset:0; display:block; width:100%; height:100%; object-fit:cover; }
+  .ie24-document-still-life>.ie24-real-page { position:absolute; display:block; left:25%; top:6%; width:61%; height:114%; object-fit:contain; object-position:top; transform:rotate(-4deg); background:#fff; box-shadow:1px 3px 0 #dbd9d3,3px 7px 17px #25313c24; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="library"] .lf19-finder { background:transparent; border-radius:0; box-shadow:none; }
+
+  /* CSAT's dark cloth book remains the main object. Make the work below readable. */
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="csat"] { background:#fcfcfa; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="csat"] .cl20-photo { box-shadow:0 1px 0 #d5d5d0,5px 13px 23px #333b4412; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="csat"] .cl20-course-work { border:0; border-top:1px solid #d6dcdf; border-bottom:1px solid #d6dcdf; border-radius:0; background:#f2f4f3; box-shadow:none; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="csat"] :is(.cl20-workspace p,.cl20-workspace li div>span,.cl20-review-note,.cl20-source-note,.cl20-course-note,.cl20-archive-links a,.cl20-archive-links small,.cl20-exam>div>span) { color:#65717c; font-size:14px; line-height:1.85; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="csat"] .cl20-review { border-left-color:#cfd6dc; }
+
+  /* Workshop and editor: restore the real desk warmth outside the original A4. */
+  html[data-design="b"][data-interior="v12"] body.working-body:is([data-page="teacher"],[data-page="print-design"]) { background:#f5f3ee; background-image:none; }
+  html[data-design="b"][data-interior="v12"] body.working-body:is([data-page="teacher"],[data-page="print-design"]) .creator-paper-stage { background:#e8e7e2; background-image:none; box-shadow:inset 0 1px 2px #47505209; }
+  html[data-design="b"][data-interior="v12"] body.working-body:is([data-page="teacher"],[data-page="print-design"]) .creator-paper-stage .paper-photo-scene { background-color:#efe5d5; background-blend-mode:normal; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="teacher"] .creator-config { background-color:#2e383d; border-radius:2px; box-shadow:0 1px 0 #1d2a30,3px 10px 20px #25343d15; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="teacher"] .tb20-eyebrow { display:none; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="print-design"] .pd16-settings { background:#fcfbf7; background-image:none; border:1px solid #d6d7d1; border-radius:2px; box-shadow:0 1px 0 #d1d4cd; }
+
+  /* Member desk: personal papers and open shelves, not more coloured boxes. */
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="account"] { background:#f7f6f2; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="account"] .account-polish-v19 .account-heading { background:none; border-bottom:1px solid #d5d9d8; padding:13px 0 27px; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="account"] .account-polish-v19 .account-nav .ap19-main-nav [aria-current] { background:none; color:#4c435a; box-shadow:inset 0 -2px 0 #7d718c; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="account"] .account-polish-v19 #account-designs { background:#edf0ef; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="account"] .account-polish-v19 .account-empty { background:#f0f1ed; border-left-color:#b3beb8; }
+
+  /* Information and request pages get one quiet photograph; no form is rebuilt. */
+  html[data-design="b"][data-interior="v12"] body.working-body .ie24-photo-heading { display:grid; grid-template-columns:minmax(0,1fr) minmax(210px,.7fr); gap:32px; align-items:center; margin-bottom:31px; }
+  .ie24-heading-copy { min-width:0; }
+  .ie24-photo { display:block; width:100%; max-width:330px; justify-self:end; margin:0; overflow:hidden; }
+  .ie24-photo>img { display:block; width:100%; height:auto; object-fit:contain; }
+  .ie24-diagnostic-photo { max-width:235px; }
+  .ie24-upload-photo { max-width:240px; max-height:170px; }
+  .ie24-upload-photo>img { height:170px; object-fit:cover; object-position:10% center; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="help"] { background:#fbfaf7; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="help"] .help-heading h1 { font-size:37px; font-weight:500; letter-spacing:-1.4px; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="help"] .help-quick>a { background:none; border:0; border-bottom:1px solid #cfd4d3; border-radius:0; box-shadow:none; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="help"] .help-faq details { background-image:none; box-shadow:none; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="help"] .help-faq details>div { font-size:14px; line-height:1.9; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="diagnostic"] .diagnostic-start-card { background:none; background-image:none; border:0; border-radius:0; box-shadow:none; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="upload"] { background:#f5f2ec; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="upload"] .upr22 { --upr-ink:#39434b; --upr-muted:#75808a; --upr-line:#d8ddd9; --upr-tint:#eef0ec; --upr-accent:#536a7a; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="upload"] .upr22-heading h1 { font-size:36px; font-weight:500; line-height:1.4; letter-spacing:-1.4px; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="upload"] .upr22-heading p { font-size:13px; line-height:1.8; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="upload"] .upr22-form { gap:0; border:1px solid #d5d7d1; background:#fffefb; box-shadow:0 1px 0 #d2d5ce,2px 4px 0 #fdfdf8,3px 5px 0 #dbddd6; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="upload"] .upr22-sheet { border:0; border-bottom:1px solid #dce0d9; border-radius:0; background:none; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="upload"] .upr22-file-field { background:#f1f3ef; border-color:#bcc7c5; border-radius:2px; }
+  /* A teacher's register: paper edges and a single clear summary. */
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="classroom"] { background:#f7f5f0; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="classroom"] .classroom-surface { --classroom-ink:#3c4852; --classroom-muted:#77828c; --classroom-blue:#5c7182; --classroom-rule:#d4dbdc; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="classroom"] .classroom-heading { border-bottom:2px solid #8998a0; padding-bottom:22px; margin-bottom:22px; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="classroom"] .classroom-heading h1 { font-size:31px; font-weight:500; letter-spacing:-1.1px; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="classroom"] .classroom-demo-notice strong { color:#766e54; background:#e9e4d7; border-radius:2px; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="classroom"] .classroom-lobby-grid { gap:22px; margin-top:25px; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="classroom"] .classroom-lobby-card { background:#fffdf6; border:1px solid #d5d5cb; border-left:6px solid #b9b1a0; border-top:3px solid #ccc4b5; border-radius:2px; box-shadow:0 1px 0 #cfd0c9,2px 4px 0 #fdfcf7,3px 5px 0 #d8dad4; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="classroom"] .classroom-sheet { background:#fffefb; background-image:none; border:1px solid #d8ddda; border-top:1px solid #b6c1c5; border-radius:2px; box-shadow:0 1px 0 #cfd6d5,2px 4px 0 #fff; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="classroom"] .classroom-round-summary { border-left:4px solid #8b9da7; padding:29px; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="classroom"] .classroom-lobby-empty { min-height:170px; border-left:5px solid #b7b5a5; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="classroom"] .classroom-class-tabs { background:none; border-radius:0; border-bottom:1px solid #cdd6d9; padding-bottom:9px; }
+}
+@media screen and (max-width:900px) {
+  html[data-design="b"][data-interior="v12"] body.working-body .ie24-photo-heading { grid-template-columns:minmax(0,1fr) 210px; gap:23px; }
+  .ie24-diagnostic-photo { display:none; }
+  html[data-design="b"][data-interior="v12"] body.working-body .ie24-diagnostic-heading { display:block; }
+}
+@media screen and (max-width:660px) {
+  html[data-design="b"][data-interior="v12"] body.working-body .ie24-photo-heading { grid-template-columns:minmax(0,1fr) 110px; gap:17px; margin-bottom:25px; }
+  .ie24-help-photo { max-width:110px; }
+  .ie24-upload-photo { max-height:125px; }
+  .ie24-upload-photo>img { height:125px; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="upload"] .upr22-heading h1,
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="help"] .help-heading h1 { font-size:27px; letter-spacing:-1px; }
+  html[data-design="b"][data-interior="v12"] body.working-body[data-page="student"] .work-shortcuts .editorial-tablet-screen strong { font-size:30px; }
+  .ie24-document-still-life { aspect-ratio:1.4; }
+}
+
+/* Actual-document exhibit retains a readable caption after replacing its image. */
+html[data-design="b"][data-interior="v12"] body[data-page="library"] .library-v12-exhibit:has(.ie24-document-still-life) .library-v12-exhibit-link { color:#fff; background:#30363e; font-size:14px; font-weight:650; }
+
+html[data-design="b"][data-interior="v12"] body[data-page="upload"] .upr22-form > .upr22-sheet { padding:28px; min-width:0; }
+html[data-design="b"][data-interior="v12"] body[data-page="upload"] .upr22-heading p { word-break:keep-all; overflow-wrap:break-word; }
+@media(max-width:600px){html[data-design="b"][data-interior="v12"] body[data-page="upload"] .upr22-form > .upr22-sheet { padding:20px; }}
