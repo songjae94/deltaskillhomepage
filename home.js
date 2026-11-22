@@ -74,11 +74,11 @@ function setScreen(remember){
   const primary=one('#primary'),secondary=one('#secondary'),extra=one('#extra');
   primary.textContent=common?'학생 공부창 열기 ↗':student?'공부하기 ↗':'내신 변형 문제집 고르기 →';
   secondary.textContent=common?'내신 변형 문제집 고르기 →':student?'자료받기 →':'자료실 바로가기 ↗';
-  primary.href=showsServiceTour()?studyUrl():'#workspace';
+  primary.href=showsServiceTour()?'/app/#student':'#workspace'; /* 1122: 공부 진입은 개편 판으로 */
   secondary.href=common?educatorDestination('teacher',exam):materialsUrl();
-  extra.textContent=student?(exam==='csat'?'수능 100분 실전 풀기 ↗':'내신 50분 실전 풀기 ↗'):'수업 자료 이용 안내 ↗';
+  extra.textContent=student?(exam==='csat'?'수능 100분 실전 풀기 ↗':'내신 50분 실전 풀기 ↗'):common?'수업 자료 이용 안내 ↗':'수업 자료 만들기 ↗';
   const guide='guide/index.html?'+new URLSearchParams({exam,audience:role});
-  extra.href=student?'study/index.html?exam='+exam+'&minutes='+(exam==='csat'?100:50)+'#timed':guide;
+  extra.href=student?'study/index.html?exam='+exam+'&minutes='+(exam==='csat'?100:50)+'#timed':common?guide:'/app/#teacher'; /* 1122: 선생님 진입은 개편 판으로 */
   for(const [q,h] of [['#navStudy',studyUrl()],['#navBooks',materialsUrl()],['#navGuide',guide]]){const n=one(q);if(n)n.href=h;} /* 39 1119: 메인 머리 = 다른 쪽과 같은 ds-head(내신 자료 · 이용권 · 주문 조회 · 계정) — 옛 칸은 없을 수 있음 */
   one('#allBooks').href=materialsUrl();one('#schoolBooks').href=materialsUrl('school');one('#csatBooks').href=materialsUrl('csat');
   const example=one('#educator-preview');
