@@ -234,7 +234,7 @@
     return `${Math.floor(seconds / 60)}분 ${seconds % 60}초`;
   }
 
-  function localDiagnostics(state) {
+  function localDiagnostics(state, signedIn) {
     const units = [...new Set((Array.isArray(state?.units) ? state.units : []).map(item => typeof item === 'string' ? item : item?.unit).filter(unit => typeof unit === 'string' && unit.trim()))];
     const selected = units.includes(state?.selectedUnit) ? state.selectedUnit : units[0];
     if (!selected) return '';
@@ -253,6 +253,8 @@
       return `<li class="account-local-attempt account-local-attempt-${axis.action}">
         <div class="account-attempt-heading"><h4>${axis.label}</h4>${date ? `<small>${escape(date)}</small>` : ''}</div>
         <p>${attempt ? escape(result.join(' · ') || '완료') : '완료한 평가 없음'}</p>
+        ${signedIn && attempt?.id ? `<button class="account-attempt-detail" type="button" data-diagnostic-result="${escape(attempt.id)}">결과 보기 →</button>` : ''}
+        <button class="account-row-action" type="button" data-diagnostic="${axis.action}" data-diagnostic-unit="${escape(selected)}">평가 시작 <span aria-hidden="true">→</span></button>
       </li>`;
     }).join('');
 
@@ -281,7 +283,7 @@
     else if (state?.loading) content = '<p class="account-muted" role="status">단원별 기록을 불러오는 중…</p>';
     else if (state?.error) content = connectionState(typeof state.error === 'string' ? state.error : '연결 확인 필요', 'units');
     else content = unitRows(state?.items, exam ? 9 : 5, ready) || emptyState('단원별 기록이 아직 없어요.', '#student', '공부 시작');
-    return `${localDiagnostics(state)}<div class="account-unit-history"><div class="account-unit-practice-title"><h3>단원별 자기채점 기록</h3><span class="account-source">계정</span></div>${controls}${content}</div>`;
+    return `${localDiagnostics(state, signedIn)}<div class="account-unit-history"><div class="account-unit-practice-title"><h3>단원별 자기채점 기록</h3><span class="account-source">계정</span></div>${controls}${content}</div>`;
   }
 
   function account(state = {}) {
