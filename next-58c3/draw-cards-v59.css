@@ -1,6 +1,6 @@
 /* v61: the draw screen on the refined design (디자인다듬기_기준_1123 · tokens --ds-*). Scoped to dq59-* / dq61-*;
    shared tb36 rules are only touched inside .dq61-surface, so /app/ and the v58.3 flow stay as they are. */
-.dq61-surface{
+.dq61-surface,.dq61-gate{
   --ds-ink:#202536;--ds-sub:#5b6274;--ds-sub-dark:#b9bdd0;--ds-paper:#fffefb;--ds-ground:#f7f5ef;--ds-navy:#252638;
   --ds-rule-1:#e3e1da;--ds-rule-2:#d5d8e1;--ds-accent:#2448cc;--ds-accent-dark:#9db0ff;
   --ds-r-in:4px;--ds-r-card:8px;--ds-r-panel:14px;--ds-r-pill:999px;
@@ -145,7 +145,6 @@ button.dq61-sol:hover{color:var(--ds-ink);background:#f5f3ec}
 .dq59-panel .tb36-quiet[disabled]{opacity:.5;cursor:not-allowed}
 html[data-design="b"] .dq59-panel .tb36-quiet{display:flex;width:100%;align-items:center;justify-content:center;gap:8px;min-height:44px;color:#e6e8f0;font-size:14px}
 .dq59-save button{cursor:pointer!important}
-.dq61-save-locked button{display:inline-flex;align-items:center;gap:6px}
 .dq59-setup .tb36-primary[disabled]{opacity:.55;cursor:not-allowed}
 .dq59-panel .tb36-primary{margin-top:16px}
 html[data-design="b"] .dq59-panel .tb36-design-link{color:#e6e8f0}
@@ -156,6 +155,7 @@ html[data-design="b"] .dq59-panel .tb36-design-link{color:#e6e8f0}
 
 /* ── preview: locked answer page ── */
 .dq61-lockpaper{position:absolute;inset:0;container-type:inline-size;background:var(--ds-paper)}
+.ds48-paper-position:has(>.dq61-lockpaper){background:var(--ds-paper,#fffefb)}
 .dq61-lockpaper-sheet{position:absolute;inset:0;padding:7% 6.5%}
 .dq61-lockpaper-sheet header{display:grid;gap:2cqw;padding-bottom:3cqw;border-bottom:1.5px solid var(--ds-navy)}
 .dq61-lockpaper-sheet header span{font-size:max(12px,1.6cqw);font-weight:700;letter-spacing:.02em;color:var(--ds-sub)}
@@ -170,6 +170,10 @@ html[data-design="b"] .dq59-panel .tb36-design-link{color:#e6e8f0}
 .dq61-surface .tb36-pages button.is-locked{display:inline-flex;align-items:center;gap:6px}
 .dq61-surface .tb36-pages button.is-waiting{opacity:1;color:var(--ds-sub);border-style:dashed;cursor:progress}
 .dq61-surface .tb36-pages button.is-waiting small{font-size:12px;font-variant-numeric:tabular-nums}
+
+.dq61-surface .dq59-canvas .tb36-pages button{font-size:12px}
+.dq61-surface .dq59-canvas .creator-canvas-footer,.dq61-surface .dq59-canvas .creator-canvas-footer span{font-size:12px}
+.dq61-surface .tb36-steps span{font-size:12px}
 
 /* ── the sign-in dialog: one, only when asked ── */
 .dq61-gate{width:min(440px,calc(100vw - 32px));max-height:calc(100vh - 32px);padding:0;border:0;border-radius:var(--ds-r-panel);background:transparent;overflow:visible}

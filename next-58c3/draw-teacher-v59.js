@@ -392,10 +392,11 @@
     const onLocked = g && page === pages - 1;
     const solBox = g ? `<button type="button" class="dq59-check dq61-check-locked" data-dq61-gate-open="solution"><span class="dq61-box" aria-hidden="true">${LOCK_SVG}</span><span>정답 · 해설 면 붙이기</span></button>`
       : `<label class="dq59-check"><input type="checkbox" data-dq-sol ${withSol ? 'checked' : ''}><span>정답 · 해설 면 붙이기</span></label>${solProgress()}`;
-    const save = g ? `<div class="tb36-save dq59-save dq61-save-locked"><strong>내 계정에 보관</strong><p>로그인하면 이 구성을 보관하고 다시 열 수 있습니다.</p><button type="button" data-dq61-gate-open="save">보관</button></div>`
+    // v61.4: a guest gets no keep box — the member screen has none either on the live connection (no owner tag).
+    const save = g ? ''
       : owner ? `<div class="tb36-save dq59-save"><strong>이 기기에 임시 보관</strong><p>문항 글은 저장하지 않습니다. 다시 열 때 서버가 권한을 확인합니다.</p><button type="button" data-dq-save>임시 보관</button></div>` : '';
     const print = g ? `<button type="button" class="tb36-primary" data-dq61-gate-open="print">인쇄 / PDF <span>↗</span></button>` : `<button type="button" class="tb36-primary" data-dq-print ${waitPrint ? 'aria-busy="true"' : ''}>인쇄 / PDF <span>↗</span></button>`;
-    const paper = onLocked ? lockedPaper() : window.DSPrintSurfaceV48.scene(`<iframe class="dq59-paper" title="${page + 1}쪽 인쇄 지면" scrolling="no" style="width:793.7008px;height:1122.5197px" srcdoc="${safe(documentHTML(pageArg()))}"></iframe>`);
+    const paper = onLocked ? window.DSPrintSurfaceV48.scene(lockedPaper()) : window.DSPrintSurfaceV48.scene(`<iframe class="dq59-paper" title="${page + 1}쪽 인쇄 지면" scrolling="no" style="width:793.7008px;height:1122.5197px" srcdoc="${safe(documentHTML(pageArg()))}"></iframe>`);
     const nav = Array.from({ length: pages }, (_, i) => { const locked = g && i === pages - 1; return `<button type="button" data-dq-page="${i}" aria-pressed="${page === i}"${locked ? ' class="is-locked"' : ''}>${i + 1} ${i < all.length ? '문제' : '정답·해설'}${locked ? ` <span class="dq61-lockmark" aria-hidden="true">${LOCK_SVG}</span>` : ''}</button>`; }).join('');
     const pending2 = !g && withSol && !drawn.solutions && drawn.solOp && !drawn.solOp.failed ? `<button type="button" disabled class="is-waiting">정답·해설 <small data-dq61-done>${drawn.solOp.done} / ${drawn.solOp.total}</small></button>` : '';
     return `<div class="tb36-workspace dq59-work${g ? ' dq61-guest' : ''}"><aside class="tb36-finish-panel dq59-panel"><div class="tb36-section-title"><b>04</b><h2>보관·출력</h2></div><label>제목<input data-dq-title maxlength="60" value="${safe(title)}"></label><label>한 쪽 문항 수<select data-dq-layout>${[1, 2, 4].map(n => `<option value="${n}" ${Number(layout) === n ? 'selected' : ''}>${n}문항</option>`).join('')}</select></label><a class="tb36-design-link" href="#print-design">학원명·머리말·표지 디자인 <span>↗</span></a>${solBox}${save}${print}<button type="button" class="tb36-quiet" data-dq-review>문항 다시 확인</button>${noteHTML()}</aside><div class="creator-canvas td34-canvas tb36-canvas ds48-canvas dq59-canvas"><div class="creator-canvas-toolbar"><div><strong>인쇄 미리보기</strong><span>${drawn.items.length}문항 · ${pages}쪽</span></div></div><div class="creator-paper-stage">${paper}</div><nav class="tb36-pages" aria-label="미리보기 쪽">${nav}${pending2}</nav><div class="creator-canvas-footer"><span>A4 · 210 × 297 mm</span><span>${g ? '문제 면 · 정답·해설은 로그인 뒤' : solOn() ? '문제 · 정답·해설' : '문제 면'}</span></div></div></div>`;
@@ -471,7 +472,6 @@
   const GATE = {
     solution: ['로그인하면 이 문항들의 정답과 해설을 바로 볼 수 있어요', '방금 뽑은 구성 그대로 정답 · 해설이 펼쳐집니다.'],
     print: ['로그인하면 이 구성 그대로 출력할 수 있어요', '방금 뽑은 문항으로 인쇄 / PDF 화면이 이어서 열립니다.'],
-    save: ['로그인하면 이 구성을 보관할 수 있어요', '방금 뽑은 구성 그대로 이어서 보관합니다.'],
     more: ['로그인하면 다른 문항으로 바꿀 수 있어요', '같은 조건의 다음 문항을 이어서 뽑습니다.'],
     limit: ['로그인하면 더 뽑을 수 있어요', '고른 조건 그대로 이어서 뽑고, 정답 · 해설까지 볼 수 있어요.']
   };
@@ -488,7 +488,7 @@
   function openGate(want) {
     const [head, line] = GATE[want] || GATE.solution, d = gateDialog(), n = drawn?.guest ? drawn.items.length : 0;
     opened = want;
-    d.innerHTML = `<form method="dialog" class="dq61-gate-card"><button type="submit" class="dq61-close" data-dq61-close aria-label="닫기">×</button><span class="dq61-lockmark is-big" aria-hidden="true">${LOCK_SVG}</span><h2 id="dq61-gate-title">${safe(head)}</h2><p>${safe(line)}${n ? ` <b>${n}문항</b>` : ''}</p><ul><li>정답 · 해설 면</li><li>인쇄 / PDF</li><li>구성 보관</li></ul><div class="dq61-gate-actions"><button type="button" class="tb36-primary" data-dq61-login>로그인</button><a class="dq61-ghost" href="${safe(signupHref())}" data-dq61-signup>회원가입</a></div><small>회원가입은 휴대폰 번호로 합니다. 가입하면 이 화면으로 돌아옵니다.</small></form>`;
+    d.innerHTML = `<form method="dialog" class="dq61-gate-card"><button type="submit" class="dq61-close" data-dq61-close aria-label="닫기">×</button><span class="dq61-lockmark is-big" aria-hidden="true">${LOCK_SVG}</span><h2 id="dq61-gate-title">${safe(head)}</h2><p>${safe(line)}${n ? ` <b>${n}문항</b>` : ''}</p><ul><li>정답 · 해설 면</li><li>인쇄 / PDF</li></ul><div class="dq61-gate-actions"><button type="button" class="tb36-primary" data-dq61-login>로그인</button><a class="dq61-ghost" href="${safe(signupHref())}" data-dq61-signup>회원가입</a></div><small>회원가입은 휴대폰 번호로 합니다. 가입하면 이 화면으로 돌아옵니다.</small></form>`;
     if (!d.open) { try { d.showModal(); } catch { d.setAttribute('open', ''); } }
     d.querySelector('[data-dq61-login]')?.focus();
   }
