@@ -110,7 +110,7 @@ const cutsReady = fetch("/cuts.json",{cache:"no-store"}).then(r=>r.json()).then(
 /* 연습 처방 — 원장 DB에서 추출한 rx.json (문항→도구→원형 기출 사다리).
    문항 원문은 담지 않는다 — 자작 처방 텍스트와 출처 라벨뿐이라 정적 배포가 가능하다. */
 let RX = {};
-const rxReady = fetch("/rx.json",{cache:"no-store"}).then(r=>r.json()).then(d=>{RX=d;}).catch(()=>{});
+const rxReady = Promise.resolve();   /* 처방 연결 자료(rx.json)는 공개 리포에서 내림(11-23) — 회원 전용 길이 생기면 그리로 */
 
 const AREA2TRACK = {"수학Ⅰ":"공통","수학Ⅱ":"공통","공통":"공통","미적분(선택)":"미적분","미적분":"미적분","확률과통계":"확통","확률과 통계":"확통","확통":"확통","기하":"기하"};
 function skillsOf(exam,area,no){const E=DELTAMAP[exam];if(!E)return null;const n=+no;if(n>=1&&n<=22&&E["공통"]&&E["공통"][no])return E["공통"][no];const tr=AREA2TRACK[area]||area;return (E[tr]&&E[tr][no])||null;}
