@@ -778,7 +778,7 @@ document.addEventListener('click',event=>{
   }
   function gallery() {
     const c=api.config(draft), questionPage=api.sequence(c).find(p=>p.type==='questions');
-    return api.designs.map((d,i)=>`<button type="button" class="pd16-template" data-design-template="${d.id}" aria-pressed="${d.id===draft.printDesign}" aria-label="${d.name} 선택"><span class="pd16-thumb" aria-hidden="true"><span class="pd16-thumb-scale">${api.renderPage({...c,design:d.id,settings:api.normalizeSettings()},questionPage,0,1)}</span></span><span class="pd16-template-name">${d.name}<i>${i<3?'기본':'추가'}</i></span><span class="pd16-template-desc">${descriptions[d.id]}</span><span class="pd16-template-check" aria-hidden="true">✓</span></button>`).join('');
+    return api.designs.map((d,i)=>`<button type="button" class="pd16-template" data-design-template="${d.id}" aria-pressed="${d.id===draft.printDesign}" aria-label="${d.name} 선택"><span class="pd16-thumb" aria-hidden="true"><span class="pd16-thumb-scale">${(questionPage?api.renderPage({...c,design:d.id,settings:api.normalizeSettings()},questionPage,0,1):'')}</span></span><span class="pd16-template-name">${d.name}<i>${i<3?'기본':'추가'}</i></span><span class="pd16-template-desc">${descriptions[d.id]}</span><span class="pd16-template-check" aria-hidden="true">✓</span></button>`).join('');
   }
   function render() {
     ensureDraft();const s=draft.printSettings;
