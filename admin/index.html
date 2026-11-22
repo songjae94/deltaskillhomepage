@@ -88,7 +88,7 @@ const pct = (n, d) => d ? Math.round(100 * n / d) + "%" : "-";
 /* 요구 스킬 — /deltamap.json 하나에서 불러온다. 회차 추가 시 그 파일만 교체
    (2026-08-12 개명: 예전 이름이 skills.json 이었다. 지금 skills.json 은 존재하지 않는다) */
 let DELTAMAP = {};
-const deltamapReady = fetch("/deltamap.json",{cache:"no-store"}).then(r=>r.json()).then(d=>{DELTAMAP=d;}).catch(()=>{});
+const deltamapReady = Promise.resolve();
 // 응답의 area(수학Ⅰ/Ⅱ·미적분(선택)·확률과통계)를 계류 트랙 키로 옮긴다.
 const AREA2TRACK = {"수학Ⅰ":"공통","수학Ⅱ":"공통","공통":"공통","미적분(선택)":"미적분","미적분":"미적분","확률과통계":"확통","확률과 통계":"확통","확통":"확통","기하":"기하"};
 function skillsOf(exam, area, no){

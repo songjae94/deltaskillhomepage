@@ -96,7 +96,7 @@ const pct = (n,d)=> d ? Math.round(100*n/d)+"%" : "-";
 /* 문항별 요구 스킬 — /deltamap.json 하나에서 불러온다. 회차 추가 시 그 파일만 교체.
    (2026-08-12 개명: 예전 이름이 skills.json 이었다. 지금 skills.json 은 존재하지 않는다) */
 let DELTAMAP = {};
-const deltamapReady = fetch("/deltamap.json",{cache:"no-store"}).then(r=>r.json()).then(d=>{DELTAMAP=d;}).catch(()=>{});
+const deltamapReady = Promise.resolve();
 /* 회차별 실제 등급컷. 없는 회차는 아래 GRADE_CUTS(전국 모평 기준)로 되돌아간다. */
 let EXAM_CUTS = {};
 const cutsReady = fetch("/cuts.json",{cache:"no-store"}).then(r=>r.json()).then(d=>{EXAM_CUTS=d;}).catch(()=>{});
