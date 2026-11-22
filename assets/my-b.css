@@ -1,0 +1,645 @@
+/* 마이페이지 꾸밈 — 개편 판(/app/ 디자인 b)과 같은 꼴. /my/ · /my/notes/ · /my/library/ 가 쓴다.
+   쓰는 법: 쪽의 <html> 에 data-purchase="b" 를 달고, 이 파일을 다른 css 뒤(site-unify.css 다음, </head> 바로 앞)에 건다.
+   토큰(--pb-*) · 공통 1~9 칸은 assets/purchase-b.css(구매 쪽, 1123)와 같은 이름 · 같은 값 → 두 파일을 합칠 때 공통 칸은 하나만 남기면 된다.
+   로직 · 주소 · id · class · data- 속성은 건드리지 않는다. 쪽에 원래 있던 class 위에 색 · 글꼴 · 테두리 · 여백만 덧입힌다. */
+
+html[data-purchase="b"] {
+  --pb-paper: #faf8f3;
+  --pb-card: #fffefb;
+  --pb-white: #fff;
+  --pb-ink: #26242a;
+  --pb-head: #29283d;
+  --pb-ink2: #433f4f;
+  --pb-muted: #625f6c;
+  --pb-line: #dedbd6;
+  --pb-line2: #c9c4d4;
+  --pb-rule: #a3a0ad;
+  --pb-panel: #f1efea;
+  --pb-accent: #493b9c;
+  --pb-accent-ui: #6253cc;
+  --pb-nav: #36355f;
+  --pb-btn: #514970;
+  --pb-btn-h: #463f63;
+  --pb-btn-edge: #312b48;
+  --pb-soft: #f1edfa;
+  --pb-soft2: #e8e2f4;
+  --pb-ok: #2f6b47;
+  --pb-ok-soft: #e6f0e9;
+  --pb-err: #9c2b23;
+  --pb-err-soft: #f8ebe8;
+  --pb-r: 5px;
+  --pb-r-s: 4px;
+  --pb-shadow: 0 2px 0 #e1ddd4, 0 5px 12px rgba(51, 43, 35, .063);
+  --pb-font: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+  --pb-width: min(1178px, calc(100% - 64px));
+  --my-width: var(--pb-width);
+  color-scheme: light;
+  background: var(--pb-paper);
+}
+html[data-purchase="b"] body {
+  background: var(--pb-paper);
+  color: var(--pb-ink);
+  font-family: var(--pb-font);
+  font-weight: 500;
+  letter-spacing: -.012em;
+}
+html[data-purchase="b"] :is(a, button, input, select, summary):focus-visible {
+  outline: 3px solid var(--pb-accent-ui);
+  outline-offset: 3px;
+  border-radius: var(--pb-r-s);
+}
+
+/* ── 공통 1. 머리(로고 · 메뉴 · 계정) — purchase-b.css 공통 1 과 같음 ── */
+html[data-purchase="b"] header.ds-head {
+  background: var(--pb-white);
+  border-bottom: 1px solid #d9d6de;
+  font-family: var(--pb-font);
+}
+html[data-purchase="b"] .ds-head-in {
+  width: var(--pb-width);
+  max-width: none;
+  height: 78px;
+  padding: 0;
+  gap: 0 24px;
+}
+html[data-purchase="b"] .ds-logo {
+  font: 900 24px/1 Arial, Helvetica, sans-serif;
+  letter-spacing: -1.5px;
+}
+html[data-purchase="b"] .ds-logo .d,
+html[data-purchase="b"] .ds-logo .s { color: #253248 !important; }
+html[data-purchase="b"] .ds-head .ds-menu {
+  margin: 0 auto;
+  gap: 28px;
+}
+html[data-purchase="b"] .ds-head .ds-menu a {
+  position: relative;
+  min-height: 78px;
+  padding: 0;
+  border-radius: 0;
+  color: #737586;
+  font: 500 14px/1 var(--pb-font);
+  letter-spacing: -.01em;
+}
+html[data-purchase="b"] .ds-head .ds-menu a:hover { background: transparent; color: var(--pb-nav); }
+html[data-purchase="b"] .ds-head .ds-acct {
+  border-left: 1px solid #d9d6de;
+  padding-left: 16px;
+  gap: 8px;
+}
+html[data-purchase="b"] .ds-head .ds-acct a {
+  min-height: 44px;
+  padding: 0 6px;
+  border-radius: var(--pb-r-s);
+  color: #595172;
+  font: 600 13px/1 var(--pb-font);
+}
+html[data-purchase="b"] .ds-head .ds-acct a[data-account-secondary] {
+  padding: 0 14px;
+  background: var(--pb-soft2);
+  color: #5244ac;
+}
+html[data-purchase="b"] .ds-head .ds-acct a[data-account-secondary]:hover { background: #ddd5f0; }
+
+/* ── 공통 5. 단추 — 주 단추(남보라 · 아래 턱) · 곁단추(흰 바탕 · 옅은 테) · 못 누름 ── */
+html[data-purchase="b"] body :is(.btn.pri, button.p):not(:disabled):not([aria-disabled="true"]) {
+  background: var(--pb-btn);
+  color: #fff;
+  border: 0;
+  border-radius: 6px;
+  box-shadow: 0 3px 0 var(--pb-btn-edge), 0 6px 12px rgba(23, 40, 60, .14);
+  font-weight: 650;
+  letter-spacing: -.01em;
+  transition: background .12s, transform .12s, box-shadow .12s;
+}
+html[data-purchase="b"] body :is(.btn.pri, button.p):not(:disabled):not([aria-disabled="true"]):hover { background: var(--pb-btn-h); }
+html[data-purchase="b"] body :is(.btn.pri, button.p):not(:disabled):not([aria-disabled="true"]):active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--pb-btn-edge);
+}
+html[data-purchase="b"] body .btn.ghost {
+  background: linear-gradient(#fff, #f7f5fa);
+  color: var(--pb-nav);
+  border: 0;
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 1px var(--pb-line2), 0 2px 0 #dcd7e4;
+  font-weight: 650;
+}
+html[data-purchase="b"] body .btn.ghost:hover { background: var(--pb-soft); }
+html[data-purchase="b"] body :is(.btn:disabled, button.p:disabled) {
+  background: #e7e5ea;
+  color: var(--pb-muted);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* ── 공통 6. 입력칸 ── */
+html[data-purchase="b"] main :is(select, input[type=text]) {
+  min-height: 44px;
+  border: 1px solid #9aa7b4;
+  border-radius: var(--pb-r-s);
+  background: #fff;
+  color: #302d3b;
+  box-shadow: inset 0 2px 3px rgba(41, 34, 49, .027);
+}
+html[data-purchase="b"] :is(input[type=radio], input[type=checkbox]) { accent-color: var(--pb-accent-ui); }
+
+/* ── 공통 7. 안내 · 빈 화면 · 오류 · 돌아가는 길 ── */
+html[data-purchase="b"] .pb-state {
+  margin: 8px 0 0;
+  padding: 34px 24px;
+  border: 1px dashed var(--pb-line2);
+  border-radius: var(--pb-r);
+  background: var(--pb-card);
+  color: var(--pb-ink2);
+  font-size: 15px;
+  text-align: center;
+}
+html[data-purchase="b"] .pb-help {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 18px;
+  margin: 14px 0 0;
+  font-size: 13.5px;
+  color: var(--pb-muted);
+}
+html[data-purchase="b"] .pb-help a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--pb-accent);
+  font-weight: 650;
+  text-decoration: none;
+}
+html[data-purchase="b"] .pb-help a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+/* ── 공통 8. 접기(자세히) ── */
+html[data-purchase="b"] details.more {
+  margin: 16px 0 0;
+  padding: 0 2px;
+  border-top: 1px solid var(--pb-line);
+  border-bottom: 1px solid var(--pb-line);
+}
+html[data-purchase="b"] details.more > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 46px;
+  cursor: pointer;
+  list-style: none;
+  color: var(--pb-head);
+  font-size: 14px;
+  font-weight: 650;
+}
+html[data-purchase="b"] details.more > summary::-webkit-details-marker { display: none; }
+html[data-purchase="b"] details.more > summary::after { content: "+"; flex: none; color: var(--pb-accent); font: 500 20px/1 var(--pb-font); }
+html[data-purchase="b"] details.more[open] > summary::after { content: "\2212"; }
+html[data-purchase="b"] details.more > :not(summary) { margin: 0 0 12px; }
+
+/* ── 공통 9. 사이트 꼬리 — 글은 그대로, 바탕 · 글꼴만 개편 판 먹색으로 ── */
+html[data-purchase="b"] footer.sitefoot,
+html[data-purchase="b"] footer.sitefoot .biz { background: #23212c; font-family: var(--pb-font); }
+html[data-purchase="b"] footer.sitefoot .biz > * { max-width: 1178px; }
+html[data-purchase="b"] footer.sitefoot .biz .policy a:hover { background: #34313f; }
+
+/* ════════ 쪽 고유: /my/ 마이페이지 ════════ */
+html[data-purchase="b"] body.payment-flow main#app {
+  width: var(--my-width);
+  max-width: none;
+  margin: 0 auto;
+  padding: 26px 0 72px;
+}
+html[data-purchase="b"] main#app .crumb { margin: 0 0 12px; font-size: 13px; font-weight: 600; color: var(--pb-muted); }
+html[data-purchase="b"] main#app .crumb a { color: var(--pb-muted); opacity: 1; }
+html[data-purchase="b"] main#app .crumb a:hover { color: var(--pb-accent); }
+html[data-purchase="b"] main h1 {
+  margin: 0;
+  color: var(--pb-head);
+  font-size: clamp(30px, 3.4vw, 36px);
+  font-weight: 700;
+  letter-spacing: -.055em;
+  line-height: 1.22;
+}
+html[data-purchase="b"] main#app .lede { margin: 8px 0 0; color: var(--pb-muted); font-size: 15px; line-height: 1.7; }
+
+/* 바로가기 — 개편 판 마이페이지의 칸 나눔 줄과 같은 꼴 */
+html[data-purchase="b"] main#app .jump {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0;
+  margin: 24px 0 0;
+  border-top: 1px solid var(--pb-line);
+  border-bottom: 1px solid var(--pb-line);
+}
+html[data-purchase="b"] main#app .jump a {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 56px;
+  padding: 0 16px;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  border-left: 1px solid var(--pb-line);
+  color: var(--pb-nav);
+  font-size: 14px;
+  font-weight: 650;
+  text-decoration: none;
+}
+html[data-purchase="b"] main#app .jump a:first-child { border-left: 0; }
+html[data-purchase="b"] main#app .jump a::after { content: "\2193"; color: var(--pb-rule); font-weight: 500; }
+html[data-purchase="b"] main#app .jump a.my-out::after { content: "\2192"; }
+html[data-purchase="b"] main#app .jump a:hover { background: var(--pb-white); color: var(--pb-accent); }
+html[data-purchase="b"] main#app .jump a:hover::after { color: var(--pb-accent-ui); }
+
+/* 판 짜기 — 넓은 화면은 왼쪽(이용권 · 결제 · 자료함) + 오른쪽(계정 · 도움) */
+html[data-purchase="b"] .my-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 24px;
+  align-items: start;
+  margin: 26px 0 0;
+}
+html[data-purchase="b"] .my-main,
+html[data-purchase="b"] .my-side { display: grid; gap: 20px; min-width: 0; }
+html[data-purchase="b"] .my-side { position: sticky; top: 20px; }
+
+/* 카드 */
+html[data-purchase="b"] main#app .card {
+  margin: 0;
+  padding: 24px 26px 22px;
+  background: var(--pb-card);
+  border: 1px solid var(--pb-line);
+  border-radius: var(--pb-r);
+  box-shadow: var(--pb-shadow);
+  scroll-margin-top: 16px;
+}
+html[data-purchase="b"] main#app .card h2 {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 14px;
+  padding: 0 0 12px;
+  border-bottom: 1px solid var(--pb-line);
+  color: var(--pb-head);
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -.045em;
+}
+html[data-purchase="b"] main#app .card h2 .my-eyebrow { color: var(--pb-muted); font-size: 12px; font-weight: 600; letter-spacing: 0; }
+html[data-purchase="b"] main#app .card :is(h3, .my-h3) {
+  margin: 22px 0 8px;
+  color: var(--pb-head);
+  font-size: 15.5px;
+  font-weight: 700;
+  letter-spacing: -.03em;
+}
+html[data-purchase="b"] main#app .hint,
+html[data-purchase="b"] main#app .k { color: var(--pb-muted); font-size: 13px; line-height: 1.7; }
+html[data-purchase="b"] main#app .hint { margin: 10px 0 0; }
+html[data-purchase="b"] main#app :is(.hint, .msg, .k, .sub, .notice) a,
+html[data-purchase="b"] .my-guest a:not(.btn) { color: var(--pb-accent); font-weight: 650; text-underline-offset: 3px; }
+html[data-purchase="b"] main#app .msg { color: var(--pb-ink2); font-size: 14px; }
+html[data-purchase="b"] main#app .err,
+html[data-purchase="b"] main#app .msg.err { color: var(--pb-err); }
+html[data-purchase="b"] main#app .tag {
+  margin-left: 6px;
+  padding: 2px 8px;
+  border-radius: 3px;
+  background: var(--pb-panel);
+  color: var(--pb-ink2);
+  font-size: 11.5px;
+  font-weight: 700;
+  vertical-align: 2px;
+}
+html[data-purchase="b"] main#app .btn.sm { min-height: 44px; padding: 0 16px; font-size: 14px; }
+
+/* 이용권 */
+html[data-purchase="b"] #passBody .prow {
+  gap: 12px 18px;
+  padding: 16px 18px;
+  border: 1px solid var(--pb-line);
+  border-left: 3px solid var(--pb-accent-ui);
+  border-radius: var(--pb-r-s);
+  background: var(--pb-white);
+}
+html[data-purchase="b"] #passBody .prow:has(.tag.off) { border-left-color: var(--pb-rule); }
+html[data-purchase="b"] #passBody .prow b { color: var(--pb-head); font-size: 17px; font-weight: 750; letter-spacing: -.03em; }
+html[data-purchase="b"] #passBody .prow .tag:not(.off) { background: var(--pb-ok-soft); color: var(--pb-ok); }
+html[data-purchase="b"] #passBody .prow .sub { margin-top: 6px; color: var(--pb-ink2); font-size: 14px; line-height: 1.65; }
+html[data-purchase="b"] #passBody > .msg:not(:only-child) { margin: 12px 0 0; }
+
+/* 불러오는 중 · 빈 화면 — 개편 판의 옅은 칸(왼쪽 줄) 꼴 */
+html[data-purchase="b"] :is(#passBody, #payBody, #libBody, #ppHead) > p.msg:only-child,
+html[data-purchase="b"] #ppList > li:only-child:not(:has(button)) {
+  margin: 0;
+  padding: 16px 18px;
+  border-left: 2px solid #8d8999;
+  border-radius: 0 var(--pb-r-s) var(--pb-r-s) 0;
+  background: var(--pb-panel);
+  color: var(--pb-ink2);
+  font-size: 14px;
+}
+/* 불러오지 못함 — 붉은 옅은 칸 + 다시 불러오기 단추를 한 줄에 */
+html[data-purchase="b"] :is(#passBody, #payBody, #libBody, #ppHead):has(> .msg.err) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 14px;
+  padding: 12px 14px 12px 18px;
+  border: 1px solid #e2b9b2;
+  border-left: 2px solid var(--pb-err);
+  border-radius: 0 var(--pb-r-s) var(--pb-r-s) 0;
+  background: var(--pb-err-soft);
+}
+html[data-purchase="b"] :is(#passBody, #payBody, #libBody, #ppHead):has(> .msg.err) > .msg.err { margin: 0; font-size: 14px; font-weight: 650; }
+
+/* 결제 내역 표 */
+html[data-purchase="b"] #payBody .tbl { margin: 0; }
+html[data-purchase="b"] #payBody table { font-size: 14px; }
+html[data-purchase="b"] #payBody th {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--pb-rule);
+  color: var(--pb-muted);
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: .02em;
+}
+html[data-purchase="b"] #payBody td { padding: 12px 10px; border-bottom: 1px solid var(--pb-line); color: var(--pb-ink); }
+html[data-purchase="b"] #payBody td small { margin-top: 3px; color: var(--pb-muted); font-size: 12.5px; }
+html[data-purchase="b"] #payBody td.num { color: var(--pb-head); font-weight: 750; }
+html[data-purchase="b"] #payBody tr:last-child td { border-bottom: 0; }
+
+/* 자료함 — 이용권 프린트 · 구매한 자료 */
+html[data-purchase="b"] #pprint {
+  margin: 0;
+  padding: 0 0 18px;
+  border-bottom: 1px solid var(--pb-line);
+}
+html[data-purchase="b"] #pprint h3 { margin-top: 0; }
+html[data-purchase="b"] #pprint .ppn { color: var(--pb-head); font-size: 16px; font-weight: 750; }
+html[data-purchase="b"] #pprint .sub { color: var(--pb-muted); font-size: 13px; }
+html[data-purchase="b"] #pprint .ppsel {
+  margin: 14px 0 4px;
+  padding: 12px 14px;
+  border-radius: var(--pb-r-s);
+  background: var(--pb-panel);
+}
+html[data-purchase="b"] #pprint .ppsel label { color: var(--pb-ink2); font-size: 13.5px; }
+html[data-purchase="b"] #pprint .ppsel select { border-radius: var(--pb-r-s); border-color: #9aa7b4; }
+html[data-purchase="b"] #pprint .lname { margin: 16px 0 0; }
+html[data-purchase="b"] main#app .files { margin: 6px 0 0; }
+html[data-purchase="b"] main#app .files li {
+  flex-wrap: nowrap;
+  gap: 14px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--pb-line);
+  color: var(--pb-ink);
+}
+html[data-purchase="b"] main#app .files li:last-child { border-bottom: 0; }
+html[data-purchase="b"] main#app .files li > span { flex: 1 1 auto; }
+html[data-purchase="b"] main#app .files li > .btn { flex: none; }
+html[data-purchase="b"] main#app .files li.bk { color: var(--pb-head); }
+html[data-purchase="b"] main#app .files small { margin-top: 3px; color: var(--pb-muted); font-size: 12.5px; line-height: 1.6; }
+html[data-purchase="b"] main#app .fmt { margin-left: 4px; color: var(--pb-accent); font-size: 11px; letter-spacing: .04em; }
+html[data-purchase="b"] main#app .lname { color: var(--pb-head); font-size: 15px; font-weight: 750; letter-spacing: -.02em; }
+html[data-purchase="b"] #libBody { margin-top: 14px; }
+html[data-purchase="b"] #libBody .lib { padding: 14px 0 4px; border-top: 1px solid var(--pb-line); }
+html[data-purchase="b"] #libBody .lib:first-child { border-top: 0; padding-top: 2px; }
+html[data-purchase="b"] #libBody .lib > .sub { margin-top: 3px; color: var(--pb-muted); font-size: 13px; }
+html[data-purchase="b"] #libMsg:not(:empty),
+html[data-purchase="b"] #ppMsg:not(:empty) {
+  margin: 10px 0 0;
+  padding: 10px 14px;
+  border-radius: var(--pb-r-s);
+  background: var(--pb-soft);
+}
+html[data-purchase="b"] #libMsg.err:not(:empty),
+html[data-purchase="b"] #ppMsg.err:not(:empty) { background: var(--pb-err-soft); }
+html[data-purchase="b"] .my-note { margin: 10px 0 0; color: var(--pb-muted); font-size: 13px; line-height: 1.7; }
+html[data-purchase="b"] .my-note.warn {
+  padding: 10px 14px;
+  border: 1px solid var(--pb-soft2);
+  border-radius: var(--pb-r-s);
+  background: var(--pb-soft);
+  color: var(--pb-ink2);
+}
+
+/* 계정 · 도움(오른쪽) */
+html[data-purchase="b"] #account .links { display: block; margin: 0; }
+html[data-purchase="b"] #account .links li { border-bottom: 1px solid var(--pb-line); }
+html[data-purchase="b"] #account .links li:last-child { border-bottom: 0; }
+html[data-purchase="b"] #account .links a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 50px;
+  color: var(--pb-nav);
+  font-size: 14.5px;
+  font-weight: 650;
+  text-decoration: none;
+}
+html[data-purchase="b"] #account .links a::after { content: "\2192"; color: var(--pb-rule); font-weight: 500; }
+html[data-purchase="b"] #account .links a:hover { color: var(--pb-accent); }
+html[data-purchase="b"] #account .links a:hover::after { color: var(--pb-accent-ui); }
+html[data-purchase="b"] #account .links a#notesLink { color: var(--pb-accent); }
+html[data-purchase="b"] #account .links li.my-quiet a { color: var(--pb-muted); font-weight: 600; }
+html[data-purchase="b"] .my-help { padding: 20px 22px; border: 1px solid var(--pb-line); border-radius: var(--pb-r); background: var(--pb-panel); }
+html[data-purchase="b"] .my-help h2 { margin: 0 0 6px; color: var(--pb-head); font-size: 15px; font-weight: 700; letter-spacing: -.03em; }
+html[data-purchase="b"] .my-help p { margin: 0; color: var(--pb-ink2); font-size: 13.5px; line-height: 1.7; }
+html[data-purchase="b"] .my-help .pb-help { margin: 6px 0 0; gap: 0 14px; }
+html[data-purchase="b"] .my-back { margin: 34px 0 0; padding: 14px 0 0; border-top: 1px solid var(--pb-rule); }
+
+/* 자동 갱신 해지 창 */
+html[data-purchase="b"] dialog#passDlg {
+  max-width: 480px;
+  padding: 24px 22px 20px;
+  border: 1px solid var(--pb-line);
+  border-radius: 6px;
+  background: var(--pb-card);
+  color: var(--pb-ink);
+  box-shadow: 0 24px 60px -24px rgba(38, 36, 42, .45);
+}
+html[data-purchase="b"] dialog#passDlg::backdrop { background: rgba(35, 33, 44, .55); }
+html[data-purchase="b"] dialog#passDlg h3 { color: var(--pb-head); font-size: 19px; font-weight: 700; letter-spacing: -.04em; }
+html[data-purchase="b"] dialog#passDlg .opt {
+  border: 1px solid var(--pb-line2);
+  border-radius: var(--pb-r);
+  background: var(--pb-white);
+  box-shadow: 0 2px 0 #e7e3ec;
+  line-height: 1.6;
+}
+html[data-purchase="b"] dialog#passDlg .opt:has(input:checked) { border-color: var(--pb-accent-ui); background: var(--pb-soft); box-shadow: inset 0 0 0 1px var(--pb-accent-ui); }
+html[data-purchase="b"] dialog#passDlg .opt input { accent-color: var(--pb-accent-ui); }
+html[data-purchase="b"] dialog#passDlg .opt b { color: var(--pb-head); }
+html[data-purchase="b"] dialog#passDlg .k { color: var(--pb-muted); font-size: 13px; }
+html[data-purchase="b"] dialog#passDlg > p.k { margin: 10px 0 0; padding: 10px 12px; border-radius: var(--pb-r-s); background: var(--pb-panel); line-height: 1.65; }
+html[data-purchase="b"] dialog#passDlg .err:empty { display: none; }
+
+/* 로그인 안 함 · 스크립트 꺼짐 — 로그인한 화면이 뜨면 숨는다(0.9초 뒤에만 보여 로그인한 사람에게 깜박이지 않게) */
+html[data-purchase="b"] .my-guest {
+  width: var(--my-width);
+  margin: 40px auto 72px;
+  padding: 40px 28px;
+  border: 1px dashed var(--pb-line2);
+  border-radius: var(--pb-r);
+  background: var(--pb-card);
+  text-align: center;
+  animation: my-show 0s .9s both;
+}
+html[data-purchase="b"] .my-guest h1 { margin: 0; padding: 0; border: 0; color: var(--pb-head); font-size: 28px; font-weight: 700; letter-spacing: -.05em; line-height: 1.25; }
+html[data-purchase="b"] .my-guest .acts { display: flex; flex-wrap: wrap; align-items: center; }
+html[data-purchase="b"] .my-guest .acts a { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; }
+html[data-purchase="b"] .my-guest .btn { text-decoration: none; }
+html[data-purchase="b"] .my-guest p { margin: 10px 0 0; color: var(--pb-ink2); font-size: 15px; line-height: 1.7; }
+html[data-purchase="b"] .my-guest .acts { justify-content: center; margin: 22px 0 0; gap: 10px 14px; }
+html[data-purchase="b"] .my-guest .btn.pri { width: auto; min-width: 180px; min-height: 48px; padding: 0 26px; font-size: 15px; }
+html[data-purchase="b"] body:has(#app:not([hidden])) .my-guest,
+html.authed[data-purchase="b"] .my-guest { display: none; }
+@keyframes my-show { from { visibility: hidden; } to { visibility: visible; } }
+
+/* ── 폭 규칙(개편 판과 같은 끊는 자리: 1050 · 860 · 640 · 520) ── */
+@media (max-width: 1050px) {
+  html[data-purchase="b"] .ds-head .ds-menu { gap: 19px; }
+  html[data-purchase="b"] .my-grid { grid-template-columns: minmax(0, 1fr) 280px; gap: 20px; }
+}
+@media (max-width: 860px) {
+  html[data-purchase="b"] .my-grid { grid-template-columns: minmax(0, 1fr); }
+  html[data-purchase="b"] .my-side { position: static; }
+  html[data-purchase="b"] main#app .jump { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  html[data-purchase="b"] main#app .jump a:nth-child(4) { border-left: 0; }
+  html[data-purchase="b"] main#app .jump a:nth-child(n+4) { border-top: 1px solid var(--pb-line); }
+}
+@media (max-width: 640px) {
+  html[data-purchase="b"] { --pb-width: calc(100% - 32px); --my-width: calc(100% - 32px); }
+  html[data-purchase="b"] .ds-head-in { height: auto; min-height: 0; gap: 0 8px; }
+  html[data-purchase="b"] .ds-head .ds-logo { height: 64px; font-size: 22px; letter-spacing: -1.3px; }
+  html[data-purchase="b"] .ds-head .ds-acct { padding-left: 0; border-left: 0; }
+  html[data-purchase="b"] .ds-head .ds-menu {
+    order: 3;
+    flex: 1 1 100%;
+    margin: 0;
+    padding: 0;
+    gap: 22px;
+    border-top: 0;
+    justify-content: flex-start;
+  }
+  html[data-purchase="b"] .ds-head .ds-menu a { min-height: 46px; font-size: 14px; }
+  html[data-purchase="b"] body.payment-flow main#app { padding-top: 18px; }
+  html[data-purchase="b"] main#app .jump { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 18px; }
+  html[data-purchase="b"] main#app .jump a { min-height: 50px; padding: 0 14px; }
+  html[data-purchase="b"] main#app .jump a:nth-child(n) { border-left: 0; border-top: 1px solid var(--pb-line); }
+  html[data-purchase="b"] main#app .jump a:nth-child(-n+2) { border-top: 0; }
+  html[data-purchase="b"] main#app .jump a:nth-child(even) { border-left: 1px solid var(--pb-line); }
+  html[data-purchase="b"] main#app .jump a:last-child { grid-column: 1 / -1; }
+  html[data-purchase="b"] .my-grid { margin-top: 20px; gap: 16px; }
+  html[data-purchase="b"] .my-main, html[data-purchase="b"] .my-side { gap: 16px; }
+  html[data-purchase="b"] main#app .card { padding: 20px 16px 18px; }
+  html[data-purchase="b"] main#app .card h2 { font-size: 18px; }
+  html[data-purchase="b"] #passBody .prow { padding: 14px; }
+  html[data-purchase="b"] #passBody .prow .btn { width: 100%; }
+  html[data-purchase="b"] #payBody tr { padding: 12px 0; border-bottom: 1px solid var(--pb-line); }
+  html[data-purchase="b"] #payBody tr:last-child { border-bottom: 0; }
+  html[data-purchase="b"] #payBody td { padding: 2px 0; border: 0; }
+  html[data-purchase="b"] #payBody td:first-child { color: var(--pb-muted); font-size: 12.5px; }
+  html[data-purchase="b"] main#app .files li { gap: 10px; }
+  html[data-purchase="b"] main#app .files li > span { flex: 1 1 auto; min-width: 0; }
+  html[data-purchase="b"] main#app .files li > .btn { padding: 0 12px; }
+  html[data-purchase="b"] #pprint .ppsel { flex-direction: column; align-items: stretch; }
+  html[data-purchase="b"] #pprint .ppsel label { justify-content: space-between; }
+  html[data-purchase="b"] #pprint .ppsel select { flex: 1; max-width: none; }
+  html[data-purchase="b"] .my-help { padding: 18px 16px; }
+  html[data-purchase="b"] .my-guest { margin: 24px auto 56px; padding: 30px 18px; }
+  html[data-purchase="b"] .my-guest .btn.pri { width: 100%; }
+}
+@media (max-width: 520px) {
+  html[data-purchase="b"] main h1 { font-size: 30px; letter-spacing: -.05em; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-purchase="b"] body :is(.btn.pri, button.p) { transition: none; }
+}
+
+/* /my/library/ — 마이페이지 자료함으로 옮기는 쪽 */
+html[data-purchase="b"] main.my-redirect { width: var(--pb-width); margin: 48px auto; }
+html[data-purchase="b"] main.my-redirect .pb-state a { color: var(--pb-accent); font-weight: 700; text-underline-offset: 3px; }
+
+/* ════════ 쪽 고유: /my/notes/ AI 오답노트 (쪽 css 의 파랑을 보라로 · 폭 · 카드 · 표) ════════ */
+html[data-purchase="b"] body.my-notes {
+  --acc: #6253cc;
+  --acc2: #493b9c;
+  --mut: #625f6c;
+  --line: #dedbd6;
+  --line2: #c9c4d4;
+  --bg: #faf8f3;
+  --card: #fffefb;
+  --red: #6253cc;
+  color: var(--pb-ink);
+  line-height: 1.6;
+}
+html[data-purchase="b"] body.my-notes #app.wrap { max-width: none; width: min(760px, calc(100% - 64px)); padding: 26px 0 72px; }
+html[data-purchase="b"] body.my-notes #app .top { justify-content: flex-start; margin: 0 0 16px; }
+html[data-purchase="b"] body.my-notes #app .top > div { display: flex; flex-wrap: wrap; gap: 8px; }
+html[data-purchase="b"] body.my-notes button {
+  border: 0;
+  border-radius: 6px;
+  background: linear-gradient(#fff, #f7f5fa);
+  color: var(--pb-nav);
+  box-shadow: inset 0 0 0 1px var(--pb-line2), 0 2px 0 #dcd7e4;
+  font-weight: 650;
+}
+html[data-purchase="b"] body.my-notes button:hover { background: var(--pb-soft); }
+html[data-purchase="b"] body.my-notes button.sm { min-height: 44px; padding: 0 14px; font-size: 13.5px; }
+html[data-purchase="b"] body.my-notes .my-crumb { margin: 0 0 4px; font-size: 13px; font-weight: 600; color: var(--pb-muted); }
+html[data-purchase="b"] body.my-notes .my-crumb a { display: inline-flex; align-items: center; min-height: 44px; color: var(--pb-accent); font-weight: 650; text-underline-offset: 3px; }
+html[data-purchase="b"] body.my-notes #app h1 {
+  margin: 0 0 18px;
+  padding: 0 0 14px;
+  border-bottom: 2px solid var(--pb-head);
+  color: var(--pb-head);
+  font-size: clamp(28px, 3.2vw, 34px);
+}
+html[data-purchase="b"] body.my-notes #app h2 { margin: 26px 0 10px; padding-left: 10px; border-left: 3px solid var(--pb-accent-ui); color: var(--pb-head); font-size: 16px; font-weight: 700; letter-spacing: -.03em; }
+html[data-purchase="b"] body.my-notes .k { color: var(--pb-muted); }
+html[data-purchase="b"] body.my-notes #body > p.k:only-child,
+html[data-purchase="b"] body.my-notes #body > p.bad:only-child {
+  margin: 0;
+  padding: 16px 18px;
+  border-left: 2px solid #8d8999;
+  border-radius: 0 var(--pb-r-s) var(--pb-r-s) 0;
+  background: var(--pb-panel);
+  font-size: 14px;
+  color: var(--pb-ink2);
+}
+html[data-purchase="b"] body.my-notes #body > p.bad:only-child { border: 1px solid #e2b9b2; border-left: 2px solid var(--pb-err); background: var(--pb-err-soft); color: var(--pb-err); }
+html[data-purchase="b"] body.my-notes .card,
+html[data-purchase="b"] body.my-notes .sub,
+html[data-purchase="b"] body.my-notes .rxc,
+html[data-purchase="b"] body.my-notes .ol li {
+  border: 1px solid var(--pb-line);
+  border-radius: var(--pb-r);
+  background: var(--pb-card);
+  box-shadow: var(--pb-shadow);
+}
+html[data-purchase="b"] body.my-notes .card b { color: var(--pb-head); font-weight: 750; }
+html[data-purchase="b"] body.my-notes .sub { padding: 12px 14px; }
+html[data-purchase="b"] body.my-notes .sub:hover { background: var(--pb-white); border-color: #b9b2c9; }
+html[data-purchase="b"] body.my-notes table { background: var(--pb-card); }
+html[data-purchase="b"] body.my-notes th { background: var(--pb-panel); color: var(--pb-ink2); font-weight: 650; }
+html[data-purchase="b"] body.my-notes th, html[data-purchase="b"] body.my-notes td { border-color: var(--pb-line); }
+html[data-purchase="b"] body.my-notes .dir { border-left-color: var(--pb-accent-ui); background: var(--pb-soft); }
+html[data-purchase="b"] body.my-notes #report:not(:empty) { border-color: var(--pb-line); border-radius: var(--pb-r); background: var(--pb-card); }
+html[data-purchase="b"] body.my-notes #acct { padding-top: 14px; border-top: 1px solid var(--pb-line); }
+html[data-purchase="b"] body.my-notes #acct a { color: var(--pb-muted); font-weight: 600; }
+@media (max-width: 640px) {
+  html[data-purchase="b"] body.my-notes #app.wrap { width: calc(100% - 32px); padding-top: 18px; }
+}
+@media print {
+  html[data-purchase="b"] body.my-notes .my-crumb { display: none; }
+}

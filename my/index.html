@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" data-purchase="b">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -111,6 +111,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 <link rel="stylesheet" href="/assets/account-header.css?v=home-logout-1118">
 <link rel="stylesheet" href="/assets/payment-flow.css">
 <link rel="stylesheet" href="/assets/site-unify.css?v=35">
+<link rel="stylesheet" href="/assets/my-b.css?v=my-b-1123">
 </head>
 <body class="payment-flow" data-logout-next="/">
 <header class="ds-head"><div class="ds-head-in">
@@ -118,17 +119,27 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   <nav class="ds-menu" aria-label="주요 메뉴"><a href="/app/#student">공부</a><a href="/app/#teacher">수업 자료</a><a href="/naesin/">내신 자료</a><a href="/pass/">이용권</a><a href="/orders/">주문 조회</a></nav>
   <nav id="authnav" class="ds-acct" data-logout-next="/" aria-label="계정"><a href="/auth/" data-account-primary>로그인</a><a href="/auth/?mode=signup" data-account-secondary>회원가입</a></nav>
 </div></header>
+<div class="my-guest" role="status">
+  <h1>마이페이지</h1>
+  <p>마이페이지는 로그인한 회원만 볼 수 있습니다. 로그인하면 이용권 상태와 다음 결제일, 결제 내역, 구매한 자료를 한곳에서 확인합니다.</p>
+  <div class="acts"><a class="btn pri" href="/auth/?next=%2Fmy%2F">로그인</a><a href="/app/">델타스킬 첫 화면으로 돌아가기</a></div>
+</div>
 <main id="app" hidden>
   <p class="crumb"><a href="/">메인</a> › 마이페이지</p>
   <h1 id="hello">마이페이지</h1>
   <p class="lede">이용권 상태와 다음 결제일, 결제 내역, 구매한 자료를 한곳에서 확인합니다.</p>
-  <nav class="jump" aria-label="마이페이지 바로가기"><a href="#pass">이용권</a><a href="#payments">결제 내역</a><a href="#library">회원 자료함</a><a href="#account">계정</a></nav>
+  <nav class="jump" aria-label="마이페이지 바로가기"><a href="#pass">이용권</a><a href="#payments">결제 내역</a><a href="#library">회원 자료함</a><a href="#account">계정</a><a class="my-out" href="/my/notes/">AI 오답노트</a></nav>
 
+  <div class="my-grid">
+  <div class="my-main">
   <section class="card" id="pass" aria-labelledby="passH">
     <h2 id="passH">이용권</h2>
     <div id="passBody"><p class="msg">불러오는 중…</p></div>
-    <p class="hint">받지 않은 벌은 다음 달로 이월되지 않습니다. 매월 결제일에 새로 30벌이 주어지고, 이용 기간이 끝날 때 남은 벌은 소멸합니다.</p>
-    <p class="hint">해지 방법: 이 칸의 「자동 갱신 해지」 단추를 누르고 「이번 이용권 종료일까지 쓰고 해지」 또는 「지금 해지하고 남은 금액 환불」 가운데 하나를 고릅니다. <a href="/refund/">환불·청약철회 안내</a></p>
+    <details class="more">
+      <summary>받는 벌 · 해지 방법</summary>
+      <p class="hint">받지 않은 벌은 다음 달로 이월되지 않습니다. 매월 결제일에 새로 30벌이 주어지고, 이용 기간이 끝날 때 남은 벌은 소멸합니다.</p>
+      <p class="hint">해지 방법: 이 칸의 「자동 갱신 해지」 단추를 누르고 「이번 이용권 종료일까지 쓰고 해지」 또는 「지금 해지하고 남은 금액 환불」 가운데 하나를 고릅니다. <a href="/refund/">환불·청약철회 안내</a></p>
+    </details>
   </section>
   <dialog id="passDlg" aria-labelledby="passDlgH">
     <h3 id="passDlgH">자동 갱신 해지</h3>
@@ -158,23 +169,36 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
       <p class="msg" id="ppMsg" role="status"></p>
       <div id="ppGot" hidden><p class="lname">받은 프린트</p><ul class="files" id="ppGotList"></ul></div>
     </div>
-    <p class="hint">로그인한 상태에서 결제한 자료가 여기에 담깁니다. 구매일로부터 12개월 동안 다시 받을 수 있습니다. 내려받기(열람)를 시작한 파일은 청약철회(환불)가 제한됩니다.</p>
+    <h3 class="my-h3">구매한 자료</h3>
+    <p class="hint my-note warn">로그인한 상태에서 결제한 자료가 여기에 담깁니다. 구매일로부터 12개월 동안 다시 받을 수 있습니다. 내려받기(열람)를 시작한 파일은 청약철회(환불)가 제한됩니다.</p>
     <div id="libBody"><p class="msg">불러오는 중…</p></div>
     <p class="msg" id="libMsg" role="status"></p>
     <p class="hint">예전에 로그인 없이 결제한 주문은 <a href="/orders/">주문 조회</a>에서 이메일과 주문번호로 받습니다.</p>
   </section>
+  </div>
 
+  <aside class="my-side" aria-label="계정과 문의">
   <section class="card" id="account" aria-labelledby="accH">
     <h2 id="accH">계정</h2>
     <ul class="links">
       <li><a href="/my/notes/" id="notesLink">AI 오답노트 · 분석 리포트</a></li>
       <li><a href="/pilot/?profile=1">내 정보</a></li>
+      <li><a href="/auth/?mode=phone">휴대폰 번호 바꾸기</a></li>
       <li><a href="/auth/?mode=password">비밀번호 변경</a></li>
-      <li><a href="/auth/?mode=withdraw">회원 탈퇴</a></li>
+      <li class="my-quiet"><a href="/auth/?mode=withdraw">회원 탈퇴</a></li>
     </ul>
-    <p class="hint">회원 탈퇴: 탈퇴하면 이용권의 다음 자동 결제는 하지 않습니다. 남은 금액을 환불받으려면 탈퇴하기 전에 이용권 칸의 「자동 갱신 해지」에서 「지금 해지하고 남은 금액 환불」을 고르세요.</p>
+    <details class="more">
+      <summary>탈퇴하기 전에 확인</summary>
+      <p class="hint">회원 탈퇴: 탈퇴하면 이용권의 다음 자동 결제는 하지 않습니다. 남은 금액을 환불받으려면 탈퇴하기 전에 이용권 칸의 「자동 갱신 해지」에서 「지금 해지하고 남은 금액 환불」을 고르세요.</p>
+    </details>
+  </section>
+  <section class="my-help" aria-labelledby="helpH">
+    <h2 id="helpH">환불 · 문의</h2>
     <p class="hint">환불 신청 · 문의: admin@deltaskill.co.kr 또는 070-8065-2468 (상품명 · 주문번호 · 결제수단). <a href="/refund/">환불·청약철회 안내</a></p>
   </section>
+  </aside>
+  </div>
+  <p class="my-back pb-help"><a href="/app/">← 델타스킬 첫 화면으로 돌아가기</a></p>
 </main>
 <footer class="sitefoot">
 <div class="biz" id="bizinfo">

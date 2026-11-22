@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" data-purchase="b">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -64,9 +64,10 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 </style>
 <link rel="stylesheet" href="/assets/account-header.css?v=pass-1117">
 <link rel="stylesheet" href="/assets/site-unify.css?v=35">
+<link rel="stylesheet" href="/assets/my-b.css?v=my-b-1123">
 <link rel="icon" href="/favicon-32.png" sizes="32x32" />
 </head>
-<body data-logout-next="/">
+<body class="my-notes" data-logout-next="/">
 <header class="ds-head"><div class="ds-head-in">
   <a class="ds-logo" href="/" aria-label="델타스킬 메인"><span class="d">DELTA</span><span class="s">SKILL</span></a>
   <nav class="ds-menu" aria-label="주요 메뉴"><a href="/app/#student">공부</a><a href="/app/#teacher">수업 자료</a><a href="/naesin/">내신 자료</a><a href="/pass/">이용권</a><a href="/orders/">주문 조회</a></nav>
@@ -75,14 +76,20 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 
 <!-- 로그인·회원가입은 /auth/ (1008) -->
 <!-- 결과 -->
+<div class="my-guest" role="status">
+  <h1>AI 오답노트</h1>
+  <p>AI 오답노트는 로그인한 회원만 볼 수 있습니다. 로그인하면 제출한 오답노트와 분석 리포트를 확인합니다.</p>
+  <div class="acts"><a class="btn pri" href="/auth/?next=%2Fmy%2Fnotes%2F">로그인</a><a href="/app/">델타스킬 첫 화면으로 돌아가기</a></div>
+</div>
 <div id="app" class="wrap" hidden>
   <div class="top">
     <div><button class="sm" id="btnNote" onclick="location.href='/pilot/'">오답노트 쓰기</button> <button class="sm" id="btnInfo" onclick="location.href='/pilot/?profile=1'">내 정보</button> <button class="sm" onclick="location.href='/auth/?mode=phone'">번호 바꾸기</button> <button class="sm" onclick="location.href='/auth/?mode=password'">비밀번호 변경</button> <button class="sm" onclick="doLogout()">로그아웃</button></div>
   </div>
-  <p class="k" style="margin:6px 0 0"><a href="/my/">← 마이페이지(이용권 · 결제 내역 · 회원 자료함)</a></p>
+  <p class="k my-crumb" style="margin:6px 0 0"><a href="/my/">← 마이페이지(이용권 · 결제 내역 · 회원 자료함)</a></p>
   <h1 id="hello">AI 오답노트</h1>
   <div id="body"></div>
   <div id="acct" class="k" style="margin-top:28px;display:flex;flex-wrap:wrap;gap:8px 18px"></div>
+  <p class="pb-help my-back"><a href="/app/">← 델타스킬 첫 화면으로 돌아가기</a></p>
 </div>
 
 <script src="/auth.js?v=home-logout-r2-1118"></script>
