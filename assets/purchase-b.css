@@ -1,0 +1,521 @@
+/* 구매 화면 공통 꾸밈 r2 — 개편 판(/app/) 자료실 카드 목록과 같은 꼴(1123).
+   쓰는 법: 쪽의 <html> 에 data-purchase="b" 를 달고, 이 파일을 다른 css 뒤(site-unify.css 다음, </head> 바로 앞)에 건다.
+   모든 규칙이 html[data-purchase="b"] 아래에만 걸린다. 로직 · 주소 · 폼 이름은 건드리지 않고 색 · 글꼴 · 테두리 · 여백만 덧입힌다.
+   값은 /app/#library 를 로컬에서 열어 잰 계산값이다(카드 #fffefb · 테 #dedbd6 · 모서리 5px · 아래 턱 그림자 · 거르기 칸 #efeeeb).
+   차례: 공통 1~9(머리 · 본문 · 흐름 줄 · 카드 · 단추 · 칩 · 입력칸 · 안내 · 접기 · 꼬리) → 결제 쪽 공통(받을 내용 칸 · 선택 칸) → 쪽 고유(/naesin/ 카드 목록) → 폭 규칙. */
+
+html:is([data-purchase="b"], [data-purchase-frame]) {
+  --pb-paper: #faf8f3;
+  --pb-card: #fffefb;
+  --pb-white: #fff;
+  --pb-ink: #26242a;
+  --pb-head: #28253a;
+  --pb-ink2: #433f4f;
+  --pb-muted: #625b74;
+  --pb-line: #dedbd6;
+  --pb-line2: #cfc8d6;
+  --pb-rule: #a3a0ad;
+  --pb-panel: #efeeeb;
+  --pb-panel-line: #b2b8bf;
+  --pb-accent: #493b9c;
+  --pb-accent-ui: #6253cc;
+  --pb-nav: #36355f;
+  --pb-btn: #514970;
+  --pb-btn-h: #463f63;
+  --pb-btn-edge: #312b48;
+  --pb-soft: #f1edfa;
+  --pb-soft2: #e8e2f4;
+  --pb-ok: #2f6b47;
+  --pb-ok-soft: #e6f0e9;
+  --pb-err: #9c2b23;
+  --pb-err-soft: #f8ebe8;
+  --pb-r: 5px;
+  --pb-r-s: 4px;
+  --pb-shadow: 0 2px 0 #e1ddd4, 0 5px 12px rgba(51, 43, 35, .063);
+  --pb-font: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+  --pb-width: min(1178px, calc(100% - 32px));
+  color-scheme: light;
+  background: var(--pb-paper);
+}
+html[data-purchase="b"] body {
+  background: var(--pb-paper);
+  color: var(--pb-ink);
+  font-family: var(--pb-font);
+  font-weight: 500;
+  letter-spacing: normal;
+}
+html:is([data-purchase="b"], [data-purchase-frame]) :is(a, button, input, select, summary):focus-visible {
+  outline: 3px solid var(--pb-accent-ui);
+  outline-offset: 3px;
+  border-radius: var(--pb-r-s);
+}
+
+/* ── 공통 1. 머리 — 개편 판 머리(흰 바탕 78px · 글자 로고 · 가운데 메뉴 · 지금 쪽 밑줄) ── */
+html:is([data-purchase="b"], [data-purchase-frame]) header.ds-head { background: var(--pb-white); border-bottom: 1px solid #d9d6de; font-family: var(--pb-font); }
+html:is([data-purchase="b"], [data-purchase-frame]) .ds-head-in { width: var(--pb-width); max-width: none; height: 78px; padding: 0; gap: 0 24px; }
+html:is([data-purchase="b"], [data-purchase-frame]) .ds-logo { font: 900 24px/1 Arial, Helvetica, sans-serif; letter-spacing: -1.5px; }
+html:is([data-purchase="b"], [data-purchase-frame]) .ds-logo .d,
+html:is([data-purchase="b"], [data-purchase-frame]) .ds-logo .s { color: #253248 !important; }
+html:is([data-purchase="b"], [data-purchase-frame]) .ds-head .ds-menu { margin: 0 auto; gap: 28px; }
+html:is([data-purchase="b"], [data-purchase-frame]) .ds-head .ds-menu a {
+  position: relative; min-height: 78px; padding: 0; border-radius: 0;
+  color: #737586; font: 500 14px/1 var(--pb-font); letter-spacing: -.01em;
+}
+html:is([data-purchase="b"], [data-purchase-frame]) .ds-head .ds-menu a:hover { background: transparent; color: var(--pb-nav); }
+html:is([data-purchase="b"], [data-purchase-frame]) .ds-head .ds-menu a[aria-current="page"] { color: var(--pb-nav); font-weight: 750; }
+html:is([data-purchase="b"], [data-purchase-frame]) .ds-head .ds-menu a[aria-current="page"]::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 19px; height: 2px; background: var(--pb-accent-ui);
+}
+html:is([data-purchase="b"], [data-purchase-frame]) .ds-head .ds-acct { border-left: 1px solid #d9d6de; padding-left: 16px; gap: 8px; }
+html:is([data-purchase="b"], [data-purchase-frame]) .ds-head .ds-acct a { min-height: 44px; padding: 0 6px; border-radius: var(--pb-r-s); color: #595172; font: 600 13px/1 var(--pb-font); }
+html:is([data-purchase="b"], [data-purchase-frame]) .ds-head .ds-acct a[data-account-secondary] { padding: 0 14px; background: var(--pb-soft2); color: #5244ac; }
+html:is([data-purchase="b"], [data-purchase-frame]) .ds-head .ds-acct a[data-account-secondary]:hover { background: #ddd5f0; }
+
+/* ── 공통 2. 본문 폭 · 제목 · 보조 글 — 자료실 머리(제목 34px · 보조 14px) ── */
+html[data-purchase="b"] main.wrap,
+html[data-purchase="b"] .wrap { width: var(--pb-width); }
+html[data-purchase="b"] main { padding-top: 30px; min-height: 0; }
+html[data-purchase="b"] main.wrap { padding-bottom: 48px; } /* 쪽 인라인의 좁은 폭 96px(앞판 아래 고정 구매 칸 몫)을 거둔다 — 담은 책이 있을 때만 아래 고정 줄 몫을 둔다(폭 규칙 860) */
+html[data-purchase="b"] main h1 {
+  margin: 0; color: var(--pb-ink); font-size: 34px; font-weight: 700; letter-spacing: -.063em; line-height: 1.25;
+}
+html[data-purchase="b"] main .lede { margin: 8px 0 0; color: #676972; font-size: 14px; line-height: 1.85; }
+html[data-purchase="b"] main a:not([class]) { color: var(--pb-accent); font-weight: 650; text-underline-offset: 3px; }
+
+/* ── 공통 3. 흐름 줄(01 고르기 → 02 주문서 → 03 결제 → 04 받기) — 쪽마다 aria-current="step" 만 옮긴다 ── */
+html[data-purchase="b"] .pb-flow { margin: 18px 0 0; }
+html[data-purchase="b"] .pb-flow ol {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px;
+  margin: 0; padding: 0; list-style: none; font-size: 12.5px; color: var(--pb-muted);
+}
+html[data-purchase="b"] .pb-flow li { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+html[data-purchase="b"] .pb-flow li + li::before { content: "→"; color: var(--pb-rule); margin-right: 3px; }
+html[data-purchase="b"] .pb-flow b { font: 600 11px/1 ui-monospace, SFMono-Regular, Consolas, monospace; color: var(--pb-rule); }
+html[data-purchase="b"] .pb-flow [aria-current="step"] { color: var(--pb-nav); font-weight: 750; }
+html[data-purchase="b"] .pb-flow [aria-current="step"] b {
+  display: inline-grid; place-items: center; min-width: 22px; height: 20px; padding: 0 3px;
+  border-radius: 3px; background: var(--pb-head); color: #fff;
+}
+
+/* ── 공통 4. 카드 · 거르기 칸 · 목록 머리 ── */
+html[data-purchase="b"] .pb-card {
+  background: var(--pb-card); border: 1px solid var(--pb-line); border-radius: var(--pb-r); box-shadow: var(--pb-shadow);
+}
+html[data-purchase="b"] .pb-filter {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 28px;
+  margin: 26px 0 0; padding: 14px 20px;
+  background: var(--pb-panel); border: 1px solid var(--pb-panel-line); border-radius: 7px; box-shadow: inset 0 1px 0 #fff;
+}
+html[data-purchase="b"] .pb-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin: 22px 0 12px; }
+html[data-purchase="b"] .pb-head h2 { margin: 0; font-size: 17px; font-weight: 700; line-height: 1.4; letter-spacing: -.04em; color: #383341; }
+html[data-purchase="b"] .pb-count { margin: 0; font-size: 14px; color: var(--pb-muted); }
+
+/* ── 공통 5. 단추 — 주 단추(남보라 · 아래 턱) · 곁단추(흰 바탕 · 옅은 테 · 자료실 「미리보기 PDF」와 같은 꼴) · 못 누름 ── */
+html[data-purchase="b"] body :is(.btn.buy, .btn.pri, .btn.go2, a.btn.buy.pk-go, .pk-cart .pay, .pk-cartbar a.pk-paybar, .action):not(:disabled):not([aria-disabled="true"]) {
+  background: var(--pb-btn); color: #fff; border: 0; border-radius: 6px;
+  box-shadow: 0 3px 0 var(--pb-btn-edge), 0 6px 12px rgba(23, 40, 60, .14);
+  font-weight: 650; letter-spacing: -.01em; transition: background .12s, transform .12s, box-shadow .12s;
+}
+html[data-purchase="b"] body :is(.btn.buy, .btn.pri, .btn.go2, a.btn.buy.pk-go, .pk-cart .pay, .pk-cartbar a.pk-paybar, .action):not(:disabled):not([aria-disabled="true"]):hover { background: var(--pb-btn-h); }
+html[data-purchase="b"] body :is(.btn.buy, .btn.pri, .btn.go2, a.btn.buy.pk-go, .pk-cart .pay, .pk-cartbar a.pk-paybar, .action):not(:disabled):not([aria-disabled="true"]):active {
+  transform: translateY(2px); box-shadow: 0 1px 0 var(--pb-btn-edge);
+}
+html[data-purchase="b"] body :is(.btn.ghost, button.pk-add) {
+  background: linear-gradient(#fff, #f0edf3); color: #443958; border: 0; border-radius: var(--pb-r-s);
+  box-shadow: inset 0 0 0 1px var(--pb-line2), 0 2px 0 #d5cfdc; font-weight: 730;
+}
+html[data-purchase="b"] body :is(.btn.ghost, button.pk-add):hover { background: var(--pb-soft); }
+html[data-purchase="b"] body button.pk-add[aria-pressed="true"] {
+  background: var(--pb-soft); color: var(--pb-accent); box-shadow: inset 0 0 0 1px var(--pb-accent-ui), 0 2px 0 #d6cff0;
+}
+html[data-purchase="b"] body :is(.btn.dis, .btn:disabled, button.pk-add[aria-disabled="true"], .pk-cart .pay[aria-disabled="true"], .pk-cartbar a.pk-paybar[aria-disabled="true"]) {
+  background: #e7e5ea; color: var(--pb-muted); box-shadow: none; cursor: not-allowed;
+}
+
+/* ── 공통 6. 칩(거르기) — 곁단추와 같은 꼴, 고른 칩은 옅은 보라 ── */
+html[data-purchase="b"] .pb-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; }
+html[data-purchase="b"] .pb-chips-t { flex: none; min-width: 44px; margin-right: 4px; font-size: 12px; font-weight: 550; color: #58545f; }
+html[data-purchase="b"] .pb-chip {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 13px;
+  background: linear-gradient(#fff, #fbfaf8); color: var(--pb-ink); border: 0; border-radius: var(--pb-r-s);
+  box-shadow: inset 0 0 0 1px var(--pb-line2), 0 2px 0 #e2dde8;
+  font: 600 14px/1.2 var(--pb-font); cursor: pointer; text-align: left;
+}
+html[data-purchase="b"] .pb-chip small { font-size: 12px; font-weight: 600; color: var(--pb-muted); }
+html[data-purchase="b"] .pb-chip:hover { box-shadow: inset 0 0 0 1px #a99fc6, 0 2px 0 #e2dde8; }
+html[data-purchase="b"] .pb-chip[aria-pressed="true"] { background: var(--pb-soft); color: var(--pb-nav); box-shadow: inset 0 0 0 1.5px var(--pb-accent-ui), 0 2px 0 #d6cff0; }
+html[data-purchase="b"] .pb-chip[aria-pressed="true"] small { color: var(--pb-accent); }
+html[data-purchase="b"] .pb-login { margin: 0; font-size: 13px; color: var(--pb-muted); }
+html[data-purchase="b"] .pb-login a { display: inline-flex; align-items: center; min-height: 44px; color: var(--pb-accent); font-weight: 730; text-decoration: none; }
+html[data-purchase="b"] .pb-login a::after { content: " →"; white-space: pre; }
+
+/* ── 공통 7. 입력칸 ── */
+html[data-purchase="b"] main :is(select, input[type=number], input[type=text], input[type=email], input[type=tel], input[type=search]) {
+  min-height: 48px; border: 1px solid #9aa7b4; border-radius: var(--pb-r-s); background: #fff; color: #302d3b;
+  box-shadow: inset 0 2px 3px rgba(41, 34, 49, .027), 0 1px 0 #fff;
+}
+html[data-purchase="b"] main :is(input[type=radio], input[type=checkbox]) { accent-color: var(--pb-accent-ui); }
+
+/* ── 공통 8. 안내 · 빈 화면 · 오류 · 돌아가는 길 ── */
+html[data-purchase="b"] :is(.pb-state, #app > p.lede:only-child, main > noscript > p.lede) {
+  margin: 26px 0 0; padding: 34px 24px; border: 1px dashed var(--pb-line2); border-radius: var(--pb-r);
+  background: var(--pb-card); color: var(--pb-ink2); font-size: 15px; line-height: 1.7; text-align: center; max-width: none;
+}
+html[data-purchase="b"] .pb-err { border-color: #e2b9b2; background: var(--pb-err-soft); color: var(--pb-err); }
+html[data-purchase="b"] .pb-help { display: flex; flex-wrap: wrap; align-items: center; gap: 0 18px; margin: 14px 0 0; font-size: 13.5px; color: var(--pb-muted); }
+html[data-purchase="b"] .pb-help a { display: inline-flex; align-items: center; min-height: 44px; color: var(--pb-accent); font-weight: 650; text-decoration: none; }
+html[data-purchase="b"] .pb-help a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+/* ── 공통 9. 접기(구매 안내 · 자세히) · 작은 글 · 사이트 꼬리 ── */
+html[data-purchase="b"] details.more {
+  margin: 34px 0 0; padding: 0 4px; border-radius: 0; background: transparent;
+  border-top: 1px solid var(--pb-line); border-bottom: 1px solid var(--pb-line);
+}
+html[data-purchase="b"] details.more > summary { color: var(--pb-head); font-size: 14px; font-weight: 650; }
+html[data-purchase="b"] details.more > summary::after { color: var(--pb-accent); opacity: 1; }
+html[data-purchase="b"] details.more .notice { color: var(--pb-ink2); box-shadow: none; background: none; }
+html[data-purchase="b"] :is(.fine, .sum1) { color: var(--pb-muted); }
+html[data-purchase="b"] :is(.fine, .sum1, .notice, .pro, .kick) a,
+html[data-purchase="b"] .link { color: var(--pb-accent); }
+html[data-purchase="b"] .pro { background: var(--pb-soft); border-radius: var(--pb-r-s); color: var(--pb-ink); }
+/* 꼬리 — 글은 그대로, 개편 판 꼬리처럼 종이 바탕 · 가는 윗줄 · 작은 글 */
+html:is([data-purchase="b"], [data-purchase-frame]) footer.sitefoot,
+html:is([data-purchase="b"], [data-purchase-frame]) footer.sitefoot .biz { background: var(--pb-paper); color: #566175; font-family: var(--pb-font); }
+html:is([data-purchase="b"], [data-purchase-frame]) footer.sitefoot { margin-top: 0; }
+html:is([data-purchase="b"], [data-purchase-frame]) footer.sitefoot .biz { width: var(--pb-width); margin: 0 auto; padding: 22px 0 40px; border-top: 1px solid var(--pb-line); }
+html:is([data-purchase="b"], [data-purchase-frame]) footer.sitefoot .biz > * { max-width: none; }
+html:is([data-purchase="b"], [data-purchase-frame]) footer.sitefoot .biz p { color: #566175; font-size: 12.5px; }
+html:is([data-purchase="b"], [data-purchase-frame]) footer.sitefoot .biz a { color: #3d3a4c; }
+html:is([data-purchase="b"], [data-purchase-frame]) footer.sitefoot .biz .policy { margin: 0 0 8px -12px; }
+html:is([data-purchase="b"], [data-purchase-frame]) footer.sitefoot .biz .policy a { color: #4b4859; font-size: 13px; }
+html:is([data-purchase="b"], [data-purchase-frame]) footer.sitefoot .biz .policy a.pp,
+html:is([data-purchase="b"], [data-purchase-frame]) footer.sitefoot .biz .policy a.pp b { color: var(--pb-head); }
+html:is([data-purchase="b"], [data-purchase-frame]) footer.sitefoot .biz .policy a:hover { background: var(--pb-panel); }
+
+/* ── 결제 쪽 공통 — 받을 내용 칸(dl.conf) · 뒤로 · 선택 칸(.pick · .opt) · 담은 책 칸 ── */
+html[data-purchase="b"] .back { min-height: 44px; padding: 0 2px; border-radius: 0; background: transparent; color: var(--pb-accent); font-size: 14px; font-weight: 700; }
+html[data-purchase="b"] .back:hover { text-decoration: underline; text-underline-offset: 3px; }
+html[data-purchase="b"] .conf { background: var(--pb-card); border: 1px solid var(--pb-line); border-radius: var(--pb-r); box-shadow: var(--pb-shadow); }
+html[data-purchase="b"] .conf div { border-bottom-color: var(--pb-line); }
+html[data-purchase="b"] .conf dt { color: var(--pb-muted); font-weight: 650; }
+html[data-purchase="b"] .conf dd { color: var(--pb-ink); }
+html[data-purchase="b"] .conf dd small, html[data-purchase="b"] .conf .blank { color: var(--pb-muted); }
+html[data-purchase="b"] .conf .won { color: var(--pb-head); font-weight: 750; }
+html[data-purchase="b"] details.more .conf { box-shadow: none; }
+html[data-purchase="b"] :is(.opt, .pick) { background: var(--pb-card); border: 1px solid var(--pb-line2); border-radius: var(--pb-r); color: var(--pb-ink); box-shadow: 0 2px 0 #e7e3ec; }
+html[data-purchase="b"] a.opt:hover, html[data-purchase="b"] a.opt:focus-visible { border-color: var(--pb-accent-ui); transform: none; }
+html[data-purchase="b"] .opt .go { color: var(--pb-accent); }
+html[data-purchase="b"] :is(.pick:has(input:checked), .pick.on) { border-color: var(--pb-accent-ui); background: var(--pb-soft); box-shadow: inset 0 0 0 1px var(--pb-accent-ui); }
+html[data-purchase="b"] .tag { border-radius: 3px; background: var(--pb-panel); color: var(--pb-ink2); }
+html[data-purchase="b"] .tag.now { background: var(--pb-ok-soft); color: var(--pb-ok); }
+html[data-purchase="b"] :is(.bar, .notice) { background: var(--pb-panel); box-shadow: inset 0 0 0 1px var(--pb-line); border-radius: var(--pb-r); }
+html[data-purchase="b"] .empty { border: 1px dashed var(--pb-line2); border-radius: var(--pb-r-s); color: var(--pb-ink2); }
+html[data-purchase="b"] .preparation { border: 1px solid var(--pb-line); border-radius: var(--pb-r); background: var(--pb-card); }
+html[data-purchase="b"] .preparation li { border-bottom-color: var(--pb-line); }
+html[data-purchase="b"] #app[data-view="confirm"] { max-width: 880px; } /* 받을 내용 확인 — 한 줄이 너무 길지 않게 */
+html[data-purchase="b"] #app[data-view="confirm"] h1 { margin: 6px 0 14px; }
+/* 담은 책 칸 — 카드 목록 위 한 칸(넓은 폭: 왼쪽 목록 · 오른쪽 합계와 결제) */
+html[data-purchase="b"] .pk-cart {
+  display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 0 28px; align-items: start;
+  margin: 0 0 14px; padding: 16px 20px;
+  background: var(--pb-card); border: 1px solid var(--pb-line); border-radius: var(--pb-r); box-shadow: var(--pb-shadow);
+}
+html[data-purchase="b"] .pk-cart h2 { grid-column: 1 / -1; color: var(--pb-head); font-size: 14px; font-weight: 700; margin: 0 0 6px; }
+html[data-purchase="b"] .pk-cart ul { grid-column: 1; grid-row: 2 / span 3; }
+html[data-purchase="b"] .pk-cart li { color: var(--pb-ink); border-bottom-color: var(--pb-line); }
+html[data-purchase="b"] .pk-cart li:last-child { border-bottom: 0; }
+html[data-purchase="b"] .pk-cart li button { color: var(--pb-accent); border-radius: var(--pb-r-s); }
+html[data-purchase="b"] .pk-cart li button:hover { background: var(--pb-soft); color: var(--pb-accent); }
+html[data-purchase="b"] .pk-cart .tot { grid-column: 2; margin: 4px 0 0; color: var(--pb-ink2); }
+html[data-purchase="b"] .pk-cart .tot b { color: var(--pb-head); font-weight: 750; }
+html[data-purchase="b"] .pk-cart .pay { grid-column: 2; border-radius: 6px; }
+html[data-purchase="b"] .pk-cart .pk-note { grid-column: 2; color: var(--pb-muted); font-size: 12.5px; }
+
+/* ── 쪽 고유: /naesin/ 지금 파는 책(카드 하나 = 책 하나 · 자료실 카드와 같은 틀) ── */
+html[data-purchase="b"] .pb-items { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 0; padding: 0; list-style: none; }
+html[data-purchase="b"] .pb-item {
+  display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 8px 18px; align-items: start; min-width: 0;
+  padding: 18px 20px; background: var(--pb-card); border: 1px solid var(--pb-line); border-radius: var(--pb-r); box-shadow: var(--pb-shadow);
+}
+html[data-purchase="b"] .pb-item .pk-thumb {
+  grid-row: 1 / span 2; width: 64px; margin-top: 12px;
+  border: 1px solid #e1ded6; box-shadow: 2px 2px 0 #f6f4ee, 3px 3px 0 #d4d0c7, 4px 6px 8px rgba(53, 49, 44, .094);
+}
+html[data-purchase="b"] .pb-item-body { display: grid; gap: 6px; min-width: 0; }
+html[data-purchase="b"] .pb-item-title { display: grid; gap: 1px; }
+html[data-purchase="b"] .pb-item-title > span,
+html[data-purchase="b"] .pb-item-title > small { font-size: 12px; line-height: 1.35; color: var(--pb-muted); }
+html[data-purchase="b"] .pb-item-title h3 {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px;
+  margin: 4px 0; font-size: 19px; font-weight: 700; line-height: 1.31; letter-spacing: -.04em; color: var(--pb-head);
+}
+html[data-purchase="b"] .pb-ed {
+  display: inline-flex; align-items: center; height: 22px; padding: 0 7px; border-radius: 3px;
+  background: var(--pb-soft2); color: #4d3fa3; font-size: 12px; font-weight: 700; letter-spacing: 0;
+}
+html[data-purchase="b"] .pb-get { margin: 2px 0 0; font-size: 13px; line-height: 1.6; color: var(--pb-ink2); }
+html[data-purchase="b"] .pb-get b { margin-right: 8px; font-size: 12px; font-weight: 700; color: var(--pb-accent); }
+html[data-purchase="b"] .pb-more { justify-self: start; display: inline-flex; align-items: center; min-height: 36px; font-size: 13px; font-weight: 730; color: var(--pb-accent); text-decoration: none; }
+html[data-purchase="b"] .pb-more::after { content: " →"; white-space: pre; }
+html[data-purchase="b"] .pb-more:hover { text-decoration: underline; text-underline-offset: 3px; }
+html[data-purchase="b"] .pb-buy {
+  grid-column: 2; display: flex; align-items: center; justify-content: space-between; gap: 10px 14px; flex-wrap: wrap;
+  margin-top: 4px; padding-top: 12px; border-top: 1px solid #ece9e3;
+}
+html[data-purchase="b"] .pb-price { margin: 0; font-size: 22px; font-weight: 750; line-height: 1.15; letter-spacing: -.04em; color: var(--pb-head); }
+html[data-purchase="b"] .pb-price small { display: block; margin-top: 3px; font-size: 12px; font-weight: 500; letter-spacing: 0; color: var(--pb-muted); }
+html[data-purchase="b"] .pb-buy .pk-acts { gap: 8px; }
+html[data-purchase="b"] .pb-buy button.pk-add { min-height: 44px; padding: 0 16px; font-size: 14px; }
+html[data-purchase="b"] .pb-buy a.btn.buy.pk-go { min-height: 44px; padding: 0 20px; font-size: 14.5px; }
+html[data-purchase="b"] .pb-dock { display: none; }
+
+/* ── 폭 규칙(개편 판과 같은 끊는 자리: 1050 · 860 · 640 · 520) ── */
+@media (max-width: 1050px) {
+  html:is([data-purchase="b"], [data-purchase-frame]) .ds-head .ds-menu { gap: 19px; }
+}
+@media (max-width: 860px) {
+  html[data-purchase="b"] .pb-items { grid-template-columns: minmax(0, 1fr); }
+  html[data-purchase="b"] .pb-dock {
+    display: block; position: fixed; left: 0; right: 0; bottom: 0; z-index: 25;
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+    background: var(--pb-card); border-top: 1px solid var(--pb-line); box-shadow: 0 -6px 16px rgba(38, 36, 42, .08);
+  }
+  html[data-purchase="b"] .pb-dock .pk-cartbar { border-top: 0; padding-top: 0; color: var(--pb-ink2); }
+  html[data-purchase="b"] .pb-dock .pk-cartbar b { color: var(--pb-head); }
+  html[data-purchase="b"].has-cart main.wrap { padding-bottom: 96px; }
+}
+@media (max-width: 640px) {
+  html:is([data-purchase="b"], [data-purchase-frame]) .ds-head-in { height: auto; min-height: 0; gap: 0 8px; }
+  html:is([data-purchase="b"], [data-purchase-frame]) .ds-head .ds-logo { height: 64px; font-size: 22px; letter-spacing: -1.3px; }
+  html:is([data-purchase="b"], [data-purchase-frame]) .ds-head .ds-acct { padding-left: 0; border-left: 0; }
+  html:is([data-purchase="b"], [data-purchase-frame]) .ds-head .ds-menu { order: 3; flex: 1 1 100%; margin: 0; padding: 0; gap: 22px; border-top: 0; justify-content: flex-start; overflow-x: auto; scrollbar-width: none; }
+  html:is([data-purchase="b"], [data-purchase-frame]) .ds-head .ds-menu a { flex: none; min-height: 46px; font-size: 14px; }
+  html:is([data-purchase="b"], [data-purchase-frame]) .ds-head .ds-menu a[aria-current="page"]::after { bottom: 6px; }
+  html[data-purchase="b"] main { padding-top: 24px; }
+  html[data-purchase="b"] main h1 { font-size: 29px; }
+  html[data-purchase="b"] .pb-filter { padding: 14px; margin-top: 20px; }
+  html[data-purchase="b"] .pb-chip { min-height: 44px; }
+  html[data-purchase="b"] .pb-item { gap: 8px 14px; padding: 15px; }
+  html[data-purchase="b"] .pb-item .pk-thumb { margin-top: 4px; }
+  html[data-purchase="b"] .pb-buy { grid-column: 1 / -1; }
+  html[data-purchase="b"] .pk-cart { grid-template-columns: minmax(0, 1fr); padding: 14px 15px; }
+  html[data-purchase="b"] .pk-cart ul,
+  html[data-purchase="b"] .pk-cart .tot,
+  html[data-purchase="b"] .pk-cart .pay,
+  html[data-purchase="b"] .pk-cart .pk-note { grid-column: 1; grid-row: auto; }
+  /* 640 아래 보조 · 가격 · 판매 안내 글 14px 이상(점검표_개편판_1108 C3 · 쪽 인라인 규칙과 같은 잣대) */
+  html[data-purchase="b"] :is(.pb-get, .pb-login, .pb-help, .pb-more, .pb-count, .pb-flow ol, .pb-chips-t, .pb-item-title > span, .pb-item-title > small, .pb-price small, .pk-cart .pk-note, footer.sitefoot .biz p, footer.sitefoot .biz a, footer.sitefoot .biz .policy a) { font-size: 14px; }
+  html[data-purchase="b"] .pb-get b { font-size: 13px; }
+  html[data-purchase="b"] .pb-ed { font-size: 13px; }
+}
+@media (max-width: 420px) {
+  html[data-purchase="b"] .pb-buy .pk-acts { flex: 1 1 100%; }
+  html[data-purchase="b"] .pb-buy .pk-acts > * { flex: 1 1 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-purchase="b"] body :is(.btn.buy, .btn.pri, .btn.go2, a.btn.buy.pk-go, .pk-cart .pay, .pk-cartbar a.pk-paybar, .action) { transition: none; }
+}
+
+/* ══ 구매 쪽 전체 r1(1123) — 주문서 · 승인 · 실패 · 주문 조회 · 이용권 · 환불 · 수능 유형서 · 자료받기 머리와 꼬리 ══
+   공통 10~12 는 결제 흐름 쪽(body.payment-flow) 모두에 걸리고, 그 아래는 쪽 고유 칸이다. 글 · 주소 · id · 폼 이름은 그대로, 색 · 여백 · 배치만. */
+
+/* ── 공통 10. 결제 흐름 쪽 본문 — 머리와 같은 왼쪽 끝 · 카드는 읽기 좋은 폭 ── */
+html[data-purchase="b"] body.payment-flow main,
+html[data-purchase="b"] body.payment-flow main.wrap { width: var(--pb-width); max-width: none; margin: 0 auto; padding: 26px 0 56px; min-height: 0; }
+html[data-purchase="b"] body.payment-flow .crumb { margin: 0 0 4px; color: var(--pb-muted); font-size: 13px; font-weight: 550; }
+html[data-purchase="b"] body.payment-flow .crumb a { color: var(--pb-muted); opacity: 1; text-decoration: none; }
+html[data-purchase="b"] body.payment-flow .crumb a:hover { color: var(--pb-accent); text-decoration: underline; text-underline-offset: 3px; }
+html[data-purchase="b"] body.payment-flow main h1 { margin: 6px 0 0; }
+html[data-purchase="b"] body.payment-flow main .lede { max-width: 760px; }
+html[data-purchase="b"] body.payment-flow main > .pb-flow { margin: 12px 0 0; }
+/* 시험 결제 띠(PAY_MODE · BILLING_PAY_MODE 가 test 일 때만 켜지는 칸)는 공개 화면에서 숨긴다 — 켜고 끄는 코드는 그대로 */
+html[data-purchase="b"] :is(#band, [data-test-flag]) { display: none !important; }
+html[data-purchase="b"] body.payment-flow .card {
+  max-width: 760px; margin: 16px 0 0; padding: 22px 24px;
+  background: var(--pb-card); border: 1px solid var(--pb-line); border-radius: var(--pb-r); box-shadow: var(--pb-shadow);
+}
+html[data-purchase="b"] body.payment-flow .card h2 { margin: 0 0 10px; color: #383341; font-size: 17px; font-weight: 700; letter-spacing: -.04em; }
+html[data-purchase="b"] body.payment-flow :is(.card, section[data-step]) dl { margin: 10px 0 0; }
+html[data-purchase="b"] body.payment-flow :is(.card, section[data-step]) dl div { padding: 9px 0; border-bottom: 1px solid #ece9e3; }
+html[data-purchase="b"] body.payment-flow :is(.card, section[data-step]) dl div:last-child { border-bottom: 0; }
+html[data-purchase="b"] body.payment-flow :is(.card, section[data-step]) dt { color: var(--pb-muted); font-size: 13px; font-weight: 650; }
+html[data-purchase="b"] body.payment-flow :is(.card, section[data-step]) dd { color: var(--pb-ink); font-size: 14.5px; }
+html[data-purchase="b"] body.payment-flow .pname { color: var(--pb-head); font-size: 19px; font-weight: 700; letter-spacing: -.04em; line-height: 1.35; }
+html[data-purchase="b"] body.payment-flow .price b { color: var(--pb-head); font-size: 26px; font-weight: 750; letter-spacing: -.04em; }
+html[data-purchase="b"] body.payment-flow .price small,
+html[data-purchase="b"] body.payment-flow :is(.hint, .pi, .pline) { color: var(--pb-muted); }
+html[data-purchase="b"] body.payment-flow .msg { color: var(--pb-ink2); }
+html[data-purchase="b"] body.payment-flow .msg.err { color: var(--pb-err); }
+html[data-purchase="b"] body.payment-flow .notice { margin: 12px 0 0; padding: 12px 15px; color: var(--pb-ink2); font-size: 14px; }
+html[data-purchase="b"] body.payment-flow .fn { max-width: 760px; margin: 22px 0 0; color: var(--pb-muted); font-size: 13px; line-height: 1.7; }
+html[data-purchase="b"] body.payment-flow .fn a { color: var(--pb-accent); font-weight: 650; text-decoration: none; }
+html[data-purchase="b"] body.payment-flow .fn a:hover { text-decoration: underline; text-underline-offset: 3px; }
+html[data-purchase="b"] body.payment-flow .card details.more { margin: 14px 0 0; padding: 0; border-bottom: 0; }
+html[data-purchase="b"] body.payment-flow .fix { border-top-color: var(--pb-line); color: var(--pb-ink2); }
+html[data-purchase="b"] body.payment-flow .fix a { color: var(--pb-accent); }
+html[data-purchase="b"] body.payment-flow .course { background: var(--pb-soft); color: var(--pb-ink); border-radius: var(--pb-r-s); }
+
+/* ── 공통 11. 결제 흐름 쪽 입력칸 · 동의 · 단추 · 파일 목록 ── */
+html[data-purchase="b"] body.payment-flow label.f { color: var(--pb-ink2); font-size: 13.5px; font-weight: 650; }
+html[data-purchase="b"] body.payment-flow .in { border-radius: var(--pb-r-s); font-size: 16px; }
+html[data-purchase="b"] body.payment-flow .in:focus { outline: 3px solid var(--pb-accent-ui); outline-offset: 1px; }
+html[data-purchase="b"] body.payment-flow .chk { border-bottom-color: #ece9e3; color: var(--pb-ink); }
+html[data-purchase="b"] body.payment-flow .chk a,
+html[data-purchase="b"] body.payment-flow .pi a { color: var(--pb-accent); }
+html[data-purchase="b"] body.payment-flow .chk.all { border-bottom-color: var(--pb-line2); }
+html[data-purchase="b"] body.payment-flow details.agd > summary { color: var(--pb-accent); }
+html[data-purchase="b"] body.payment-flow .chk.pm { padding: 0 14px; min-height: 44px; align-items: center; border: 0; border-radius: var(--pb-r-s); background: #fff; box-shadow: inset 0 0 0 1px var(--pb-line2), 0 2px 0 #e2dde8; }
+html[data-purchase="b"] body.payment-flow .chk.pm:has(input:checked) { background: var(--pb-soft); box-shadow: inset 0 0 0 1.5px var(--pb-accent-ui), 0 2px 0 #d6cff0; color: var(--pb-nav); font-weight: 700; }
+html[data-purchase="b"] body.payment-flow .chk.pm input { width: 18px; height: 18px; margin: 0; }
+html[data-purchase="b"] body.payment-flow .pm-t { color: var(--pb-ink2); font-size: 13.5px; font-weight: 650; }
+html[data-purchase="b"] body.payment-flow .acts { gap: 10px; margin: 16px 0 0; }
+html[data-purchase="b"] body.payment-flow .btn { border-radius: 6px; font-family: inherit; }
+html[data-purchase="b"] body.payment-flow .btn.pri { min-height: 52px; font-size: 16px; }
+html[data-purchase="b"] body.payment-flow .btn.pri.sm { min-height: 44px; font-size: 14.5px; width: auto; }
+html[data-purchase="b"] body.payment-flow .btn.ghost { min-height: 44px; padding: 0 18px; }
+html[data-purchase="b"] body.payment-flow .btn.pri:disabled { background: #e7e5ea; color: var(--pb-muted); box-shadow: none; }
+html[data-purchase="b"] body.payment-flow .files li { border-bottom-color: #ece9e3; color: var(--pb-ink); }
+html[data-purchase="b"] body.payment-flow .files li.bk { border-bottom-color: var(--pb-line); color: var(--pb-head); }
+html[data-purchase="b"] body.payment-flow .files small { color: var(--pb-muted); }
+
+/* ── 공통 12. 돌아가는 길 줄(.pb-help)을 카드 아래에 둘 때 ── */
+html[data-purchase="b"] body.payment-flow .pb-help { max-width: 760px; margin: 10px 0 0; }
+
+/* ── 쪽 고유: /checkout/ 주문서 — 넓은 폭은 왼쪽 입력 · 오른쪽 주문 요약(따라 내려옴), 좁은 폭은 요약 → 입력 차례 ── */
+html[data-purchase="b"] body.pb-checkout main:has(#f:not([hidden])) {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 380px); column-gap: 28px; align-items: start;
+}
+html[data-purchase="b"] body.pb-checkout main:has(#f:not([hidden])) > * { grid-column: 1 / -1; }
+html[data-purchase="b"] body.pb-checkout main:has(#f:not([hidden])) > #prod { grid-column: 2; grid-row: 4 / span 2; position: sticky; top: 16px; max-width: none; }
+html[data-purchase="b"] body.pb-checkout main:has(#f:not([hidden])) > #f { grid-column: 1; grid-row: 4; }
+html[data-purchase="b"] body.pb-checkout main:has(#f:not([hidden])) > .fn { grid-column: 1; grid-row: 5; }
+html[data-purchase="b"] body.pb-checkout #f .card { max-width: none; }
+html[data-purchase="b"] body.pb-checkout #prod .pname { font-size: 18px; }
+html[data-purchase="b"] body.pb-checkout #prod dl.cartrows dt { color: var(--pb-ink); font-size: 14px; font-weight: 600; }
+html[data-purchase="b"] body.pb-checkout #prod dl.cartrows dd { color: var(--pb-head); }
+html[data-purchase="b"] body.pb-checkout #paywrap { margin-top: 14px; }
+
+/* ── 쪽 고유: /checkout/fail/ 실패 — 오류 칸(붉은 옅은 바탕) ── */
+html[data-purchase="b"] body.payment-flow .card.pb-fail { border-color: #e2b9b2; background: #fffaf8; box-shadow: 0 2px 0 #eedad5, 0 5px 12px rgba(51, 43, 35, .05); }
+html[data-purchase="b"] body.payment-flow .card.pb-fail #why { margin: 0; color: var(--pb-err); font-size: 16px; font-weight: 700; }
+html[data-purchase="b"] body.payment-flow .card.pb-fail .btn.pri { width: auto; padding: 0 26px; }
+
+/* ── 쪽 고유: /orders/ 주문 조회 — 입력 칸 두 개를 넓은 폭에서 한 줄 ── */
+html[data-purchase="b"] body.pb-orders #f { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 16px; }
+html[data-purchase="b"] body.pb-orders #f label[for="em"] { grid-column: 1; grid-row: 1; }
+html[data-purchase="b"] body.pb-orders #f #em { grid-column: 1; grid-row: 2; }
+html[data-purchase="b"] body.pb-orders #f label[for="oid"] { grid-column: 2; grid-row: 1; }
+html[data-purchase="b"] body.pb-orders #f #oid { grid-column: 2; grid-row: 2; }
+html[data-purchase="b"] body.pb-orders #f label.f { margin-top: 0; }
+html[data-purchase="b"] body.pb-orders #f > :is(.msg, .acts) { grid-column: 1 / -1; }
+html[data-purchase="b"] body.pb-orders #f .btn { width: auto; min-width: 160px; }
+
+/* ── 쪽 고유: /pass/ 이용권 — 단계 칸 하나 = 카드 하나 · 손님이 결제 확인으로 바로 오면 로그인 안내 먼저 ── */
+html[data-purchase="b"] body.payment-pass main section[data-step] {
+  max-width: 860px; margin: 0; padding: 26px 28px;
+  background: var(--pb-card); border: 1px solid var(--pb-line); border-radius: var(--pb-r); box-shadow: var(--pb-shadow);
+}
+html[data-purchase="b"] body.payment-pass main section[data-step] > .pb-flow { margin: 0 0 14px; }
+html[data-purchase="b"] body.payment-pass main section[data-step] h2 { color: #383341; font-size: 17px; font-weight: 700; letter-spacing: -.04em; margin: 24px 0 6px; }
+html[data-purchase="b"] body.payment-pass main section[data-step] p { color: var(--pb-ink2); }
+html[data-purchase="b"] body.payment-pass .big strong { color: var(--pb-head); font-size: 30px; font-weight: 750; letter-spacing: -.04em; }
+html[data-purchase="b"] body.payment-pass .core { color: var(--pb-ink); }
+html[data-purchase="b"] body.payment-pass .actions { gap: 10px 18px; }
+html[data-purchase="b"] body.payment-pass .actions a:not(.action) { color: var(--pb-accent); font-weight: 650; text-decoration: none; }
+html[data-purchase="b"] body.payment-pass .actions a:not(.action):hover { text-decoration: underline; text-underline-offset: 3px; }
+html[data-purchase="b"] body.payment-pass .action { min-height: 48px; padding: 0 20px; font-size: 15px; text-decoration: none; }
+html[data-purchase="b"] body.payment-pass .action:disabled { background: #e7e5ea; color: var(--pb-muted); box-shadow: none; }
+html[data-purchase="b"] body.payment-pass .pass-agree { border-color: var(--pb-line); border-radius: var(--pb-r); background: #fff; }
+html[data-purchase="b"] body.payment-pass .pass-agree legend { color: var(--pb-head); }
+html[data-purchase="b"] body.payment-pass .chk.all { border-bottom-color: var(--pb-line); }
+html[data-purchase="b"] body.payment-pass .chk.all small { color: var(--pb-muted); }
+html[data-purchase="b"] body.payment-pass details.more { margin: 14px 0 0; padding: 0; border-bottom: 0; }
+html[data-purchase="b"] body.payment-pass .pass-done { margin-top: 6px; padding: 16px 18px; border-radius: var(--pb-r); background: var(--pb-ok-soft); }
+html[data-purchase="b"] body.payment-pass [data-checkout-status]:not(:empty) { background: var(--pb-panel); color: var(--pb-ink); box-shadow: inset 0 0 0 1px var(--pb-line); border-radius: var(--pb-r); }
+html[data-purchase="b"] body.payment-pass .pb-gate { display: none; }
+html[data-purchase="b"] body.payment-pass main section[data-step] .pb-gate h2 { margin: 0; color: var(--pb-ink); font-size: 26px; font-weight: 700; letter-spacing: -.05em; line-height: 1.3; }
+html[data-purchase="b"] body.payment-pass .pb-gate .actions { margin-top: 16px; }
+/* 로그인 안 한 사람(auth.js 가 html 에 authed 를 달지 않음): 결제 확인 칸 대신 로그인 안내 — 결제 단추 · 동의 칸 · 값은 그대로 둔 채 보이지만 않게 */
+html[data-purchase="b"]:not(.authed) body.payment-pass #checkout-pass > .pb-gate { display: block; }
+html[data-purchase="b"]:not(.authed) body.payment-pass #checkout-pass > :not(.pb-gate):not(.pb-flow):not(h1) { display: none; }
+html[data-purchase="b"]:not(.authed) body.payment-pass #checkout-pass > h1 {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* ── 쪽 고유: /refund/ 환불 · 청약철회 안내 — 글은 그대로, 읽는 폭 860px · 한눈에 칸 ── */
+html[data-purchase="b"] body.ds-doc .wrap { width: var(--pb-width); max-width: none; margin: 0 auto; padding: 30px 0 64px; color: var(--pb-ink); }
+html[data-purchase="b"] body.ds-doc .wrap > * { max-width: 860px; }
+html[data-purchase="b"] body.ds-doc .wrap h1 { margin: 0; color: var(--pb-ink); font-size: 34px; font-weight: 700; letter-spacing: -.063em; line-height: 1.25; }
+html[data-purchase="b"] body.ds-doc .eff { margin: 8px 0 0; color: var(--pb-muted); font-size: 13px; }
+html[data-purchase="b"] body.ds-doc :is(.lead, p, ol li) { color: var(--pb-ink2); }
+html[data-purchase="b"] body.ds-doc .wrap a { color: var(--pb-accent); font-weight: 650; }
+html[data-purchase="b"] body.ds-doc b { color: var(--pb-ink); }
+html[data-purchase="b"] body.ds-doc .callout { background: var(--pb-panel); border: 1px solid var(--pb-line); border-radius: var(--pb-r); color: var(--pb-ink2); }
+html[data-purchase="b"] body.ds-doc .pb-sum { margin: 20px 0 0; padding: 18px 22px; }
+html[data-purchase="b"] body.ds-doc .pb-sum h2 { margin: 0 0 6px; color: #383341; font-size: 17px; font-weight: 700; letter-spacing: -.04em; }
+html[data-purchase="b"] body.ds-doc .pb-sum dl { margin: 0; }
+html[data-purchase="b"] body.ds-doc .pb-sum dl div { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 4px 16px; padding: 9px 0; border-bottom: 1px solid #ece9e3; }
+html[data-purchase="b"] body.ds-doc .pb-sum dl div:last-child { border-bottom: 0; }
+html[data-purchase="b"] body.ds-doc .pb-sum dt { color: var(--pb-muted); font-size: 13px; font-weight: 650; }
+html[data-purchase="b"] body.ds-doc .pb-sum dd { margin: 0; color: var(--pb-ink); font-size: 14.5px; line-height: 1.65; }
+html[data-purchase="b"] body.ds-doc .pb-help { margin-top: 6px; }
+html[data-purchase="b"] body.ds-doc h2:not(.pb-sum h2) { color: #383341; font-size: 17px; font-weight: 700; letter-spacing: -.04em; }
+
+/* ── 쪽 고유: /store/ 수능 유형서 — 지금 파는 내신 자료로 안내하는 짧은 쪽 ── */
+html[data-purchase="b"] body.pb-store main { width: var(--pb-width); max-width: none; margin: 0 auto; padding: 26px 0 56px; }
+html[data-purchase="b"] body.pb-store .crumb { margin: 0 0 4px; color: var(--pb-muted); font-size: 13px; font-weight: 550; }
+html[data-purchase="b"] body.pb-store .crumb a { color: var(--pb-muted); opacity: 1; }
+html[data-purchase="b"] body.pb-store main h1 { margin: 6px 0 0; }
+html[data-purchase="b"] body.pb-store main .lede { max-width: 760px; }
+html[data-purchase="b"] body.pb-store .act35 { gap: 10px; margin: 18px 0 0; }
+html[data-purchase="b"] body.pb-store .act35 .btn { display: inline-flex; align-items: center; min-height: 48px; padding: 0 20px; border-radius: 6px; font-size: 15px; text-decoration: none; }
+html[data-purchase="b"] body.pb-store .act35 .btn.ghost { min-height: 48px; }
+html[data-purchase="b"] body.pb-store .sale-now { margin-top: 30px; }
+html[data-purchase="b"] body.pb-store .sale-now h2 { margin: 0 0 12px; color: #383341; font-size: 17px; font-weight: 700; letter-spacing: -.04em; }
+html[data-purchase="b"] body.pb-store .sale-books { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 0; }
+html[data-purchase="b"] body.pb-store .sale-books a {
+  padding: 18px 20px; background: var(--pb-card); border: 1px solid var(--pb-line); border-radius: var(--pb-r); box-shadow: var(--pb-shadow); color: var(--pb-ink);
+}
+html[data-purchase="b"] body.pb-store .sale-books a:hover { background: var(--pb-card); border-color: var(--pb-accent-ui); }
+html[data-purchase="b"] body.pb-store .sale-books strong { color: var(--pb-head); font-size: 19px; font-weight: 700; letter-spacing: -.04em; }
+html[data-purchase="b"] body.pb-store .sale-books span { color: var(--pb-muted); font-size: 13px; }
+html[data-purchase="b"] body.pb-store .sale-books em { color: var(--pb-accent); font-size: 13.5px; font-weight: 730; }
+html[data-purchase="b"] body.pb-store details.more .notice { margin: 4px 0 14px; padding: 0; font-size: 14px; }
+html[data-purchase="b"] body.pb-store details.more .notice p { margin: 0 0 8px; }
+html[data-purchase="b"] body.pb-store details.more .fn { margin: 0 0 14px; color: var(--pb-muted); font-size: 13px; }
+
+/* ── 머리 · 꼬리만 맞추는 쪽(data-purchase-frame: /materials/ 자료받기 · 공개 지면 · 교재 만들기 · 프린트 만들기) — 옛 사업자 꼬리(footer.business-footer)도 종이 바탕 ── */
+html[data-purchase-frame] footer.business-footer { background: var(--pb-paper); color: #566175; border-top: 0; }
+html[data-purchase-frame] footer.business-footer :is(.footer-shortcuts, .business-info) { width: var(--pb-width); max-width: none; margin: 0 auto; }
+html[data-purchase-frame] footer.business-footer .footer-shortcuts { padding-top: 22px; border-top: 1px solid var(--pb-line); color: var(--pb-head); }
+html[data-purchase-frame] footer.business-footer :is(.footer-shortcuts a, .business-info nav a) { color: #4b4859; }
+html[data-purchase-frame] footer.business-footer .business-info nav a.pp,
+html[data-purchase-frame] footer.business-footer .business-info nav a.pp b { color: var(--pb-head); }
+html[data-purchase-frame] footer.business-footer .business-info nav a:hover { background: var(--pb-panel); }
+html[data-purchase-frame] footer.business-footer .business-info p { color: #566175; }
+html[data-purchase-frame] footer.business-footer .business-info a { color: #3d3a4c; }
+
+@media (max-width: 860px) {
+  html[data-purchase="b"] body.pb-checkout main:has(#f:not([hidden])) { display: block; }
+  html[data-purchase="b"] body.pb-checkout main:has(#f:not([hidden])) > #prod { position: static; }
+  html[data-purchase="b"] body.pb-store .sale-books { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 640px) {
+  html[data-purchase="b"] body.payment-flow main,
+  html[data-purchase="b"] body.payment-flow main.wrap,
+  html[data-purchase="b"] body.pb-store main { padding-top: 20px; }
+  html[data-purchase="b"] body.payment-flow .card { padding: 18px 16px; }
+  html[data-purchase="b"] body.payment-pass main section[data-step] { padding: 20px 16px; }
+  html[data-purchase="b"] body.payment-pass main dl div { grid-template-columns: 88px minmax(0, 1fr); }
+  html[data-purchase="b"] body.pb-orders #f { display: block; }
+  html[data-purchase="b"] body.pb-orders #f label[for="oid"] { margin-top: 12px; }
+  html[data-purchase="b"] body.pb-orders #f .btn { width: 100%; }
+  html[data-purchase="b"] body.ds-doc .wrap { padding-top: 24px; }
+  html[data-purchase="b"] body.ds-doc .wrap h1 { font-size: 29px; }
+  html[data-purchase="b"] body.ds-doc .pb-sum { padding: 16px; }
+  html[data-purchase="b"] body.ds-doc .pb-sum dl div { grid-template-columns: minmax(0, 1fr); }
+  html[data-purchase="b"] body.payment-pass main section[data-step] .pb-gate h2 { font-size: 23px; }
+  /* 640 아래 보조 글 14px 이상(같은 잣대) */
+  html[data-purchase="b"] :is(body.payment-flow .crumb, body.payment-flow .fn, body.payment-flow .hint, body.payment-flow .pi, body.payment-flow .price small, body.payment-flow .files small, body.payment-flow .fix, body.payment-flow .sum1, body.payment-pass .chk.all small, body.ds-doc .eff, body.ds-doc .pb-sum dt, body.pb-store .crumb, body.pb-store .sale-books span, body.pb-store details.more .fn) { font-size: 14px; }
+  html[data-purchase-frame] footer.business-footer :is(p, a) { font-size: 14px; }
+}

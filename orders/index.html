@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" data-purchase="b">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -99,8 +99,9 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 <link rel="stylesheet" href="/assets/account-header.css?v=home-logout-1118">
 <link rel="stylesheet" href="/assets/payment-flow.css">
 <link rel="stylesheet" href="/assets/site-unify.css?v=35">
+<link rel="stylesheet" href="/assets/purchase-b.css?v=r3-1123">
 </head>
-<body class="payment-flow">
+<body class="payment-flow pb-orders">
 <header class="ds-head"><div class="ds-head-in">
   <a class="ds-logo" href="/" aria-label="델타스킬 메인"><span class="d">DELTA</span><span class="s">SKILL</span></a>
   <nav class="ds-menu" aria-label="주요 메뉴"><a href="/app/#student">공부</a><a href="/app/#teacher">수업 자료</a><a href="/naesin/">내신 자료</a><a href="/pass/">이용권</a><a href="/orders/" aria-current="page">주문 조회</a></nav>
@@ -108,6 +109,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 </div></header>
 <main>
   <p class="crumb"><a href="/">메인</a> › 주문 조회</p>
+  <nav class="pb-flow" aria-label="구매 순서"><ol><li><b>01</b>고르기</li><li><b>02</b>주문서</li><li><b>03</b>결제</li><li aria-current="step"><b>04</b>받기</li></ol></nav>
   <h1>주문 조회</h1>
   <p class="lede">결제할 때 적은 이메일과 주문번호로 주문 상태를 보고, 구매한 파일을 다시 내려받을 수 있습니다(구매일(결제 완료일)로부터 12개월).</p>
   <form class="card" id="f" novalidate>

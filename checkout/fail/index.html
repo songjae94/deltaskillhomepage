@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" data-purchase="b">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -98,8 +98,9 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 <link rel="stylesheet" href="/assets/account-header.css?v=home-logout-1118">
 <link rel="stylesheet" href="/assets/payment-flow.css">
 <link rel="stylesheet" href="/assets/site-unify.css?v=35">
+<link rel="stylesheet" href="/assets/purchase-b.css?v=r3-1123">
 </head>
-<body class="payment-flow">
+<body class="payment-flow pb-fail-page">
 <header class="ds-head"><div class="ds-head-in">
   <a class="ds-logo" href="/" aria-label="델타스킬 메인"><span class="d">DELTA</span><span class="s">SKILL</span></a>
   <nav class="ds-menu" aria-label="주요 메뉴"><a href="/app/#student">공부</a><a href="/app/#teacher">수업 자료</a><a href="/naesin/">내신 자료</a><a href="/pass/">이용권</a><a href="/orders/">주문 조회</a></nav>
@@ -107,13 +108,15 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 </div></header>
 <main>
   <p class="crumb"><a href="/">메인</a> › <a href="/orders/">주문 조회</a> › 결제 결과</p>
+  <nav class="pb-flow" aria-label="구매 순서"><ol><li><b>01</b>고르기</li><li aria-current="step"><b>02</b>주문서</li><li><b>03</b>결제</li><li><b>04</b>받기</li></ol></nav>
   <div class="band" id="band" role="note" hidden>지금은 테스트 결제 환경입니다 · 실제 결제는 일어나지 않습니다.</div>
   <h1>결제가 완료되지 않았습니다</h1>
-  <section class="card" aria-live="polite">
+  <section class="card pb-fail" aria-live="polite">
     <p class="msg" id="why">결제가 승인되지 않았습니다.</p>
     <dl id="det"></dl>
     <div class="acts"><a class="btn pri" id="again" href="/naesin/">다시 주문하기</a><a class="btn ghost" id="toNaesin" href="/naesin/">내신 자료</a></div>
   </section>
+  <p class="pb-help"><a href="/orders/">주문 조회</a></p>
   <p class="fn">문의: admin@deltaskill.co.kr · 070-8065-2468 · <a href="/refund/">환불·청약철회 안내</a></p>
 </main>
 <footer class="sitefoot">
