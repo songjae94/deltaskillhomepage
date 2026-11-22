@@ -327,3 +327,11 @@ details.agd > summary { min-height: 44px; }
 html[data-ds-sub] .comparison nav a, html[data-ds-sub] nav.seg a { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; }
 html[data-ds-sub] #study-nav a, .flinks a { min-width: 44px; justify-content: center; }
 #acct a { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px; }
+
+/* 641~760 폭: 머리 메뉴 · 계정 링크가 한 줄에 다 안 들어가 넘치던 것 → 폰 꼴 두 줄 */
+@media (min-width: 641px) and (max-width: 760px) {
+  html:not([data-purchase]):not([data-purchase-frame]) .ds-head-in { height: auto; min-height: 64px; flex-wrap: wrap; padding: 0 16px; gap: 0 8px; }
+  html:not([data-purchase]):not([data-purchase-frame]) .ds-head .ds-acct { order: 2; margin-left: auto; border-left: 0; padding-left: 0; gap: 4px; }
+  html:not([data-purchase]):not([data-purchase-frame]) .ds-head .ds-menu { order: 3; flex: 1 1 100%; margin: 0 -6px; padding: 0 0 6px; gap: 0; justify-content: flex-start; border-top: 1px solid #E6E9F0; }
+  html:not([data-purchase]):not([data-purchase-frame]) .ds-head .ds-menu a { padding: 0 10px; min-height: 44px; }
+}
