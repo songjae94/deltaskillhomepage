@@ -2,9 +2,6 @@
 (() => {
   'use strict';
 
-  if (typeof route !== 'function' || typeof header !== 'function') return;
-  const previousRoute = route;
-
   // One question, four steps. Text is set on screen only; no data file is fetched.
   const circled = ['①', '②', '③', '④', '⑤'];
   const ladderItems = [
@@ -135,6 +132,12 @@
       window.addEventListener('load', run, { once: true });
     }
   }
+
+  // The front page's fourth scene shows the same ladder: same question, same text, same badges, set the same way.
+  window.DSLadderV60 = Object.freeze({ items: ladderItems, question, tex, typeset, circled });
+
+  if (typeof route !== 'function' || typeof header !== 'function') return;
+  const previousRoute = route;
 
   function page() {
     return `<article class="tsc60" aria-labelledby="tsc60-title">
