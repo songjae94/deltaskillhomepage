@@ -19,7 +19,8 @@
   }
 
   function login(state = {}) {
-    const { busy, error, phone, signupUrl, recoverUrl, nextRole } = state;
+    const { busy, error, phone, signupUrl, recoverUrl, socialUrl, nextRole } = state;
+    const socialHref = safeLink(socialUrl);
     const accessLinks = [serviceLink(signupUrl, '회원가입'), serviceLink(recoverUrl, '비밀번호 찾기')].filter(Boolean);
 
     return `<section class="account-v7 account-surface account-login" aria-labelledby="account-login-title">
@@ -44,6 +45,7 @@
             <button class="account-primary" type="submit"${busy ? ' disabled' : ''}>${busy ? '로그인 중…' : '로그인'}</button>
           </div>
         </form>
+        ${socialHref && !socialHref.startsWith('#') ? `<nav class="account-login-links account-login-social" aria-label="간편 로그인"><a href="${socialHref}">카카오 · 네이버로 로그인</a></nav>` : ''}
         ${accessLinks.length ? `<nav class="account-login-links" aria-label="계정 도움말">${accessLinks.join('')}</nav>` : ''}
       </div>
     </section>`;

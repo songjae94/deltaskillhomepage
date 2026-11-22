@@ -68,7 +68,7 @@
     },
     /* 헤더: #authnav(데스크톱 링크 묶음) · #mauth(모바일 단추) — 옛 인라인 조각과 같은 꼴 */
     header: function () {
-      var n = document.getElementById("authnav"), on = A.has(), back = (n && n.dataset.next) || (location.pathname + location.search + location.hash);
+      var n = document.getElementById("authnav"), on = A.has(), q = location.pathname.indexOf("/auth/") === 0 ? new URLSearchParams(location.search).get("next") : "", back = q || (n && n.dataset.next) || (location.pathname + location.search + location.hash);
       document.documentElement.classList.toggle("authed", on);
       function link(target, name, href, signOut) {
         target.textContent = name;

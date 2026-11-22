@@ -28,6 +28,8 @@
   const canOpen = () => status === 'active' && member.session();
   const isId = value => typeof value === 'string' && /^[A-Za-z0-9_-]{1,128}$/.test(value);
   const watchedPage = () => main.querySelector('.nv20-collections, .account-dashboard .ac25-account-entry');
+  // The class-material service is not shipped yet: draw no entry and no page until it exists.
+  const serviceReady = () => { const s = window.DSClassMaterialsService; return typeof s?.access === 'function' && typeof s?.list === 'function' && typeof s?.download === 'function'; };
 
   function entry(active = false, account = false) {
     return `<button type="button" class="${account ? 'ac25-account-entry' : 'ac25-collection-entry'}" data-ac25-open${account ? '' : ' data-library-view="academy"'}${active ? ' aria-pressed="true"' : account ? '' : ' aria-pressed="false"'}${canOpen() ? '' : ' disabled'}><span>수업자료</span><small data-ac25-note>${summary[status]}</small></button>`;
@@ -36,6 +38,7 @@
   libraryPage = function () {
     const template = document.createElement('template');
     template.innerHTML = originalLibrary.apply(this, arguments);
+    if (!serviceReady()) return template.innerHTML;
     const tabs = template.content.querySelector('.nv20-collections');
     if (tabs) {
       const request = tabs.querySelector('.upload-entry-v22');
@@ -47,7 +50,7 @@
 
   DSAccountViews.account = function (state = {}) {
     const html = originalAccount.apply(this, arguments);
-    if (state.role === 'teacher') return html;
+    if (state.role === 'teacher' || !serviceReady()) return html;
     const template = document.createElement('template');
     template.innerHTML = html;
     template.content.querySelector('.account-dashboard .ap19-sub-nav')?.insertAdjacentHTML('afterbegin', entry(false, true));
@@ -166,6 +169,10 @@
     reset();
     // Run the existing route's teardown before opening a different workspace.
     previousRoute.apply(this, arguments);
+    if (location.hash === '#academy' && !serviceReady()) {
+      location.replace('#library');
+      return;
+    }
     if (location.hash === '#academy') {
       academyHeader();
       main.innerHTML = page();

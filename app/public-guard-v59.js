@@ -1,14 +1,14 @@
 /* Public edition guard: closed pages stay in code but are not reachable. */
 (() => {
   'use strict';
-  const closed = ['benefits','improve','classroom','upload','school-exams','exam-week','academy','diagnostic','diagnostic-run','diagnostic-result','technology','technology-about'];
+  const closed = ['benefits','classroom','upload','school-exams','academy','diagnostic','diagnostic-run','diagnostic-result','technology','technology-about'];
   const isClosed = hash => closed.includes(String(hash || '').replace(/^#/, '').split(/[/?]/)[0]);
   const guardHash = () => { if (isClosed(location.hash)) { location.replace('#home'); return true; } return false; };
   guardHash();
   window.addEventListener('hashchange', guardHash);
 
   const linkSel = closed.map(p => `a[href="#${p}"]`).join(',');
-  const direct = [linkSel, '[data-feedback]', '[data-csat-diagnostic-v20]', '[data-lf19-mode="book"]', '.lf19-book-state', '.techv20-request', '.ew25-home-banner', '.ew25-csat-entry', '.upload-entry-v22'].join(',');
+  const direct = [linkSel, '[data-csat-diagnostic-v20]', '[data-lf19-mode="book"]', '.lf19-book-state', '.techv20-request', '.ew25-home-banner', '.ew25-csat-entry', '.upload-entry-v22'].join(',');
   const textRules = [
     ['.help-faq details', /운영안|시안 의견|12월 PDF 체험/],
     ['.cl20-course', /진단 준비 중|단원 진단/]

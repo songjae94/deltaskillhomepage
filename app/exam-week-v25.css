@@ -152,3 +152,6 @@
 }
 
 .ew25-grid>button{min-height:44px}
+/* Footer kept inside the page gutter (it sat flush to the screen edge on this page). */
+.ew25-page > .work-footer { width: min(1120px, calc(100% - 32px)); margin-inline: auto; box-sizing: border-box; }
+.ew25-preview a { text-decoration: underline; text-underline-offset: 2px; }

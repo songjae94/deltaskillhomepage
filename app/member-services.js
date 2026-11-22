@@ -6,7 +6,7 @@
  const memberPreview=window.DSRuntime?.mode==='member-preview'&&location.hostname==='127.0.0.1';
  const auth=window.DSAuth;
  let signedIn=false,csrf='',legacyPassword=false,authEpoch=0;
- const accountLinks=mode=>ORIGIN+'/auth/?'+(mode?'mode='+encodeURIComponent(mode)+'&':'')+'next=%2Fmy%2F';
+ const accountLinks=mode=>ORIGIN+'/auth/?'+(mode?'mode='+encodeURIComponent(mode)+'&':'')+'next=%2Fapp%2F%23account';
  function session(){return memberPreview?signedIn:isLiveOrigin&&Boolean(auth?.get())}
  async function local(path,body){
   const generation=authEpoch;

@@ -78,11 +78,13 @@
     </div>`;
   }
 
+  // No upload server is connected: contributions go by mail to the address already published on the site.
+  const mailtoHref = 'mailto:admin@deltaskill.co.kr?subject=%ED%95%99%EA%B5%90%20%EA%B8%B0%EC%B6%9C%20%EC%A0%9C%EA%B3%B5';
   function page() {
     return `<section class="work-surface resource-surface se26" data-collection="school-exams" aria-labelledby="se26-title">
       <header class="se26-heading">
-        <div><a href="#library" data-library-view="school">자료실</a><h1 id="se26-title">학교별 기출</h1><p>학교 기출은 무료로 보고, 변형문항은 유료로 제작할 수 있어요.</p></div>
-        <button type="button" class="se26-primary" data-se26-open>학교 기출 올리기</button>
+        <div><a href="#library" data-library-view="school">자료실</a><h1 id="se26-title">학교별 기출</h1><p>학교별로 공개된 시험지를 찾아봅니다.</p></div>
+        <a class="se26-primary" href="${mailtoHref}">학교 기출 보내기</a>
       </header>
       ${schoolTabs()}
       <datalist id="se26-subjects">${subjects.map(subject => `<option value="${subject}"></option>`).join('')}</datalist>
@@ -96,23 +98,10 @@
           <div class="se26-results" data-se26-results aria-live="polite"></div>
         </section>
         <aside class="se26-contribute" aria-labelledby="se26-contribute-title">
-          <h2 id="se26-contribute-title">학교 기출 올리기</h2>
-          <p>최초 제공한 시험지가 검수를 통과하면 무료 포인트를 한 번 드립니다. 지급량은 확정 전입니다.</p>
-          <details data-se26-details>
-            <summary>시험 정보 입력</summary>
-            <form id="se26-check" autocomplete="off">
-              ${fields(true)}
-              <div class="se26-actions"><button class="se26-quiet" type="submit">중복 확인</button></div>
-            </form>
-            <div class="se26-check-status" role="status" data-se26-check-status></div>
-            <form id="se26-files" hidden autocomplete="off">
-              <label>시험지 파일<input name="files" type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" multiple required></label>
-              <p>PDF·JPG·PNG·WebP. 이름이나 학번이 보이는 부분은 가려 주세요.</p>
-              <div class="se26-actions"><button class="se26-primary" type="submit">요청 미리보기</button></div>
-              <p role="alert" data-se26-file-error hidden></p>
-            </form>
-            <section class="se26-review" aria-labelledby="se26-review-title" tabindex="-1" data-se26-review hidden></section>
-          </details>
+          <h2 id="se26-contribute-title">학교 기출 보내기</h2>
+          <p>가진 학교 시험지는 메일로 보내 주실 수 있습니다. 학교 · 학년 · 학년도 · 학기 · 중간·기말 · 과목을 함께 적어 주세요.</p>
+          <p>PDF·JPG·PNG·WebP. 이름이나 학번이 보이는 부분은 가려 주세요.</p>
+          <div class="se26-actions"><a class="se26-quiet" href="${mailtoHref}">메일로 보내기</a></div>
         </aside>
       </div>
       ${compactFooter()}
@@ -155,7 +144,7 @@
     if (!items.length) return '<p class="se26-state">조건에 맞는 공개 시험지가 없습니다.</p>';
     return `<ul class="se26-exam-list">${items.map(exam => `<li>
       <div><h3>${esc(exam.school)} · ${esc(exam.subject)}</h3><p>${esc(examDescription(exam))}</p></div>
-      <div class="se26-file-links"><a class="se26-quiet" href="${esc(exam.url)}" rel="noreferrer">무료 PDF 보기</a><a class="se26-text-link" href="#upload">유료 변형 제작</a></div>
+      <div class="se26-file-links"><a class="se26-quiet" href="${esc(exam.url)}" rel="noreferrer">PDF 보기</a></div>
     </li>`).join('')}</ul>`;
   }
 
@@ -183,7 +172,7 @@
     const box = state.root.querySelector('[data-se26-results]');
     const adapter = service();
     if (typeof adapter?.list !== 'function') {
-      box.innerHTML = '<p class="se26-state">학교별 기출 목록은 연결 준비 중입니다.</p>';
+      box.innerHTML = '<p class="se26-state">공개된 학교별 시험지가 없습니다. 단원별 내신 자료는 <a href="#library" data-library-view="school">자료실</a>에서 볼 수 있습니다.</p>';
       return;
     }
     const request = new AbortController();
@@ -216,6 +205,7 @@
     state.draft = null;
     state.existing = null;
     const files = state.root.querySelector('#se26-files');
+    if (!files) return;
     files.reset();
     files.hidden = true;
     reviewReset(state);

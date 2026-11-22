@@ -44,7 +44,7 @@
   function page() {
     const teacher = typeof role !== 'undefined' && role === 'teacher';
     return `<section class="upr22" aria-labelledby="upr22-title">
-      <header class="upr22-heading"><h1 id="upr22-title">유사문항 제작 요청</h1><p>요청서 미리보기 · 아직 전송되지 않습니다</p></header>
+      <header class="upr22-heading"><h1 id="upr22-title">유사문항 제작 요청</h1><p>요청 내용을 정리해 메일로 문의합니다</p></header>
       <form id="upr22-form" class="upr22-form" method="post" autocomplete="off" enctype="multipart/form-data">
         <section class="upr22-sheet" aria-labelledby="upr22-file-heading">
           <h2 id="upr22-file-heading">원본 파일</h2>
@@ -62,16 +62,9 @@
             <label>난이도<select name="level">${Object.entries(levels).map(([value, label]) => `<option value="${value}">${label}</option>`).join('')}</select></label>
             <label class="upr22-wide">요청 메모 (선택)<textarea name="memo" rows="3" maxlength="400"></textarea></label>
           </div>
-          <aside class="upr22-estimate" id="upr22-estimate"${teacher ? '' : ' hidden'}><strong>수업 자료 견적 기준</strong><p>검수 후 제공한 문항 수 × 문항당 단가</p><small>문항당 단가는 확정 전입니다.</small></aside>
         </section>
-        <section class="upr22-sheet upr22-contribute" aria-labelledby="upr22-contribute-heading">
-          <h2 id="upr22-contribute-heading">학교 내신 기출 자료 제공</h2>
-          <p class="upr22-note">자료 제공은 제작 요청과 별도입니다. 중복, 개인정보, 제공 권한을 검토한 뒤 보상을 안내합니다.</p>
-          <label class="upr22-check"><input name="contribution" type="checkbox" aria-controls="upr22-contribute-source"> 학교 기출 자료의 제공 검토에 동의합니다.</label>
-          <label class="upr22-source-field" id="upr22-contribute-source" hidden>자료 출처 <small>선택</small><input name="source" type="text" maxlength="100" placeholder="학년도·학기·과목"></label>
-        </section>
-        <div class="upr22-actions"><button class="upr22-primary" type="submit">요청서 미리보기</button><p class="upr22-error" id="upr22-form-error" role="alert" hidden></p></div>
-        <section class="upr22-sheet upr22-summary" id="upr22-summary" tabindex="-1" aria-label="제작 요청서 미리보기" hidden></section>
+        <div class="upr22-actions"><button class="upr22-primary" type="submit">요청서 만들기</button><p class="upr22-error" id="upr22-form-error" role="alert" hidden></p></div>
+        <section class="upr22-sheet upr22-summary" id="upr22-summary" tabindex="-1" aria-label="제작 요청서" hidden></section>
       </form>
     </section>`;
   }
@@ -144,9 +137,12 @@
     }
     const summary = form.querySelector('#upr22-summary');
     const fields = [['용도', purposes[purpose]], ['선택 파일', `${attachments.length}개`], ['원본 문항 번호', get('original')], ['요청 문항 수', `${quantity}문항`], ['난이도', levels[level]], ['요청 메모', get('memo')]].filter(([, value]) => value);
-    summary.innerHTML = `<h2>요청서 미리보기</h2><p class="upr22-note">아직 전송되지 않았습니다.</p><dl>${fields.map(([label, value]) => `<div><dt>${label}</dt><dd>${escape(value)}</dd></div>`).join('')}</dl>
-      ${purpose === 'lesson' ? '<p class="upr22-summary-line"><strong>수업 자료 견적</strong> 실제 제공 문항 수 × 문항당 단가 · 단가 확정 전</p>' : ''}
-      ${fd.has('contribution') ? `<p class="upr22-summary-line"><strong>자료 제공 검토에 동의</strong>${get('source') ? ` · ${escape(get('source'))}` : ''} · 보상은 검토 후 안내</p>` : ''}`;
+    // No upload server is connected: the request goes as a mail to the address already published on the site.
+    const body = fields.map(([label, value]) => `${label}: ${value}`).concat(['첨부할 파일: ' + attachments.map(({ file }) => file.name).join(', ')]).join('\n');
+    const mailto = `mailto:admin@deltaskill.co.kr?subject=${encodeURIComponent('유사문항 제작 문의')}&body=${encodeURIComponent(body)}`;
+    summary.innerHTML = `<h2>요청서</h2><dl>${fields.map(([label, value]) => `<div><dt>${label}</dt><dd>${escape(value)}</dd></div>`).join('')}</dl>
+      <p class="upr22-summary-line"><a class="upr22-primary" href="${escape(mailto)}">메일로 문의 보내기</a></p>
+      <p class="upr22-note">메일 앱이 열리면 위에서 고른 원본 파일을 직접 첨부해 보내 주세요. 이 페이지에서는 파일이 전송되지 않습니다.</p>`;
     notifyError(form, '#upr22-form-error', '');
     summary.hidden = false;
     summary.focus({ preventScroll: true });
@@ -187,8 +183,6 @@
     if (!form) return;
     if (field.id === 'upr22-files') { void chooseFiles(field, form); return; }
     resetSummary(form);
-    if (field.name === 'purpose') form.querySelector('#upr22-estimate').hidden = field.value !== 'lesson';
-    if (field.name === 'contribution') form.querySelector('#upr22-contribute-source').hidden = !field.checked;
   });
   document.addEventListener('input', event => {
     const form = event.target.closest?.('#upr22-form');

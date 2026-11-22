@@ -46,7 +46,7 @@
       <h2 id="ew25-guide-title">시험 후 복습 순서</h2>
       <ol>
         <li><span>시험 당일</span><strong>채점하고 문항 표시</strong></li>
-        <li><span>1–3일 뒤</span><strong>막힌 문항 다시 풀기</strong><p>문제와 해설은 시험 문항 연결 후 제공됩니다.</p></li>
+        <li><span>1–3일 뒤</span><strong>막힌 문항 다시 풀기</strong></li>
         <li><span>7일 뒤</span><strong>헷갈린 문항 다시 확인</strong></li>
       </ol>
     </aside>`;
@@ -57,7 +57,7 @@
       <fieldset class="ew25-modes"><legend>표시할 문항 종류</legend><div>
         ${Object.entries(kinds).map(([key, label]) => `<label data-ew25-mode="${key}"><input type="radio" name="mark" value="${key}" ${mode === key ? 'checked' : ''}><span>${label}</span><b aria-hidden="true">${glyphs[key]}</b></label>`).join('')}
       </div></fieldset>
-      <div class="ew25-grid-caption"><h2 id="ew25-grid-label">문항 번호 <small>구성 예시</small></h2><p>한 번 더 누르면 표시가 해제됩니다.</p></div>
+      <div class="ew25-grid-caption"><h2 id="ew25-grid-label">문항 번호</h2><p>한 번 더 누르면 표시가 해제됩니다.</p></div>
       <div class="ew25-grid" role="group" aria-labelledby="ew25-grid-label">
         ${numbers.map(number => `<button type="button" data-ew25-number="${number}" aria-label="${number}번" aria-describedby="ew25-mark-${number}">${number}<span class="sr-only" id="ew25-mark-${number}"></span></button>`).join('')}
       </div>
@@ -98,13 +98,13 @@
       <div class="ew25-layout">
         <header class="ew25-header">
           <a class="ew25-back" href="#csat"><span aria-hidden="true">←</span> 수능·모의고사</a>
-          <p class="ew25-edition">2027년 3월 모의고사</p>
+          <p class="ew25-edition">모의고사 · 1~30번</p>
           <h1>모의고사 오답노트</h1>
           <p class="ew25-intro">공식 정답으로 채점한 뒤, 틀린 문항과 찍어서 맞힌 문항을 표시하세요.</p>
         </header>
         <div id="ew25-work">${showingNote ? note() : form()}</div>
         ${fieldGuide()}
-        <p class="ew25-preview">지금은 시안입니다. 입력은 전송하지 않습니다.</p>
+        <p class="ew25-preview">이 화면의 표시는 저장되지 않습니다. 기록으로 남기려면 로그인 후 <a href="https://www.deltaskill.co.kr/my/notes/" target="_blank" rel="noopener">AI 오답노트</a>에서 이어 가세요.</p>
       </div>
       ${compactFooter()}
     </article>`;

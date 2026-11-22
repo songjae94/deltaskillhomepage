@@ -239,7 +239,23 @@
     </div>`;
   }
 
-  function render(state = {}) {
+  // Public edition: no class server is connected, so the page shows only real paths (no sample classes, no roster form).
+  function render() {
+    return `<section class="classroom-surface" aria-labelledby="classroom-title">
+      <header class="classroom-heading"><h1 id="classroom-title">반·학생 관리</h1></header>
+      <div class="classroom-sheet classroom-lobby-empty">
+        <p>반·학생 관리는 교육기관 도입 문의로 안내합니다.</p>
+        <p class="classroom-muted">학원·학교 단위로 쓰실 곳은 아래로 연락해 주세요.</p>
+        <p><a class="classroom-primary" href="/partners/">교육기관 도입 안내</a> <a class="classroom-quiet" href="mailto:admin@deltaskill.co.kr?subject=%EB%B0%98%C2%B7%ED%95%99%EC%83%9D%20%EA%B4%80%EB%A6%AC%20%EB%AC%B8%EC%9D%98">메일 문의</a></p>
+      </div>
+      <div class="classroom-sheet">
+        <h2>지금 쓸 수 있는 것</h2>
+        <p><a class="classroom-quiet" href="#teacher">자료 만들기</a> <a class="classroom-quiet" href="#library">자료실</a></p>
+      </div>
+    </section>`;
+  }
+
+  function renderWithClasses(state = {}) {
     const demo = state.demo === true;
     const classes = getClasses(state);
     const selected = state.selectedClass == null || state.selectedClass === '' ? undefined : classes.find(item => String(item.id) === String(state.selectedClass));
