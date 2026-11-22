@@ -168,8 +168,8 @@
     try{
       const display=attr(math,'display')==='block';
       // v61: a fragment that carries the canonical TeX (KaTeX's own annotation) is set from that TeX with the
-      // canonical render's options (render_items.mjs: strict false · trust only \htmlClass) — the same
-      // formula, size and place as the item's 렌더.html and the type books. Otherwise the MathML path below.
+      // canonical render's options (strict false · trust only \htmlClass) — the same
+      // formula, size and place as the printed item. Otherwise the MathML path below.
       const note=math.querySelector('annotation[encoding="application/x-tex"]');
       const source=note?String(note.textContent||''):'';
       let html=null,canonical=false;
@@ -178,7 +178,7 @@
           html=global.katex.renderToString(source,{displayMode:display,throwOnError:true,strict:false,output:'htmlAndMathml',
             trust:ctx=>ctx.command==='\\htmlClass'&&/^(?:대각칸|대각위|대각아래)$/.test(String(ctx.class||''))});
           canonical=true;stats.canonical=(stats.canonical||0)+1;
-          // The canonical render's two marks for tall inline formulas (render_items.mjs R-116 · R-168).
+          // The canonical render's two marks for tall inline formulas .
           if(!display&&/mfrac/.test(html))html=html.replace('class="katex"','class="katex 인라인분수"');
           else if(!display&&/op-limits|op-symbol/.test(html))html=html.replace('class="katex"','class="katex 인라인큰연산"');
         }catch(error){record(error,math);html=null;}

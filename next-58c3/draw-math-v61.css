@@ -1,6 +1,4 @@
-/* 지침 확인: 렌더규격-0903@r1.11 · 수식조판-원칙-1005@r0.3 (스킬: 렌더생산 · 유형서짓기)
-   뽑기 화면 · 인쇄 지면의 문제 · 해설 = 정본 렌더 판 규칙 그대로(유형서 문제 쪽과 같은 길).
-   기계로 옮김: 도구 렌더판css_옮기기.py · 값은 정본 katex-embed.css 와 같다 — 여기서 손으로 고치지 않는다. */
+/* Draw cards and print pages: question and solution type set the same way as the printed items. */
 :where(.dq61-q,.dq61-s) .bogi{border:1.1px solid #7a7a7a;border-radius:0;padding:1.10em 1.03em 0.73em;margin:18px 0 12px;position:relative}
 :where(.dq61-q,.dq61-s) .bogi .bt{position:absolute;top:-0.85em;left:50%;transform:translateX(-50%);background:#fff;padding:0 10px;margin:0;font-weight:700;white-space:nowrap}
 :where(.dq61-q,.dq61-s) .brow{margin:0;line-height:1.69;display:block;padding-left:1.744em;text-indent:-1.744em}
