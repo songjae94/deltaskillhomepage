@@ -72,7 +72,7 @@ dd{margin:0;font-size:14.5px;min-width:0}
 details.more{margin:18px 0;border-radius:16px;background:#EEF2FA;padding:0 16px}details.more>summary{cursor:pointer;min-height:48px;display:flex;align-items:center;font-size:14.5px;font-weight:700}details.more>summary::-webkit-details-marker{display:none}details.more>summary::after{content:"펼치기 ▾";margin-left:auto;padding-left:10px;font-size:12.5px;font-weight:650;opacity:.75}details.more[open]>summary::after{content:"접기 ▴"}details.more[open]{padding-bottom:14px}
 </style>
 <style id="sale-css">
-/* 38 창 1119: 판매 중 내신 자료(naesin/on-sale.js · catalog.json 에서 그림) — 카드 16 · 글 #172B43 · 옅은 글 #5B6678 · 파랑 #245BD6 · 테두리 #DFE3ED */
+/* 판매 중 내신 자료(naesin/on-sale.js · catalog.json 에서 그림) — 카드 16 · 글 #172B43 · 옅은 글 #5B6678 · 파랑 #245BD6 · 테두리 #DFE3ED */
 .sale-books{list-style:none;margin:12px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:12px}
 .sale-books a{display:grid;gap:6px;align-content:start;min-height:44px;height:100%;box-sizing:border-box;padding:18px 20px;border:1px solid #DFE3ED;border-radius:16px;background:#fff;color:#172B43;text-decoration:none}
 .sale-books a:hover{background:#EEF3FF}
@@ -95,7 +95,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 </style>
 <script defer src="/auth.js?v=home-logout-r2-1123"></script>
 <link rel="stylesheet" href="/assets/site-unify.css?v=35">
-<link rel="stylesheet" href="/assets/purchase-b.css?v=r3-1123">
+<link rel="stylesheet" href="/assets/purchase-b.css?v=r4-1123">
 </head>
 <body class="pb-store">
 <header class="ds-head"><div class="ds-head-in">
@@ -137,7 +137,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 </footer>
 <script src="/naesin/on-sale.js?v=38-1119"></script>
 <script>
-/* 38 창 1119: 판매 중 내신 자료를 위에 — 없으면 칸을 숨긴 채 둔다 */
+/* 판매 중 내신 자료를 위에 — 없으면 칸을 숨긴 채 둔다 */
 (function(){
   var box=document.getElementById("sale-now"),ul=document.getElementById("sale-books");
   if(!box||!ul||!window.DSOnSale)return;
@@ -155,14 +155,14 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 })();
 </script>
 <script>
-/* 1007 결제 점검: /pay-config.json 의 PAY_MODE 가 test 면 「구매하기」를 켠다(판매 시작 단추는 그대로 둠).
+/* /pay-config.json 의 PAY_MODE 가 test 면 「구매하기」를 켠다(판매 시작 단추는 그대로 둠).
    live 면 판매 기간 안의 상품만 「구매하기」를 켜고 그 상품의 판매 시작 단추를 숨긴다. 설정을 못 읽으면 아무것도 바꾸지 않는다.
    수능 판매 스위치(1104): live 에서는 pay-config.json 의 SUNEUNG_SALE_OPEN 이 정확히 true 일 때만 위 live 동작을 한다. 없거나 false 면 아무 상품도 켜지 않는다. test 동작은 이 값을 보지 않는다. */
 (function(){
   "use strict";
   var SALE=Date.parse("2026-10-20T19:00:00+09:00"),PRE0=Date.parse("2026-11-09T00:00:00+09:00"),PRE1=Date.parse("2026-11-13T00:00:00+09:00");
   function open(sku,t){return sku.indexOf("PRE-")===0?(t>=PRE0&&t<PRE1):t>=SALE;}
-  /* 형 1119 「회원 가입후 사는 것으로」: 로그인 안 된 「구매하기」는 로그인 쪽으로 · 로그인 뒤 그 주문서로 돌아온다(DSAuth.loginUrl 의 safeNext = 같은 사이트 경로만) */
+  /* 로그인 안 된 「구매하기」는 로그인 쪽으로 · 로그인 뒤 그 주문서로 돌아온다(DSAuth.loginUrl 의 safeNext = 같은 사이트 경로만) */
   document.addEventListener("click",function(ev){
     var a=ev.target&&ev.target.closest?ev.target.closest('a.btn.buy[href^="/checkout/"]'):null;
     if(!a||!window.DSAuth||window.DSAuth.has())return;
@@ -171,7 +171,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   fetch("/pay-config.json",{cache:"no-store"}).then(function(r){return r.ok?r.json():null;}).then(function(c){
     if(!c||(c.PAY_MODE!=="test"&&c.PAY_MODE!=="live"))return;
     var t=Date.now(),sn=c.SUNEUNG_SALE_OPEN===true;
-    /* 1007 PG 점검: 머리 문구를 화면과 맞춘다 — test 면 「구매하기」가 켜지므로 테스트 결제임을 밝히고, live 판매 중이면 「지금 구매할 수 있습니다」 */
+    /* 머리 문구를 화면과 맞춘다 — test 면 「구매하기」가 켜지므로 테스트 결제임을 밝히고, live 판매 중이면 「지금 구매할 수 있습니다」 */
     var note=document.getElementById("sale-note");
     if(note){
       if(sn&&t>=SALE)note.textContent="지금 구매할 수 있습니다. 결제 뒤 바로 내려받을 수 있고, 제공 예정 상품은 제공일부터 내려받습니다.";

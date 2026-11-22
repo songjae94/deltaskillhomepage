@@ -64,7 +64,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 </style>
 <link rel="stylesheet" href="/assets/account-header.css?v=pass-1117">
 <link rel="stylesheet" href="/assets/site-unify.css?v=35">
-<link rel="stylesheet" href="/assets/my-b.css?v=my-b-1123">
+<link rel="stylesheet" href="/assets/my-b.css?v=r4-1123">
 <link rel="icon" href="/favicon-32.png" sizes="32x32" />
 </head>
 <body class="my-notes" data-logout-next="/">
@@ -121,7 +121,7 @@ function rxOf(exam,area,no){const E=(RX.exams||{})[exam];if(!E)return null;const
 function useName(u){return typeof u==="string"?u:((u&&u.skill)||"");}
 /* 해설실(/sol/) 등재 회차 — 새 회차 해설을 올리면 여기와 /sol/ 페이지를 함께 늘린다 (0902) */
 const SOL_EXAMS={MP27_09:1};
-/* 1007 옛 회차 코드 별칭 표는 공개 소스에서 삭제(형 1007 · 10/13 공개 전). 별칭이 필요하면 서버(exam_aliases) 쪽에서 바꿔 내려준다.
+/* 1007 옛 회차 코드 별칭 표는 공개 소스에서 삭제. 별칭이 필요하면 서버(exam_aliases) 쪽에서 바꿔 내려준다.
    여기서는 코드를 그대로 쓴다 — 목록에 없는 옛 코드는 「지원하지 않음」으로 안내한다. */
 const normExam=c=>c;
 const normHist=a=>(a||[]).map(x=>(x&&x.exam_code)?Object.assign({},x,{exam_code:normExam(x.exam_code)}):x);
@@ -225,7 +225,7 @@ function acctLinks(role){
   document.getElementById("roleBtn").onclick=async e=>{e.preventDefault();try{await api("/role-change",{method:"POST",body:{role:other}});location.reload();}catch(_){alert("바꾸지 못했어요. 다시 시도해 주세요.");}};
   if(role==="student") schoolLine();
 }
-/* ---- 학교명 보기 · 고치기(형 1106 · 학생만) — 기존 회원 · 옛 서버는 빈 값이라 「아직 없음」으로 둔다 ---- */
+/* ---- 학교명 보기 · 고치기(학생만) — 기존 회원 · 옛 서버는 빈 값이라 「아직 없음」으로 둔다 ---- */
 async function schoolLine(){
   const old=document.getElementById("schoolBox"); if(old) old.remove();
   const box=document.createElement("div"); box.id="schoolBox"; box.style.cssText="margin-top:18px;display:flex;flex-wrap:wrap;align-items:center;gap:8px";

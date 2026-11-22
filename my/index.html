@@ -70,7 +70,7 @@ label.f{display:block;font-size:13.5px;font-weight:700;color:var(--ink2);margin:
 .files{list-style:none;margin:10px 0 0;padding:0}
 .files li{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:10px 0;border-bottom:1px dashed var(--line);font-size:14.5px}
 .files li span{min-width:0}
-.files li.bk{display:block;padding:12px 0 4px;border-bottom:1px solid var(--line);font-size:14.5px;font-weight:700} /* 39 1119: 여러 권 주문은 책마다 한 줄 */
+.files li.bk{display:block;padding:12px 0 4px;border-bottom:1px solid var(--line);font-size:14.5px;font-weight:700} /* 여러 권 주문은 책마다 한 줄 */
 .files small{display:block;font-size:12.5px;color:var(--sub)}
 .tag{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:999px;font-size:11.5px;font-weight:700;background:var(--sky1);color:var(--ink)}
 .fn{margin-top:22px;font-size:13px;color:var(--sub)}
@@ -111,7 +111,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 <link rel="stylesheet" href="/assets/account-header.css?v=home-logout-1118">
 <link rel="stylesheet" href="/assets/payment-flow.css">
 <link rel="stylesheet" href="/assets/site-unify.css?v=35">
-<link rel="stylesheet" href="/assets/my-b.css?v=my-b-1123">
+<link rel="stylesheet" href="/assets/my-b.css?v=r4-1123">
 </head>
 <body class="payment-flow" data-logout-next="/">
 <header class="ds-head"><div class="ds-head-in">
@@ -220,7 +220,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 <script src="/assets/textbook-name.js?v=38-1119"></script>
 <script>
 "use strict";
-/* 마이페이지(11-18 · 21 창) — 이용권(billing-test) · 결제 내역 · 회원 자료함(member-library). 서버가 로그인 회원 것만 돌려준다. */
+/* 마이페이지 — 이용권(billing-test) · 결제 내역 · 회원 자료함(member-library). 서버가 로그인 회원 것만 돌려준다. */
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const won = n => Number(n).toLocaleString("ko-KR") + "원";
@@ -241,7 +241,7 @@ async function fnCall(name, body){
   return j;
 }
 
-/* ---- 이용권 · 자동 갱신 해지(형 1118 · 17 창 화면을 옮김) ---- */
+/* ---- 이용권 · 자동 갱신 해지 ---- */
 const passCall = (action, extra) => fnCall("billing-test", {action, ...(extra||{})});
 function passView(p){
   const box = $("passBody");
@@ -338,12 +338,12 @@ function libView(list){
     const d = document.createElement("div"); d.className = "lib";
     d.innerHTML = `<p class="lname">${esc(o.orderName)}${o.mode === "test" ? ` <span class="tag off">테스트 결제</span>` : ``}</p>`
       + `<p class="sub">결제 ${esc(day(o.approvedAt))} · ${o.redownloadUntil ? esc(day(o.redownloadUntil)) + "까지 다시 받기" : ""}${o.reason ? " · " + esc(LIB_ERR[o.reason] || "") : ""}</p>`;
-    { const m = !o.isMultiUnit && /^(NS-[A-Z0-9]+-\d\d)-/.exec(((o.files || [])[0] || {}).id || ""); /* 38 창 1119: 원 교재 이름은 로그인 뒤에만 */
+    { const m = !o.isMultiUnit && /^(NS-[A-Z0-9]+-\d\d)-/.exec(((o.files || [])[0] || {}).id || ""); /* 원 교재 이름은 로그인 뒤에만 */
       if(m && window.DSTextbook) d.querySelector(".lname").after(DSTextbook.line(m[1])); }
     const ul = document.createElement("ul"); ul.className = "files";
     let lastBk = null;
     (o.files || []).forEach(f => {
-      const bk = o.isMultiUnit && /^(NS-[A-Z0-9]+-\d\d)-/.exec(f.id || ""); /* 39 1119: 여러 권 주문은 책 이름 한 줄 + 그 책 파일 */
+      const bk = o.isMultiUnit && /^(NS-[A-Z0-9]+-\d\d)-/.exec(f.id || ""); /* 여러 권 주문은 책 이름 한 줄 + 그 책 파일 */
       if(bk && bk[1] !== lastBk){ lastBk = bk[1]; const hb = document.createElement("li"); hb.className = "bk"; hb.textContent = String(f.title || bk[1]).replace(/ · [^·]*$/, ""); ul.appendChild(hb);
         if(window.DSTextbook){ const tl = DSTextbook.line(bk[1]); if(tl) hb.appendChild(tl); } }
       const li = document.createElement("li"), s = document.createElement("span");
@@ -376,7 +376,7 @@ async function libLine(){
   catch(e){ if(e.message === "login_required") return;
     $("payBody").innerHTML = $("libBody").innerHTML = `<p class="msg err">불러오지 못했어요.</p> <button type="button" class="btn ghost sm" onclick="location.reload()">다시 불러오기</button>`; }
 }
-/* ---- 이용권 프린트(벌) 받기 (11-18 · 25 창) — member-library pass_sets · pass_download ---- */
+/* ---- 이용권 프린트(벌) 받기 — member-library pass_sets · pass_download ---- */
 const PP_ERR = { no_active_pass:"이용 중인 이용권이 없어 새 프린트를 받을 수 없습니다. 받은 프린트는 다시 받을 수 있습니다.", sets_full:"이번 달 받을 수 있는 30벌을 모두 받았습니다. 다음 결제일부터 다시 받을 수 있습니다.",
   renew_in_progress:"자동 결제를 처리하고 있습니다. 잠시 뒤 다시 시도해 주세요.", test_mode:"이 이용권으로는 지금 프린트를 받을 수 없습니다.", not_yet:"아직 제공 전인 프린트입니다.",
   bad_set:"이 프린트를 찾을 수 없습니다.", file_not_ready:"파일을 준비하고 있습니다. 잠시 뒤 다시 시도해 주세요.", network:"서버에 연결하지 못했습니다. 잠시 뒤 다시 시도해 주세요." };

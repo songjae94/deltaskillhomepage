@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
 <style>
-/* 색 토큰 — 로고 2색(번개 #D8281C · 기준선 #0B1F3A) + 중립 + 상태 초록 하나(시안 e/색.css · 형 답 11-04 「로고 색」) */
+/* 색 토큰 — 로고 2색(번개 #D8281C · 기준선 #0B1F3A) + 중립 + 상태 초록 하나 */
 :root{
   --bg:#F7F8FC;--bg2:#F7F8FC;--bg3:#E9EDF5;--card:#ffffff;
   --ink:#172B43;--ink2:#3C4A60;--muted:#5D6B80;--line:#DFE3ED;--line2:#C9D0DE;
@@ -56,8 +56,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
 html[data-theme="dark"] .brand .lg-k{display:none}
 html[data-theme="dark"] .brand .lg-w{display:block}
 .hd-r{display:flex;align-items:center;gap:6px}
-.authnav{display:inline-flex;align-items:center}   /* 1107 B5: 로그인·회원가입 / 마이페이지·로그아웃 — /auth.js 가 #authnav 를 채운다(메인 머리와 같은 방식) */
-@media(max-width:400px){.authnav a{display:none!important}html:not(.authed) .authnav a:first-child,html.authed .authnav a.dsout{display:inline-flex!important}}   /* 1107 B5 짝: 좁은 폭은 손님 「로그인」 · 회원 「로그아웃」 하나만(320px 가로 넘침 31·54px 를 막음 · 무료_재기) */
+.authnav{display:inline-flex;align-items:center}   /* 로그인·회원가입 / 마이페이지·로그아웃 — /auth.js 가 #authnav 를 채운다(메인 머리와 같은 방식) */
+@media(max-width:400px){.authnav a{display:none!important}html:not(.authed) .authnav a:first-child,html.authed .authnav a.dsout{display:inline-flex!important}}   /* 좁은 폭은 손님 「로그인」 · 회원 「로그아웃」 하나만(320px 가로 넘침 31·54px 를 막음) */
 .hd-r a{display:inline-flex;align-items:center;min-height:44px;padding:0 10px;font-size:14px;font-weight:650;color:var(--ink2);text-decoration:none;white-space:nowrap}
 .tg{display:inline-flex;align-items:center;gap:7px;min-height:44px;padding:6px 12px;border-radius:999px;border:1px solid var(--line2);font-size:13px;font-weight:700;color:var(--ink2);background:var(--card);cursor:pointer;white-space:nowrap}
 .tg i{width:14px;height:14px;border-radius:50%;background:var(--ink);box-shadow:inset -4px -2px 0 0 var(--card);transform:rotate(-20deg)}
@@ -142,7 +142,7 @@ html[data-theme="dark"] .btn.go2{background:var(--deepSoft);color:var(--ink);box
 @media(max-width:760px){.opts,.opts.three{grid-template-columns:minmax(0,1fr)}.opt{min-height:96px}}
 @media(max-width:640px){.wrap{width:calc(100% - 32px)}.hdr .wrap{min-height:56px}.brand img{height:24px}.hd-r a{padding:0 6px;font-size:13px}.tg{padding:6px 10px}main{padding-top:18px}.picks,.fields{grid-template-columns:minmax(0,1fr)}.conf{padding:4px 16px}.conf div{flex-direction:column;gap:2px;padding:10px 0}.conf dt{width:auto}.act .btn{flex:1 1 100%}.bar .btn{width:100%}}
 @media(prefers-reduced-motion:reduce){a.opt{transition:none}a.opt:hover,a.opt:focus-visible{transform:none}}
-/* 30 창 1118: 결제 간결 — 지금 살 수 있는 자료 카드 · 자세히 접기 */
+/* 결제 간결 — 지금 살 수 있는 자료 카드 · 자세히 접기 */
 .h2q{margin:36px 0 0;font-size:18px;letter-spacing:-.02em;line-height:1.4}
 details.more{margin:16px 0 0;border-radius:16px;background:var(--bg2);padding:0 16px}
 details.more>summary{cursor:pointer;min-height:48px;display:flex;align-items:center;font-size:14px;font-weight:700;color:var(--ink2)}
@@ -155,7 +155,7 @@ details.more>summary,details.agd>summary{list-style:none}
 .sum1{margin:14px 0 0;font-size:13.5px;line-height:1.6;color:var(--ink2)}
 .sum1 a{color:var(--deepT);font-weight:650;text-underline-offset:2px}
 
-/* 31 창 1118 — 목록(과목 칩 · 단원 머리 · 상품 카드) */
+/* 목록(과목 칩 · 단원 머리 · 상품 카드) */
 .chips{display:flex;gap:8px;overflow-x:auto;margin:0 0 22px;padding:2px 0 6px;scrollbar-width:none}
 .chips a{flex:none;display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--line2);background:var(--card);font-size:14px;font-weight:700;color:var(--ink2);text-decoration:none;white-space:nowrap}
 html main .chips a{color:#3C4A60!important}
@@ -165,7 +165,7 @@ html main .chips a[aria-current="true"]{background:#172B43;border-color:#172B43;
 .cards{display:grid;gap:12px}
 @media (min-width:760px){.cards{grid-template-columns:1fr 1fr}}
 .grps{display:block}
-@media (min-width:760px){.grps{display:grid;grid-template-columns:1fr 1fr;gap:0 16px;align-items:start}.grps .cards{grid-template-columns:1fr}} /* 38 창 1119: 단원마다 카드 하나라 오른쪽이 비던 것 — 넓은 폭은 단원 묶음을 2단으로 */
+@media (min-width:760px){.grps{display:grid;grid-template-columns:1fr 1fr;gap:0 16px;align-items:start}.grps .cards{grid-template-columns:1fr}} /* 단원마다 카드 하나라 오른쪽이 비던 것 — 넓은 폭은 단원 묶음을 2단으로 */
 .buycard{display:flex;flex-direction:column;gap:6px;padding:18px 20px;border-radius:16px;border:1px solid var(--line);background:var(--card)}
 .buycard h3{margin:0;font-size:17px;font-weight:800;line-height:1.4;color:var(--ink)}
 .buycard .m{margin:0;font-size:13.5px;color:var(--muted)}
@@ -177,7 +177,7 @@ html main .chips a[aria-current="true"]{background:#172B43;border-color:#172B43;
 .buycard .row2{margin-top:auto;padding-top:8px}
 .pro2{margin-top:6px}
 @media (max-width:420px){.buycard .act{width:100%}.buycard .act .btn{flex:1}}
-/* 39 창 1119 — 한 화면 고르기(안 A2) · 색은 #172B43 · #3C4A60 · #5B6678 · #F7F8FC · #fff · #DFE3ED · #245BD6 · #1D4DB8 · #EEF3FF 만 */
+/* 한 화면 고르기 · 색은 #172B43 · #3C4A60 · #5B6678 · #F7F8FC · #fff · #DFE3ED · #245BD6 · #1D4DB8 · #EEF3FF 만 */
 .pk h1{font-size:clamp(26px,3.4vw,32px);margin:0 0 6px}
 .pk .lede{color:#5B6678;margin:0 0 18px}
 .pk-shelf{margin:0 0 20px;min-width:0}
@@ -239,7 +239,7 @@ a.btn.buy.pk-go:hover{background:#1D4DB8}
 .pk-item .pk-thumb{width:100%}
 .pk-item b{display:block;font-size:14px;line-height:1.35}.pk-item small{display:block;font-size:12.5px;color:#5B6678}.pk-item strong{display:block;font-size:16px;font-weight:800;margin-top:2px}
 .pk .fine{margin-top:18px}
-/* 담기(사본 · 39 1119) — 곁단추 = 흰 바탕 + 남색 안쪽 테두리 · 주 단추는 쪽마다 「구매하기」 / 「한 번에 결제」 */
+/* 담기 — 곁단추 = 흰 바탕 + 남색 안쪽 테두리 · 주 단추는 쪽마다 「구매하기」 / 「한 번에 결제」 */
 .pk-acts{display:flex;gap:8px;align-items:center;flex-wrap:nowrap}
 button.pk-add{min-height:48px;padding:0 16px;border-radius:10px;border:0;background:#fff;color:#172B43;box-shadow:inset 0 0 0 1px #172B43;font-size:15px;font-weight:700;cursor:pointer;white-space:nowrap}
 button.pk-add:hover{background:#EEF3FF}
@@ -292,12 +292,12 @@ button.pk-add[aria-disabled="true"]{background:#F7F8FC;color:#5B6678;box-shadow:
 .biz .policy a.pp b{font-weight:700;color:#fff}
 .biz .copy{color:#aab7ca}
 footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
-@media(max-width:640px){.hd-r a,.tg,.kick,.kick .n,.opt small,.opt .go,.tag,.pr,.mj,.pick .t small,.cnt,.conf dt,.conf dd small,.fine,.notice,.biz p,.biz a{font-size:14px}}   /* 1109 C3(점검표_개편판_1108): 640 아래 보조·가격·판매 안내 글 14px 이상 · 머리 링크 13→14 */
+@media(max-width:640px){.hd-r a,.tg,.kick,.kick .n,.opt small,.opt .go,.tag,.pr,.mj,.pick .t small,.cnt,.conf dt,.conf dd small,.fine,.notice,.biz p,.biz a{font-size:14px}}   /* 640 아래 보조·가격·판매 안내 글 14px 이상 · 머리 링크 13→14 */
 </style>
 <link rel="stylesheet" href="/naesin/preparation.css"><script defer src="/naesin/finals-order.js"></script>
 <link rel="stylesheet" href="/assets/account-header.css?v=pass-1117">
 <link rel="stylesheet" href="/assets/site-unify.css?v=35">
-<link rel="stylesheet" href="/assets/purchase-b.css?v=r2-1123">
+<link rel="stylesheet" href="/assets/purchase-b.css?v=r4-1123">
 </head>
 <body>
 <header class="ds-head"><div class="ds-head-in">
@@ -348,11 +348,11 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 <script src="/assets/sheet-preview.js?v=39-1119"></script>
 <script>
 "use strict";
-/* 내신 상품 — /naesin/catalog.json 한 값에서 그린다(서버 표와 같은 정본 · 게이트 ops scripts/홈페이지/내신상품표.py).
+/* 내신 상품 — /naesin/catalog.json 한 값에서 그린다(서버 표와 같은 값).
    손님 길: 과목 → 부교재 → 무료 세트 · 기본형 · 상세선택 → 받을 내용 확인 → /checkout/?sku=.
    상태는 주소 인수뿐이다(서버 저장 없음): who s b p c u from to n t f v. 고객 값(who)은 문구만 가르고 값은 가르지 않는다.
    값은 형식(f = pdf · hwpx)마다 다르다. 구매는 /checkout/?sku=<SKU>.<형식> 으로 가고 서버 표의 키도 같다.
-   값이 빈 칸이면 빈 칸 그대로 알린다. 고른 형식의 가격·면세값·파일과 판매일이 다 차고(11-11: 맛보기는 팔 조건 아님) PAY_MODE 가 있어야 구매 버튼이 켜진다. */
+   값이 빈 칸이면 빈 칸 그대로 알린다. 고른 형식의 가격·면세값·파일과 판매일이 다 차고(맛보기는 팔 조건 아님) PAY_MODE 가 있어야 구매 버튼이 켜진다. */
 (function(){
   var APP=document.getElementById("app"),CAT=null,CFG=null,compOpenList=false;
   function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e;}
@@ -391,7 +391,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   /* ── 자료 찾기 ── */
   function subj(q){var r=null;CAT.subjects.forEach(function(s){if(s.code===q.s)r=s;});return r;}
   function book(s,q){var r=null;s.textbooks.forEach(function(b){if(b.id===q.b)r=b;});return r;}
-  /* 부교재 칸의 글은 catalog.json 에서만 온다 — 일반 표기면 이름과 판이 파일에 아예 없다(짓는 곳 ops 내신상품표.py 부교재표기) */
+  /* 부교재 칸의 글은 catalog.json 에서만 온다 — 일반 표기면 이름과 판이 파일에 아예 없다 */
   function bookNote(b){return (b.edition?b.edition+" 기준 · ":"")+"문항 원문은 담지 않습니다";}
   function comp(id){var r=null;CAT.compositions.forEach(function(c){if(c.id===id)r=c;});return r;}
   function comps(f){return CAT.compositions.filter(f);}
@@ -414,19 +414,19 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   }
   /* 무료 세트 — catalog freeSet(도구가 짓는다 · PDF · 한글이 다 찬 단원만 · 없으면 null). 제공 시작이 지난 세트만 연다.
      파일은 공개 리포에 없다. /free-download 가 1분짜리 서명 URL 을 준다(주문을 안 거친다).
-     받는 조건(형 답 1106): 로그인한 회원만. 로그인 = 공용 /auth.js(DSAuth · 토큰 ds_tk). 토큰은 Authorization 머리로만 보낸다(주소 인수에 넣지 않는다).
+     받는 조건: 로그인한 회원만. 로그인 = 공용 /auth.js(DSAuth · 토큰 ds_tk). 토큰은 Authorization 머리로만 보낸다(주소 인수에 넣지 않는다).
      손님에게는 「로그인하고 무료로 받기」 하나만 보이고, 로그인 뒤 이 주소로 돌아온다(DSAuth.loginUrl 의 next). 서버가 401 unauthorized 를 주면 토큰을 지우고 로그인으로 안내한다. */
   var FREE_RULE="로그인한 회원만 받을 수 있습니다.",freeOut=false;
   function authed(){return !!(window.DSAuth&&window.DSAuth.has());}
   function loginHref(){var n=location.pathname+location.search;return window.DSAuth?window.DSAuth.loginUrl(n):"/auth/?next="+encodeURIComponent(n);}
-  /* 형 1119 「회원 가입후 사는 것으로」: 비회원 결제 닫음 — 로그인 안 된 「구매하기」는 로그인 쪽으로, 로그인 뒤 그 주문서로 돌아온다(next = 같은 사이트 경로만 · DSAuth.loginUrl 의 safeNext). 주문서(/checkout/)도 같은 문지기를 둔다. */
+  /* 비회원 결제 닫음 — 로그인 안 된 「구매하기」는 로그인 쪽으로, 로그인 뒤 그 주문서로 돌아온다(next = 같은 사이트 경로만 · DSAuth.loginUrl 의 safeNext). 주문서(/checkout/)도 같은 문지기를 둔다. */
   document.addEventListener("click",function(ev){
     var a=ev.target&&ev.target.closest?ev.target.closest('a.btn.buy[href^="/checkout/"]'):null;
     if(!a||authed()||!window.DSAuth)return;
     ev.preventDefault();location.assign(window.DSAuth.loginUrl(a.getAttribute("href")));
   });
   function loginBtn(){var a=el("a","btn buy","로그인하고 무료로 받기");a.href=loginHref();a.dataset.fk="free-login";return a;}
-  /* 1107 B6(판정 무료세트 e): 손님에게 회원가입 바로 가기 — /auth/ 가입 탭 · 돌아올 주소는 loginHref 와 같은 next(DSAuth.loginUrl 의 safeNext) */
+  /* 손님에게 회원가입 바로 가기 — /auth/ 가입 탭 · 돌아올 주소는 loginHref 와 같은 next(DSAuth.loginUrl 의 safeNext) */
   function signupLink(){var n=location.pathname+location.search,a=el("a",null,"처음이시면 회원가입");a.href=window.DSAuth?window.DSAuth.loginUrl(n,"signup"):"/auth/?mode=signup&next="+encodeURIComponent(n);a.dataset.fk="free-signup";return a;}
   function toLogin(){
     freeOut=true;var y=window.scrollY;draw(false);window.scrollTo(0,y);
@@ -464,7 +464,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     return null;
   }
   function sellable(u,f,now){
-    if(!u||!priceAt(u,f)||!u.taxFreeAmount||u.taxFreeAmount[f]==null||!u.saleFrom||!u.sample||!filesAt(u,f).length)return false; /* 11-11 본부 11/11 05: 맛보기(sample = 단원 무료 세트) 요구는 그대로(형 답 「07 무료 세트 같이 열기」) · F00 은 11/12 */
+    if(!u||!priceAt(u,f)||!u.taxFreeAmount||u.taxFreeAmount[f]==null||!u.saleFrom||!u.sample||!filesAt(u,f).length)return false; /* 맛보기(sample = 단원 무료 세트) 요구는 그대로 */
     if(now<Date.parse(u.saleFrom))return false;
     return !(u.saleTo&&now>=Date.parse(u.saleTo));
   }
@@ -484,17 +484,17 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   /* 구성 카드의 값 줄 — 값이 있는 상품만 말한다. 값이 하나뿐이면 어느 단원 값인지 함께 적는다 */
   function priceLine(c,s){
     var has=linesOf(c,s).filter(function(x){return anyPrice(x.u);});
-    if(!has.length)return null; /* 형 1119: 값 없는 구성은 화면에 두지 않는다 */
+    if(!has.length)return null; /* 값 없는 구성은 화면에 두지 않는다 */
     if(has.length===1)return "단원 "+has[0].no+" · "+twoPrices(has[0].u);
     return c.sku==="item"?"유형마다 값이 다릅니다":"단원마다 값이 다릅니다";
   }
   function pathPriced(p,s){return comps(function(x){return x.path===p&&linesOf(x,s).some(function(l){return anyPrice(l.u);});}).length>0;}
-  /* 고른 형식의 파일 수(형 11-04: 한 주문은 한 형식 · 한글 값에 PDF 는 따라오지 않는다) */
+  /* 고른 형식의 파일 수(한 주문은 한 형식 · 한글 값에 PDF 는 따라오지 않는다) */
   function fileUnits(u,f){var n=filesAt(u,f).length;if(n)return n;var s=setOf(u,f);return s&&s.count?s.count:0;}
-  /* 단원 전체의 형식별 파일 묶음(catalog fileSets): PDF = 합본 1파일 · 한글 = 유형별 파일 묶음. 파일 수를 모르면 0 → 수 없이 「유형별 파일 묶음」(형 결정 7: 공지 글 없음) */
+  /* 단원 전체의 형식별 파일 묶음(catalog fileSets): PDF = 합본 1파일 · 한글 = 유형별 파일 묶음. 파일 수를 모르면 0 → 수 없이 「유형별 파일 묶음」(공지 글 없음) */
   function setOf(u,f){return (u&&u.fileSets&&u.fileSets[f])||null;}
   function setLine(u,f){var s=setOf(u,f),n=fileUnits(u,f);if(!s)return "";if(s.kind==="merged"&&n===1)return "합본 1파일";return n?"유형별 파일 "+n+"개":"유형별 파일 묶음";}
-  /* 받으면 제공 시작 — 약관 제11조 제8항 1 · 2 · 4호와 제5항에 맞춘 글. checkout/index.html 의 startText 와 글자가 같아야 한다(시험 합본_재기.mjs 가 잰다) */
+  /* 받으면 제공 시작 — 약관 제11조 제8항 1 · 2 · 4호와 제5항에 맞춘 글. checkout/index.html 의 startText 와 글자가 같아야 한다 */
   function startText(n,kind){
     if(n===1||(!n&&kind==="merged"))return "파일이 하나입니다. 내려받거나 사이트에서 열람하면 제공이 시작되어 그때부터 환불되지 않습니다(파일 오류 · 표시와 다른 경우는 제외). 받기 전이면 결제일로부터 7일 이내에 요청해 전액 환불받습니다.";
     if(n>1||kind==="types")return "파일마다 따로 봅니다. 내려받거나 사이트에서 열람한 파일은 제공이 시작된 것으로 보고, 결제일로부터 7일 이내에 요청하면 결제금액에서 받은 파일 값의 합을 뺀 금액을 환불합니다(약관 제11조 제8항 4호). 파일 값은 그 책 값을 그 책의 파일 수로 나눈 금액(PDF 3파일이면 3분의 1)으로 하고, 받은 파일 값의 합에서 원 단위 미만은 버립니다. 하나도 받기 전이면 전액 환불합니다.";
@@ -522,14 +522,14 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     p.appendChild(document.createTextNode("로 알려 주세요."));
     return p;
   }
-  /* 이 과목에서 지금 살 수 있는 상품이 있는 구성인가 — 형 1119: 안 파는 구성은 화면에 두지 않는다(표 글 없음) */
+  /* 이 과목에서 지금 살 수 있는 상품이 있는 구성인가 — 안 파는 구성은 화면에 두지 않는다(표 글 없음) */
   function compOpen(c,s){
     return linesOf(c,s).some(function(l){return canBuyAny(l.u);});
   }
   function pathOpen(p,s){return comps(function(x){return x.path===p&&compOpen(x,s);}).length>0;}
   function tag(open){return open?el("span","tag now","받을 수 있음"):null;}
   function optTop(title,tag){var t=el("span","top");add(t,el("b",null,title),tag);return t;}
-  /* ① 목록 — 31 창 1118(형 「타 사이트 중 가장 간결 · 교재가 다 올라간 상황의 페이지」): 물음 화면 없이 판매 중 상품을 한 목록에.
+  /* ① 목록 — 물음 화면 없이 판매 중 상품을 한 목록에.
      과목 칩으로 좁히고(?s=) · 단원 머리 아래 상품 카드(무엇 · 문항 수 · 파일 · 값 · 구매하기). 안 파는 것은 목록에 없다(막다른 길 0). */
   function bySubj(){return CAT.subjects.slice().sort(function(a,b){return a.grade<b.grade?-1:a.grade>b.grade?1:0;});}
   function products(sc){
@@ -621,7 +621,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   }
   function thumb(b,alt){var t=el("span","pk-thumb");add(t,layImg(b,"2",alt||""));return t;}
   function bookTitle(b){return b.sn+" "+b.no+" "+b.unit+(b.ed?" · "+b.ed:"");}
-  /* ① 지금 파는 책 — r2 1123(형 「구매쪽 너무 복잡 · 다른 페이지 참고해 같은 형식으로 간결하게 골라서 구매」): 자료실(/app/#library) 카드 목록과 같은 꼴.
+  /* ① 지금 파는 책 — 자료실(/app/#library) 카드 목록과 같은 꼴.
      카드 하나 = 책 하나(과목 · 단원 · 문항 수 · 받는 것 · 값 · 작은 지면) · 카드에서 바로 「담기」 / 「구매하기」. 쪽 구성은 고름이 아니라 「받는 것」 한 줄(한 값에 PDF 셋이 다 들어 있음).
      거르기는 카드 위 칩(과목 · 단원 · 로그인 뒤 내 교재) — 주소 인수 g · s · u 에 남는다(뒤로 가기 됨).
      주소는 앞판과 같은 식 그대로: 구매하기 = /checkout/?sku=<SKU>.<형식> · 담기 → cartHref(DeltaFinalsOrder.checkoutUrl) · 받을 내용 = link(상세 confirm) · 로그인 = loginHref(). */
@@ -666,10 +666,12 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     var hd=el("div","pb-head");add(hd,el("h2",null,"지금 파는 책"),el("p","pb-count",list.length+"권"));hd.lastChild.setAttribute("role","status");add(wrap,hd);
     add(wrap,cartPanel(bs));
     var ul=el("ul","pb-items");list.forEach(function(b){add(ul,shelfCard(bs,b));});add(wrap,ul);
+    var fn=el("p","fine",refundLine()+" · ");var r=el("a",null,"환불 안내");r.href="/refund/";add(fn,r);add(wrap,fn);
     var cb=cartBar(bs);if(cb){var dk=el("div","pb-dock");add(dk,cb);add(wrap,dk);} /* 좁은 폭 — 담은 책이 있을 때만 아래 고정 줄 */
     if(CFG&&CFG.PAY_MODE==="test"){var nt=document.getElementById("sale-note");if(nt)nt.textContent="지금은 결제 연동 점검 기간입니다. 「구매하기」로 열리는 결제는 테스트 결제이며 실제로 청구되지 않고 자료도 제공되지 않습니다.";}
     return f;
   }
+  function refundLine(){return "받기 전이면 결제일부터 7일 안 전액 환불 · 일부 받았으면 결제금액에서 받은 파일 값(파일 하나 = 그 책 값의 3분의 1)을 뺀 만큼 7일 안 환불 · 받은 파일은 청약철회 제한";}
   /* ② 부교재(?s=CM2 · ?s=MI1) */
   function vBook(q,s){
     var f=document.createDocumentFragment();
@@ -693,7 +695,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
       add(a,optTop(title,tag),el("small",null,desc),(price?el("span","pr",price):null),el("span","go",go));
       add(li,a);return li;
     }
-    if(freeOpen)add(ul,card("free",free.name,free.desc+" "+FREE_RULE,tag(freeOpen),"0원","받을 내용 보기 →")); /* 형 1116: 무료 세트 없앰 — 열린 세트가 없으면 칸을 두지 않는다 */
+    if(freeOpen)add(ul,card("free",free.name,free.desc+" "+FREE_RULE,tag(freeOpen),"0원","받을 내용 보기 →")); /* 무료 세트 없앰 — 열린 세트가 없으면 칸을 두지 않는다 */
     if(pathOpen("basic",s))add(ul,card("basic","기본형","미리 만든 구성에서 고릅니다.",tag(true),pathPriced("basic",s)?"구성마다 값이 다릅니다":null,"구성 보기 →"));
     if(pathOpen("basic",s)||pathOpen("detail",s))add(ul,card("detail","상세선택","단원과 구성을 직접 고릅니다.",tag(true),(pathPriced("basic",s)||pathPriced("detail",s))?"구성마다 값이 다릅니다":null,"직접 고르기 →"));
     add(f,ul,proNote(q));
@@ -865,10 +867,10 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     var f=document.createDocumentFragment(),base={who:q.who,s:q.s,b:q.b};
     var free=c.path==="free",u=product(c,q,s),back=Object.assign({},q),fss=free?freeSets(b):[];delete back.v;
     add(f,backLink(free?base:(q.p==="detail"&&q.v==="confirm"?(u?{x:u.sku}:{s:q.s}):back)),h1(product(c,q,s)&&product(c,q,s).name||"받을 내용을 확인하세요"));
-    if(u&&window.DSTextbook)add(f,DSTextbook.line(u.sku)); /* 38 창 1119: 원 교재 이름은 로그인 뒤에만 */
+    if(u&&window.DSTextbook)add(f,DSTextbook.line(u.sku)); /* 원 교재 이름은 로그인 뒤에만 */
     var dl=el("dl","conf");
-    row(dl,"부교재",b.label,filesAt(u,"pdf").some(function(x){return x.layout;})?(b.edition?b.edition+" 기준":null):bookNote(b)); /* 본부 1118 ②: A06 1권은 원문항 여부 확인 전 「원문 없음」 글을 안 붙임 */
-    var lay=filesAt(u,"pdf").filter(function(x){return x.layout;}); /* 22 창 1118 걸음 8: 같은 문항 쪽 구성 여러 꼴(A06 1권) */
+    row(dl,"부교재",b.label,filesAt(u,"pdf").some(function(x){return x.layout;})?(b.edition?b.edition+" 기준":null):bookNote(b)); /* A06 1권은 원문항 여부 확인 전 「원문 없음」 글을 안 붙임 */
+    var lay=filesAt(u,"pdf").filter(function(x){return x.layout;}); /* 같은 문항 쪽 구성 여러 꼴(A06 1권) */
     row(dl,"구성",c.name,lay.length?"같은 문항을 쪽 구성 "+lay.length+"가지 PDF로 담아 한 값에 모두 받습니다.":c.desc);
     if(lay.length)row(dl,"쪽 구성",lay.map(function(x){return x.layout+(x.pages?" "+x.pages+"쪽":"");}).join(" · "),"PDF "+lay.length+"파일");
     if(c.pick==="range"){var rg=rangeOf(q,s);row(dl,"시험범위",rg[0].no+" "+rg[0].unit+" ~ "+rg[rg.length-1].no+" "+rg[rg.length-1].unit);}
@@ -882,12 +884,12 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     if(!nq&&c.perUnit){var k=unitsOf(q,s).length;nq=c.perUnit*k;nnote=c.perUnit+"문항 × "+k+"단원";}
     if(!nq&&c.pick==="unitsCount"){var m=counts(q);unitsOf(q,s).forEach(function(x){nq+=m[x.no]||0;});nnote="단원마다 적은 수의 합";}
     if(!nq&&c.pick==="unitsTotal"){nq=total(q);nnote="적은 수";}
-    if(nq)row(dl,"문항 수",nq+"문항",nnote); /* 형 결정 7: 빈 값은 줄을 안 보인다(공지 글 없음) */
+    if(nq)row(dl,"문항 수",nq+"문항",nnote); /* 빈 값은 줄을 안 보인다(공지 글 없음) */
     if(u&&u.pages)row(dl,"쪽 수",u.pages+"쪽",pickFmt0(c,u)?"PDF 기준":null);else if(freeSum(fss,"pages"))row(dl,"쪽 수",freeSum(fss,"pages")+"쪽");
     /* 미리 만든 유료 구성은 손님이 형식을 고른다 — 고른 형식의 값을 치르고 그 형식 파일을 받는다 */
     var pickFmt=pickFmt0(c,u),fm=fmtOf(q),fmtsOn=pickFmt?FMTS.filter(function(x){return priceAt(u,x[0]);}):[];
-    if(pickFmt&&!q.f&&fmtsOn.length===1)fm=fmtsOn[0][0]; /* 30 창 1118: 값 있는 형식이 하나면 고르는 칸 없이 그 형식 */
-    if(pickFmt&&fmtsOn.length&&!priceAt(u,fm))fm=fmtsOn[0][0]; /* 형 1119: 값 없는 형식 주소(?f=)로 와도 파는 형식을 보인다 */
+    if(pickFmt&&!q.f&&fmtsOn.length===1)fm=fmtsOn[0][0]; /* 값 있는 형식이 하나면 고르는 칸 없이 그 형식 */
+    if(pickFmt&&fmtsOn.length&&!priceAt(u,fm))fm=fmtsOn[0][0]; /* 값 없는 형식 주소(?f=)로 와도 파는 형식을 보인다 */
     var fu=pickFmt?fileUnits(u,fm):0,fset=pickFmt?setOf(u,fm):null,fstart=pickFmt?startText(fu,fset&&fset.kind):"",fnote=pickFmt?fmtName(fm)+(fset?(fset.kind==="merged"?" 합본":" 유형별 파일 묶음"):" 기준"):null;
     if(fss.length)row(dl,"파일 수",fss.reduce(function(n,x){return n+x.files.length;},0)+"개","형식마다 따로 받습니다");else if(fu)row(dl,"파일 수",fu+"개",fnote);
     if(pickFmt)row(dl,"파일 형식",fmtName(fm)+" 파일만",notIn(fm)+(fmtsOn.length>1?" · 아래에서 바꿉니다":""));
@@ -904,7 +906,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     else{dd.className="blank";dd.textContent="지금 판매하지 않습니다";}
     add(d,dd);dl.appendChild(d);
     add(f,dl);
-    if(u&&u.preview&&u.preview.url)add(f,previewBox(u.preview)); /* 24 창 1118: 미리보기 = 저장 자리 PDF 몇 쪽을 화면에만 그림(pdf.js · 받기 단추 없음) */
+    if(u&&u.preview&&u.preview.url)add(f,previewBox(u.preview)); /* 미리보기 = 저장 자리 PDF 몇 쪽을 화면에만 그림(pdf.js · 받기 단추 없음) */
     var fsNode=null;
     if(pickFmt&&fmtsOn.length>1){
       var fs=el("fieldset","sec");fsNode=fs;add(fs,el("legend",null,"파일 형식 고르기"));
@@ -926,8 +928,8 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
       if(authed()){freeOut=false;fss.forEach(function(x){x.files.forEach(function(ff){add(act,freeBtn(x,ff,fss.length>1,fm0));});});}
       else{add(act,loginBtn());fm0.textContent=(freeOut?"로그인이 풀렸어요. 다시 로그인하면 바로 받을 수 있습니다.":"무료 세트는 "+FREE_RULE)+" 로그인하면 이 화면으로 돌아옵니다.";add(fm0,el("br"),signupLink());}
     }
-    else if(ok){var buy=el("a","btn buy","구매하기");buy.href="/checkout/?sku="+encodeURIComponent(u.sku+"."+fm);/* 31 창 1118: 다른 단원 함께 담기 뺌 — 상품 하나 = 결제 하나(가장 간결 · 환불도 파일마다 한 가지) */add(act,buy);}
-    else{var dis=el("button","btn dis","지금 구매할 수 없습니다");dis.type="button";dis.disabled=true;add(act,dis);} /* 형 1119: 예정 글 · 「알림 받기」 없음 — 안 파는 상품은 draw() 가 목록으로 돌린다 */
+    else if(ok){var buy=el("a","btn buy","구매하기");buy.href="/checkout/?sku="+encodeURIComponent(u.sku+"."+fm);/* 다른 단원 함께 담기 뺌 — 상품 하나 = 결제 하나(가장 간결 · 환불도 파일마다 한 가지) */add(act,buy);}
+    else{var dis=el("button","btn dis","지금 구매할 수 없습니다");dis.type="button";dis.disabled=true;add(act,dis);} /* 예정 글 · 「알림 받기」 없음 — 안 파는 상품은 draw() 가 목록으로 돌린다 */
     add(f,act);
     if(fss.length)add(f,fm0);
     var fine=el("p","fine");
@@ -935,7 +937,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     var r1=el("a",null,"환불·청약철회 안내");r1.href="/refund/";add(fine,r1);fine.appendChild(document.createTextNode(" · "));
     var r2=el("a",null,"이용약관 개정 안내");r2.href="/notice/";add(fine,r2);
     add(f,fine,proNote(q));
-    if(!free){ /* 30 창 1118: 핵심 줄(단원 · 문항 수 · 쪽 구성/파일 · 값) + 단추를 위로 · 나머지 줄과 긴 글은 「자세히」 접기(글은 그대로) */
+    if(!free){ /* 핵심 줄(단원 · 문항 수 · 쪽 구성/파일 · 값) + 단추를 위로 · 나머지 줄과 긴 글은 「자세히」 접기(글은 그대로) */
       var CORE={"단원":1,"문항 수":1,"값":1},hasLay=[].some.call(dl.children,function(d){return d.firstChild.textContent==="쪽 구성";});CORE[hasLay?"쪽 구성":"파일 수"]=1;
       var more=el("dl","conf");[].slice.call(dl.children).forEach(function(d){var k=d.firstChild.textContent;if(!CORE[k]&&!/^단원 \d+개$/.test(k))more.appendChild(d);else if(k==="단원")d.lastChild.firstChild.textContent=s.subject+" · "+d.lastChild.firstChild.textContent;});
       ["단원","문항 수","쪽 구성","파일 수","값"].forEach(function(k){[].slice.call(dl.children).forEach(function(d){if(d.firstChild.textContent===k||(k==="단원"&&/^단원 \d+개$/.test(d.firstChild.textContent)))dl.appendChild(d);});}); /* 핵심 줄 차례: 무엇 → 몇 문항 → 파일 → 값 */
@@ -989,11 +991,11 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   var TITLES={subject:"내신 자료",book:"부교재 고르기",path:"구성 고르기",basic:"기본형",detail:"상세선택",confirm:"받을 내용 확인"};
   function draw(focus){
     var q=readQ(),s=subj(q),b=s?book(s,q):null,v,node,c=comp(q.c);
-    if(!s||!b||!products(s.code).length){v="subject";node=vPick(q);} /* 39 창 1119: 목록 → 한 화면 고르기(안 A2) · 상세(받을 내용 확인)는 그대로 */ /* 형 1119: 파는 상품이 없는 과목 · 없는 과목 주소는 목록으로 · 38 창 1119: 과목 칩(?s= 만)은 그 과목으로 거른다 */
+    if(!s||!b||!products(s.code).length){v="subject";node=vPick(q);} /* 목록 → 한 화면 고르기 · 상세(받을 내용 확인)는 그대로 */ /* 파는 상품이 없는 과목 · 없는 과목 주소는 목록으로 · 과목 칩(?s= 만)은 그 과목으로 거른다 */
     else if(q.p==="free"){if(comp("C0")&&freeSets(b).length){v="confirm";node=vConfirm(q,s,b,comp("C0"));}else{v="subject";node=vPick({});}}
     else if(q.p==="basic"&&!c){v="basic";node=vBasic(q,s,b);}
     else if(q.p==="detail"||q.p==="basic"){
-      if(q.v==="confirm"&&c&&c.path!=="free"&&picked(c,q,s)){if(product(c,q,s)&&canBuyAny(product(c,q,s))){v="confirm";node=vConfirm(q,s,b,c);}else{v="subject";node=vPick({});}} /* 형 1119: 안 파는 상품 확인 쪽은 열지 않는다 */
+      if(q.v==="confirm"&&c&&c.path!=="free"&&picked(c,q,s)){if(product(c,q,s)&&canBuyAny(product(c,q,s))){v="confirm";node=vConfirm(q,s,b,c);}else{v="subject";node=vPick({});}} /* 안 파는 상품 확인 쪽은 열지 않는다 */
       else{v="detail";node=vDetail(q,s,b);}
     }else{v="path";node=vPath(q,s,b);}
     APP.textContent="";APP.dataset.view=v;APP.appendChild(node);
@@ -1008,7 +1010,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     history.replaceState(null,"",url(q));
   }
   function get(u){return fetch(u,{cache:"no-store"}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});}
-  window.addEventListener("popstate",function(){if(!CAT)return;if(APP.dataset.view==="subject"&&!readQ().p)redraw();else draw(true);}); /* 39 창 1119: 고르기 안의 뒤로 가기는 자리를 지킨다 */
+  window.addEventListener("popstate",function(){if(!CAT)return;if(APP.dataset.view==="subject"&&!readQ().p)redraw();else draw(true);}); /* 고르기 안의 뒤로 가기는 자리를 지킨다 */
   window.addEventListener("pageshow",function(e){if(e.persisted&&CAT)draw(false);});   /* 뒤로 가기로 되살아난 화면 — 로그인 상태를 다시 읽는다(무료 세트 버튼) */
   Promise.all([get("/naesin/catalog.json"),get("/pay-config.json")]).then(function(v){
     CAT=v[0];CFG=v[1];

@@ -1,6 +1,6 @@
-/* 마이페이지 꾸밈 — 개편 판(/app/ 디자인 b)과 같은 꼴. /my/ · /my/notes/ · /my/library/ 가 쓴다.
+/* 마이페이지 꾸밈 — /app/ 과 같은 꼴. /my/ · /my/notes/ · /my/library/ 가 쓴다.
    쓰는 법: 쪽의 <html> 에 data-purchase="b" 를 달고, 이 파일을 다른 css 뒤(site-unify.css 다음, </head> 바로 앞)에 건다.
-   토큰(--pb-*) · 공통 1~9 칸은 assets/purchase-b.css(구매 쪽, 1123)와 같은 이름 · 같은 값 → 두 파일을 합칠 때 공통 칸은 하나만 남기면 된다.
+   토큰(--pb-*) · 쪽 폭 · 머리 · 사이트 꼬리는 assets/purchase-b.css(구매 쪽)와 같은 이름 · 같은 값 → 두 쪽을 오가도 왼쪽 끝 · 꼬리가 같다.
    로직 · 주소 · id · class · data- 속성은 건드리지 않는다. 쪽에 원래 있던 class 위에 색 · 글꼴 · 테두리 · 여백만 덧입힌다. */
 
 html[data-purchase="b"] {
@@ -8,13 +8,14 @@ html[data-purchase="b"] {
   --pb-card: #fffefb;
   --pb-white: #fff;
   --pb-ink: #26242a;
-  --pb-head: #29283d;
+  --pb-head: #28253a;
   --pb-ink2: #433f4f;
-  --pb-muted: #625f6c;
+  --pb-muted: #625b74;
   --pb-line: #dedbd6;
-  --pb-line2: #c9c4d4;
+  --pb-line2: #cfc8d6;
   --pb-rule: #a3a0ad;
-  --pb-panel: #f1efea;
+  --pb-panel: #efeeeb;
+  --pb-panel-line: #b2b8bf;
   --pb-accent: #493b9c;
   --pb-accent-ui: #6253cc;
   --pb-nav: #36355f;
@@ -31,7 +32,7 @@ html[data-purchase="b"] {
   --pb-r-s: 4px;
   --pb-shadow: 0 2px 0 #e1ddd4, 0 5px 12px rgba(51, 43, 35, .063);
   --pb-font: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
-  --pb-width: min(1178px, calc(100% - 64px));
+  --pb-width: min(1178px, calc(100% - 32px));
   --my-width: var(--pb-width);
   color-scheme: light;
   background: var(--pb-paper);
@@ -198,18 +199,26 @@ html[data-purchase="b"] details.more > summary::after { content: "+"; flex: none
 html[data-purchase="b"] details.more[open] > summary::after { content: "\2212"; }
 html[data-purchase="b"] details.more > :not(summary) { margin: 0 0 12px; }
 
-/* ── 공통 9. 사이트 꼬리 — 글은 그대로, 바탕 · 글꼴만 개편 판 먹색으로 ── */
+/* ── 공통 9. 사이트 꼬리 — 글은 그대로, 구매 쪽(purchase-b.css)과 같은 종이 바탕 · 가는 윗줄 · 작은 글 ── */
 html[data-purchase="b"] footer.sitefoot,
-html[data-purchase="b"] footer.sitefoot .biz { background: #23212c; font-family: var(--pb-font); }
-html[data-purchase="b"] footer.sitefoot .biz > * { max-width: 1178px; }
-html[data-purchase="b"] footer.sitefoot .biz .policy a:hover { background: #34313f; }
+html[data-purchase="b"] footer.sitefoot .biz { background: var(--pb-paper); color: #566175; font-family: var(--pb-font); }
+html[data-purchase="b"] footer.sitefoot { margin-top: 0; }
+html[data-purchase="b"] footer.sitefoot .biz { width: var(--pb-width); margin: 0 auto; padding: 22px 0 40px; border-top: 1px solid var(--pb-line); }
+html[data-purchase="b"] footer.sitefoot .biz > * { max-width: none; }
+html[data-purchase="b"] footer.sitefoot .biz p { color: #566175; font-size: 12.5px; }
+html[data-purchase="b"] footer.sitefoot .biz a { color: #3d3a4c; }
+html[data-purchase="b"] footer.sitefoot .biz .policy { margin: 0 0 8px -12px; }
+html[data-purchase="b"] footer.sitefoot .biz .policy a { color: #4b4859; font-size: 13px; }
+html[data-purchase="b"] footer.sitefoot .biz .policy a.pp,
+html[data-purchase="b"] footer.sitefoot .biz .policy a.pp b { color: var(--pb-head); }
+html[data-purchase="b"] footer.sitefoot .biz .policy a:hover { background: var(--pb-panel); }
 
 /* ════════ 쪽 고유: /my/ 마이페이지 ════════ */
 html[data-purchase="b"] body.payment-flow main#app {
   width: var(--my-width);
   max-width: none;
   margin: 0 auto;
-  padding: 26px 0 72px;
+  padding: 26px 0 56px;
 }
 html[data-purchase="b"] main#app .crumb { margin: 0 0 12px; font-size: 13px; font-weight: 600; color: var(--pb-muted); }
 html[data-purchase="b"] main#app .crumb a { color: var(--pb-muted); opacity: 1; }
@@ -224,7 +233,7 @@ html[data-purchase="b"] main h1 {
 }
 html[data-purchase="b"] main#app .lede { margin: 8px 0 0; color: var(--pb-muted); font-size: 15px; line-height: 1.7; }
 
-/* 바로가기 — 개편 판 마이페이지의 칸 나눔 줄과 같은 꼴 */
+/* 바로가기 — 칸 나눔 줄 */
 html[data-purchase="b"] main#app .jump {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -334,7 +343,7 @@ html[data-purchase="b"] #passBody .prow .tag:not(.off) { background: var(--pb-ok
 html[data-purchase="b"] #passBody .prow .sub { margin-top: 6px; color: var(--pb-ink2); font-size: 14px; line-height: 1.65; }
 html[data-purchase="b"] #passBody > .msg:not(:only-child) { margin: 12px 0 0; }
 
-/* 불러오는 중 · 빈 화면 — 개편 판의 옅은 칸(왼쪽 줄) 꼴 */
+/* 불러오는 중 · 빈 화면 — 옅은 칸(왼쪽 줄) 꼴 */
 html[data-purchase="b"] :is(#passBody, #payBody, #libBody, #ppHead) > p.msg:only-child,
 html[data-purchase="b"] #ppList > li:only-child:not(:has(button)) {
   margin: 0;
@@ -505,7 +514,7 @@ html[data-purchase="b"] body:has(#app:not([hidden])) .my-guest,
 html.authed[data-purchase="b"] .my-guest { display: none; }
 @keyframes my-show { from { visibility: hidden; } to { visibility: visible; } }
 
-/* ── 폭 규칙(개편 판과 같은 끊는 자리: 1050 · 860 · 640 · 520) ── */
+/* ── 폭 규칙(구매 쪽과 같은 끊는 자리: 1050 · 860 · 640 · 520) ── */
 @media (max-width: 1050px) {
   html[data-purchase="b"] .ds-head .ds-menu { gap: 19px; }
   html[data-purchase="b"] .my-grid { grid-template-columns: minmax(0, 1fr) 280px; gap: 20px; }
@@ -517,8 +526,12 @@ html.authed[data-purchase="b"] .my-guest { display: none; }
   html[data-purchase="b"] main#app .jump a:nth-child(4) { border-left: 0; }
   html[data-purchase="b"] main#app .jump a:nth-child(n+4) { border-top: 1px solid var(--pb-line); }
 }
+@media (min-width: 641px) and (max-width: 760px) {
+  html[data-purchase="b"] .ds-head-in { gap: 0 14px; }
+  html[data-purchase="b"] .ds-head .ds-menu { gap: 12px; }
+  html[data-purchase="b"] .ds-head .ds-acct { padding-left: 10px; gap: 4px; }
+}
 @media (max-width: 640px) {
-  html[data-purchase="b"] { --pb-width: calc(100% - 32px); --my-width: calc(100% - 32px); }
   html[data-purchase="b"] .ds-head-in { height: auto; min-height: 0; gap: 0 8px; }
   html[data-purchase="b"] .ds-head .ds-logo { height: 64px; font-size: 22px; letter-spacing: -1.3px; }
   html[data-purchase="b"] .ds-head .ds-acct { padding-left: 0; border-left: 0; }
@@ -558,6 +571,7 @@ html.authed[data-purchase="b"] .my-guest { display: none; }
   html[data-purchase="b"] .my-help { padding: 18px 16px; }
   html[data-purchase="b"] .my-guest { margin: 24px auto 56px; padding: 30px 18px; }
   html[data-purchase="b"] .my-guest .btn.pri { width: 100%; }
+  html[data-purchase="b"] :is(footer.sitefoot .biz p, footer.sitefoot .biz a, footer.sitefoot .biz .policy a) { font-size: 14px; }
 }
 @media (max-width: 520px) {
   html[data-purchase="b"] main h1 { font-size: 30px; letter-spacing: -.05em; }
@@ -583,7 +597,7 @@ html[data-purchase="b"] body.my-notes {
   color: var(--pb-ink);
   line-height: 1.6;
 }
-html[data-purchase="b"] body.my-notes #app.wrap { max-width: none; width: min(760px, calc(100% - 64px)); padding: 26px 0 72px; }
+html[data-purchase="b"] body.my-notes #app.wrap { max-width: none; width: min(760px, calc(100% - 32px)); padding: 26px 0 56px; }
 html[data-purchase="b"] body.my-notes #app .top { justify-content: flex-start; margin: 0 0 16px; }
 html[data-purchase="b"] body.my-notes #app .top > div { display: flex; flex-wrap: wrap; gap: 8px; }
 html[data-purchase="b"] body.my-notes button {

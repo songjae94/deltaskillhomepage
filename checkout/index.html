@@ -49,7 +49,7 @@ dl{margin:10px 0 0}
 dl div{display:flex;gap:12px;padding:6px 0;border-bottom:1px dashed var(--line)}
 dt{flex:none;width:72px;font-size:13px;font-weight:700;color:var(--sub)}
 dd{margin:0;font-size:14.5px;min-width:0}
-dl.cartrows div{align-items:baseline}dl.cartrows dt{flex:1 1 auto;width:auto;min-width:0;font-size:14px;line-height:1.45;color:var(--ink)}dl.cartrows dd{flex:none;margin-left:auto;text-align:right;white-space:nowrap;font-weight:700} /* 39 1119: 여러 권 주문서 — 책 이름 넓게 · 값 오른쪽 끝 */
+dl.cartrows div{align-items:baseline}dl.cartrows dt{flex:1 1 auto;width:auto;min-width:0;font-size:14px;line-height:1.45;color:var(--ink)}dl.cartrows dd{flex:none;margin-left:auto;text-align:right;white-space:nowrap;font-weight:700} /* 여러 권 주문서 — 책 이름 넓게 · 값 오른쪽 끝 */
 .course{margin:12px 0 0;padding:10px 12px;border-radius:12px;background:var(--sky1);font-size:13.5px;font-weight:600}
 .fix{margin-top:12px;padding-top:10px;border-top:1px solid var(--line);font-size:12.5px;line-height:1.65;color:var(--ink2)}
 .fix p{margin:0 0 6px}.fix a{color:var(--ink);font-weight:650;text-decoration:underline}
@@ -85,7 +85,7 @@ label.f{display:block;font-size:13.5px;font-weight:700;color:var(--ink2);margin:
 .fn{margin-top:22px;font-size:13px;color:var(--sub)}
 .fn a{color:var(--ink);text-decoration:underline}
 a:focus-visible,.btn:focus-visible,.chk input:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
-/* 30 창 1118: 결제 간결 — 자세히 접기 · 일괄 동의 한 줄 */
+/* 결제 간결 — 자세히 접기 · 일괄 동의 한 줄 */
 details.more{margin:12px 0 0;border-top:1px solid var(--line);padding-top:2px}
 details.more>summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-size:13.5px;font-weight:700;color:var(--ink2)}
 details.agd{margin:0 0 4px}
@@ -115,7 +115,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 <link rel="stylesheet" href="/assets/account-header.css?v=home-logout-1118">
 <link rel="stylesheet" href="/assets/payment-flow.css">
 <link rel="stylesheet" href="/assets/site-unify.css?v=35">
-<link rel="stylesheet" href="/assets/purchase-b.css?v=r3-1123">
+<link rel="stylesheet" href="/assets/purchase-b.css?v=r4-1123">
 </head>
 <body class="payment-flow pb-checkout">
 <header class="ds-head"><div class="ds-head-in">
@@ -182,7 +182,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 <script src="/assets/textbook-name.js?v=38-1119"></script>
 <script>
 "use strict";
-/* 형 1119 「회원 가입후 사는 것으로」: 비회원 결제 닫음 — 로그인 안 됐으면 주문서를 열지 않고 로그인 쪽으로(next = 이 주문서 주소 · 같은 사이트 경로만 · auth.js safeNext). 서버 create-order 도 토큰 없는 주문을 401 login_required 로 거절한다. */
+/* 비회원 결제 닫음 — 로그인 안 됐으면 주문서를 열지 않고 로그인 쪽으로(next = 이 주문서 주소 · 같은 사이트 경로만 · auth.js safeNext). 서버 create-order 도 토큰 없는 주문을 401 login_required 로 거절한다. */
 function toLogin(){if(window.DSAuth){location.replace(DSAuth.loginUrl(location.pathname+location.search+location.hash));}else{location.replace("/auth/?next="+encodeURIComponent("/checkout/"));}}
 var LOGIN_GATE=!(window.DSAuth&&DSAuth.has());
 if(LOGIN_GATE)toLogin();
@@ -194,7 +194,7 @@ function apiBase(cfg){return (cfg&&typeof cfg.api==="string"?cfg.api:"").replace
 function callApi(cfg,name,body){
   var headers={"Content-Type":"application/json"};
   var api=apiBase(cfg)+"/"+name;
-  if(window.DSAuth&&DSAuth.has())headers.Authorization="Bearer "+DSAuth.get(); /* 31 창 1118: 로그인 결제를 회원에 잇는다 */
+  if(window.DSAuth&&DSAuth.has())headers.Authorization="Bearer "+DSAuth.get(); /* 로그인 결제를 회원에 잇는다 */
   return fetch(api,{method:"POST",headers:headers,body:JSON.stringify(body),redirect:"follow"})
     .then(function(r){return r.json().catch(function(){return {ok:false,error:"server"};});})
     .catch(function(){return {ok:false,error:"network"};});
@@ -282,19 +282,19 @@ var FIX="<p>디지털콘텐츠(PDF)는 받기 전이면 결제일부터 7일 안
 var SDK="https://js.tosspayments.com/v2/standard";
 var query=new URLSearchParams(location.search),cart=query.has("skus"),skus=query.getAll("skus");
 var sku=(query.get("sku")||"").trim(),cartError="",cartProducts=null;
-/* 38 창 1119: 형식 없는 내신 주소(?sku=NS-CM2-06 · 옛 고리 · 밖 공유 고리)는 PDF 로 채워 받는다 — 주소도 같은 꼴로 고친다 */
+/* 형식 없는 내신 주소(?sku=NS-CM2-06 · 옛 고리 · 밖 공유 고리)는 PDF 로 채워 받는다 — 주소도 같은 꼴로 고친다 */
 if(/^NS-[A-Z0-9]+(?:-[A-Z0-9]+)*$/.test(sku)){sku+=".pdf";try{query.set("sku",sku);history.replaceState(history.state,"",location.pathname+"?"+query.toString()+location.hash);}catch(_){}}
-var reviewClosed=/^REVIEW-/i.test(sku); /* 1118 재점검 N1: 낱개 시험 상품(REVIEW-S2 · 600원)은 test 에서도 판매하지 않는다 — 주문서를 열지 않음 */
+var reviewClosed=/^REVIEW-/i.test(sku); /* 낱개 시험 상품(REVIEW-S2 · 600원)은 test 에서도 판매하지 않는다 — 주문서를 열지 않음 */
 var P=Object.prototype.hasOwnProperty.call(CAT,sku)?CAT[sku]:null;
 var NS=cart||sku.indexOf("NS-")===0;
-if(NS){var bs=document.getElementById("band-sale");if(bs)bs.remove();} /* 형 결정 7: 내신 주문서에는 판매일 공지 글을 두지 않는다(수능 글은 그대로) */
-/* 내신 상품은 /naesin/catalog.json 한 값에서 읽는다(서버 표와 같은 정본 · 게이트 scripts/홈페이지/내신상품표.py). 주소는 sku=<SKU>.<형식>(pdf · hwpx) — 그 형식의 가격·면세값·파일과 판매일 중 하나라도 비면 주문서를 열지 않는다. */
+if(NS){var bs=document.getElementById("band-sale");if(bs)bs.remove();} /* 내신 주문서에는 판매일 공지 글을 두지 않는다(수능 글은 그대로) */
+/* 내신 상품은 /naesin/catalog.json 한 값에서 읽는다(서버 표와 같은 값). 주소는 sku=<SKU>.<형식>(pdf · hwpx) — 그 형식의 가격·면세값·파일과 판매일 중 하나라도 비면 주문서를 열지 않는다. */
 function naesinP(c,sku){
   var m=/^(NS-[A-Z0-9-]+)\.(pdf|hwpx)$/.exec(sku);if(!m)return null;
   var u=null;((c&&c.subjects)||[]).forEach(function(s){(s.units||[]).forEach(function(x){if(x.sku===m[1])u=x;(x.items||[]).concat(x.packs||[]).forEach(function(i){if(i.sku===m[1])u=i;});});});
   if(!u)return null;
   var f=m[2],n=(u.files||[]).filter(function(x){return x.fmt===f;}).length,pr=u.price&&u.price[f];
-  if(!pr||!u.taxFreeAmount||u.taxFreeAmount[f]==null||!u.saleFrom||!u.sample||!n)return null; /* 11-11 본부 11/11 05: 맛보기(sample = 단원 무료 세트) 요구는 그대로 · F00 은 11/12 */
+  if(!pr||!u.taxFreeAmount||u.taxFreeAmount[f]==null||!u.saleFrom||!u.sample||!n)return null; /* 맛보기(sample = 단원 무료 세트) 요구는 그대로 */
   var fn=f==="hwpx"?"한글(HWPX)":"PDF",fs=u.fileSets&&u.fileSets[f],cnt=fs&&fs.kind==="merged"&&n===1?fn+" 합본 1파일":fs&&fs.kind==="types"?fn+" 유형별 파일 "+n+"개":fn+" 파일 "+n+"개";
   return {noOrigClaim:(u.files||[]).some(function(x){return x.layout;}),name:u.name+(f==="hwpx"?" (한글)":" (PDF)"),price:pr,priceNote:"부가세 포함",comp:cnt+" · "+(u.kind?"":"단원 ")+"변형 문항",start:startText(n),only:fn+" 파일만 받습니다. "+(f==="hwpx"?"PDF는":"한글 파일은")+" 들어 있지 않습니다.",give:"결제 뒤 바로 내려받기",saleFrom:u.saleFrom,saleTo:u.saleTo||undefined,cards:(c.cards||[])};
 }
@@ -322,11 +322,11 @@ function cartProduct(c){
   cartProducts={items:items,subtotal:sum.subtotal,adjustment:sum.adjustment};
   return {name:"내신 단원 문제집 "+items.length+"권",price:sum.total,priceNote:"부가세 포함",give:"결제 뒤 바로 내려받기",cards:c.cards||[]};
 }
-/* 받으면 제공 시작 — 약관 제11조 제8항 1 · 2 · 4호와 제5항에 맞춘 글. naesin/index.html 의 startText 와 글자가 같아야 한다(시험 합본_재기.mjs 가 잰다) */
+/* 받으면 제공 시작 — 약관 제11조 제8항 1 · 2 · 4호와 제5항에 맞춘 글. naesin/index.html 의 startText 와 글자가 같아야 한다 */
 function startText(n){
   return n===1?"파일이 하나입니다. 내려받거나 사이트에서 열람하면 제공이 시작되어 그때부터 환불되지 않습니다(파일 오류 · 표시와 다른 경우는 제외). 받기 전이면 결제일로부터 7일 이내에 요청해 전액 환불받습니다.":"파일마다 따로 봅니다. 내려받거나 사이트에서 열람한 파일은 제공이 시작된 것으로 보고, 결제일로부터 7일 이내에 요청하면 결제금액에서 받은 파일 값의 합을 뺀 금액을 환불합니다(약관 제11조 제8항 4호). 파일 값은 그 책 값을 그 책의 파일 수로 나눈 금액(PDF 3파일이면 3분의 1)으로 하고, 받은 파일 값의 합에서 원 단위 미만은 버립니다. 하나도 받기 전이면 전액 환불합니다.";
 }
-var TRANSFER_MIN=1000; /* 계좌이체 하한(내신상품구조 §8 · 공개 수수료 기준) — 서버 create-order 와 같은 값. 토스 결제창에는 금액별 수단 제한이 없어 이 화면의 수단 칸에서 뺀다 */
+var TRANSFER_MIN=1000; /* 계좌이체 하한(공개 수수료 기준) — 서버 create-order 와 같은 값. 토스 결제창에는 금액별 수단 제한이 없어 이 화면의 수단 칸에서 뺀다 */
 var cfg={},widgets=null,ready=false,busy=false,amount=0;
 function priceNow(p){return (p.price2&&p.price2From&&Date.now()>=Date.parse(p.price2From))?p.price2:p.price;}
 function onSale(p){var t=Date.now();return t>=Date.parse(p.saleFrom)&&!(p.saleTo&&t>=Date.parse(p.saleTo));}
@@ -336,27 +336,27 @@ function showProduct(){
   var box=$("prod");box.textContent="";
   if(!P){box.appendChild(el("p","msg err",cartError?ERR[cartError]:reviewClosed?"이 상품은 판매하지 않습니다.":NS?"이 상품은 판매하지 않습니다.":"상품을 찾을 수 없습니다."));var a=el("a","btn ghost",reviewClosed?"변형문항 이용권으로 돌아가기":NS?"내신 자료로 돌아가기":"수능 유형서로 돌아가기");a.href=reviewClosed?"/pass/":NS?"/naesin/":"/store/";var d=el("div","acts");d.appendChild(a);box.appendChild(d);return false;}
   box.appendChild(el("p","pname",P.name));
-  if(NS&&!cart&&window.DSTextbook)box.appendChild(DSTextbook.line(sku)); /* 38 창 1119: 원 교재 이름은 로그인 뒤에만 */
+  if(NS&&!cart&&window.DSTextbook)box.appendChild(DSTextbook.line(sku)); /* 원 교재 이름은 로그인 뒤에만 */
   var pr=el("p","price");pr.appendChild(el("b",null,won(amount)));pr.appendChild(el("small",null,P.priceNote));box.appendChild(pr);
   var rows=cart
     ? cartProducts.items.map(function(item,index){return [String(index+1)+". "+item.name,won(item.price)];})
       .concat([["단원 합계",won(cartProducts.subtotal)]],cartProducts.adjustment?[["결제 한도 조정",won(cartProducts.adjustment)]]:[],[["제공",P.give]])
     : [["SKU",sku],["구성",P.comp]].concat(P.only?[["파일 형식",P.only]]:[],[["제공",P.give]],P.start?[["제공 시작",P.start]]:[]);
   var dl=el("dl",cart?"cartrows":null);rows.forEach(function(r){var d=el("div");d.appendChild(el("dt",null,r[0]));d.appendChild(el("dd",null,r[1]));dl.appendChild(d);});
-  var host=box;if(!cart){box.appendChild(el("p","pline",[P.comp,P.give].filter(Boolean).join(" · ")));host=el("details","more");host.appendChild(el("summary",null,"상품 · 제공 · 환불 자세히"));box.appendChild(host);} /* 30 창 1118: 글은 그대로 · 접기만 */
+  var host=box;if(!cart){box.appendChild(el("p","pline",[P.comp,P.give].filter(Boolean).join(" · ")));host=el("details","more");host.appendChild(el("summary",null,"상품 · 제공 · 환불 자세히"));box.appendChild(host);} /* 글은 그대로 · 접기만 */
   host.appendChild(dl);
   if(cart)box.appendChild(el("p","hint",window.DeltaFinalsOrder.FULL_REFUND));
   if(P.course)host.appendChild(el("p","course",P.course));
-  if(P.cards&&P.cards.length)host.appendChild(el("p","hint","결제창에서 사용할 수 있는 카드가 표시됩니다.")); /* 본부 1118 ③: 라이브 계약 카드 확인 전에는 목록을 적지 않음 */
+  if(P.cards&&P.cards.length)host.appendChild(el("p","hint","결제창에서 사용할 수 있는 카드가 표시됩니다.")); /* 라이브 계약 카드 확인 전에는 목록을 적지 않음 */
   var fx=el("div","fix");fx.innerHTML=cart?'<p>내려받거나 열람한 파일은 청약철회가 제한됩니다. <a href="/refund/">환불·청약철회 안내</a></p>':NS?FIX.replace("디지털콘텐츠(PDF)","디지털콘텐츠(고른 형식의 파일)").replace(P&&P.noOrigClaim?/<p>유료 PDF에는[^<]*<\/p>/:"유료 PDF에는",P&&P.noOrigClaim?"":"유료 파일에는"):FIX;host.appendChild(fx);
   $("pay").textContent=won(amount)+" 결제하기";
-  var s1=$("sum1");if(NS&&s1&&s1.firstChild&&s1.firstChild.nodeType===3)s1.firstChild.nodeValue=s1.firstChild.nodeValue.replace("받기 전이면 결제일부터 7일 안 전액 환불 · 일부 받았으면 받은 파일 값을 뺀 만큼 7일 안 환불 · 받은 파일은 청약철회 제한","받기 전이면 결제일부터 7일 안 전액 환불 · 일부 받았으면 결제금액에서 받은 파일 값(파일 하나 = 그 책 값의 3분의 1)을 뺀 만큼 7일 안 환불 · 받은 파일은 청약철회 제한"); /* 39 1119: 내신 환불 셈(받은 파일 값 = 책 값 ÷ 3) */
+  var s1=$("sum1");if(NS&&s1&&s1.firstChild&&s1.firstChild.nodeType===3)s1.firstChild.nodeValue=s1.firstChild.nodeValue.replace("받기 전이면 결제일부터 7일 안 전액 환불 · 일부 받았으면 받은 파일 값을 뺀 만큼 7일 안 환불 · 받은 파일은 청약철회 제한","받기 전이면 결제일부터 7일 안 전액 환불 · 일부 받았으면 결제금액에서 받은 파일 값(파일 하나 = 그 책 값의 3분의 1)을 뺀 만큼 7일 안 환불 · 받은 파일은 청약철회 제한"); /* 내신 환불 셈(받은 파일 값 = 책 값 ÷ 3) */
   return true;
 }
 function okEmail(s){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);}
 function agreed(){return ["c1","c2","c3","c4"].every(function(i){return $(i).checked;});}
 var seen={};
-/* 31 창 1118: 결제 단추가 회색일 때 막는 까닭 한 줄 — 칸에서 벗어날 때 · 단추를 누를 때 보이고 다 맞으면 사라진다 */
+/* 결제 단추가 회색일 때 막는 까닭 한 줄 — 칸에서 벗어날 때 · 단추를 누를 때 보이고 다 맞으면 사라진다 */
 function whyText(){
   if(seen.em&&!okEmail($("em").value.trim()))return "이메일을 확인해 주세요.";
   if(seen.nm&&!$("nm").value.trim())return "이름을 적어 주세요.";
@@ -412,7 +412,7 @@ function payReq(r,email,name){
   return widgets.requestPayment(q);
 }
 function boot(){
-  function sameAccount(){return true;} /* 회원 전용 시험 낱개 길을 닫아(1118 N1) 계정 바뀜 대조가 드는 주문서가 없음 */
+  function sameAccount(){return true;} /* 회원 전용 시험 낱개 길을 닫아 계정 바뀜 대조가 드는 주문서가 없음 */
   amount=P?priceNow(P):0;
   if(!showProduct()){loadCfg().then(function(c){if(c&&c.PAY_MODE==="test")$("band").hidden=false;});return;}
   $("f").hidden=false;
@@ -429,7 +429,7 @@ function boot(){
     if(mode==="test")$("band").hidden=false;
     if(mode!=="test"&&mode!=="live"){stop("결제가 아직 열려 있지 않습니다.");return;}
     if(!NS&&cfg.SUNEUNG_SALE_OPEN!==true){suneungClosed();return;}
-    if(mode==="live"&&NS&&!cart&&!onSale(P)){P=null;ready=false;$("pay").disabled=true;$("f").hidden=true;showProduct();return;} /* 형 결정 7(11-11): 내신은 판매일을 공지하지 않는다 — 판매 시각 전이면 값이 빈 상품과 같이 「이 상품은 판매하지 않습니다.」(형 1119: 출시 예정 글 없음) */
+    if(mode==="live"&&NS&&!cart&&!onSale(P)){P=null;ready=false;$("pay").disabled=true;$("f").hidden=true;showProduct();return;} /* 내신은 판매일을 공지하지 않는다 — 판매 시각 전이면 값이 빈 상품과 같이 「이 상품은 판매하지 않습니다.」(출시 예정 글 없음) */
     if(mode==="live"&&!cart&&!onSale(P)){stop("지금은 이 상품의 판매 기간이 아닙니다. 제공: "+P.give);return;}
     loadSdk().then(function(){
       if(!sameAccount())return;
@@ -456,7 +456,7 @@ function boot(){
       try{sessionStorage.setItem("ds_order",JSON.stringify(cart?{orderId:r.orderId,email:email,skus:skus}:{orderId:r.orderId,email:email,sku:sku}));}catch(_){}
       setMsg($("msg"),"결제창을 여는 중…");
       return payReq(r,email,name);
-    }).catch(function(e){if(e&&e.error==="login_required"){if(window.DSAuth)DSAuth.clear();toLogin();return;} /* 형 1119: 토큰이 풀렸거나 없으면 서버가 401 login_required — 토큰을 지우고(auth 쪽이 바로 되돌려 보내지 않게) 로그인으로 */if(sameAccount()){busy=false;update();setMsg($("msg"),errText(e),true);}});
+    }).catch(function(e){if(e&&e.error==="login_required"){if(window.DSAuth)DSAuth.clear();toLogin();return;} /* 토큰이 풀렸거나 없으면 서버가 401 login_required — 토큰을 지우고(auth 쪽이 바로 되돌려 보내지 않게) 로그인으로 */if(sameAccount()){busy=false;update();setMsg($("msg"),errText(e),true);}});
   });
 }
 if(!LOGIN_GATE){ /* 로그인 문지기를 지난 뒤에만 주문서를 그린다 */
