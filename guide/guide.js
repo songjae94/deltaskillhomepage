@@ -11,7 +11,7 @@
     a.href = route('index.html',{audience:a.dataset.for});
     if (a.dataset.for === role) a.setAttribute('aria-current','page');
   }
-  document.querySelectorAll('header a').forEach(a => {a.href=route('../index.html')});
+  document.querySelectorAll('header a').forEach(a => {if(!a.closest('.ds-menu,.ds-acct'))a.href=route('../index.html')});
   for(const key of ['school','csat'])find(key).href=route('../materials/index.html',{exam:key});
   find('custom').href=route('../materials/index.html',{exam:'school',view:'studio'});
   find('study').href=route('../study/index.html',{},'#note');
