@@ -23,6 +23,8 @@
     '→':'\\to ','⇒':'\\Rightarrow ','↔':'\\leftrightarrow ','±':'\\pm ','∓':'\\mp ',
     '∂':'\\partial ','∇':'\\nabla ','∴':'\\therefore ','∵':'\\because ',
     '…':'\\ldots ','⋯':'\\cdots ','⋮':'\\vdots ','∣':'\\mid ','∥':'\\parallel ','′':"'",'″':"''",
+    '⊂':'\\subset ','⊃':'\\supset ','⊆':'\\subseteq ','⊇':'\\supseteq ','⊄':'\\not\\subset ','∅':'\\varnothing ','⊥':'\\perp ','∠':'\\angle ','△':'\\triangle ','∘':'\\circ ',
+    '\u2282\u0338':'\\not\\subset ','⟶':'\\longrightarrow ','ℓ':'\\ell ','⋄':'\\diamond ','▹':'\\triangleright ','∗':'\\ast ','≪':'\\ll ','≫':'\\gg ','°':'{}^{\\circ}','/':'/',
     '{':'\\{','}':'\\}','⌊':'\\lfloor ','⌋':'\\rfloor ','⌈':'\\lceil ','⌉':'\\rceil ',
     'α':'\\alpha ','β':'\\beta ','γ':'\\gamma ','δ':'\\delta ','ε':'\\epsilon ',
     'θ':'\\theta ','λ':'\\lambda ','μ':'\\mu ','π':'\\pi ','ρ':'\\rho ',
@@ -48,6 +50,14 @@
       if(['∫','∬','∭'].includes(op))return `${body}\\nolimits_{${toTeX(lower)}}^{${toTeX(upper)}}`;
       return `{${body}}_{${toTeX(lower)}}^{${toTeX(upper)}}`;
     };
+    // Piecewise definitions: a table of rows, with or without the opening brace in front.
+    const rows=table=>children(table).map(row=>{if(tag(row)!=='mtr'||children(row).some(cell=>tag(cell)!=='mtd'))throw new UnsupportedMathML('Unsupported table shape',table);return children(row).map(cell=>children(cell).map(toTeX).join('')).join('&');});
+    const width=table=>Math.max(1,...children(table).map(row=>children(row).length));
+    if(name==='mrow'&&parts.length===2&&tag(parts[0])==='mo'&&text(parts[0])==='{'&&tag(parts[1])==='mtable'){
+      const lines=rows(parts[1]),cols=width(parts[1]);
+      return cols<=2?`\\begin{cases}${lines.join('\\\\')}\\end{cases}`:`\\left\\{\\begin{array}{${'l'.repeat(cols)}}${lines.join('\\\\')}\\end{array}\\right.`;
+    }
+    if(name==='mtable')return `\\begin{array}{${'l'.repeat(width(node))}}${rows(node).join('\\\\')}\\end{array}`;
     if(['math','mrow'].includes(name))return join();
     if(name==='semantics')return parts.length?toTeX(parts[0]):'';
     if(name==='mstyle'){
@@ -80,8 +90,12 @@
       if(value==='')return '';
       throw new UnsupportedMathML(`Unsupported operator: ${value}`,node);
     }
-    if(name==='mtext')return `\\text{${escape(node.textContent||'')}}`;
+    if(name==='mtext'){
+      const gaps={'\u00a0':'~','\u2009':'\\,','\u200a':'\\,','\u2005':'\\:','\u205f':'\\:','\u2004':'\\;','\u2002':'\\enspace ','\u2003':'\\quad ','\u2000':'\\enspace ','\u2001':'\\quad ','\u2006':'\\,','\u2008':'\\,','\u202f':'\\,','\u2007':'~'};
+      return (node.textContent||'').split(/([\u00a0\u2000-\u200a\u202f\u205f])/).map(piece=>Object.hasOwn(gaps,piece)?gaps[piece]:(piece?`\\text{${escape(piece)}}`:'')).join('');
+    }
     if(name==='mfrac'){arity(2);if(attr(node,'linethickness')||attr(node,'bevelled')==='true')throw new UnsupportedMathML('Nonstandard fraction needs source review',node);return `\\frac{${toTeX(parts[0])}}{${toTeX(parts[1])}}`;}
+    if(name==='menclose'&&attr(node,'notation')==='box')return `\\boxed{${join()}}`;
     if(name==='msqrt')return `\\sqrt{${join()}}`;
     if(name==='mroot'){arity(2);return `\\sqrt[${toTeX(parts[1])}]{${toTeX(parts[0])}}`;}
     if(name==='msup'){arity(2);return `{${toTeX(parts[0])}}^{${toTeX(parts[1])}}`;}

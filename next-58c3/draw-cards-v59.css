@@ -25,6 +25,9 @@
 .dq59-choices li[data-mark]:before{content:attr(data-mark);position:absolute;left:12px;color:#3a4a63;font-weight:650}
 
 .dq59-body .dq59-bogi{position:relative;margin:1.4em 0 1em;padding:1.2em 1.1em .7em;border:1px solid #4a5364;border-radius:2px}
+.dq59-body .dq59-cond{margin:1em 0;padding:.7em 1em;border:1px solid #4a5364;border-radius:2px}
+.dq59-body .dq59-cond-line{display:block}
+.dq59-body .dq59-cond-line+.dq59-cond-line{margin-top:.35em}
 .dq59-body .dq59-bogi-title{position:absolute;top:-.95em;left:50%;transform:translateX(-50%);padding:0 .8em;background:#fff;white-space:nowrap}
 .dq59-body .dq59-bogi-title:before{content:'〈 '}
 .dq59-body .dq59-bogi-title:after{content:' 〉'}
