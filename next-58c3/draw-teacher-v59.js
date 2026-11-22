@@ -9,8 +9,11 @@
   const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
   const HTML_NS = 'http://www.w3.org/1999/xhtml', MATH_NS = 'http://www.w3.org/1998/Math/MathML';
   const htmlTags = new Set('article section div p span br b strong em i u sup sub ol ul li table thead tbody tr td th img figure figcaption'.split(' '));
-  const mathTags = new Set('math mrow mi mn mo mtext mspace ms mfrac msqrt mroot msub msup msubsup munder mover munderover mtable mtr mtd mfenced mstyle menclose mpadded mmultiscripts mprescripts none'.split(' '));
-  const mathAttrs = new Set('display mathvariant stretchy fence separator separators open close accent accentunder linethickness columnalign rowalign columnspacing rowspacing notation'.split(' '));
+  const mathTags = new Set('math mrow mi mn mo mtext mspace ms mfrac msqrt mroot msub msup msubsup munder mover munderover mtable mtr mtd mfenced mstyle menclose mpadded mmultiscripts mprescripts none semantics annotation'.split(' '));
+  const mathAttrs = new Set('display mathvariant stretchy fence separator separators open close accent accentunder linethickness columnalign rowalign columnspacing rowspacing notation displaystyle scriptlevel encoding'.split(' '));
+  // v61: the canonical render's structure names that a fragment may carry (box, <보기>, blank, choice rows, table, notes).
+  // Presentation only: no name here marks an answer or a solution, and every other class is still dropped.
+  const keepClass = new Set('cond-box cond-line 라벨줄 문단틈 문단자국 상자딱지 과정 bogi bt brow 빈칸 본표 넓은표 대각칸 선지표 선지번호 선지그림 선지글 ch5 ch3 ch2 ch1 단서 eqno 식이어줄 수식줄 식꼬리 식번호줄 별행 항목줄 글머리줄 자모줄 라벨 vdots 표딱지 표딱지묶음 표제목 tbl-right 그림줄안 fig 어절'.split(' '));
   const FIELDS = [['subject', '과목'], ['unit', '단원'], ['stage', '단계'], ['difficulty', '난도']];
   const SAVED = 'dq59-saved';
   const ALERTS = {
@@ -101,7 +104,10 @@
       if (!solution && /(?:^|[\s_-])(?:answer|answers|solution|solutions|sol|explanation|정답|해설|풀이)(?:$|[\s_-])/i.test(node.getAttribute('class') || '')) throw Error('render');
       const dest = document.createElementNS(node.namespaceURI, tag);
       for (const a of node.attributes) {
-        if (math && mathAttrs.has(a.name)) dest.setAttribute(a.name, a.value);
+        if (math && a.name === 'encoding' && !(tag === 'annotation' && a.value === 'application/x-tex')) throw Error('render');
+        else if (math && ['displaystyle', 'scriptlevel'].includes(a.name) && !/^(?:true|false|[0-2])$/.test(a.value)) throw Error('render');
+        else if (math && mathAttrs.has(a.name)) dest.setAttribute(a.name, a.value);
+        else if (!math && a.name === 'class') { const kept = a.value.split(/\s+/).filter(c => keepClass.has(c)); if (kept.length) dest.setAttribute('class', kept.join(' ')); }
         else if (math && a.name === 'xmlns' && a.value === MATH_NS) continue;
         else if (tag === 'img' && a.name === 'src' && /^data:image\/(?:png|jpeg|webp|gif);base64,[A-Za-z0-9+/]+=*$/i.test(a.value)) dest.setAttribute('src', a.value);
         else if (tag === 'img' && a.name === 'alt') dest.setAttribute('alt', a.value);
@@ -114,7 +120,7 @@
       return dest;
     }
     const body = document.createElement('div');
-    body.className = 'dq59-body';
+    body.className = 'dq59-body ' + (solution ? 'dq61-s' : 'dq61-q');   // v61: canonical render rules (draw-math-v61.css) scope
     for (const node of source.content.childNodes) body.append(copy(node, 0));
     if (!body.textContent.trim() && !body.querySelector('img')) throw Error('render');
     dress(body, solution);
@@ -133,13 +139,16 @@
     if (list) {
       let longest = 0;
       [...list.children].forEach((li, i) => {
-        const text = li.textContent.trim();
+        const text = li.textContent.replace(/[⁠⁡]/g, '').trim();
         if (!/^[①②③④⑤]/.test(text)) li.dataset.mark = '①②③④⑤'[i];
         longest = Math.max(longest, li.querySelector('img,table,mfrac,msqrt,mtable') ? Math.max(text.length, 14) : text.length);
         if (li.querySelector('img,table')) longest = 99;
       });
+      // v61: the rows are the canonical render's (5 · 3+2 · 2+2+1, never 4+1 — 렌더규격 §2-3); a fragment
+      // without that name falls back to the same three rows by length (no one-per-row list).
+      const row = (list.className.match(/\bch([1235])\b/) || [])[1];
       list.classList.add('dq59-choices');
-      list.dataset.fit = longest <= 8 ? '5' : longest <= 24 ? '2' : '1';
+      list.dataset.fit = row ? (row === '1' ? '1' : row) : longest <= 8 ? '5' : longest <= 24 ? '3' : '2';
     }
     // A blank text token after a comma (as in a coordinate pair) stops the site math renderer and leaves
     // that formula in the browser's own math font; the comma already carries its spacing, so drop it.
@@ -163,6 +172,7 @@
     });
     // The <보기> block arrives as plain nested blocks; give it its frame back.
     body.querySelectorAll('div').forEach(box => {
+      if (box.closest('.bogi,.cond-box')) return;          // v61: the canonical frame already came with the fragment
       const head = box.firstElementChild;
       if (!head || box.children.length < 2 || head.children.length || !/^[<〈＜\[]?\s*보\s*기\s*[>〉＞\]]?$/.test(head.textContent.trim())) return;
       box.classList.add('dq59-bogi');
@@ -171,6 +181,7 @@
     });
     // The (가)(나) condition block arrives as a plain nested block too.
     if (!solution) body.querySelectorAll('div div').forEach(box => {
+      if (box.closest('.bogi,.cond-box')) return;
       const lines = [...box.children].filter(c => c.localName === 'span' && /^\((가|나|다|라|마)\)/.test(c.textContent.trim()));
       if (box.querySelector('div') || lines.length < 2 || lines.length !== box.children.length) return;
       box.classList.add('dq59-cond'); lines.forEach(line => line.classList.add('dq59-cond-line'));
@@ -209,12 +220,12 @@
     const brand = `<div class="brand"><strong>${top || (s.identityPlacement === 'none' || bottom ? '' : 'DELTA<em>SKILL</em>')}</strong><span>${safe(s.headerText || drawn.labels.subject + ' · ' + drawn.labels.unit)}</span></div>`;
     const footText = [bottom, safe(s.footerText || 'DELTASKILL · ' + drawn.labels.unit)].filter(Boolean).join(' · ');
     const answer = a => { const t = String(a ?? '').trim(); return /^[1-5]$/.test(t) ? '①②③④⑤'[t - 1] : /[\\^_{}]/.test(t) ? `<span class="ans" data-tex="${safe(t)}">${safe(t)}</span>` : safe(t); };
-    const solutions = !withSolutions ? '' : `<section class="paper solmeasure"><header class="head">${brand}<h1>정답과 해설</h1><small>${heading}</small></header><main class="body"><div class="solwin"><div class="solflow">${drawn.items.map((q, i) => { const x = drawn.solutions.find(v => v.id === q.id); return `<article class="sol"><div class="solhead"><b>${String(i + 1).padStart(2, '0')}</b><span>${x && !x.missing ? '정답 ' + answer(x.answer) : ''}</span></div><div class="solbody">${x && !x.missing ? x.body.innerHTML : '<p class="solnone">이 문항은 해설이 준비되지 않았습니다.</p>'}</div></article>`; }).join('')}</div></div></main><footer class="foot"><span>${footText}</span><span class="pgno" data-base="${s.showPageNumber ? all.length : ''}"></span></footer></section>`;
-    const css = `*{box-sizing:border-box}html,body{margin:0;padding:0;background:#fff;color:#191919;font-family:${face}}body{font-size:12px}.paper{width:210mm;height:297mm;padding:14mm 13mm;position:relative;break-after:page;overflow:hidden}.head{height:25mm;border-bottom:1px solid #353535;margin-bottom:7mm}.brand{display:flex;justify-content:space-between;font-size:9px;letter-spacing:.03em}.head h1{font-size:23px;letter-spacing:-.03em;margin:12px 0 5px;text-align:${s.titleAlign === 'center' ? 'center' : 'left'}}.student{float:right;font-size:10px}.body{height:225mm}.questions{display:grid;grid-template-columns:${n === 1 ? '1fr' : '1fr 1fr'};grid-template-rows:${n === 4 ? '1fr 1fr' : '1fr'};gap:7mm;height:100%}.question{min-width:0;min-height:0;display:flex;flex-direction:column;overflow:hidden}.qhead{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #cfcfcf;padding-bottom:4px;margin-bottom:9px}.qhead b{font-size:17px}.qhead small{font-size:8px;color:#777}.qbody{flex:1;min-height:0;overflow:hidden}.qbody>div{font-size:${n === 4 ? 12 : 13.5}px;line-height:1.75;word-break:keep-all;overflow-wrap:anywhere}.qbody p{margin:0 0 .7em}.qbody img{max-width:100%;height:auto}.qbody math{font-size:1.06em}.qbody .dq59-bogi{position:relative;margin:1.3em 0 .9em;padding:1.1em .9em .6em;border:1px solid #333}.qbody .dq59-cond,.solbody .dq59-cond{margin:.9em 0;padding:.6em .9em;border:1px solid #333}.dq59-cond-line{display:block}.dq59-cond-line+.dq59-cond-line{margin-top:.35em}.qbody .dq59-bogi-title{position:absolute;top:-.8em;left:50%;transform:translateX(-50%);padding:0 .7em;background:#fff;white-space:nowrap}.qbody .dq59-bogi-title:before{content:'〈 '}.qbody .dq59-bogi-title:after{content:' 〉'}.qbody table{border-collapse:collapse;margin:.5em 0}.qbody td,.qbody th{border:1px solid #555;padding:3px 8px;text-align:center}.qbody ol,.qbody ul{margin:.6em 0;padding-left:1.4em}.qbody .dq59-choices{list-style:none;padding:0;margin:1em 0 0;display:grid;gap:.55em 1em;grid-template-columns:repeat(var(--cols),minmax(0,1fr))}.qbody .dq59-choices[data-fit="5"]{--cols:${n === 1 ? 5 : 3}}.qbody .dq59-choices[data-fit="2"]{--cols:2}.qbody .dq59-choices[data-fit="1"]{--cols:1}.qbody .dq59-choices li{position:relative;min-width:0;padding-left:1.6em}.qbody .dq59-choices li:not([data-mark]){padding-left:0}.qbody .dq59-choices li[data-mark]:before{content:attr(data-mark);position:absolute;left:0}.head small{font-size:10px}.solwin{height:225mm;overflow:hidden}.solflow{height:225mm;column-count:2;column-gap:7mm;column-fill:auto;font-size:12px;line-height:1.7;word-break:keep-all;overflow-wrap:anywhere}.sol{margin:0 0 5mm}.solhead{display:flex;gap:10px;align-items:baseline;border-bottom:1px solid #ddd;padding-bottom:3px;margin-bottom:6px;break-after:avoid}.solhead b{font-size:14px}.solhead span{font-size:12px;font-weight:700}.solbody p{margin:0 0 .6em}.solbody img{max-width:100%;height:auto}.solbody table{border-collapse:collapse;margin:.4em 0}.solbody td,.solbody th{border:1px solid #555;padding:2px 6px;text-align:center}.solnone{color:#777}.solmeasure{position:absolute;left:-9999px;top:0}.foot{position:absolute;bottom:10mm;left:13mm;right:13mm;display:flex;justify-content:space-between;font-size:9px;color:#666}@page{size:A4;margin:0}@media print{.paper:last-child{break-after:auto}}`;
-    return `<!doctype html><html lang="ko"><meta charset="utf-8"><title>${heading}</title><link rel="stylesheet" href="${asset('assets/vendor/katex-0.18.4/katex-embed.css?v=24.3')}"><link rel="stylesheet" href="${asset('math-render-v23.css?v=24.1')}"><style>${css}</style><body${solOnly !== null ? ` data-sol-only="${solOnly}"` : ''}>${chosen.map((p, local) => {
+    const solutions = !withSolutions ? '' : `<section class="paper solmeasure"><header class="head">${brand}<h1>정답과 해설</h1><small>${heading}</small></header><main class="body"><div class="solwin"><div class="solflow">${drawn.items.map((q, i) => { const x = drawn.solutions.find(v => v.id === q.id); return `<article class="sol"><div class="solhead"><b>${String(i + 1).padStart(2, '0')}</b><span>${x && !x.missing ? '정답 ' + answer(x.answer) : ''}</span></div><div class="solbody dq61-s">${x && !x.missing ? x.body.innerHTML : '<p class="solnone">이 문항은 해설이 준비되지 않았습니다.</p>'}</div></article>`; }).join('')}</div></div></main><footer class="foot"><span>${footText}</span><span class="pgno" data-base="${s.showPageNumber ? all.length : ''}"></span></footer></section>`;
+    const css = `*{box-sizing:border-box}html,body{margin:0;padding:0;background:#fff;color:#191919;font-family:${face}}body{font-size:12px}.paper{width:210mm;height:297mm;padding:14mm 13mm;position:relative;break-after:page;overflow:hidden}.head{height:25mm;border-bottom:1px solid #353535;margin-bottom:7mm}.brand{display:flex;justify-content:space-between;font-size:9px;letter-spacing:.03em}.head h1{font-size:23px;letter-spacing:-.03em;margin:12px 0 5px;text-align:${s.titleAlign === 'center' ? 'center' : 'left'}}.student{float:right;font-size:10px}.body{height:225mm}.questions{display:grid;grid-template-columns:${n === 1 ? '1fr' : '1fr 1fr'};grid-template-rows:${n === 4 ? '1fr 1fr' : '1fr'};gap:7mm;height:100%}.question{min-width:0;min-height:0;display:flex;flex-direction:column;overflow:hidden}.qhead{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #cfcfcf;padding-bottom:4px;margin-bottom:9px}.qhead b{font-size:17px}.qhead small{font-size:8px;color:#777}.qbody{flex:1;min-height:0;overflow:hidden}.qbody>div{font-size:${n === 4 ? 12 : 13.5}px;line-height:1.75;word-break:keep-all;overflow-wrap:anywhere}.qbody p{margin:0 0 .7em}.qbody img{max-width:100%;height:auto}.qbody math{font-size:1.06em}.qbody .dq59-bogi{position:relative;margin:1.3em 0 .9em;padding:1.1em .9em .6em;border:1px solid #333}.qbody .dq59-cond,.solbody .dq59-cond{margin:.9em 0;padding:.6em .9em;border:1px solid #333}.dq59-cond-line{display:block}.dq59-cond-line+.dq59-cond-line{margin-top:.35em}.qbody .dq59-bogi-title{position:absolute;top:-.8em;left:50%;transform:translateX(-50%);padding:0 .7em;background:#fff;white-space:nowrap}.qbody .dq59-bogi-title:before{content:'〈 '}.qbody .dq59-bogi-title:after{content:' 〉'}.qbody table{border-collapse:collapse;margin:.5em 0}.qbody td,.qbody th{border:1px solid #555;padding:3px 8px;text-align:center}.qbody ol,.qbody ul{margin:.6em 0;padding-left:1.4em}.qbody .dq59-choices{list-style:none;padding:0;margin:1em 0 0;display:grid;gap:.55em 1em;grid-template-columns:repeat(var(--cols),minmax(0,1fr))}.qbody .dq59-choices[data-fit="5"]{--cols:${n === 1 ? 5 : 3}}.qbody .dq59-choices[data-fit="3"]{--cols:3}.qbody .dq59-choices[data-fit="2"]{--cols:2}.qbody .dq59-choices[data-fit="1"]{--cols:1}.qbody .dq59-choices li{position:relative;min-width:0;padding-left:1.6em}.qbody .dq59-choices li:not([data-mark]){padding-left:0}.qbody .dq59-choices li[data-mark]:before{content:attr(data-mark);position:absolute;left:0}.head small{font-size:10px}.solwin{height:225mm;overflow:hidden}.solflow{height:225mm;column-count:2;column-gap:7mm;column-fill:auto;font-size:12px;line-height:1.7;word-break:keep-all;overflow-wrap:anywhere}.sol{margin:0 0 5mm}.solhead{display:flex;gap:10px;align-items:baseline;border-bottom:1px solid #ddd;padding-bottom:3px;margin-bottom:6px;break-after:avoid}.solhead b{font-size:14px}.solhead span{font-size:12px;font-weight:700}.solbody p{margin:0 0 .6em}.solbody img{max-width:100%;height:auto}.solbody table{border-collapse:collapse;margin:.4em 0}.solbody td,.solbody th{border:1px solid #555;padding:2px 6px;text-align:center}.solnone{color:#777}.solmeasure{position:absolute;left:-9999px;top:0}.foot{position:absolute;bottom:10mm;left:13mm;right:13mm;display:flex;justify-content:space-between;font-size:9px;color:#666}@page{size:A4;margin:0}@media print{.paper:last-child{break-after:auto}}`;
+    return `<!doctype html><html lang="ko"><meta charset="utf-8"><title>${heading}</title><link rel="stylesheet" href="${asset('assets/vendor/katex-0.18.4/katex-embed.css?v=24.3')}"><link rel="stylesheet" href="${asset('math-render-v23.css?v=24.1')}"><style>${css}</style><link rel="stylesheet" href="${asset('draw-math-v61.css?v=61.0')}"><body${solOnly !== null ? ` data-sol-only="${solOnly}"` : ''}>${chosen.map((p, local) => {
       const index = only === undefined ? local : only;
-      return `<section class="paper"><header class="head">${brand}<h1>${heading}</h1>${s.showStudentName ? '<span class="student">이름 ______________</span>' : ''}</header><main class="body"><div class="questions">${p.items.map((q, i) => `<article class="question"><div class="qhead"><b>${String(p.offset + i + 1).padStart(2, '0')}</b><small>${tag}</small></div><div class="qbody"><div>${q.body.innerHTML}</div></div></article>`).join('')}</div></main><footer class="foot"><span>${footText}</span><span${s.showPageNumber ? ` class="pgq" data-i="${index + 1}" data-q="${all.length}"` : ''}>${s.showPageNumber ? index + 1 + ' / ' + total : ''}</span></footer></section>`;
-    }).join('')}${solutions}<script src="${asset('assets/vendor/katex-0.18.4/katex.min.js')}"><\/script><script src="${asset('math-render-v23.js?v=59.5')}"><\/script><script>${fitScript}<\/script></body></html>`;
+      return `<section class="paper"><header class="head">${brand}<h1>${heading}</h1>${s.showStudentName ? '<span class="student">이름 ______________</span>' : ''}</header><main class="body"><div class="questions">${p.items.map((q, i) => `<article class="question"><div class="qhead"><b>${String(p.offset + i + 1).padStart(2, '0')}</b><small>${tag}</small></div><div class="qbody"><div class="dq61-q">${q.body.innerHTML}</div></div></article>`).join('')}</div></main><footer class="foot"><span>${footText}</span><span${s.showPageNumber ? ` class="pgq" data-i="${index + 1}" data-q="${all.length}"` : ''}>${s.showPageNumber ? index + 1 + ' / ' + total : ''}</span></footer></section>`;
+    }).join('')}${solutions}<script src="${asset('assets/vendor/katex-0.18.4/katex.min.js')}"><\/script><script src="${asset('math-render-v23.js?v=61.0')}"><\/script><script>${fitScript}<\/script></body></html>`;
   }
   async function printNow() {
     if (printing || !drawn) return;

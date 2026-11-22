@@ -9,7 +9,7 @@
   const expectedVersion='0.18.4';
   const namespace='http://www.w3.org/1998/Math/MathML';
   const failures=[],failureKeys=new Set(),originals=new WeakMap(),failedNodes=new WeakMap();
-  const stats={normalizedSum:0,normalizedIntegral:0,rendered:0,unsupported:0};
+  const stats={normalizedSum:0,normalizedIntegral:0,rendered:0,unsupported:0,canonical:0};
   const tag=node=>(node.localName||node.tagName||'').toLowerCase();
   const children=node=>Array.from(node.children||[]);
   const text=node=>String(node.textContent||'').trim();
@@ -60,9 +60,14 @@
     if(name==='mtable')return `\\begin{array}{${'l'.repeat(width(node))}}${rows(node).join('\\\\')}\\end{array}`;
     if(['math','mrow'].includes(name))return join();
     if(name==='semantics')return parts.length?toTeX(parts[0]):'';
+    if(name==='annotation')return '';
     if(name==='mstyle'){
-      if(attr(node,'mathsize')||attr(node,'scriptlevel'))throw new UnsupportedMathML('Explicit MathML sizing requires source review',node);
-      const style=attr(node,'displaystyle');
+      if(attr(node,'mathsize'))throw new UnsupportedMathML('Explicit MathML sizing requires source review',node);
+      // v61: the four TeX styles exactly as KaTeX writes them (displaystyle + scriptlevel 0/1/2).
+      const style=attr(node,'displaystyle'),level=attr(node,'scriptlevel');
+      if(level!==null&&level!==undefined&&!['0','1','2'].includes(level))throw new UnsupportedMathML('Explicit MathML sizing requires source review',node);
+      if(style==='false'&&level==='1')return `{\\scriptstyle ${join()}}`;
+      if(style==='false'&&level==='2')return `{\\scriptscriptstyle ${join()}}`;
       return style==='true'?`{\\displaystyle ${join()}}`:style==='false'?`{\\textstyle ${join()}}`:join();
     }
     if(name==='mi'){
@@ -161,10 +166,27 @@
     if(engineStatus()!=='ready')return;
     if(failedNodes.get(math)===math.outerHTML)return;
     try{
-      const tex=toTeX(math),display=attr(math,'display')==='block';
-      const html=global.katex.renderToString(tex,{displayMode:display,throwOnError:true,trust:false,strict:'error',output:'htmlAndMathml'});
+      const display=attr(math,'display')==='block';
+      // v61: a fragment that carries the canonical TeX (KaTeX's own annotation) is set from that TeX with the
+      // canonical render's options (render_items.mjs: strict false · trust only \htmlClass) — the same
+      // formula, size and place as the item's 렌더.html and the type books. Otherwise the MathML path below.
+      const note=math.querySelector('annotation[encoding="application/x-tex"]');
+      const source=note?String(note.textContent||''):'';
+      let html=null,canonical=false;
+      if(source.trim()){
+        try{
+          html=global.katex.renderToString(source,{displayMode:display,throwOnError:true,strict:false,output:'htmlAndMathml',
+            trust:ctx=>ctx.command==='\\htmlClass'&&/^(?:대각칸|대각위|대각아래)$/.test(String(ctx.class||''))});
+          canonical=true;stats.canonical=(stats.canonical||0)+1;
+          // The canonical render's two marks for tall inline formulas (render_items.mjs R-116 · R-168).
+          if(!display&&/mfrac/.test(html))html=html.replace('class="katex"','class="katex 인라인분수"');
+          else if(!display&&/op-limits|op-symbol/.test(html))html=html.replace('class="katex"','class="katex 인라인큰연산"');
+        }catch(error){record(error,math);html=null;}
+      }
+      if(html===null)html=global.katex.renderToString(toTeX(math),{displayMode:display,throwOnError:true,trust:false,strict:'error',output:'htmlAndMathml'});
       const wrapper=document.createElement('span');wrapper.className='wm23-equation';
       wrapper.dataset.display=display?'block':'inline';
+      if(canonical)wrapper.dataset.source='tex';
       if(math.querySelector('mfrac,msubsup,munderover,mroot'))wrapper.classList.add('wm23-tall');
       wrapper.innerHTML=html;originals.set(wrapper,original);math.replaceWith(wrapper);stats.rendered++;
     }catch(error){failedNodes.set(math,math.outerHTML);record(error,math);}
@@ -191,7 +213,7 @@
     const fonts=Array.from(document.fonts||[]).map(face=>face.family.replace(/["']/g,'').trim()).filter(name=>/^KaTeX_[A-Za-z0-9_-]+$/.test(name));
     const families=Array.from(new Set(fonts)).sort();
     const last=failures.at(-1);
-    html.dataset.mathModule='v23.2-diagnostics';
+    html.dataset.mathModule='v23.3-canonical-tex';
     html.dataset.mathEngine=engineStatus();
     html.dataset.mathExpected=expectedVersion;
     html.dataset.mathActual=String(global.katex?.version||'none').slice(0,30);

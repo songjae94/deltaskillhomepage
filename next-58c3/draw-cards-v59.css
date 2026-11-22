@@ -18,6 +18,7 @@
 .dq59-scroll{overflow-x:auto}
 .dq59-body .dq59-choices{display:grid;grid-template-columns:repeat(var(--cols),minmax(0,1fr));gap:10px 12px;margin:1.1em 0 0;padding:0;list-style:none}
 .dq59-choices[data-fit="5"]{--cols:5}
+.dq59-choices[data-fit="3"]{--cols:3}
 .dq59-choices[data-fit="2"]{--cols:2}
 .dq59-choices[data-fit="1"]{--cols:1}
 .dq59-choices li{position:relative;min-width:0;padding:8px 12px 8px 2.5em;border:1px solid #e1e5eb;border-radius:8px;background:#fafbfc;overflow-x:auto;overflow-y:hidden}
@@ -75,4 +76,4 @@ html[data-design="b"] .dq59-panel .tb36-design-link{color:#dce2eb}
   .dq59-choices[data-fit="2"]{--cols:1}
   .dq59-idle{min-height:0;padding:24px 20px}
 }
-@media(max-width:420px){.dq59-choices[data-fit="5"]{--cols:2}}
+@media(max-width:420px){.dq59-choices:is([data-fit="5"],[data-fit="3"]){--cols:2}}
