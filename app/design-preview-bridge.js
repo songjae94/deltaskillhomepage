@@ -3,7 +3,7 @@
   document.documentElement.dataset.design = 'b';
   document.documentElement.dataset.interior = 'v12';
   // Pages that are not open yet: the address is put back to the front page before any routing reads it.
-  const closed = ['benefits', 'classroom', 'upload', 'school-exams', 'academy', 'diagnostic', 'diagnostic-run', 'diagnostic-result', 'technology', 'technology-about'];
+  const closed = ['benefits', 'classroom', 'upload', 'school-exams', 'academy', 'diagnostic', 'diagnostic-run', 'diagnostic-result', 'technology-about'];
   const shut = () => {
     if (closed.includes(location.hash.replace(/^#/, '').split(/[/?]/)[0])) history.replaceState(null, '', location.pathname + location.search + '#home');
   };

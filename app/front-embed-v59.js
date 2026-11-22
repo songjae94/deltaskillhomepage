@@ -2,8 +2,9 @@
    the notes under the scenes, and the fourth scene (one original and one result, as pictures only). */
 (() => {
   'use strict';
-  const RESULT_SCENE = false;
+  const RESULT_SCENE = true;
   const home = () => document.querySelector('.cinema');
+  const resultOn = () => RESULT_SCENE && document.documentElement.dataset.design === 'b';   // the scene's layout exists for this design only
 
   if (window.top !== window) {
     // Inside the front page: links open in the whole window, and leaving the first screen moves the whole window.
@@ -54,7 +55,7 @@
   const MARKS = { 0: 'AI로 만든 가상 인물입니다', 2: '델타스킬 실제 화면', 3: '델타스킬 실제 결과' };
   const look = document.createElement('style');
   look.textContent = '.fx59-mark{position:absolute;z-index:6;left:0;right:0;bottom:5px;margin:0;text-align:center;font-size:11px;font-weight:400;line-height:1.2;letter-spacing:-.01em;color:rgba(255,255,255,.76);text-shadow:0 1px 2px rgba(8,12,26,.75);white-space:nowrap;pointer-events:none}.fx59-mark:empty{display:none}@media(min-width:900px){.fx59-mark{bottom:9px;font-size:12px}}'
-    + '.fx59-result{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:16px;align-items:center;width:min(1040px,92vw);margin:0 auto}.fx59-result figure{margin:0;padding:12px 16px 14px;border-radius:10px;background:#fff;box-shadow:0 14px 34px rgba(10,16,37,.28)}.fx59-result figcaption{margin:0 0 6px;font-size:12px;font-weight:600;letter-spacing:-.01em;color:#5b6478}.fx59-result img{display:block;width:100%;height:auto}.fx59-arrow{font-size:22px;color:#fff;opacity:.85}.fx59-scale{grid-column:1/-1;margin:2px 0 0;text-align:center;font-size:13px;color:rgba(255,255,255,.86)}@media(max-width:760px){.fx59-result{grid-template-columns:minmax(0,1fr);gap:8px;width:min(430px,90vw)}.fx59-arrow{justify-self:center;transform:rotate(90deg);font-size:18px}.fx59-result figure{padding:9px 12px 10px}.fx59-scale{font-size:12px}}';
+    + '.fx59-result{position:absolute;z-index:4;display:grid;grid-template-columns:minmax(0,1fr);gap:8px;left:50%;top:190px;width:min(420px,90vw);margin:0;transform:translateX(-50%)}.fx59-result figure{margin:0;padding:9px 12px 10px;border-radius:10px;background:#fff;box-shadow:0 14px 34px rgba(10,16,37,.28)}.fx59-result figcaption{margin:0 0 5px;font-size:12px;font-weight:600;letter-spacing:-.01em;color:#5b6478}.fx59-result img{display:block;width:100%;height:auto}.fx59-arrow{justify-self:center;font-size:18px;line-height:1;color:#fff;opacity:.85;transform:rotate(90deg)}.fx59-scale{margin:2px 0 0;text-align:center;font-size:12px;color:rgba(255,255,255,.86)}@media(max-height:700px){.fx59-result{top:172px;width:min(340px,84vw)}}@media(min-width:900px){.fx59-result{left:auto;right:6%;top:50%;width:min(520px,46vw);transform:translateY(-52%)}.fx59-result figure{padding:12px 16px 14px}.fx59-scale{font-size:13px}}';
   document.head.append(look);
   const mark = () => {
     const stage = home(); if (!stage) return;
@@ -66,20 +67,22 @@
 
   const priorShow = window.showCinema, priorPlay = window.playCinema;
   if (typeof priorShow === 'function' && typeof priorPlay === 'function') {
-    const RESULT = '<div class="fx59-result"><figure><figcaption>원문 · 2027학년도 수능 수학 공통 12번</figcaption><img src="assets/front-v59/paper-original.webp" width="0" height="0" alt="2027학년도 수능 수학 공통 12번 원문"></figure><span class="fx59-arrow" aria-hidden="true">→</span><figure><figcaption>변형 결과 · 표현을 바꿔 새로 만든 문항</figcaption><img src="assets/front-v59/paper-result.webp" width="0" height="0" alt="같은 문항에서 표현을 바꿔 새로 만든 변형 문항"></figure><p class="fx59-scale">변형 관련 특허 출원 5건 · 2026년 11월 12일</p></div>';
+    const RESULT = '<div class="fx59-result"><figure><figcaption>원문 · 2027학년도 수능 수학 공통 12번</figcaption><img src="assets/front-v59/paper-original.webp" width="786" height="365" alt="2027학년도 수능 수학 공통 12번 원문"></figure><span class="fx59-arrow" aria-hidden="true">→</span><figure><figcaption>변형 결과 · 표현을 바꿔 새로 만든 문항</figcaption><img src="assets/front-v59/paper-result.webp" width="736" height="405" alt="같은 문항에서 표현을 바꿔 새로 만든 변형 문항"></figure><p class="fx59-scale">변형 관련 특허 출원 5건 · 2026년 11월 12일</p></div>';
     const dot = () => {
       const dots = document.querySelector('.cinema-dots');
-      if (!RESULT_SCENE || !dots || dots.querySelector('[data-cinema="3"]')) return;
+      if (!resultOn() || !dots || dots.querySelector('[data-cinema="3"]')) return;
       const button = document.createElement('button');
       button.type = 'button'; button.dataset.cinema = '3'; button.setAttribute('aria-label', '변형 문항'); button.setAttribute('aria-pressed', 'false'); button.innerHTML = '<span></span>';
       const last = dots.querySelector('[data-cinema="2"]'); if (last) last.after(button); else dots.append(button);
     };
     window.showCinema = function (index) {
-      if (!RESULT_SCENE || Number(index) !== 3) { priorShow.apply(this, Number(index) === 3 ? [0] : arguments); dot(); mark(); return; }
+      home()?.querySelector(':scope > .fx59-result')?.remove();
+      if (!resultOn() || Number(index) !== 3) { priorShow.apply(this, Number(index) === 3 ? [0] : arguments); dot(); mark(); return; }
       priorShow.call(this, 2); dot();
       const stage = home(); if (!stage) return;
       clearTimeout(cinemaTimer); cinemaIndex = 3; stage.dataset.scene = '3';
-      document.getElementById('cinema-product').innerHTML = RESULT;
+      document.getElementById('cinema-product').innerHTML = '';
+      stage.insertAdjacentHTML('beforeend', RESULT);
       document.getElementById('cinema-title').innerHTML = '기출을 분석해,<br>새 문항으로.';
       document.getElementById('cinema-label').textContent = '변형 문항';
       document.querySelectorAll('[data-cinema]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.cinema === '3')));
@@ -87,7 +90,7 @@
       mark();
     };
     window.playCinema = function () {
-      if (!RESULT_SCENE || !home() || (cinemaIndex !== 2 && cinemaIndex !== 3)) return priorPlay.apply(this, arguments);
+      if (!resultOn() || !home() || (cinemaIndex !== 2 && cinemaIndex !== 3)) return priorPlay.apply(this, arguments);
       clearTimeout(cinemaTimer);
       if (cinemaPaused || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       cinemaTimer = setTimeout(() => { window.showCinema(cinemaIndex === 2 ? 3 : 0); window.playCinema(); }, 10000);
