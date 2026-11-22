@@ -1,7 +1,7 @@
 /* Public edition guard: closed pages stay in code but are not reachable. */
 (() => {
   'use strict';
-  const closed = ['benefits','improve','classroom','upload','school-exams','exam-week','academy','diagnostic','diagnostic-run','diagnostic-result'];
+  const closed = ['benefits','improve','classroom','upload','school-exams','exam-week','academy','diagnostic','diagnostic-run','diagnostic-result','technology','technology-about'];
   const isClosed = hash => closed.includes(String(hash || '').replace(/^#/, '').split(/[/?]/)[0]);
   const guardHash = () => { if (isClosed(location.hash)) { location.replace('#home'); return true; } return false; };
   guardHash();
