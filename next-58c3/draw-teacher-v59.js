@@ -145,10 +145,10 @@
         if (li.querySelector('img,table')) longest = 99;
       });
       // v61: the rows are the canonical render's (5 · 3+2 · 2+2+1, never 4+1 — 렌더규격 §2-3); a fragment
-      // without that name falls back to the same three rows by length (no one-per-row list).
+      // without that name falls back by length, and a long choice keeps one per row (no choice folds in two).
       const row = (list.className.match(/\bch([1235])\b/) || [])[1];
       list.classList.add('dq59-choices');
-      list.dataset.fit = row ? (row === '1' ? '1' : row) : longest <= 8 ? '5' : longest <= 24 ? '3' : '2';
+      list.dataset.fit = row ? (row === '1' ? '1' : row) : longest <= 8 ? '5' : longest <= 14 ? '3' : longest <= 24 ? '2' : '1';
     }
     // A blank text token after a comma (as in a coordinate pair) stops the site math renderer and leaves
     // that formula in the browser's own math font; the comma already carries its spacing, so drop it.
