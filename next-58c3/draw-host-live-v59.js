@@ -5,6 +5,7 @@
   'use strict';
   const ENABLED = true;                          // the gate
   const POINTS = false;                          // v60 point board: off until the point functions are on the server
+  const TRIAL = false;                           // v61 guest trial (contract r2): off until the gate knows trial_menu · trial_draw · trial_open
   const service = window.DSService;
   if (!ENABLED || !service?.isLiveOrigin || window.DSDrawHostV59) return;
   const GATE = '/item-draw-gate';                // one address, action in the body
@@ -55,6 +56,73 @@
       throw Object.assign(fail(status, code), { data: error?.data ?? error?.body ?? null });
     } finally { done(); }
   }
+  // v61 guest trial (contract r2 · 맛보기_r2_s1/읽어라.md 2절). The three guest calls carry no Authorization header
+  // (with one the gate takes the member path); the reply is checked to the contract and only the named fields go
+  // on to the screen. A guest never reaches open / solution: without a token the gate answers 401 there.
+  const TRIAL_CODES = new Set(['forbidden', 'not_found', 'invalid_request', 'rate_limited', 'unavailable', 'trial_limit', 'origin_rejected']);
+  const count = (v, lo, hi) => Number.isInteger(v) && v >= lo && v <= hi;
+  const when = v => typeof v === 'string' && v.length <= 40 && !Number.isNaN(Date.parse(v));
+  const CELL = /^[A-Za-z0-9_-]{8,80}$/;            // a set key, or an opaque key for sets drawn together
+  const refusal = d => {
+    if (!d || typeof d !== 'object' || Array.isArray(d)) return null;
+    const out = {};
+    if (['address', 'all'].includes(d.scope)) out.scope = d.scope;
+    if (count(d.left, 0, 1000)) out.left = d.left;
+    if (when(d.resets_at)) out.resets_at = d.resets_at;
+    if (count(d.retry_after, 0, 86400)) out.retry_after = d.retry_after;
+    return out;
+  };
+  async function guest(body, signal) {
+    await slot();
+    try {
+      if (signal?.aborted) throw fail(0, 'aborted');
+      let r, d = null;
+      try {
+        r = await fetch(EDGE + GATE, { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'omit', cache: 'no-store', body: JSON.stringify(body), signal });
+        d = await r.json().catch(() => null);
+      } catch { throw fail(signal?.aborted ? 0 : 502, signal?.aborted ? 'aborted' : 'unavailable'); }
+      if (r.ok && d && typeof d === 'object' && !Array.isArray(d) && d.ok !== false) return d;
+      const name = d && typeof d.error === 'string' ? d.error : '';
+      throw Object.assign(fail(r.status || 502, TRIAL_CODES.has(name) ? name : 'unavailable'), { lost: false, data: refusal(d) });
+    } finally { done(); }
+  }
+  const trial = {
+    menu: async signal => {
+      const d = await guest({ action: 'trial_menu' }, signal);
+      const lim = d.limits;
+      if (!exact(d, ['cells', 'limits']) || !Array.isArray(d.cells) || d.cells.length > 500 || !exact(lim, ['daily_items', 'max_items']) ||
+          !count(lim.daily_items, 1, 1000) || !count(lim.max_items, 1, 50) ||
+          !d.cells.every(r => exact(r, ['subject', 'unit', 'stage', 'difficulty', 'cell_key', 'size']) && label(r.subject) && label(r.unit) && label(r.stage) && label(r.difficulty) && typeof r.cell_key === 'string' && CELL.test(r.cell_key) && count(r.size, 1, 50)) ||
+          new Set(d.cells.map(r => r.cell_key)).size !== d.cells.length) throw fail(502, 'unavailable');
+      return { cells: d.cells.map(r => ({ subject: r.subject, unit: r.unit, stage: r.stage, difficulty: r.difficulty, cell_key: r.cell_key, size: r.size, ready: true })),
+        limits: { daily_items: lim.daily_items, max_items: lim.max_items } };
+    },
+    // left = questions this address may still take today without signing in.
+    draw: async (cell_key, want, signal) => {
+      const d = await guest({ action: 'trial_draw', cell_key, count: want }, signal);
+      const items = Array.isArray(d.items) ? d.items : null;
+      if (!exact(d, ['status', 'items', 'ticket', 'left', 'resets_at']) || !items || items.length === 0 || items.length > want ||
+          !items.every(x => exact(x, ['item_id']) && typeof x.item_id === 'string' && UUID.test(x.item_id)) ||
+          new Set(items.map(x => x.item_id)).size !== items.length || d.status !== (items.length === want ? 'ok' : 'insufficient') ||
+          typeof d.ticket !== 'string' || !/^[A-Za-z0-9._~-]{8,400}$/.test(d.ticket) || !count(d.left, 0, 1000) || !when(d.resets_at)) throw fail(502, 'unavailable');
+      return { status: d.status, items: items.map(x => ({ item_id: x.item_id })), ticket: d.ticket, left: d.left, resets_at: d.resets_at };
+    },
+    open: async (cell_key, item_id, ticket, signal) => {
+      const d = await guest({ action: 'trial_open', cell_key, item_id, ticket }, signal);
+      if (!exact(d, ['item_id', 'question_html']) || d.item_id !== item_id || typeof d.question_html !== 'string') throw fail(502, 'unavailable');
+      return { item_id: d.item_id, question_html: d.question_html };
+    },
+    // Signed in: take the questions the guest saw into the member's record (the point board's sets only).
+    // Each question comes back with the set it belongs to; open and solution use that set.
+    claim: async (cell_key, want, signal) => {
+      const d = await call({ action: 'trial_claim', cell_key, count: want }, signal);
+      if (!exact(d, ['status', 'items', 'draws', 'points']) || !Array.isArray(d.items) || d.items.length === 0 || d.items.length > want ||
+          !d.items.every(x => exact(x, ['item_id', 'set_key']) && typeof x.item_id === 'string' && UUID.test(x.item_id) && typeof x.set_key === 'string' && UUID.test(x.set_key)) ||
+          new Set(d.items.map(x => x.item_id)).size !== d.items.length || d.status !== (d.items.length === want ? 'ok' : 'insufficient') ||
+          !Array.isArray(d.draws) || d.draws.length > 20 || !d.draws.every(x => x && typeof x === 'object' && typeof x.set_key === 'string' && UUID.test(x.set_key) && (x.draw_id === null || (typeof x.draw_id === 'string' && UUID.test(x.draw_id))) && count(x.next_page, 0, 9999))) throw fail(502, 'unavailable');
+      return { status: d.status, items: d.items.map(x => ({ item_id: x.item_id, set_key: x.set_key })), draws: d.draws.map(x => ({ set_key: x.set_key, next_page: x.next_page })) };
+    }
+  };
   window.DSDrawHostV59 = {
     ready: service.ready,
     signedIn: () => Boolean(service.session()),
@@ -93,6 +161,7 @@
       points: signal => call({ action: 'points' }, signal),
       library: (query, signal) => call({ action: 'history', ...query }, signal),
       reopen: (id, signal) => call({ action: 'reopen', draw_id: id }, signal)
-    } : {})
+    } : {}),
+    ...(TRIAL ? { trial } : {})
   };
 })();
