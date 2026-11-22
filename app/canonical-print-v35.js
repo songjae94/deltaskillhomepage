@@ -1,0 +1,43 @@
+/* Page composition only. Question and solution documents are untouched shared-renderer output. */
+(() => {
+  'use strict';
+  const original={...window.PrintComposerV14},bank=window.DSBasicExamV34;
+  if(!original||!bank?.canonical)return;
+  const safe=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const active=()=>studio.itemSource==='exam-basic-v34'&&studio.source==='practice';
+  const old={sheet,printSheet,previewSheetCount,showPaper};
+  function config(source=studio){const c=original.config(source);return {...c,canonical:source.itemSource==='exam-basic-v34'||c.questions.some(q=>q.canonical)};}
+  function sequence(c){
+    if(!c.canonical)return original.sequence(c);
+    const p=[];if(c.book)p.push({type:'cover',questions:[],offset:0});
+    for(let i=0;i<c.questions.length;i+=c.layout)p.push({type:'questions',questions:c.questions.slice(i,i+c.layout),offset:i});
+    for(let i=0;i<c.questions.length;i+=4)p.push({type:'solutions',questions:c.questions.slice(i,i+4),offset:i});
+    return p;
+  }
+  function card(q,kind){return `<div class="source-card"><iframe title="${safe(q.short)} ${kind==='question'?'문제':'해설'}" src="${safe(new URL(q[kind+'Frame'],location.href).href)}" scrolling="no" style="width:${bank.cardWidth}px;height:600px"></iframe></div>`;}
+  const frameScript=`(()=>{const observers=[];const pending=Array.from(document.querySelectorAll('.source-card iframe')).map(f=>new Promise(resolve=>{let done=false;const fit=()=>{try{const d=f.contentDocument;if(!d?.body)return;const width=${bank.cardWidth};const h=Math.ceil(Math.max(d.body.scrollHeight,d.body.getBoundingClientRect().height)+36);const scale=f.parentElement.clientWidth/width;f.style.height=h+'px';f.style.transform='scale('+scale+')';f.parentElement.style.height=Math.ceil(h*scale)+'px';if(!done){done=true;resolve();}}catch{document.body.dataset.renderError='source';resolve();}};f.addEventListener('load',async()=>{await f.contentDocument?.fonts?.ready;await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));fit();const ro=new ResizeObserver(fit);ro.observe(f.parentElement);observers.push(ro);},{once:true});if(f.contentDocument?.readyState==='complete'&&f.contentDocument?.body?.children.length)fit();setTimeout(()=>{if(!done){document.body.dataset.renderError='load';resolve();}},15000);}));Promise.all(pending).then(()=>{document.body.dataset.ready='true';});})();`;
+  function documentHTML(c,onlyPage){
+    const pages=sequence(c),settings=original.normalizeSettings(c.settings),title=safe(c.title),identity=[settings.academyName,settings.teacherName].filter(Boolean).map(safe).join(' · ');
+    const chosen=onlyPage===undefined?pages:pages.slice(onlyPage,onlyPage+1);
+    return `<!doctype html><html lang="ko"><meta charset="utf-8"><title>${title}</title><style>*{box-sizing:border-box}html,body{margin:0;padding:0;background:#fff;color:#191919;font-family:Arial,"Malgun Gothic",sans-serif}body{font-size:12px}.paper{width:210mm;height:297mm;padding:14mm 13mm;position:relative;break-after:page;overflow:hidden}.head{height:25mm;border-bottom:1px solid #353535;margin-bottom:7mm}.brand{display:flex;justify-content:space-between;font-size:9px;letter-spacing:.03em}.head h1{font-size:23px;letter-spacing:-.03em;margin:12px 0 5px;text-align:${settings.titleAlign}}.head small{font-size:10px}.student{float:right;font-size:10px}.body{height:225mm}.questions{display:grid;grid-template-columns:${c.layout===1?'1fr':'1fr 1fr'};gap:6mm;height:100%;grid-template-rows:${c.layout===4?'1fr 1fr':'1fr'}}.question{min-width:0;border-bottom:1px solid #ddd}.qhead{display:flex;justify-content:space-between;align-items:center;margin:0 0 4px}.qhead b{font-size:17px}.qhead small{font-size:8px;color:#777}.source-card{position:relative;width:100%;min-height:20px}.source-card iframe{position:absolute;left:0;top:0;border:0;transform-origin:0 0;max-width:none;background:#fff}.solutions{display:grid;grid-template-columns:1fr 1fr;gap:6mm}.solutions>div+div{border-left:1px solid #ddd;padding-left:6mm}.solution{margin-bottom:5mm;break-inside:avoid}.solution .qhead{border-bottom:1px solid #eee;padding-bottom:6px}.foot{position:absolute;bottom:10mm;left:13mm;right:13mm;display:flex;justify-content:space-between;font-size:9px;color:#666}.cover{height:220mm;display:flex;flex-direction:column;justify-content:center}.cover h2{font-size:37px;line-height:1.4}.cover p{font-size:14px}.meta{font-size:10px;color:#777}@page{size:A4;margin:0}@media print{.paper:last-child{break-after:auto}body[data-render-error] .paper{visibility:hidden}}</style><link rel="stylesheet" href="${safe(new URL('print-paper-v48.css?v=48.1',location.href).href)}"><body class="${onlyPage===undefined?'print-document':'single-page'}">${chosen.map((p,local)=>{const n=onlyPage===undefined?local:onlyPage;let content='';if(p.type==='cover')content=`<div class="cover"><p>${safe(c.subject)}</p><h2>${title}</h2><p>${c.questions.length}문항 · 문제와 해설</p></div>`;else if(p.type==='questions')content='<div class="questions">'+p.questions.map((q,i)=>`<article class="question"><div class="qhead"><b>${String(p.offset+i+1).padStart(2,'0')}</b><small>${safe(q.short)}</small></div>${card(q,'question')}<div class="ds48-writing"><span>풀이</span><small>검산 □　 조건 □　 계산 □　 답 □</small></div></article>`).join('')+'</div>';else{const split=Math.ceil(p.questions.length/2);content='<div class="solutions">'+[p.questions.slice(0,split),p.questions.slice(split)].map((col,k)=>'<div>'+col.map((q,i)=>`<article class="solution"><div class="qhead"><b>${p.offset+k*split+i+1}. ${['①','②','③','④','⑤'][q.answer]}</b><small>${safe(q.short)}</small></div>${card(q,'solution')}</article>`).join('')+'</div>').join('')+'</div>';}return `<section class="paper"><header class="head"><div class="brand"><strong>${identity||'DELTA<em>SKILL</em>'}</strong><span>${safe(settings.headerText||c.unit)}</span></div><h1 style="--title-size:${p.type==='solutions'?31:Math.max(18,Math.min(31,620/Math.max(1,c.title.length)))}px">${p.type==='solutions'?'정답과 해설':title}</h1>${p.type==='solutions'?'<small>'+title+'</small>':''}${settings.showStudentName?'<span class="student">이름 ______________</span>':''}</header><main class="body">${content}</main><footer class="foot"><span>${safe(settings.footerText||('DELTASKILL · '+c.unit))}</span><span>${settings.showPageNumber?(n+1)+' / '+pages.length:''}</span></footer></section>`;}).join('')}<script>${frameScript}</script></body></html>`;
+  }
+  function renderPage(c,page,i){if(!c.canonical)return original.renderPage.apply(this,arguments);return `<section class="pc14-page cp35-page" aria-label="${i+1}쪽 ${page.type==='solutions'?'정답과 해설':page.type==='cover'?'표지':'문제'}"><iframe class="cp35-document" title="${i+1}쪽 실제 인쇄 지면" srcdoc="${safe(documentHTML(c,i))}"></iframe></section>`;}
+  function renderPages(c=config()){return c.canonical?sequence(c).map((p,i)=>renderPage(c,p,i)):original.renderPages(c);}
+  let printing=false;
+  async function printConfig(c=config()){
+    if(!c.canonical)return original.printConfig(c);if(printing||!c.questions.length)return;
+    printing=true;const f=document.createElement('iframe');f.style.cssText='position:fixed;left:-10000px;top:0;width:794px;height:1123px;border:0';f.title='인쇄용 실제 디지털 지면';f.srcdoc=documentHTML(c);document.body.append(f);
+    try{await new Promise((resolve,reject)=>{const started=Date.now(),timer=setInterval(()=>{const d=f.contentDocument;if(d?.body?.dataset.ready==='true'){clearInterval(timer);d.body.dataset.renderError?reject(Error('render')):resolve();}else if(Date.now()-started>18000){clearInterval(timer);reject(Error('load'));}},80);});
+      const d=f.contentDocument;const overflow=Array.from(d.querySelectorAll('.body')).some(x=>x.scrollHeight>x.clientHeight+2);if(overflow)throw Error('overflow');
+      f.contentWindow.focus();f.contentWindow.print();
+    }catch{toast('지면을 완전히 불러오지 못했습니다. 인쇄하지 않고 구성을 유지합니다.');}
+    finally{printing=false;setTimeout(()=>f.remove(),60000);}
+  }
+  const facade={...original,config,sequence,renderPage,renderPages,printConfig,documentHTML};
+  window.DSCanonicalPrintV35=facade;
+  Object.assign(window.PrintComposerV14,facade);
+  sheet=function(){if(!active())return old.sheet.apply(this,arguments);const c=config(),pages=renderPages(c);creatorPage=Math.max(0,Math.min(creatorPage,pages.length-1));return `<div class="pc14-preview-scale">${pages[creatorPage]||''}</div>`;};
+  printSheet=function(){return active()?printConfig(config()):old.printSheet.apply(this,arguments);};
+  previewSheetCount=function(){return active()?sequence(config()).length:old.previewSheetCount.apply(this,arguments);};
+  showPaper=function(){return old.showPaper.apply(this,arguments);};
+})();

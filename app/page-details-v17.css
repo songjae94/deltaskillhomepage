@@ -1,0 +1,47 @@
+/* These rules affect screen interiors only; canonical print surfaces are untouched. */
+@media screen {
+  html[data-interior="v12"] body[data-page="library"] .library-search {
+    position: relative;
+  }
+  html[data-interior="v12"] body[data-page="library"] .library-search input {
+    padding-right: 72px;
+  }
+  html[data-interior="v12"] body[data-page="library"] .library-clear-v17 {
+    position: absolute;
+    right: 4px;
+    top: 1px;
+    min-width: 60px;
+    min-height: 44px;
+    border: 0;
+    border-radius: 4px;
+    background: #fff;
+    color: #574579;
+    font-size: 13px;
+    font-weight: 650;
+    cursor: pointer;
+  }
+  html[data-interior="v12"] .library-clear-v17[hidden] { display: none; }
+  html[data-interior="v12"] .library-clear-v17:hover { background: #f1eef7; }
+  html[data-interior="v12"] :is(.student-v7, .study-v12, .material-detail, .classroom-surface) button:focus-visible,
+  html[data-interior="v12"] .library-clear-v17:focus-visible {
+    outline: 3px solid #8575c9;
+    outline-offset: 3px;
+  }
+  html[data-interior="v12"] .csat-scope-v17 {
+    padding: 12px 14px;
+    border-left: 2px solid #b5a6d0;
+    background: #f6f3fa;
+    color: #4e465a;
+    font-size: 13px;
+    line-height: 1.7;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+  }
+  html[data-interior="v12"] .classroom-scope-v17 {
+    display: block;
+    margin-top: 6px;
+    line-height: 1.65;
+    color: #4e465a;
+    overflow-wrap: anywhere;
+  }
+}

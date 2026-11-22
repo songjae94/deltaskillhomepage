@@ -1,0 +1,59 @@
+/* Live hero demonstration; same 1024×724 viewport inside the existing iPad.
+   Hardware, status bar, home indicator, real practice and print are untouched. */
+@media screen {
+html[data-design="b"] body.home-body .ip19-glass>.ht23-demo{
+ position:absolute;left:0;top:3.125%;width:100%;height:94.2708333%;box-sizing:border-box;
+ display:flex;flex-direction:column;gap:1.1cqw;padding:1.7cqw 3.4cqw 1.7cqw;
+ background:#f4f5f9;color:#34394c;font-family:"Pretendard Variable",Pretendard,"Malgun Gothic",sans-serif;
+ container-type:inline-size;overflow:hidden;isolation:isolate;text-align:left;pointer-events:none;
+}
+html[data-design="b"] body.home-body .ht23-heading{display:flex;justify-content:space-between;align-items:center;gap:3cqw}
+html[data-design="b"] body.home-body .ht23-brand{display:block;margin-bottom:.55cqw;font:900 1.85cqw/1.2 Arial,sans-serif;letter-spacing:-.035em;color:#74658b}
+html[data-design="b"] body.home-body .ht23-heading strong{display:block;font-size:4.2cqw;line-height:1.2;font-weight:700;letter-spacing:-.055em;color:#3e3954}
+html[data-design="b"] body.home-body .ht23-heading>span{font-size:1.65cqw;line-height:1.4;color:#70778b;letter-spacing:.015em}
+html[data-design="b"] body.home-body .ht23-timing{display:flex;justify-content:space-between;align-items:center;gap:4cqw;padding:.25cqw 0 1.2cqw;border-bottom:.15cqw solid #d9dde7}
+html[data-design="b"] body.home-body .ht23-label{display:block;font-size:2.1cqw;font-weight:550;line-height:1.5;color:#666f83}
+html[data-design="b"] body.home-body .ht23-clock{display:block;margin-top:.3cqw;font-family:Arial,sans-serif;font-size:12.3cqw;font-weight:500;line-height:1;letter-spacing:-.065em;font-variant-numeric:tabular-nums;color:#4e426c;white-space:nowrap}
+html[data-design="b"] body.home-body .ht23-total{display:flex;flex-direction:column;align-items:flex-end;gap:1.7cqw;padding-top:3cqw}
+html[data-design="b"] body.home-body .ht23-total>strong{font-size:2.8cqw;font-weight:550;line-height:1.4;white-space:nowrap;color:#4a5065}
+html[data-design="b"] body.home-body .ht23-total b{font-size:5cqw;font-weight:550;letter-spacing:-.06em;color:#50466c}
+html[data-design="b"] body.home-body .ht23-total>span{font-size:1.9cqw;line-height:1.5;color:#697487}
+html[data-design="b"] body.home-body .ht23-paper{min-height:0;flex:1;display:flex;flex-direction:column;background:#fff;border:.14cqw solid #dce0e8;border-radius:.65cqw;padding:1.55cqw 2.3cqw;box-shadow:0 .3cqw 0 #e2e5ec;overflow:hidden}
+html[data-design="b"] body.home-body .ht23-paper-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:.45cqw;gap:2cqw}
+html[data-design="b"] body.home-body .ht23-paper-top>strong{font-size:2.5cqw;font-weight:600;line-height:1.2;color:#75628f}
+html[data-design="b"] body.home-body .ht23-paper-top>span{font-size:1.6cqw;color:#7d8696;line-height:1.4}
+html[data-design="b"] body.home-body .ht23-question{font-size:2.7cqw;line-height:1.7;letter-spacing:-.025em;color:#303749;word-break:keep-all;overflow-wrap:anywhere}
+html[data-design="b"] body.home-body .ht23-question p{margin:0;line-height:inherit}
+html[data-design="b"] body.home-body .ht23-question math{font-size:1.12em;color:inherit}
+html[data-design="b"] body.home-body .ht23-working{position:relative;flex:1;min-height:0;margin:.7cqw 0 1cqw;border-radius:.55cqw;background:#fafafa}
+html[data-design="b"] body.home-body .ht23-ink{display:block;width:100%;height:100%;overflow:visible}
+html[data-design="b"] body.home-body .ht23-ink [data-ink]{visibility:hidden;fill:none;stroke-dasharray:1 2;stroke-dashoffset:1;stroke-linecap:round;stroke-linejoin:round}
+html[data-design="b"] body.home-body .ht23-axes{stroke:#343434;stroke-width:1.2}
+html[data-design="b"] body.home-body .ht23-curve{stroke:#202020;stroke-width:2.1}
+html[data-design="b"] body.home-body .ht23-graph-details{visibility:hidden}
+html[data-design="b"] body.home-body .ht23-working.has-graph .ht23-graph-details{visibility:visible}
+html[data-design="b"] body.home-body .ht23-region{fill:#d2d2d2}
+html[data-design="b"] body.home-body .ht23-graph-labels{fill:#262626;font:15px Georgia,"Times New Roman",serif;font-variant-numeric:lining-nums}
+html[data-design="b"] body.home-body .ht23-variable{font-style:italic}
+html[data-design="b"] body.home-body .ht23-strokes{stroke:#24529b;stroke-width:2.15}
+html[data-design="b"] body.home-body .ht23-pencil{filter:drop-shadow(1px 1px 1.6px #273a6645)}
+html[data-design="b"] body.home-body .ht23-solution{position:absolute;width:1px;height:1px;clip-path:inset(50%);overflow:hidden;white-space:nowrap}
+html[data-design="b"] body.home-body .ht23-options{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:1.2cqw;align-items:stretch}
+html[data-design="b"] body.home-body .ht23-options>span{min-height:4.6cqw;display:flex;align-items:center;justify-content:center;gap:.7cqw;padding:.7cqw .4cqw;border:.13cqw solid #e0e3eb;border-radius:.55cqw;background:#fafbfc;color:#4b5367;box-sizing:border-box;transition:background .2s,border-color .2s,box-shadow .2s}
+html[data-design="b"] body.home-body .ht23-options small{font-size:1.55cqw;line-height:1;color:#8590a0}
+html[data-design="b"] body.home-body .ht23-options math{font-size:2.6cqw;line-height:1.3;color:inherit}
+html[data-design="b"] body.home-body .ht23-options>.is-selected{background:#ecf3ff;border-color:#6484b6;box-shadow:inset 0 .15cqw .35cqw #33518012;color:#244f92}
+html[data-design="b"] body.home-body .ht23-bottom{display:flex;justify-content:space-between;align-items:center;gap:3cqw}
+html[data-design="b"] body.home-body .ht23-progress{display:flex;align-items:center;gap:.8cqw}
+html[data-design="b"] body.home-body .ht23-progress>span{display:grid;place-items:center;width:3.8cqw;height:3.8cqw;border:.13cqw solid #d8deea;border-radius:.45cqw;background:#fff;color:#8a94a5;font:400 1.65cqw/1 Arial,sans-serif}
+html[data-design="b"] body.home-body .ht23-progress>span.is-current{background:#6d5c88;border-color:#6d5c88;color:#fff}
+html[data-design="b"] body.home-body .ht23-progress>span.is-done{background:#e4dfed;border-color:#d2c9e1;color:#70617f}
+html[data-design="b"] body.home-body .ht23-progress>i{font-size:1.8cqw;font-style:normal;color:#8a94a5}
+@media(max-width:560px){
+ html[data-design="b"] body.home-body .ht23-clock{font-size:12.6cqw}
+ html[data-design="b"] body.home-body .ht23-heading strong{font-size:4.5cqw}
+ html[data-design="b"] body.home-body .ht23-total>strong{font-size:3cqw}
+ html[data-design="b"] body.home-body .ht23-label{font-size:2.4cqw}
+}
+@media(prefers-reduced-motion:reduce){html[data-design="b"] body.home-body .ht23-options>span{transition:none}}
+}

@@ -1,0 +1,9 @@
+/* Flat optical plane. Layout zoom preserves native type and straight rules. */
+.hd48-chassis{position:absolute;left:14.3%;top:5.6%;width:73.6%;aspect-ratio:1074/818;border-radius:30px;padding:13px;background:linear-gradient(125deg,#cad0d8 0%,#7a8593 1%,#20252c 1.4%,#090b0f 2.1%,#11151b 47%,#04060a 87%,#525e70 98.9%,#d8dce2 99.3%,#535f70 100%);box-shadow:0 0 0 1px #adb6c3,inset 0 0 0 2px #e2e6ed66,inset 0 0 0 4px #10151e,0 18px 32px #1320393d,0 5px 7px #0d15263b;isolation:isolate}
+.hd48-chassis:before{content:'';position:absolute;inset:5px;border:1px solid #5361717a;border-radius:26px;box-shadow:inset 0 1px 0 #e5efff2b;pointer-events:none}.hd48-chassis:after{content:'';position:absolute;top:-3px;right:10%;width:45px;height:3px;border-radius:3px 3px 0 0;background:linear-gradient(#a8b1be,#343e4c);box-shadow:0 0 1px #0008}
+.hd48-camera{position:absolute;width:5px;height:5px;top:4px;left:50%;margin-left:-2.5px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#40546f 0%,#132133 32%,#05070b 65%,#405062 100%);box-shadow:0 0 0 1px #171d29;z-index:2}
+.hd48-chassis>.hd40-screen{position:relative!important;left:auto!important;top:auto!important;width:100%!important;height:100%!important;border-radius:16px;transform:none!important;box-shadow:0 0 0 1px #000,inset 0 1px 0 #fff2;overflow:hidden;background:#f7f7fa;container-type:normal}
+.hd48-display{position:relative;width:1024px;height:768px;transform:none!important;transform-origin:0 0}
+.hd48-chassis .hd40-glass-light{background:linear-gradient(118deg,#fff0 92%,#daeaff0a);opacity:1;box-shadow:inset 0 1px 0 #fff8,inset 1px 0 0 #fff4;pointer-events:none}
+.hd48-display .ht23-qbody,.hd48-display .ht23-timer{color:#172234}.hd48-display .ht23-timer{font-weight:760}
+@media(max-width:800px){.hd48-chassis{padding:8px;border-radius:20px}.hd48-chassis:before{inset:3px;border-radius:17px}.hd48-chassis>.hd40-screen{border-radius:12px}.hd48-camera{top:2px;width:3px;height:3px;margin-left:-1.5px}}

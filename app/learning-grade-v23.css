@@ -1,0 +1,21 @@
+@media screen {
+  .lg23-rubric { margin:21px 0; border-top:1px solid #d3d9df; border-bottom:1px solid #d3d9df; color:#455260; background:none; }
+  .lg23-rubric>summary { display:flex; align-items:center; justify-content:space-between; gap:15px; padding:16px 0; min-height:48px; cursor:pointer; list-style:none; }
+  .lg23-rubric>summary::-webkit-details-marker { display:none; }
+  .lg23-rubric>summary strong { font-size:13px; font-weight:550; line-height:1.8; }
+  .lg23-rubric>summary>span { color:#87929e; font-size:10px; line-height:1.8; }
+  .lg23-rubric>summary::after { content:'＋'; color:#85929f; font-size:15px; flex:none; }
+  .lg23-rubric[open]>summary::after { content:'−'; }
+  .lg23-rubric>summary:focus-visible { outline:3px solid #8575c9; outline-offset:3px; }
+  .lg23-rubric>ol { display:block; list-style:none; margin:0; padding:0 0 10px; }
+  .lg23-rubric>ol>li { display:grid; grid-template-columns:53px minmax(0,1fr); gap:17px; align-items:center; min-height:44px; padding:10px 0; border-top:1px solid #e0e4e7; font-size:12px; line-height:1.8; }
+  .lg23-rubric>ol>li>b { color:#647587; font-size:18px; font-weight:500; font-variant-numeric:tabular-nums; }
+  .lg23-rubric>ol>li>b small { margin-left:4px; color:#8b96a2; font-size:9px; font-weight:400; }
+  .lg23-rubric>p { margin:0 0 18px; font-size:10px; line-height:1.9; color:#89939d; }
+  .lg23-scale-label { color:#7a8795; font-size:11px; margin:0 0 10px; line-height:1.8; }
+}
+@media screen and (max-width:660px) {
+  .lg23-rubric>summary { flex-wrap:wrap; gap:5px 12px; }
+  .lg23-rubric>summary>span { margin-left:auto; font-size:9px; }
+  .lg23-rubric>ol>li { gap:12px; font-size:11px; }
+}

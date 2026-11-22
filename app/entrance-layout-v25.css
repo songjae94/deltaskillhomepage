@@ -1,0 +1,40 @@
+/* Keep the two entrances anchored; one deliberate full-width secondary action. */
+html[data-design="b"] .home-body .role-dock{display:grid;grid-template-columns:1fr 1fr;width:min(430px,86%);gap:10px 12px;bottom:30px;align-items:stretch}
+html[data-design="b"] .home-body .role-dock>a{width:100%;min-width:0;min-height:57px}
+html[data-design="b"] .home-body .role-dock .ip23-request-entry{position:static;grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;translate:none;transform:none;width:100%;max-width:none;min-height:44px;padding:9px 16px;border:1px solid #ffffff29;border-radius:9px;background:linear-gradient(120deg,#1e243cda,#222338b0);box-shadow:inset 0 1px 0 #ffffff14;backdrop-filter:blur(18px);white-space:normal;text-align:left}
+html[data-design="b"] .home-body .role-dock .ip25-request-copy{display:flex;align-items:center;gap:13px;min-width:0}
+html[data-design="b"] .home-body .role-dock .ip25-request-copy strong{font-size:12px;font-weight:650;color:#fff}
+html[data-design="b"] .home-body .role-dock .ip25-request-copy>span{font-size:10px;font-weight:400;color:#cbcbd9}
+html[data-design="b"] .home-body .role-dock .ip23-request-entry .ip25-request-arrow{font-size:19px;font-weight:400;color:#e0d8ef;line-height:1}
+html[data-design="b"] .home-body .role-dock .ip23-request-entry:hover{background:#30334deb;box-shadow:inset 0 1px 0 #ffffff29}
+@media(max-width:800px){html[data-design="b"] .home-body .role-dock{bottom:48px}html[data-design="b"] .home-body:has(.ip23-request-entry) .cinema-controls{bottom:12px}}
+@media(max-width:560px){html[data-design="b"] .home-body .role-dock{top:auto;bottom:48px;gap:8px 10px}html[data-design="b"] .home-body .role-dock>a{min-height:53px}html[data-design="b"] .home-body .role-dock .ip23-request-entry{min-height:42px;padding:8px 14px}html[data-design="b"] .home-body .role-dock .ip25-request-copy{gap:10px}}
+
+/* v26: a single, tangible entry with its own small paper detail. */
+html[data-design="b"] .home-body .role-dock .ip23-request-entry{
+ min-height:64px;padding:10px 15px 11px;gap:13px;border-radius:12px;
+ border:1px solid #b7bfd059;border-top-color:#e1e6f48f;border-bottom-color:#192033;
+ background:linear-gradient(115deg,#343e52ef,#262c40f2 64%,#34384cec);
+ box-shadow:inset 0 1px 0 #ffffff24,inset 0 -2px 0 #0d142e5e,0 2px 0 #1a213bac,0 6px 14px #10192a26;
+ transition:box-shadow .18s,background .18s,transform .18s;
+}
+html[data-design="b"] .home-body .role-dock .ip23-request-entry .ip26-request-mark{display:grid;place-items:center;flex:none;width:36px;height:38px;filter:drop-shadow(0 2px 2px #0b102b45)}
+html[data-design="b"] .home-body .role-dock .ip26-request-mark svg{width:36px;height:36px;overflow:visible}
+html[data-design="b"] .home-body .role-dock .ip26-sheet-back{fill:#8994af;stroke:#d7deed;stroke-width:.65}
+html[data-design="b"] .home-body .role-dock .ip26-sheet-front{fill:#f5f5fc;stroke:#fff;stroke-width:.65}
+html[data-design="b"] .home-body .role-dock .ip26-sheet-fold{fill:#cdd4e5;stroke:#a5b0ca;stroke-width:.65}
+html[data-design="b"] .home-body .role-dock .ip26-sheet-ink{stroke:#6b7590;stroke-width:1.4;stroke-linecap:round}
+html[data-design="b"] .home-body .role-dock .ip23-request-entry .ip25-request-copy{display:flex;flex:1;align-items:flex-start;flex-direction:column;gap:3px;line-height:1.35}
+html[data-design="b"] .home-body .role-dock .ip25-request-copy strong{font-size:14px;font-weight:680;letter-spacing:-.025em;color:#fff;text-shadow:0 1px 0 #0004}
+html[data-design="b"] .home-body .role-dock .ip23-request-entry .ip25-request-copy>span{font-size:10px;font-weight:420;letter-spacing:.005em;color:#bec8da}
+html[data-design="b"] .home-body .role-dock .ip23-request-entry .ip25-request-arrow{display:grid;place-items:center;flex:none;width:31px;height:31px;border-radius:50%;border:1px solid #d9ddef38;background:linear-gradient(#ffffff16,#ffffff03);box-shadow:inset 0 1px 0 #ffffff13,0 1px 2px #0002}
+html[data-design="b"] .home-body .role-dock .ip25-request-arrow svg{width:16px;height:16px;stroke:#edf0fa;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+html[data-design="b"] .home-body .role-dock .ip23-request-entry:hover{transform:translateY(-1px);background:linear-gradient(115deg,#414c65f5,#30384ef5 64%,#41435aef);box-shadow:inset 0 1px 0 #ffffff35,inset 0 -2px 0 #131b2b60,0 3px 0 #1a213b94,0 8px 19px #10192a29}
+html[data-design="b"] .home-body .role-dock .ip23-request-entry:active{transform:translateY(2px);box-shadow:inset 0 2px 4px #10192a4a,inset 0 1px 0 #fff1,0 1px 0 #1a213b8f}
+@media(max-width:560px){
+ html[data-design="b"] .home-body .role-dock .ip23-request-entry{min-height:60px;padding:9px 13px;gap:10px}
+ html[data-design="b"] .home-body .role-dock .ip25-request-copy strong{font-size:13px}
+ html[data-design="b"] .home-body .role-dock .ip23-request-entry .ip26-request-mark{width:31px;height:34px}
+ html[data-design="b"] .home-body .role-dock .ip26-request-mark svg{width:33px;height:33px}
+}
+@media(prefers-reduced-motion:reduce){html[data-design="b"] .home-body .role-dock .ip23-request-entry{transition:none}}

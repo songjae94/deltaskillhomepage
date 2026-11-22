@@ -1,0 +1,23 @@
+/* 지침 확인: 렌더규격-0903@r1.11 · 카드@r1 (스킬: 렌더생산|렌더전수조사)
+   Load after the VERIFIED ops KaTeX CSS with base64-embedded woff2 fonts.
+   No .katex font-family/size override, positional limits hack or glyph scaling. */
+.wm23-equation{white-space:nowrap}
+.wm23-equation[data-display="block"]{display:block;margin:.45em 0 .55em}
+/* UI text context is established before typesetting; engine glyph sizes and
+   script proportions remain entirely KaTeX/TeX controlled. */
+.ht23-options{font-size:2.15cqw}
+/* R-98: enlarge the containing text line, not fractions or operator scripts. */
+:is(.question-stem,.hero-question,.ht23-question,.solution p,.pc14-stem p,.pc14-solution p,.techv20-equation):has(.wm23-tall){line-height:2}
+/* Explanation layout follows §2; original question alignment is preserved. */
+.solution .wm23-equation[data-display="block"]>.katex-display,
+.pc14-solution .wm23-equation[data-display="block"]>.katex-display{text-align:left}
+.solution .wm23-equation[data-display="block"]>.katex-display>.katex,
+.pc14-solution .wm23-equation[data-display="block"]>.katex-display>.katex{text-align:left;padding-left:1.1em}
+@media screen{
+ .wm23-equation .katex .frac-line{border-bottom-width:max(1px,.06em);border-bottom-color:currentColor}
+}
+/* The fraction-bar treatment below is the explicit r1.10/R-248 print rule;
+   it does not move a symbol or resize a script, and is not a layout workaround. */
+@media print{
+ .wm23-equation .katex .frac-line{border-bottom-width:1px!important;transform:scaleY(.56);transform-origin:50% 100%}
+}

@@ -1,0 +1,121 @@
+/* Material teacher v21. Append after v20/tactile styles.
+   Only teacher and print-design screen surroundings; no A4 page, math, print,
+   source-image or behavior changes. The existing flatlay photograph is reused. */
+@media screen {
+html[data-design="b"][data-interior="v12"] body:is([data-page="teacher"],[data-page="print-design"]){
+ background-color:#f3f4f5;
+ background-image:radial-gradient(#33415408 .45px,transparent .65px),linear-gradient(125deg,#ffffffb3,transparent 65%);
+ background-size:4px 4px,100% 100%;
+}
+/* Main focal object: a squared work surface carrying the real document. */
+html[data-design="b"][data-interior="v12"] body:is([data-page="teacher"],[data-page="print-design"]) .creator-canvas{
+ border:1px solid #cbd0d7;border-top-color:#eef0f3;border-left-color:#e2e6ea;border-bottom-color:#aab3c0;
+ border-radius:7px;background:#e7e9ed;
+ box-shadow:0 2px 0 #c7ced6,1px 5px 7px #2532480a,4px 14px 29px #27324712;
+}
+html[data-design="b"][data-interior="v12"] body:is([data-page="teacher"],[data-page="print-design"]) .creator-canvas-toolbar{
+ background:linear-gradient(120deg,#ffffffd9,transparent 58%),linear-gradient(#f9fafb,#eef0f3);
+ border-bottom:1px solid #cbd2dc;box-shadow:inset 0 1px 0 #fff;
+}
+html[data-design="b"][data-interior="v12"] body:is([data-page="teacher"],[data-page="print-design"]) .creator-canvas-toolbar strong{
+ font-size:13px;font-weight:650;letter-spacing:-.025em;color:#444c60;text-shadow:0 1px 0 #fff;
+}
+html[data-design="b"][data-interior="v12"] body:is([data-page="teacher"],[data-page="print-design"]) .creator-canvas-footer{
+ background:linear-gradient(#e9ecf0,#e4e8ed);border-top:1px solid #cdd4df;color:#7a8495;font-size:10px;letter-spacing:.02em;
+ box-shadow:inset 0 1px 0 #ffffff85;
+}
+html[data-design="b"][data-interior="v12"] body:is([data-page="teacher"],[data-page="print-design"]) .creator-paper-stage{
+ background-color:#e6e8eb;
+ background-image:radial-gradient(#38485f0a .5px,transparent .7px),linear-gradient(135deg,#f5f6f7,#dce1e7);
+ background-size:3px 3px,100% 100%;
+}
+/* Neutralize only the photographic background's warmth, without filtering the document. */
+html[data-design="b"][data-interior="v12"] body:is([data-page="teacher"],[data-page="print-design"]) .creator-paper-stage .paper-photo-scene{
+ background-color:#e4e6e9;background-blend-mode:luminosity;
+ box-shadow:inset 0 1px 4px #25354b07;
+}
+/* Page-edge shadows belong to the host, never to the canonical A4 renderer. */
+html[data-design="b"][data-interior="v12"] body:is([data-page="teacher"],[data-page="print-design"]) .creator-canvas .creator-paper-stage #sheet{
+ mix-blend-mode:normal;
+ box-shadow:1px 1px 0 #c4c9d0,2px 3px 0 #fbfcfd,3px 4px 0 #c5cbd4,4px 5px 0 #f9fafb,5px 6px 0 #bfc7d1,6px 10px 13px #17263c12,11px 21px 27px #17263c17!important;
+}
+/* Quiet tools: matte painted side panel and readable, solid inset fields. */
+html[data-design="b"][data-interior="v12"] body[data-page="teacher"] .creator-config{
+ background-color:#2c3449;
+ background-image:radial-gradient(#ffffff08 .45px,transparent .7px),linear-gradient(120deg,#ffffff05,transparent 54%,#00000008);
+ background-size:4px 4px,100% 100%;border:1px solid #20293a;border-top-color:#596071;border-left-color:#434b60;
+ border-radius:5px;box-shadow:inset 0 1px 0 #ffffff0a,0 2px 0 #202939,2px 7px 13px #25324912;
+}
+html[data-design="b"][data-interior="v12"] body[data-page="teacher"] .creator-config .creator-step-title h2{font-weight:600;letter-spacing:-.025em;color:#eff1f7}
+html[data-design="b"][data-interior="v12"] body[data-page="teacher"] .creator-config .creator-field{font-size:12px;line-height:1.6;color:#c8ccd9}
+html[data-design="b"][data-interior="v12"] body[data-page="teacher"] .creator-config :is(input[type="text"],select){
+ background-color:#f9fafc;color:#3c465a;border-color:#1d283b;border-top-color:#142035;
+ box-shadow:inset 0 1px 3px #18253d19,0 1px 0 #ffffff18;border-radius:4px;
+}
+html[data-design="b"][data-interior="v12"] body[data-page="teacher"] .tb20-surface>.tb20-mode{
+ background:linear-gradient(125deg,#f7f8fa,#e9edf2);border-top-color:#fff;border-left-color:#eef1f5;border-bottom-color:#c9d1dc;
+ box-shadow:inset 0 1px 0 #fff,0 1px 0 #d4dae2;border-radius:6px;
+}
+html[data-design="b"][data-interior="v12"] body[data-page="teacher"] .tb20-surface>.tb20-mode button[aria-pressed="true"]{
+ color:#51496e;background:linear-gradient(125deg,#fff,#f8f9fc);border-color:#d2cedd;border-top-color:#fff;
+ box-shadow:0 2px 0 #c1bccd,1px 4px 7px #29334b0d,inset 0 1px 0 #fff;text-shadow:0 1px 0 #fff;
+}
+/* Steps remain visible but do not compete with the print preview as separate cards. */
+html[data-design="b"][data-interior="v12"] body[data-page="teacher"] .tb20-surface .tb20-flow nav>:is(button,a){
+ background:linear-gradient(120deg,#ffffffb8,#ffffff36);border-color:#dfe2e8;border-top-color:#fff;
+ box-shadow:0 1px 0 #d5dae3,inset 0 1px 0 #fff;
+}
+html[data-design="b"][data-interior="v12"] body[data-page="teacher"] .tb20-surface :is(.tb20-flow h2,.tb20-review h2){font-weight:550;letter-spacing:-.045em;color:#3a4052}
+html[data-design="b"][data-interior="v12"] body[data-page="teacher"] .tb20-surface .tb20-part{
+ background:linear-gradient(120deg,#fff,#fafbfd);border-color:#dde1e8;box-shadow:0 1px 0 #d1d8e2;
+}
+/* Design editor: swatches are the focal object, like clean physical paper samples. */
+html[data-design="b"][data-interior="v12"] body[data-page="print-design"] .pd16-gallery{
+ padding:19px 15px 22px;background-color:#e8eaf0;
+ background-image:radial-gradient(#3a455b0a .5px,transparent .7px),linear-gradient(125deg,#f2f3f6,#e1e4eb);
+ background-size:4px 4px,100% 100%;
+ border-block:1px solid #d7dce5;box-shadow:inset 0 1px 0 #ffffffb3;border-radius:3px;
+}
+html[data-design="b"][data-interior="v12"] body[data-page="print-design"] .pd16-template{
+ background:transparent;border-color:transparent;border-radius:4px;box-shadow:none;
+ padding:10px 8px 12px;transition:border-color .15s ease,background .15s ease;
+}
+html[data-design="b"][data-interior="v12"] body[data-page="print-design"] .pd16-template .pd16-thumb{
+ box-shadow:1px 1px 0 #c6cbd4,2px 3px 0 #f8f9fb,3px 4px 0 #bac2ce,4px 7px 7px #26364e17,7px 13px 17px #26364e12;
+ border:1px solid #fdfefe;border-bottom-color:#c5ccd6;
+}
+html[data-design="b"][data-interior="v12"] body[data-page="print-design"] .pd16-template:hover{transform:none;background:#ffffff42;border-color:#c8c2d8}
+html[data-design="b"][data-interior="v12"] body[data-page="print-design"] .pd16-template[aria-pressed="true"]{
+ background:linear-gradient(135deg,#ffffffc7,#f5f3fb87);border-color:#aea3c5;border-top-color:#c9c0da;
+ box-shadow:0 1px 0 #b8afc9,inset 0 1px 0 #fff;
+}
+html[data-design="b"][data-interior="v12"] body[data-page="print-design"] .pd16-template[aria-pressed="true"] .pd16-thumb{
+ box-shadow:1px 1px 0 #c2c5d2,2px 3px 0 #fff,3px 4px 0 #b7bdce,5px 9px 9px #3630471e,8px 16px 20px #36304720;
+}
+html[data-design="b"][data-interior="v12"] body[data-page="print-design"] .pd16-template-name{font-weight:650;letter-spacing:-.02em;color:#45455c}
+html[data-design="b"][data-interior="v12"] body[data-page="print-design"] .pd16-template-desc{font-size:10px;color:#758092;line-height:1.7}
+html[data-design="b"][data-interior="v12"] body[data-page="print-design"] .pd16-template-check{
+ background:linear-gradient(#817496,#635779);border:1px solid #594c6e;border-top-color:#b5a8c7;box-shadow:0 1px 0 #4f435f,1px 3px 5px #30243f20;
+}
+html[data-design="b"][data-interior="v12"] body[data-page="print-design"] .pd16-settings{
+ border-color:#d1d6e0;border-top-color:#fff;border-left-color:#e5e8ef;border-radius:5px;
+ box-shadow:0 2px 0 #cbd2dd,2px 8px 18px #2532470b;background:#fbfcfd;
+}
+html[data-design="b"][data-interior="v12"] body[data-page="print-design"] .pd16-panel-heading{
+ background:linear-gradient(125deg,#41465b,#343a4e);border-color:#2b3041;box-shadow:inset 0 1px 0 #ffffff13;
+}
+html[data-design="b"][data-interior="v12"] body[data-page="print-design"] .pd16-panel-heading h2{font-weight:550;letter-spacing:-.03em;text-shadow:0 -1px 0 #1f243553}
+html[data-design="b"][data-interior="v12"] body[data-page="print-design"] .pd16-field :is(input,select){
+ background-color:#fff;border-color:#ccd3df;border-top-color:#b8c2d1;box-shadow:inset 0 1px 3px #25364c0a,0 1px 0 #fff;
+}
+html[data-design="b"][data-interior="v12"] body[data-page="print-design"] .pd16-gallery-heading h2{font-weight:600;letter-spacing:-.025em;color:#4c4961}
+@media(max-width:760px){
+ html[data-design="b"][data-interior="v12"] body:is([data-page="teacher"],[data-page="print-design"]) .creator-canvas{border-radius:5px;box-shadow:0 2px 0 #c9d0da,2px 8px 16px #26354c0e}
+ html[data-design="b"][data-interior="v12"] body:is([data-page="teacher"],[data-page="print-design"]) .creator-canvas .creator-paper-stage #sheet{box-shadow:1px 1px 0 #c4c9d0,2px 3px 0 #fff,3px 4px 0 #bbc4d0,5px 10px 15px #17263c18!important}
+ html[data-design="b"][data-interior="v12"] body[data-page="print-design"] .pd16-gallery{padding:15px 8px 21px;gap:13px;margin-inline:-5px;scroll-padding-inline:8px}
+ html[data-design="b"][data-interior="v12"] body[data-page="print-design"] .pd16-template{flex-basis:142px;padding:9px 9px 12px}
+ html[data-design="b"][data-interior="v12"] body[data-page="print-design"] .pd16-template-desc{font-size:10px}
+ html[data-design="b"][data-interior="v12"] body[data-page="teacher"] .tb20-surface>.tb20-mode button{font-size:12px}
+}
+@media(prefers-reduced-motion:reduce){html[data-design="b"][data-interior="v12"] body[data-page="print-design"] .pd16-template{transition:none}}
+}

@@ -1,0 +1,42 @@
+/* Scoped to the student's actual learning record; no account or teacher layout overrides. */
+.account-dashboard .sa55-paper{--sa55-ink:#24374a;--sa55-rule:#e0e3e4;margin:0 0 34px;padding:26px 28px;background:linear-gradient(120deg,#fff 55%,#fbfaf7);border:1px solid #e1e2de;border-top:3px solid #32485e;box-shadow:2px 3px 0 #e7e7e1,0 8px 20px #233a4d06;color:var(--sa55-ink);font-size:13px;line-height:1.7}
+.sa55-paper .sa55-title>span{display:block;font-size:10px;letter-spacing:.08em;color:#77828b}
+.sa55-paper .sa55-title h3{font-size:21px;font-weight:600;letter-spacing:-.6px;line-height:1.5;margin:5px 0 8px;color:var(--sa55-ink)}
+.sa55-paper .sa55-status{margin:0;color:#6d7780;font-size:12px;line-height:1.7;overflow-wrap:anywhere}
+.sa55-paper .sa55-status.is-error,.sa55-paper .sa55-action-error{color:#983e2b}
+.sa55-paper .sa55-status.is-error{padding:10px 12px;margin-top:12px;background:#fff6f0;border-left:2px solid #b6694d}
+.sa55-paper .sa55-overview{display:grid;grid-template-columns:minmax(0,1fr) minmax(250px,1fr);gap:26px;align-items:center;padding:24px 0 20px}
+.sa55-paper .sa55-continue>small{color:#78828b;font-size:11px}
+.sa55-paper .sa55-continue h4{font-size:22px;font-weight:550;letter-spacing:-.6px;line-height:1.5;margin:4px 0 8px;overflow-wrap:anywhere}
+.sa55-paper .sa55-continue p{font-size:12px;color:#6d7780;margin:0 0 14px}
+.sa55-paper .sa55-button{display:inline-flex;justify-content:space-between;align-items:center;gap:20px;min-height:44px;padding:10px 14px;background:#f5f6f5;border:1px solid #d7dde0;border-bottom:2px solid #b2bdc5;border-radius:3px;box-shadow:inset 0 1px #fff;color:#32485e;font:inherit;font-size:12px;text-decoration:none;line-height:1.5;cursor:pointer}
+.sa55-paper .sa55-primary{background:linear-gradient(#364f66,#263d52);border-color:#253c51;border-bottom-color:#152a3d;box-shadow:inset 0 1px #6d8193;color:#fff;min-width:150px}
+.sa55-paper .sa55-button:hover{filter:brightness(.97)}
+.sa55-paper .sa55-button:focus-visible{outline:3px solid #8ba9c1;outline-offset:3px}
+.sa55-paper .sa55-button:disabled{opacity:.55;cursor:wait}
+.sa55-paper .sa55-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0;padding:18px 0 18px 24px;border-left:1px solid var(--sa55-rule)}
+.sa55-paper .sa55-metrics dt{font-size:11px;color:#6c7883;white-space:nowrap}
+.sa55-paper .sa55-metrics dd{margin:7px 0 0;font-size:32px;font-weight:500;line-height:1.3;font-variant-numeric:tabular-nums;letter-spacing:-1px}
+.sa55-paper .sa55-metrics dd small{font-size:10px;font-weight:400;letter-spacing:0;margin-left:4px;color:#78828b}
+.sa55-paper .sa55-count-note{margin:0;padding:0 0 19px;border-bottom:1px solid var(--sa55-rule);font-size:11px;color:#78828b;line-height:1.8}
+.sa55-paper .sa55-recent-heading{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:22px}
+.sa55-paper .sa55-recent-heading h4{font-size:14px;font-weight:600;margin:0}
+.sa55-paper .sa55-recent-heading>span{font-size:10px;color:#7a848d}
+.sa55-paper .sa55-records{list-style:none;margin:8px 0 0;padding:0}
+.sa55-paper .sa55-record{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:17px 0;border-bottom:1px solid var(--sa55-rule)}
+.sa55-paper .sa55-record:last-child{border-bottom:0;padding-bottom:2px}
+.sa55-paper .sa55-record-main{min-width:0}
+.sa55-paper .sa55-state{display:inline-block;font-size:10px;color:#756548;margin-bottom:4px}
+.sa55-paper .sa55-state.is-complete{color:#627a70}
+.sa55-paper .sa55-record-main>strong{display:block;font-size:14px;font-weight:550;overflow-wrap:anywhere}
+.sa55-paper .sa55-record-main>small{display:block;font-size:11px;color:#77828b;margin-top:4px}
+.sa55-paper .sa55-record-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px;flex-shrink:0}
+.sa55-paper .sa55-record-actions .sa55-button{gap:12px;padding:9px 11px;font-size:11px}
+.sa55-paper .sa55-empty{font-size:12px;color:#77828b;padding:14px 0 0;margin:0}
+.sa55-paper .sa55-action-error{margin:18px 0 0;font-size:12px}
+.sa55-paper .sa55-history-tools{margin-top:18px;text-align:center}
+.sa55-paper .sa55-history-tools:empty{display:none}
+.sa55-paper .sa55-history-tools .sa55-button{justify-content:center;min-width:190px}
+.sa55-paper .sa55-history-error{margin:12px 0 0;color:#983e2b;font-size:12px;text-align:left}
+.sa55-paper [hidden]{display:none!important}
+@media(max-width:700px){.account-dashboard .sa55-paper{padding:21px 18px;margin-bottom:28px}.sa55-paper .sa55-overview{grid-template-columns:1fr;gap:22px;padding:20px 0 15px}.sa55-paper .sa55-metrics{border-left:0;border-top:1px solid var(--sa55-rule);padding:18px 0 0}.sa55-paper .sa55-metrics dd{font-size:30px}.sa55-paper .sa55-record{align-items:flex-start;flex-direction:column;gap:12px}.sa55-paper .sa55-record-actions{justify-content:flex-start}.sa55-paper .sa55-continue h4{font-size:21px}}

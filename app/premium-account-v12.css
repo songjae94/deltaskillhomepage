@@ -1,0 +1,251 @@
+/* v12: composition, hierarchy and one focal point per page. */
+@media screen {
+html[data-interior="v12"] body:is([data-page="login"],[data-page="account"],[data-page="account-settings"],[data-page="account-password"],[data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"],[data-page="record"],[data-page="progress"],[data-page="help"],[data-page="benefits"],[data-page="classroom"]) {--v12-ink:#252638;--v12-muted:#65687b;--v12-rule:#dcdde8;background:#f6f6fb;color:#252638}
+html[data-interior="v12"] body:is([data-page="login"],[data-page="account"],[data-page="account-settings"],[data-page="account-password"],[data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"],[data-page="record"],[data-page="progress"],[data-page="help"],[data-page="benefits"],[data-page="classroom"]) :is(.work-surface,.account-surface,.classroom-surface){box-shadow:none}
+html[data-interior="v12"] body:is([data-page="login"],[data-page="account"],[data-page="account-settings"],[data-page="account-password"],[data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"],[data-page="record"],[data-page="progress"],[data-page="help"],[data-page="benefits"],[data-page="classroom"]) :is(button,a,input,select,textarea,summary):focus-visible{outline:3px solid #6757cf;outline-offset:4px}
+html[data-interior="v12"] body:is([data-page="login"],[data-page="account"],[data-page="account-settings"],[data-page="account-password"],[data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"],[data-page="record"],[data-page="progress"],[data-page="help"],[data-page="benefits"],[data-page="classroom"]) :is(.primary,.account-primary){background:#5b4bb8;color:#fff;border-radius:5px;border:0}
+html[data-interior="v12"] body:is([data-page="login"],[data-page="account"],[data-page="account-settings"],[data-page="account-password"],[data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"],[data-page="record"],[data-page="progress"],[data-page="help"],[data-page="benefits"],[data-page="classroom"]) :is(.primary,.account-primary):hover{background:#44368f}
+html[data-interior="v12"] body:is([data-page="login"],[data-page="account"],[data-page="account-settings"],[data-page="account-password"],[data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"],[data-page="record"],[data-page="progress"],[data-page="help"],[data-page="benefits"],[data-page="classroom"]) :is(.primary,.account-primary):disabled{background:#e0e2ea;color:#62667b;opacity:1}
+html[data-interior="v12"] body:is([data-page="login"],[data-page="account"],[data-page="account-settings"],[data-page="account-password"],[data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"],[data-page="record"],[data-page="progress"],[data-page="help"],[data-page="benefits"],[data-page="classroom"]) :is(.secondary,.account-row-action){background:#fff;border:1px solid #c9c9da;color:#51478a;border-radius:5px}
+html[data-interior="v12"] body:is([data-page="login"],[data-page="account"],[data-page="account-settings"],[data-page="account-password"],[data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"],[data-page="record"],[data-page="progress"],[data-page="help"],[data-page="benefits"],[data-page="classroom"]) :is(input,select,textarea){border-radius:5px;background-color:#fff;color:#252638;border-color:#bfc2d3}
+html[data-interior="v12"] body:is([data-page="login"],[data-page="account"],[data-page="account-settings"],[data-page="account-password"],[data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"],[data-page="record"],[data-page="progress"],[data-page="help"],[data-page="benefits"],[data-page="classroom"]) :is(.work-footer,.work-footer small,.work-footer a,.work-footer button){color:#65687b}
+html[data-interior="v12"] body:is([data-page="login"]) .account-v7.account-login{width:min(91%,1120px);max-width:1120px;margin:65px auto 10px;background:transparent;border:0;border-radius:0;box-shadow:none;overflow:visible}
+html[data-interior="v12"] body:is([data-page="login"]) .account-v7 .account-login-panel{display:grid;grid-template-columns:1.15fr 1fr;grid-template-rows:auto auto auto auto;gap:0 70px;padding:40px 22px 45px;min-height:530px;background:transparent;align-items:start}
+html[data-interior="v12"] body:is([data-page="login"]) .account-v7 .account-wordmark{grid-column:1;grid-row:1/6;align-self:center;justify-self:start;display:flex;flex-direction:column;position:relative;margin:0;padding-bottom:36px;font:900 clamp(70px,8.4vw,116px)/.88 Arial,sans-serif;letter-spacing:-.085em;color:#24233b;background:none;-webkit-text-fill-color:currentColor}
+html[data-interior="v12"] body:is([data-page="login"]) .account-v7 .account-wordmark span{display:block;color:#6a5dcd;background:none;-webkit-text-fill-color:currentColor}
+html[data-interior="v12"] body:is([data-page="login"]) .account-v7 .account-wordmark::after{content:"";height:4px;width:72px;background:#6a5dcd;position:absolute;left:4px;bottom:0}
+html[data-interior="v12"] body:is([data-page="login"]) .account-v7 .account-login-panel>h1{grid-column:2;font-size:38px;font-weight:600;letter-spacing:-1.4px;color:#252638;margin:0}
+html[data-interior="v12"] body:is([data-page="login"]) .account-v7 .account-login-panel>.account-subtitle{grid-column:2;font-size:14px;line-height:1.9;margin-top:17px;color:#65687b}
+html[data-interior="v12"] body:is([data-page="login"]) .account-v7 .account-form{grid-column:2;gap:24px;margin-top:35px}
+html[data-interior="v12"] body:is([data-page="login"]) .account-v7 .account-form label{font-size:13px;font-weight:550;color:#5b5d73}
+html[data-interior="v12"] body:is([data-page="login"]) .account-v7 .account-form input{background:#fff;border:1px solid #c4c5d5;border-radius:5px;min-height:53px}
+html[data-interior="v12"] body:is([data-page="login"]) .account-v7 .account-password-toggle{background:#fff;color:#5b4bb8;border-left:1px solid #ddddea}
+html[data-interior="v12"] body:is([data-page="login"]) .account-v7 .account-form .account-primary{min-height:51px;border-radius:5px;background:#5b4bb8}
+html[data-interior="v12"] body:is([data-page="login"]) .account-v7 .account-login-links{grid-column:2;margin-top:20px;gap:22px}
+html[data-interior="v12"] body:is([data-page="login"]) .account-v7 .account-login-links a{font-size:13px;color:#5d557f}
+html[data-interior="v12"] body:is([data-page="login"]) .account-v7.account-login+.login-return{width:min(91%,1120px);margin:0 auto 55px;padding-left:55%;justify-content:flex-start;gap:25px}
+html[data-interior="v12"] body:is([data-page="account"],[data-page="account-settings"]) .account-v7.account-surface:not(.account-login){--account-ink:#252638;--account-muted:#65687b;--account-accent:#5b4bb8;--account-accent-dark:#44368f;--account-rule:#dcdde8;width:min(92%,1160px);max-width:1160px;margin:43px auto 65px;padding:28px 0;background:transparent;border:0;border-radius:0;box-shadow:none}
+html[data-interior="v12"] body:is([data-page="account"]) .account-v7.account-dashboard{display:grid;grid-template-columns:190px minmax(0,1fr);gap:0 48px}
+html[data-interior="v12"] body:is([data-page="account"]) .account-v7 .account-heading{grid-column:1/-1;grid-row:1;align-items:end;border:0;border-bottom:1px solid #d5d5e4;padding-bottom:35px;margin-bottom:28px}
+html[data-interior="v12"] body:is([data-page="account"]) .account-v7 .account-heading h1{font-size:45px;font-weight:550;letter-spacing:-1.8px;color:#252638}
+html[data-interior="v12"] body:is([data-page="account"]) .account-v7 .account-heading:has(.account-subtitle) h1{font-size:15px;letter-spacing:-.3px;color:#65687b;font-weight:500}
+html[data-interior="v12"] body:is([data-page="account"]) .account-v7 .account-heading .account-subtitle{font-size:clamp(35px,4.5vw,56px);font-weight:550;letter-spacing:-2px;line-height:1.3;color:#29273f;margin-top:13px;overflow-wrap:anywhere}
+html[data-interior="v12"] body:is([data-page="account"]) .account-v7 .account-nav{grid-column:1;grid-row:2/span 5;align-self:start;position:sticky;top:137px;display:flex;flex-direction:column;align-items:stretch;gap:0;padding:0 24px 0 0;margin:0;background:transparent;border:0;border-right:1px solid #deddeb;border-radius:0}
+html[data-interior="v12"] body:is([data-page="account"]) .account-v7 .account-nav :is(a,button){display:block;text-align:left;padding:15px 0;border-radius:0;background:transparent;color:#65617b;font-size:14px;min-height:48px}
+html[data-interior="v12"] body:is([data-page="account"]) .account-v7 .account-nav :is(a,button):first-child{font-weight:700;color:#5b4bb8}
+html[data-interior="v12"] body:is([data-page="account"]) .account-v7 .account-nav :is(a,button):hover{background:transparent;color:#44368f;text-decoration:underline;text-underline-offset:7px}
+html[data-interior="v12"] body:is([data-page="account"]) .account-v7 .account-section{grid-column:2;min-width:0;padding:31px 0;border-color:#dcdde8}
+html[data-interior="v12"] body:is([data-page="account"]) .account-v7 #account-materials{grid-row:2;padding-top:3px}
+html[data-interior="v12"] body:is([data-page="account"]) .account-v7 .account-section-heading{align-items:baseline;gap:15px;margin-bottom:22px}
+html[data-interior="v12"] body:is([data-page="account"]) .account-v7 .account-section-heading h2{font-size:27px;font-weight:550;letter-spacing:-1px;color:#252638}
+html[data-interior="v12"] body:is([data-page="account"]) .account-v7 .account-section-heading .account-source{background:transparent;color:#747087;padding:0;font-size:12px}
+html[data-interior="v12"] body:is([data-page="account"]) .account-v7 .account-material-bundles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 27px}
+html[data-interior="v12"] body:is([data-page="account"]) .account-v7 .account-material-bundle{display:flex;flex-direction:column;align-items:stretch;gap:19px;padding:21px 0;border:0;border-block:1px solid #d5d4e3;border-radius:0;background:transparent;min-height:150px}
+html[data-interior="v12"] body:is([data-page="account"]) .account-v7 .account-material-title{display:flex;flex-direction:column-reverse;align-items:start;gap:12px}
+html[data-interior="v12"] body:is([data-page="account"]) .account-v7 .account-material-title h3{font-size:24px;line-height:1.45;font-weight:550;letter-spacing:-.7px;color:#2d2b42}
+html[data-interior="v12"] body:is([data-page="account"]) .account-v7 .account-material-title>span{font-size:11px;letter-spacing:.07em;color:#6b608b}
+html[data-interior="v12"] body:is([data-page="account"]) .account-v7 .account-material-chip:not(.account-material-unavailable){background:#fff;color:#51478a;border:1px solid #c8c4dc;border-radius:4px}
+html[data-interior="v12"] body:is([data-page="account"]) .account-v7 :is(.account-empty,.account-local-records,.account-unit-scales){background:#fff;border:1px solid #e0dfeb;border-radius:5px;color:#65687b}
+html[data-interior="v12"] body:is([data-page="account"]) .account-v7 .account-local-attempt{background:#fff;border:1px solid #dddaea;border-radius:5px;color:#252638}
+html[data-interior="v12"] body:is([data-page="account"]) .account-v7 .account-local-attempt :is(p,small,.account-attempt-detail){color:#65687b}
+html[data-interior="v12"] body:is([data-page="account"]) .account-v7 .account-local-attempt-timed{border-top:3px solid #6b5baf}
+html[data-interior="v12"] body:is([data-page="account"]) .account-v7 .account-local-attempt-difficulty{border-top:3px solid #53688c}
+html[data-interior="v12"] body:is([data-page="account"]) .account-v7 .account-local-attempt .account-row-action{color:#51478a;background:#fff}
+html[data-interior="v12"] body:is([data-page="account"]) .account-v7 .account-stats dd{font-size:38px;font-weight:450;color:#29273f}
+html[data-interior="v12"] body:is([data-page="account"]) .account-v7 .account-class-link{background:#fff;color:#5b4bb8;border-color:#c8c4dc;border-radius:5px}
+html[data-interior="v12"] body:is([data-page="account-settings"]) .account-v7.account-settings{max-width:800px;background:#fff;padding:37px}
+html[data-interior="v12"] body:is([data-page="account-settings"]) .account-v7 .account-heading h1{font-size:40px;font-weight:550;letter-spacing:-1.4px}
+html[data-interior="v12"] body:is([data-page="account-settings"]) .account-v7 .account-profile dd{font-size:24px;font-weight:500;color:#29273f}
+html[data-interior="v12"] body:is([data-page="account-password"]) .password-surface{background:#fff;border:0;border-radius:6px;box-shadow:none;max-width:580px;padding:39px}
+html[data-interior="v12"] body:is([data-page="account-password"]) .password-surface h1{font-size:38px;font-weight:550}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-surface{max-width:1160px;color:#252638;padding-top:40px}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) :is(.diagnostic-heading,.diagnostic-result-head){border:0;border-bottom:1px solid #d7d6e5;padding-bottom:25px;margin-bottom:29px}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) :is(.diagnostic-heading h1,.diagnostic-result-head h1){font-size:40px;font-weight:550;letter-spacing:-1.5px;color:#252638}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) :is(.diagnostic-heading p,.diagnostic-heading .eyebrow,.diagnostic-note,.diagnostic-result-head>span,.diagnostic-result-head small){color:#65687b}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-types{gap:18px;max-width:700px;margin-bottom:27px}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-types button{border:0;border-bottom:2px solid #d4d2e2;border-radius:0;background:transparent;padding:16px 15px 20px;box-shadow:none;color:#65617b;grid-template-columns:42px 1fr}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-types button[aria-pressed="true"]{background:transparent;border-color:#6655bd;color:#403567;box-shadow:none}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-types strong{font-size:22px;font-weight:550}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-types small{color:#65687b;opacity:1;font-size:13px}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-symbol{color:#7b6ca8;font-size:35px}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-brief{background:transparent;border:0;border-radius:0;grid-template-columns:1fr .9fr;gap:65px;padding:34px 0 25px;align-items:center}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-brief h2{font-size:34px;font-weight:550;letter-spacing:-1.2px;color:#29273f}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-brief :is(p,li){color:#65687b;line-height:1.9}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-label{color:#6755a1}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-start-card{background:transparent;border-radius:0;padding:0 38px;gap:13px;align-items:center;color:#403567}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-start-card>strong{display:flex;flex-direction:column;align-items:center;justify-content:center;width:232px;min-height:232px;border:12px solid #d9d2eb;border-radius:50%;color:#403567;font-size:53px;font-weight:450;letter-spacing:-2.5px;margin:0 0 16px;font-variant-numeric:tabular-nums;background:#fff}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-start-card>strong small{font-size:12px;font-weight:400;color:#706585;letter-spacing:0;margin-top:13px}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-start-card>.primary{width:218px;max-width:100%;background:#6655ad}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-start-card :is(p,.text-action){color:#65687b}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-surface:has([data-diagnostic-type="difficulty"][aria-pressed="true"]) .diagnostic-start-card>strong{border:0;border-radius:0;background:linear-gradient(#e5e4f0,#e5e4f0) left bottom/65px 33% no-repeat,linear-gradient(#deddeb,#deddeb) center bottom/65px 66% no-repeat,linear-gradient(#d5d5e6,#d5d5e6) right bottom/65px 100% no-repeat;font-size:86px;color:#3e426b;min-height:203px;width:221px}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-surface:has([data-diagnostic-type="difficulty"][aria-pressed="true"]) .diagnostic-start-card>strong small{background:#f6f6fb;padding:4px 15px;color:#65687b}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-running .quick-paper{background:#fff;border:1px solid #d7d5e5;border-top:3px solid #6b5cae;border-radius:5px;box-shadow:none}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-run-top{padding-block:10px 20px;border-bottom:1px solid #d7d6e5}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-run-top b{color:#403567;font-size:35px;font-weight:500}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-run-top span{color:#65687b}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-run-top .urgent{color:#af453c}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-answer-sheet{background:#fff;border:1px solid #d7d5e5;border-radius:5px}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-answer-sheet nav button{background:#fff;border-color:#cbc5db;color:#685b82;border-radius:4px}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-answer-sheet nav button.answered{background:#6b5cae;color:#fff;border-color:#6b5cae}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-answer-sheet nav button[aria-current]{outline:2px solid #302649;outline-offset:2px}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) :is(.diagnostic-answer-sheet p,.diagnostic-confirm p,.diagnostic-next p,.diagnostic-solutions article>p){color:#65687b}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-confirm{background:#fff;border-color:#ccc4dc;border-radius:5px}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-result-metrics{background:transparent;color:#252638;border:0;border-bottom:1px solid #d7d6e5;border-radius:0;padding:20px 0 35px}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-result-metrics>div{padding:0 28px;border-color:#d7d6e5}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-result-metrics>div:first-child{padding-left:0}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-result-metrics strong{font-size:75px;font-weight:450;letter-spacing:-3px;color:#403567}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-result-metrics :is(span,em){color:#706585}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-levels{gap:0;background:#fff;border:1px solid #e0ddea;border-radius:5px}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-levels>div{background:transparent;border:0;border-radius:0}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-levels>div+div{border-left:1px solid #e0ddea}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-levels :is(span,small){color:#65687b}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-levels .correct strong{color:#54668c}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-pace>div{background:#e2deed}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-pace i{background:#7663ae}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-next{background:transparent;border-block:1px solid #d7d6e5;border-radius:0;padding:27px 0}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-solutions{background:#fff;border-color:#d7d6e5;border-radius:5px}
+html[data-interior="v12"] body:is([data-page="record"],[data-page="progress"]) :is(.progress-v7,.member-record){max-width:1130px}
+html[data-interior="v12"] body:is([data-page="record"],[data-page="progress"]) :is(.work-heading h1,.member-record-heading h1){font-size:39px;font-weight:550;color:#29304a}
+html[data-interior="v12"] body:is([data-page="record"],[data-page="progress"]) .progress-top{background:transparent;border:0;border-block:1px solid #d0d6e2;border-radius:0;grid-template-columns:1fr 1.1fr}
+html[data-interior="v12"] body:is([data-page="record"],[data-page="progress"]) .progress-top .record-summary{background:transparent;color:#29304a;padding:34px 25px 34px 0}
+html[data-interior="v12"] body:is([data-page="record"],[data-page="progress"]) .progress-top .record-summary strong{color:#465f91;font-size:96px;line-height:1.1;font-weight:450;letter-spacing:-4px}
+html[data-interior="v12"] body:is([data-page="record"],[data-page="progress"]) .progress-top .record-summary :is(span,em){color:#626d83}
+html[data-interior="v12"] body:is([data-page="record"],[data-page="progress"]) .progress-next{padding:39px 0 39px 35px;border-left:1px solid #d0d6e2}
+html[data-interior="v12"] body:is([data-page="record"],[data-page="progress"]) .progress-next h2{color:#29304a;font-weight:550;font-size:28px}
+html[data-interior="v12"] body:is([data-page="record"],[data-page="progress"]) :is(.progress-next p,.record-list small,.section-caption span){color:#656d81}
+html[data-interior="v12"] body:is([data-page="record"],[data-page="progress"]) .progress-v7 .record-list{background:#fff;border:1px solid #dbe0ea;border-radius:5px;box-shadow:none}
+html[data-interior="v12"] body:is([data-page="record"],[data-page="progress"]) .record-type-icon{background:#edf0f8;color:#536991;border-radius:4px}
+html[data-interior="v12"] body:is([data-page="record"],[data-page="progress"]) .progress-empty{background:transparent;border:0;border-block:1px solid #d0d6e2;border-radius:0;padding:60px 20px}
+html[data-interior="v12"] body:is([data-page="record"],[data-page="progress"]) .progress-empty .empty-integral{font-size:110px;color:#91a0bc}
+html[data-interior="v12"] body:is([data-page="record"],[data-page="progress"]) .member-score{background:transparent;color:#29304a;border-radius:0}
+html[data-interior="v12"] body:is([data-page="record"],[data-page="progress"]) .member-score strong{font-size:92px;font-weight:450;color:#465f91}
+html[data-interior="v12"] body:is([data-page="record"],[data-page="progress"]) .record-overview{background:#fff;border-radius:5px;border-color:#dbe0ea}
+html[data-interior="v12"] body:is([data-page="record"],[data-page="progress"]) .record-overview b{color:#29304a}
+html[data-interior="v12"] body:is([data-page="record"],[data-page="progress"]) .response-list{background:#fff;border-color:#dbe0ea;border-radius:5px}
+html[data-interior="v12"] body:is([data-page="record"],[data-page="progress"]) .response-row.correct .response-state{background:#edf0f8;color:#465f91}
+html[data-interior="v12"] body:is([data-page="record"],[data-page="progress"]) .response-row.incorrect .response-state{background:#f9eeee;color:#a44b47}
+html[data-interior="v12"] body:is([data-page="help"]) .help-v7{max-width:1150px}
+html[data-interior="v12"] body:is([data-page="help"]) .help-heading{position:relative;padding:15px 200px 31px 0;border-bottom:1px solid #d7d5e2;margin-bottom:31px;min-height:190px}
+html[data-interior="v12"] body:is([data-page="help"]) .help-heading h1{font-size:52px;letter-spacing:-2px;font-weight:550;color:#29283d}
+html[data-interior="v12"] body:is([data-page="help"]) .help-heading p{font-size:15px;color:#65687b}
+html[data-interior="v12"] body:is([data-page="help"]) .v12-help-mark{position:absolute;right:35px;top:-26px;font:450 210px/1 Arial,sans-serif;letter-spacing:-12px;color:#8978b5;pointer-events:none}
+html[data-interior="v12"] body:is([data-page="help"]) .help-quick{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;margin-bottom:44px}
+html[data-interior="v12"] body:is([data-page="help"]) .help-quick>a{background:transparent;border:0;border-bottom:1px solid #d7d5e2;border-radius:0;padding:18px 0 24px;box-shadow:none;gap:12px}
+html[data-interior="v12"] body:is([data-page="help"]) .help-quick strong{font-size:27px;font-weight:550;color:#29283d}
+html[data-interior="v12"] body:is([data-page="help"]) .help-quick :is(span,small){color:#65687b}
+html[data-interior="v12"] body:is([data-page="help"]) .help-layout{grid-template-columns:220px minmax(0,1fr);gap:45px}
+html[data-interior="v12"] body:is([data-page="help"]) .help-sidebar h2{font-size:25px;line-height:1.5;color:#4f456b;font-weight:500}
+html[data-interior="v12"] body:is([data-page="help"]) .help-faq{border-top:2px solid #54466b}
+html[data-interior="v12"] body:is([data-page="help"]) .help-faq details{border-color:#d7d5e2}
+html[data-interior="v12"] body:is([data-page="help"]) .help-faq summary{font-size:17px;padding-block:25px;color:#302d42;font-weight:500}
+html[data-interior="v12"] body:is([data-page="help"]) .help-faq details>div{color:#65687b;font-size:14px;line-height:1.9}
+html[data-interior="v12"] body:is([data-page="help"]) .help-policies{background:#fff;border:1px solid #dedbe7;border-radius:5px;padding:28px}
+html[data-interior="v12"] body:is([data-page="help"]) .help-policies :is(h2,a){color:#5b5075}
+html[data-interior="v12"] body:is([data-page="benefits"]) .benefits-heading{padding:12px 0 29px;border-bottom:1px solid #dfd6d8}
+html[data-interior="v12"] body:is([data-page="benefits"]) .benefits-heading h1{color:#513642;font-size:50px;font-weight:550;letter-spacing:-1.8px}
+html[data-interior="v12"] body:is([data-page="benefits"]) .benefits-heading :is(span,p){color:#7b6570}
+html[data-interior="v12"] body:is([data-page="benefits"]) .benefits-grid{gap:31px;margin-block:36px}
+html[data-interior="v12"] body:is([data-page="benefits"]) .benefits-grid article{padding:0 0 27px;background:transparent;border:0;border-bottom:1px solid #dfd6d8;border-radius:0}
+html[data-interior="v12"] body:is([data-page="benefits"]) .benefits-grid article>span{display:block;color:#a85f6d;font-size:30px;font-weight:450;letter-spacing:-1px;line-height:1.4;margin-bottom:28px}
+html[data-interior="v12"] body:is([data-page="benefits"]) .benefits-grid h2{color:#513642;font-size:25px;font-weight:550;letter-spacing:-.7px}
+html[data-interior="v12"] body:is([data-page="benefits"]) .benefits-grid p{color:#756670;line-height:1.9}
+html[data-interior="v12"] body:is([data-page="benefits"]) .benefits-policy{background:#fff;border:1px solid #e2dadd;border-radius:5px;padding:30px}
+html[data-interior="v12"] body:is([data-page="benefits"]) .benefits-policy :is(h2,strong){color:#79515f}
+html[data-interior="v12"] body:is([data-page="benefits"]) .benefits-policy :is(p,span){color:#756670}
+html[data-interior="v12"] body:is([data-page="classroom"]) .classroom-surface{max-width:1200px;color:#263349}
+html[data-interior="v12"] body:is([data-page="classroom"]) .classroom-heading{border-bottom:1px solid #cfd8e4;padding-bottom:25px}
+html[data-interior="v12"] body:is([data-page="classroom"]) .classroom-heading h1{font-size:39px;font-weight:550;color:#263349}
+html[data-interior="v12"] body:is([data-page="classroom"]) .classroom-lobby{padding:13px 0;background:transparent;border:0}
+html[data-interior="v12"] body:is([data-page="classroom"]) .classroom-lobby h2{font-size:26px;font-weight:550;color:#3d506b}
+html[data-interior="v12"] body:is([data-page="classroom"]) .classroom-lobby-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:0 38px;margin-top:29px}
+html[data-interior="v12"] body:is([data-page="classroom"]) .classroom-lobby-card{position:relative;background:transparent;border:0;border-top:2px solid #758aa9;border-radius:0;box-shadow:none;padding:25px 0 31px;text-align:left;min-height:225px;display:flex;flex-direction:column;gap:17px}
+html[data-interior="v12"] body:is([data-page="classroom"]) .classroom-lobby-card:hover{transform:none;box-shadow:none;background:transparent;border-top-color:#405f8d}
+html[data-interior="v12"] body:is([data-page="classroom"]) .classroom-lobby-card strong{font-size:37px;font-weight:550;line-height:1.3;letter-spacing:-1.4px;color:#293b58;overflow-wrap:anywhere}
+html[data-interior="v12"] body:is([data-page="classroom"]) :is(.classroom-card-subject,.classroom-card-info){color:#65738a;font-size:13px}
+html[data-interior="v12"] body:is([data-page="classroom"]) .classroom-card-open{color:#4c6794;font-size:14px;margin-top:auto}
+html[data-interior="v12"] body:is([data-page="classroom"]) .classroom-class-header{background:transparent;border:0;border-bottom:1px solid #cfd8e4;border-radius:0;padding:15px 0 32px;align-items:end}
+html[data-interior="v12"] body:is([data-page="classroom"]) .classroom-class-header h2{font-size:clamp(36px,4.6vw,58px);font-weight:550;letter-spacing:-2px;color:#293b58;line-height:1.25;margin:24px 0 15px;overflow-wrap:anywhere}
+html[data-interior="v12"] body:is([data-page="classroom"]) .classroom-class-header p{font-size:14px;color:#65738a}
+html[data-interior="v12"] body:is([data-page="classroom"]) .classroom-class-tabs{background:transparent;border-bottom:1px solid #c5d0df;border-radius:0;padding:0;gap:28px;margin-top:29px}
+html[data-interior="v12"] body:is([data-page="classroom"]) .classroom-class-tabs button{background:transparent;border:0;border-radius:0;color:#6a768c;padding:17px 0;font-size:16px}
+html[data-interior="v12"] body:is([data-page="classroom"]) .classroom-class-tabs button[aria-pressed="true"]{background:transparent;color:#314f7c;font-weight:700;box-shadow:inset 0 -3px #496d9f}
+html[data-interior="v12"] body:is([data-page="classroom"]) :is(.classroom-sheet,.classroom-counts>div,.classroom-assessments>div,.classroom-pending){background:#fff;border:1px solid #dbe1eb;border-radius:5px;box-shadow:none;color:#263349}
+html[data-interior="v12"] body:is([data-page="classroom"]) :is(.classroom-assessments>div:first-child,.classroom-assessments>div:nth-child(2)){background:#fff}
+html[data-interior="v12"] body:is([data-page="classroom"]) .classroom-assessments>div:first-child :is(strong,p){color:#3c5478}
+html[data-interior="v12"] body:is([data-page="classroom"]) .classroom-primary{background:#49658f;color:#fff;border-radius:5px}
+html[data-interior="v12"] body:is([data-page="classroom"]) :is(.classroom-quiet,.classroom-status-ready){background:#edf1f8;color:#405e88;border-color:#c4cfdf;border-radius:4px}
+html[data-interior="v12"] body:is([data-page="classroom"]) .classroom-roster-filter button[aria-pressed="true"]{background:#49658f;color:#fff}
+html[data-interior="v12"] body:is([data-page="classroom"]) .classroom-analysis-table{background:#fff;color:#263349}
+html[data-interior="v12"] body:is([data-page="classroom"]) .classroom-analysis-table th{background:#f0f3f8;color:#4d6281}
+html[data-interior="v12"] body:is([data-page="classroom"]) .classroom-students button[aria-pressed="true"]{background:#edf1f8;color:#405e88}
+}
+@media screen and (max-width:900px){
+html[data-interior="v12"] body:is([data-page="login"]) .account-v7 .account-login-panel{gap:0 45px;padding-inline:0;grid-template-columns:1fr 1fr}
+html[data-interior="v12"] body:is([data-page="login"]) .account-v7 .account-wordmark{font-size:clamp(65px,9vw,88px)}
+html[data-interior="v12"] body:is([data-page="account"]) .account-v7.account-dashboard{grid-template-columns:145px minmax(0,1fr);gap:0 27px}
+html[data-interior="v12"] body:is([data-page="account"]) .account-v7 .account-material-bundles{grid-template-columns:1fr}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-brief{gap:30px;grid-template-columns:1fr .9fr}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-start-card{padding-inline:0}
+html[data-interior="v12"] body:is([data-page="help"]) .help-layout{grid-template-columns:180px 1fr;gap:28px}
+}
+@media screen and (max-width:620px){
+html[data-interior="v12"] body:is([data-page="login"]) .account-v7.account-login{width:88%;margin-top:30px}
+html[data-interior="v12"] body:is([data-page="login"]) .account-v7 .account-login-panel{display:flex;flex-direction:column;gap:0;padding:0 0 30px;min-height:0}
+html[data-interior="v12"] body:is([data-page="login"]) .account-v7 .account-wordmark{align-self:start;font-size:68px;line-height:.87;margin:0 0 38px;padding-bottom:25px}
+html[data-interior="v12"] body:is([data-page="login"]) .account-v7 .account-wordmark::after{height:3px;width:48px;left:2px}
+html[data-interior="v12"] body:is([data-page="login"]) .account-v7 .account-login-panel>h1{font-size:30px}
+html[data-interior="v12"] body:is([data-page="login"]) .account-v7 .account-login-panel>.account-subtitle{margin-top:12px;font-size:13px}
+html[data-interior="v12"] body:is([data-page="login"]) .account-v7 .account-form{width:100%;gap:22px;margin-top:27px}
+html[data-interior="v12"] body:is([data-page="login"]) .account-v7.account-login+.login-return{width:88%;padding-left:0;justify-content:flex-start;margin:0 auto 35px}
+html[data-interior="v12"] body:is([data-page="account"]) .account-v7.account-dashboard{display:block;width:90%;padding:16px 0}
+html[data-interior="v12"] body:is([data-page="account"]) .account-v7 .account-heading{padding-bottom:25px;gap:17px;margin-bottom:19px}
+html[data-interior="v12"] body:is([data-page="account"]) .account-v7 .account-heading h1{font-size:35px}
+html[data-interior="v12"] body:is([data-page="account"]) .account-v7 .account-heading .account-subtitle{font-size:39px;letter-spacing:-1.4px}
+html[data-interior="v12"] body:is([data-page="account"]) .account-v7 .account-nav{position:static;display:flex;flex-direction:row;flex-wrap:wrap;border:0;border-bottom:1px solid #d7d5e5;padding:0 0 10px;gap:0 20px}
+html[data-interior="v12"] body:is([data-page="account"]) .account-v7 .account-nav :is(a,button){font-size:13px;min-height:42px;padding:11px 0}
+html[data-interior="v12"] body:is([data-page="account"]) .account-v7 #account-materials{padding-top:29px}
+html[data-interior="v12"] body:is([data-page="account"]) .account-v7 .account-section-heading h2{font-size:24px}
+html[data-interior="v12"] body:is([data-page="account"]) .account-v7 .account-material-bundles{grid-template-columns:1fr}
+html[data-interior="v12"] body:is([data-page="account-settings"]) .account-v7.account-settings{width:91%;padding:27px}
+html[data-interior="v12"] body:is([data-page="account-password"]) .password-surface{width:91%;padding:28px}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) :is(.diagnostic-heading h1,.diagnostic-result-head h1){font-size:31px}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-types{gap:8px}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-types button{grid-template-columns:1fr;padding:14px 10px}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-types strong{font-size:19px}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-types small{font-size:12px}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-symbol{font-size:31px;grid-row:auto}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-brief{grid-template-columns:1fr;gap:30px;padding-top:15px}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-brief h2{font-size:28px}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-start-card{padding:0 15px}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-start-card>strong{width:216px;min-height:216px;font-size:50px}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-result-metrics{gap:0;padding-block:15px 25px}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-result-metrics>div{padding:0 10px}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-result-metrics strong{font-size:43px;letter-spacing:-2px}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-result-metrics em{font-size:17px}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-result-metrics span{font-size:12px}
+html[data-interior="v12"] body:is([data-page="diagnostic"],[data-page="diagnostic-run"],[data-page="diagnostic-result"]) .diagnostic-levels small{font-size:12px;line-height:1.7}
+html[data-interior="v12"] body:is([data-page="record"],[data-page="progress"]) .progress-top{grid-template-columns:1fr}
+html[data-interior="v12"] body:is([data-page="record"],[data-page="progress"]) .progress-top .record-summary{padding:29px 0}
+html[data-interior="v12"] body:is([data-page="record"],[data-page="progress"]) .progress-top .record-summary strong{font-size:79px}
+html[data-interior="v12"] body:is([data-page="record"],[data-page="progress"]) .progress-next{padding:29px 0;border-left:0;border-top:1px solid #d0d6e2}
+html[data-interior="v12"] body:is([data-page="record"],[data-page="progress"]) .member-score strong{font-size:68px}
+html[data-interior="v12"] body:is([data-page="help"]) .help-heading{padding-right:90px;min-height:150px}
+html[data-interior="v12"] body:is([data-page="help"]) .help-heading h1{font-size:37px;letter-spacing:-1.5px}
+html[data-interior="v12"] body:is([data-page="help"]) .v12-help-mark{font-size:130px;right:1px;top:-8px}
+html[data-interior="v12"] body:is([data-page="help"]) .help-quick{grid-template-columns:1fr;gap:0;margin-bottom:32px}
+html[data-interior="v12"] body:is([data-page="help"]) .help-quick>a{padding-block:20px;display:grid;grid-template-columns:1fr auto}
+html[data-interior="v12"] body:is([data-page="help"]) .help-quick strong{font-size:23px}
+html[data-interior="v12"] body:is([data-page="help"]) .help-quick small{grid-column:2;grid-row:1/3;max-width:130px;align-self:center}
+html[data-interior="v12"] body:is([data-page="help"]) .help-layout{grid-template-columns:1fr;gap:19px}
+html[data-interior="v12"] body:is([data-page="help"]) .help-sidebar h2{font-size:22px}
+html[data-interior="v12"] body:is([data-page="benefits"]) .benefits-heading h1{font-size:36px}
+html[data-interior="v12"] body:is([data-page="benefits"]) .benefits-grid{grid-template-columns:1fr;gap:25px}
+html[data-interior="v12"] body:is([data-page="benefits"]) .benefits-grid article>span{font-size:28px;margin-bottom:17px}
+html[data-interior="v12"] body:is([data-page="classroom"]) .classroom-heading h1{font-size:31px}
+html[data-interior="v12"] body:is([data-page="classroom"]) .classroom-lobby-grid{grid-template-columns:1fr;gap:0}
+html[data-interior="v12"] body:is([data-page="classroom"]) .classroom-lobby-card{min-height:200px}
+html[data-interior="v12"] body:is([data-page="classroom"]) .classroom-lobby-card strong{font-size:33px}
+html[data-interior="v12"] body:is([data-page="classroom"]) .classroom-class-header h2{font-size:39px;letter-spacing:-1.5px}
+html[data-interior="v12"] body:is([data-page="classroom"]) .classroom-class-tabs{gap:22px;flex-wrap:wrap}
+html[data-interior="v12"] body:is([data-page="classroom"]) .classroom-class-tabs button{font-size:14px;padding-block:15px}
+}

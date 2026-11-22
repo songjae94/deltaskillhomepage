@@ -1,0 +1,85 @@
+/* Audit refinements v23. Append last. B design, screen UI only.
+   No DOM/content changes, new assets, canonical A4 rules or mathematics. */
+@media screen {
+html[data-design="b"][data-interior="v12"] body.working-body:is([data-page="account-settings"],[data-page="account-password"]){
+ background:#f4f5f7;color:#33394c;
+ --tc18-paint:#51476b;--tc18-edge:#30283f;
+}
+html[data-design="b"][data-interior="v12"] body.working-body[data-page="account-settings"] .account-v7.account-surface.account-settings,
+html[data-design="b"][data-interior="v12"] body.working-body[data-page="account-password"] .account-surface.password-surface{
+ --account-ink:#30374a;--account-muted:#606a7d;--account-rule:#dce0e8;
+ --account-accent:#5b4e78;--account-accent-dark:#40344f;
+ box-sizing:border-box;width:min(91%,760px);max-width:760px;min-width:0;
+ margin:clamp(28px,4.5vw,58px) auto 72px;padding:clamp(25px,4vw,43px);
+ background-color:#fdfdfe;background-image:var(--mi21-fibre,none);
+ border:1px solid #d4d8e1;border-top:3px solid #584c70;border-left-color:#edf0f4;border-bottom-color:#bac3d0;
+ border-radius:6px;color:var(--account-ink);
+ box-shadow:0 2px 0 #d2d8e2,1px 4px 4px #27324808,4px 14px 28px #29334b0c,inset 0 1px 0 #fff;
+}
+html[data-design="b"][data-interior="v12"] body.working-body[data-page="account-password"] .account-surface.password-surface{width:min(91%,620px);max-width:620px}
+html[data-design="b"][data-interior="v12"] body.working-body:is([data-page="account-settings"],[data-page="account-password"]) .account-back{
+ display:inline-flex;align-items:center;min-height:44px;margin:0 0 13px;padding:4px 0;color:#687188;font-size:12px;line-height:1.6;
+}
+html[data-design="b"][data-interior="v12"] body.working-body[data-page="account-settings"] .account-settings .account-heading{
+ display:flex;align-items:center;flex-wrap:wrap;gap:16px 24px;padding-bottom:22px;border-bottom:1px solid #d7dce6;
+}
+html[data-design="b"][data-interior="v12"] body.working-body[data-page="account-settings"] .account-settings .account-heading h1,
+html[data-design="b"][data-interior="v12"] body.working-body[data-page="account-password"] .password-surface>h1{
+ font-size:clamp(28px,3.2vw,38px);font-weight:600;line-height:1.3;letter-spacing:-.05em;color:#35364d;
+ text-shadow:0 1px 0 #fff;
+}
+html[data-design="b"][data-interior="v12"] body.working-body[data-page="account-settings"] .account-settings .account-section-heading h2{font-size:16px;line-height:1.5;font-weight:600;letter-spacing:-.025em;color:#41495e}
+html[data-design="b"][data-interior="v12"] body.working-body[data-page="account-settings"] .account-settings .account-profile dd{overflow-wrap:anywhere;min-width:0;color:#394357}
+html[data-design="b"][data-interior="v12"] body.working-body:is([data-page="account-settings"],[data-page="account-password"]) .account-form{min-width:0;gap:18px;margin-top:27px}
+html[data-design="b"][data-interior="v12"] body.working-body:is([data-page="account-settings"],[data-page="account-password"]) .account-form label{min-width:0;color:#4d566b;font-size:13px;line-height:1.6}
+html[data-design="b"][data-interior="v12"] body.working-body:is([data-page="account-settings"],[data-page="account-password"]) .account-form input{
+ display:block;box-sizing:border-box;width:100%;max-width:100%;min-width:0;min-height:48px;
+ padding:11px 13px;border:1px solid #cbd1de;border-top-color:#b6bfcd;border-radius:4px;
+ background:#fff;color:#303a50;font-size:16px;line-height:1.5;box-shadow:inset 0 1px 3px #28364e0a,0 1px 0 #fff;
+}
+html[data-design="b"][data-interior="v12"] body.working-body:is([data-page="account-settings"],[data-page="account-password"]) .account-form input:focus{
+ outline:2px solid #88759e;outline-offset:3px;border-color:#78618e;background:#fff;box-shadow:inset 0 1px 2px #28364e08;
+}
+html[data-design="b"][data-interior="v12"] body.working-body:is([data-page="account-settings"],[data-page="account-password"]) .account-surface :is(a,button):focus-visible{outline:3px solid #88759e;outline-offset:5px}
+html[data-design="b"][data-interior="v12"] body.working-body[data-page="account-settings"] .account-settings .account-settings-links a{
+ display:inline-flex;align-items:center;min-height:44px;padding:9px 13px;border:1px solid #c8ceda;border-top-color:#fff;border-radius:4px;
+ background:linear-gradient(#fff,#f1f3f7);color:#584d70;font-weight:550;font-size:13px;line-height:1.5;
+ box-shadow:0 2px 0 #c3ccda,inset 0 1px 0 #fff;text-shadow:0 1px 0 #fff;
+}
+/* Continue the v21 study paper into the actual existing practice renderer. */
+html[data-design="b"][data-interior="v12"] body.working-body[data-page="practice"] .practice-work .quick-paper{
+ position:relative;background-color:#fff;background-image:var(--mi21-fibre,none);
+ border:1px solid #dde1e7;border-top-color:#fff;border-left-color:#e9ebee;border-radius:2px;
+ box-shadow:var(--mi21-paper-edge,0 1px 0 #bfc4cc,1px 3px 0 #fff,2px 4px 0 #d3d6dd,4px 8px 0 #d8dbe1,9px 18px 28px #2630440f);
+}
+/* Preserve content and controls: only the sheet's surrounding material changes. */
+@media(max-width:660px){
+ html[data-design="b"][data-interior="v12"] body.working-body[data-page="account-settings"] .account-v7.account-surface.account-settings,
+ html[data-design="b"][data-interior="v12"] body.working-body[data-page="account-password"] .account-surface.password-surface{
+  width:92%;max-width:92%;margin:25px auto 52px;padding:23px 19px 28px;border-radius:5px;
+  box-shadow:0 2px 0 #d2d8e2,2px 9px 18px #29334b0b;
+ }
+ html[data-design="b"][data-interior="v12"] body.working-body[data-page="account-settings"] .account-settings .account-heading{align-items:flex-start;gap:13px 18px;padding-bottom:19px}
+ html[data-design="b"][data-interior="v12"] body.working-body:is([data-page="account-settings"],[data-page="account-password"]) .account-back{margin-bottom:9px}
+ html[data-design="b"][data-interior="v12"] body.working-body[data-page="practice"] .practice-work .quick-paper{
+  box-shadow:0 1px 0 #cbd0d8,1px 3px 0 #fff,2px 4px 0 #d5d9e0,4px 9px 17px #2630440c;
+ }
+}
+/* Audit contrast fixes are deliberately after every previous material rule. */
+html[data-design="b"][data-interior="v12"] body.working-body[data-page="teacher"] .tb20-surface :is(.tb20-flow small,.tb20-part small,.tb20-question-list summary>span,.tb20-review-heading p,.tb20-proof p){
+ color:#626f83;font-size:11px;line-height:1.7;
+}
+html[data-design="b"][data-interior="v12"] body.working-body[data-page="teacher"] .tb20-surface .tb20-flow nav>:is(button,a)>b{color:#6f627e}
+/* Explicit active rules outrank both v20 :active and v21 material base states. */
+html[data-design="b"][data-interior="v12"] body.working-body[data-page="teacher"] .tb20-surface .tb20-flow nav>:is(button,a):not(:disabled):not([aria-disabled="true"]):active,
+html[data-design="b"][data-interior="v12"] body.working-body[data-page="teacher"] .tb20-surface .tb20-part:not(:disabled):not([aria-disabled="true"]):active{
+ transform:translateY(2px);box-shadow:0 0 0 #d5dae3,0 1px 2px #26354a0a,inset 0 2px 4px #24344c16,inset 0 -1px 0 #fff;
+}
+html[data-design="b"][data-interior="v12"] body.working-body[data-page="account-settings"] .account-settings .account-settings-links a:active{
+ transform:translateY(2px);box-shadow:0 0 0 #c3ccda,inset 0 1px 3px #26354a17;
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-design="b"][data-interior="v12"] body.working-body[data-page="teacher"] .tb20-surface :is(.tb20-flow nav>button,.tb20-flow nav>a,.tb20-part),
+ html[data-design="b"][data-interior="v12"] body.working-body:is([data-page="account-settings"],[data-page="account-password"]) .account-surface :is(a,button,input){transition:none;animation:none}
+}
+}

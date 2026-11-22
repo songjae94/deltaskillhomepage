@@ -1,0 +1,21 @@
+/* One desk, one paper placement, shared by the library, workbench and hero. */
+.ds48-canvas{overflow:hidden;background:#fff;border:1px solid #bbc0cc;border-radius:13px;min-width:0}
+.tb36-order-preview.ds48-canvas{display:block!important;padding:0!important;border-left:1px solid #bbc0cc;align-self:stretch}
+.ds48-preview-toolbar{min-height:58px;padding:16px 21px;display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fafbfc;border-bottom:1px solid #d1d5dc;color:#243247}
+.ds48-preview-toolbar strong{font-size:12px;font-weight:750}.ds48-preview-toolbar small{font-size:10px;color:#6d7888}.ds48-preview-toolbar button{border:0;background:none;color:#56667e;font-size:11px;cursor:pointer;padding:7px}
+.ds48-paper-scene{position:relative;width:100%;aspect-ratio:4/5;overflow:hidden;background:#eee5d9 url('assets/editorial/paper-flatlay-v15.png') center/100% auto no-repeat;isolation:isolate}
+.ds48-paper-position{position:absolute;left:11.1328125%;top:7.109375%;width:76.85546875%;aspect-ratio:210/297;background:#fff;overflow:hidden}
+.ds48-original-paper{display:block;width:100%;height:auto;border:0;max-width:none}
+.tb53-preview-empty{padding:48px 24px;min-height:260px;display:grid;place-items:center;text-align:center;color:#576478;font-size:14px;line-height:1.7}
+html[data-interior="v12"] .ds48-paper-position>#sheet,.ds48-paper-position>#sheet{position:relative!important;inset:auto!important;width:100%!important;min-width:0!important;height:auto!important;min-height:0!important;aspect-ratio:210/297;margin:0!important;padding:0!important;transform:none!important;box-shadow:none!important;border:0!important;background:#fff!important;mix-blend-mode:normal!important;overflow:hidden!important}
+.ds48-paper-position .pc14-preview-scale{position:relative!important;left:0!important;top:0!important;margin:0!important;max-width:none!important;transform:none!important;transform-origin:0 0}
+.ds48-paper-position iframe{display:block;border:0;background:#fff;max-width:none}
+.ds48-paper-position>#sheet>img{display:block;width:100%;height:auto}
+html[data-interior="v12"] body[data-page="teacher"] .ds48-canvas .creator-paper-stage,.ds48-canvas .creator-paper-stage{height:auto!important;max-height:none!important;min-height:0!important;padding:0!important;display:block!important;background:#eee5d9;overflow:hidden}
+.ds48-canvas .creator-paper-stage:before,.ds48-canvas .creator-paper-stage:after{display:none!important}
+.ds48-canvas .creator-canvas-toolbar{background:#fafbfc;border-bottom:1px solid #cbd1db;color:#243247;padding:16px 21px}
+.ds48-canvas .creator-canvas-toolbar strong{font-weight:750}.ds48-canvas .creator-canvas-footer{background:#fff;border-top:1px solid #d4d9e1}
+.ds48-reference-note{padding:11px 18px;margin:0!important;font-size:10px!important;line-height:1.6;color:#657185!important;background:#fff;border-top:1px solid #d5dae0}
+@media(max-width:650px){.ds48-preview-toolbar{min-height:52px;padding:14px 17px}.ds48-reference-note{font-size:10px!important}.tb36-order-preview.ds48-canvas{border-left:0;border-top:1px solid #c6c9d1}.ds48-paper-scene{aspect-ratio:4/5}}
+
+html[data-interior="v12"] body[data-page="teacher"] .ds48-canvas .ds48-paper-scene .ds48-paper-position>#sheet{position:relative!important;left:0!important;top:0!important;right:auto!important;bottom:auto!important;width:100%!important;min-width:0!important;max-width:none!important;height:auto!important;min-height:0!important;aspect-ratio:210/297;margin:0!important;padding:0!important;border:0!important;box-shadow:none!important;transform:none!important;background:#fff!important;mix-blend-mode:normal!important}

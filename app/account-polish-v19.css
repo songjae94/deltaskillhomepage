@@ -1,0 +1,93 @@
+@media screen {
+  html[data-interior="v12"] body[data-page="account"] { background:#f4f3f0; }
+  html[data-interior="v12"] body[data-page="account"] .account-v7.account-surface.account-polish-v19 { display:block; width:min(92%,1160px); margin:27px auto 65px; padding:0; color:#353b43; --account-ink:#353b43; --account-muted:#7a7e83; --account-rule:#dcdedc; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-heading { display:grid; grid-template-columns:minmax(0,1fr) 37%; grid-template-rows:auto auto; align-items:center; gap:15px 35px; margin:0; padding:28px 30px; border:0; background:#eaece9; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-heading>div:first-child { min-width:0; grid-column:1; grid-row:1; padding-top:6px; }
+  .account-polish-v19 .ap19-role { display:block; color:#6c7480; font-size:11px; letter-spacing:.02em; line-height:1.7; margin-bottom:13px; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-heading h1,
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-heading:has(.account-subtitle) h1 { font-size:29px; font-weight:500; line-height:1.4; letter-spacing:-1.1px; color:#353b43; margin:0; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-heading .account-subtitle { font-size:21px; line-height:1.6; letter-spacing:-.5px; font-weight:500; color:#5b6570; margin-top:9px; overflow-wrap:anywhere; }
+  .account-polish-v19 .ap19-welcome { font-size:12px; color:#727b84; line-height:1.9; margin:14px 0 0; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-heading-actions { grid-column:1; grid-row:2; justify-content:flex-start; align-self:start; display:flex; gap:20px; padding:0; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-heading-actions :is(button,a) { min-height:44px; font-size:12px; }
+  .account-polish-v19 .ap19-masthead-photo { position:relative; grid-column:2; grid-row:1 / span 2; margin:0; overflow:hidden; width:100%; min-width:0; aspect-ratio:auto; height:180px; border:1px solid #fff; box-shadow:0 2px 0 #ccd0ce,4px 8px 18px #35434c12; }
+  .account-polish-v19 .ap19-masthead-photo img { display:block; width:100%; height:100%; object-fit:cover; }
+  .account-polish-v19 .ap19-masthead-photo .ap19-public-page { position:absolute; left:24%; top:6%; width:60%; height:110%; object-fit:contain; object-position:top; transform:rotate(-5deg); box-shadow:2px 4px 12px #34404b12; }
+  .account-polish-v19 .ap19-masthead-photo figcaption { position:absolute; bottom:11px; left:13px; background:#faf9f4e8; padding:5px 8px; font-size:8px; letter-spacing:.05em; color:#7d837d; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-nav { display:block; position:static; margin:25px 0 8px; padding:0; border:0; border-bottom:1px solid #d5dadc; background:none; }
+  .account-polish-v19 .ap19-main-nav { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:0; border-top:1px solid #d5dadc; border-bottom:1px solid #d5dadc; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-nav .ap19-main-nav :is(button,a) { display:flex; align-items:center; justify-content:space-between; gap:12px; text-align:left; min-width:0; min-height:66px; padding:16px 22px; color:#5e6772; font-size:14px; font-weight:500; border:0; border-right:1px solid #dadfdf; border-radius:0; background:none; box-shadow:none; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-nav .ap19-main-nav :is(button,a):last-child { border-right:0; }
+  .account-polish-v19 .ap19-main-nav :is(button,a)>span { color:#86939e; font-size:17px; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-nav .ap19-main-nav [aria-current] { color:#454059; background:#e9e7ec; box-shadow:inset 0 -2px 0 #81768f; }
+  .account-polish-v19 .ap19-sub-nav { display:flex; flex-wrap:wrap; align-items:center; gap:6px 26px; padding:8px 0; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-nav .ap19-sub-nav :is(button,a) { display:inline-flex; align-items:center; min-height:44px; padding:9px 0; border:0; background:none; color:#7e838a; font-size:11px; font-weight:400; box-shadow:none; }
+  .account-polish-v19 .ap19-sub-nav small { color:#9a9fa5; font-size:10px; margin-left:7px; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-section { display:block; padding:39px 0; margin:0; min-width:0; border:0; border-bottom:1px solid #d9dddf; scroll-margin-top:140px; background:none; box-shadow:none; border-radius:0; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 #account-materials { padding-top:30px; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-section-heading { display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:10px 22px; margin-bottom:26px; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-section-heading h2 { font-size:25px; font-weight:500; letter-spacing:-.9px; line-height:1.5; color:#3b424b; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-source { color:#8a8c92; background:none; padding:0; border:0; font-size:10px; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-material-bundles { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:28px 34px; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-material-bundle { display:grid; grid-template-columns:95px minmax(0,1fr); align-items:start; gap:24px; padding:24px 0; border:0; border-top:1px solid #dbdcd8; border-radius:0; min-height:0; background:none; }
+  .account-polish-v19 .ap19-material-paper { position:relative; min-width:0; aspect-ratio:210 / 297; padding:12px 10px; background:#fffefb; border:1px solid #d9dad4; border-left:4px solid #b4b7b5; box-shadow:2px 3px 0 #e1e2dc,4px 6px 0 #e9e9e4,5px 9px 14px #37404812; overflow:hidden; transform:rotate(-2deg); }
+  .account-polish-v19 .ap19-material-paper:has(img) { padding:0; border-left-width:1px; }
+  .account-polish-v19 .ap19-material-paper img { display:block; width:100%; height:100%; object-fit:cover; object-position:top; }
+  .account-polish-v19 .ap19-material-paper>small { display:block; font-size:5px; letter-spacing:1px; color:#888d8c; border-bottom:1px solid #a3aaa9; padding-bottom:7px; }
+  .account-polish-v19 .ap19-material-paper>strong { display:block; margin-top:14px; font-size:10px; font-weight:550; line-height:1.6; color:#5d666d; overflow-wrap:anywhere; max-height:65px; overflow:hidden; }
+  .account-polish-v19 .ap19-material-paper>i { display:block; width:60%; height:1px; background:#d3d7d4; margin-top:15px; }
+  .account-polish-v19 .ap19-material-body { min-width:0; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-material-title { gap:7px; margin-bottom:15px; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-material-title h3 { font-size:18px; line-height:1.6; color:#38434e; font-weight:550; letter-spacing:-.5px; overflow-wrap:anywhere; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-material-title>span { font-size:10px; color:#87909a; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-material-options { display:flex; flex-wrap:wrap; gap:10px; margin:0; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-material-chip:not(.account-material-unavailable) { display:inline-flex; align-items:center; gap:10px; min-height:44px; padding:9px 12px; color:#4e5e71; background:linear-gradient(#fff,#f0f2f4); border:1px solid #c5ced6; border-top-color:#fff; border-bottom:2px solid #9daab6; border-radius:4px; box-shadow:0 2px 0 #d3d9de,inset 0 1px 0 #fff; font-size:11px; line-height:1.6; white-space:normal; overflow-wrap:anywhere; text-align:left; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-material-chip:not(.account-material-unavailable):active { transform:translateY(1px); box-shadow:0 1px 0 #c7d0d8,inset 0 2px 3px #38434e15; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-empty { min-height:100px; padding:24px 26px; background:#eeefec; border:0; border-left:2px solid #b7bebf; border-radius:0; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-empty p { font-size:13px; line-height:1.9; color:#77808a; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 #account-designs { padding:35px 27px; margin:20px 0; background:#e9edf0; border:0; }
+  .account-polish-v19 .pd17-design-grid { gap:24px; }
+  .account-polish-v19 .pd17-card { padding:22px 0; background:none; border:0; border-top:1px solid #cdd5dc; border-radius:0; box-shadow:none; gap:22px; }
+  .account-polish-v19 .pd17-card h3 { font-size:18px!important; font-weight:550; }
+  .account-polish-v19 .pd17-empty { background:#f6f7f7; border:1px solid #d7dcdf; border-radius:2px; padding:25px; }
+  .account-polish-v19 .pd17-empty strong { font-size:18px; font-weight:500; }
+  .account-polish-v19 .pd17-empty p { font-size:12px; }
+  .account-polish-v19 .pd17-library-top p { font-size:12px; }
+  .account-polish-v19 .pd17-card-actions { gap:10px; }
+  .account-polish-v19 .pd17-card-actions button { min-height:44px; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-unit-history { border-top:1px solid #d2d9df; padding-top:22px; margin-top:25px; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-local-records { margin-top:25px; border-top:1px solid #d9dfe2; padding-top:15px; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-local-records summary { min-height:44px; font-size:12px; color:#7b8490; }
+}
+@media screen and (max-width:900px) {
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-heading { grid-template-columns:minmax(0,1fr) 40%; gap:15px 25px; padding:26px; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-material-bundles { gap:20px; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-material-bundle { grid-template-columns:76px minmax(0,1fr); gap:18px; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-nav .ap19-main-nav :is(button,a) { padding:15px; font-size:13px; }
+}
+@media screen and (max-width:660px) {
+  html[data-interior="v12"] body[data-page="account"] .account-v7.account-surface.account-polish-v19 { width:92%; margin:19px auto 45px; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-heading { grid-template-columns:minmax(0,1fr) 36%; align-items:start; padding:22px 20px; gap:14px 15px; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-heading h1,
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-heading:has(.account-subtitle) h1 { font-size:24px; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-heading .account-subtitle { font-size:17px; margin-top:7px; }
+  .account-polish-v19 .ap19-role { font-size:9px; margin-bottom:9px; }
+  .account-polish-v19 .ap19-masthead-photo { aspect-ratio:.8; height:145px; align-self:stretch; }
+  .account-polish-v19 .ap19-masthead-photo img { object-position:65% center; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-nav { margin-top:20px; }
+  .account-polish-v19 .ap19-main-nav { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-nav .ap19-main-nav :is(button,a) { min-height:55px; padding:14px 16px; font-size:13px; border-bottom:1px solid #dadfdf; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-nav .ap19-main-nav :is(button,a):nth-child(even) { border-right:0; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-nav .ap19-main-nav :is(button,a):nth-last-child(-n+2) { border-bottom:0; }
+  .account-polish-v19 .ap19-sub-nav { gap:4px 18px; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-section { padding:29px 0; scroll-margin-top:120px; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-section-heading { margin-bottom:20px; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-section-heading h2 { font-size:23px; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-material-bundles { grid-template-columns:1fr; gap:9px; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-material-bundle { grid-template-columns:79px minmax(0,1fr); gap:20px; padding:23px 0; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-material-title h3 { font-size:17px; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 .account-material-chip:not(.account-material-unavailable) { font-size:11px; }
+  html[data-interior="v12"] body[data-page="account"] .account-polish-v19 #account-designs { margin:14px 0; padding:26px 19px; }
+  .account-polish-v19 .pd17-card { gap:19px; }
+  .account-polish-v19 .pd17-paper-mark { min-width:66px; width:66px; }
+}

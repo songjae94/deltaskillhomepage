@@ -1,0 +1,58 @@
+@media screen{
+/* A photographed aluminum enclosure, with a precisely registered live display. */
+html[data-design="b"] body.home-body .hd40-product{position:absolute;width:min(84vw,calc((100svh - 240px)*1.5),1120px);aspect-ratio:3/2;right:-5.5%;top:76px;pointer-events:none;isolation:isolate;}
+.hd40-stage{position:absolute;left:0;top:0;width:1536px;height:1024px;transform-origin:0 0;}
+.hd40-hardware{position:absolute;inset:0;display:block;width:1536px;height:1024px;max-width:none;pointer-events:none;}
+.hd40-screen{position:absolute;left:0;top:0;width:1024px;height:768px;transform-origin:0 0;overflow:hidden;border-radius:13px;background:#edf0f3;container-type:inline-size;pointer-events:auto;box-shadow:inset 0 0 2px #0008;}
+.hd40-screen .ip19-statusbar{position:absolute;inset:0 0 auto;height:24px;display:flex;align-items:center;justify-content:space-between;padding:0 19px;background:#fafbfc;color:#20252b;font:600 12px/1 Arial,sans-serif;}
+.hd40-screen .ip19-statusbar>span:last-child{display:flex;align-items:center;gap:5px;}
+.hd40-screen .ip19-statusbar svg{width:18px;height:12px;}
+.hd40-screen .ip19-statusbar svg:last-child{width:23px;}
+.hd40-screen .ip19-system-bottom{position:absolute;inset:auto 0 0;height:20px;background:#e8edf1;}
+.hd40-screen .ip19-home-indicator{position:absolute;width:245px;height:4px;bottom:6px;left:50%;transform:translateX(-50%);border-radius:5px;background:#171b20;}
+.hd40-glass-light{position:absolute;inset:0;z-index:9;pointer-events:none;border-radius:inherit;background:linear-gradient(118deg,#fff3,transparent 23%,transparent 82%,#9faab705);box-shadow:inset 0 1px 0 #ffffffe0,inset 0 0 1px 1px #0004;opacity:.28;}
+/* UI is laid out at the device's actual logical resolution, then projected as one plane. */
+.hd40-screen .hd39-app{top:24px;height:724px;}
+.hd40-screen .hd39-appbar{height:46px;padding:0 23px;gap:9px;}
+.hd40-screen .hd39-appbar>strong{font-size:20px;}
+.hd40-screen .hd39-wordmark{font-size:15px;}
+.hd40-screen .hd39-app svg{width:20px;height:20px;}
+.hd40-screen .hd39-tabs{padding:5px 18px;gap:5px;}
+.hd40-screen .hd39-tabs button{font-size:14px;line-height:18px;padding:6px 14px;border-radius:6px;}
+.hd40-screen .hd39-filebar{height:39px;padding:0 23px;gap:10px;}
+.hd40-screen .hd39-filebar>span{gap:9px;}
+.hd40-screen .hd39-filebar strong{font-size:14px;}
+.hd40-screen .hd39-filebar button,.hd40-screen .hd39-readerbar button{width:30px;height:30px;border-radius:6px;}
+.hd40-screen .hd39-paper-well{padding:18px 24px;background:#ccd2d8;box-shadow:inset 0 1px 2px #24303e16;}
+.hd40-screen .hd39-sheet-surface{box-shadow:0 0 0 1px #b1bbc6,0 2px 3px #18283b23,0 8px 18px #18283b24;}
+.hd40-screen .hd39-readerbar{height:35px;padding:0 20px;gap:12px;font-size:12px;}
+.hd40-screen .hd39-page-controls{gap:4px;}
+.hd40-screen .hd39-page-controls strong{font-size:12px;}
+.hd40-screen .ht23-demo{top:24px;height:724px;}
+
+/* Compact physical keys: fixed sockets and moving caps, not larger flat tiles. */
+html[data-design="b"] body.home-body .role-dock{width:min(374px,calc(100vw - 56px));gap:12px 10px;bottom:32px;isolation:isolate;}
+html[data-design="b"] body.home-body .role-dock::before{display:none;}
+html[data-design="b"] body.home-body .role-dock>a:not(.ip23-request-entry){display:block;position:relative;height:51px;min-height:51px;max-height:51px;border:0;border-radius:9px;background:transparent;box-shadow:none;backdrop-filter:none;padding:0;font-size:15px;text-shadow:none;transition:none;}
+html[data-design="b"] body.home-body .role-dock>a:not(.ip23-request-entry)::before{display:none;}
+html[data-design="b"] body.home-body .role-dock>a:not(.ip23-request-entry):is(:hover,:active){transform:none;filter:none;box-shadow:none;}
+.hd40-keycap{position:absolute;inset:1px 0 4px;display:flex;align-items:center;justify-content:center;overflow:hidden;border:0;border-radius:7px;color:#253044;background:transparent url("assets/hero-v40/button-materials.png") 3.237% 52.5%/217.635% 296.721% no-repeat;filter:drop-shadow(0 2px 2px #101c3338);transform:translateY(0);transition:transform .09s,filter .12s;font-size:15px;font-weight:650;letter-spacing:-.025em;}
+.hd40-keycap::before{display:none;}
+.hd40-keycap>span{position:relative;text-shadow:0 .6px 0 #fff;}
+html[data-design="b"] body.home-body .role-dock>a[href="#teacher"] .hd40-keycap{color:#f5f6fb;background:transparent url("assets/hero-v40/button-materials.png") 96.849% 52.5%/217.635% 296.721% no-repeat;box-shadow:none;border:0;}
+html[data-design="b"] body.home-body .role-dock>a[href="#teacher"] .hd40-keycap>span{text-shadow:0 1px 1px #101a2a;}
+html[data-design="b"] body.home-body .role-dock>a:not(.ip23-request-entry):hover .hd40-keycap{filter:brightness(1.035) drop-shadow(0 2px 2px #101c3338);}
+html[data-design="b"] body.home-body .role-dock>a:not(.ip23-request-entry):active .hd40-keycap{transform:translateY(2px);filter:brightness(.98) drop-shadow(0 .5px .5px #101c3338);box-shadow:none;}
+html[data-design="b"] body.home-body .role-dock .ip23-request-entry{height:44px;min-height:44px;max-height:44px;border-radius:9px;padding:5px 13px;background:linear-gradient(110deg,#263245e6,#1e293de6);box-shadow:inset 0 1px 0 #fff1,0 1px 0 #151f30,0 3px 8px #14213a22;}
+html[data-design="b"] body.home-body .role-dock .ip23-request-entry .ip25-request-copy strong{font-size:12px;}
+html[data-design="b"] body.home-body .role-dock .ip23-request-entry .ip25-request-copy>span{font-size:9px;}
+html[data-design="b"] body.home-body .role-dock .ip26-request-mark,html[data-design="b"] body.home-body .role-dock .ip26-request-mark svg{width:22px;height:26px;}
+html[data-design="b"] body.home-body .role-dock .ip23-request-entry .ip25-request-arrow{width:23px;height:23px;}
+@media(max-width:800px){
+ html[data-design="b"] body.home-body .hd40-product{width:min(126vw,710px);right:50%;transform:translateX(50%);top:calc(180px + max(0px, (100svh - 667px)*.48));}
+ html[data-design="b"] body.home-body .role-dock{width:min(330px,calc(100vw - 56px));bottom:max(47px,calc(env(safe-area-inset-bottom) + 22px));gap:12px 10px;}
+ html[data-design="b"] body.home-body .role-dock>a:not(.ip23-request-entry){height:48px;min-height:48px;max-height:48px;}
+ html[data-design="b"] body.home-body .role-dock::before{height:58px;}
+}
+@media(prefers-reduced-motion:reduce){.hd40-keycap{transition:none;}}
+}

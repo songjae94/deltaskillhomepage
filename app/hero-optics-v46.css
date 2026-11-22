@@ -1,0 +1,15 @@
+/* Single projection: live text and rules are never downsampled by an ancestor bitmap. */
+@media screen{
+.hd40-stage{width:100%;height:100%;transform:none!important}.hd40-hardware,.hd40-stylus{width:100%;height:100%}
+.hd40-screen{background:#fff;box-shadow:0 0 0 1px #0d1420,inset 0 0 0 1px #ffffffb3}
+.hd40-screen .ip19-statusbar{background:#fff;color:#131d2c}.hd40-screen .ip19-system-bottom{background:#f4f6f9}.hd40-screen .ip19-home-indicator{background:#101824}
+.hd40-glass-light{opacity:1;background:none!important;box-shadow:inset 0 1px 0 #fffffff2,inset 1px 0 0 #dceaff99,inset -1px 0 0 #18213280,inset 0 -1px 0 #050c1680;overflow:hidden}
+.hd40-glass-light::before{content:'';position:absolute;top:0;left:0;width:100%;height:2px;background:linear-gradient(100deg,transparent 0%,transparent 38%,#dbedff66 44%,#fff 50%,#ddecff99 56%,transparent 62%);background-size:320% 100%;animation:hd46-edge-light 13s cubic-bezier(.42,0,.32,1) infinite}
+.hd40-glass-light::after{content:'';position:absolute;right:0;top:2%;width:1.5px;height:62%;background:linear-gradient(transparent,#d5e8ff9c 25%,#fff 42%,#dbe9ff72 64%,transparent);opacity:.75}
+@keyframes hd46-edge-light{0%,15%{background-position:100% 0}65%,100%{background-position:0% 0}}
+html[data-design="b"] body.home-body:has([data-cinema-pause][aria-label="배경 재생"]) .hd40-glass-light::before{animation-play-state:paused}
+.hw41-study .hw41-question{border-color:#b9c3cf;box-shadow:0 1px 0 #fff,0 2px 3px #1422380d}.hw41-study .hw41-top,.hw41-study .hw41-toolbar{border-color:#bcc7d4}.hw41-study .hw41-answers button{border-color:#bdc7d4;background:#fff}.hw41-study .hw41-answer-sheet{color:#445469}.hw41-study .hw41-top{background:#fff;color:#18283e}.hw41-study .hw41-clock time{color:#29476b}.hw41-study .hw41-toolbar-note,.hw41-study .hw41-pen-width,.hw41-study .hw41-nextbar{color:#63728a}
+@media(prefers-reduced-motion:reduce){.hd40-glass-light::before{animation:none;background-position:50% 0}}
+}
+
+.hd46-metal-lines{position:absolute;inset:0;width:100%;height:100%;fill:none;pointer-events:none;stroke-linecap:round;opacity:.8;animation:hd46-metal-glint 12s ease-in-out infinite}@keyframes hd46-metal-glint{0%,100%{opacity:.58}35%,62%{opacity:.96}}html[data-design="b"] body.home-body:has([data-cinema-pause][aria-label="배경 재생"]) .hd46-metal-lines{animation-play-state:paused}@media(prefers-reduced-motion:reduce){.hd46-metal-lines{animation:none;opacity:.8}}

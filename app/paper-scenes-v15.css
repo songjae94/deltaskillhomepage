@@ -1,0 +1,74 @@
+/* The photographed sheet occupies x=114..901, y=219..1334 in a 1024x1536
+   asset. A centered 1024x1280 crop removes 128px from top and bottom.
+   Original live page content sits exactly inside that photographed sheet.
+   Nothing in this stylesheet affects the A4 print renderer. */
+@media screen {
+  .paper-photo-scene {
+    position:relative;
+    width:100%;
+    aspect-ratio:4 / 5;
+    overflow:hidden;
+    isolation:isolate;
+    background:#eee5d9 url('assets/editorial/paper-flatlay-v15.png') center / 100% auto no-repeat;
+  }
+  html[data-interior="v12"] body:is([data-page="teacher"],[data-page="print-design"]) .creator-paper-stage {
+    padding:0;
+    background:#eee5d9;
+    box-shadow:none;
+    max-height:none;
+    overflow:hidden;
+  }
+  html[data-interior="v12"] body:is([data-page="teacher"],[data-page="print-design"]) .creator-paper-stage::before,
+  html[data-interior="v12"] body:is([data-page="teacher"],[data-page="print-design"]) .creator-paper-stage::after {display:none}
+  html[data-interior="v12"] body:is([data-page="teacher"],[data-page="print-design"]) .paper-photo-scene #sheet,
+  html[data-interior="v12"] .paper-photo-detail > img,
+  html[data-interior="v12"] body[data-page="library"] .paper-photo-catalog > .material-page-peek {
+    position:absolute!important;
+    left:11.1328125%!important;
+    top:7.109375%!important;
+    right:auto!important;
+    bottom:auto!important;
+    width:76.85546875%!important;
+    max-width:none!important;
+    min-width:0!important;
+    margin:0!important;
+    padding:0!important;
+    border:0!important;
+    border-radius:0!important;
+    box-shadow:none!important;
+    transform:none!important;
+    background:transparent!important;
+    mix-blend-mode:multiply;
+    opacity:1;
+  }
+  html[data-interior="v12"] body:is([data-page="teacher"],[data-page="print-design"]) .paper-photo-scene #sheet.source-sheet,
+  html[data-interior="v12"] .paper-photo-detail > img,
+  html[data-interior="v12"] body[data-page="library"] .paper-photo-catalog > .material-page-peek {
+    display:block;
+    height:auto!important;
+    min-height:0!important;
+    object-fit:contain;
+    aspect-ratio:auto;
+  }
+  html[data-interior="v12"] body:is([data-page="teacher"],[data-page="print-design"]) .paper-photo-scene #sheet.source-sheet > img {
+    display:block;width:100%;height:auto;box-shadow:none;border:0;
+  }
+  html[data-interior="v12"] body[data-page="library"] .material-art {
+    height:auto;
+    aspect-ratio:4 / 5;
+    padding:0;
+    background:#eee5d9;
+  }
+  html[data-interior="v12"] body[data-page="library"] .material-art::before,
+  html[data-interior="v12"] body[data-page="library"] .material-art::after {display:none}
+  html[data-interior="v12"] body[data-page="library"] .material-preview-tag {
+    right:12px;bottom:12px;background:#fffefbf2;color:#454b55;
+    border:1px solid #ffffffb3;box-shadow:0 2px 7px #3f332719;
+  }
+  html[data-interior="v12"] .material-preview:has(.paper-photo-detail) {
+    padding:0;background:#eee5d9;
+  }
+  html[data-interior="v12"] .material-preview:has(.paper-photo-detail) .preview-toolbar {
+    margin:0;padding:18px 22px;background:#fafbfc;border-bottom:1px solid #e2e4e7;
+  }
+}

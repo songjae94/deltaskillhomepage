@@ -1,0 +1,58 @@
+/* Small-screen controls and content resilience. No print surface is targeted. */
+@media screen {
+  /* FAQ disclosure is a keyboard control, just like the links beside it. */
+  html[data-interior="v12"] body[data-page="help"] .help-faq summary:focus-visible {
+    outline: 3px solid #8575c9;
+    outline-offset: 4px;
+    border-radius: 3px;
+  }
+
+  /* A title and its source should wrap independently instead of squeezing. */
+  html[data-interior="v12"] body[data-page="account"] .account-v7 .account-section-heading {
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+
+  html[data-interior="v12"] body[data-page="account"] .account-v7 .account-section-heading h2 {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+}
+
+@media screen and (max-width: 660px) {
+  /* Give the question and answer controls the first screen on a phone. */
+  html[data-interior="v12"] body[data-page="student"] .study-heading {
+    min-height: 104px;
+    gap: 14px;
+    padding-bottom: 18px;
+  }
+  html[data-interior="v12"] body[data-page="student"] .paper-heading {
+    min-height: 60px;
+    padding-bottom: 14px;
+  }
+  html[data-interior="v12"] body[data-page="student"] .paper-count b {
+    font-size: 44px;
+  }
+  html[data-interior="v12"] body[data-page="student"] .quick-question {
+    min-height: 0;
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+  html[data-interior="v12"] body[data-page="student"] .quick-question .question-stem {
+    margin-top: 12px;
+  }
+  /* Keep native form controls at a readable size without focus zoom on iOS. */
+  html[data-interior="v12"] body[data-page="student"] .study-picker select,
+  html[data-interior="v12"] body[data-page="library"] .library-search input {
+    font-size: 16px;
+  }
+
+  /* Match the login form's existing 44px secondary-link hit areas. */
+  html[data-interior="v12"] body[data-page="login"] .login-return a {
+    min-height: 44px;
+  }
+
+  html[data-interior="v12"] body[data-page="account"] .account-v7 .account-nav :is(a, button) {
+    min-height: 44px;
+  }
+}
