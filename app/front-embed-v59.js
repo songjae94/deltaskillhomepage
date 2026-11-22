@@ -52,4 +52,18 @@
     for (const url of AHEAD) fetch(url, { priority: 'low' }).catch(() => {});
   };
   if (document.readyState === 'complete') setTimeout(warm, 1200); else addEventListener('load', () => setTimeout(warm, 1200));
+  // Required notes on the hero: the person is AI-made; a scene that shows a screen working on the site says so.
+  const MARKS = { 0: 'AI로 만든 가상 인물입니다', 2: '델타스킬 실제 화면' };
+  const look = document.createElement('style');
+  look.textContent = '.fx59-mark{position:absolute;z-index:6;top:68px;right:20px;margin:0;padding:5px 10px;border-radius:999px;background:rgba(16,23,43,.68);color:#fff;font-size:12px;font-weight:500;line-height:1.3;letter-spacing:-.01em;white-space:nowrap;pointer-events:none}.fx59-mark:empty{display:none}@media(min-width:900px){.fx59-mark{top:84px;right:58px;font-size:13px}}';
+  document.head.append(look);
+  const mark = () => {
+    const stage = document.querySelector('.cinema'); if (!stage) return;
+    let note = stage.querySelector(':scope > .fx59-mark');
+    if (!note) { note = document.createElement('p'); note.className = 'fx59-mark'; stage.append(note); }
+    const text = MARKS[stage.dataset.scene] || '';
+    if (note.textContent !== text) note.textContent = text;
+  };
+  new MutationObserver(mark).observe(document.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: ['data-scene'] });
+  mark();
 })();
