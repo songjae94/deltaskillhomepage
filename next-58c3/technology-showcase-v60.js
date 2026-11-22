@@ -74,18 +74,17 @@
     return `<section class="tsc60-ladder-wrap" aria-label="원문항과 네 단계 변형 결과"><ol class="tsc60-ladder">${rungs}</ol></section>`;
   }
 
-  const plate = (label, figure) => `<figure class="tsc60-plate"><figcaption>${label}</figcaption>${figure}</figure>`;
+  // Smaller pairs below the ladder: the same card, badge and source line on every page.
+  const plate = (label, side, tex, original) => `<figure class="tsc60-plate${original ? ' tsc60-plate--original' : ''}"><figcaption><span class="tsc60-badge">${label}</span></figcaption>${question(side, tex)}</figure>`;
   function pair(p, tex) {
-    const show = side => side.img
-      ? `<img src="${p.dir}${side.img.file}" width="${side.img.width || 860}" height="${side.img.height}" alt="${esc(side.img.alt)}" loading="lazy" decoding="async" draggable="false">`
-      : question(side, tex);
     return `<article class="tsc60-pair">
-        <header><p class="tsc60-subject">${p.subject} <span>${p.unit}</span></p><p class="tsc60-source">${p.source}</p></header>
-        <div class="tsc60-pair-body">${plate('원문항', show(p.original))}<span class="tsc60-arrow" aria-hidden="true">→</span>${plate('변형 결과', show(p.variant))}</div>
+        <header><p class="tsc60-subject">${p.subject} <span>${p.unit}</span></p></header>
+        <div class="tsc60-pair-body">${plate('원문항', p.original, tex, true)}<span class="tsc60-arrow" aria-hidden="true">→</span>${plate('변형 결과', p.variant, tex)}</div>
+        <p class="tsc60-cite">출처: ${p.cite}</p>
       </article>`;
   }
-  function pairs(list, title, tex) {
-    return `<section class="tsc60-pairs" aria-labelledby="tsc60-pairs-title"><h2 id="tsc60-pairs-title">${title}</h2><div class="tsc60-pair-list">${list.map(p => pair(p, tex)).join('')}</div></section>`;
+  function pairs(list, tex) {
+    return `<section class="tsc60-pairs" aria-labelledby="tsc60-pairs-title"><h2 id="tsc60-pairs-title">다른 문항에서도</h2><div class="tsc60-pair-list">${list.map(p => pair(p, tex)).join('')}</div></section>`;
   }
 
   const hero = back => `<header class="tsc60-hero">
@@ -95,17 +94,28 @@
         <p class="tsc60-lead">2027학년도 수능 수학 공통 12번을 델타스킬이 네 단계로 바꾼 결과입니다. 단계가 오를수록 원문항과 멀어집니다.</p>
       </header>`;
 
-  const dir = 'assets/technology-showcase/';
   const smallPairs = [
     {
-      dir, subject: '수학Ⅱ', unit: '다항함수의 적분법', source: '2027학년도 수능 공통 9번 · 4점',
-      original: { img: { file: 'velocity-distance-original.webp', height: 298, alt: '수능 공통 9번 원문항. 수직선 위를 움직이는 점이 움직인 거리를 구하는 문제' } },
-      variant: { img: { file: 'velocity-distance-variant.webp', height: 345, alt: '변형 결과. 움직인 거리가 주어졌을 때 속도 식의 상수를 구하는 문제' } }
+      subject: '수학Ⅱ', unit: '다항함수의 적분법', cite: '2027학년도 대학수학능력시험 수학 공통 9번 · 4점',
+      original: {
+        body: ['수직선 위를 움직이는 점 P가 있다. 시각이 $t\\,(t \\ge 0)$일 때 점 P의 속도 $v(t)$는', { d: 'v(t) = 3t^2 - 18t + 15' }, '이다. 시각 $t = 0$부터 $t = 2$까지 점 P가 움직인 거리는? [4점]'],
+        choices: ['9', '10', '11', '12', '13']
+      },
+      variant: {
+        body: ['수직선 위를 움직이는 점 P가 있다. 시각 $t\\,(t \\ge 0)$일 때 점 P의 속도 $v(t)$는', { d: 'v(t) = 3(t-1)(t-a) \\quad (a > 2\\text{인 상수})' }, '이다. 시각 $t = 0$부터 $t = 2$까지 점 P가 움직인 거리가 $15$일 때, $a$의 값은? [4점]'],
+        choices: ['4', '5', '6', '7', '8']
+      }
     },
     {
-      dir, subject: '확률과 통계', unit: '확률', source: '2027학년도 수능 확률과 통계 26번 · 3점',
-      original: { img: { file: 'dice-product-original.webp', height: 200, alt: '수능 확률과 통계 26번 원문항. 주사위를 두 번 던진 눈의 곱에 대한 확률 문제' } },
-      variant: { img: { file: 'dice-product-variant.webp', height: 202, alt: '변형 결과. 주사위를 세 번 던진 눈의 곱에 대한 확률 문제' } }
+      subject: '확률과 통계', unit: '확률', cite: '2027학년도 대학수학능력시험 수학 확률과 통계 26번 · 3점',
+      original: {
+        body: ['한 개의 주사위를 두 번 던져 나오는 눈의 수를 차례로 $a$, $b$라 하자. $5 \\le a \\times b \\le 28$일 확률은? [3점]'],
+        choices: ['\\dfrac{1}{4}', '\\dfrac{13}{36}', '\\dfrac{17}{36}', '\\dfrac{7}{12}', '\\dfrac{25}{36}']
+      },
+      variant: {
+        body: ['한 개의 주사위를 세 번 던져 나오는 눈의 수를 차례로 $a$, $b$, $c$라 하자. $4 \\le a \\times b \\times c \\le 200$일 확률은? [3점]'],
+        choices: ['\\dfrac{103}{108}', '\\dfrac{26}{27}', '\\dfrac{209}{216}', '\\dfrac{35}{36}', '\\dfrac{53}{54}']
+      }
     }
   ];
 
@@ -130,7 +140,7 @@
     return `<article class="tsc60" aria-labelledby="tsc60-title">
       ${hero('<a class="tsc60-back" href="#csat"><span aria-hidden="true">←</span> 수능 공부</a>')}
       ${ladder(tex)}
-      ${pairs(smallPairs, '다른 과목에서도', tex)}
+      ${pairs(smallPairs, tex)}
       <section class="tsc60-figures" aria-label="변형 규모">
         <dl>
           <div><dt>2027학년도 수능 수학<br>공통 · 확률과 통계</dt><dd>30<span>문항 모두</span></dd></div>
