@@ -1,0 +1,95 @@
+#content .ms-shop {
+  --paper:#fff; --ink:#181c26; --muted:#566071; --line:#e1e5ea; --accent:#364d9e;
+  box-sizing:border-box; width:100%; max-width:1120px; margin:0 auto; padding:clamp(16px,3.4vw,46px);
+  background:var(--paper); color:var(--ink); font-family:"Pretendard Variable",-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+}
+.ms-shop *, .ms-shop *::after,.ms-shop *::before { box-sizing:border-box }
+#content .ms-shop :is(h1,h2,p) { margin:0; color:inherit }
+#content .ms-shop button { font-family:inherit; cursor:pointer }
+#content .ms-shop :disabled {cursor:default}
+#content .ms-shop :focus-visible { outline:2px solid #4055b3; outline-offset:3px }
+#content .ms-mast { position:relative; display:flex; align-items:flex-start; justify-content:space-between; gap:16px; padding:0 0 20px; isolation:isolate }
+#content .ms-mast h1 {font-family:inherit; font-size:clamp(34px,3.7vw,50px); font-weight:680; line-height:1.15; letter-spacing:-.065em}
+#content .ms-mast p {margin-top:8px; font-size:13px; color:var(--muted)}
+.ms-mast p i { font-style:normal; padding:0 4px }
+.ms-mast:has(.ms-display) {min-height:145px}
+.ms-display {position:absolute; bottom:0; right:24%; width:36%; height:100%; overflow:hidden; pointer-events:none; z-index:-1}
+.ms-display img {position:absolute; height:90%; bottom:-9%; left:12%; transform:rotate(-14deg); box-shadow:3px 1px 8px #1e211d32}
+.ms-display img:nth-child(2){left:33%; bottom:-3%; transform:rotate(-1deg)}
+.ms-display img:nth-child(3){left:54%; bottom:-10%; transform:rotate(12deg)}
+#content .ms-cart-button {display:inline-flex; align-items:center; gap:8px; background:transparent; color:var(--ink); padding:7px 0 7px 8px; border:0; font-size:14px; font-weight:600}
+.ms-cart-button b {padding:2px 6px; min-width:21px; border-radius:20px; color:white; background:#26303f; font-size:12px}
+.ms-cart-button i {position:relative; display:inline-block; width:14px; height:13px; border:1.5px solid; border-radius:2px}
+.ms-cart-button i::before {content:""; position:absolute; width:6px; height:5px; left:2.5px; top:-6px; border:1.5px solid; border-bottom:0; border-radius:4px 4px 0 0}
+.ms-categories {display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
+#content .ms-categories button {display:flex; align-items:center; justify-content:center; gap:7px; min-height:45px; padding:6px 2px; border:0; border-radius:0; background:transparent; color:var(--muted); font-size:clamp(12px,1.35vw,15px); font-weight:500; word-break:keep-all}
+#content .ms-categories button[aria-pressed] {color:var(--ink); font-weight:750; box-shadow:inset 0 -3px var(--accent)}
+.ms-categories small {font:500 11px/1 ui-monospace,monospace; color:#76808f}
+.ms-find {display:flex; align-items:center; justify-content:space-between; gap:16px; padding:20px 0; border-bottom:1px solid var(--line)}
+#content .ms-find h2,#content .ms-results h2,#content .ms-order h2 {font-size:clamp(16px,2vw,23px); font-weight:700; letter-spacing:-.05em}
+.ms-picker {position:relative; width:min(52%,430px); min-width:0}
+.ms-picker summary {display:flex; justify-content:space-between; align-items:center; gap:12px; min-height:43px; border:1px solid #c4cdd7; border-radius:5px; background:#fff; list-style:none; padding:9px 14px; font-size:15px; cursor:pointer}
+.ms-picker summary::-webkit-details-marker {display:none}
+.ms-picker summary i {width:8px; height:8px; margin-right:3px; border:solid currentColor; border-width:0 1.5px 1.5px 0; transform:rotate(45deg)}
+.ms-picker[open] summary i {transform:rotate(225deg)}
+.ms-popup {position:absolute; z-index:9; top:calc(100% + 3px); inset-inline:0; padding:8px; background:#fff; border:1px solid #b4becb; box-shadow:0 9px 23px #1620371a}
+.ms-popup input {width:100%; padding:10px; border:1px solid var(--line); background:white; font:inherit}
+.ms-popup [data-ms-options] {max-height:220px; overflow:auto}
+#content .ms-popup button {display:flex; justify-content:space-between; align-items:center; gap:8px; width:100%; padding:12px 5px; border:0; border-bottom:1px solid #ebedf1; background:transparent; color:var(--ink); font-size:14px; text-align:left}
+.ms-popup button small {white-space:nowrap; color:var(--muted)}
+#content .ms-popup button:hover {background:#f2f5fa}
+.ms-results {display:flex; align-items:baseline; gap:9px; padding:18px 0 13px}
+.ms-results span {color:var(--muted); font-size:13px}
+#content .ms-bookshelf {display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:clamp(14px,3vw,38px)}
+#content .ms-volume {max-width:315px; min-width:0; margin:0; padding:0; border:0; background:none; box-shadow:none; border-radius:0}
+.ms-stage {display:grid; place-items:center; padding:clamp(17px,2.05vw,26px) 12%; background:#f1f4f7; border-radius:5px}
+.ms-book-cover {display:block; position:relative; isolation:isolate; width:100%; max-width:226px; aspect-ratio:640/852; color:white}
+.ms-book-cover::after {content:""; position:absolute; inset:3px -2px -2px 3px; z-index:-1; background:#eceef1; border:1px solid #d7dce1; box-shadow:3px 5px 11px #1c304825}
+.ms-book-cover img,.ms-fallback-cover {display:block; width:100%; height:100%}
+.ms-fallback-cover {padding:10%; background:#264857; font-weight:700}
+.ms-formats {margin-top:7px}
+#content .ms-format {display:grid; grid-template-columns:auto 1fr auto; width:100%; align-items:center; gap:6px; min-height:33px; padding:5px 2px; border:0; border-bottom:1px solid var(--line); border-radius:0; color:var(--ink); background:transparent; font:inherit; font-size:14px; text-align:left}
+.ms-format b {text-align:right; font-variant-numeric:tabular-nums}
+.ms-format small {min-width:32px; text-align:right; font-size:11px; color:var(--accent)}
+.ms-format:disabled small {color:var(--muted)}
+#content .ms-format:enabled:hover {background:#edf2f8}
+#content .ms-order {width:min(460px,calc(100% - 28px)); max-height:85dvh; padding:22px; border:1px solid var(--line); background:var(--paper); color:var(--ink); overflow:auto; border-radius:5px}
+.ms-order::backdrop {background:#28231c66}
+.ms-order header,.ms-order li>div,.ms-total div,.ms-line {display:flex; justify-content:space-between; align-items:center; gap:10px}
+#content .ms-order header {position:static; width:auto; height:auto; box-shadow:none; background:none; padding:0 0 12px}
+.ms-order header small,.ms-order li small,.ms-line small {color:var(--muted); font-size:13px}
+#content .ms-line button,#content .ms-order header button {border:0; background:none; color:var(--muted); padding:7px}
+.ms-order ul {list-style:none; padding:0}
+.ms-line,.ms-order li,.ms-total {padding:12px 0; border-top:1px solid var(--line)}
+.ms-order li strong,.ms-line small {display:block; margin:4px 0}
+#content .ms-review-open {width:100%; padding:12px; border:0; background:#273446; color:#fff; font:inherit}
+#content .tb36-surface:has(.ms-shop) .tb36-modes {max-width:1120px; margin:0 auto 6px; gap:0; padding:0; background:#f0f3f6; border:0; box-shadow:none; border-radius:0}
+#content .tb36-surface:has(.ms-shop) .tb36-modes>button {min-height:38px!important; justify-content:center; padding:7px 8px!important; background:transparent; border:0; border-radius:0; box-shadow:none}
+#content .tb36-surface:has(.ms-shop) .tb36-modes>button[aria-pressed=true] {background:#28323e}
+#content .tb36-surface:has(.ms-shop) .tb36-modes strong {color:#394351; text-shadow:none; font-size:14px}
+#content .tb36-surface:has(.ms-shop) .tb36-modes>button[aria-pressed=true] strong {color:white}
+#content .tb36-surface:has(.ms-shop) .tb36-modes :is(small,.tb36-mode-icon) {display:none}
+@media(max-width:580px){
+  #content .ms-shop {padding:16px 12px 22px}
+  .ms-mast:has(.ms-display) {min-height:103px}
+  .ms-display {right:24%; width:29%; height:80%}
+  .ms-display img:nth-child(1) {left:3%}
+  .ms-categories {grid-template-columns:repeat(2,minmax(0,1fr))}
+  #content .ms-categories button {min-height:36px}
+  .ms-find {align-items:stretch; flex-direction:column; gap:8px; padding:14px 0}
+  .ms-picker {width:100%}
+  #content .ms-bookshelf {grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px 12px}
+  #content .ms-format {font-size:12px; min-height:36px; gap:3px}
+  .ms-format small {min-width:27px}
+}
+
+#content .ms-shop .ms-categories button:disabled {opacity:1;color:#737d8c}
+#content .ms-shop .ms-format:disabled {opacity:1;color:#545e69}
+#content .ms-shop .ms-stage:has(a:hover) {background:#eaf0f5}
+#content .ms-shop .ms-volume:nth-child(2) .ms-stage {background:#f2f1f7}
+#content .ms-shop .ms-volume:nth-child(3) .ms-stage {background:#f1f3f2}
+body.working-body:has(.ms-shop), body:has(.ms-shop) #content {background:#fff}
+
+.ms-planned-label {display:block;font-size:10px;font-weight:400;color:var(--muted)}
+.ms-price-number {white-space:nowrap}
+.ms-order-note {font-size:13px;line-height:1.65;color:var(--muted)}

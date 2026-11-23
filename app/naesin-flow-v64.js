@@ -392,10 +392,12 @@
     surface.classList.add('bf62-surface', 'nf64-surface');
     [...surface.children].forEach(el => { if (!el.matches('.tb36-modes, .tb36-compact-footer, footer, [class*="footer"]')) el.remove(); });
     const modes = surface.querySelector('.tb36-modes');
-    const wrap = document.createElement('template'); wrap.innerHTML = heading() + flowView();
+    const wrap = document.createElement('template'); wrap.innerHTML = window.DSMaterialsShop ? window.DSMaterialsShop.render() : heading() + flowView();
     if (modes) modes.after(wrap.content); else surface.prepend(wrap.content);
-    loadSold(); readLive();
-    requestAnimationFrame(pinSummary);
+    if (!window.DSMaterialsShop) {
+      loadSold(); readLive();
+      requestAnimationFrame(pinSummary);
+    }
     return surface.outerHTML;
   };
   const routeHere = () => ['#teacher', '#studio'].includes(location.hash);

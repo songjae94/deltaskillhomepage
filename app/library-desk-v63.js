@@ -346,6 +346,6 @@
     if (event.target.form?.id === 'dl63-upload' && state.uploadMsg) { state.uploadMsg = null; const box = main.querySelector('[data-dl63-up-msg]'); if (box) box.innerHTML = ''; }
   });
 
-  window.DSLibraryDeskV63 = Object.freeze({ reload() { state.load = 'idle'; load(); } });
+  window.DSLibraryDeskV63 = Object.freeze({ buildCatalog: build, checkoutHref, reload() { state.load = 'idle'; load(); } });
   if (location.hash === '#library') main.innerHTML = libraryPage();
 })();
