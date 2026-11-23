@@ -78,7 +78,9 @@
   let layout = '2', title = '', page = 0, embedded = 0, printing = false, owner = '', count = 5, withSol = true, waitPrint = false;
   let trialOn = false, limits = null, seenToday = 0, opened = '';
   const frames = new Set();
-  const here = () => ['#teacher', '#studio'].includes(location.hash);
+  const studentSurface = () => Boolean(window.DSStudentDownloads?.isPrintActive());
+  const here = () => ['#teacher', '#studio'].includes(location.hash) || studentSurface();
+  const printSurface = () => studentSurface() || B.snapshot().mode === 'print';
   const listed = () => menu.filter(r => r.ready);
   const rows = prefix => listed().filter(r => FIELDS.every(([k]) => !(k in prefix) || r[k] === prefix[k]));
   const current = () => listed().find(r => FIELDS.every(([k]) => r[k] === sel[k]));
@@ -134,10 +136,11 @@
   // Only same-site places: the in-page sign-in comes back through the page's own short list (#teacher);
   // the sign-up page gets a path of this page and checks it again itself.
   function signupHref() {
-    const path = location.pathname + location.search + '#teacher';
-    return '/auth/?mode=signup&next=' + encodeURIComponent(/^\/[A-Za-z0-9_\-./?#=&%]*$/.test(path) && !path.startsWith('//') ? path : location.pathname + '#teacher');
+    const target=studentSurface()?'#student':'#teacher';
+    const path = location.pathname + location.search + target;
+    return '/auth/?mode=signup&next=' + encodeURIComponent(/^\/[A-Za-z0-9_\-./?#=&%]*$/.test(path) && !path.startsWith('//') ? path : location.pathname + target);
   }
-  function goLogin() { window.DSLoginReturn = '#teacher'; location.hash = '#login'; }
+  function goLogin() { window.DSLoginReturn = studentSurface() ? '#student' : '#teacher'; location.hash = '#login'; }
 
   // ── question markup: copy supported static nodes into a new tree ──
   function questionBody(id, payload) {
@@ -272,7 +275,7 @@
   const fitScript = `(async()=>{try{const R=window.WebMathRendererV23;if(R){R.typeset(document.body);await R.prepareFonts();}await Promise.all(Array.from(document.images,i=>i.decode().catch(()=>{})));await document.fonts.ready;await new Promise(r=>{let done=false;const go=()=>{if(!done){done=true;r();}};requestAnimationFrame(()=>requestAnimationFrame(go));setTimeout(go,300);});for(const l of document.querySelectorAll('.dq59-choices[data-auto],.dq59-choices[data-fit="3"]')){if(!l.offsetWidth)continue;const o=['5','3','2','1'];let i=Math.max(0,o.indexOf(l.dataset.auto||l.dataset.fit));for(;i<o.length;i++){l.dataset.fit=o[i];if(Array.from(l.children).every(li=>{const w=li.style.whiteSpace;li.style.whiteSpace='nowrap';const ok=li.scrollWidth<=li.clientWidth+1;li.style.whiteSpace=w;return ok;}))break;}}const wide=el=>el.scrollWidth>el.clientWidth+1;for(const box of document.querySelectorAll('.qbody')){const inner=box.firstElementChild;const blocks=Array.from(inner.querySelectorAll('p,li,td,th,div')).filter(el=>!el.querySelector('p,li,td,th,div,table'));for(const el of blocks){if(wide(el)){el.style.zoom=Math.max(.5,Math.floor(el.clientWidth/el.scrollWidth*100-1)/100);}}let z=1;while(z>.6&&inner.getBoundingClientRect().height>box.clientHeight+1){z=Math.round((z-.04)*100)/100;inner.style.zoom=z;}const edge=box.getBoundingClientRect();if(inner.getBoundingClientRect().height>box.clientHeight+1||Array.from(inner.querySelectorAll('*')).some(el=>{if(el.closest('.katex'))return false;const r=el.getBoundingClientRect();return r.width>0&&(r.right>edge.right+1.5||r.bottom>edge.bottom+1.5||r.left<edge.left-1.5||r.top<edge.top-1.5);}))document.body.dataset.overflow='true';}const flow=document.querySelector('.solflow');if(flow){for(const a of flow.querySelectorAll('.ans[data-tex]')){try{a.innerHTML=window.katex.renderToString(a.dataset.tex,{throwOnError:true,displayMode:false,trust:false,strict:'ignore'});}catch{}}for(const el of Array.from(flow.querySelectorAll('p,li,td,th,div')).filter(el=>!el.querySelector('p,li,td,th,div,table'))){if(wide(el))el.style.zoom=Math.max(.5,Math.floor(el.clientWidth/el.scrollWidth*100-1)/100);}const gap=parseFloat(getComputedStyle(flow).columnGap)||0,fb=flow.getBoundingClientRect(),colW=(fb.width-gap)/2,pitch=colW+gap;const clipped=(f=flow)=>{const fb=f.getBoundingClientRect();return Array.from(f.querySelectorAll('p,li,td,th,div')).filter(el=>!el.querySelector('p,li,td,th,div,table')).some(wide)||Array.from(f.querySelectorAll('*')).some(el=>{const inK=el.closest('.katex');if(inK&&(el.closest('.katex-mathml')||el.ownerSVGElement||el.localName==='svg'||/(^|\\s)(strut|pstrut|vlist-s)(\\s|$)/.test(String(el.className.baseVal??el.className))))return false;const blk=el.closest('p,li,td,th,div,article')||f;return Array.from(el.getClientRects()).some(r=>{if(!(r.width>0))return false;const cy=(r.top+r.bottom)/2,cx=(r.left+r.right)/2;let fr=null,best=Infinity;for(const q of blk.getClientRects()){if(cy<q.top-1||cy>q.bottom+1)continue;const gapx=cx<q.left?q.left-cx:cx>q.right?cx-q.right:0;if(gapx<best){best=gapx;fr=q;}}if(!fr)fr=r;const L=fb.left+Math.floor((fr.left-fb.left+1.5)/pitch)*pitch,side=r.width>colW+1.5||r.left<L-1.5||r.right>L+colW+1.5;return inK?side:(side||r.bottom>fb.bottom+1.5||r.top<fb.top-1.5);});});};window.dqSolClipped=clipped;if(clipped())document.body.dataset.overflow='true';const cols=Math.max(1,Math.round((flow.scrollWidth+gap)/pitch)),n=Math.ceil(cols/2);document.body.dataset.solPages=n;const src=flow.closest('.paper'),only=document.body.dataset.solOnly;const list=only===undefined||only===''?Array.from({length:n},(_,i)=>i):[Math.min(n-1,Number(only))];for(const j of list){const pg=src.cloneNode(true);pg.classList.remove('solmeasure');pg.querySelector('.solflow').style.transform='translateX(-'+(j*2*pitch)+'px)';const no=pg.querySelector('.pgno');if(no&&no.dataset.base!=='')no.textContent=(Number(no.dataset.base)+j+1)+' / '+(Number(no.dataset.base)+n);document.body.insertBefore(pg,src);}src.remove();document.querySelectorAll('.pgq').forEach(e=>{e.textContent=e.dataset.i+' / '+(Number(e.dataset.q)+n);});}}catch{document.body.dataset.renderError='fit';}document.body.dataset.ready='true';})();`;
   const asset = path => safe(new URL(path, location.href).href);
   function documentHTML(only) {
-    const all = sheets(), s = printSettings(), heading = safe(title || '수업 프린트'), who = [s.academyName, s.teacherName].filter(Boolean).map(safe).join(' · ');
+    const all = sheets(), s = printSettings(), heading = safe(title || (studentSurface()?'모의시험지':'수업 프린트')), who = [s.academyName, s.teacherName].filter(Boolean).map(safe).join(' · ');
     const top = ['header', 'both'].includes(s.identityPlacement) ? who : '', bottom = ['footer', 'both'].includes(s.identityPlacement) ? who : '';
     const face = s.font === 'serif' ? '"Batang","AppleMyungjo","Noto Serif KR",serif' : '"Malgun Gothic","Apple SD Gothic Neo",Arial,sans-serif';
     const solOnly = typeof only === 'string' ? Number(only.slice(1)) : null, withSolutions = solOn() && (only === undefined || solOnly !== null);
@@ -368,11 +371,12 @@
     const row = current();
     const wantsMore = guest() && row && count > guestCap(row);
     const scope = window.DSPrintScope;
-    const ready = row?.ready && !pending && (!scope?.active() || scope.status(host()).ready);
+    const ready = !pending && (scope?.active() ? scope.status(host()).ready : row?.ready);
     const button = !host()?.signedIn()&&scope?.active()?`<button type="button" class="tb36-primary" data-dq61-login>로그인하고 문항 구성하기 <span>→</span></button>`: wantsMore ? `<button type="button" class="tb36-primary" data-dq61-gate-open="limit">${guestCap(row) > 0 ? `로그인하고 ${count}문항 구성하기` : '로그인하고 더 구성'} <span>→</span></button>`
-      : `<button type="submit" class="tb36-primary" ${ready ? '' : 'disabled'}>${pending ? '구성하는 중' : scope?.active() || row?.pointPrint ? '포인트로 문항 구성하기' : '문항 구성하기'} <span>→</span></button>`;
+      : `<button type="submit" class="tb36-primary" ${ready ? '' : 'disabled'}>${pending ? '구성하는 중' : scope?.active() ? scope.request()?.access_mode==='received' ? '기수령 자료로 문항 구성하기' : '포인트로 문항 구성하기' : row?.pointPrint ? '포인트로 문항 구성하기' : '문항 구성하기'} <span>→</span></button>`;
     const walletRow=row?.pointPrint?row:menu.find(r=>r.pointPrint);
-    const pointNotice=!guest()&&(scope?.active()||row?.pointPrint)&&walletRow?`<p class="tb36-message dq59-note" role="status">새 문항당 ${walletRow.pointPrice.toLocaleString()}P · ${count}문항 최대 ${(count*walletRow.pointPrice).toLocaleString()}P<br>현재 사용 가능 ${walletRow.pointRemaining.toLocaleString()}P · 재열기 추가 차감 없음</p>`:'';
+    const pointScope=scope?.active()&&scope.request()?.access_mode!=='received';
+    const pointNotice=!guest()&&(pointScope||!scope?.active()&&row?.pointPrint)&&walletRow?`<p class="tb36-message dq59-note" role="status">새 문항당 ${walletRow.pointPrice.toLocaleString()}P · ${count}문항 최대 ${(count*walletRow.pointPrice).toLocaleString()}P<br>현재 사용 가능 ${walletRow.pointRemaining.toLocaleString()}P · 재열기 추가 차감 없음</p>`:'';
     return `<div class="tb36-setup dq59-setup${guest() ? ' dq61-guest' : ''}"><form id="dq59-form" class="tb36-conditions"><div class="tb36-section-title"><b>01</b><h2>어떤 수업을 준비하나요?</h2></div>${meter()}${!menu.length && window.DSPrintScopeData ? `<label>과목<select data-ps-subject>${(window.DSPrintScopeData.subjects || []).map(s => `<option value="${safe(s.subject)}" ${sel.subject === s.subject ? 'selected' : ''}>${safe(s.subject)}</option>`).join('')}</select></label>` : ''}${menu.length ? selects() : ['menufail', 'unauthorized', 'nosets'].includes(note.kind) ? '' : '<p class="dq59-lead dq61-skeleton" aria-busy="true"><i></i><i></i><i></i><span>조건 목록을 불러오는 중입니다.</span></p>'}${(menu.length || window.DSPrintScopeData) ? (window.DSPrintScope?.render({ subject: sel.subject || window.DSPrintScopeData?.books?.[0]?.subject, stage: sel.stage, difficulty: sel.difficulty, count, host: host(), pending: Boolean(pending), guest: guest() }) || '') + countField() : ''}${pointNotice}${window.DSDocumentDesign?.picker()||''}${menu.length || pending || window.DSPrintScopeData ? button : ''}${noteHTML()}</form>${idle()}</div>`;
   }
   function solProgress() {
@@ -431,6 +435,7 @@
   }
   function rerender(focus) {
     if (!here()) return;
+    if(studentSurface()){window.DSStudentDownloads.refresh(focus);mount();return;}
     document.getElementById('content').innerHTML = teacher();
     mount();
     if (focus) document.querySelector(focus)?.focus({ preventScroll: true });
@@ -504,13 +509,13 @@
   let menuBusy = false, menuTried = false;
   async function loadMenu() {
     const h = host();
-    if (!h || menuBusy || !here() || B.snapshot().mode !== 'print') return;   // only for the teacher print screen
+    if (!h || menuBusy || !here() || !printSurface()) return;   // only for the teacher print screen
     menuBusy = true; menuTried = true;
     const guard = new AbortController(), timer = setTimeout(() => guard.abort(), 12000);
     let back = null;
     try {
       await h.ready;
-      if (!here() || B.snapshot().mode !== 'print') { menuTried = false; return; }   // the screen changed while waiting
+      if (!here() || !printSurface()) { menuTried = false; return; }   // the screen changed while waiting
       if (h.trial && !h.signedIn()) {
         // Guest: the trial list. Switched off or unknown on the server = the sign-in line as before.
         try {
@@ -559,7 +564,7 @@
       const result = await job(h, op.controller.signal, alive);
       if (!alive() || !result) return;
       dropSolutions(); drawn = result; phase = result.phase || 'finish'; page = 0;
-      title = result.title || `${result.labels.unit} 수업 프린트`;
+      title = result.title || `${result.labels.unit} ${studentSurface()?'모의시험지':'수업 프린트'}`;
       say(result.status, result.items.length);
       if (result.reopened) note = { kind: 'ok', text: `보관한 ${result.items.length}문항을 다시 열었습니다.` };
       if (result.said) note = result.said;
@@ -648,7 +653,7 @@
   function scopedDraw() {
     const scope = window.DSPrintScope, row = current();
     if (!host()?.signedIn()) { goLogin(); return; }
-    if (!scope?.status(host()).ready || !row) { note = { kind: 'notready', text: scope?.status(host()).reason || TEXT.notready }; rerender(); return; }
+    if (!scope?.status(host()).ready) { note = { kind: 'notready', text: scope?.status(host()).reason || TEXT.notready }; rerender(); return; }
     if (guest()) { goLogin(); return; }
     const criteria = { ...scope.request(), subject: sel.subject || window.DSPrintScopeData?.books?.[0]?.subject, stage: sel.stage, difficulty: sel.difficulty, count };
     const key=JSON.stringify(criteria);if(scopePendingJob?.key!==key)scopePendingJob={key,id:crypto.randomUUID()};criteria.request_id=scopePendingJob.id;
@@ -674,9 +679,9 @@
       scopePendingJob=null;try{sessionStorage.removeItem('ds-print-pending-job');}catch{}
       const chosen = scope.unitLabels(criteria.subunit_ids);
       const missing = scope.unitLabels(d.unrepresented_subunits || []);
-      const unit = chosen.length ? chosen.join(' · ') : criteria.mode === 'book' ? '교재 연계 선별범위' : '선별본 전체 범위';
+      const unit = chosen.length ? chosen.join(' · ') : criteria.mode === 'book' ? '교재 연계 범위' : criteria.access_mode==='received' ? '기수령 자료 범위' : '선별본 전체 범위';
       return {
-        said: {kind:missing.length?'insufficient':'ok',text:`${items.length}문항을 구성했습니다.${d.points?' '+d.points.charged.toLocaleString()+'P 사용 · 현재 '+d.points.free_remaining.toLocaleString()+'P':''}${missing.length?' · '+missing.join(' · ')+' 문항은 포함되지 않았습니다.':''}`},
+        said: {kind:missing.length?'insufficient':'ok',text:`${items.length}문항을 구성했습니다.${d.points?' '+d.points.charged.toLocaleString()+'P 사용 · 현재 '+d.points.free_remaining.toLocaleString()+'P':criteria.access_mode==='received'?' 기수령 권리 확인 · 추가 차감 없음':''}${missing.length?' · '+missing.join(' · ')+' 문항은 포함되지 않았습니다.':''}`},
         key: d.items[0].set_key, scoped: true, claimed: true, labels: { ...sel, unit },
         status: items.length === count ? 'ok' : 'insufficient', count, page: 0, items
       };
@@ -809,10 +814,10 @@
     if (drawn?.scoped) { note = {kind: 'savefail', text: '이 구성은 인쇄 / PDF에서 저장할 수 있습니다.'}; rerender(); return; }
     if (!drawn || drawn.guest) return;
     const d = new Date(), day = `${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-    const entry = { documentDesign: window.DSDocumentDesign?.selected().id || 'DS-FOCUS-V2', title: (title || '수업 프린트').slice(0, 60), layout, key: drawn.key, labels: drawn.labels, ids: drawn.items.map(q => q.id), page: drawn.page, count: drawn.count, day };
+    const entry = { documentDesign: window.DSDocumentDesign?.selected().id || 'DS-FOCUS-V2', title: (title || (studentSurface()?'모의시험지':'수업 프린트')).slice(0, 60), layout, key: drawn.key, labels: drawn.labels, ids: drawn.items.map(q => q.id), page: drawn.page, count: drawn.count, day };
     say(putSaved([entry, ...savedList().filter(x => x.key !== entry.key || x.ids.join() !== entry.ids.join())]) ? 'saved' : 'savefail'); rerender('[data-dq-save]');
   }
-  document.addEventListener('submit', e => { if (e.target.id === 'dq59-form') { e.preventDefault(); draw(); } });
+  document.addEventListener('submit', e => { if (e.target.id === 'dq59-form' && here()) { e.preventDefault(); draw(); } });
   document.addEventListener('click', e => {
     const g = e.target.closest?.('[data-dq61-gate-open],[data-dq61-login],[data-dq61-signup]');
     if (g && (here() || g.closest('#dq61-gate'))) {
@@ -850,7 +855,7 @@
     }
   });
   for (const eventName of ['click', 'change']) document.addEventListener(eventName, e => {
-    const el = e.target.closest?.('[data-ps-mode],[data-ps-types],[data-ps-book],[data-ps-unit],[data-ps-type],[data-ps-all]');
+    const el = e.target.closest?.('[data-ps-access],[data-ps-expand],[data-ps-mode],[data-ps-types],[data-ps-book],[data-ps-unit],[data-ps-type],[data-ps-all]');
     if (!el || pending || (eventName === 'click') !== (el.tagName === 'BUTTON')) return;
     if (window.DSPrintScope?.change(el)) { note = {kind:'',text:''}; rerender(); }
   });
@@ -862,12 +867,12 @@
     if (paper) paper.srcdoc = documentHTML(pageArg());
   });
   // While a teacher tab stays open the local preview session is kept from idling out.
-  setInterval(() => { const h = host(); if (h?.keepAlive && here() && B.snapshot().mode === 'print' && h.signedIn()) h.keepAlive(); }, 10 * 60 * 1000);
+  setInterval(() => { const h = host(); if (h?.keepAlive && here() && printSurface() && h.signedIn()) h.keepAlive(); }, 10 * 60 * 1000);
   window.addEventListener('ds-session-change', () => { window.DSPrintScope?.change({hasAttribute:k=>k==='data-ps-mode',dataset:{psMode:'random'}}); stop(); dropSolutions(); drawn = null; owner = ''; phase = 'setup'; note = { kind: '', text: '' }; menu = []; menuTried = false; trialOn = false; limits = null; document.getElementById('dq61-gate')?.close(); if (here()) rerender(); });
   window.addEventListener('hashchange', () => { if (pending) { stop(); say(''); } if (!here()) { waitPrint = false; document.getElementById('dq61-gate')?.close(); if (phase === 'finish') phase = 'cards'; } });
   window.addEventListener('ds-print-scope-ready', () => { if (phase === 'setup' && here()) rerender(); });
-  window.addEventListener('ds-document-design-change', () => { if (here() && B.snapshot().mode === 'print') { page=0; rerender(); } });
+  window.addEventListener('ds-document-design-change', () => { if (here() && printSurface()) { page=0; rerender(); } });
   window.addEventListener('pagehide', () => { stop(); dropSolutions(); });
-  window.DSDrawTeacherV59 = { snapshot: () => ({ phase, pending: Boolean(pending), note: { ...note }, count: drawn?.items.length ?? 0, layout, guest: Boolean(drawn?.guest), trial: trialOn, seen: seenToday, sol: drawn?.solOp ? { done: drawn.solOp.done, total: drawn.solOp.total, ready: Boolean(drawn.solutions), failed: drawn.solOp.failed } : null }) };
+  window.DSDrawTeacherV59 = { suspendStudent(){stop();waitPrint=false;document.getElementById('dq61-gate')?.close();},renderStudent:()=>B.withPrintSurface?B.withPrintSurface(mine):mine(),mount, snapshot: () => ({ phase, pending: Boolean(pending), note: { ...note }, count: drawn?.items.length ?? 0, layout, guest: Boolean(drawn?.guest), trial: trialOn, seen: seenToday, sol: drawn?.solOp ? { done: drawn.solOp.done, total: drawn.solOp.total, ready: Boolean(drawn.solutions), failed: drawn.solOp.failed } : null }) };
   if (here() && host()) rerender();                 // the page was first drawn before this file loaded
 })();

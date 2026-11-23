@@ -102,7 +102,7 @@
   if(typeof MutationObserver!=='undefined'&&document.getElementById('content'))new MutationObserver(()=>fitLivePreviews()).observe(document.getElementById('content'),{childList:true,subtree:true});
   window.addEventListener('ds-document-design-change',()=>{if(mode==='book')rerender();});
   window.addEventListener('resize',()=>fitLivePreviews());
-  window.DSTeacherBuilderV36={fitLivePreviews,createEmbedded,renderEmbedded:model=>isolated(model,()=>teacher()),embeddedAction,embeddedConfig:model=>isolated(model,()=>api.config()),pool,choose,alternatives,exchange,compose,switchMode,snapshot:()=>({mode,phase,spec:{...spec},generated:generated&&{...generated}})};
+  window.DSTeacherBuilderV36={withPrintSurface(fn){const before={mode,phase};mode='print';phase='setup';try{return fn();}finally{mode=before.mode;phase=before.phase;}},fitLivePreviews,createEmbedded,renderEmbedded:model=>isolated(model,()=>teacher()),embeddedAction,embeddedConfig:model=>isolated(model,()=>api.config()),pool,choose,alternatives,exchange,compose,switchMode,snapshot:()=>({mode,phase,spec:{...spec},generated:generated&&{...generated}})};
   window.addEventListener('ds-session-change',()=>{generated=null;phase='setup';replacing=-1;message='';studio={...studio,itemRefs:[],title:getTitle(),printSettings:api.normalizeSettings()};if(routeHere())rerender();});
   const restoreTeacherMode=()=>{if(routeHere()){const next=modeFromURL();if(next!==mode)switchMode(next,{syncURL:false});}};
   window.addEventListener('popstate',restoreTeacherMode);

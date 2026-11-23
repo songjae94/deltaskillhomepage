@@ -15,7 +15,7 @@
     const saved = JSON.parse(localStorage.getItem(storageKey));
     if (Array.isArray(saved)) cart = [...new Set(saved.filter(x => typeof x === 'string'))];
   } catch {}
-  let products = [], selected = '', status = 'idle';
+  let products = [], selected = '', status = 'idle', audience = 'teacher';
   function save() {
     try { localStorage.setItem(storageKey, JSON.stringify(cart)); } catch {}
   }
@@ -49,7 +49,7 @@
     return list.map(name => `<button type="button" data-ms-book="${escape(name)}">${escape(name)}<small>${products.filter(p=>p.source===name).length}권</small></button>`).join('') || '<p role="status">검색 결과가 없습니다.</p>';
   }
   function picker() {
-    return `<div class="ms-find"><h2>어느 책으로 수업하세요?</h2><details class="ms-picker"><summary><span>${escape(selected || '수업 교재 찾기')}</span><i aria-hidden="true"></i></summary><div class="ms-popup"><input type="search" aria-label="교재 검색" placeholder="교재명으로 검색" data-ms-search><div data-ms-options>${options()}</div></div></details></div>`;
+    return `<div class="ms-find"><h2>${audience==='student'?'어떤 부교재로 공부하나요?':'어느 책으로 수업하세요?'}</h2><details class="ms-picker"><summary><span>${escape(selected || (audience==='student'?'공부하는 교재 찾기':'수업 교재 찾기'))}</span><i aria-hidden="true"></i></summary><div class="ms-popup"><input type="search" aria-label="교재 검색" placeholder="교재명으로 검색" data-ms-search><div data-ms-options>${options()}</div></div></details></div>`;
   }
   const coverSkus = new Set(['NS-CM2-06', 'NS-CM2-07', 'NS-CM2B-06', 'NS-MI1B-05']);
   function formats(p) {
@@ -106,7 +106,7 @@
     dialog.setAttribute('aria-labelledby','ms-order-title');
     const lines = entries.map(({p,fmt}) => {
       const action = fmt === 'pdf'
-        ? `<a data-ms-point-purchase href="/app/?pointPdf=${encodeURIComponent(key(p,fmt))}#library">${quote(p)?.owned ? '보유 PDF 다시 받기' : '포인트 구매 확인'}</a>`
+        ? `<a data-ms-point-purchase ${audience==='student'?'data-ms-point-receive="'+escape(key(p,fmt))+'"':''} href="/app/?pointPdf=${encodeURIComponent(key(p,fmt))}#library">${quote(p)?.owned ? '보유 PDF 다시 받기' : '포인트 구매 확인'}</a>`
         : cashReady(p) ? `<a href="${escape(library.checkoutHref(p,fmt))}">한글 결제하기</a>` : '<small>한글 준비 중</small>';
       return `<li><small>${escape(p.source)}</small><strong>${escape(title(p))}</strong><div><span>${formatLabel(fmt)} · ${cost(p,fmt)}</span>${action}</div></li>`;
     }).join('');
@@ -126,9 +126,10 @@
   const root = () => document.querySelector('#content .ms-shop');
   function refresh() { const el=root(); if(el) el.innerHTML=body(); }
   window.DSMaterialsShop = {
-    render() {
+    render(options={}) {
+      audience=options.audience==='student'?'student':'teacher';
       load();
-      return '<section class="ms-shop">' + body() + '</section>';
+      return '<section class="ms-shop" data-ms-audience="'+audience+'">' + body() + '</section>';
     }
   };
   document.addEventListener('input',e=>{if(e.target.matches('[data-ms-search]')) root().querySelector('[data-ms-options]').innerHTML=options(e.target.value);});
@@ -141,8 +142,9 @@
     if(e.key==='Enter'&&e.target.matches('input')){e.preventDefault();choices[0]?.click();}
   });
   document.addEventListener('click',e=>{
-    if(e.target.closest('[data-open-naesin]')) {e.preventDefault();location.hash='teacher';setTimeout(()=>builder.switchMode('materials'),0);return;}
+    if(e.target.closest('[data-open-naesin]')) {if(location.hash==='#student'&&window.DSStudentDownloads){e.preventDefault();window.DSStudentDownloads.open('store');return;}e.preventDefault();location.hash='teacher';setTimeout(()=>builder.switchMode('materials'),0);return;}
     const panel=root(); if(!panel) return;
+    const point=e.target.closest('[data-ms-point-receive]');if(point&&panel.contains(point)){e.preventDefault();const id=point.dataset.msPointReceive;window.DSStudentDownloads?.open('files');window.DSPointPdf?.receive(id);return;}
     const picker=panel.querySelector('.ms-picker'); if(picker?.open&&!picker.contains(e.target)) picker.open=false;
     const b=e.target.closest('button'); if(!b||!panel.contains(b)) return;
     if(b.hasAttribute('data-ms-clear')){selected='';refresh();root()?.querySelector('.ms-picker summary')?.focus();return;}

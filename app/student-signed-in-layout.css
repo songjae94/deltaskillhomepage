@@ -1,0 +1,65 @@
+/* Only the signed-in student home and explicitly marked student account. */
+#content .sl54-shell.student-signed-in{--ssil-ink:#263b42;--ssil-muted:#64767a;--ssil-line:#dce4e4;--ssil-accent:#2b6666;max-width:1160px!important;margin:0 auto!important;padding:30px 24px 58px!important;background:transparent!important;box-shadow:none!important;color:var(--ssil-ink);min-width:0}
+.student-signed-in *{box-sizing:border-box}
+.student-signed-in .ssil-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:28px}
+.student-signed-in .ssil-eyebrow{margin:0 0 10px;font-size:13px;font-weight:650;color:var(--ssil-accent);letter-spacing:.04em}
+#content .student-signed-in .ssil-heading h1{margin:0;font-size:clamp(28px,3.2vw,38px)!important;line-height:1.25!important;font-weight:700;letter-spacing:-.05em;color:var(--ssil-ink)!important}
+.student-signed-in .ssil-heading p:not(.ssil-eyebrow){margin:12px 0 0;font-size:15px;line-height:1.7;color:var(--ssil-muted)}
+.student-signed-in a{color:var(--ssil-accent);text-decoration:none}
+.student-signed-in .ssil-heading>a{font-size:14px;flex:none;padding:12px 0}
+.student-signed-in .ssil-main{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:20px;align-items:stretch}
+.student-signed-in .ssil-today,.student-signed-in .ssil-review{min-width:0;border:1px solid var(--ssil-line);border-radius:18px;background:#fff;padding:32px}
+.student-signed-in .ssil-today{border-top:3px solid var(--ssil-accent);padding-top:30px}
+.student-signed-in .ssil-label{margin:0 0 18px;font-size:12px;font-weight:650;letter-spacing:.04em;color:var(--ssil-muted)}
+#content .student-signed-in .ssil-today h2{margin:0!important;font-size:clamp(25px,2.4vw,32px)!important;line-height:1.35!important;color:var(--ssil-ink)!important;letter-spacing:-.045em;word-break:keep-all;overflow-wrap:anywhere}
+.student-signed-in .ssil-description{max-width:43em;margin:16px 0 0;font-size:15px;line-height:1.85;color:#5a6b70;word-break:keep-all;overflow-wrap:anywhere}
+.student-signed-in .ssil-progress{max-width:480px;margin:25px 0 0}
+.student-signed-in .ssil-progress>div{display:flex;justify-content:space-between;font-size:12px;color:var(--ssil-muted);gap:12px;margin-bottom:8px}
+.student-signed-in .ssil-progress strong{color:var(--ssil-ink);font-variant-numeric:tabular-nums}
+.student-signed-in progress{display:block;width:100%;height:6px;border:0;border-radius:4px;overflow:hidden;accent-color:var(--ssil-accent);background:#e7eeee}
+.student-signed-in progress::-webkit-progress-bar{background:#e7eeee;border-radius:4px}
+.student-signed-in progress::-webkit-progress-value{background:var(--ssil-accent);border-radius:4px}
+.student-signed-in .ssil-primary-row{display:flex;align-items:center;flex-wrap:wrap;gap:12px 20px;margin-top:30px}
+.student-signed-in button{font:inherit;cursor:pointer}
+.student-signed-in .ssil-primary{display:inline-flex;align-items:center;justify-content:space-between;gap:25px;min-height:52px;padding:14px 22px;border:1px solid var(--ssil-accent);border-radius:9px;background:var(--ssil-accent);color:#fff;font-size:16px;font-weight:650;line-height:1.4;box-shadow:none}
+.student-signed-in .ssil-primary:hover{background:#215454;border-color:#215454}
+.student-signed-in .ssil-browse{min-height:44px;padding:10px 0;background:none;border:0;border-bottom:1px solid #bdcbcb;border-radius:0;font-size:14px;line-height:1.5;color:var(--ssil-accent)}
+.student-signed-in button:disabled{cursor:default;opacity:.6}
+.student-signed-in .ssil-sync{margin:22px 0 0!important;font-size:12px;line-height:1.75;color:var(--ssil-muted);overflow-wrap:anywhere}
+.student-signed-in .ssil-sync[role=alert]{color:#9b4536}
+.student-signed-in .ssil-sync button{display:block;min-height:40px;margin:6px 0 0;padding:4px 0;background:none;border:0;color:var(--ssil-accent);text-decoration:underline}
+.student-signed-in .ssil-review{background:#f3f6f4;padding:28px 25px;display:flex;flex-direction:column;align-items:flex-start}
+#content .student-signed-in .ssil-review h2{margin:0!important;font-size:19px!important;line-height:1.5!important;color:var(--ssil-ink)!important;letter-spacing:-.025em}
+.student-signed-in .ssil-review p:not(.ssil-label){font-size:13px;line-height:1.75;color:var(--ssil-muted);margin:14px 0;word-break:keep-all}
+.student-signed-in .ssil-review .ssil-review-count{display:flex;gap:6px;align-items:baseline;margin:20px 0 4px!important}
+.student-signed-in .ssil-review-count strong{font-size:38px;line-height:1;font-weight:600;color:var(--ssil-ink);font-variant-numeric:tabular-nums;letter-spacing:-.04em}
+.student-signed-in .ssil-review>button,.student-signed-in .ssil-review>a{margin-top:auto;min-height:44px;display:inline-flex;align-items:center;gap:20px;padding:8px 0;border:0;background:none;font-size:13px;color:var(--ssil-accent);font-weight:600}
+.student-signed-in .ssil-shortcuts{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:22px}
+.student-signed-in .ssil-shortcuts>a{position:relative;display:flex;flex-direction:column;min-width:0;min-height:124px;gap:9px;padding:23px 55px 23px 25px;border:1px solid var(--ssil-line);border-radius:12px;background:#fbfcfb;color:var(--ssil-ink)}
+.student-signed-in .ssil-shortcuts span{font-size:12px;color:var(--ssil-muted)}
+.student-signed-in .ssil-shortcuts strong{font-size:17px;font-weight:600;letter-spacing:-.025em}
+.student-signed-in .ssil-shortcuts small{font-size:12px;line-height:1.6;color:var(--ssil-muted)}
+.student-signed-in .ssil-shortcuts i{position:absolute;right:25px;top:48px;font-size:20px;font-style:normal;color:var(--ssil-accent)}
+.student-signed-in .ssil-recent{margin-top:34px;padding:27px 0 0;border-top:1px solid var(--ssil-line)}
+.student-signed-in .ssil-recent>div{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:8px}
+#content .student-signed-in .ssil-recent h2{font-size:18px!important;line-height:1.5!important;margin:0!important;color:var(--ssil-ink)!important}
+.student-signed-in .ssil-recent>div>a{padding:10px 0;font-size:13px}
+.student-signed-in .ssil-recent ol{list-style:none;margin:0;padding:0}
+.student-signed-in .ssil-recent li{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:19px 0;border-bottom:1px solid #e7eded}
+.student-signed-in .ssil-recent li>div{min-width:0;display:flex;flex-direction:column;gap:7px}
+.student-signed-in .ssil-recent li strong{font-size:14px;font-weight:600;word-break:keep-all;overflow-wrap:anywhere}
+.student-signed-in .ssil-recent li span{font-size:12px;color:var(--ssil-muted);line-height:1.5}
+.student-signed-in .ssil-recent li button{flex:none;min-height:44px;padding:10px 14px;background:#fff;border:1px solid var(--ssil-line);border-radius:7px;font-size:12px;color:var(--ssil-accent)}
+.student-signed-in .ssil-recent>p{font-size:13px;color:var(--ssil-muted);line-height:1.7}
+.student-signed-in .ssil-count-note{margin:16px 0 0;font-size:11px!important;line-height:1.7;color:var(--ssil-muted)}
+.student-signed-in :is(a,button):focus-visible,.student-account-signed-in :is(a,button,select,input):focus-visible{outline:3px solid #688d91!important;outline-offset:4px!important}
+.ssil-return{min-height:44px;margin-bottom:18px;padding:10px 0;border:0;background:none;font-size:14px;line-height:1.5;color:#2b6666;cursor:pointer}
+.student-account-signed-in .account-heading{gap:20px;margin-bottom:24px}
+.student-account-signed-in .account-nav{display:flex;flex-wrap:wrap;gap:8px}
+.student-account-signed-in .account-nav button,.student-account-signed-in .account-nav a{min-height:44px;line-height:1.5}
+.student-account-signed-in .account-section{scroll-margin-top:24px}
+@media(max-width:800px){#content .sl54-shell.student-signed-in{padding:24px 18px 44px!important}.student-signed-in .ssil-main{grid-template-columns:1fr}.student-signed-in .ssil-review{display:grid;grid-template-columns:1fr auto;gap:8px 22px;padding:23px}.student-signed-in .ssil-review .ssil-label{grid-column:1/-1;margin-bottom:2px}.student-signed-in .ssil-review h2{grid-column:1}.student-signed-in .ssil-review .ssil-review-count{grid-column:2;grid-row:2;margin:0!important}.student-signed-in .ssil-review p:not(.ssil-label):not(.ssil-review-count){grid-column:1/-1;margin:0}.student-signed-in .ssil-review>button,.student-signed-in .ssil-review>a{grid-column:1/-1;margin-top:3px}.student-signed-in .ssil-heading{align-items:flex-start}.student-signed-in .ssil-heading>a{font-size:12px}}
+@media(max-width:520px){#content .sl54-shell.student-signed-in{padding:20px 15px 36px!important}.student-signed-in .ssil-heading{display:block;margin-bottom:22px}.student-signed-in .ssil-heading>a{display:inline-flex;min-height:42px;margin-top:7px}.student-signed-in .ssil-today{padding:24px 20px}.student-signed-in .ssil-primary-row{align-items:stretch;gap:12px;margin-top:24px}.student-signed-in .ssil-primary{width:100%;min-height:52px}.student-signed-in .ssil-browse{margin:0 auto}.student-signed-in .ssil-shortcuts{grid-template-columns:1fr;gap:12px;margin-top:15px}.student-signed-in .ssil-shortcuts>a{min-height:111px;padding:19px 45px 19px 20px}.student-signed-in .ssil-shortcuts i{top:40px;right:20px}.student-signed-in .ssil-recent{margin-top:26px}.student-signed-in .ssil-recent li{gap:10px}.student-signed-in .ssil-sync{font-size:11px}.student-signed-in .ssil-review{padding:21px}}
+@media(prefers-reduced-motion:reduce){.student-signed-in *,.student-account-signed-in *{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+
+.student-signed-in .ssil-notebook{display:inline-flex;align-items:center;gap:6px;min-height:44px;margin-top:17px;font-size:12px;color:var(--ssil-accent)}

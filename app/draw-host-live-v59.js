@@ -150,7 +150,7 @@
       version: 1,
       menu: async (criteria, signal) => {
         const scope = { subject: criteria.subject, stage: criteria.stage, difficulty: criteria.difficulty, textbook: criteria.book_id || undefined, subunits: criteria.subunit_ids || [], types: criteria.type_ids || [], typeMode: criteria.type_mode, sourceMode: criteria.mode === 'book' ? 'textbook' : 'random' };
-        const d = await call({ action:'scope_menu',scope,count:criteria.count },signal);
+        const d = await call({ action:criteria.access_mode==='received'?'received_scope_menu':'scope_menu',scope,count:criteria.count },signal);
         if (!d || d.version !== 1 || d.count_basis !== 'catalog' || typeof d.extraction_ready !== 'boolean' || !count(d.available_count,0,100000) || d.requested !== criteria.count || !count(d.shortage,0,20) || d.shortage !== Math.max(0,criteria.count-d.available_count)) throw fail(502,'unavailable');
         return d;
       },
@@ -158,7 +158,7 @@
         const scope = { subject: criteria.subject, stage: criteria.stage, difficulty: criteria.difficulty,
           textbook: criteria.book_id || undefined, subunits: criteria.subunit_ids || [], types: criteria.type_ids || [],
           typeMode: criteria.type_mode, sourceMode: criteria.mode === 'book' ? 'textbook' : 'random' };
-        const d = await call({ action: 'scope_draw', scope, count: criteria.count, request_id: criteria.request_id }, signal);
+        const d = await call({ action: criteria.access_mode==='received'?'received_scope_draw':'scope_draw', scope, count: criteria.count, request_id: criteria.request_id }, signal);
         if (!d || (d.coverage_limited !== undefined && typeof d.coverage_limited !== 'boolean') || (d.unrepresented_subunits !== undefined && (!Array.isArray(d.unrepresented_subunits) || d.unrepresented_subunits.length > 50 || !d.unrepresented_subunits.every(x => typeof x === 'string' && x.length > 0 && x.length <= 100))) || d.requested !== criteria.count || !count(d.available_count,0,100000) || !count(d.shortage,0,20) || !Array.isArray(d.items) || d.shortage !== criteria.count - d.items.length || d.items.length > criteria.count ||
             !d.items.every(x => x && UUID.test(x.item_id) && UUID.test(x.set_key) && x.pg && count(x.pg.page,0,9999) && count(x.pg.count,1,20)) ||
             new Set(d.items.map(x => x.item_id)).size !== d.items.length ||
