@@ -18,7 +18,7 @@
   const keepClass = new Set('cond-box cond-line 라벨줄 문단틈 문단자국 상자딱지 과정 bogi bt brow 빈칸 본표 넓은표 대각칸 선지표 선지번호 선지그림 선지글 ch5 ch3 ch2 ch1 단서 eqno 식이어줄 수식줄 식꼬리 식번호줄 별행 항목줄 글머리줄 자모줄 라벨 vdots 표딱지 표딱지묶음 표제목 tbl-right 그림줄안 fig 어절'.split(' '));
   const FIELDS = [['subject', '과목'], ['unit', '단원'], ['stage', '단계'], ['difficulty', '난도']];
   const COUNTS = [5, 10, 15, 20];
-  const SAVED = 'dq59-saved', BACK = 'dq61-trial-back', TALLY = 'dq61-trial-seen';
+  const SAVED = 'dq59-saved', BACK = 'dq61-trial-back', TALLY = 'dq62-trial-seen';
   const TRIAL_DAILY = 20;                      // guest questions a day when the server does not state its own number
   const LOCK_SVG = '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M6.5 9V6.6a3.5 3.5 0 0 1 7 0V9"/><rect x="4.5" y="9" width="11" height="8" rx="2"/></svg>';
   const ALERTS = {
