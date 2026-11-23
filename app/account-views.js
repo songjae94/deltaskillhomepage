@@ -51,19 +51,22 @@
     </section>`;
   }
 
+  function printDate(value) {
+    return typeof value==='string' && Number.isFinite(Date.parse(value)) ? new Intl.DateTimeFormat('ko-KR',{timeZone:'Asia/Seoul',year:'numeric',month:'long',day:'numeric'}).format(new Date(value)) : '';
+  }
   function passMaterialRows(items) {
-    const rows = (Array.isArray(items) ? items : []).map(item => {
-      const title = typeof item === 'string' ? item : item?.title ?? item?.name;
-      if (!title) return '';
-      const id = item?.fileId ?? item?.file_id;
-      const downloadable = validId(id);
-      return `<li class="account-item"${downloadable ? ` data-owned-file="${escape(id)}"` : ''}>
-        <span class="account-row-title">${escape(title)}</span>
-        ${downloadable ? `<button type="button" class="account-row-action" data-account-action="download" data-file-id="${escape(id)}" aria-label="${escape(title)} 다운로드">다운로드 <span aria-hidden="true">↓</span></button>` : ''}
-      </li>`;
+    const rows=(Array.isArray(items)?items:[]).map(item=>{
+      const title=item?.title??item?.name;if(!title)return '';
+      const id=item?.fileId,downloadable=validId(id),received=item.received===true;
+      const facts=[received?'수령 기록':'새 프린트',Number.isSafeInteger(item.price)&&item.price>0?'1벌 값 '+formatNumber(item.price)+'원':'',item.fileStored===true?'내 자료 보관 확인':item.fileStored===false?'개인 보관 확인 필요':'',received&&printDate(item.firstAt)?'받은 날 '+printDate(item.firstAt):'',received&&printDate(item.redownloadUntil)?printDate(item.redownloadUntil)+'까지 다시 받기':''].filter(Boolean).join(' · ');
+      return `<li class="account-item"${downloadable?` data-owned-file="${escape(id)}"`:''}><span class="account-row-title">${escape(title)}<small>${escape(facts)}</small></span>${downloadable?`<button type="button" class="account-row-action" data-account-action="download" data-file-id="${escape(id)}">${received?'다시 받기':'1벌 받기'} <span aria-hidden="true">↓</span></button>`:`<span class="account-muted">${item.fileReady===false?'파일 준비 중':received?'다시 받기 불가':'현재 받기 불가'}</span>`}</li>`;
     }).filter(Boolean);
-
-    return rows.length ? `<ul class="account-list">${rows.join('')}</ul>` : '';
+    return rows.length?`<ul class="account-list">${rows.join('')}</ul>`:'';
+  }
+  function passOverview(pass) {
+    if(!pass)return '';
+    if(pass.state==='live'&&window.DSMemberPrints?.validCounts(pass))return `<div class="account-pass-quota"><strong>이번 결제 기간 남은 프린트 ${pass.setsTotal-pass.setsReceived} / ${pass.setsTotal}벌</strong><p>받은 ${pass.setsReceived}벌 · 한 벌 20문항${printDate(pass.endsAt)?' · '+escape(printDate(pass.endsAt))+'까지':''}</p><p>같은 프린트 다시 받기는 추가 차감이 없습니다. 받지 않은 벌은 다음 결제 기간으로 이월되지 않습니다.</p></div>`;
+    return `<p class="account-muted">${pass.state==='renewing'?'자동 결제를 처리하고 있습니다. 잠시 뒤 다시 확인해 주세요.':pass.state==='mode'?'이 이용권으로 지금 새 프린트를 받을 수 없습니다.':'새 프린트를 받을 수 있는 이용권이 없습니다.'} 수령 기록의 다시 받기 가능 여부는 아래에서 확인해 주세요.</p>`;
   }
 
   function ownedMaterialGroups(items) {
@@ -124,14 +127,16 @@
     return `<div class="account-state"><p class="account-error" role="alert">${escape(message)}</p><button type="button" class="account-row-action" data-account-action="retry" data-account-target="${target}">다시 시도</button></div>`;
   }
 
-  function materials({ signedIn, loading, error, library, passSets }) {
+  function materials({ signedIn, loading, error, library, passSets, passSummary, passError }) {
     if (!signedIn) return emptyState('로그인하면 내 자료를 볼 수 있어요.', '#login', '로그인');
     if (loading) return '<p class="account-muted" role="status">자료 불러오는 중…</p>';
     const owned = ownedMaterialGroups(library);
-    const pass = passMaterialRows(passSets);
+    const received=passMaterialRows((passSets||[]).filter(s=>s.received));
+    const available=passMaterialRows((passSets||[]).filter(s=>!s.received));
+    const pass = `<div class="account-member-prints"><h3>이용권 프린트 · 월 30벌</h3>${passOverview(passSummary)}${passError?connectionState(passError,'materials'):''}<h4>내가 받은 프린트</h4>${received||'<p class="account-muted">서버에 확인된 수령 내역이 없습니다.</p>'}${passSummary?.state==='live'?`<h4>새로 받을 프린트</h4>${available||'<p class="account-muted">지금 받을 수 있는 실제 프린트 파일을 준비하고 있습니다.</p>'}`:''}<p class="account-muted">구성·인쇄 미리보기만으로 파일이 보관되지는 않습니다. 서버 수령 내역과 파일 주소를 확인한 뒤 기기에 저장해 주세요.</p><a class="account-text-button" href="/my/#library">회원 자료함에서 전체 수령 내역 보기 →</a></div>`;
     const issue = error ? connectionState(error, 'materials') : '';
     if (!issue && !owned && !pass) return emptyState('내 자료가 아직 없어요.', '#library', '자료실 보기');
-    return `${issue}${owned ? `<div class="account-material-bundles">${owned}</div>` : ''}${pass ? `<h3 class="account-material-group">이용권 자료</h3>${pass}` : ''}`;
+    return `${issue}${owned ? `<div class="account-material-bundles">${owned}</div>` : ''}${pass}`;
   }
 
   function learningStats({ sessions, total, correct, latestScore, averageScore } = {}) {

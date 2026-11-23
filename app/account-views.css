@@ -367,3 +367,5 @@ button.account-material-chip:hover { border-color: var(--account-accent); backgr
 @media (max-width: 350px) {
   .account-local-attempts { grid-template-columns: minmax(0, 1fr); }
 }
+
+.account-member-prints{margin:24px 0;padding-top:20px;border-top:1px solid #dce2e8}.account-member-prints h4{margin:24px 0 10px}.account-member-prints .account-row-title small{display:block;margin-top:5px;color:#5a6771;font-size:12px}.account-pass-quota{padding:16px;background:#edf5f6;border:1px solid #d3e4e6;border-radius:8px;margin:14px 0}.account-pass-quota strong{font-size:20px;color:#183d49}.account-pass-quota p{font-size:13px;margin:8px 0 0}.account-print-notice{padding:16px;border:1px solid #accbd1;background:#f2f8f9;line-height:1.7}.member-print-file-link{display:inline-block;padding:8px 12px;color:#174d64;text-decoration:underline;font-weight:700}

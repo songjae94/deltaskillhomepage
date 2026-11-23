@@ -101,11 +101,13 @@ async function loadAccount(){
  if(library.status==='fulfilled'){
   for(const o of library.value.library||[]){for(const f of o.files||[]){const key='file-'+downloadMap.size;if(f.downloadable)downloadMap.set(key,{action:'download',orderId:o.orderId,fileId:f.id,received:f.downloaded});accountState.library.push({groupTitle:String(f.title||o.orderName||'내 자료').replace(/\s*[·_-]?\s*\(?[124]문항\s*[124](?:쪽|단)\)?/g,'').trim(),layout:(f.title||'').match(/(\d+문항[^·(]*)/)?.[1]?.trim()||f.fmt,title:f.title||o.orderName,format:f.fmt,received:Boolean(f.downloaded),...(f.downloadable?{fileId:key}:{})})}}
  }else accountState.error=DSService.errorText(library.reason);
- accountState.passSets=[];
+ accountState.passSets=[];accountState.passSummary=null;accountState.passError='';
  if(passes.status==='fulfilled'){
-  const p=passes.value;const sets=[...(p.received||[]),...(p.pass?.state==='live'?(p.sets||[]).filter(s=>!s.received):[])];
-  for(const s of sets){const key='set-'+downloadMap.size,received=Boolean(s.received||s.firstAt),can=received?s.redownloadable:p.pass?.state==='live';if(can)downloadMap.set(key,{action:'pass_download',setId:s.setId,received});accountState.passSets.push({title:s.title||s.setId,received,...(can?{fileId:key}:{})})}
- }else if(!accountState.library.length)accountState.error=DSService.errorText(passes.reason);
+  try{
+  const p=DSMemberPrints.snapshot(passes.value);accountState.passSummary=p.pass;const sets=[...(p.received||[]).map(s=>({...s,received:true})),...(p.pass?.state==='live'?(p.sets||[]).filter(s=>!s.received):[])];
+  for(const s of sets){const key='set-'+downloadMap.size,received=Boolean(s.received||s.firstAt),can=s.fileReady&&(received?s.redownloadable===true:p.pass?.state==='live'&&p.pass.setsReceived<p.pass.setsTotal);if(can)downloadMap.set(key,{action:'pass_download',setId:s.setId,received,price:s.price});accountState.passSets.push({title:s.title||s.setId,received,fileReady:s.fileReady,firstAt:s.firstAt,redownloadUntil:s.redownloadUntil,redownloadable:s.redownloadable,fileStored:s.fileStored,fileState:s.fileState,price:s.price,...(can?{fileId:key}:{})})}
+  }catch(e){accountState.passError=DSMemberPrints.message(e)}
+ }else accountState.passError=DSMemberPrints.message(passes.reason);
  if(history.status==='fulfilled'){const records=normalizeHistory(history.value.items);learningState={loading:false,error:'',available:true,records,summary:{sessions:records.length,latestScore:records[0]?.score}}}
  else learningState={loading:false,error:DSService.errorText(history.reason),available:false,records:[],summary:{}};
  const uniqueFiles=new Map();for(const item of accountState.library){const old=uniqueFiles.get(item.title);if(!old||(!old.fileId&&item.fileId))uniqueFiles.set(item.title,item)}accountState.library=[...uniqueFiles.values()];accountState.loading=false;refreshAccount();loadUnitDiagnostics(epoch);
@@ -125,7 +127,25 @@ function recordPage(){
  return `<section class="work-surface member-record"><a class="back-study" href="#account">← 마이페이지</a><div class="member-record-heading"><div><span class="small muted">${item?.when?esc(new Date(item.when).toLocaleDateString('ko-KR')):''}${item?' · '+item.attempt+'회차':''}</span><h1>${esc(item?.title||'학습 기록')}</h1></div>${item?.score!==undefined?`<div class="member-score"><small>자기채점</small><strong>${esc(item.score)}</strong><span>점</span></div>`:''}</div>${!DSService.session()?`<div class="simple-empty"><h2>로그인 후 확인할 수 있습니다.</h2>${link('login','로그인','primary')}</div>`:recordState.loading?'<div class="record-skeleton" role="status"><i></i><i></i><i></i><span>문항 기록을 불러오는 중</span></div>':recordState.error?`<div class="simple-empty"><p>${esc(recordState.error)}</p><button class="secondary" data-account-action="retry-record">다시 불러오기</button></div>`:`<div class="record-overview"><div><b>${right.length}</b><span>정답</span></div><div><b>${wrong.length}</b><span>오답</span></div><div><b>${rows.length-right.length-wrong.length}</b><span>미채점</span></div></div><div class="record-detail-toolbar"><h2>문항별 기록</h2><button data-record-filter aria-pressed="${recordState.onlyWrong}">오답만 보기</button></div><div class="response-list">${shown.length?shown.map(r=>{const result=String(r.result).toLowerCase(),status=result==='o'?'correct':result==='x'?'incorrect':'unset';return `<details class="response-row ${status}"><summary><span class="response-no">${esc(String(r.item_no).padStart(2,'0'))}</span><span class="response-title">${esc(r.unit||r.area||'문항 기록')}<small>${esc(r.area||'')}</small></span><span class="response-state">${result==='o'?'정답':result==='x'?'오답':'미채점'}</span><span class="response-expand">＋</span></summary><div class="response-details"><div class="response-answers"><div><small>내 답</small><b>${esc(r.my_answer??'—')}</b></div><div><small>정답</small><b>${esc(r.correct_answer??'—')}</b></div></div>${r.reason?`<p><span>오답 이유</span>${esc(r.reason)}</p>`:''}${r.reached_step?`<p><span>풀이 단계</span>${esc(r.reached_step)}</p>`:''}${r.memo?`<p class="response-memo">${esc(r.memo)}</p>`:''}${!r.memo&&!r.reason&&!r.reached_step?'<p class="response-empty-note">추가 기록이 없습니다.</p>':''}</div></details>`}).join(''):'<p class="simple-empty">해당 문항 기록이 없습니다.</p>'}</div>`}${compactFooter()}</section>`
 }
 function renderRecord(){if(location.hash.startsWith('#record/')){$('#content').innerHTML=recordPage()}}
-async function downloadOwned(key){const item=downloadMap.get(key);if(!item)return;if(!item.received&&!confirm(item.action==='pass_download'?'이 자료를 받으면 이용권에서 1세트가 차감됩니다. 받을까요?':'이 자료를 처음 받으면 수령 기록이 남으며 환불 가능 범위가 달라질 수 있습니다. 받을까요?'))return;const {received,...body}=item;try{const data=await DSService.request('/member-library',body),url=DSService.safeDownloadUrl(data.url);if(!url)throw new Error('server');location.assign(url)}catch(e){toast(DSService.errorText(e))}}
+let ownedDownloadBusy=false;
+async function downloadOwned(key){
+ const item=downloadMap.get(key);if(!item||ownedDownloadBusy)return;
+ if(!item.received&&!confirm(item.action==='pass_download'?'이 프린트를 받으면 이번 결제 기간의 이용권에서 1벌이 차감되고 환불액에 반영됩니다. 받을까요?':'이 자료를 처음 받으면 수령 기록이 남으며 환불 가능 범위가 달라질 수 있습니다. 받을까요?'))return;
+ const {received,price,...body}=item,token=window.DSAuth?.get();ownedDownloadBusy=true;
+ document.querySelectorAll('[data-account-action="download"]').forEach(b=>b.disabled=true);
+ try{
+  const data=await DSService.request('/member-library',body);
+  if(window.DSAuth?.get()!==token)return;
+  if(body.action==='pass_download'){
+   const r=DSMemberPrints.receipt(data,received);await loadAccount();if(window.DSAuth?.get()!==token)return;
+   const panel=document.querySelector('#account-materials');
+   if(panel){const status=document.createElement('div');status.className='account-print-notice';status.setAttribute('role','status');status.textContent=DSMemberPrints.notice(r);status.appendChild(document.createTextNode(' '));status.appendChild(DSMemberPrints.fileLink(r.url));panel.prepend(status);}
+  }else{const url=DSService.safeDownloadUrl(data.url);if(!url)throw new Error('server');location.assign(url)}
+ }catch(e){
+  if(window.DSAuth?.get()!==token)return;
+  if(body.action==='pass_download'){await loadAccount();toast(DSMemberPrints.message(e))}else toast(DSService.errorText(e));
+ }finally{ownedDownloadBusy=false;document.querySelectorAll('[data-account-action="download"]').forEach(b=>b.disabled=false)}
+}
 function passwordPage(){return `<section class="account-surface password-surface"><a href="#account-settings" class="account-back">← 계정 관리</a><h1>비밀번호 변경</h1>${!DSService.session()?`<p class="account-subtitle">로그인 후 변경할 수 있습니다.</p>${link('login','로그인','primary')}`:passwordState.done?`<div class="password-done"><span>✓</span><h2>비밀번호를 변경했습니다.</h2>${link('account','마이페이지','primary')}</div>`:`<form id="password-form" class="account-form"><label>현재 비밀번호<input type="password" name="pin" autocomplete="current-password" required></label><label>새 비밀번호<input type="password" name="new_pin" autocomplete="new-password" minlength="8" maxlength="64" required></label><p class="account-subtitle">영문과 숫자를 섞어 8자 이상</p><label>새 비밀번호 확인<input type="password" name="confirm_pin" autocomplete="new-password" required></label><p id="password-error" class="account-error" role="alert">${esc(passwordState.error)}</p><button class="account-primary" type="submit"${passwordState.busy?' disabled':''}>${passwordState.busy?'변경 중…':'변경하기'}</button></form>`}</section>`}
 
 function improve(){return `<section class="work-surface record-surface"><div class="work-heading"><h1>의견</h1><button class="primary" data-feedback="홈페이지">의견 남기기</button></div><p class="source-note">의견은 메일로 받습니다 · <a href="mailto:admin@deltaskill.co.kr">admin@deltaskill.co.kr</a></p><div class="record-list"><div class="simple-empty">‘의견 남기기’를 누르면 적은 내용이 담긴 메일이 메일 앱에서 열립니다. 메일 앱에서 보내기를 눌러야 전달됩니다.</div></div>${compactFooter()}</section>`}
