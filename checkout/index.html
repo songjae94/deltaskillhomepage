@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="ko" data-purchase="b">
-<head>
+<head><script>(function(){var q=new URLSearchParams(location.search),list=q.getAll('sku').concat(q.getAll('skus'));var found=list.map(function(s){return /^NS-[A-Z0-9]+(?:-[A-Z0-9]+)*$/.test(s)?s+'.pdf':s;}).find(function(s){return /^[A-Za-z0-9._-]+\.pdf$/.test(s);});window.POINT_PDF_TARGET=found||'';if(found){document.documentElement.classList.add('point-pdf-route');location.replace('/app/?pointPdf='+encodeURIComponent(found)+'#library');}})();</script><style>.point-pdf-route body{visibility:hidden}</style>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>주문서 | 델타스킬</title>
@@ -185,7 +185,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 /* 비회원 결제 닫음 — 로그인 안 됐으면 주문서를 열지 않고 로그인 쪽으로(next = 이 주문서 주소 · 같은 사이트 경로만 · auth.js safeNext). 서버 create-order 도 토큰 없는 주문을 401 login_required 로 거절한다. */
 function toLogin(){if(window.DSAuth){location.replace(DSAuth.loginUrl(location.pathname+location.search+location.hash));}else{location.replace("/auth/?next="+encodeURIComponent("/checkout/"));}}
 var LOGIN_GATE=!(window.DSAuth&&DSAuth.has());
-if(LOGIN_GATE)toLogin();
+if(LOGIN_GATE&&!window.POINT_PDF_TARGET)toLogin();
 function $(id){return document.getElementById(id);}
 function won(n){return Number(n).toLocaleString("ko-KR")+"원";}
 function kst(iso){try{return new Date(iso).toLocaleString("ko-KR",{timeZone:"Asia/Seoul",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});}catch(_){return iso||"";}}
@@ -459,7 +459,7 @@ function boot(){
     }).catch(function(e){if(e&&e.error==="login_required"){if(window.DSAuth)DSAuth.clear();toLogin();return;} /* 토큰이 풀렸거나 없으면 서버가 401 login_required — 토큰을 지우고(auth 쪽이 바로 되돌려 보내지 않게) 로그인으로 */if(sameAccount()){busy=false;update();setMsg($("msg"),errText(e),true);}});
   });
 }
-if(!LOGIN_GATE){ /* 로그인 문지기를 지난 뒤에만 주문서를 그린다 */
+if(!LOGIN_GATE&&!window.POINT_PDF_TARGET){ /* 로그인 문지기를 지난 뒤에만 주문서를 그린다 */
 if(reviewClosed){var rc=document.querySelector('.crumb a[href="/naesin/"]');if(rc){rc.href="/pass/";rc.textContent="변형문항 이용권";}}
 if(NS){var crumb=document.querySelector('.crumb a[href="/store/"]');if(crumb){crumb.href="/naesin/";crumb.textContent="내신 자료";}fetch("/naesin/catalog.json",{cache:"no-store"}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}).then(function(c){P=cart?cartProduct(c):naesinP(c,sku);boot();});}
 else boot();

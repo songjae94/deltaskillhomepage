@@ -11,7 +11,7 @@
   const ORIGIN = 'https://www.deltaskill.co.kr';
   const MAIL = 'admin@deltaskill.co.kr';
   // 「포인트로 받기」 스위치 — 기본 꺼짐. 켜도 포인트 서버(window.DSPointService.redeemPdf)가 없으면 아무것도 그리지 않는다.
-  const POINT_PDF = false;
+  const POINT_PDF = true;
   const UPLOAD_POINTS = '5,000';
   const FORMATS = { pdf: 'PDF', hwpx: '한글(HWPX)' };
   const GRADES = { 1: '1학년', 2: '2학년', 3: '3학년' };
@@ -36,6 +36,8 @@
   const entities = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
   const h = value => String(value ?? '').replace(/[&<>"']/g, c => entities[c]);
   const won = n => Number(n).toLocaleString('ko-KR') + '원';
+  const pointQuote = item => window.DSPointPdf?.product(item.sku + '.pdf');
+  const shownPrice = (item,fmt) => fmt === 'pdf' && pointQuote(item) ? pointQuote(item).points.toLocaleString('ko-KR') + ' P' : won(item.formats[fmt].price);
   const abs = path => /^https:\/\//.test(path) ? path : ORIGIN + path;
   const outLink = (href, body, cls = '') => `<a class="${cls}" href="${h(abs(href))}" target="_blank" rel="noopener">${body}<span aria-hidden="true">↗</span><span class="sr-only"> 새 탭</span></a>`;
 
@@ -100,7 +102,7 @@
     const on = item.sku === state.sku;
     const cells = Object.keys(FORMATS).filter(f => f === 'pdf' || state.hasHwp).map(f => {
       const v = item.formats[f];
-      return `<span class="dl63-cell dl63-cell-${f}">${v ? `<small>${FORMATS[f]}</small><b>${won(v.price)}</b>` : '<small>—</small>'}</span>`;
+      return `<span class="dl63-cell dl63-cell-${f}">${v ? `<small>${FORMATS[f]}</small><b>${shownPrice(item,f)}</b>` : '<small>—</small>'}</span>`;
     }).join('');
     return `<li><button type="button" class="dl63-row" data-dl63-pick="${h(item.sku)}" aria-pressed="${on}">
       ${item.thumb ? `<img class="dl63-thumb" src="${h(item.thumb)}" alt="" width="804" height="1137" loading="lazy">` : '<span class="dl63-thumb dl63-thumb-none" aria-hidden="true"></span>'}
@@ -112,18 +114,19 @@
   function receipt(item) {
     if (!item) return '<div class="dl63-receipt"><p class="dl63-empty">왼쪽 목록에서 자료를 고르세요.</p></div>';
     const f = fmtOf(item), v = item.formats[f];
-    const fmts = Object.keys(item.formats).map(k => `<button type="button" class="dl63-fmt" data-dl63-fmt="${k}" aria-pressed="${k === f}"><span>${FORMATS[k]}</span><b>${won(item.formats[k].price)}</b></button>`).join('');
+    const fmts = Object.keys(item.formats).map(k => `<button type="button" class="dl63-fmt" data-dl63-fmt="${k}" aria-pressed="${k === f}"><span>${FORMATS[k]}</span><b>${shownPrice(item,k)}</b></button>`).join('');
     const lay = v.files.filter(x => x.layout).map(x => `<li><span>${h(x.layout)}</span><b>${x.pages ? x.pages + '쪽' : ''}</b></li>`).join('');
-    const point = POINT_PDF && f === 'pdf' && typeof window.DSPointService?.redeemPdf === 'function'
-      ? `<button type="button" class="dl63-point" data-dl63-point="${h(item.sku)}">포인트로 받기</button>` : '';
+    const quote = f === 'pdf' ? pointQuote(item) : null;
+    const point = POINT_PDF && quote && typeof window.DSPointService?.redeemPdf === 'function'
+      ? `<button type="button" class="dl63-point" data-dl63-point="${h(item.sku)}"${window.DSPointPdf.availability(item.sku) ? '' : ' disabled'}>${quote.owned ? '이미 보유 · 차감 없이 받기' : '포인트로 묶음 받기'}</button>` : '';
     return `<div class="dl63-receipt">
       <span class="dl63-kicker">고른 자료</span>
       <h3>${h(item.name)}</h3>
       <dl class="dl63-facts"><div><dt>과목</dt><dd>${h(item.grade)} ${h(item.subject)}</dd></div><div><dt>단원</dt><dd>${h(item.major)} › ${h(item.no)} ${h(item.unit)}</dd></div><div><dt>문항</dt><dd>${item.count}문항</dd></div></dl>
       <div class="dl63-fmts" role="group" aria-label="받을 꼴">${fmts}</div>
       <div class="dl63-get"><p><strong>받는 것</strong><span>${FORMATS[f]} ${v.files.length}파일</span></p>${lay ? `<ul>${lay}</ul>` : ''}</div>
-      <p class="dl63-total"><span>값</span><b>${won(v.price)}</b></p>
-      <a class="dl63-buy" data-dl63-buy href="${h(checkoutHref(item, f))}" target="_blank" rel="noopener">구매하기<span aria-hidden="true">↗</span><span class="sr-only"> 새 탭</span></a>
+      <p class="dl63-total"><span>값</span><b>${shownPrice(item,f)}</b></p>
+      ${f === 'pdf' && window.DSPointPdf ? (quote ? '<p class="dl63-small">구성 '+v.files.length+'파일 · 묶음 가격 1회 차감</p>' : '<p class="dl63-small">포인트 가격과 파일을 확인하는 중입니다.</p>') : `<a class="dl63-buy" data-dl63-buy href="${h(checkoutHref(item, f))}" target="_blank" rel="noopener">구매하기<span aria-hidden="true">↗</span><span class="sr-only"> 새 탭</span></a>`}
       ${point}
       <div class="dl63-sub">
         ${item.sample ? `<a href="${h(item.sample)}" download>미리보기 ${item.previewPages || ''}쪽 PDF<span aria-hidden="true">↓</span></a>` : ''}
@@ -285,6 +288,7 @@
     const box = main.querySelector('[data-dl63-shop]');
     if (box) box.innerHTML = shopBody();
   }
+  window.addEventListener('ds-point-pdf-update', repaintShop);
   function repaintPick() {
     for (const b of main.querySelectorAll('[data-dl63-pick]')) b.setAttribute('aria-pressed', String(b.dataset.dl63Pick === state.sku));
     const r = main.querySelector('[data-dl63-receipt]');

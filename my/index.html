@@ -112,7 +112,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 <link rel="stylesheet" href="/assets/payment-flow.css">
 <link rel="stylesheet" href="/assets/site-unify.css?v=36">
 <link rel="stylesheet" href="/assets/my-b.css?v=r4-1123">
-</head>
+<link rel="stylesheet" href="/welcome-points.css?v=welcome-accumulate-1"><script src="/welcome-points.js?v=welcome-accumulate-1"></script><link rel="stylesheet" href="/assets/point-pdf.css?v=1"></head>
 <body class="payment-flow" data-logout-next="/">
 <header class="ds-head"><div class="ds-head-in">
   <a class="ds-logo" href="/" aria-label="델타스킬 메인"><span class="d">DELTA</span><span class="s">SKILL</span></a>
@@ -128,8 +128,9 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   <p class="crumb"><a href="/">메인</a> › 마이페이지</p>
   <h1 id="hello">마이페이지</h1>
   <p class="lede">이용권 상태와 다음 결제일, 결제 내역, 구매한 자료를 한곳에서 확인합니다.</p>
-  <nav class="jump" aria-label="마이페이지 바로가기"><a href="#pass">이용권</a><a href="#payments">결제 내역</a><a href="#library">회원 자료함</a><a href="#account">계정</a><a class="my-out" href="/my/notes/">AI 오답노트</a></nav>
+  <nav class="jump" aria-label="마이페이지 바로가기"><a href="#welcome">포인트</a><a href="#pass">이용권</a><a href="#payments">결제 내역</a><a href="#library">회원 자료함</a><a href="#account">계정</a><a class="my-out" href="/my/notes/">AI 오답노트</a></nav>
 
+  <div id="welcome" aria-live="polite"></div>
   <div class="my-grid">
   <div class="my-main">
   <section class="card" id="pass" aria-labelledby="passH">
@@ -243,7 +244,13 @@ async function fnCall(name, body){
 
 /* ---- 이용권 · 자동 갱신 해지 ---- */
 const passCall = (action, extra) => fnCall("billing-test", {action, ...(extra||{})});
+let membershipPass = null, welcomeRead = false, welcomeBalance = null;
+function showMembershipOverview(){
+  if (welcomeRead) $("welcome").innerHTML = DSWelcomePoints.panel(welcomeBalance, {legacy:true, pass:membershipPass});
+}
 function passView(p){
+  membershipPass = p;
+  showMembershipOverview();
   const box = $("passBody");
   const end = p && passDay(p.endsAt), row = (tag, off, line) => `<div class="prow"><div class="grow"><b>변형문항 이용권</b><span class="tag${off?" off":""}">${tag}</span><div class="sub">${line}</div></div>`;
   if(p && p.status === "ACTIVE" && end){
@@ -410,7 +417,7 @@ function ppList(){
   (ppData.sets || []).filter(x => x.subject === s && (!u || x.unitCode === u)).forEach(x => ul.appendChild(ppRow(x, false)));
 }
 function ppRow(x, got){
-  const li = document.createElement("li"), sp = document.createElement("span");
+  const li = document.createElement("li"), sp = document.createElement("span");li.dataset.memberPassSet=String(x.setId);
   const meta = [x.unitName, x.typeRange, x.items ? x.items + "문항" : "", x.pages ? x.pages + "쪽" : "", x.price > 0 ? "1벌 값 " + won(x.price) : ""].filter(Boolean).map(esc).join(" · ");
   sp.innerHTML = `${esc(x.title || x.setId)}${!got && x.received ? ` <span class="tag">받음</span>` : ``}<small>${meta}${got ? (meta ? " · " : "") + "받은 날 " + esc(day(x.firstAt)) + " · " + (x.redownloadable ? esc(day(x.redownloadUntil)) + "까지 다시 받기" : "다시 받기 기간 지남") : ""}</small>`;
   li.appendChild(sp);
@@ -446,7 +453,7 @@ async function ppTake(setId, again, b, price){
   }
 }
 async function ppLine(){
-  try{ ppView(await fnCall("member-library", {action:"pass_sets"})); }
+  try{ ppView(await fnCall("member-library", {action:"pass_sets"}));const wanted=new URLSearchParams(location.search).get("passSet");if(wanted){const row=[...document.querySelectorAll("[data-member-pass-set]")].find(x=>x.dataset.memberPassSet===wanted);if(row){row.tabIndex=-1;row.scrollIntoView({block:"center"});row.focus({preventScroll:true});}} }
   catch(e){ ppData=null;$("ppList").textContent="";$("ppGotList").textContent="";$("ppGot").hidden=true;$("ppSel").hidden=true;if(e.message !== "login_required") $("ppHead").innerHTML = `<p class="msg err">불러오지 못했어요.</p> <button type="button" class="btn ghost sm" onclick="location.reload()">다시 불러오기</button>`; }
 }
 async function roleLine(){
@@ -459,8 +466,13 @@ function boot(){
   if(!tok()){ goLogin(); return; }
   $("app").hidden = false;
   passLine(); libLine(); ppLine(); roleLine();
+  const signedToken = tok();
+  fetch(DSAuth.api + "/welcome-points", {headers:{Authorization:"Bearer " + signedToken}, cache:"no-store"})
+    .then(r => r.ok ? r.json() : null).catch(() => null).then(data => {
+      if (signedToken === tok()) { welcomeRead = true; welcomeBalance = data?.welcome_points; showMembershipOverview(); }
+    });
 }
 boot();
 </script>
-</body>
+<script src="/assets/point-pdf.js?v=1"></script></body>
 </html>

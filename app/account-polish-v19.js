@@ -46,6 +46,7 @@
     root.dataset.signedIn = String(Boolean(state.signedIn));
     root.dataset.accountLoading = String(Boolean(state.loading));
     const heading = root.querySelector('.account-heading');
+    if (state.signedIn && !state.loading) heading?.insertAdjacentHTML('afterend', DSWelcomePoints.panel(state.welcomePoints, {pass:state.membership}));
     const identity = heading?.firstElementChild;
     if (identity) {
       const label = document.createElement('span'); label.className = 'ap19-role';

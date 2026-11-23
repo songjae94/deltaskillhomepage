@@ -25,6 +25,6 @@
     return o;
   }
   function won(n){return Number(n).toLocaleString("ko-KR")+"원";}
-  function meta(p){return (p.count?p.count+"문항 · ":"")+(p.fmt==="hwpx"?"한글(HWPX)":"PDF")+" "+p.nfiles+"파일 · "+won(p.price);}
+  function meta(p){return (p.count?p.count+"문항 · ":"")+(p.fmt==="hwpx"?"한글(HWPX)":"PDF")+" "+p.nfiles+"파일 · "+(p.fmt==="pdf"?"포인트 자료실에서 가격 확인":won(p.price));}
   window.DSOnSale={load:function(){return Promise.all([get("/naesin/catalog.json"),get("/pay-config.json")]).then(function(v){return list(v[0],v[1]);});},meta:meta};
 })();

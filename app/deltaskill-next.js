@@ -91,10 +91,12 @@ async function loadAccount(){
  await DSService.ready;
  if(!DSService.session()||accountState.loading)return;
  const epoch=++accountEpoch;accountState.loading=true;accountState.error='';learningState={...learningState,loading:true,error:''};refreshAccount();
- const [me,profile,library,passes,history]=await Promise.allSettled([DSService.request('/api/me'),DSService.request('/api/profile'),DSService.request('/member-library',{action:'list'}),DSService.request('/member-library',{action:'pass_sets'}),DSService.request('/api/history')]);
+ const [me,profile,library,passes,history,welcome,membership]=await Promise.allSettled([DSService.request('/api/me'),DSService.request('/api/profile'),DSService.request('/member-library',{action:'list'}),DSService.request('/member-library',{action:'pass_sets'}),DSService.request('/api/history'),DSService.request('/api/welcome-points'),DSService.request('/billing-test',{action:'status'})]);
  if(epoch!==accountEpoch)return;
  if(!DSService.session()){clearMemberView();refreshAccount();return}
  downloadMap=new Map();
+ accountState.membership=membership.status==='fulfilled'?membership.value:null;
+ accountState.welcomePoints=welcome.status==='fulfilled'?welcome.value.welcome_points:null;
  if(profile.status==='fulfilled'){const p=profile.value.profile||{};accountState.displayName=p.name||'';accountState.phoneMasked=me.status==='fulfilled'?me.value.phone_masked||'':'';accountState.memberSince=''}
  else accountState.error=DSService.errorText(profile.reason);
  accountState.library=[];
