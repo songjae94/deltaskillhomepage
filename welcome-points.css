@@ -27,3 +27,7 @@
 .wp-new-offer{border-top:1px solid #d9e1e8;padding-top:12px;margin:18px 0}
 .wp-new-offer>p{font-weight:700;color:#52606d}
 .wp-signup-offer{margin-top:12px}
+
+.wp-actions a.wp-join{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 20px;border-radius:8px;background:#144d60;color:#fff;font-weight:700;text-decoration:none}
+.wp-actions a.wp-join:hover{background:#103e4d}
+.wp-actions a.wp-join:focus-visible{outline:3px solid #267990;outline-offset:3px}

@@ -46,12 +46,14 @@
         ? '<a class="wp-link" href="/app/#library">포인트로 PDF 고르기 →</a>' : '')+'</section>';
     if (options.signup) return points+'<section class="wp-section wp-signup-offer"><h2>월 이용권 신규 가입 요금</h2>'+priceMarkup()+'</section><div class="wp-actions"><a class="wp-link" href="/my/#welcome">내 포인트 확인 →</a><a href="/pass/#product">월 '+number(newPrice)+'원 이용권 안내</a></div>';
     const subscribed = ['ACTIVE','CANCEL_SCHEDULED','RENEWING','RENEW_RETRY'].includes(options.pass?.status);
+    const canJoin = ['NONE', 'RENEW_FAILED', 'REFUNDED'].includes(options.pass?.status);
+    const joinLink = canJoin ? '<a class="wp-join" href="/pass/#checkout-pass">월 유료회원 가입하기</a>' : '';
     const paymentHelp = subscribed ? '결제 내역, 이용 기간과 자동 갱신 설정을 확인할 수 있습니다.' : '직접 신청하면 매월 자동 결제됩니다. 다음 결제일과 해지는 마이페이지에서 확인할 수 있습니다.';
     const monthlyPrice = subscribed && Number.isSafeInteger(options.pass.amount) && options.pass.amount > 0 ? options.pass.amount : subscribed ? null : newPrice;
     return '<div class="wp-panel">'+points+'<section class="wp-section"><h2>월 유료회원</h2>'+
       membership(options.pass)+(subscribed ? '<p class="wp-own-price-label">내 결제금액</p><p class="wp-balance wp-own-price"><strong>'+(monthlyPrice === null ? '결제금액 확인 중' : number(monthlyPrice)+'원')+'</strong>'+(monthlyPrice === null ? '' : ' / 월')+'</p><div class="wp-new-offer"><p>신규 가입 요금</p>'+priceMarkup()+'</div>' : priceMarkup())+'<p>변형문항 프린트 월 30벌 · 한 벌 20문항</p>'+
       '<p class="wp-help">'+(subscribed ? '기존 이용권의 실제 결제금액을 유지합니다. ' : '')+paymentHelp+'</p>'+
-      '<div class="wp-actions"><a class="wp-link" href="/pass/#product">월 이용권 자세히 보기 →</a><a href="'+
+      '<div class="wp-actions">'+joinLink+'<a class="wp-link" href="/pass/#product">이용권 자세히 보기</a><a href="'+
       (options.legacy ? '#pass' : '/my/#pass')+'">내 이용권 관리</a></div></section></div>';
   }
   window.DSWelcomePoints = {panel};
