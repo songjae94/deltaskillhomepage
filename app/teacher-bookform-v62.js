@@ -207,7 +207,7 @@
     const t = document.createElement('template'); t.innerHTML = html;
     const surface = t.content.querySelector('.tb36-surface');
     if (!surface) return html;
-    surface.classList.add('bf62-surface','dd-modern');
+    surface.classList.add('bf62-surface');
     [...surface.children].forEach(el => { if (!el.matches('.tb36-modes, .tb36-compact-footer, footer, [class*="footer"]')) el.remove(); });
     const modes = surface.querySelector('.tb36-modes');
     const wrap = document.createElement('template'); wrap.innerHTML = heading() + bookView();

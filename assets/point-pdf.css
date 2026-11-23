@@ -2,3 +2,28 @@
 
 .ppdf{scroll-margin-top:100px}.ppdf-filters label{white-space:nowrap;flex-shrink:0}.ppdf-benefit{display:grid;gap:4px;background:#f5f7fa;border-left:3px solid #7997a5;padding:12px 15px;margin:14px 0;font-size:13px}.ppdf-benefit small{color:#617582}
 .ppdf-selected{background:#f0f7fa;outline:2px solid #7ba2b4;outline-offset:-2px;padding-left:14px!important;padding-right:14px!important}
+
+/* /my and the static purchase pages: same card, receipt lines and buttons
+   as my-b.css / purchase-b.css. No changes to /app's separate palette. */
+html[data-purchase="b"] .ppdf {
+ background:var(--pb-card);color:var(--pb-ink);border-color:var(--pb-line);
+ border-radius:var(--pb-r);box-shadow:var(--pb-shadow);font-family:var(--pb-font);
+}
+html[data-purchase="b"] .ppdf :is(h2,h3,h4) {color:var(--pb-head)}
+html[data-purchase="b"] .ppdf-heading {padding-bottom:12px;border-bottom:1px solid var(--pb-line)}
+html[data-purchase="b"] .ppdf-heading h2 {font-size:19px;margin:0;line-height:1.4}
+html[data-purchase="b"] .ppdf :is(.ppdf-help,.ppdf-heading span,.ppdf-products p,.ppdf-receipts p,small) {color:var(--pb-muted)}
+html[data-purchase="b"] .ppdf a {color:var(--pb-accent)}
+html[data-purchase="b"] .ppdf-wallet {background:var(--pb-panel);border:1px solid var(--pb-line);border-radius:var(--pb-r-s)}
+html[data-purchase="b"] .ppdf :is(.ppdf-filters input,.ppdf-filters select) {background:var(--pb-white);border-color:var(--pb-line2);color:var(--pb-ink);border-radius:var(--pb-r-s);min-height:44px}
+html[data-purchase="b"] .ppdf :is(.ppdf-products>li,.ppdf-receipts>li) {border-color:var(--pb-line)}
+html[data-purchase="b"] .ppdf-product-price strong {color:var(--pb-head)}
+html[data-purchase="b"] .ppdf :is(.ppdf-primary,.ppdf-quiet) {min-height:44px;border-radius:6px;border-color:var(--pb-line2);background:var(--pb-white);color:var(--pb-ink)}
+html[data-purchase="b"] .ppdf :is(.ppdf-primary,a.ppdf-primary) {background:var(--pb-btn);color:#fff!important;border-color:transparent;box-shadow:0 3px 0 var(--pb-btn-edge),0 6px 12px #17283c24}
+html[data-purchase="b"] .ppdf .ppdf-primary:not(:disabled):hover {background:var(--pb-btn-h)}
+html[data-purchase="b"] .ppdf .ppdf-notice {background:var(--pb-soft);border-color:var(--pb-line2);color:var(--pb-ink2)}
+html[data-purchase="b"] .ppdf .ppdf-error {color:var(--pb-err);background:var(--pb-err-soft);border-color:var(--pb-err)}
+html[data-purchase="b"] .ppdf .ppdf-files a {background:var(--pb-soft);border:1px solid var(--pb-line2);border-radius:var(--pb-r-s);color:var(--pb-accent);min-height:44px}
+html[data-purchase="b"] .ppdf .ppdf-benefit {background:var(--pb-panel);border-left-color:var(--pb-accent-ui);color:var(--pb-ink2)}
+html[data-purchase="b"] .ppdf .ppdf-selected {background:var(--pb-soft);outline-color:var(--pb-accent-ui)}
+html[data-purchase="b"] .ppdf :focus-visible {outline:3px solid var(--pb-accent-ui);outline-offset:3px}

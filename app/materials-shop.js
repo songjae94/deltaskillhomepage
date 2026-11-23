@@ -49,7 +49,7 @@
     return list.map(name => `<button type="button" data-ms-book="${escape(name)}">${escape(name)}<small>${products.filter(p=>p.source===name).length}권</small></button>`).join('') || '<p role="status">검색 결과가 없습니다.</p>';
   }
   function picker() {
-    return `<div class="ms-find"><h2>${audience==='student'?'어떤 부교재로 공부하나요?':'어느 책으로 수업하세요?'}</h2><details class="ms-picker"><summary><span>${escape(selected || (audience==='student'?'공부하는 교재 찾기':'수업 교재 찾기'))}</span><i aria-hidden="true"></i></summary><div class="ms-popup"><input type="search" aria-label="교재 검색" placeholder="교재명으로 검색" data-ms-search><div data-ms-options>${options()}</div></div></details></div>`;
+    return `<div class="ms-find"><h2>${audience==='student'?'어떤 부교재로 공부하나요?':'어느 책으로 수업하세요?'}</h2><details class="ms-picker"><summary><span>${escape(selected || (audience==='student'?'공부하는 교재 찾기':'수업 교재 찾기'))}</span><i aria-hidden="true"></i></summary><div class="ms-popup dl63-list-wrap"><input type="search" aria-label="교재 검색" placeholder="교재명으로 검색" data-ms-search><div data-ms-options>${options()}</div></div></details></div>`;
   }
   const coverSkus = new Set(['NS-CM2-06', 'NS-CM2-07', 'NS-CM2B-06', 'NS-MI1B-05']);
   function formats(p) {
@@ -66,13 +66,13 @@
     const cover = p.sample
       ? `<a class="ms-book-cover" href="${escape(p.sample)}" target="_blank" rel="noopener" aria-label="${label} 지면 미리보기, 새 창">${art}</a>`
       : `<div class="ms-book-cover">${art}</div>`;
-    return `<article class="ms-volume" aria-label="${label}"><div class="ms-stage">${cover}</div><div class="ms-formats">${formats(p)}</div></article>`;
+    return `<article class="ms-volume" data-sku="${escape(p.sku)}" aria-label="${label}"><div class="ms-stage">${cover}</div><div class="ms-book-info"><small>${escape(p.subject || p.source)}</small><h3>${label}</h3><span>${p.count}문항</span></div><div class="ms-formats">${formats(p)}</div></article>`;
   }
   function items() {
     const list = selected ? products.filter(p => p.source === selected) : products;
     const heading = selected ? '단원별 교재' : '판매 교재';
     const reset = selected ? '<button type="button" class="ms-clear" data-ms-clear>전체 교재 보기</button>' : '';
-    return `<section class="ms-items" aria-label="${escape(selected || '전체')} 판매 교재"><div class="ms-results"><h2>${heading}</h2><span>${list.length}권</span>${reset}</div><div class="ms-bookshelf">${list.map(coverTile).join('')}</div></section>`;
+    return `<section class="ms-items" aria-label="${escape(selected || '전체')} 판매 교재"><div class="ms-results dl63-head"><h2>${heading}</h2><span>${list.length}권</span>${reset}</div><div class="ms-bookshelf">${list.map(coverTile).join('')}</div></section>`;
   }
 
   const formatLabel = fmt => fmt === 'pdf' ? 'PDF' : '한글';
@@ -88,7 +88,7 @@
   }
   function openCart(panel) {
     const dialog = document.createElement('dialog');
-    dialog.className = 'ms-order ms-cart-sheet';
+    dialog.className = 'ms-order ms-cart-sheet dl63-receipt';
     dialog.setAttribute('aria-labelledby','ms-cart-title');
     dialog.innerHTML = cartContents();
     dialog.addEventListener('close', () => {
@@ -102,7 +102,7 @@
     const entries = picked();
     if (!entries.length) return;
     const dialog = document.createElement('dialog');
-    dialog.className = 'ms-order';
+    dialog.className = 'ms-order dl63-receipt';
     dialog.setAttribute('aria-labelledby','ms-order-title');
     const lines = entries.map(({p,fmt}) => {
       const action = fmt === 'pdf'
@@ -120,7 +120,7 @@
     const cartButton = `<button class="ms-cart-button" type="button" data-ms-cart aria-label="장바구니 ${count}개"><i aria-hidden="true"></i>장바구니 <b>${count}</b></button>`;
     const tabs = categories.map((c,i) => `<button type="button" ${i?'disabled':'aria-pressed="true"'}><small>${i+1}</small>${c}</button>`).join('');
     const catalog = status === 'error' ? '<p>교재 목록을 불러오지 못했습니다.</p><button data-ms-retry>다시 불러오기</button>' : status !== 'ready' ? '<p role="status">교재 목록을 불러오는 중입니다.</p>' : picker() + items();
-    return `<div class="ms-mast"><div><h1>내신 자료</h1>${status==='ready' ? `<p>연계 교재 ${grouped().length}종 <i>·</i> 단원별 자료 ${products.length}권</p>` : ''}</div>${cartButton}</div><div class="ms-categories" role="group" aria-label="자료 종류">${tabs}</div>${catalog}`;
+    return `<div class="ms-mast dl63-head"><div><span class="dl63-kicker">시험 범위 자료 고르기</span><h1>내신 자료</h1>${status==='ready' ? `<p>연계 교재 ${grouped().length}종 <i>·</i> 단원별 자료 ${products.length}권</p>` : ''}</div>${cartButton}</div><div class="ms-categories" role="group" aria-label="자료 종류">${tabs}</div>${catalog}`;
   }
   window.addEventListener('ds-point-pdf-update', () => { if (!root()?.querySelector('dialog[open]')) refresh(); });
   const root = () => document.querySelector('#content .ms-shop');
@@ -129,7 +129,7 @@
     render(options={}) {
       audience=options.audience==='student'?'student':'teacher';
       load();
-      return '<section class="ms-shop" data-ms-audience="'+audience+'">' + body() + '</section>';
+      return '<section class="ms-shop dl63-page dl63" data-ms-audience="'+audience+'">' + body() + '</section>';
     }
   };
   document.addEventListener('input',e=>{if(e.target.matches('[data-ms-search]')) root().querySelector('[data-ms-options]').innerHTML=options(e.target.value);});

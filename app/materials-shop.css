@@ -63,12 +63,6 @@
 .ms-line,.ms-order li,.ms-total {padding:12px 0; border-top:1px solid var(--line)}
 .ms-order li strong,.ms-line small {display:block; margin:4px 0}
 #content .ms-review-open {width:100%; padding:12px; border:0; background:#273446; color:#fff; font:inherit}
-#content .tb36-surface:has(.ms-shop) .tb36-modes {max-width:1120px; margin:0 auto 6px; gap:0; padding:0; background:#f0f3f6; border:0; box-shadow:none; border-radius:0}
-#content .tb36-surface:has(.ms-shop) .tb36-modes>button {min-height:38px!important; justify-content:center; padding:7px 8px!important; background:transparent; border:0; border-radius:0; box-shadow:none}
-#content .tb36-surface:has(.ms-shop) .tb36-modes>button[aria-pressed=true] {background:#28323e}
-#content .tb36-surface:has(.ms-shop) .tb36-modes strong {color:#394351; text-shadow:none; font-size:14px}
-#content .tb36-surface:has(.ms-shop) .tb36-modes>button[aria-pressed=true] strong {color:white}
-#content .tb36-surface:has(.ms-shop) .tb36-modes :is(small,.tb36-mode-icon) {display:none}
 @media(max-width:580px){
   #content .ms-shop {padding:16px 12px 22px}
   .ms-mast:has(.ms-display) {min-height:103px}
@@ -88,7 +82,7 @@
 #content .ms-shop .ms-stage:has(a:hover) {background:#eaf0f5}
 #content .ms-shop .ms-volume:nth-child(2) .ms-stage {background:#f2f1f7}
 #content .ms-shop .ms-volume:nth-child(3) .ms-stage {background:#f1f3f2}
-body.working-body:has(.ms-shop), body:has(.ms-shop) #content {background:#fff}
+
 
 .ms-planned-label {display:block;font-size:10px;font-weight:400;color:var(--muted)}
 .ms-price-number {white-space:nowrap}
@@ -96,3 +90,45 @@ body.working-body:has(.ms-shop), body:has(.ms-shop) #content {background:#fff}
 
 @media(min-width:850px){#content .ms-bookshelf{grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(15px,2.2vw,28px)}}
 #content .ms-results .ms-clear{margin-left:auto;padding:6px 0;color:var(--accent);font:inherit;font-size:13px;border:0;background:none;text-decoration:underline;text-underline-offset:3px}
+
+/* Restore the v63 library materials: the original paper / ash desk / navy cloth.
+   Scope stays inside the shop; teacher workbench and #library are not restyled. */
+#content .ms-shop {
+  --paper:#fffefb; --ink:#202536; --muted:#565d70; --line:#d5d8e1; --accent:#2448cc;
+  --dl-ink:#202536; --dl-sub:#565d70; --dl-accent:#2448cc; --dl-navy:#252638;
+  --dl-paper:#fffefb; --dl-rule-1:#e3e1da; --dl-rule-2:#d5d8e1;
+  background:#fffefb url('assets/textures/dl63-paper-fiber.webp') 0 0 / 256px;
+  border:1px solid #e3e1da; border-radius:14px;
+  box-shadow:0 1px 2px #2025360f; line-height:1.65;
+}
+#content .ms-mast {border-bottom:1px solid #e3e1da;margin-bottom:20px;align-items:center}
+#content .ms-mast h1 {font-size:clamp(27px,3vw,36px);font-weight:700;letter-spacing:-.035em;line-height:1.3;margin-top:4px}
+#content .ms-cart-button {min-height:44px;padding:8px 14px;border:1px solid #d5d8e1;border-radius:8px;background:#fffefb;box-shadow:0 1px 2px #2025360f;white-space:nowrap}
+.ms-cart-button b {background:#252638;color:#f6efdf}
+.ms-categories {gap:8px;border:0;margin-bottom:8px}
+#content .ms-categories button {min-height:48px;padding:9px 10px;border:1px solid #d5d8e1;border-radius:8px;background:#fffefb;font-size:14px;box-shadow:0 1px 2px #2025360f}
+#content .ms-categories button[aria-pressed=true] {background:#252638 url('assets/textures/dl63-cloth-navy.webp') 0 0 / 128px;color:#fff;box-shadow:inset 0 0 0 2px #ffffff2e,0 2px 6px #20253614;border-color:#252638}
+.ms-categories button[aria-pressed=true] small {color:#e0b45c}
+.ms-find {padding:20px 0;border-color:#e3e1da}
+.ms-picker summary {min-height:48px;border-radius:8px;border-color:#d5d8e1;background:#fffefb;box-shadow:0 1px 2px #2025360f;font-size:14px}
+.ms-popup {border-radius:8px;background:#fffefb url('assets/textures/dl63-paper-fiber.webp') 0 0 / 256px}
+#content .ms-results {margin:0;padding:24px 0 16px}
+#content .ms-bookshelf {padding:24px;gap:28px 24px;border:1px solid #d5d8e1;border-radius:14px;background:#e9e1d3 url('assets/textures/dl63-ash-wood.webp') 0 0 / 384px 120px;box-shadow:inset 0 1px 0 #ffffff80,0 2px 6px #20253614;align-items:start}
+#content .ms-volume {max-width:none}
+#content .ms-stage,#content .ms-shop .ms-volume:nth-child(n) .ms-stage {padding:20px 14% 26px;background:transparent;border-radius:0;border-bottom:5px solid #d4c4aa;box-shadow:0 3px 3px #5d493c20}
+.ms-book-cover {max-width:220px;transition:transform .15s}
+.ms-book-cover:hover {transform:translateY(-3px)}
+.ms-book-cover img {object-fit:contain;box-shadow:2px 3px 8px #20253626}
+.ms-book-info {margin-top:16px;padding:14px 12px 10px;background:#fffefb url('assets/textures/dl63-paper-fiber.webp') 0 0 / 256px;border:1px solid #d5d8e1;border-bottom:0;border-radius:8px 8px 0 0;min-height:116px}
+.ms-book-info small,.ms-book-info>span {display:block;color:#565d70;font-size:12px}
+#content .ms-book-info h3 {font-size:15px;font-weight:700;line-height:1.45;letter-spacing:-.02em;margin:4px 0;color:#202536;word-break:keep-all;overflow-wrap:anywhere}
+.ms-formats {margin:0;padding:0 12px 8px;background:#fffefb;border:1px solid #d5d8e1;border-top:0;border-radius:0 0 8px 8px;box-shadow:0 2px 6px #20253614}
+#content .ms-format {font-size:13px;min-height:44px;border-color:#e3e1da}
+.ms-format small {font-size:12px}
+#content .ms-order {border-radius:8px;background:#fffefb url('assets/textures/dl63-paper-fiber.webp') 0 0 / 256px;box-shadow:0 12px 32px #20253624;line-height:1.65}
+#content .ms-order :is(button,a):focus-visible {outline:2px solid #2448cc;outline-offset:3px}
+#content .ms-review-open {min-height:48px;border-radius:8px;background:linear-gradient(#2a50d4,#2448cc 55%,#2143c0);box-shadow:inset 0 1px 0 #ffffff33,0 2px 0 #1a3497;font-size:15px}
+.ms-order-note {font-size:13px;color:#565d70}
+@media(max-width:760px){#content .ms-bookshelf{grid-template-columns:repeat(2,minmax(0,1fr));padding:16px;gap:22px 16px}.ms-book-info{min-height:124px}}
+@media(max-width:580px){#content .ms-shop{padding:20px 14px;border-radius:8px}.ms-mast{gap:10px}#content .ms-cart-button{font-size:12px;padding:7px 9px}#content .ms-categories button{font-size:12px;min-height:48px}.ms-categories{gap:6px}#content .ms-bookshelf{padding:12px;gap:22px 10px}#content .ms-stage{padding:14px 10% 20px}.ms-book-info{padding:10px 8px 8px;min-height:130px}#content .ms-book-info h3{font-size:13px}.ms-formats{padding:0 8px 6px}#content .ms-format{grid-template-columns:auto 1fr;font-size:12px;gap:2px}.ms-format small{grid-column:2;text-align:right;font-size:12px}.ms-planned-label{font-size:12px}.ms-price-number{white-space:normal}}
+@media(prefers-reduced-motion:reduce){.ms-book-cover{transition:none}}

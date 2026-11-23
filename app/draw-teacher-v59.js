@@ -419,7 +419,7 @@
     if (!oldSteps || !oldSetup) return base();
     if (!menuTried) queueMicrotask(loadMenu);          // first time this screen is drawn (or after a sign-in change)
     settle();
-    root.classList.add('dq61-surface','dd-modern');
+    root.classList.add('dq61-surface');
     oldSteps.outerHTML = steps();
     oldSetup.outerHTML = phase === 'setup' || !drawn ? setup() : phase === 'cards' ? cards() : finish();
     return root.outerHTML;

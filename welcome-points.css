@@ -31,3 +31,35 @@
 .wp-actions a.wp-join{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 20px;border-radius:8px;background:#144d60;color:#fff;font-weight:700;text-decoration:none}
 .wp-actions a.wp-join:hover{background:#103e4d}
 .wp-actions a.wp-join:focus-visible{outline:3px solid #267990;outline-offset:3px}
+
+/* Static account/purchase pages reuse their own approved surface tokens.
+   App pages have data-design and retain the original app component palette. */
+html[data-purchase="b"] .wp-section {
+ --wp-card:var(--pb-card);--wp-ink:var(--pb-ink);--wp-head:var(--pb-head);
+ --wp-muted:var(--pb-muted);--wp-line:var(--pb-line);--wp-accent:var(--pb-accent);
+ --wp-soft:var(--pb-soft);--wp-btn:var(--pb-btn);--wp-btn-h:var(--pb-btn-h);
+ --wp-edge:var(--pb-btn-edge);--wp-radius:var(--pb-r);--wp-shadow:var(--pb-shadow);
+}
+html:not([data-design]):has(#authnav) .wp-section {
+ --wp-card:var(--card,#fff);--wp-ink:var(--ink,#172b43);--wp-head:var(--deep,#172b43);
+ --wp-muted:var(--mut,#5b6678);--wp-line:var(--line,#dfe3ed);--wp-accent:var(--acc,#245bd6);
+ --wp-soft:#eef3ff;--wp-btn:var(--acc,#245bd6);--wp-btn-h:#1d4db8;
+ --wp-edge:transparent;--wp-radius:16px;--wp-shadow:none;
+}
+:is(html[data-purchase="b"],html:not([data-design]):has(#authnav)) .wp-section {
+ background:var(--wp-card);color:var(--wp-ink);border-color:var(--wp-line);
+ border-radius:var(--wp-radius);box-shadow:var(--wp-shadow);
+}
+:is(html[data-purchase="b"],html:not([data-design]):has(#authnav)) .wp-section h2 {color:var(--wp-head)}
+html[data-purchase="b"] .wp-section h2 {padding-bottom:12px;border-bottom:1px solid var(--wp-line)}
+:is(html[data-purchase="b"],html:not([data-design]):has(#authnav)) .wp-section p {color:var(--wp-ink)}
+:is(html[data-purchase="b"],html:not([data-design]):has(#authnav)) .wp-section :is(.wp-help,.wp-facts dt,.wp-list-price,.wp-new-offer>p) {color:var(--wp-muted)}
+:is(html[data-purchase="b"],html:not([data-design]):has(#authnav)) .wp-section :is(.wp-period,.wp-balance strong,.wp-sale-price,.wp-sale-price strong,.wp-sale-term,.wp-actions a,.wp-link) {color:var(--wp-accent)}
+:is(html[data-purchase="b"],html:not([data-design]):has(#authnav)) .wp-section .wp-sale-term b {background:var(--wp-soft);color:var(--wp-accent);border-radius:4px}
+:is(html[data-purchase="b"],html:not([data-design]):has(#authnav)) .wp-section .wp-list-price del {text-decoration-color:var(--wp-muted)}
+:is(html[data-purchase="b"],html:not([data-design]):has(#authnav)) .wp-section .wp-new-offer {border-color:var(--wp-line)}
+:is(html[data-purchase="b"],html:not([data-design]):has(#authnav)) .wp-section .wp-join {min-height:48px;border-radius:6px;background:var(--wp-btn);color:#fff;box-shadow:0 3px 0 var(--wp-edge),0 6px 12px #17283c24}
+:is(html[data-purchase="b"],html:not([data-design]):has(#authnav)) .wp-section .wp-join:hover {background:var(--wp-btn-h)}
+:is(html[data-purchase="b"],html:not([data-design]):has(#authnav)) .wp-section :focus-visible {outline:3px solid var(--wp-accent);outline-offset:3px}
+html:not([data-design]):has(#authnav) .wp-section .wp-join {border-radius:10px;box-shadow:none}
+:is(html[data-purchase="b"],html:not([data-design]):has(#authnav)) .wp-section .wp-actions a.wp-join {color:#fff}

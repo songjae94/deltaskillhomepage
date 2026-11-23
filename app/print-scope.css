@@ -1,14 +1,3 @@
-@media (min-width: 761px) {
-  #content .dq59-setup:has(.ps-scope) {
-    grid-template-columns: minmax(365px, 1.08fr) minmax(0, 1fr);
-    align-items: start;
-  }
-  #content .dq59-setup:has(.ps-scope) > .dq59-stage {
-    position: sticky;
-    top: 84px;
-    align-self: start;
-  }
-}
 #content .ps-scope {
   margin: 16px 0;
   padding: clamp(13px, 1.8vw, 22px);
@@ -102,3 +91,108 @@
   cursor: pointer;
 }
 #content .ps-scope .ps-basic[aria-pressed=true] { color: #204955; font-weight: 700; }
+
+/* The added scope controls belong to the existing teacher desk, not a second card. */
+@media screen {
+  html[data-design="b"] :is(body[data-page="teacher"] #content,body[data-page="student"] #content .sd-print) .ps-scope {
+    margin: 20px 0;
+    padding: 17px 0;
+    border: 0;
+    border-top: 1px solid #c4d0df29;
+    border-bottom: 1px solid #c4d0df29;
+    border-radius: 0;
+    background: transparent;
+    color: #edf0f5;
+    font-size: 12px;
+  }
+  html[data-design="b"] :is(body[data-page="teacher"] #content,body[data-page="student"] #content .sd-print) .ps-scope :is(label,legend) {
+    color: #dce2eb;
+    font-size: 12px;
+    font-weight: 650;
+  }
+  html[data-design="b"] :is(body[data-page="teacher"] #content,body[data-page="student"] #content .sd-print) .ps-mode {
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  html[data-design="b"] :is(body[data-page="teacher"] #content,body[data-page="student"] #content .sd-print) .ps-mode button {
+    min-width: 0;
+    min-height: 42px;
+    padding: 7px 8px;
+    border: 1px solid #182535;
+    border-top-color: #fff;
+    border-radius: 5px;
+    background: linear-gradient(#f4f3f0,#fff);
+    box-shadow: inset 0 1px #fff, 0 2px 0 #121e30;
+    color: #34445d;
+    font-size: 12px;
+    line-height: 1.45;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+  }
+  html[data-design="b"] :is(body[data-page="teacher"] #content,body[data-page="student"] #content .sd-print) .ps-mode button[aria-pressed=true] {
+    background: linear-gradient(#786280,#584362);
+    border-color: #594463;
+    box-shadow: inset 0 1px #af94b7, 0 2px 0 #413149;
+    color: #fff;
+  }
+  html[data-design="b"] :is(body[data-page="teacher"] #content,body[data-page="student"] #content .sd-print) .ps-scope :is(.ps-basic,.ps-help,.ps-availability,.ps-shortage p,legend small) {
+    color: #c7d2e0;
+    font-size: 11px;
+    font-weight: 450;
+    line-height: 1.6;
+  }
+  html[data-design="b"] :is(body[data-page="teacher"] #content,body[data-page="student"] #content .sd-print) .ps-scope :is(.ps-basic[aria-pressed=true],.ps-shortage summary) {
+    color: #f0f4fa;
+  }
+  html[data-design="b"] :is(body[data-page="teacher"] #content,body[data-page="student"] #content .sd-print) .ps-availability {
+    border-top-color: #c4d0df29;
+  }
+  html[data-design="b"] :is(body[data-page="teacher"] #content,body[data-page="student"] #content .sd-print) .ps-scope :is(.ps-all,.ps-picks label) {
+    background: #dee7f00c;
+    border: 1px solid #c0cde026;
+    border-radius: 4px;
+    color: #dce2eb;
+    font-size: 12px;
+    font-weight: 450;
+  }
+  html[data-design="b"] :is(body[data-page="teacher"] #content,body[data-page="student"] #content .sd-print) .ps-scope label:has(input[type=checkbox]:checked) {
+    background: #b9a4c12b;
+    border-color: #cab3d273;
+    color: #fff;
+  }
+  html[data-design="b"] :is(body[data-page="teacher"] #content,body[data-page="student"] #content .sd-print) .ps-scope input[type=checkbox] {
+    accent-color: #786280;
+  }
+  html[data-design="b"] :is(body[data-page="teacher"] #content,body[data-page="student"] #content .sd-print) .ps-scope [data-ps-expand] {
+    display: block;
+    margin: 9px 0 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #d0daea;
+    font: inherit;
+    font-size: 11px;
+    text-align: left;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+  html[data-design="b"] :is(body[data-page="teacher"] #content,body[data-page="student"] #content .sd-print) .ps-picks {
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: #a4b4c2 #23364a;
+  }
+  html[data-design="b"] :is(body[data-page="teacher"] #content,body[data-page="student"] #content .sd-print) .ps-scope :focus-visible {
+    outline-color: #c7d7ef;
+  }
+}
+@media screen {
+  html[data-design="b"] :is(body[data-page="teacher"] #content,body[data-page="student"] #content .sd-print) .dq59-setup:has(.ps-scope) > .dq59-stage {
+    align-self: start;
+  }
+  /* This is an actual paper sample card on the desk, so its heading stays ink-colored. */
+  html[data-design="b"] :is(body[data-page="teacher"] #content,body[data-page="student"] #content .sd-print) .tb36-conditions .dd-design-picker h3 {
+    color: #2d2441 !important;
+    text-shadow: none !important;
+  }
+}

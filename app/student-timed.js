@@ -129,8 +129,16 @@ function customSetup(){
  else if(remote&&!shortage)controls+='<button data-time-action="quote">시작 전 포인트 확인</button>';
  return filters+controls+' <button data-time-action="resume">최근 맞춤 세트 열기</button>';
 }
-function setup(){const prev=remembered(grade);return '<header class="dst-head"><div><p>기말고사 연습</p><h2>타임어택</h2></div></header><div class="dst-grades">'+[1,2].map(g=>'<button data-time-grade="'+g+'" aria-pressed="'+(grade===g)+'">고'+g+'　'+gradeNames[g]+'</button>').join('')+'</div><section class="dst-panel"><span>학년 공통 · 무료</span><h3>'+gradeNames[grade]+' 기말 연습</h3><p>쎈 단원 구성을 참고한 델타스킬 대표 유형 8문항 · 24분</p><button data-time-action="fixed">'+(prev?prev.status==='finished'?'채점 결과 다시 보기':'공통 세트 이어 풀기':'공통 세트 풀기')+'</button></section><section class="dst-panel"><h3>내 맞춤 타임어택</h3>'+(!signed()?'<p>로그인하면 단계와 단원을 고를 수 있어요. 첫 맞춤 세트는 무료예요.</p><a href="#login">로그인하고 구성하기 →</a>':'<p>첫 세트 무료 · 이후 프린트와 같은 문항별 포인트를 시작 전에 확인합니다.</p>'+customSetup())+'</section>';}
-function html(){return '<section class="ds-timed">'+(active?attemptHTML():setup())+'<p role="status">'+escape(notice)+'</p></section>';}
+function setup(){
+ const prev=remembered(grade);
+ const gradeKeys=[1,2].map(g=>'<button data-time-grade="'+g+'" aria-pressed="'+(grade===g)+'">고'+g+' · '+gradeNames[g]+'</button>').join('');
+ const start=prev?(prev.status==='finished'?'채점 결과 다시 보기':'공통 세트 이어 풀기'):'공통 세트 풀기';
+ return '<header class="sl54-heading"><div><div class="sl54-eyebrow">기말고사 연습</div><h1>타임어택</h1></div></header>'+
+ '<div class="sl54-entry-grid"><section class="dst-panel sl54-unit-side"><div class="sl55-subject-label">학년 공통 · 무료</div><div class="sl55-subjects dst-grades">'+gradeKeys+'</div><h3>'+gradeNames[grade]+' 기말 연습</h3><p>쎈 단원 구성을 참고한 델타스킬 대표 유형 8문항 · 24분</p><button class="sl54-quiet" data-time-action="fixed">'+start+'</button></section>'+
+ '<section class="dst-panel sl54-paper-preview"><div class="sl54-paper-top"><b>DELTASKILL</b><span>타임어택</span></div><h3>내 맞춤 타임어택</h3>'+
+ (!signed()?'<p>로그인하면 단계와 단원을 고를 수 있어요. 첫 맞춤 세트는 무료예요.</p><a class="sl54-primary" href="#login">로그인하고 구성하기 →</a>':'<p>첫 세트 무료 · 이후 프린트와 같은 문항별 포인트를 시작 전에 확인합니다.</p>'+customSetup())+'</section></div>';
+}
+function html(){return '<section class="ds-timed sl54-shell work-surface" data-sl-view="entry">'+(active?'<div class="ta-work-v18 sl54-paper-preview">'+attemptHTML()+'</div>':setup())+'<p role="status">'+escape(notice)+'</p></section>';}
 function paint(){const root=document.querySelector(scope);if(root)root.outerHTML=html();}
 let req=null,lastId=null;
 window.addEventListener('ds-session-change',()=>{req=null;lastId=null;});

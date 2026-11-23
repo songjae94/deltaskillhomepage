@@ -113,3 +113,8 @@
 }
 
 @media screen {.cl20-course-top h2{font-size:clamp(24px,2.8vw,34px);font-weight:720;letter-spacing:-.055em}.csat-learning-v20 .cl20-course-work{background:linear-gradient(120deg,#f7f8fa,#eceff4);border:1px solid #d7dce4;border-top:2px solid #a5acc3;box-shadow:inset 0 1px 0 #fff,0 7px 18px #27334a09}.csat-learning-v20 .cl20-course-actions .primary{min-width:170px;font-size:13px}.cl20-course-copy h3{font-weight:650}.cl20-course-copy p{max-width:29em;word-break:keep-all}}
+
+.cl20-first-question{display:block;width:100%;height:11rem;border:1px solid var(--cl20-rule);background:#fff;margin:16px 0 12px}
+.csat-learning-v20 .cl20-solve{min-height:44px;padding:10px 18px}
+.csat-learning-v20 .cl20-hero-copy h2{font-size:clamp(26px,3vw,38px)}
+.csat-learning-v20 .cl20-solve+.cl20-main-link{margin:6px 0 0 6px}
