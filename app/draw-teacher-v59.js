@@ -552,7 +552,7 @@
       if (!job.guest && !h.signedIn()) { say('unauthorized'); return; }
       const result = await job(h, op.controller.signal, alive);
       if (!alive() || !result) return;
-      dropSolutions(); drawn = result; phase = result.phase || 'cards'; page = 0;
+      dropSolutions(); drawn = result; phase = result.phase || 'finish'; page = 0;
       title = result.title || `${result.labels.unit} 수업 프린트`;
       say(result.status, result.items.length);
       if (result.reopened) note = { kind: 'ok', text: `보관한 ${result.items.length}문항을 다시 열었습니다.` };
