@@ -650,7 +650,7 @@
         try { claimed = await h.trial.claim(x.key, x.count, signal); }
         catch (error) {
           if (error?.status === 402) { say('claimshort'); return null; }
-          if (![403, 404].includes(error?.status)) throw error;
+          if (![400, 403, 404].includes(error?.status)) throw error;   // 판 A gate does not know trial_claim (400) = same conditions, member draw
         }
       }
       if (!alive()) return null;

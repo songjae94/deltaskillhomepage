@@ -5,7 +5,7 @@
   'use strict';
   const ENABLED = true;                          // the gate
   const POINTS = false;                          // v60 point board: off until the point functions are on the server
-  const TRIAL = false;                           // v61 guest trial (contract r2): off until the gate knows trial_menu · trial_draw · trial_open
+  const TRIAL = true;                            // v61 guest trial (contract r4 · 판 A): on — the gate answers trial_menu · trial_draw · trial_open; switched off on the server = sign-in line
   const service = window.DSService;
   if (!ENABLED || !service?.isLiveOrigin || window.DSDrawHostV59) return;
   const GATE = '/item-draw-gate';                // one address, action in the body
