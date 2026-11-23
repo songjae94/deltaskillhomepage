@@ -41,18 +41,26 @@
   };
   // 책 — 닮은 문제가 나온 원문항 책 두 권(설계 1절) · 차례는 뽑기조건_단원표_1122 의 중단원 번호 · 이름 그대로. 책 이름은 글자로만.
   const BOOKS = [
-    { id: 'sen-cm2', title: '쎈 공통수학2', subject: 'cm2', chapters: [
+    { id: 'sen-cm2', title: '쎈 공통수학2', subject: 'cm2', exams: ['DLV-26-CM2'], chapters: [
       ['01', '평면좌표', 'cm2-1'], ['02', '직선의 방정식', 'cm2-1'], ['03', '원의 방정식', 'cm2-1'], ['04', '도형의 이동', 'cm2-1'],
       ['05', '집합의 뜻과 표현', 'cm2-2'], ['06', '집합의 연산', 'cm2-2']
     ],
     // 이 책에서 닮은 문제가 0 인 단원 — 이름은 설계 1절 「명제 · 함수 · 유리함수와 무리함수 단원은 뽑기에 0」 그대로. 책 차례 번호는 자료에 없어 안 적음.
     others: ['명제', '함수', '유리함수와 무리함수'] },
-    { id: 'sen-ca1', title: '쎈 미적분Ⅰ', subject: 'ca1', chapters: [
+    { id: 'sen-ca1', title: '쎈 미적분Ⅰ', subject: 'ca1', exams: ['DLV-26-MI1'], chapters: [
       ['01', '함수의 극한', 'ca1-1'], ['02', '함수의 연속', 'ca1-1'],
       ['03', '미분계수와 도함수', 'ca1-2'], ['04', '도함수의 활용 (1)', 'ca1-2'], ['05', '도함수의 활용 (2)', 'ca1-2'], ['06', '도함수의 활용 (3)', 'ca1-2'],
       ['07', '부정적분', 'ca1-3'], ['08', '정적분', 'ca1-3'], ['09', '정적분의 활용', 'ca1-3']
     ] }
   ];
+  // 책 가름 = 문항의 exam_code(32칸 판에는 책 칸이 없음 · 센터 11-23). 한 코드는 한 책에만 — 여러 책에 걸치는 코드는 「책 없이」 쪽에만.
+  // 기다리는 책: 등재는 됐지만 뽑기 0(렌더 도장 전) · 책 차례 번호는 자료에 없어 과목 단원 이름으로 고름. LIVE 가 켜지고 menu 가 그 코드에 뽑을 수 있는 수를 줄 때만 목록에 나옴.
+  const WAIT_BOOKS = [
+    { id: 'ol-cm2', title: '올림포스 공통수학2', subject: 'cm2', exams: ['DLV-26-OLBASECM2'] },
+    { id: 'olt-cm2', title: '올림포스 유형편 공통수학2', subject: 'cm2', exams: ['DLV-26-OLTYPECM2'] },
+    { id: 'ol-ca1', title: '올림포스 미적분Ⅰ', subject: 'ca1', exams: ['DLV-26-OLBASEMI1'] },
+    { id: 'olt-ca1', title: '올림포스 유형편 미적분Ⅰ', subject: 'ca1', exams: ['DLV-26-OLTYPEMI1'] }
+  ].map(b => ({ ...b, chapters: SUBJECTS[b.subject].units.map(u => ['', u.name, u.id]) }));
   const NONE = 'none';
   // LIVE 가 꺼진 동안 넷째 걸음은 지금 실제로 되는 것(판매 단원 문제집 · 프린트 만들기 잇기)만 보여 준다.
   const STEPS = ['책', '시험 범위', '문제 수준', LIVE ? '미리보기 · 출력' : '받을 자료'];
@@ -69,14 +77,15 @@
 
   /* ---------- 판 · 셈 ---------- */
   const unitById = id => Object.values(SUBJECTS).flatMap(s => s.units).find(u => u.id === id);
-  const book = () => BOOKS.find(b => b.id === state.book) || null;
+  const allBooks = () => BOOKS.concat(WAIT_BOOKS.filter(b => LIVE && b.exams.some(c => (live.exams.get(c) || 0) > 0)));
+  const book = () => allBooks().find(b => b.id === state.book) || null;
   const subjectId = () => book()?.subject || (state.book === NONE ? state.subject : '');
   const subject = () => SUBJECTS[subjectId()] || null;
   const bookTotal = b => SUBJECTS[b.subject].units.reduce((n, u) => n + (u.n ? Object.values(u.n).reduce((a, x) => a + x, 0) : 0), 0);
   // 범위 줄: 책이면 그 책 차례(중단원) · 책 없이면 과목 단원.
   function rows() {
     const b = book();
-    if (b) return b.chapters.map(([no, name, unit]) => ({ key: b.id + ':' + no, no, name, unit, ok: true }));
+    if (b) return b.chapters.map(([no, name, unit]) => ({ key: b.id + ':' + (no || unit), no, name, unit, ok: true }));
     const s = subject();
     return s ? s.units.map(u => ({ key: u.id, no: '', name: u.name, unit: u.id, ok: Boolean(u.n) })) : [];
   }
@@ -163,21 +172,25 @@
   }
 
   /* ---------- LIVE(꺼짐): 서버 menu 의 book · chapter · available ---------- */
-  const live = { counts: new Map(), stages: new Set(), asked: false };
+  const live = { counts: new Map(), exams: new Map(), stages: new Set(), asked: false };
   function readLive() {
     const host = window.DSDrawHostV59;
     if (!LIVE || live.asked || !host?.menu || !signed()) return;
     live.asked = true;
     host.menu().then(d => {
       (d?.sets || []).forEach(r => {
-        if (typeof r.book !== 'string' || typeof r.chapter !== 'string' || !Number.isInteger(r.available)) return;
-        const k = r.book + '|' + r.chapter + '|' + r.stage;
+        if (typeof r.chapter !== 'string' || !Number.isInteger(r.available)) return;
+        // exam_code 가 오면 그것으로 · 없으면 책 이름으로(옛 계약).
+        const by = typeof r.exam_code === 'string' ? r.exam_code : typeof r.book === 'string' ? r.book : '';
+        if (!by) return;
+        const k = by + '|' + r.chapter + '|' + r.stage;
         live.counts.set(k, (live.counts.get(k) || 0) + r.available);
+        if (typeof r.exam_code === 'string') live.exams.set(r.exam_code, (live.exams.get(r.exam_code) || 0) + r.available);
       });
       if (here()) softUpdate();
     }).catch(() => { live.asked = false; });
   }
-  const liveAvail = t => { if (!LIVE || !book()) return null; let n = 0, seen = false; picked().forEach(r => { const v = live.counts.get(book().title + '|' + r.name + '|' + t.stage); if (v != null) { n += v; seen = true; } }); return seen ? n : null; };
+  const liveAvail = t => { if (!LIVE || !book()) return null; let n = 0, seen = false; const keys = (book().exams || []).concat(book().title); picked().forEach(r => { for (const by of keys) { const v = live.counts.get(by + '|' + r.name + '|' + t.stage); if (v != null) { n += v; seen = true; break; } } }); return seen ? n : null; };
 
   /* ---------- 그리기 ---------- */
   const heading = () => `<header class="tb36-heading nf64-heading"><div><span>수업 준비</span><h1>내신 자료</h1><p class="nf64-lead">${LIVE ? '학교 부교재 · 시험 범위 · 반 수준으로, 내일 수업 프린트까지.' : '학교 부교재 · 시험 범위 · 반 수준을 고르면, 그 범위에 맞는 자료로 바로 잇습니다.'}</p></div><a href="#account">내 보관함 ↗</a></header>`;
@@ -195,7 +208,7 @@
 
   function bookCards() {
     const q = state.query.trim().toLowerCase().replace(/\s+/g, '');
-    const list = BOOKS.filter(b => (!state.chip || b.subject === state.chip) && (!q || (b.title + SUBJECTS[b.subject].name).toLowerCase().replace(/\s+/g, '').includes(q)));
+    const list = allBooks().filter(b => (!state.chip || b.subject === state.chip) && (!q || (b.title + SUBJECTS[b.subject].name).toLowerCase().replace(/\s+/g, '').includes(q)));
     if (!list.length) return `<div class="nf64-empty" role="status"><p>찾는 책이 없습니다. 책 없이 과목 · 단원으로 고를 수 있습니다.</p><button type="button" class="nf64-ghost" data-nf64-none>단원으로 고르기</button><button type="button" class="nf64-textlink" data-feedback="필요한 책 알려 주기">필요한 책 알려 주기</button></div>`;
     return `<div class="bf62-choices nf64-books" role="radiogroup" aria-label="책">${list.map(b => `<label class="bf62-choice"><input type="radio" name="nf64-book" value="${b.id}" data-nf64-book ${state.book === b.id ? 'checked' : ''}><span><strong>${safe(b.title)}</strong><small>${safe(SUBJECTS[b.subject].name)} · 이 책과 닮은 새 문제 <em class="nf64-num">${num(bookTotal(b))}</em>문항</small></span></label>`).join('')}</div>`;
   }
@@ -238,7 +251,7 @@
       body += groups.map(u => {
         const ch = b.chapters.filter(c => c[2] === u.id);
         if (!ch.length) return '';      // 과목 대단원 이름은 책 차례가 아니므로 책 길에서는 「이 책의 다른 단원」에서 단원 이름으로 보인다.
-        return `<section class="nf64-group"><h3>${safe(u.name)}<small>${unitCounts(u)}</small></h3><ol class="nf64-rows">${ch.map(([no, name, unit]) => rowButton({ key: b.id + ':' + no, no, name, unit })).join('')}</ol></section>`;
+        return `<section class="nf64-group"><h3>${safe(u.name)}<small>${unitCounts(u)}</small></h3><ol class="nf64-rows">${ch.map(([no, name, unit]) => rowButton({ key: b.id + ':' + (no || unit), no, name, unit })).join('')}</ol></section>`;
       }).join('');
       if (b.others?.length) body += `<section class="nf64-group nf64-group-dead"><h3>이 책의 다른 단원<small>닮은 문제가 없는 단원</small></h3><ol class="nf64-rows">${b.others.map(name => { const links = soldByName(name); return `<li class="nf64-dead"><div><strong>${safe(name)}</strong><span>이 단원에는 닮은 문제가 없습니다.</span>${links.length ? `<span class="nf64-dead-links"><span>단원 문제집으로 받기 →</span>${links.map(x => soldLink(x)).join('')}</span>` : ''}</div></li>`; }).join('')}</ol></section>`;
       body += `<p class="bf62-source nf64-source">큰 단원 이름 곁의 수는 그 단원에 실린 닮은 문제 수입니다.</p>`;
@@ -501,7 +514,7 @@
     state = Object.assign(fresh(), { book: n >= 1 ? 'sen-cm2' : '', units: n >= 2 ? ['sen-cm2:01', 'sen-cm2:02', 'sen-cm2:03'] : [], academy: n >= 4 ? '한빛수학학원' : '' });
     state.step = n; rerender();
   }
-  window.DSNaesinFlowV64 = { demo, go: goStep, state: () => JSON.parse(JSON.stringify(state)), books: BOOKS, subjects: SUBJECTS, live: LIVE };
+  window.DSNaesinFlowV64 = { demo, go: goStep, state: () => JSON.parse(JSON.stringify(state)), books: BOOKS, waitBooks: WAIT_BOOKS, subjects: SUBJECTS, live: LIVE };
   if (here()) rerender();
   setTimeout(resume, 0);
 })();
