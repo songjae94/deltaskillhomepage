@@ -19,7 +19,7 @@ details.more>summary,details.agd>summary{list-style:none}
 details.more{margin:14px 0 0;border-top:1px solid #d6dfeb}details.more>summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:700;font-size:15px}
 details.agd>summary{cursor:pointer;min-height:40px;display:flex;align-items:center;font-size:14px;font-weight:650;padding-left:26px}
 .chk.all small{display:block;font-weight:500;font-size:13px;color:#44607f}
-</style><link rel="stylesheet" href="/assets/business-footer.css"><link rel="stylesheet" href="/assets/account-header.css?v=02-9-slot"><script defer src="/auth.js?v=home-logout-r2-1123"></script><link rel="stylesheet" href="/assets/payment-flow.css">
+</style><link rel="stylesheet" href="/assets/business-footer.css"><link rel="stylesheet" href="/assets/account-header.css?v=02-9-slot"><script defer src="/auth.js?v=home-logout-r2-1123"></script><link rel="stylesheet" href="/assets/payment-flow.css"><link rel="stylesheet" href="./price.css?v=billing-release-r1">
 <link rel="stylesheet" href="/assets/site-unify.css?v=36">
 <link rel="stylesheet" href="/assets/purchase-b.css?v=r4-1123">
 </head>
@@ -33,31 +33,31 @@ details.agd>summary{cursor:pointer;min-height:40px;display:flex;align-items:cent
 <section id="login" data-step>
 <nav class="pb-flow" aria-label="구매 순서"><ol><li aria-current="step"><b>01</b>고르기</li><li><b>02</b>주문서</li><li><b>03</b>결제</li><li><b>04</b>받기</li></ol></nav>
 <h1>변형문항 이용권</h1>
-<p class="big"><strong>월 10,000원</strong> · 매월 자동 결제(정기결제)</p>
-<ul class="core"><li>한 달 30벌 · 한 벌 20문항 · 하루 제한 없음</li><li>받지 않은 벌은 다음 달로 이월되지 않습니다</li><li>해지는 마이페이지에서 언제든 — 종료일까지 쓰고 해지 또는 지금 해지 · 남은 금액 바로 환불</li></ul>
+<div data-price-offer></div><p>매월 자동 결제(정기결제)</p>
+<p>기존 이용권은 실제 결제금액을 유지합니다.</p><ul class="core"><li>한 달 30벌 · 한 벌 20문항 · 하루 제한 없음</li><li>받지 않은 벌은 다음 달로 이월되지 않습니다</li><li>해지는 마이페이지에서 언제든 — 종료일까지 쓰고 해지 또는 지금 해지 · 남은 금액 바로 환불</li></ul>
 <p>같은 표현 변형문항과 같은 개념 표현변형 문항을 프린트로 받는 회원 상품입니다. 1개월 이용권 · 월 단위 정기결제만(연 단위 이용권은 없습니다) · 결제는 회원 로그인 뒤에 할 수 있습니다.</p>
 <div class="actions"><a class="action" href="#checkout-pass">이용권 결제하기 →</a><a href="#product">상품 자세히</a><a data-review-login href="/auth/?next=%2Fpass%2F%23checkout-pass">로그인 →</a></div>
 </section>
 <section id="product" data-step hidden>
 <nav class="pb-flow" aria-label="구매 순서"><ol><li aria-current="step"><b>01</b>고르기</li><li><b>02</b>주문서</li><li><b>03</b>결제</li><li><b>04</b>받기</li></ol></nav>
-<h1>변형문항 이용권</h1><p>같은 표현 변형문항과 같은 개념 표현변형 문항을 골라 프린트로 받는 1개월 이용권입니다. 월 10,000원에 한 달 30벌까지 받을 수 있습니다. 받지 않은 벌은 다음 달로 이월되지 않습니다. 매월 결제일에 새로 30벌이 주어지고, 이용 기간이 끝날 때 남은 벌은 소멸합니다.</p>
-<dl><div><dt>제공 범위</dt><dd>같은 표현 변형문항 · 같은 개념 표현변형 문항</dd></div><div><dt>이용 기간</dt><dd>1개월 · 매월 자동 갱신</dd></div><div><dt>이용 한도</dt><dd data-pass-limits>한 달 30벌 · 하루 제한 없음 · 한 벌 20문항</dd></div><div><dt>남은 벌</dt><dd>받지 않은 벌은 다음 달로 이월되지 않습니다. 매월 결제일에 새로 30벌이 주어지고, 이용 기간이 끝날 때 남은 벌은 소멸합니다.</dd></div><div><dt>상품 가격</dt><dd><strong data-confirmed-price>10,000원</strong></dd></div></dl>
+<h1>변형문항 이용권</h1><div data-price-offer></div><p>같은 표현 변형문항과 같은 개념 표현변형 문항을 골라 프린트로 받는 1개월 이용권입니다. 월 <span data-new-price>15,000원</span>에 한 달 30벌까지 받을 수 있습니다. 받지 않은 벌은 다음 달로 이월되지 않습니다. 매월 결제일에 새로 30벌이 주어지고, 이용 기간이 끝날 때 남은 벌은 소멸합니다.</p>
+<dl><div><dt>제공 범위</dt><dd>같은 표현 변형문항 · 같은 개념 표현변형 문항</dd></div><div><dt>이용 기간</dt><dd>1개월 · 매월 자동 갱신</dd></div><div><dt>이용 한도</dt><dd data-pass-limits>한 달 30벌 · 하루 제한 없음 · 한 벌 20문항</dd></div><div><dt>남은 벌</dt><dd>받지 않은 벌은 다음 달로 이월되지 않습니다. 매월 결제일에 새로 30벌이 주어지고, 이용 기간이 끝날 때 남은 벌은 소멸합니다.</dd></div><div><dt>상품 가격</dt><dd><div data-confirmed-price></div></dd></div></dl>
 <h2>제공 방식</h2><p>결제 승인 후 한 달 동안 이용권 제공 범위 안에서 문제와 정답·해설이 포함된 디지털 프린트를 구성해 준비되는 대로 마이페이지 자료함에서 받습니다. 한글 파일은 한컴 확인 후 제공합니다.</p><p>단원 묶음도 이용권으로 받을 수 있으며, 묶음에 든 벌 수만큼 월 한도에서 차감됩니다. 무료회원은 단원 묶음을 개별구매할 수 있습니다.</p>
 <h2>구독 해지와 환불</h2><p><a href="/my/">마이페이지</a> &gt; 이용권에서 자동 갱신을 해지할 수 있습니다. 해지할 때 두 가지 가운데 하나를 고릅니다. ① 이번 이용권 종료일까지 쓰고 해지: 다음 결제가 중지되고 환불은 없습니다. ② 지금 해지하고 남은 금액 환불: 이용권이 바로 끝나고 남은 금액을 결제 취소로 바로 환불합니다.</p><p>환불액은 실제 결제금액에서 이번 이용 기간에 받은 벌의 1벌 값을 모두 더한 금액을 뺀 금액입니다. 1벌 값은 마이페이지 이용권 프린트 목록에 벌마다 표시한 금액으로 하며, 같은 벌을 다시 받으면 한 번만 계산합니다. 받은 벌의 1벌 값 합계가 결제금액 이상이면 환불액은 없습니다. 한 벌도 받지 않았다면 전액 환불합니다.</p>
 <div class="actions"><a class="action" href="#checkout-pass">이용권 결제 확인 →</a></div>
 </section>
 <section id="checkout-pass" data-step hidden>
 <nav class="pb-flow" aria-label="구매 순서"><ol><li><b>01</b>고르기</li><li aria-current="step"><b>02</b>주문서</li><li><b>03</b>결제</li><li><b>04</b>받기</li></ol></nav>
-<h1>결제 확인</h1><div class="pb-gate"><h2>로그인 뒤 신청합니다</h2><p class="big"><strong>월 10,000원</strong> · 매월 자동 결제(정기결제)</p><p>결제는 회원 로그인 뒤에 할 수 있습니다. 로그인하면 이 화면으로 돌아와 주문 내용과 자동 결제 조건을 확인합니다.</p><div class="actions"><a class="action" href="/auth/?next=%2Fpass%2F%23checkout-pass">로그인하고 신청하기 →</a><a href="/auth/?mode=signup&amp;next=%2Fpass%2F%23checkout-pass">회원가입</a><a href="#product">상품 자세히</a></div></div><p>카드를 등록하기 전에 주문 내용과 자동 결제 조건을 확인해 주세요.</p>
-<dl><div><dt>주문 상품</dt><dd>변형문항 이용권</dd></div><div><dt>결제 금액</dt><dd><strong data-confirmed-price>10,000원</strong></dd></div><div><dt>결제 방식</dt><dd>1개월 이용권 · 매월 자동 갱신(정기결제) · 카드 등록 뒤 첫 결제가 바로 승인됩니다</dd></div><div><dt>다음 결제일</dt><dd data-next-charge>결제 승인일로부터 1개월 뒤 같은 날짜</dd></div><div><dt>남은 벌</dt><dd>받지 않은 벌은 다음 달로 이월되지 않습니다. 매월 결제일에 새로 30벌이 주어지고, 이용 기간이 끝날 때 남은 벌은 소멸합니다.</dd></div></dl>
+<h1>결제 확인</h1><div data-price-offer></div><p>기존 이용권은 실제 결제금액을 유지합니다.</p><div class="pb-gate"><h2>로그인 뒤 신청합니다</h2><div data-price-offer></div><p>매월 자동 결제(정기결제)</p><p>결제는 회원 로그인 뒤에 할 수 있습니다. 로그인하면 이 화면으로 돌아와 주문 내용과 자동 결제 조건을 확인합니다.</p><div class="actions"><a class="action" href="/auth/?next=%2Fpass%2F%23checkout-pass">로그인하고 신청하기 →</a><a href="/auth/?mode=signup&amp;next=%2Fpass%2F%23checkout-pass">회원가입</a><a href="#product">상품 자세히</a></div></div><p>카드를 등록하기 전에 주문 내용과 자동 결제 조건을 확인해 주세요.</p>
+<dl><div><dt>주문 상품</dt><dd>변형문항 이용권</dd></div><div><dt>결제 금액</dt><dd><div data-confirmed-price></div></dd></div><div><dt>결제 방식</dt><dd>1개월 이용권 · 매월 자동 갱신(정기결제) · 카드 등록 뒤 첫 결제가 바로 승인됩니다</dd></div><div><dt>다음 결제일</dt><dd data-next-charge>결제 승인일로부터 1개월 뒤 같은 날짜</dd></div><div><dt>남은 벌</dt><dd>받지 않은 벌은 다음 달로 이월되지 않습니다. 매월 결제일에 새로 30벌이 주어지고, 이용 기간이 끝날 때 남은 벌은 소멸합니다.</dd></div></dl>
 <p class="sum1">해지: <a href="/my/">마이페이지</a> &gt; 이용권에서 언제든 · 환불: 7일 안 한 벌도 안 받았으면 전액, 그 밖에는 결제금액에서 받은 벌의 1벌 값 합계를 뺀 금액</p>
-<details class="more"><summary>자세히 · 결제 주기 · 이용 한도 · 해지 · 환불</summary><dl><div><dt>결제 주기</dt><dd>매월 · 결제 승인일과 같은 날짜에 10,000원</dd></div><div><dt>이용 한도</dt><dd>한 달 30벌 · 한 벌 20문항</dd></div><div><dt>제공 위치</dt><dd>마이페이지 자료함(준비되는 대로)</dd></div><div><dt>자동 갱신 해지</dt><dd><a href="/my/">마이페이지</a> &gt; 이용권에서 자동 갱신을 해지할 수 있습니다. 종료일까지 쓰고 해지(환불 없음) 또는 지금 해지하고 남은 금액 바로 환불 가운데 고릅니다.</dd></div><div><dt>환불</dt><dd>결제일로부터 7일 이내이고 한 벌도 받지 않았다면 전액 환불 · 그 밖에는 결제금액에서 이번 이용 기간에 받은 벌의 1벌 값 합계를 뺀 금액을 환불(1벌 값은 마이페이지 이용권 프린트 목록에 벌마다 표시) · <a href="/refund/" target="_blank" rel="noopener">환불·청약철회 안내</a></dd></div></dl></details>
+<details class="more"><summary>자세히 · 결제 주기 · 이용 한도 · 해지 · 환불</summary><dl><div><dt>결제 주기</dt><dd>매월 · 결제 승인일과 같은 날짜에 <span data-new-price>15,000원</span></dd></div><div><dt>이용 한도</dt><dd>한 달 30벌 · 한 벌 20문항</dd></div><div><dt>제공 위치</dt><dd>마이페이지 자료함(준비되는 대로)</dd></div><div><dt>자동 갱신 해지</dt><dd><a href="/my/">마이페이지</a> &gt; 이용권에서 자동 갱신을 해지할 수 있습니다. 종료일까지 쓰고 해지(환불 없음) 또는 지금 해지하고 남은 금액 바로 환불 가운데 고릅니다.</dd></div><div><dt>환불</dt><dd>결제일로부터 7일 이내이고 한 벌도 받지 않았다면 전액 환불 · 그 밖에는 결제금액에서 이번 이용 기간에 받은 벌의 1벌 값 합계를 뺀 금액을 환불(1벌 값은 마이페이지 이용권 프린트 목록에 벌마다 표시) · <a href="/refund/" target="_blank" rel="noopener">환불·청약철회 안내</a></dd></div></dl></details>
 <fieldset class="pass-agree" data-pass-agree><legend>동의</legend>
 <label class="chk all"><input type="checkbox" data-agree-all> <span>필수 항목에 모두 동의합니다.<small>이용약관 · 환불 안내 · 개인정보 · 매월 자동 결제(이월 안 됨) · 디지털콘텐츠 청약철회 제한 · 미성년자</small></span></label>
 <details class="agd"><summary>필수 항목 4개 펼쳐 보기</summary>
 <label class="chk"><input type="checkbox" data-agree> <span>[필수] <a href="/terms/" target="_blank" rel="noopener">이용약관</a>과 <a href="/refund/" target="_blank" rel="noopener">환불·청약철회 안내</a>에 동의합니다.</span></label>
 <label class="chk"><input type="checkbox" data-agree> <span>[필수] <a href="/privacy/" target="_blank" rel="noopener">개인정보처리방침</a>에 따른 개인정보 수집·이용과 결제대행 위탁(토스페이먼츠)에 동의합니다.</span></label>
-<label class="chk"><input type="checkbox" data-agree> <span>[필수] 해지하기 전까지 매월 결제 승인일과 같은 날짜에 등록한 카드로 10,000원이 자동 결제되는 정기결제에 동의하며, 받지 않은 벌은 다음 달로 이월되지 않고 이용 기간이 끝날 때 소멸한다는 점을 확인했습니다.</span></label>
+<label class="chk"><input type="checkbox" data-agree> <span>[필수] 해지하기 전까지 매월 결제 승인일과 같은 날짜에 등록한 카드로 <span data-new-price>15,000원</span>이 자동 결제되는 정기결제에 동의하며, 받지 않은 벌은 다음 달로 이월되지 않고 이용 기간이 끝날 때 소멸한다는 점을 확인했습니다.</span></label>
 <label class="chk"><input type="checkbox" data-agree> <span>[필수] 이용권으로 받은 프린트는 디지털콘텐츠로, 받은 벌은 청약철회(환불)가 제한된다는 점을 확인했습니다. (만 19세 미만인 경우: 법정대리인의 동의를 받았습니다. <a href="/minor/" target="_blank" rel="noopener">미성년자 구매 안내</a>)</span></label>
 </details>
 </fieldset>
@@ -82,8 +82,8 @@ details.agd>summary{cursor:pointer;min-height:40px;display:flex;align-items:cent
   <p class="copy">© 2026 델타스킬. All rights reserved.</p>
 </div>
 </footer>
-<script>
+<script src="./price-policy.js?v=billing-release-r1"></script><script>
 const steps=[...document.querySelectorAll("[data-step]")];
 function renderStep(event){if(location.hash==="#single"||location.hash==="#checkout-single"){location.replace("/naesin/");return;} /* 낱개 시험 상품(600원) 닫음 — 옛 주소는 내신 파일로 */const next=steps.find(step=>"#"+step.id===location.hash)||steps[0];for(const step of steps)step.hidden=step!==next;if(event){const heading=next.querySelector("h1");heading.tabIndex=-1;heading.focus();}}
 window.addEventListener("hashchange",renderStep);renderStep();
-</script><script defer src="./review-config.js?v=live-1119"></script><script type="module" src="./test-checkout.mjs?v=live-1119"></script></body></html>
+</script><script defer src="./review-config.js?v=live-1119"></script><script type="module" src="./test-checkout.mjs?v=billing-release-r1"></script></body></html>

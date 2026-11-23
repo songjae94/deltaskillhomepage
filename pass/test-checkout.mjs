@@ -3,6 +3,22 @@ const billingStatus = document.querySelector("#checkout-pass [data-checkout-stat
 const pendingKey = "delta-pass-test-attempt";
 const ttl = 10 * 60 * 1000;
 const auth = window.DSAuth;
+const pricing = window.DSMonthlyPrice;
+let displayedAmount = pricing.amount();
+const money = amount => amount.toLocaleString('ko-KR') + '원';
+function renderPrice() {
+  displayedAmount = pricing.amount();
+  for (const node of document.querySelectorAll('[data-new-price]')) node.textContent = money(displayedAmount);
+  for (const node of document.querySelectorAll('[data-price-offer],[data-confirmed-price]')) node.innerHTML = pricing.markup();
+}
+renderPrice();
+window.addEventListener('focus', () => {
+  if (pricing.amount() !== displayedAmount) {
+    for (const box of agrees) box.checked = false;
+    if (agreeAll) agreeAll.checked = false;
+  }
+  renderPrice(); renderControls();
+});
 let sdk;
 let generation = 0;
 let billingPhase = "idle";
@@ -46,7 +62,7 @@ function renderControls() {
     approved: "결제 승인 완료",
     checking: "이용권 상태 확인 중",
     unclear: "승인 결과 확인 필요"
-  }[billingPhase] ?? (!agreed() ? "필수 항목에 동의해 주세요" : auth.has() ? "카드 등록하고 10,000원 결제" : "로그인하고 카드 등록하기");
+  }[billingPhase] ?? (!agreed() ? "필수 항목에 동의해 주세요" : auth.has() ? "카드 등록하고 " + money(displayedAmount) + " 결제" : "로그인하고 카드 등록하기");
   for (const link of loginLinks) link.hidden = auth.has();
 }
 
@@ -129,7 +145,8 @@ async function finishRegistration(url, api, accountGeneration) {
   let pending;
   try { pending = JSON.parse(saved); } catch { sessionStorage.removeItem(pendingKey); }
   if (!pending || pending.state !== url.searchParams.get("state") ||
-      pending.owner !== await tokenDigest(token) || Date.now() - pending.started > ttl) {
+      pending.owner !== await tokenDigest(token) || !Number.isFinite(pending.started) || Date.now() < pending.started || Date.now() - pending.started > ttl ||
+      !(pending.priceVersion === 1 ? [15000,30000].includes(pending.amount) : pending.priceVersion === undefined && pending.amount === undefined)) {
     if (!current()) return;
     setPhase("idle");
     billingStatus.textContent = "카드 등록 요청을 확인할 수 없습니다. 상품 화면에서 확인해 주세요.";
@@ -154,11 +171,11 @@ async function finishRegistration(url, api, accountGeneration) {
   try {
     const result = await billingCall(api, token, {action:"approve",authKey,customerKey,state:pending.state});
     if (!current()) return;
-    if (result.status !== "DONE" || result.amount !== 10000 || result.orderId !== pending.orderId) {
+    if (result.status !== "DONE" || result.amount !== (pending.priceVersion === 1 ? pending.amount : 10000) || result.orderId !== pending.orderId) {
       throw new Error("unverified");
     }
     setPhase("approved");
-    billingStatus.textContent = "변형문항 이용권 10,000원 결제 승인을 확인했습니다. 마이페이지 > 이용권에서 이용 기간과 다음 결제일을 확인할 수 있습니다.";
+    billingStatus.textContent = "변형문항 이용권 " + money(result.amount) + " 결제 승인을 확인했습니다. 마이페이지 > 이용권에서 이용 기간과 다음 결제일을 확인할 수 있습니다.";
     const view = await passStatus(api, token);
     if (current()) showDone(view ?? {status:"ACTIVE", amount:result.amount});
   } catch {
@@ -188,8 +205,16 @@ async function openRegistration(config, api) {
   setPhase("opening");
   billingStatus.textContent = "";
   try {
-    const {status,customerKey,state,orderId,amount} = await billingCall(api, token, {action:"session"});
-    if (status !== "READY" || amount !== 10000 ||
+    const expectedAmount = pricing.amount();
+    if (expectedAmount !== displayedAmount) {
+      renderPrice();
+      for (const box of agrees) box.checked = false;
+      if (agreeAll) agreeAll.checked = false;
+      billingStatus.textContent = '가격 적용 기간이 바뀌었습니다. 새 금액을 확인하고 다시 동의해 주세요.';
+      return;
+    }
+    const {status,customerKey,state,orderId,amount} = await billingCall(api, token, {action:"session",expectedAmount});
+    if (status !== "READY" || amount !== expectedAmount ||
         ![customerKey,state,orderId].every(value => typeof value === "string" && value.trim())) {
       throw new Error("unverified");
     }
@@ -202,7 +227,7 @@ async function openRegistration(config, api) {
     failure.searchParams.set("billing", "fail");
     const [TossPayments, customerName] = await Promise.all([loadSdk(), memberName(token)]);
     if (!current()) return;
-    sessionStorage.setItem(pendingKey, JSON.stringify({state,customerKey,orderId,owner,started:Date.now()}));
+    sessionStorage.setItem(pendingKey, JSON.stringify({state,customerKey,orderId,owner,started:Date.now(),priceVersion:1,amount}));
     await TossPayments(window.DSBillingKey(config)).payment({customerKey}).requestBillingAuth({
       method:"CARD", successUrl:success.href, failUrl:failure.href, windowTarget:"self",
       ...(customerName ? {customerName} : {})

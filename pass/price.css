@@ -1,0 +1,7 @@
+.wp-price-offer{margin:14px 0 18px;line-height:1.4;font-variant-numeric:tabular-nums}
+.wp-list-price{display:flex;align-items:baseline;gap:12px;color:#52606d;font-size:16px;font-weight:650}
+.wp-list-price del{font-size:clamp(23px,2.7vw,29px);text-decoration-thickness:2px;text-decoration-color:#536474}
+.wp-sale-price{display:flex;align-items:baseline;flex-wrap:wrap;gap:7px;color:#123d52;margin-top:4px;font-size:16px;font-weight:700}
+.wp-sale-price strong{font-size:clamp(31px,3.6vw,40px);line-height:1.25;letter-spacing:-.045em;color:#123d52}
+.wp-sale-term{margin-top:9px;color:#205a67;font-size:13px;line-height:1.6}
+.wp-sale-term b{display:inline-block;font-size:15px;padding:3px 9px;background:#dceef0;color:#164d59;border-radius:5px}
