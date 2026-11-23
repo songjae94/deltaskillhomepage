@@ -9,7 +9,8 @@ const money = amount => amount.toLocaleString('ko-KR') + '원';
 function renderPrice() {
   displayedAmount = pricing.amount();
   for (const node of document.querySelectorAll('[data-new-price]')) node.textContent = money(displayedAmount);
-  for (const node of document.querySelectorAll('[data-price-offer],[data-confirmed-price]')) node.innerHTML = pricing.markup();
+  for (const node of document.querySelectorAll('[data-price-offer]')) node.innerHTML = pricing.markup();
+  for (const node of document.querySelectorAll('[data-confirmed-price]')) node.textContent = money(displayedAmount);
 }
 renderPrice();
 window.addEventListener('focus', () => {
