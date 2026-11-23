@@ -1121,4 +1121,5 @@ window.addEventListener('storage',e=>{if(e.key==='ds_tk'||e.key==='ds_logout_epo
 window.addEventListener('ds-session-ready',()=>{header(location.hash.slice(1)||'home');if(['#account','#account-settings'].includes(location.hash))loadAccount();if(location.hash.startsWith('#record/')){loadAccount();loadRecord(recordState.id)}});
 window.addEventListener('ds-session-change',()=>{if(!DSService.session()){clearMemberView();refreshAccount();if(location.hash.startsWith('#record/'))renderRecord();header(location.hash.slice(1)||'home')}});
 window.addEventListener('hashchange',route);route();
-try{if((!location.hash||location.hash==='#home')&&!sessionStorage.getItem('ds-next-intro')){sessionStorage.setItem('ds-next-intro','1');intro()}}catch{}
+// Enter the homepage immediately, including first visits from search.
+// The intro remains available only through the explicit replay control.

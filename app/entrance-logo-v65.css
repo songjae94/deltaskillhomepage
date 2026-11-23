@@ -1,0 +1,31 @@
+/* The original scene palette supplies the lettering. A soft mask moves
+   across a lighter copy without changing the base color or its position. */
+html[data-design="b"] body.home-body #header .brand {
+  position: relative;
+  background: none !important;
+  color: var(--logo-base) !important;
+  -webkit-text-fill-color: var(--logo-base) !important;
+  animation: none !important;
+}
+html[data-design="b"] body.home-body #header .brand::after {
+  content: "DELTASKILL" / "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  color: color-mix(in srgb, var(--logo-base) 74%, white);
+  -webkit-text-fill-color: currentColor;
+  mask-image: linear-gradient(105deg, transparent 34%, black 50%, transparent 66%);
+  mask-size: 220% 100%;
+  mask-repeat: no-repeat;
+  animation: quiet-logo-sweep 4s linear infinite;
+}
+@keyframes quiet-logo-sweep {
+  0% { mask-position: 100% 50%; }
+  70%, 100% { mask-position: 0% 50%; }
+}
+html[data-design="b"] body.home-body:has([data-cinema-pause][aria-label="배경 재생"]) #header .brand::after {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-design="b"] body.home-body #header .brand::after { display: none; }
+}
