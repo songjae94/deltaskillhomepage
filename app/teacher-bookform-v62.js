@@ -34,7 +34,7 @@
     { id: 's5', name: '기본문제 – 유형별 문제 – 실전 테스트', use: '범위 전체를 한 번 훑을 때', parts: [['기본문제', 15, 'easy'], ['유형별 문제', 30, 'mid'], ['실전 테스트', 30, 'mix', 'end']] },
     { id: 's6', name: '실전 테스트만', use: '시험 전 주 · 전날', parts: [['실전 테스트', 60, 'mix', 'end']] }
   ];
-  const normalizeCover=id=>window.DSBookCoverV65?.normalize(id)||(['sunprint','mobileart','press','weave'].includes(id)?id:'mobileart');
+  const normalizeCover=id=>window.DSBookCoverV65?.normalize(id)||(['sunprint','mobileart','press','weave','graphite','chromatype','ocean'].includes(id)?id:'mobileart');
   const STEPS = ['범위', '바탕 · 구성', '문항 수 · 난이도', '꼴 · 만들기'];
   const KEY = 'ds-bookform-v62', SAVED = 'ds-bookform-saved-v62';
   const store = {
