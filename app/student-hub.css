@@ -24,3 +24,4 @@
 .fv57-intro>.dsh-navigation{margin:16px 0 0}
 .ssil-review .dsh-tabs{display:flex}
 .ssil-review .dsh-tabs button{flex:1;min-width:0;padding-inline:6px}
+@media(max-width:700px){.dsh .sl54-source>iframe{max-width:100%}}
