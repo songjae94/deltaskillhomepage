@@ -514,7 +514,7 @@
           if (note.kind === 'menufail' || note.kind === 'unauthorized') note = { kind: '', text: '' };
         } catch (error) {
           trialOn = false; menu = [];
-          if ([403, 404].includes(error?.status)) say('unauthorized'); else say('menufail');
+          if ([401, 403, 404, 502, 503].includes(error?.status)) say('unauthorized'); else say('menufail');   // trial not on the server yet (401) or its pool not ready (502 · 503) = sign-in line
         }
       } else {
         trialOn = false;
