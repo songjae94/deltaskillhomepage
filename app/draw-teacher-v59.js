@@ -22,36 +22,36 @@
   const TRIAL_DAILY = 20;                      // guest questions a day when the server does not state its own number
   const LOCK_SVG = '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M6.5 9V6.6a3.5 3.5 0 0 1 7 0V9"/><rect x="4.5" y="9" width="11" height="8" rx="2"/></svg>';
   const ALERTS = {
-    empty: '과목 · 단원 · 단계 · 난도를 바꿔 다시 뽑아 보세요.',
+    empty: '과목 · 단원 · 단계 · 난도를 바꿔 다시 구성해 보세요.',
     unauthorized: '<a href="#login" data-dq61-login>로그인하기 ↗</a>',
     forbidden: '<a href="#account">내 이용권 확인 ↗</a>',
     expired: '<a href="#account">내 이용권 확인 ↗</a>',
     notreceived: '<a href="#account">내 자료에서 세트 받기 ↗</a>',
-    busy: '잠시 뒤 「문항 뽑기」를 다시 눌러 주세요.',
+    busy: '잠시 뒤 「문항 구성하기」를 다시 눌러 주세요.',
     origin: '델타스킬 홈페이지 주소에서 다시 열어 주세요.',
     nosets: '<a href="#account">내 이용권 확인 ↗</a>',
-    unavailable: '「문항 뽑기」를 다시 눌러 주세요. 계속되면 조건을 바꿔 보세요.',
-    changed: '왼쪽에서 조건을 고르고 「문항 뽑기」를 눌러 주세요.',
+    unavailable: '「문항 구성하기」를 다시 눌러 주세요. 계속되면 조건을 바꿔 보세요.',
+    changed: '왼쪽에서 조건을 고르고 「문항 구성하기」를 눌러 주세요.',
     notready: '다른 조건을 골라 주세요.',
     menufail: '<button type="button" data-dq-menu>조건 목록 다시 불러오기</button>',
     unconfigured: '잠시 뒤 다시 열어 주세요.',
-    trialexpired: '<button type="button" data-dq-redraw>같은 조건으로 다시 뽑기</button>',
+    trialexpired: '<button type="button" data-dq-redraw>같은 조건으로 다시 구성하기</button>',
     trialbusy: '<a href="#login" data-dq61-login>로그인하기 ↗</a>',
-    trialrate: '잠시 뒤 「문항 뽑기」를 다시 눌러 주세요.'
+    trialrate: '잠시 뒤 「문항 구성하기」를 다시 눌러 주세요.'
   };
   const TEXT = {
     loading: '문항을 불러오는 중입니다.',
     empty: '이 조건으로 제공할 문항이 아직 없습니다. 다른 조건을 골라 주세요.',
-    unauthorized: '로그인한 뒤 문항을 뽑을 수 있습니다.',
+    unauthorized: '로그인한 뒤 문항을 구성할 수 있습니다.',
     forbidden: '이 조건의 문항을 열 수 있는 이용권이 없습니다.',
     expired: '이용권 기간이 끝났습니다.',
     notreceived: '이 세트를 아직 받지 않았습니다.',
     busy: '요청이 많습니다. 잠시 뒤 다시 눌러 주세요.',
     origin: '이 주소에서는 문항을 불러올 수 없습니다.',
-    nosets: '이 계정으로 뽑을 수 있는 조건이 없습니다.',
+    nosets: '이 계정으로 구성할 수 있는 조건이 없습니다.',
     unavailable: '문항을 불러오지 못했습니다. 잠시 뒤 다시 시도해 주세요.',
     unconfigured: '문항 서버 연결을 기다리고 있습니다.',
-    notready: '이 조건으로는 지금 뽑을 수 없습니다.',
+    notready: '이 조건으로는 지금 구성할 수 없습니다.',
     menufail: '조건 목록을 불러오지 못했습니다.',
     lastpage: '이 조건에서 더 넘길 문항이 없습니다.',
     solloading: '정답 · 해설을 불러오는 중입니다.',
@@ -60,13 +60,13 @@
     solfail: '정답 · 해설을 불러오지 못했습니다.',
     solwait: '해설을 붙이는 중입니다. 다 붙으면 인쇄 창이 열립니다.',
     savefail: '이 기기에 보관하지 못했습니다. 브라우저 저장 공간을 확인해 주세요.',
-    changed: '보관한 구성의 문항이 바뀌었습니다. 조건을 골라 다시 뽑아 주세요.',
+    changed: '보관한 구성의 문항이 바뀌었습니다. 조건을 골라 다시 구성해 주세요.',
     saved: '이 기기에 임시 보관했습니다.',
-    trialexpired: '맛보기 시간이 지났습니다. 다시 뽑아 주세요.',
-    trialbusy: '지금 맛보기 이용이 많아 잠시 멈췄습니다. 로그인하면 바로 뽑을 수 있습니다.',
+    trialexpired: '맛보기 시간이 지났습니다. 다시 구성해 주세요.',
+    trialbusy: '지금 맛보기 이용이 많아 잠시 멈췄습니다. 로그인하면 바로 구성할 수 있습니다.',
     trialrate: '잠시 뒤 다시 눌러 주세요.',
-    renewed: '같은 조건으로 새로 뽑았습니다.',
-    claimshort: '포인트가 모자라 방금 본 구성을 받지 못했습니다. 문항 수를 줄여 다시 뽑아 주세요.'
+    renewed: '같은 조건으로 새로 구성했습니다.',
+    claimshort: '포인트가 모자라 방금 본 구성을 받지 못했습니다. 문항 수를 줄여 다시 구성해 주세요.'
   };
 
   // ── host: the local member preview, or a test double supplied before this file ──
@@ -98,7 +98,7 @@
     }
   }
   function say(kind, n) {
-    note = { kind, text: kind === 'ok' ? `${n}문항을 뽑았습니다.` : kind === 'insufficient' ? `이 조건에 맞는 문항은 ${n}문항입니다. 그대로 프린트를 만들 수 있습니다.` : TEXT[kind] || '' };
+    note = { kind, text: kind === 'ok' ? `${n}문항을 구성했습니다.` : kind === 'insufficient' ? `이 조건에 맞는 문항은 ${n}문항입니다. 그대로 프린트를 만들 수 있습니다.` : TEXT[kind] || '' };
   }
   const validSaved = x => x && typeof x.title === 'string' && UUID.test(x.key) && Array.isArray(x.ids) && x.ids.length >= 1 && x.ids.length <= 20 && (x.page === undefined || Number.isInteger(x.page)) && (x.count === undefined || Number.isInteger(x.count)) && new Set(x.ids).size === x.ids.length && x.ids.every(i => typeof i === 'string' && UUID.test(i)) && x.labels && FIELDS.every(([k]) => typeof x.labels[k] === 'string' && x.labels[k].length <= 60);
   function savedList() { if (!owner) return []; try { const v = JSON.parse(localStorage.getItem(SAVED + ':' + owner) || '[]'); return Array.isArray(v) ? v.filter(validSaved).slice(0, 12) : []; } catch { return []; } }
@@ -320,7 +320,7 @@
   // ── views ──
   function steps() {
     const index = phase === 'setup' ? (pending ? 1 : 0) : phase === 'cards' ? 2 : 3;
-    return `<ol class="tb36-steps" aria-label="제작 순서">${['조건 설정', '문항 뽑기', '문항 확인', '보관·출력'].map((text, i) => `<li class="${i < index ? 'is-done' : i === index ? 'is-current' : ''}" ${i === index ? 'aria-current="step"' : ''}><b>${i < index ? '✓' : i + 1}</b><span>${text}</span></li>`).join('')}</ol>`;
+    return `<ol class="tb36-steps" aria-label="제작 순서">${['조건 설정', '문항 구성하기', '문항 확인', '보관·출력'].map((text, i) => `<li class="${i < index ? 'is-done' : i === index ? 'is-current' : ''}" ${i === index ? 'aria-current="step"' : ''}><b>${i < index ? '✓' : i + 1}</b><span>${text}</span></li>`).join('')}</ol>`;
   }
   function noteHTML() {
     const link = note.kind === 'unauthorized' ? ' <a href="#login" data-dq61-login>로그인 ↗</a>' : note.kind === 'forbidden' ? ' <a href="#account">내 이용권 확인 ↗</a>' : note.kind === 'solfail' ? ' <button type="button" class="dq61-inline" data-dq61-solretry>다시 불러오기</button>' : '';
@@ -344,30 +344,31 @@
   function countField() {
     const row = current(), cap = guest() ? guestCap(row) : 20;
     const over = guest() && count > cap && cap > 0;          // at 0 the faint card on the right is the one notice
-    return `<label>문항 수<select data-dq-count aria-label="문항 수" ${pending ? 'disabled' : ''}${over ? ' aria-describedby="dq61-more"' : ''}>${COUNTS.map(n => `<option value="${n}" ${count === n ? 'selected' : ''}>${n}문항${guest() && n > cap && cap > 0 ? ' · 로그인하면' : ''}</option>`).join('')}</select>${over ? `<small id="dq61-more" class="dq61-more">${cap > 0 ? `로그인 없이 지금은 ${cap}문항까지 뽑을 수 있어요.` : '오늘 로그인 없이 볼 수 있는 문항을 다 봤어요.'} <a href="#login" data-dq61-login>로그인하면 더 ↗</a></small>` : ''}</label>`;
+    return `<label>문항 수<select data-dq-count aria-label="문항 수" ${pending ? 'disabled' : ''}${over ? ' aria-describedby="dq61-more"' : ''}>${COUNTS.map(n => `<option value="${n}" ${count === n ? 'selected' : ''}>${n}문항${guest() && n > cap && cap > 0 ? ' · 로그인하면' : ''}</option>`).join('')}</select>${over ? `<small id="dq61-more" class="dq61-more">${cap > 0 ? `로그인 없이 지금은 ${cap}문항까지 구성할 수 있어요.` : '오늘 로그인 없이 볼 수 있는 문항을 다 봤어요.'} <a href="#login" data-dq61-login>로그인하면 더 ↗</a></small>` : ''}</label>`;
   }
   function idle() {
     const list = guest() ? [] : savedList();
     const lead = pending ? '<div class="dq59-wait" aria-hidden="true"><i></i><i></i><i></i></div><p class="dq59-lead">문항을 불러오는 중입니다.</p>'
       : ALERTS[note.kind] ? `<p class="dq59-lead dq59-alert" data-kind="${safe(note.kind)}"><strong>${safe(note.text)}</strong><span>${ALERTS[note.kind]}</span></p>`
       : guest() && leftToday() === 0 ? lockCard(true)
-      : `<p class="dq59-lead"><strong>조건을 고르고 「문항 뽑기」를 누르세요.</strong><span>${guest() ? '로그인 없이 문제를 바로 볼 수 있어요. 정답 · 해설과 출력은 로그인하면 이어집니다.' : '뽑은 문항이 이 자리에 카드로 놓이고, 그대로 프린트로 이어집니다.'}</span></p>`;
+      : `<p class="dq59-lead"><strong>조건을 고르고 「문항 구성하기」를 누르세요.</strong><span>${guest() ? '로그인 없이 문제를 바로 볼 수 있어요. 정답 · 해설과 출력은 로그인하면 이어집니다.' : '구성한 문항이 이 자리에 카드로 놓이고, 그대로 프린트로 이어집니다.'}</span></p>`;
     // The same desk as the print preview: an empty sheet waits where the drawn questions will land.
     const sheet = `<div class="dq61-blank"><header><span>DELTA<em>SKILL</em></span><span>${safe(current() ? current().unit : '수업 프린트')}</span></header><div class="dq61-blank-body">${lead}${pending || ALERTS[note.kind] || (guest() && leftToday() === 0) ? '' : '<div class="dq61-ghostlines" aria-hidden="true"><i style="width:86%"></i><i style="width:64%"></i><i style="width:78%"></i></div>'}</div></div>`;
     const surface = window.DSPrintSurfaceV48?.scene ? window.DSPrintSurfaceV48.scene(sheet) : sheet;
-    return `<aside class="dq59-stage dq59-idle tb36-order-preview ds48-canvas dq61-desk" aria-busy="${Boolean(pending)}"><div class="ds48-preview-toolbar"><strong>뽑은 문항이 놓일 자리</strong><small>${current() ? `${safe(current().stage)}단계 · ${safe(current().difficulty)} · ${count}문항` : ''}</small></div>${surface}${list.length && !pending ? `<div class="dq59-saved"><h3>이 기기에 임시 보관한 구성</h3><ul>${list.map((x, i) => `<li><button type="button" data-dq-reopen="${i}"><strong>${safe(x.title)}</strong><small>${safe(label(x.labels))} · ${x.ids.length}문항 · ${safe(x.day)}</small></button><button type="button" data-dq-forget="${i}" aria-label="${safe(x.title)} 지우기">×</button></li>`).join('')}</ul></div>` : ''}</aside>`;
+    return `<aside class="dq59-stage dq59-idle tb36-order-preview ds48-canvas dq61-desk" aria-busy="${Boolean(pending)}"><div class="ds48-preview-toolbar"><strong>구성한 문항이 놓일 자리</strong><small>${current() ? `${safe(current().stage)}단계 · ${safe(current().difficulty)} · ${count}문항` : ''}</small></div>${surface}${list.length && !pending ? `<div class="dq59-saved"><h3>이 기기에 임시 보관한 구성</h3><ul>${list.map((x, i) => `<li><button type="button" data-dq-reopen="${i}"><strong>${safe(x.title)}</strong><small>${safe(label(x.labels))} · ${x.ids.length}문항 · ${safe(x.day)}</small></button><button type="button" data-dq-forget="${i}" aria-label="${safe(x.title)} 지우기">×</button></li>`).join('')}</ul></div>` : ''}</aside>`;
   }
   // The faint card in the next place once today's free questions are used: no question in it.
   function lockCard(alone) {
-    return `<div class="dq61-lockcard${alone ? ' is-alone' : ''}"><span class="dq61-lockmark" aria-hidden="true">${LOCK_SVG}</span><strong>오늘 로그인 없이 볼 수 있는 ${daily()}문항을 다 봤어요.</strong><span>로그인하면 같은 조건으로 더 뽑고, 정답 · 해설까지 이어서 볼 수 있어요.</span>${alone ? '' : '<button type="button" class="dq61-ghost" data-dq61-gate-open="limit">로그인하고 더 뽑기</button>'}</div>`;
+    return `<div class="dq61-lockcard${alone ? ' is-alone' : ''}"><span class="dq61-lockmark" aria-hidden="true">${LOCK_SVG}</span><strong>오늘 로그인 없이 볼 수 있는 ${daily()}문항을 다 봤어요.</strong><span>로그인하면 같은 조건으로 더 구성하고, 정답 · 해설까지 이어서 볼 수 있어요.</span>${alone ? '' : '<button type="button" class="dq61-ghost" data-dq61-gate-open="limit">로그인하고 문항 구성하기</button>'}</div>`;
   }
   function setup() {
     const row = current();
     const wantsMore = guest() && row && count > guestCap(row);
     const ready = row?.ready && !pending;
-    const button = wantsMore ? `<button type="button" class="tb36-primary" data-dq61-gate-open="limit">${guestCap(row) > 0 ? `로그인하고 ${count}문항 뽑기` : '로그인하고 더 뽑기'} <span>→</span></button>`
-      : `<button type="submit" class="tb36-primary" ${ready ? '' : 'disabled'}>${pending ? '불러오는 중' : '문항 뽑기'} <span>→</span></button>`;
-    return `<div class="tb36-setup dq59-setup${guest() ? ' dq61-guest' : ''}"><form id="dq59-form" class="tb36-conditions"><div class="tb36-section-title"><b>01</b><h2>어떤 수업을 준비하나요?</h2></div>${meter()}${menu.length ? selects() : ['menufail', 'unauthorized', 'nosets'].includes(note.kind) ? '' : '<p class="dq59-lead dq61-skeleton" aria-busy="true"><i></i><i></i><i></i><span>조건 목록을 불러오는 중입니다.</span></p>'}${menu.length ? countField() : ''}${menu.length || pending ? button : ''}${noteHTML()}</form>${idle()}</div>`;
+    const button = wantsMore ? `<button type="button" class="tb36-primary" data-dq61-gate-open="limit">${guestCap(row) > 0 ? `로그인하고 ${count}문항 구성하기` : '로그인하고 문항 구성하기'} <span>→</span></button>`
+      : `<button type="submit" class="tb36-primary" ${ready ? '' : 'disabled'}>${pending ? '불러오는 중' : row?.pointPrint ? '포인트로 문항 구성하기' : '문항 구성하기'} <span>→</span></button>`;
+    const pointNotice=row?.pointPrint?`<p class="tb36-message dq59-note" role="status"><strong>신규회원 선별연습 · ${safe(row.subject)}</strong><br>새로 받는 문항당 ${row.pointPrice.toLocaleString()}P · ${count}문항 최대 ${(count*row.pointPrice).toLocaleString()}P<br>현재 사용 가능 ${row.pointRemaining.toLocaleString()}P · 이미 받은 문항 재열기는 추가 차감이 없습니다.</p>`:'';
+    return `<div class="tb36-setup dq59-setup${guest() ? ' dq61-guest' : ''}"><form id="dq59-form" class="tb36-conditions"><div class="tb36-section-title"><b>01</b><h2>어떤 수업을 준비하나요?</h2></div>${meter()}${menu.length ? selects() : ['menufail', 'unauthorized', 'nosets'].includes(note.kind) ? '' : '<p class="dq59-lead dq61-skeleton" aria-busy="true"><i></i><i></i><i></i><span>조건 목록을 불러오는 중입니다.</span></p>'}${menu.length ? countField() : ''}${pointNotice}${menu.length || pending ? button : ''}${noteHTML()}</form>${idle()}</div>`;
   }
   function solProgress() {
     const op = drawn?.solOp;
@@ -376,9 +377,9 @@
   }
   function cards() {
     const l = drawn.labels, g = drawn.guest;
-    const head = `<div class="tb36-composed dq61-summary"><span>${drawn.reopened ? '보관한 구성' : g ? '로그인 없이 뽑음 · 문제만' : '서버에서 뽑음'}</span><h2>${safe(l.unit)}</h2><p>${safe(l.subject)} · ${safe(l.stage)}단계 · ${safe(l.difficulty)} · <b>${drawn.items.length}문항</b></p><button type="button" data-dq-back>조건 변경</button></div>`;
+    const head = `<div class="tb36-composed dq61-summary"><span>${drawn.reopened ? '보관한 구성' : g ? '로그인 없이 구성 · 문제만' : '서버에서 구성'}</span><h2>${safe(l.unit)}</h2><p>${safe(l.subject)} · ${safe(l.stage)}단계 · ${safe(l.difficulty)} · <b>${drawn.items.length}문항</b></p><button type="button" data-dq-back>조건 변경</button></div>`;
     const next = (drawn.page + 2) * drawn.count <= 50 ? '다른 문항으로 바꾸기 ↻' : '처음 문항으로 돌아가기 ↺';
-    return `<div class="tb36-workspace dq59-work${g ? ' dq61-guest' : ''}"><aside class="tb36-review-panel dq59-panel">${head}${meter()}<div class="tb36-review-heading"><h3>문항 확인</h3><p>${g ? '문제를 살펴보고 프린트 꼴로 넘어가세요.' : '문항과 정답 · 해설을 확인하고 프린트로 넘어가세요.'}</p></div>${solProgress()}${noteHTML()}<button type="button" class="tb36-primary" data-dq-finish ${pending ? 'disabled' : ''}>이 ${drawn.items.length}문항으로 프린트 <span>→</span></button><button type="button" class="tb36-quiet" ${g ? 'data-dq61-gate-open="more"' : 'data-dq-next'} ${pending ? 'disabled' : ''}>${next}${g ? ` <span class="dq61-lockmark" aria-hidden="true">${LOCK_SVG}</span>` : ''}</button></aside><section class="dq59-stage dq61-cardstage" aria-label="뽑은 문항"><div class="ds48-preview-toolbar"><strong>뽑은 문항 · ${drawn.items.length}문항</strong><small>${safe(l.unit)} · ${safe(l.stage)}단계 · ${safe(l.difficulty)}</small></div><div class="dq59-cards" data-dq-cards></div>${g && drawn.capped ? lockCard(false) : ''}</section></div>`;
+    return `<div class="tb36-workspace dq59-work${g ? ' dq61-guest' : ''}"><aside class="tb36-review-panel dq59-panel">${head}${meter()}<div class="tb36-review-heading"><h3>문항 확인</h3><p>${g ? '문제를 살펴보고 프린트 꼴로 넘어가세요.' : '문항과 정답 · 해설을 확인하고 프린트로 넘어가세요.'}</p></div>${solProgress()}${noteHTML()}<button type="button" class="tb36-primary" data-dq-finish ${pending ? 'disabled' : ''}>이 ${drawn.items.length}문항으로 프린트 <span>→</span></button><button type="button" class="tb36-quiet" ${g ? 'data-dq61-gate-open="more"' : 'data-dq-next'} ${pending ? 'disabled' : ''}>${next}${g ? ` <span class="dq61-lockmark" aria-hidden="true">${LOCK_SVG}</span>` : ''}</button></aside><section class="dq59-stage dq61-cardstage" aria-label="구성한 문항"><div class="ds48-preview-toolbar"><strong>구성한 문항 · ${drawn.items.length}문항</strong><small>${safe(l.unit)} · ${safe(l.stage)}단계 · ${safe(l.difficulty)}</small></div><div class="dq59-cards" data-dq-cards></div>${g && drawn.capped ? lockCard(false) : ''}</section></div>`;
   }
   function lockedPaper() {
     // A picture of an answer page with nothing written on it: grey bars stand for lines.
@@ -470,10 +471,10 @@
 
   // ── gate: one dialog for the four signed-in things ──
   const GATE = {
-    solution: ['로그인하면 이 문항들의 정답과 해설을 바로 볼 수 있어요', '방금 뽑은 구성 그대로 정답 · 해설이 펼쳐집니다.'],
-    print: ['로그인하면 이 구성 그대로 출력할 수 있어요', '방금 뽑은 문항으로 인쇄 / PDF 화면이 이어서 열립니다.'],
-    more: ['로그인하면 다른 문항으로 바꿀 수 있어요', '같은 조건의 다음 문항을 이어서 뽑습니다.'],
-    limit: ['로그인하면 더 뽑을 수 있어요', '고른 조건 그대로 이어서 뽑고, 정답 · 해설까지 볼 수 있어요.']
+    solution: ['로그인하면 이 문항들의 정답과 해설을 바로 볼 수 있어요', '방금 구성한 구성 그대로 정답 · 해설이 펼쳐집니다.'],
+    print: ['로그인하면 이 구성 그대로 출력할 수 있어요', '방금 구성한 문항으로 인쇄 / PDF 화면이 이어서 열립니다.'],
+    more: ['로그인하면 다른 문항으로 바꿀 수 있어요', '같은 조건의 다음 문항을 이어서 구성합니다.'],
+    limit: ['로그인하면 더 구성할 수 있어요', '고른 조건 그대로 이어서 구성하고, 정답 · 해설까지 볼 수 있어요.']
   };
   function gateDialog() {
     let d = document.getElementById('dq61-gate');
@@ -562,6 +563,7 @@
       if (error?.lost) h.resync?.();
       if (pending === op) {
         if (job.guest) guestRefusal(error);
+        else if(error?.code==='no_points')note={kind:'unavailable',text:`포인트가 부족합니다.${Number.isSafeInteger(error.data?.free_remaining)?' 현재 '+error.data.free_remaining.toLocaleString()+'P를 사용할 수 있습니다.':''} 문항 수를 줄이거나 다음 지급 시각을 확인해 주세요.`};
         else say(error?.status === 401 ? 'unauthorized' : error?.code === 'origin_rejected' ? 'origin' : error?.status === 403 ? (error.reason === 'expired' ? 'expired' : error.reason === 'not_received' ? 'notreceived' : 'forbidden') : error?.status === 429 ? 'busy' : error?.status === 404 && job.reopen ? 'changed' : 'unavailable');
       }
     } finally {
@@ -626,12 +628,13 @@
       const pg = paging({ page: pageNo, count: want });
       const d = await h.draw(key, pg, signal);
       if (!alive()) return null;
+      if(d.points&&Number.isSafeInteger(d.points.free_remaining))for(const r of menu)if(r.pointPrint)r.pointRemaining=d.points.free_remaining;
       const ids = Array.isArray(d?.items) ? d.items.map(x => x?.item_id) : null;
       const state = !ids ? null : ids.length === 0 ? 'empty' : ids.length === want ? 'ok' : ids.length < want ? 'insufficient' : null;
       if (!state || d.status !== state || new Set(ids).size !== ids.length || !ids.every(i => typeof i === 'string' && UUID.test(i))) throw Error('render');
       if (state === 'empty') { say(from ? 'lastpage' : 'empty'); return null; }
       const labels = from ? from.labels : Object.fromEntries(FIELDS.map(([k]) => [k, row[k]]));
-      return { key, labels, status: state, page: pageNo, count: want, items: await openAll(h, key, ids, pg, signal, alive) };
+      return { key, labels, status: state, page: pageNo, count: want, ...(d.points?{said:{kind:'ok',text:`${ids.length}문항을 구성했습니다. ${d.points.charged.toLocaleString()}P 사용 · 현재 ${d.points.free_remaining.toLocaleString()}P`}}:{}), items: await openAll(h, key, ids, pg, signal, alive) };
     });
   }
   // Signed in after a guest set: take that set into the member's record (the point board's sets), or draw
@@ -662,7 +665,7 @@
           return { id: it.item_id, set: it.set_key, body: questionBody(it.item_id, payload) };
         }));
         return { key: claimed.items[0].set_key, claimed: true, labels: x.labels, status: claimed.status, page: 0, count: x.count, items,
-          said: { kind: 'ok', text: `방금 뽑은 ${items.length}문항을 이어서 열었습니다.` }, openSol: x.want === 'solution', phase: want };
+          said: { kind: 'ok', text: `방금 구성한 ${items.length}문항을 이어서 열었습니다.` }, openSol: x.want === 'solution', phase: want };
       }
       // Not a point-board cell (403) or «다른 문항으로 바꾸기»: the member draw of the same conditions.
       const next = claimed?.draws?.[0];
@@ -672,6 +675,7 @@
       const pg = paging({ page: pageNo, count: x.count });
       const d = await h.draw(key, pg, signal);
       if (!alive()) return null;
+      if(d.points&&Number.isSafeInteger(d.points.free_remaining))for(const r of menu)if(r.pointPrint)r.pointRemaining=d.points.free_remaining;
       const ids = Array.isArray(d?.items) ? d.items.map(i => i?.item_id) : [];
       if (!ids.length || !ids.every(i => typeof i === 'string' && UUID.test(i))) { say('empty'); return null; }
       const labels = match ? Object.fromEntries(FIELDS.map(([k]) => [k, match[k]])) : x.labels;

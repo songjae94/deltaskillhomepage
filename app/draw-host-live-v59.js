@@ -3,8 +3,9 @@
    member calls; the signature is made on the server. */
 (() => {
   'use strict';
+  const POINT_PRINT_SETS=new Set(["d209f5b5-3cc1-40eb-b246-52392410e326", "24d02d3a-7883-43b8-af3f-59c536cd9f28"]);
   const ENABLED = true;                          // the gate
-  const POINTS = false;                          // v60 point board: off until the point functions are on the server
+  const POINTS = true;                          // v60 point board: off until the point functions are on the server
   const TRIAL = true;                            // v61 guest trial (contract r4 · 판 A): on — the gate answers trial_menu · trial_draw · trial_open; switched off on the server = sign-in line
   const service = window.DSService;
   if (!ENABLED || !service?.isLiveOrigin || window.DSDrawHostV59) return;
@@ -132,7 +133,12 @@
       if (!exact(d, ['sets']) || !Array.isArray(d.sets) || d.sets.length > 500 ||
           !d.sets.every(r => exact(r, ['subject', 'unit', 'stage', 'difficulty', 'set_key']) && label(r.subject) && label(r.unit) && label(r.stage) && label(r.difficulty) && typeof r.set_key === 'string' && UUID.test(r.set_key)) ||
           new Set(d.sets.map(r => r.set_key)).size !== d.sets.length) throw fail(502, 'unavailable');
-      return { sets: d.sets.map(r => ({ ...r, ready: true })) };   // no account tag: the device list stays off here
+      let wallet=null;
+      if(d.sets.some(r=>POINT_PRINT_SETS.has(r.set_key)))try{
+        const w=await call({action:'points'},signal);
+        if(w&&w.free&&Number.isSafeInteger(w.free.remaining)&&w.free.remaining>=0&&w.price&&Number.isSafeInteger(w.price.pdf_per_item)&&w.price.pdf_per_item>=0)wallet=w;
+      }catch{}
+      return { sets: d.sets.filter(r=>!POINT_PRINT_SETS.has(r.set_key)||wallet).map(r => ({ ...r, ready: true, ...(POINT_PRINT_SETS.has(r.set_key)?{pointPrint:true,pointPrice:wallet.price.pdf_per_item,pointRemaining:wallet.free.remaining}: {}) })) };   // no account tag: the device list stays off here
     },
     // pg is {} for the plain five, or { page, count } — the same values go with open and solution.
     draw: async (set_key, pg, signal) => {
