@@ -42,7 +42,7 @@
     put(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch { return false; } }
   };
   const fresh = () => ({ step: 1, units: [], base: 'exam', book: '', structure: 's1', parts: STRUCTURES[0].parts.map(p => ({ count: p[1], level: p[2] })), layout: 2, documentDesign: window.DSDocumentDesign?.selected().id || 'DS-FOCUS-V2', title: '', academy: '', cover: 'mobileart', view: '', message: '' });
-  let coverQuery='';
+  let coverQuery='',coverGroup='';
   let state = Object.assign(fresh(), store.get(KEY, {}));
   state.cover=normalizeCover(state.cover);
   state.message = '';
@@ -138,7 +138,7 @@
     return `${head}<p>지금 고른 범위 · 바탕 · 구성 · 문항 수 · 난이도 · 꼴을 한 묶음으로 보관합니다. 보관함은 이 브라우저에 저장되어 다른 기기에서는 보이지 않습니다.</p><button type="button" class="tb36-primary" data-bf62-save>이 구성 보관 <span>→</span></button><p class="tb36-message bf62-made" role="status">${safe(state.message)}</p>${saved.length ? `<div class="bf62-saved"><strong>이 브라우저에 보관한 구성</strong><ul>${saved.slice().reverse().map((x, i) => `<li><span>${safe(x.title)}<small>${safe(x.when)} · ${x.total}문항</small></span><button type="button" data-bf62-open="${saved.length - 1 - i}">다시 열기</button></li>`).join('')}</ul></div>` : ''}</div>`;
   }
   function styleForm() {
-    return `${stepTitle(4, '책의 꼴을 정합니다')}${window.DSDocumentDesign?.picker()||''}<div class="bf62-field"><span class="bf62-label">한 쪽 문항 수</span><div class="bf62-segment" role="radiogroup" aria-label="한 쪽 문항 수">${[1, 2, 4].map(n => `<label><input type="radio" name="bf62-layout" value="${n}" data-bf62-layout ${Number(state.layout) === n ? 'checked' : ''}><span>${n}문항</span></label>`).join('')}</div></div><label class="bf62-field"><span class="bf62-label">책 제목</span><input type="text" maxlength="60" data-bf62-field="title" value="${safe(state.title)}" placeholder="${safe(defaultTitle())}"></label><label class="bf62-field"><span class="bf62-label">학원 이름 <small>머리말과 표지에 들어갑니다</small></span><input type="text" maxlength="30" data-bf62-field="academy" value="${safe(state.academy)}" placeholder="예: ○○수학학원"></label><div class="bf62-field"><span class="bf62-label">표지</span>${window.DSBookCoverV65?.picker(coverModel(),coverQuery)||'<p>표지 선택기를 불러오고 있습니다.</p>'}</div>${makeArea()}`;
+    return `${stepTitle(4, '책의 꼴을 정합니다')}${window.DSDocumentDesign?.picker()||''}<div class="bf62-field"><span class="bf62-label">한 쪽 문항 수</span><div class="bf62-segment" role="radiogroup" aria-label="한 쪽 문항 수">${[1, 2, 4].map(n => `<label><input type="radio" name="bf62-layout" value="${n}" data-bf62-layout ${Number(state.layout) === n ? 'checked' : ''}><span>${n}문항</span></label>`).join('')}</div></div><label class="bf62-field"><span class="bf62-label">책 제목</span><input type="text" maxlength="60" data-bf62-field="title" value="${safe(state.title)}" placeholder="${safe(defaultTitle())}"></label><label class="bf62-field"><span class="bf62-label">학원 이름 <small>머리말과 표지에 들어갑니다</small></span><input type="text" maxlength="30" data-bf62-field="academy" value="${safe(state.academy)}" placeholder="예: ○○수학학원"></label><div class="bf62-field"><span class="bf62-label">표지</span>${window.DSBookCoverV65?.picker(coverModel(),coverQuery,coverGroup)||'<p>표지 선택기를 불러오고 있습니다.</p>'}</div>${makeArea()}`;
   }
   function nav() {
     const back = state.step > 1 ? `<button type="button" class="bf62-back" data-bf62-step="${state.step - 1}">← ${STEPS[state.step - 2]}</button>` : '';
@@ -243,9 +243,12 @@
     swap('.bf62-summary', summary());
     swap('.bf62-preview', preview());
     const focusCover=document.activeElement?.hasAttribute?.('data-bf62-cover')?document.activeElement.value:null;
-    const oldScroll=root.querySelector('.bf62-covers')?.scrollLeft||0;
-    if(window.DSBookCoverV65){swap('.bf62-covers',window.DSBookCoverV65.options(coverModel(),coverQuery));swap('.bc65-current',`<small class="bc65-current" role="status">현재 표지: ${window.DSBookCoverV65.name(state.cover)} · ${window.DSBookCoverV65.styles.length}종을 옆으로 넘겨 선택하세요.</small>`);}
-    const grid=root.querySelector('.bf62-covers');if(grid)grid.scrollLeft=oldScroll;
+    const oldScroll=root.querySelector('.bf62-covers')?.scrollTop||0;
+    if(window.DSBookCoverV65){
+      swap('.bf62-covers',window.DSBookCoverV65.options(coverModel(),coverQuery,coverGroup));
+      swap('.bc65-current',window.DSBookCoverV65.status(coverModel()));
+    }
+    const grid=root.querySelector('.bf62-covers');if(grid)grid.scrollTop=oldScroll;
     if(focusCover)root.querySelector(`[data-bf62-cover][value="${focusCover}"]`)?.focus({preventScroll:true});
     const totalBox = root.querySelector('.bf62-total');
     if (totalBox) { const t = document.createElement('template'); t.innerHTML = countForm(); const nt = t.content.querySelector('.bf62-total'); if (nt) totalBox.replaceWith(nt); }
@@ -302,6 +305,7 @@
     if (t.dataset.bf62Level) { const i = Number(t.dataset.bf62Level); state.parts[i] = { ...state.parts[i], level: t.value }; softUpdate(); return; }
     if (t.dataset.bf62Count) { const i = Number(t.dataset.bf62Count); t.value = clampCount(t.value); state.parts[i] = { ...state.parts[i], count: Number(t.value) }; softUpdate(); return; }
     if (t.hasAttribute('data-bf62-layout')) { state.layout = Number(t.value); softUpdate(); return; }
+    if(t.hasAttribute('data-bf62-cover-group')){coverGroup=t.value;softUpdate();document.querySelector('.bf62-covers')?.scrollTo(0,0);return;}
     if (t.hasAttribute('data-bf62-cover')) { state.cover = normalizeCover(t.value); state.view = 'cover'; softUpdate(); return; }
     if (t.tagName === 'SELECT' && t.dataset.bf62Field === 'book') { state.book = t.value; softUpdate(); }
   });

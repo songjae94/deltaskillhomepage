@@ -43,7 +43,7 @@
 #content .ms-bookshelf {display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:clamp(14px,3vw,38px)}
 #content .ms-volume {max-width:315px; min-width:0; margin:0; padding:0; border:0; background:none; box-shadow:none; border-radius:0}
 .ms-stage {display:grid; place-items:center; padding:clamp(17px,2.05vw,26px) 12%; background:#f1f4f7; border-radius:5px}
-.ms-book-cover {display:block; position:relative; isolation:isolate; width:100%; max-width:226px; aspect-ratio:640/852; color:white}
+.ms-book-cover {display:block; position:relative; isolation:isolate; width:100%; max-width:226px; aspect-ratio:210/297; color:white}
 .ms-book-cover::after {content:""; position:absolute; inset:3px -2px -2px 3px; z-index:-1; background:#eceef1; border:1px solid #d7dce1; box-shadow:3px 5px 11px #1c304825}
 .ms-book-cover img,.ms-fallback-cover {display:block; width:100%; height:100%}
 .ms-fallback-cover {padding:10%; background:#264857; font-weight:700}
@@ -93,3 +93,6 @@ body.working-body:has(.ms-shop), body:has(.ms-shop) #content {background:#fff}
 .ms-planned-label {display:block;font-size:10px;font-weight:400;color:var(--muted)}
 .ms-price-number {white-space:nowrap}
 .ms-order-note {font-size:13px;line-height:1.65;color:var(--muted)}
+
+@media(min-width:850px){#content .ms-bookshelf{grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(15px,2.2vw,28px)}}
+#content .ms-results .ms-clear{margin-left:auto;padding:6px 0;color:var(--accent);font:inherit;font-size:13px;border:0;background:none;text-decoration:underline;text-underline-offset:3px}

@@ -1,0 +1,5 @@
+{
+  "earthrise.webp": {"title":"Earthrise","creator":"William Anders / NASA","imageId":"AS08-14-2383","source":"https://science.nasa.gov/resource/image-earthrise/","asset":"https://images-assets.nasa.gov/image/as08-14-2383/as08-14-2383~orig.jpg"},
+  "cypresses.webp": {"title":"Wheat Field with Cypresses","creator":"Vincent van Gogh","year":1889,"museum":"The Metropolitan Museum of Art","object":"1993.132","source":"https://www.metmuseum.org/art/collection/search/436535","image":"https://commons.wikimedia.org/wiki/File:Vincent_van_Gogh_-_Wheat_Field_with_Cypresses_-_Google_Art_Project.jpg","rights":"Public domain"},
+  "city.webp":{"description":"도시와 강을 내려다본 창작 항공 풍경","method":"ImageGen"}
+}

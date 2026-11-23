@@ -1,0 +1,97 @@
+{
+  "collection": "photo cover templates",
+  "artOrigin": "Six original AI-generated text-free photographic/painting images; no original reference captures reproduced. First5 reused from independent reference1124 original artwork, architecture newly generated. All images are illustrative photographic-style artwork, not documentary photographs of actual places.",
+  "styles": [
+    "photo-botanical",
+    "photo-studio",
+    "photo-alpine",
+    "photo-horizon",
+    "photo-burgundy",
+    "photo-architecture"
+  ],
+  "fontSources": [
+    {
+      "name": "Nanum Pen Script",
+      "source": "https://github.com/google/fonts/tree/main/ofl/nanumpenscript",
+      "license": "OFL.txt"
+    },
+    {
+      "name": "Nanum Gothic",
+      "source": "https://github.com/google/fonts/tree/main/ofl/nanumgothic",
+      "license": "NanumGothic-OFL.txt"
+    }
+  ],
+  "modelLimits": {
+    "title": 60,
+    "academy": 30,
+    "subject": 40,
+    "units": 20,
+    "eachUnit": 36,
+    "summaryUnits": 3,
+    "maxCount": 1000000
+  },
+  "printContract": "absolute image/font URL derived from currentScript; img.bc65-background inside .bc65-photo-art; root .bc65-cover[data-cover-style]; h2.bc65-title; all geometry in cqw",
+  "checks": {
+    "normalAndLongTextBounds": "pass6styles",
+    "classicCoverCssConflict": "pass",
+    "escapeAndUntrustedInputs": "pass",
+    "wordAwareAlpine": "pass",
+    "shortSingleWordUnsplit": "pass",
+    "A4PdfAndPoppler": "6pages allA4 allrendered",
+    "brandAndDynamicCountPdf": "6/6 UTF-8 readable",
+    "newFilesOnly": true,
+    "productionWrites": 0
+  },
+  "files": [
+    {
+      "file": "NanumGothic-OFL.txt",
+      "bytes": 4534,
+      "sha256": "eeacf16032901d0ed0456876ec77b8f0fda6b3fecec7d972f8543eb602e6c30f"
+    },
+    {
+      "file": "OFL.txt",
+      "bytes": 4534,
+      "sha256": "eeacf16032901d0ed0456876ec77b8f0fda6b3fecec7d972f8543eb602e6c30f"
+    },
+    {
+      "file": "alpine.webp",
+      "bytes": 540738,
+      "sha256": "423c5e9cbf518081a20fddac3f02f1813251075a27ece0fbfb23d2fdeee1018c"
+    },
+    {
+      "file": "architecture.webp",
+      "bytes": 168820,
+      "sha256": "3fedb7534385496a640401284131ee3f8a63e7a130e9511a4a5f6dfd1ab0c834"
+    },
+    {
+      "file": "botanical.webp",
+      "bytes": 372234,
+      "sha256": "3cc3eb97e07408c24581874647f3870a3bdfc402a7b5e361d6fefba88870a53e"
+    },
+    {
+      "file": "burgundy.webp",
+      "bytes": 226302,
+      "sha256": "3e623a5c3aeb7166dc8b0ba82c4c4443822e8bd5da90a6ec607ec54c86a43493"
+    },
+    {
+      "file": "horizon.webp",
+      "bytes": 208970,
+      "sha256": "ebfc8982aa3e11cbadc0a9dde323c4cd19a68041ad79b753a8926df4750edba4"
+    },
+    {
+      "file": "nanum-gothic.woff2",
+      "bytes": 363776,
+      "sha256": "291659f64bbd58a10493167661e6cce8e4257bbff4f7e551646014dfe4515e3e"
+    },
+    {
+      "file": "nanum-pen.woff2",
+      "bytes": 615892,
+      "sha256": "ad2aff6276ed249a9485d289f5a63dbe1182e7d64bb07af813bb21c0d5cd0224"
+    },
+    {
+      "file": "studio.webp",
+      "bytes": 269864,
+      "sha256": "e0ac5a2422388d9e515cff3ed3c2cddbcfa01c1cd9026017634752f7ba62b2f7"
+    }
+  ]
+}

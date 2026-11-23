@@ -41,7 +41,7 @@
   const price = (p, fmt) => fmt === 'pdf' ? (quote(p)?.points ?? publicPoints[p.sku] ?? null) : p.formats.hwpx?.price;
   const cashReady = p => Number.isSafeInteger(p.formats.hwpx?.price) && p.formats.hwpx.price > 0 && p.formats.hwpx.files.length > 0;
   const enabled = (p, fmt) => fmt === 'pdf' ? Number.isSafeInteger(price(p,fmt)) && price(p,fmt)>0 : cashReady(p);
-  const coverURL = sku => 'public-data/covers/' + encodeURIComponent(sku) + '.webp?v=mobileart-1124';
+  const coverURL = sku => 'public-data/covers/' + encodeURIComponent(sku) + '.webp?v=shelf-1124';
   const cost = (p,fmt) => Number.isSafeInteger(price(p,fmt)) ? money(price(p,fmt)) + (fmt === 'pdf' ? ' P' : '원') : fmt === 'pdf' ? '포인트 가격 확인 중' : publicPoints[p.sku] ? '판매 예정가 ' + money(publicPoints[p.sku] * 2) + '원' : '준비 중';
   const picked = () => products.flatMap(p => ['pdf','hwpx'].filter(fmt => cart.includes(key(p,fmt)) && enabled(p,fmt)).map(fmt => ({p,fmt})));
   function options(query='') {
@@ -61,7 +61,7 @@
   function coverTile(p) {
     const label = escape(title(p));
     const art = coverSkus.has(p.sku)
-      ? `<img src="${coverURL(p.sku)}" width="640" height="852" alt="${label}, ${p.count}문항 표지">`
+      ? `<img src="${coverURL(p.sku)}" width="630" height="891" alt="${label}, ${p.count}문항 표지">`
       : `<span class="ms-fallback-cover">${label}</span>`;
     const cover = p.sample
       ? `<a class="ms-book-cover" href="${escape(p.sample)}" target="_blank" rel="noopener" aria-label="${label} 지면 미리보기, 새 창">${art}</a>`
@@ -69,9 +69,10 @@
     return `<article class="ms-volume" aria-label="${label}"><div class="ms-stage">${cover}</div><div class="ms-formats">${formats(p)}</div></article>`;
   }
   function items() {
-    if (!selected) return '';
-    const list = products.filter(p => p.source === selected);
-    return `<section class="ms-items" aria-label="${escape(selected)} 단원별 교재"><div class="ms-results"><h2>단원별 교재</h2><span>${list.length}권</span></div><div class="ms-bookshelf">${list.map(coverTile).join('')}</div></section>`;
+    const list = selected ? products.filter(p => p.source === selected) : products;
+    const heading = selected ? '단원별 교재' : '판매 교재';
+    const reset = selected ? '<button type="button" class="ms-clear" data-ms-clear>전체 교재 보기</button>' : '';
+    return `<section class="ms-items" aria-label="${escape(selected || '전체')} 판매 교재"><div class="ms-results"><h2>${heading}</h2><span>${list.length}권</span>${reset}</div><div class="ms-bookshelf">${list.map(coverTile).join('')}</div></section>`;
   }
 
   const formatLabel = fmt => fmt === 'pdf' ? 'PDF' : '한글';
@@ -119,8 +120,7 @@
     const cartButton = `<button class="ms-cart-button" type="button" data-ms-cart aria-label="장바구니 ${count}개"><i aria-hidden="true"></i>장바구니 <b>${count}</b></button>`;
     const tabs = categories.map((c,i) => `<button type="button" ${i?'disabled':'aria-pressed="true"'}><small>${i+1}</small>${c}</button>`).join('');
     const catalog = status === 'error' ? '<p>교재 목록을 불러오지 못했습니다.</p><button data-ms-retry>다시 불러오기</button>' : status !== 'ready' ? '<p role="status">교재 목록을 불러오는 중입니다.</p>' : picker() + items();
-    const art = !selected && products.length ? `<div class="ms-display" aria-hidden="true">${products.filter(p=>coverSkus.has(p.sku)).slice(0,3).map(p=>`<img src="${coverURL(p.sku)}" alt="">`).join('')}</div>` : '';
-    return `<div class="ms-mast"><div><h1>내신 자료</h1>${status==='ready' ? `<p>연계 교재 ${grouped().length}종 <i>·</i> 단원별 자료 ${products.length}권</p>` : ''}</div>${art}${cartButton}</div><div class="ms-categories" role="group" aria-label="자료 종류">${tabs}</div>${catalog}`;
+    return `<div class="ms-mast"><div><h1>내신 자료</h1>${status==='ready' ? `<p>연계 교재 ${grouped().length}종 <i>·</i> 단원별 자료 ${products.length}권</p>` : ''}</div>${cartButton}</div><div class="ms-categories" role="group" aria-label="자료 종류">${tabs}</div>${catalog}`;
   }
   window.addEventListener('ds-point-pdf-update', () => { if (!root()?.querySelector('dialog[open]')) refresh(); });
   const root = () => document.querySelector('#content .ms-shop');
@@ -145,6 +145,7 @@
     const panel=root(); if(!panel) return;
     const picker=panel.querySelector('.ms-picker'); if(picker?.open&&!picker.contains(e.target)) picker.open=false;
     const b=e.target.closest('button'); if(!b||!panel.contains(b)) return;
+    if(b.hasAttribute('data-ms-clear')){selected='';refresh();root()?.querySelector('.ms-picker summary')?.focus();return;}
     if(b.hasAttribute('data-ms-cart')){openCart(panel);return;}
     if(b.hasAttribute('data-ms-review')){panel.querySelector('.ms-cart-sheet')?.close();reviewOrder(panel);return;}
     if(b.hasAttribute('data-ms-retry')){status='idle';load();refresh();return;}
