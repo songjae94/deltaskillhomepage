@@ -8,6 +8,11 @@
   const POINTS = true;                          // v60 point board: off until the point functions are on the server
   const TRIAL = true;                            // v61 guest trial (contract r4 · 판 A): on — the gate answers trial_menu · trial_draw · trial_open; switched off on the server = sign-in line
   const service = window.DSService;
+  if (!service?.isLiveOrigin && ['localhost','127.0.0.1','[::1]'].includes(location.hostname) && !window.DSDrawHostV59) {
+    // Public metadata preview only. Every extract request still requires the live origin and member gate.
+    window.DSDrawHostV59 = { preview:true, ready:Promise.resolve(), signedIn:()=>false,
+      menu:async()=>{ throw Object.assign(Error('preview'),{status:401}); } };
+  }
   if (!ENABLED || !service?.isLiveOrigin || window.DSDrawHostV59) return;
   const GATE = '/item-draw-gate';                // one address, action in the body
   const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
@@ -139,6 +144,27 @@
         if(w&&w.free&&Number.isSafeInteger(w.free.remaining)&&w.free.remaining>=0&&w.price&&Number.isSafeInteger(w.price.pdf_per_item)&&w.price.pdf_per_item>=0)wallet=w;
       }catch{}
       return { sets: d.sets.filter(r=>!POINT_PRINT_SETS.has(r.set_key)||wallet).map(r => ({ ...r, ready: true, ...(POINT_PRINT_SETS.has(r.set_key)?{pointPrint:true,pointPrice:wallet.price.pdf_per_item,pointRemaining:wallet.free.remaining}: {}) })) };   // no account tag: the device list stays off here
+    },
+    // Scope requests use only names and opaque public IDs; the gate owns candidate selection.
+    scope: {
+      version: 1,
+      menu: async (criteria, signal) => {
+        const scope = { subject: criteria.subject, stage: criteria.stage, difficulty: criteria.difficulty, textbook: criteria.book_id || undefined, subunits: criteria.subunit_ids || [], types: criteria.type_ids || [], typeMode: criteria.type_mode, sourceMode: criteria.mode === 'book' ? 'textbook' : 'random' };
+        const d = await call({ action:'scope_menu',scope,count:criteria.count },signal);
+        if (!d || d.version !== 1 || d.count_basis !== 'catalog' || typeof d.extraction_ready !== 'boolean' || !count(d.available_count,0,100000) || d.requested !== criteria.count || !count(d.shortage,0,20) || d.shortage !== Math.max(0,criteria.count-d.available_count)) throw fail(502,'unavailable');
+        return d;
+      },
+      draw: async (criteria, signal) => {
+        const scope = { subject: criteria.subject, stage: criteria.stage, difficulty: criteria.difficulty,
+          textbook: criteria.book_id || undefined, subunits: criteria.subunit_ids || [], types: criteria.type_ids || [],
+          typeMode: criteria.type_mode, sourceMode: criteria.mode === 'book' ? 'textbook' : 'random' };
+        const d = await call({ action: 'scope_draw', scope, count: criteria.count, request_id: criteria.request_id }, signal);
+        if (!d || (d.coverage_limited !== undefined && typeof d.coverage_limited !== 'boolean') || (d.unrepresented_subunits !== undefined && (!Array.isArray(d.unrepresented_subunits) || d.unrepresented_subunits.length > 50 || !d.unrepresented_subunits.every(x => typeof x === 'string' && x.length > 0 && x.length <= 100))) || d.requested !== criteria.count || !count(d.available_count,0,100000) || !count(d.shortage,0,20) || !Array.isArray(d.items) || d.shortage !== criteria.count - d.items.length || d.items.length > criteria.count ||
+            !d.items.every(x => x && UUID.test(x.item_id) && UUID.test(x.set_key) && x.pg && count(x.pg.page,0,9999) && count(x.pg.count,1,20)) ||
+            new Set(d.items.map(x => x.item_id)).size !== d.items.length ||
+            d.status !== (d.items.length === 0 ? 'empty' : d.items.length === criteria.count ? 'ok' : 'insufficient')) throw fail(502,'unavailable');
+        return { ...d, items: d.items.map(x => ({ item_id:x.item_id, set_key:x.set_key, paging:{page:x.pg.page,count:x.pg.count} })) };
+      }
     },
     // pg is {} for the plain five, or { page, count } — the same values go with open and solution.
     draw: async (set_key, pg, signal) => {

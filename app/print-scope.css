@@ -1,0 +1,104 @@
+@media (min-width: 761px) {
+  #content .dq59-setup:has(.ps-scope) {
+    grid-template-columns: minmax(365px, 1.08fr) minmax(0, 1fr);
+    align-items: start;
+  }
+  #content .dq59-setup:has(.ps-scope) > .dq59-stage {
+    position: sticky;
+    top: 84px;
+    align-self: start;
+  }
+}
+#content .ps-scope {
+  margin: 16px 0;
+  padding: clamp(13px, 1.8vw, 22px);
+  background: #fbfcfd;
+  color: #223748;
+  border: 1px solid #d5dfe4;
+  border-radius: 10px;
+  line-height: 1.5;
+}
+#content .ps-scope label, #content .ps-scope legend {
+  color: #243647;
+  font-size: 14px;
+}
+#content .ps-scope select, #content .ps-scope input[type=search] {
+  width: 100%;
+  min-width: 0;
+  margin-block: 4px 8px;
+  padding: 8px 10px;
+  border: 1px solid #b8c5cf;
+  border-radius: 6px;
+  background: white;
+  color: #223748;
+  font: inherit;
+}
+#content .ps-mode { display: flex; gap: 5px; margin: 0 0 10px; }
+#content .ps-mode button {
+  flex: 1;
+  min-height: 38px;
+  padding: 6px 9px;
+  border: 1px solid #becbd2;
+  border-radius: 7px;
+  background: #fff;
+  color: #354b59;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+#content .ps-mode button[aria-pressed=true] {
+  color: white;
+  border-color: #284a57;
+  background: #284a57;
+  font-weight: 650;
+}
+#content .ps-scope fieldset { padding: 0; margin: 16px 0 0; border: 0; min-width: 0; }
+#content .ps-scope legend { margin-bottom: 7px; font-weight: 700; }
+#content .ps-scope legend small { margin-left: 4px; color: #566975; font-weight: 400; font-size: 12px; }
+#content .ps-picks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(148px, 100%), 1fr));
+  align-items: start;
+  gap: 4px;
+  max-height: 195px;
+  overflow: auto;
+  padding: 2px 4px 2px 0;
+}
+#content .ps-scope :is(.ps-all,.ps-picks label) {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  padding: 5px 7px;
+  margin: 0;
+  border: 0;
+  border-radius: 5px;
+  background: #f0f3f5;
+  color: #334a56;
+  line-height: 1.45;
+  font-size: 13px;
+  cursor: pointer;
+}
+#content .ps-scope .ps-all { display: inline-flex; margin-bottom: 4px; }
+#content .ps-scope label:has(input[type=checkbox]:checked) { background: #ddebec; color: #193e43; }
+#content .ps-scope input[type=checkbox] {
+  appearance: auto; width: 14px; height: 14px; min-height: 0; min-width: 0;
+  margin: 0; padding: 0; flex: none; accent-color: #285763;
+}
+#content .ps-picks span { color: inherit; overflow-wrap: anywhere; }
+#content .ps-scope :is(.ps-help,.ps-availability,.ps-shortage p) { margin: 6px 0; color: #465966; font-size: 13px; line-height: 1.55; }
+#content .ps-availability { padding-top: 8px; border-top: 1px solid #d7e0e5; }
+#content .ps-shortage summary { font-size: 13px; cursor: pointer; color: #60470e; }
+#content .ps-scope :focus-visible { outline: 2px solid #326b86; outline-offset: 2px; }
+#content .ps-scope .ps-basic {
+  margin: 0 0 10px;
+  padding: 4px 0;
+  border: 0;
+  background: transparent;
+  color: #435c68;
+  font: inherit;
+  font-size: 13px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+#content .ps-scope .ps-basic[aria-pressed=true] { color: #204955; font-weight: 700; }
