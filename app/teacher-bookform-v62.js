@@ -34,16 +34,17 @@
     { id: 's5', name: '기본문제 – 유형별 문제 – 실전 테스트', use: '범위 전체를 한 번 훑을 때', parts: [['기본문제', 15, 'easy'], ['유형별 문제', 30, 'mid'], ['실전 테스트', 30, 'mix', 'end']] },
     { id: 's6', name: '실전 테스트만', use: '시험 전 주 · 전날', parts: [['실전 테스트', 60, 'mix', 'end']] }
   ];
-  const COVERS = [['band', '짙은 띠'], ['title', '큰 제목'], ['line', '가는 선']];
+  const COVERS = [['band', '타이포'], ['title', '소프트 톤'], ['line', '아웃라인']];
   const STEPS = ['범위', '바탕 · 구성', '문항 수 · 난이도', '꼴 · 만들기'];
   const KEY = 'ds-bookform-v62', SAVED = 'ds-bookform-saved-v62';
   const store = {
     get(k, f) { try { const v = JSON.parse(localStorage.getItem(k)); return v ?? f; } catch { return f; } },
     put(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch { return false; } }
   };
-  const fresh = () => ({ step: 1, units: [], base: 'exam', book: '', structure: 's1', parts: STRUCTURES[0].parts.map(p => ({ count: p[1], level: p[2] })), layout: 2, title: '', academy: '', cover: 'band', view: '', message: '' });
+  const fresh = () => ({ step: 1, units: [], base: 'exam', book: '', structure: 's1', parts: STRUCTURES[0].parts.map(p => ({ count: p[1], level: p[2] })), layout: 2, documentDesign: window.DSDocumentDesign?.selected().id || 'DS-FOCUS-V2', title: '', academy: '', cover: 'band', view: '', message: '' });
   let state = Object.assign(fresh(), store.get(KEY, {}));
   state.message = '';
+  state.documentDesign = window.DSDocumentDesign?.selected().id || state.documentDesign;
   const persist = () => store.put(KEY, { ...state, message: '' });
 
   const unitKey = (s, i) => s.id + ':' + i;
@@ -84,7 +85,9 @@
       rows.push({ kind: 'unit', subject: u.subject.name, unit: u.unit, page: items[0]?.page ?? page, items });
     });
     endParts.forEach(p => { const pages = p.count ? Math.ceil(p.count / per) : 0; rows.push({ kind: 'end', name: p.name, count: p.count, level: p.level, page }); page += pages; });
-    const solutionPage = page, n = units.length ? total() : 0;
+    const n = units.length ? total() : 0;
+    if(window.DSDocumentDesign?.selected().id !== 'DS-FOCUS-V2')page += n;
+    const solutionPage = page;
     page += n ? Math.ceil(n / 6) : 0;
     return { rows, solutionPage, pages: units.length ? page - 1 : 0, perUnit: units.length };
   }
@@ -123,7 +126,7 @@
   function makeArea() {
     const signed = Boolean(window.DSService?.session?.());
     const saved = store.get(SAVED, []);
-    const head = `<div class="bf62-make"><h3>만들기</h3>`;
+    const head = `<div class="bf62-make"><h3>구성 보관</h3><p>지금은 구성과 지면 견본을 확인하는 단계입니다. 실제 문항이 담긴 교재 파일 생성은 아직 연결되지 않았습니다.</p>`;
     if (!signed) {
       const signup = window.DSService?.accountLinks ? window.DSService.accountLinks('signup') : '';
       return `${head}<p>로그인하면 이 구성을 보관할 수 있습니다. 로그인 뒤 이 화면으로 돌아오며 고른 구성은 그대로 남습니다.</p><button type="button" class="tb36-primary" data-bf62-login>로그인하고 이어 가기 <span>→</span></button>${signup ? `<a class="bf62-signup" href="${safe(signup)}" target="_blank" rel="noopener">처음이면 회원가입 <span aria-hidden="true">↗</span></a><p class="bf62-small">가입은 새 창에서 열립니다. 가입을 마치고 이 창에서 로그인하면 됩니다.</p>` : ''}</div>`;
@@ -131,7 +134,7 @@
     return `${head}<p>지금 고른 범위 · 바탕 · 구성 · 문항 수 · 난이도 · 꼴을 한 묶음으로 보관합니다. 보관함은 이 브라우저에 저장되어 다른 기기에서는 보이지 않습니다.</p><button type="button" class="tb36-primary" data-bf62-save>이 구성 보관 <span>→</span></button><p class="tb36-message bf62-made" role="status">${safe(state.message)}</p>${saved.length ? `<div class="bf62-saved"><strong>이 브라우저에 보관한 구성</strong><ul>${saved.slice().reverse().map((x, i) => `<li><span>${safe(x.title)}<small>${safe(x.when)} · ${x.total}문항</small></span><button type="button" data-bf62-open="${saved.length - 1 - i}">다시 열기</button></li>`).join('')}</ul></div>` : ''}</div>`;
   }
   function styleForm() {
-    return `${stepTitle(4, '책의 꼴을 정합니다')}<div class="bf62-field"><span class="bf62-label">한 쪽 문항 수</span><div class="bf62-segment" role="radiogroup" aria-label="한 쪽 문항 수">${[1, 2, 4].map(n => `<label><input type="radio" name="bf62-layout" value="${n}" data-bf62-layout ${Number(state.layout) === n ? 'checked' : ''}><span>${n}문항</span></label>`).join('')}</div></div><label class="bf62-field"><span class="bf62-label">책 제목</span><input type="text" maxlength="60" data-bf62-field="title" value="${safe(state.title)}" placeholder="${safe(defaultTitle())}"></label><label class="bf62-field"><span class="bf62-label">학원 이름 <small>머리말과 표지에 들어갑니다</small></span><input type="text" maxlength="30" data-bf62-field="academy" value="${safe(state.academy)}" placeholder="예: ○○수학학원"></label><div class="bf62-field"><span class="bf62-label">표지</span><div class="bf62-covers" role="radiogroup" aria-label="표지">${COVERS.map(([v, t]) => `<label><input type="radio" name="bf62-cover" value="${v}" data-bf62-cover ${state.cover === v ? 'checked' : ''}><span><i class="bf62-cover-mini bf62-cover-${v}" aria-hidden="true"></i>${t}</span></label>`).join('')}</div></div>${makeArea()}`;
+    return `${stepTitle(4, '책의 꼴을 정합니다')}${window.DSDocumentDesign?.picker()||''}<div class="bf62-field"><span class="bf62-label">한 쪽 문항 수</span><div class="bf62-segment" role="radiogroup" aria-label="한 쪽 문항 수">${[1, 2, 4].map(n => `<label><input type="radio" name="bf62-layout" value="${n}" data-bf62-layout ${Number(state.layout) === n ? 'checked' : ''}><span>${n}문항</span></label>`).join('')}</div></div><label class="bf62-field"><span class="bf62-label">책 제목</span><input type="text" maxlength="60" data-bf62-field="title" value="${safe(state.title)}" placeholder="${safe(defaultTitle())}"></label><label class="bf62-field"><span class="bf62-label">학원 이름 <small>머리말과 표지에 들어갑니다</small></span><input type="text" maxlength="30" data-bf62-field="academy" value="${safe(state.academy)}" placeholder="예: ○○수학학원"></label><div class="bf62-field"><span class="bf62-label">표지</span><div class="bf62-covers" role="radiogroup" aria-label="표지">${COVERS.map(([v, t]) => `<label><input type="radio" name="bf62-cover" value="${v}" data-bf62-cover ${state.cover === v ? 'checked' : ''}><span><i class="bf62-cover-mini bf62-cover-${v}" aria-hidden="true"></i>${t}</span></label>`).join('')}</div></div>${makeArea()}`;
   }
   function nav() {
     const back = state.step > 1 ? `<button type="button" class="bf62-back" data-bf62-step="${state.step - 1}">← ${STEPS[state.step - 2]}</button>` : '';
@@ -170,14 +173,20 @@
     const p = plan(), per = Number(state.layout) || 2, first = p.rows.find(r => r.kind === 'unit');
     const label = first ? `${roman(0)}. ${first.unit} · ${first.items[0]?.name || ''}` : (p.rows[0]?.name || '본문');
     const boxes = Array.from({ length: per }, (_, i) => `<div class="bf62-q"><b>${String(i + 1).padStart(2, '0')}</b><i></i><i></i><i class="bf62-short"></i><span class="bf62-room"></span></div>`).join('');
-    return `<div class="bf62-paper bf62-body"><div class="bf62-pg-head"><span>${safe(state.academy || '학원 이름')}</span><span>${safe(title())}</span></div><div class="bf62-sec">${safe(label)}</div><div class="bf62-qs bf62-qs-${per}">${boxes}</div><div class="bf62-pg-foot"><span>DELTASKILL</span><span>${first?.page || 3}</span></div></div>`;
+    return `<div class="bf62-paper bf62-body" data-document-design="${safe(window.DSDocumentDesign?.selected().id||'DS-FOCUS-V2')}"><div class="bf62-pg-head"><span>${safe(state.academy || '학원 이름')}</span><span>${safe(title())}</span></div><div class="bf62-sec">${safe(label)}</div><div class="bf62-qs bf62-qs-${per}">${boxes}</div><div class="bf62-pg-foot"><span>DELTASKILL</span><span>${first?.page || 3}</span></div></div>`;
+  }
+  function recordPreview() {
+    const sequence=window.DSDocumentDesign?.selected().id === 'DS-SEQUENCE-V2';
+    const labels=sequence?['01 · 조건 읽기','02 · 핵심 판단','03 · 풀이 확인','다시 풀기']:['첫 생각','막힌 지점','다음 시도'];
+    return `<div class="bf62-paper bf62-body dd-book-record"><div class="bf62-pg-head"><span>${safe(state.academy||'학원 이름')}</span><span>${safe(title())}</span></div><div class="bf62-sec">01번 · ${sequence?'세 판단 기록':'풀이 기록'}</div><div class="dd-book-records" data-record-kind="${sequence?'sequence':'margin'}">${labels.map(t=>`<section><b>${t}</b><div></div></section>`).join('')}</div><div class="bf62-pg-foot"><span>${safe(window.DSDocumentDesign?.selected().name)}</span><span>문항별 기록면</span></div></div>`;
   }
   function preview() {
     const view = state.view || (state.step === 4 ? 'cover' : 'toc');
     const p = plan();
-    const tabs = [['cover', '표지'], ['toc', '차례'], ['page', '본문 쪽']];
-    const page = view === 'cover' ? coverPage() : view === 'page' ? bodyPage() : tocPage();
-    return `<aside class="tb36-order-preview ds48-canvas bf62-preview" aria-label="책 미리보기"><div class="ds48-preview-toolbar bf62-toolbar"><strong>책 미리보기</strong><small>${chosen().length ? total() : 0}문항 · 어림 ${p.pages}쪽 · 한 쪽 ${state.layout}문항</small></div><div class="bf62-tabs" role="tablist" aria-label="미리보기 쪽">${tabs.map(([v, t]) => `<button type="button" role="tab" aria-selected="${view === v}" data-bf62-view="${v}">${t}</button>`).join('')}</div><div class="bf62-stage">${window.DSPrintSurfaceV48 ? window.DSPrintSurfaceV48.scene(page) : `<div class="bf62-plain">${page}</div>`}</div><p class="bf62-stage-note">${view === 'page' ? '쪽 그림 뼈대입니다. 문항 자리와 머리말 · 쪽 번호의 놓임을 보여 줍니다.' : view === 'cover' ? '표지 꼴과 제목 · 학원 이름이 놓이는 자리입니다.' : '쪽 번호는 고른 문항 수와 한 쪽 문항 수로 셈한 어림입니다.'}</p></aside>`;
+    const tabs = [['cover', '표지'], ['toc', '차례'], ['page', '문제면']];
+    if(window.DSDocumentDesign?.selected().id !== 'DS-FOCUS-V2')tabs.push(['record','기록면']);
+    const page = view === 'cover' ? coverPage() : view === 'page' ? bodyPage() : view === 'record' ? recordPreview() : tocPage();
+    return `<aside class="tb36-order-preview ds48-canvas bf62-preview" aria-label="책 미리보기"><div class="ds48-preview-toolbar bf62-toolbar"><strong>책 미리보기</strong><small>${chosen().length ? total() : 0}문항 · 어림 ${p.pages}쪽 · 한 쪽 ${state.layout}문항</small></div><div class="bf62-tabs" role="tablist" aria-label="미리보기 쪽">${tabs.map(([v, t]) => `<button type="button" role="tab" aria-selected="${view === v}" data-bf62-view="${v}">${t}</button>`).join('')}</div><div class="bf62-stage">${window.DSPrintSurfaceV48 ? window.DSPrintSurfaceV48.scene(page) : `<div class="bf62-plain">${page}</div>`}</div><p class="bf62-stage-note">${view === 'record' ? '선택한 디자인의 문항별 기록면 견본입니다. 실제 문항 정보는 들어 있지 않습니다.' : view === 'page' ? '쪽 그림 뼈대입니다. 문항 자리와 머리말 · 쪽 번호의 놓임을 보여 줍니다.' : view === 'cover' ? '표지 꼴과 제목 · 학원 이름이 놓이는 자리입니다.' : '쪽 번호는 고른 문항 수와 한 쪽 문항 수로 셈한 어림입니다.'}</p></aside>`;
   }
 
   function bookView() {
@@ -195,7 +204,7 @@
     const t = document.createElement('template'); t.innerHTML = html;
     const surface = t.content.querySelector('.tb36-surface');
     if (!surface) return html;
-    surface.classList.add('bf62-surface');
+    surface.classList.add('bf62-surface','dd-modern');
     [...surface.children].forEach(el => { if (!el.matches('.tb36-modes, .tb36-compact-footer, footer, [class*="footer"]')) el.remove(); });
     const modes = surface.querySelector('.tb36-modes');
     const wrap = document.createElement('template'); wrap.innerHTML = heading() + bookView();
@@ -251,6 +260,7 @@
     const list = store.get(SAVED, []);
     const now = new Date();
     const when = `${now.getMonth() + 1}월 ${now.getDate()}일 ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    state.documentDesign=window.DSDocumentDesign?.selected().id||state.documentDesign;
     list.push({ title: title(), when, total: total(), config: { ...state, step: 4, view: '', message: '' } });
     const ok = store.put(SAVED, list.slice(-12));
     state.message = ok ? '이 브라우저의 보관함에 담았습니다. 아래 목록에서 다시 열 수 있습니다.' : '이 브라우저에 보관하지 못했습니다. 사생활 보호 창이면 일반 창에서 다시 눌러 주세요.';
@@ -265,7 +275,7 @@
     if (b.dataset.bf62View) { state.view = b.dataset.bf62View; persist(); const el = document.querySelector('.bf62-preview'); if (el) el.outerHTML = preview(); document.querySelector(`[data-bf62-view="${state.view}"]`)?.focus({ preventScroll: true }); return; }
     if (b.hasAttribute('data-bf62-login')) { persist(); window.DSLoginReturn = '#teacher'; location.hash = '#login'; return; }
     if (b.hasAttribute('data-bf62-save')) { saveConfig(); return; }
-    if (b.dataset.bf62Open) { const x = store.get(SAVED, [])[Number(b.dataset.bf62Open)]; if (x?.config) { state = Object.assign(fresh(), x.config, { message: '보관한 구성을 다시 열었습니다.' }); rerender(); } }
+    if (b.dataset.bf62Open) { const x = store.get(SAVED, [])[Number(b.dataset.bf62Open)]; if (x?.config) { state = Object.assign(fresh(), x.config, { message: '보관한 구성을 다시 열었습니다.' }); if(state.documentDesign)window.DSDocumentDesign?.select(state.documentDesign); rerender(); } }
   });
   document.addEventListener('change', e => {
     if (!routeHere() || !isBook()) return;
@@ -288,6 +298,7 @@
   });
   document.addEventListener('submit', e => { if (e.target.id === 'bf62-form') { e.preventDefault(); if (state.step < 4) goStep(state.step + 1); } });
 
+  window.addEventListener('ds-document-design-change',()=>{state.documentDesign=window.DSDocumentDesign.selected().id;if(routeHere()&&isBook()){state.view=state.documentDesign==='DS-FOCUS-V2'?'page':'record';rerender();}});
   // Local screenshots only: fill a sample composition and open a step.
   function demo(n) {
     state = Object.assign(fresh(), { units: ['cm1:0', 'cm1:1', 'cm1:2', 'cm1:3', 'alg:2'], base: n >= 2 ? 'market' : 'exam', book: n >= 2 ? '학교 부교재' : '', academy: n >= 3 ? '한빛수학학원' : '', title: n >= 4 ? '2학기 기말 대비' : '' });
