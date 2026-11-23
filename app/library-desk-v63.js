@@ -64,10 +64,10 @@
         const book = (s.textbooks || [])[0];
         const app = thumbs.get(u.sku);
         const thumb = app && Array.isArray(app.previewPages) && app.previewPages[0] === `public-data/${u.sku}-1.png` ? app.previewPages[0] : '';
-        const sample = app && app.pdf === `public-data/${u.sku}.pdf` ? app.pdf : '';
+        const sample = app && app.pdf === `public-data/${u.sku}.pdf` ? app.pdf + (/^[a-f0-9]{64}$/.test(app.sha256 || '') ? '?v=' + app.sha256.slice(0,12) : '') : '';
         out.push({ sku: u.sku, grade: s.grade, subject: s.subject, code: s.code, major: u.major || '', no: u.no, unit: u.unit,
           name: u.name || `${s.subject} · ${u.no} ${u.unit}`, count: u.count || 0, book, composition: u.composition || 'C1',
-          formats, thumb, sample, previewPages: (u.preview && u.preview.pages) || (app && app.previewPages ? app.previewPages.length : 0) });
+          formats, thumb, sample, previewPages: (sample && app.samplePdfPages) || (u.preview && u.preview.pages) || (app && app.previewPages ? app.previewPages.length : 0) });
       });
     });
     return out;
