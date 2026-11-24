@@ -159,3 +159,9 @@
  #content .ms-format small {grid-column:2;justify-self:end;font-size:11px;padding:1px 5px}
  #content .ms-format em {display:inline;margin-left:3px}
 }
+@media(max-width:360px){
+ #content .ms-bookshelf {grid-template-columns:minmax(0,1fr)}
+ #content .ms-shop .ms-volume .ms-stage {padding:16px 20% 20px}
+ #content .ms-format {grid-template-columns:auto minmax(0,1fr) auto;gap:8px}
+ #content .ms-format small {grid-column:auto}
+}

@@ -35,6 +35,7 @@
     refresh();
   }
   const title = p => p.name.replace(/\s*·\s*\d+\s+/, ' · ');
+  const bookLabel = value => String(value ?? '').replace(/\s*\((?:19|20)\d{2}년?(?:판|용)?\)/g, '').trim();
   const grouped = () => [...new Set(products.map(p => p.source))].sort((a,b) => a.localeCompare(b,'ko'));
   const key = (p, fmt) => p.sku + '.' + fmt;
   const publicPoints = Object.freeze({'NS-CM2-06':4000,'NS-CM2-07':5000,'NS-CM2B-06':2200,'NS-MI1B-05':3100});
@@ -47,10 +48,10 @@
   const picked = () => products.flatMap(p => ['pdf','hwpx'].filter(fmt => cart.includes(key(p,fmt)) && enabled(p,fmt)).map(fmt => ({p,fmt})));
   function options(query='') {
     const list = grouped().filter(name => normalize(name).includes(normalize(query)));
-    return list.map(name => `<button type="button" data-ms-book="${escape(name)}">${escape(name)}<small>${products.filter(p=>p.source===name).length}권</small></button>`).join('') || '<p role="status">검색 결과가 없습니다.</p>';
+    return list.map(name => `<button type="button" data-ms-book="${escape(name)}">${escape(bookLabel(name))}<small>${products.filter(p=>p.source===name).length}권</small></button>`).join('') || '<p role="status">검색 결과가 없습니다.</p>';
   }
   function picker() {
-    return `<div class="ms-find"><h2>${audience==='student'?'어떤 부교재로 공부하나요?':'어느 책으로 수업하세요?'}</h2><details class="ms-picker"><summary><span>${escape(scope?.label || selected || (audience==='student'?'공부하는 교재 찾기':'수업 교재 찾기'))}</span><i aria-hidden="true"></i></summary><div class="ms-popup dl63-list-wrap"><input type="search" aria-label="교재 검색" placeholder="교재명으로 검색" data-ms-search><div data-ms-options>${options()}</div></div></details></div>`;
+    return `<div class="ms-find"><h2>${audience==='student'?'어떤 부교재로 공부하나요?':'어느 책으로 수업하세요?'}</h2><details class="ms-picker"><summary><span>${escape(bookLabel(scope?.label || selected || (audience==='student'?'공부하는 교재 찾기':'수업 교재 찾기')))}</span><i aria-hidden="true"></i></summary><div class="ms-popup dl63-list-wrap"><input type="search" aria-label="교재 검색" placeholder="교재명으로 검색" data-ms-search><div data-ms-options>${options()}</div></div></details></div>`;
   }
   const coverSkus = new Set(['NS-CM2-06', 'NS-CM2-07', 'NS-CM2B-06', 'NS-MI1B-05']);
   function formats(p) {
@@ -71,16 +72,16 @@
     const cover = p.sample
       ? `<a class="ms-book-cover" href="${escape(p.sample)}" target="_blank" rel="noopener" aria-label="${label} 지면 미리보기, 새 창">${art}<span class="ms-look">미리보기 ↗</span></a>`
       : `<div class="ms-book-cover">${art}</div>`;
-    return `<article class="ms-volume" data-sku="${escape(p.sku)}" aria-label="${label}"><div class="ms-stage">${cover}</div><div class="ms-book-info"><small>${escape(p.subject)}<i aria-hidden="true">·</i>${p.count}문항</small><h3>${escape(p.unit||title(p))}</h3><span>${p.sourceId?'연계 · ':''}${escape(p.source)}</span></div><div class="ms-formats">${formats(p)}</div></article>`;
+    return `<article class="ms-volume" data-sku="${escape(p.sku)}" aria-label="${label}"><div class="ms-stage">${cover}</div><div class="ms-book-info"><small>${escape(p.subject)}<i aria-hidden="true">·</i>${p.count}문항</small><h3>${escape(p.unit||title(p))}</h3><span>${p.sourceId?'연계 · ':''}${escape(bookLabel(p.source))}</span></div><div class="ms-formats">${formats(p)}</div></article>`;
   }
   function items() {
     const list = scope ? products.filter(p => scope.bookId
       ? p.sourceId===scope.bookId && (!scope.unitId || p.no===scope.unitId)
       : p.subject===scope.subject && p.unit===scope.unit)
       : selected ? products.filter(p => p.source === selected) : products;
-    const heading = scope ? scope.label : selected ? '단원별 교재' : audience==='student' ? '문제집 변형문항' : '판매 교재';
+    const heading = scope ? bookLabel(scope.label) : selected ? '단원별 교재' : audience==='student' ? '문제집 변형문항' : '판매 교재';
     const reset = scope || selected ? '<button type="button" class="ms-clear" data-ms-clear>전체 교재 보기</button>' : '';
-    return `<section class="ms-items" aria-label="${escape(selected || '전체')} 판매 교재"><div class="ms-results dl63-head"><h2>${escape(heading)}</h2><span>${list.length}권</span>${reset}</div>${scope && !list.length ? '<p role="status">이 범위에서 구매할 수 있는 자료는 아직 없습니다.</p>' : ''}<div class="ms-bookshelf">${list.map(coverTile).join('')}</div></section>`;
+    return `<section class="ms-items" aria-label="${escape(bookLabel(selected || '전체'))} 판매 교재"><div class="ms-results dl63-head"><h2>${escape(heading)}</h2><span>${list.length}권</span>${reset}</div>${scope && !list.length ? '<p role="status">이 범위에서 구매할 수 있는 자료는 아직 없습니다.</p>' : ''}<div class="ms-bookshelf">${list.map(coverTile).join('')}</div></section>`;
   }
 
   const formatLabel = fmt => fmt === 'pdf' ? 'PDF' : '한글';
@@ -116,7 +117,7 @@
       const action = fmt === 'pdf'
         ? `<a data-ms-point-purchase ${audience==='student'?'data-ms-point-receive="'+escape(key(p,fmt))+'"':''} href="/app/?pointPdf=${encodeURIComponent(key(p,fmt))}#library">${quote(p)?.owned ? '보유 PDF 다시 받기' : '포인트 구매 확인'}</a>`
         : cashReady(p) ? `<a href="${escape(library.checkoutHref(p,fmt))}">한글 결제하기</a>` : '<small>한글 준비 중</small>';
-      return `<li><small>${escape(p.source)}</small><strong>${escape(title(p))}</strong><div><span>${formatLabel(fmt)} · ${cost(p,fmt)}</span>${action}</div></li>`;
+      return `<li><small>${escape(bookLabel(p.source))}</small><strong>${escape(title(p))}</strong><div><span>${formatLabel(fmt)} · ${cost(p,fmt)}</span>${action}</div></li>`;
     }).join('');
     dialog.innerHTML = `<header><h2 id="ms-order-title">주문 내용 확인</h2><form method="dialog"><button type="submit" aria-label="주문 내용 닫기">닫기</button></form></header><ul>${lines}</ul>${totals(entries)}<p class="ms-order-note">PDF는 묶음마다 한 번만 차감합니다. 구매 화면에서 잔액과 보유 권리를 확인하며, 이미 보유한 PDF는 추가 차감하지 않습니다. 한글은 별도 원화 결제입니다.</p><form method="dialog"><button type="submit" value="basket" class="ms-review-open">장바구니로 돌아가기</button></form>`;
     dialog.addEventListener('close', () => { dialog.remove(); if (dialog.returnValue === 'basket') openCart(panel); else panel.querySelector('[data-ms-cart]')?.focus({preventScroll:true}); }, {once:true});
