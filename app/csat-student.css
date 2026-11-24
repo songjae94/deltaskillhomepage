@@ -1,0 +1,11 @@
+.csat-desk .csat-frame,.csat-student .csat-frame{display:block;width:100%;border:0;min-width:0;height:180px;background:white}
+.csat-desk .csat-settings label,.csat-student .dst-config>label{display:grid;gap:.35rem;margin-bottom:1rem}
+.csat-desk .csat-settings select,.csat-student .dst-config>label select{width:100%;min-height:44px;padding:8px;font:inherit;color:#242a31;background:#fffdf8;border:1px solid #cbc7be;border-radius:5px}
+.csat-desk .csat-settings a{color:inherit;text-underline-offset:4px}
+.csat-check,.csat-pager{display:flex;gap:8px;margin-top:16px}
+.csat-check[hidden]{display:none}
+.csat-pager{justify-content:space-between;align-items:center;border-top:1px solid #dad5cb;padding-top:12px}
+.csat-pager button,.csat-check button,.csat-records button{min-height:44px;padding:7px 13px;border:1px solid #c6c0b6;border-radius:4px;background:#faf8f2;color:#343842;font:inherit;cursor:pointer}
+.csat-pager button:disabled{opacity:.45;cursor:default}
+.csat-records{padding:20px;margin:16px 0;background:#fffdf8;border:1px solid #d4cfc3;border-radius:8px}
+.csat-records button{display:block;margin:5px 0}

@@ -2,7 +2,104 @@
 (() => {
   'use strict';
 
+  function prepareChoices({root,id,value,options=[],math,choose}) {
+      const doc=root.ownerDocument;
+      const optionCount=options.length||5;
+      const excludes='li,table,.bogi,.cond,.cond-box,.condition,.conditions,.katex,[data-condition]';
+      const lists=[...root.querySelectorAll('ol,ul')].filter(el=>
+        !el.closest(excludes) && el.children.length===optionCount &&
+        [...el.children].every(child=>child.localName==='li' && !/^[(（]?[ㄱ-ㅎ가나다라마바사][.)）]/.test(child.textContent.trim())));
+      const explicit=lists.filter(el=>el.matches('.ch,.dq59-choices,.choices,[data-choices]'));
+      // An unlabelled list is safe only when it ends the problem. Earlier lists may be conditions.
+      const trailing=lists.filter(el=>{
+        const tail=doc.createRange();tail.selectNodeContents(root);tail.setStartAfter(el);
+        const remainder=tail.cloneContents();remainder.querySelectorAll('style,script').forEach(n=>n.remove());
+        return !remainder.textContent.trim() && !remainder.querySelector('img,svg,math,table');
+      });
+      let list=explicit.length===1?explicit[0]:trailing.length===1?trailing[0]:null;
+      let rows=list ? [...list.children] : [];
+      const numbers='①②③④⑤';
+      if (!rows.length) {
+        const blocks=[...root.querySelectorAll('p,div,td')].filter(el=>
+          /^[①②③④⑤]/.test(el.textContent.trim()) && !el.closest('.bogi,.cond,.cond-box,.condition,.conditions,[data-condition]') && !el.querySelector('p,div,td'));
+        if (blocks.length===optionCount && blocks.every((el,i)=>el.textContent.trim().startsWith(numbers[i]))) rows=blocks;
+      }
+      if (!rows.length && options.length>=2 && options.length<=5 && options.every(x=>['string','number'].includes(typeof x))) {
+        list=doc.createElement('ol');
+        rows=options.map(option=>{
+          const row=doc.createElement('li');
+          row.innerHTML=math(String(option));
+          list.append(row);return row;
+        });
+        root.append(list);
+      }
+      if (!rows.length) {
+        if (!root.querySelector('.dte-choice-issue')) {
+          const note=doc.createElement('p');note.className='dte-choice-issue';
+          note.setAttribute('role','status');
+          note.textContent='이 문항의 선택지를 확인할 수 없습니다. 화살표로 다른 문항을 풀어 주세요.';
+          root.append(note);
+        }
+        return;
+      }
+      if (!doc.getElementById('dte-choice-style')) {
+        const style=doc.createElement('style');style.id='dte-choice-style';
+        style.textContent=choiceStyles;
+        doc.head.append(style);
+      }
+      if (!list) {
+        // Some editions put the numbered answers in separate paragraphs or table cells.
+        // Move the existing nodes so their formula layout and accessible math stay intact.
+        list=doc.createElement('ol');
+        const table=rows[0].closest('table');
+        if (table) table.after(list);
+        else rows[0].before(list);
+        rows=rows.map(source=>{
+          const row=doc.createElement('li');
+          row.append(...Array.from(source.childNodes));
+          list.append(row);
+          source.remove();
+          return row;
+        });
+        if (table && !table.textContent.trim() && !table.querySelector('img,svg,math')) table.remove();
+      }
+      list.classList.add('dte-source-choices');
+      rows.forEach((row,index)=>{
+        const button=doc.createElement('button');
+        button.type='button';button.className='dte-inline-choice';
+        button.dataset.examChoice=String(index);button.dataset.examId=id;
+        button.setAttribute('aria-pressed',String(value!=null && value!=='' && Number(value)===index));
+        const marker=doc.createElement('span');marker.className='dte-choice-no';marker.textContent=String(index+1);
+        const body=doc.createElement('span');body.className='dte-choice-content';
+        // Canonical PDFs use a circled marker in the first text node. Preserve the math itself.
+        const walker=doc.createTreeWalker(row,4);
+        for(let t=walker.nextNode();t;t=walker.nextNode()) {
+          if (!t.textContent.trim()) continue;
+          if (t.textContent.trimStart().startsWith(numbers[index])) t.textContent=t.textContent.replace(/^\s*[①②③④⑤]\s*/,'');
+          break;
+        }
+        body.append(...Array.from(row.childNodes));button.append(marker,body);row.append(button);
+        if (choose) button.addEventListener('click',()=>choose(button));
+      });
+      window.DSChoiceLayout?.mount(list,Array.from(list.querySelectorAll('.dte-inline-choice')));
+    }
+    const choiceStyles=`
+      .dte-source-choices{display:grid!important;grid-template-columns:minmax(0,1fr)!important;align-items:stretch!important;gap:4px!important;box-sizing:border-box;min-width:0;max-width:100%;margin:12px 0!important;padding:0!important;list-style:none!important}
+      .dte-source-choices[data-choice-columns="5"]{grid-template-columns:repeat(5,minmax(max-content,1fr))!important}
+      .dte-source-choices[data-choice-columns="3"]{grid-template-columns:repeat(3,minmax(max-content,1fr))!important}
+      .dte-source-choices>li{display:flex!important;min-width:0!important;width:auto!important;margin:0!important;padding:0!important;list-style:none!important}
+      .dte-source-choices>li::before,.dte-source-choices>li::marker{content:none!important}
+      .dte-inline-choice{box-sizing:border-box;width:100%;min-width:0;min-height:44px;display:flex;align-items:center;gap:4px;padding:5px 6px;border:1px solid #c4c1b6;border-radius:4px;background:#fbf9f2;color:#292d31;cursor:pointer;text-align:start;font:inherit;line-height:1.55}
+      .dte-inline-choice:hover{border-color:#949284;background:#f5f2e9}
+      .dte-inline-choice[aria-pressed=true]{border-color:#78668a;background:#eee9f1}
+      .dte-inline-choice:focus-visible{outline:2px solid #766686;outline-offset:-2px}
+      .dte-choice-no{box-sizing:border-box;flex:0 0 16px;height:16px;display:grid;place-items:center;border:1px solid currentColor;border-radius:50%;font:500 11px/1 Arial,sans-serif}
+      .dte-choice-content{min-width:0;max-width:100%;white-space:normal;overflow-wrap:anywhere;overflow-x:auto}
+      .dte-source-choices:is([data-choice-columns="3"],[data-choice-columns="5"]) .dte-choice-content{white-space:nowrap;overflow-wrap:normal}
+      @media(max-width:480px){.dte-inline-choice{gap:3px;padding-inline:4px}}
+    `;
   function create(api) {
+    const scope=api.scope || '.ds-timed';
     const { getActive, known, clock, remaining, title, paperQuestion, questionContent,
       displayedAnswer, recordAnswer, finish, paint, escape } = api;
     let setKey, page, retry, finishing, finishFailed;
@@ -28,7 +125,7 @@
       return (retry?.ids || set.questionIds)[page];
     }
     function focusQuestion() {
-      document.querySelector('.ds-timed .dst-sheet')?.focus({ preventScroll:true });
+      document.querySelector(scope+' .dst-sheet')?.focus({ preventScroll:true });
     }
     function repaintQuestion() {
       paint();
@@ -72,7 +169,7 @@
       const sheet=paperQuestion(q,page,ids.length,box);
       const canChoose=!complete && q.answerType==='choice';
       if (canChoose) requestAnimationFrame(() => {
-        const host=document.querySelector('.ds-timed [data-exam-paper-id]');
+        const host=document.querySelector(scope+' [data-exam-paper-id]');
         if (host?.dataset.examPaperId===id) bindPaper(host);
       });
       const edge=(step,label,glyph,disabled)=>`<button type="button" class="dte-edge" data-exam-${step} aria-label="${label}" title="${label}" ${disabled?'disabled':''}><span aria-hidden="true">${glyph}</span></button>`;
@@ -110,107 +207,15 @@
       const set=getActive(),id=host.dataset.examPaperId;
       if (!set || id!==current(set)) return;
       const q=known(id),options=Array.isArray(q.options)?q.options:[];
-      const optionCount=options.length||5;
-      const excludes='li,table,.bogi,.cond,.cond-box,.condition,.conditions,.katex,[data-condition]';
-      const lists=[...root.querySelectorAll('ol,ul')].filter(el=>
-        !el.closest(excludes) && el.children.length===optionCount &&
-        [...el.children].every(child=>child.localName==='li' && !/^[(（]?[ㄱ-ㅎ가나다라마바사][.)）]/.test(child.textContent.trim())));
-      const explicit=lists.filter(el=>el.matches('.ch,.dq59-choices,.choices,[data-choices]'));
-      // An unlabelled list is safe only when it ends the problem. Earlier lists may be conditions.
-      const trailing=lists.filter(el=>{
-        const tail=doc.createRange();tail.selectNodeContents(root);tail.setStartAfter(el);
-        const remainder=tail.cloneContents();remainder.querySelectorAll('style,script').forEach(n=>n.remove());
-        return !remainder.textContent.trim() && !remainder.querySelector('img,svg,math,table');
-      });
-      let list=explicit.length===1?explicit[0]:trailing.length===1?trailing[0]:null;
-      let rows=list ? [...list.children] : [];
-      const numbers='①②③④⑤';
-      if (!rows.length) {
-        const blocks=[...root.querySelectorAll('p,div,td')].filter(el=>
-          /^[①②③④⑤]/.test(el.textContent.trim()) && !el.closest('.bogi,.cond,.cond-box,.condition,.conditions,[data-condition]') && !el.querySelector('p,div,td'));
-        if (blocks.length===optionCount && blocks.every((el,i)=>el.textContent.trim().startsWith(numbers[i]))) rows=blocks;
-      }
-      if (!rows.length && options.length>=2 && options.length<=5 && options.every(x=>['string','number'].includes(typeof x))) {
-        list=doc.createElement('ol');
-        rows=options.map(option=>{
-          const row=doc.createElement('li');
-          row.innerHTML=api.math(String(option));
-          list.append(row);return row;
-        });
-        root.append(list);
-      }
-      if (!rows.length) {
-        if (!root.querySelector('.dte-choice-issue')) {
-          const note=doc.createElement('p');note.className='dte-choice-issue';
-          note.setAttribute('role','status');
-          note.textContent='이 문항의 선택지를 확인할 수 없습니다. 화살표로 다른 문항을 풀어 주세요.';
-          root.append(note);
-        }
-        return;
-      }
-      if (!doc.getElementById('dte-choice-style')) {
-        const style=doc.createElement('style');style.id='dte-choice-style';
-        style.textContent=choiceStyles;
-        doc.head.append(style);
-      }
-      if (!list) {
-        // Some editions put the numbered answers in separate paragraphs or table cells.
-        // Move the existing nodes so their formula layout and accessible math stay intact.
-        list=doc.createElement('ol');
-        const table=rows[0].closest('table');
-        if (table) table.after(list);
-        else rows[0].before(list);
-        rows=rows.map(source=>{
-          const row=doc.createElement('li');
-          row.append(...Array.from(source.childNodes));
-          list.append(row);
-          source.remove();
-          return row;
-        });
-        if (table && !table.textContent.trim() && !table.querySelector('img,svg,math')) table.remove();
-      }
-      list.classList.add('dte-source-choices');
-      const value=(retry?retry.answers:set.responses)?.[id];
-      rows.forEach((row,index)=>{
-        const button=doc.createElement('button');
-        button.type='button';button.className='dte-inline-choice';
-        button.dataset.examChoice=String(index);button.dataset.examId=id;
-        button.setAttribute('aria-pressed',String(present(value) && Number(value)===index));
-        const marker=doc.createElement('span');marker.className='dte-choice-no';marker.textContent=String(index+1);
-        const body=doc.createElement('span');body.className='dte-choice-content';
-        // Canonical PDFs use a circled marker in the first text node. Preserve the math itself.
-        const walker=doc.createTreeWalker(row,4);
-        for(let t=walker.nextNode();t;t=walker.nextNode()) {
-          if (!t.textContent.trim()) continue;
-          if (t.textContent.trimStart().startsWith(numbers[index])) t.textContent=t.textContent.replace(/^\s*[①②③④⑤]\s*/,'');
-          break;
-        }
-        body.append(...Array.from(row.childNodes));button.append(marker,body);row.append(button);
-        if (frame) button.addEventListener('click',()=>{
-          if (host.isConnected && getActive() && current(getActive())===id) selectChoice(button);
-        });
-      });
-      window.DSChoiceLayout?.mount(list,Array.from(list.querySelectorAll('.dte-inline-choice')));
+      const choose=frame ? button=>{
+        if(host.isConnected && getActive() && current(getActive())===id)selectChoice(button);
+      } : null;
+      prepareChoices({root,id,value:(retry?retry.answers:set.responses)?.[id],options,math:api.math,choose});
     }
-    const choiceStyles=`
-      .dte-source-choices{display:grid!important;grid-template-columns:minmax(0,1fr)!important;align-items:stretch!important;gap:4px!important;box-sizing:border-box;min-width:0;max-width:100%;margin:12px 0!important;padding:0!important;list-style:none!important}
-      .dte-source-choices[data-choice-columns="5"]{grid-template-columns:repeat(5,minmax(max-content,1fr))!important}
-      .dte-source-choices[data-choice-columns="3"]{grid-template-columns:repeat(3,minmax(max-content,1fr))!important}
-      .dte-source-choices>li{display:flex!important;min-width:0!important;width:auto!important;margin:0!important;padding:0!important;list-style:none!important}
-      .dte-source-choices>li::before,.dte-source-choices>li::marker{content:none!important}
-      .dte-inline-choice{box-sizing:border-box;width:100%;min-width:0;min-height:44px;display:flex;align-items:center;gap:4px;padding:5px 6px;border:1px solid #c4c1b6;border-radius:4px;background:#fbf9f2;color:#292d31;cursor:pointer;text-align:start;font:inherit;line-height:1.55}
-      .dte-inline-choice:hover{border-color:#949284;background:#f5f2e9}
-      .dte-inline-choice[aria-pressed=true]{border-color:#78668a;background:#eee9f1}
-      .dte-inline-choice:focus-visible{outline:2px solid #766686;outline-offset:-2px}
-      .dte-choice-no{box-sizing:border-box;flex:0 0 16px;height:16px;display:grid;place-items:center;border:1px solid currentColor;border-radius:50%;font:500 11px/1 Arial,sans-serif}
-      .dte-choice-content{min-width:0;max-width:100%;white-space:normal;overflow-wrap:anywhere;overflow-x:auto}
-      .dte-source-choices:is([data-choice-columns="3"],[data-choice-columns="5"]) .dte-choice-content{white-space:nowrap;overflow-wrap:normal}
-      @media(max-width:480px){.dte-inline-choice{gap:3px;padding-inline:4px}}
-    `;
     document.addEventListener('load',e=>{
       const frame=e.target;
       if (frame?.matches?.('.dst-prompt iframe')) {
-        const host=frame.closest('.ds-timed [data-exam-paper-id]');
+        const host=frame.closest(scope+' [data-exam-paper-id]');
         if (host) bindPaper(host);
       }
     },true);
@@ -224,7 +229,7 @@
       const ids=retry?.ids || set.questionIds,answers=retry?retry.answers:set.responses;
       const blanks=ids.filter(id=>!present(answers?.[id])).length;
       if (!blanks) { finishPractice();return; }
-      const root=document.querySelector('.ds-timed');
+      const root=document.querySelector(scope);
       if (!root || root.querySelector('.dte-submit-dialog')) return;
       const dialog=document.createElement('dialog');
       dialog.className='dst-start-dialog dte-submit-dialog';
@@ -258,10 +263,10 @@
       for(const option of box.querySelectorAll('.dte-inline-choice')) {
         option.setAttribute('aria-pressed',String(option===button));
       }
-      const mark=document.querySelector('.ds-timed .ta-numbers-v18 [aria-current]');
+      const mark=document.querySelector(scope+' .ta-numbers-v18 [aria-current]');
       mark?.classList.add('is-answered');
       mark?.setAttribute('aria-label',(page+1)+'번 문항 · 응답');
-      const counter=document.querySelector('.ds-timed [data-time-answered]');
+      const counter=document.querySelector(scope+' [data-time-answered]');
       const ids=retry?.ids || set.questionIds,answers=retry?retry.answers:set.responses;
       if (counter) counter.textContent=ids.filter(k=>present(answers?.[k])).length+' / '+ids.length;
     }
@@ -272,7 +277,7 @@
     }
     function confirmInput() {
       const set=getActive();
-      const input=document.querySelector('.ds-timed [data-exam-input]');
+      const input=document.querySelector(scope+' [data-exam-input]');
       if (!set || !input || input.dataset.examInput!==current(set)) return;
       const value=input.value.trim();
       if (!/^-?\d{1,9}$/.test(value)) {
@@ -329,18 +334,18 @@
     function tick() {
       const set=getActive();
       if (!set || settled(set)) return;
-      const display=document.querySelector('.ds-timed [data-time-clock]');
+      const display=document.querySelector(scope+' [data-time-clock]');
       const value=clock();
       if (display && display.textContent!==value) display.textContent=value;
       if (remaining()===0 && !finishFailed) void submit();
     }
     document.addEventListener('keydown',event=>{
-      if (event.key==='Enter' && !event.isComposing && event.target.matches?.('.ds-timed [data-exam-input]')) {
+      if (event.key==='Enter' && !event.isComposing && event.target.matches?.(scope+' [data-exam-input]')) {
         event.preventDefault();
         confirmInput();
       }
     });
     return {render,click,input,reset,tick};
   }
-  window.DSTimedExam={create};
+  window.DSTimedExam={create,prepareChoices};
 })();
