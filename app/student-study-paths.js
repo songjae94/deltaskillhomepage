@@ -1111,7 +1111,8 @@ function bind(container,options={}){
    const saved=candidates.find(q=>q.id===pending?.questionId&&q.version===pending?.version);
    if(saved){
     state.course=planCourse=planProfile.need;view='home';current=null;
-    sourceResult={questions:[saved,...balancedRows(candidates.filter(q=>q.id!==saved.id))].slice(0,10)};
+    sourceResult={questions:[saved,...candidates.filter(q=>q.id!==saved.id)]};
+    deskType=state.course==='supplement'?saved.originalGroupId||'':saved.typeId||saved.typeIds?.[0]||'';
     void openRemote(saved.id,pending);return;
    }
    startRange(planProfile,range);return;
@@ -1366,7 +1367,7 @@ function bind(container,options={}){
    }
   }
   const definitions=new Map(workbookChoices().flatMap(book=>book.units.flatMap(unit=>(unit.types||[]).map(type=>[type.id,type.label]))));
-  return [...groups.values()].sort((a,b)=>a.id.localeCompare(b.id,undefined,{numeric:true})).map(group=>({...group,label:state.course==='supplement'?'교재 '+group.rows[0].originalQuestionNo+'번 연결 문항':definitions.get(group.id)||group.id}));
+  return [...groups.values()].sort((a,b)=>(state.course==='supplement'?(a.rows[0].originalQuestionNo-b.rows[0].originalQuestionNo):0)||a.id.localeCompare(b.id,undefined,{numeric:true})).map(group=>({...group,label:state.course==='supplement'?'교재 '+group.rows[0].originalQuestionNo+'번 연결 문항':definitions.get(group.id)||group.id}));
  }
  function sourceRows(){
   const groups=remoteTypeGroups();
