@@ -246,7 +246,7 @@ function customSetup(){
   field('book','연계 교재',[['','교재 없이 구성'],...books.map(b=>[b.id,b.label])],book),
   field('unit','단원',[['','전체 단원'],...unitOptions().map(u=>[u.id,u.label])],unit)
  ].join('');
- const extra=receivedSource?'':'<details class="dst-extra"'+(type||level?' open':'')+'><summary>유형·난이도 설정</summary><div class="dst-fields">'+field('type','유형',[['','전체 유형'],...types.map(t=>[t.id,t.label])],type)+field('level','난이도',[['','여러 단계 섞기'],...[1,2,3,4].map(n=>[n,n+'단계'])],level)+'</div></details>';
+ const extra=receivedSource?'':'<details class="dst-extra"'+(type||level?' open':'')+'><summary>유형·변형 단계 설정</summary><div class="dst-fields">'+field('type','유형',[['','전체 유형'],...types.map(t=>[t.id,t.label])],type)+field('level','변형 단계',[['','여러 단계 섞기'],...[1,2].map(n=>[n,n+'단계'])],level)+'</div></details>';
  const preset=field('preset','시험 구성',presets.map(n=>[n,n+'문항 · '+(n*2)+'분']),count);
  const start='<button class="dst-start" data-time-action="quote"'+(busy?' disabled':'')+'>시험 시작</button>';
  return '<div class="dst-fields">'+scopeFields+preset+'</div>'+extra+start;

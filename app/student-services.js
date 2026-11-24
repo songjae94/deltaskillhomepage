@@ -6,12 +6,31 @@
  const own=o=>o&&typeof o==='object'&&!Array.isArray(o);
  const copy=o=>JSON.parse(JSON.stringify(o));
  const requestId=id=>{if(!UUID.test(id||''))throw fail('bad_request_id');return id;};
- function reset(){epoch++;progress=null;sets.clear();inflight.clear();}
+ let progressPermits=null;
+ function reset(){epoch++;progress=null;progressPermits=null;sets.clear();inflight.clear();}
+ // Keep unsupported legacy exercises on this device; only server-admitted local
+ // exercises are sent. Remote sourcePending is preserved for server validation.
+ function projectProgress(state,questions){
+  const permitted=new Map(questions.filter(q=>q.sourceKind==='supplement').map(q=>[q.id||q.questionId,q]));
+  const out=copy(state),localOnly={records:0,pending:0};
+  out.records=state.records.filter(r=>{const q=permitted.get(r.questionId);const ok=q&&q.version===r.version&&q.course===r.course;if(!ok)localOnly.records++;return ok;}).map(copy);
+  out.pending={};
+  for(const [course,p] of Object.entries(state.pending||{})){
+   if(p?.cleared===true){out.pending[course]=copy(p);continue;}
+   if(Array.isArray(p?.pool)&&p.pool.length&&p.pool.every(id=>permitted.get(id)?.course===course))out.pending[course]=copy(p);
+   else localOnly.pending++;
+  }
+  return {state:out,localOnly};
+ }
+ async function progressCatalog(){
+  if(!progressPermits){const ownEpoch=epoch;const pending=catalog({purpose:'study_free',sourceKind:'supplement'}).then(d=>d.questions);progressPermits=pending;pending.catch(()=>{if(ownEpoch===epoch&&progressPermits===pending)progressPermits=null;});}
+  return progressPermits;
+ }
  addEventListener('ds-session-change',reset);
  async function call(action,args={}){const generation=epoch;await window.DSService?.ready;if(generation!==epoch)throw fail('session_changed');if(!window.DSService?.session?.())throw fail('unauthorized',{status:401});try{const d=await DSService.request('/student-services',{action,...args});if(generation!==epoch)throw fail('session_changed');if(!own(d)||d.ok!==true)throw fail('invalid_response');return d;}catch(e){if(generation!==epoch)throw fail('session_changed');throw fail(e.code||e.message||'service_unavailable',{status:e.status,requestId:args.requestId});}}
  function cleanProgress(d){if(d.courseId!==COURSE||!HEX.test(d.ownerKey||'')||!integer(d.version)||!own(d.state)||d.state.version!==1||!Array.isArray(d.state.records)||d.state.records.length>250)throw fail('invalid_response');if(JSON.stringify(d.state).length>262144)throw fail('invalid_response');return {ownerKey:d.ownerKey,courseId:d.courseId,version:d.version,state:copy(d.state),...(typeof d.replayed==='boolean'?{replayed:d.replayed}:{})};}
  async function getProgress(courseId=COURSE){if(courseId!==COURSE)throw fail('unknown_course');const d=cleanProgress(await call('get_progress',{courseId}));progress=d;return copy(d);}
- async function saveProgress(state,{courseId=COURSE,expectedVersion,requestId:id}={}){if(courseId!==COURSE)throw fail('unknown_course');if(!progress)throw fail('progress_not_loaded');if(!own(state)||state.version!==1||!Array.isArray(state.records)||state.records.length>250||new TextEncoder().encode(JSON.stringify(state)).length>262144)throw fail('bad_state');const owner=progress.ownerKey,version=expectedVersion??progress.version;if(!integer(version))throw fail('bad_version');id=requestId(id||crypto.randomUUID());try{const d=cleanProgress(await call('save_progress',{courseId,ownerKey:owner,state:copy(state),expectedVersion:version,requestId:id}));if(d.ownerKey!==owner){reset();throw fail('owner_changed');}progress=d;return copy(d);}catch(e){if(e.status===409&&e.code==='version_conflict'){try{const latest=await getProgress(courseId);if(latest.ownerKey!==owner)throw fail('owner_changed');Object.assign(e,latest);}catch(recovery){if(recovery.code==='owner_changed')throw recovery;}}throw e;}}
+ async function saveProgress(state,{courseId=COURSE,expectedVersion,requestId:id}={}){if(courseId!==COURSE)throw fail('unknown_course');if(!progress)throw fail('progress_not_loaded');if(!own(state)||state.version!==1||!Array.isArray(state.records)||state.records.length>250||new TextEncoder().encode(JSON.stringify(state)).length>262144)throw fail('bad_state');const owner=progress.ownerKey,version=expectedVersion??progress.version;if(!integer(version))throw fail('bad_version');id=requestId(id||crypto.randomUUID());const generation=epoch;const projected=projectProgress(state,await progressCatalog());if(generation!==epoch||progress?.ownerKey!==owner)throw fail('session_changed');try{const d=cleanProgress(await call('save_progress',{courseId,ownerKey:owner,state:projected.state,expectedVersion:version,requestId:id}));if(d.ownerKey!==owner){reset();throw fail('owner_changed');}progress=d;return {...copy(d),localOnly:projected.localOnly};}catch(e){if(e.status===409&&e.code==='version_conflict'){try{const latest=await getProgress(courseId);if(latest.ownerKey!==owner)throw fail('owner_changed');Object.assign(e,latest);}catch(recovery){if(recovery.code==='owner_changed')throw recovery;}}throw e;}}
  function selection(input={}){if(!own(input)||!Array.isArray(input.questionIds)||input.questionIds.length<1||input.questionIds.length>100||new Set(input.questionIds).size!==input.questionIds.length||!input.questionIds.every(id=>typeof id==='string'&&id.length>=1&&id.length<=160)||!integer(input.durationSeconds,60,7200))throw fail('bad_selection');return {questionIds:[...input.questionIds],durationSeconds:input.durationSeconds};}
  function quoted(d){if(!HEX.test(d.catalogVersion||'')||!integer(d.basePoints,1,1000000)||!integer(d.chargePoints,0,1000000)||typeof d.firstFreeAvailable!=='boolean'||!(d.remaining===null||integer(d.remaining,0,100000000))||!Array.isArray(d.questions)||!d.questions.length||!Number.isFinite(Date.parse(d.serverNow)))throw fail('invalid_response');return d;}
  async function quote(input){return copy(quoted(await call('timeattack_quote',selection(input))));}
