@@ -61,7 +61,7 @@
     </div>`;
   }
 
-  function render({profile, draft = {}, step = 0, phase = 'survey', course, subjects = [], units = [], books = []}) {
+  function render({profile, draft = {}, step = 0, phase = 'survey', course, subjects = [], units = [], books = [], supplyPhase = 'idle'}) {
     if (phase === 'return') {
       return `<section class="ssp-plan" aria-label="학습 시작">
         <h3 class="ssp-plan-title" tabindex="-1">오늘은 어디서 시작할까요?</h3>
@@ -86,7 +86,12 @@
     } else if (index === 1) {
       choices = `<div class="ssp-plan-needs">${Object.entries(courses).map(([id, label]) => answer(id, label, draft.need)).join('')}</div>`;
     } else {
-      choices = draft.need==='supplement' ? chooseBook(draft, books, units) : chooseRange(draft, subjects, units);
+      choices = draft.need==='supplement' && !books.length ? '' : draft.need==='supplement' ? chooseBook(draft, books, units) : chooseRange(draft, subjects, units);
+      if(supplyPhase==='error')choices+='<p role="status">무료 문항 목록을 확인하지 못했어요.</p><button type="button" data-plan-supply-retry>다시 확인</button>';
+      else if(supplyPhase==='loading')choices+='<p role="status">무료로 풀 수 있는 교재와 단원을 확인하고 있어요.</p>';
+      else if(supplyPhase==='guest'&&draft.need==='supplement')choices+='<p>로그인하면 교재별 무료 문항을 연습할 수 있어요.</p>';
+      else if(draft.need==='supplement'&&!books.length)choices+='<p>지금 선택할 수 있는 교재가 없어요.</p>';
+      else if(draft.subject&&units.length&&units.every(u=>u.disabled))choices+='<p>이 과목의 선택한 학습 문항을 준비하고 있어요. 다른 과목을 골라 주세요.</p>';
     }
     return `<section class="ssp-plan" aria-label="내 공부 선택">
       <div class="ssp-plan-progress"><span>질문 ${index + 1} / 3</span>
