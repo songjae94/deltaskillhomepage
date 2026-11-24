@@ -4,6 +4,7 @@
 
   function prepareChoices({root,id,value,options=[],math,choose}) {
       const doc=root.ownerDocument;
+      window.DSStudentFragment?.applyTypography(doc);
       const optionCount=options.length||5;
       const excludes='li,table,.bogi,.cond,.cond-box,.condition,.conditions,.katex,[data-condition]';
       const lists=[...root.querySelectorAll('ol,ul')].filter(el=>
@@ -89,11 +90,11 @@
       .dte-source-choices[data-choice-columns="3"]{grid-template-columns:repeat(3,minmax(max-content,1fr))!important}
       .dte-source-choices>li{display:flex!important;min-width:0!important;width:auto!important;margin:0!important;padding:0!important;list-style:none!important}
       .dte-source-choices>li::before,.dte-source-choices>li::marker{content:none!important}
-      .dte-inline-choice{box-sizing:border-box;width:100%;min-width:0;min-height:44px;display:flex;align-items:center;gap:4px;padding:5px 6px;border:1px solid #c4c1b6;border-radius:4px;background:#fbf9f2;color:#292d31;cursor:pointer;text-align:start;font:inherit;line-height:1.55}
+      .dte-inline-choice{box-sizing:border-box;width:100%;min-width:0;min-height:44px;display:flex;align-items:baseline;gap:4px;padding:5px 6px;border:1px solid #c4c1b6;border-radius:4px;background:#fbf9f2;color:#292d31;cursor:pointer;text-align:start;font:inherit;line-height:1.55}
       .dte-inline-choice:hover{border-color:#949284;background:#f5f2e9}
       .dte-inline-choice[aria-pressed=true]{border-color:#78668a;background:#eee9f1}
       .dte-inline-choice:focus-visible{outline:2px solid #766686;outline-offset:-2px}
-      .dte-choice-no{box-sizing:border-box;flex:0 0 16px;height:16px;display:grid;place-items:center;border:1px solid currentColor;border-radius:50%;font:500 11px/1 Arial,sans-serif}
+      .dte-choice-no{box-sizing:border-box;flex:0 0 1.24em;height:1.24em;display:inline-flex;align-items:center;justify-content:center;border:1px solid currentColor;border-radius:50%;font:500 1em/1 Arial,sans-serif}
       .dte-choice-content{min-width:0;max-width:100%;white-space:normal;overflow-wrap:anywhere;overflow-x:auto}
       .dte-source-choices:is([data-choice-columns="3"],[data-choice-columns="5"]) .dte-choice-content{white-space:nowrap;overflow-wrap:normal}
       @media(max-width:480px){.dte-inline-choice{gap:3px;padding-inline:4px}}
