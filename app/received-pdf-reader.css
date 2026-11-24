@@ -1,0 +1,29 @@
+.received-pdf-reader {
+  --rpr-ink:#23283a; --rpr-rule:#d6d7d0;
+  box-sizing:border-box; width:min(880px,96vw); height:min(94dvh,1120px); max-height:96dvh; max-width:96vw;
+  padding:0; border:1px solid #bbbcb6; border-radius:12px; color:var(--rpr-ink);
+  background:#faf8f3 url('assets/textures/dl63-paper-fiber.webp') 0 0 / 256px;
+  box-shadow:0 16px 70px #19222f42; font:inherit;
+}
+.received-pdf-reader[open]{display:grid;grid-template-rows:auto auto minmax(0,1fr) auto}
+.received-pdf-reader::backdrop{background:#18203099}
+.received-pdf-reader :is(header,.rpr-files,nav){display:flex;align-items:center;gap:12px;padding:10px 20px}
+.received-pdf-reader header{justify-content:space-between;border-bottom:1px solid var(--rpr-rule)}
+.received-pdf-reader header h2{font-family:inherit;font-size:clamp(15px,2.5vw,20px);line-height:1.45;font-weight:650;margin:0;word-break:keep-all}
+.received-pdf-reader :is(button,select,input){box-sizing:border-box;background:#fffefa;color:var(--rpr-ink);font:inherit;font-size:14px;border:1px solid #c4c8c8;border-radius:6px;min-height:40px}
+.received-pdf-reader button{padding:4px 14px;cursor:pointer;flex:none}
+.received-pdf-reader button:disabled{opacity:.45;cursor:default}
+.received-pdf-reader .rpr-files{justify-content:space-between;flex-wrap:wrap}
+.received-pdf-reader .rpr-files label{display:flex;align-items:center;gap:8px;font-size:13px;max-width:100%}
+.received-pdf-reader .rpr-files select{min-width:0;max-width:65vw;padding:4px 8px}
+.received-pdf-reader .rpr-files a{margin-left:auto;font-size:13px;color:#304e65;text-underline-offset:3px}
+.received-pdf-reader [hidden]{display:none!important}
+.received-pdf-reader .rpr-sheet{overflow:auto;min-height:0;overscroll-behavior:contain;border-block:1px solid var(--rpr-rule);background:#e6e6e1}
+.received-pdf-reader .rpr-sheet p{padding:12px 16px;font-size:14px}
+.received-pdf-reader .rpr-sheet p:empty{display:none}
+.received-pdf-reader canvas{display:block;width:100%;height:auto;background:white}
+.received-pdf-reader nav{justify-content:center}
+.received-pdf-reader nav label{display:flex;align-items:center;gap:8px;font-size:14px}
+.received-pdf-reader input{width:4.2em;text-align:center}
+.received-pdf-reader :focus-visible{outline:2px solid #2448cc;outline-offset:2px}
+@media(max-width:600px){.received-pdf-reader :is(header,.rpr-files,nav){padding:8px 12px}.received-pdf-reader nav button{min-width:44px;min-height:44px}}

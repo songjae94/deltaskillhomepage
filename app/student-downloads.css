@@ -79,7 +79,7 @@ html[data-design="b"] body[data-page="student"] #content .sd-print .tb36-count i
   #content .sd-heading p {max-width:54ch; word-break:keep-all}
 }
 
-#content .sd-downloads .ms-categories button:enabled {cursor:pointer}
-#content .sd-downloads .ms-categories button[aria-pressed=false] {font-weight:550;box-shadow:0 1px 2px #2025360f}
-#content .sd-downloads:not([data-sd-view="store"]) .ms-categories {margin-bottom:24px}
 @media(max-width:700px){#content .sd-downloads{width:calc(100% - 32px);padding:15px 12px 28px}}
+
+#content .sd-downloads .sd-files {margin-top:32px;scroll-margin-top:80px}
+#sd-files-title{scroll-margin-top:90px}

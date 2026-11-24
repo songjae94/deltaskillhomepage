@@ -11,7 +11,7 @@ const gradeBank=()=>bank.filter(q=>q.grade===grade);
 let grade=1,level='',unit='',book='',count=4,minutes=24,active=null,quote=null,selection=[],busy=false,notice='',epoch=0;
 const scope='.ds-timed';
 const label=q=>gradeNames[q.grade]+' · '+q.unit;
-function accountChanged(){epoch++;seq++;remote=null;remoteStatus='';resources.clear();catalogById.clear();active=null;quote=null;notice='';busy=false;selection=[];}
+function accountChanged(){receivedSource=null;epoch++;seq++;remote=null;remoteStatus='';resources.clear();catalogById.clear();active=null;quote=null;notice='';busy=false;selection=[];}
 window.addEventListener('ds-session-change',accountChanged);
 function options(values,chosen){return values.map(([value,title])=>'<option value="'+escape(value)+'"'+(String(chosen)===String(value)?' selected':'')+'>'+escape(title)+'</option>').join('');}
 const fixedKey=g=>'ds-fixed-final-v1-'+g;
@@ -76,7 +76,7 @@ async function printPaper(ids,title,includeSolutions=true){
   doc.body.replaceChildren(main);await Promise.all([...main.querySelectorAll('iframe')].map(f=>f.matches('.ds-student-fragment')?window.DSStudentFragment.fit(f):sizeFrame(f)));await doc.fonts.ready;await new Promise(ok=>w.requestAnimationFrame(()=>w.requestAnimationFrame(ok)));if(!w.closed)w.print();
  }catch{if(!w.closed)doc.body.textContent='문제지 조판을 불러오지 못했습니다. 창을 닫고 다시 인쇄해 주세요.';}
 }
-function title(){return '고'+grade+' '+gradeNames[grade]+(active?.kind==='custom'?' 맞춤 타임어택':' 기말 연습');}
+function title(){if(receivedSource)return receivedSource.title+' 타임어택';return '고'+grade+' '+gradeNames[grade]+(active?.kind==='custom'?' 맞춤 타임어택':' 기말 연습');}
 function attemptHTML(){
  const finished=['finished','expired'].includes(active.status);
  const count=active.questionIds.length;
@@ -93,6 +93,7 @@ function attemptHTML(){
  return heading+'<div data-time-form>'+questions+'</div><div class="dst-actions">'+(finished?'':'<button data-time-action="finish">채점하고 마치기</button>')+'<button data-time-action="print">'+(finished?'문제지·해설 인쇄':'문제지 인쇄')+'</button><button data-time-action="back">세트 목록</button></div>';
 }
 const catalogById=new Map(), resources=new Map();
+let receivedSource=null;
 let remote=null,remoteStatus='',seq=0,type='',scopeMode='specific';
 function subjectBooks(){return (window.DSWorkbookScope?.books||[]).filter(b=>b.subject===gradeNames[grade]);}
 function selectedBook(){return subjectBooks().find(b=>b.id===book);}
@@ -103,33 +104,76 @@ function criteria(){
  const typeIds=!type||scopeMode==='unit'?[]:scopeMode==='family'&&t?.familyId?typeOptions().filter(x=>x.familyId===t.familyId).map(x=>x.id):[type];
  return {purpose:'timeattack',sourceKind:'existing_print',grade,subject:gradeNames[grade],...(book?{bookId:book}:{}),unitIds:unit?[unit]:[],typeIds:[...new Set(typeIds)]};
 }
+const receivedSku='NS-CM2-07.pdf';
+function canOpenReceived(row){
+ return Boolean(row?.fileId===receivedSku&&row.receiptId&&row.redownloadable!==false);
+}
+async function questionPin(id,version){
+ const hash=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(id+'|'+version));
+ return Array.from(new Uint8Array(hash),b=>b.toString(16).padStart(2,'0')).join('');
+}
+function savedReceiptSet(receiptId){
+ try{return localStorage.getItem('ds-received-timed:'+receiptId);}catch{return null;}
+}
+async function openReceived(row,delivery){
+ const sessionEpoch=epoch;
+ if(busy||!signed()||!canOpenReceived(row)||delivery?.receiptId!==row.receiptId||delivery.fileId!==row.fileId||delivery.charged!==0)throw Error('unverified_receipt');
+ const file=delivery.files?.find(f=>f.fileId==='NS-CM2-07-L1.pdf');
+ const safe=window.DSPointPdf?.safeUrl(file?.url);
+ if(!safe)throw Error('unverified_edition');
+ const path=new URL(safe).pathname.split('/');
+ const edition=path.at(-2);
+ if(path.at(-3)!==row.fileId||!(path.at(-1)===file.fileId+'.pdf'||path.at(-1)===file.fileId))throw Error('unverified_edition');
+ const response=await fetch(new URL('public-data/received-timed-pins.json',document.baseURI));
+ if(!response.ok)throw Error('missing_edition');
+ const collection=await response.json(),pins=collection.groups[collection.editions[edition]];
+ if(!Array.isArray(pins)||!pins.length)throw Error('unverified_edition');
+ const tab=document.querySelector('[data-hub-tab="timed"]');
+ if(active?.kind==='custom'&&active.dirty)await flushDraft(active);
+ if(epoch!==sessionEpoch||!signed()||!tab?.isConnected)throw Error('session_changed');
+ receivedSource={receiptId:row.receiptId,pins:new Set(pins),title:row.title||'유리함수와 무리함수',lastSet:savedReceiptSet(row.receiptId)};
+ grade=1;book='OL-type-CM2';unit='';type='';level='';scopeMode='specific';count=4;minutes=24;
+ active=null;remote=null;quote=null;req=null;selection=[];remoteStatus='';notice='';seq++;
+ tab.click();
+}
 function cleanRemote(r){
  return (r.questions||[]).filter(q=>typeof q.id==='string'&&!byId.has(q.id)&&typeof q.version==='string'&&q.id.length<220).map(q=>({...q,level:q.stage??q.level??(Number.isInteger(q.difficulty)?q.difficulty:null)}));
 }
 async function loadCatalog(){
  const own=++seq;quote=null;remote=null;remoteStatus='확인 중';paint();
  try{if(!signed()||!service()?.catalog)throw Error();const requested=criteria();const r=await service().catalog(requested);if(own!==seq||!signed())return;
- const rows=cleanRemote(r).filter(q=>q.subject===requested.subject&&(!requested.bookId||(q.bookId===requested.bookId||q.bookIds?.includes(requested.bookId)))&&(!requested.unitIds.length||requested.unitIds.includes(q.unitId)||requested.unitIds.includes(q.subunitId)||q.unitIds?.some(v=>requested.unitIds.includes(v)))&&(!requested.typeIds.length||requested.typeIds.includes(q.typeId)||q.typeIds?.some(v=>requested.typeIds.includes(v))));remote={rows,catalogVersion:r.catalogVersion};for(const q of rows)catalogById.set(q.id,q);remoteStatus='';}
+ let rows=cleanRemote(r).filter(q=>q.subject===requested.subject&&(!requested.bookId||(q.bookId===requested.bookId||q.bookIds?.includes(requested.bookId)))&&(!requested.unitIds.length||requested.unitIds.includes(q.unitId)||requested.unitIds.includes(q.subunitId)||q.unitIds?.some(v=>requested.unitIds.includes(v)))&&(!requested.typeIds.length||requested.typeIds.includes(q.typeId)||q.typeIds?.some(v=>requested.typeIds.includes(v))));
+ const source=receivedSource;
+ if(source){
+  const pins=await Promise.all(rows.map(q=>questionPin(q.id,q.version)));
+  if(own!==seq||!signed()||source!==receivedSource)return;
+  rows=rows.filter((q,i)=>source.pins.has(pins[i]));
+ }
+ remote={rows,catalogVersion:r.catalogVersion};for(const q of rows)catalogById.set(q.id,q);remoteStatus='';}
  catch{if(own===seq)remoteStatus='문항 자료를 불러오지 못했어요. 다시 확인해 주세요.';}
  if(own===seq)paint();
 }
 function candidates(){return (remote?.rows||[]).filter(q=>!level||String(q.level)===level);}
 function customSetup(){
  const books=subjectBooks(),types=typeOptions(),t=types.find(x=>x.id===type),pool=candidates(),shortage=!!remote&&pool.length<count;
- const filters='<div class="dst-fields"><label>부교재<select data-time-field="book">'+options([['','교재 지정 없이 섞기'],...books.map(b=>[b.id,b.label])],book)+'</select></label><label>소단원<select data-time-field="unit">'+options([['','여러 소단원 섞기'],...unitOptions().map(u=>[u.id,u.label])],unit)+'</select></label><label>유형<select data-time-field="type">'+options([['','여러 유형 섞기'],...types.map(t=>[t.id,t.label])],type)+'</select></label><label>단계<select data-time-field="level">'+options([['','여러 단계 섞기'],...[1,2,3,4].map(n=>[n,n+'단계'])],level)+'</select></label><label>문항 수<select data-time-field="count">'+options(Array.from({length:16},(_,i)=>[i+1,(i+1)+'문항']),count)+'</select></label><label>제한 시간<select data-time-field="minutes">'+options([6,12,18,24,30].map(n=>[n,n+'분']),minutes)+'</select></label></div>';
+ const fields='<div class="dst-fields"><label>부교재<select data-time-field="book">'+options([['','교재 지정 없이 섞기'],...books.map(b=>[b.id,b.label])],book)+'</select></label><label>소단원<select data-time-field="unit">'+options([['','여러 소단원 섞기'],...unitOptions().map(u=>[u.id,u.label])],unit)+'</select></label><label>유형<select data-time-field="type">'+options([['','여러 유형 섞기'],...types.map(t=>[t.id,t.label])],type)+'</select></label><label>단계<select data-time-field="level">'+options([['','여러 단계 섞기'],...[1,2,3,4].map(n=>[n,n+'단계'])],level)+'</select></label>';
+ const sizeFields='<label>문항 수<select data-time-field="count">'+options(Array.from({length:16},(_,i)=>[i+1,(i+1)+'문항']),count)+'</select></label><label>제한 시간<select data-time-field="minutes">'+options([6,12,18,24,30].map(n=>[n,n+'분']),minutes)+'</select></label></div>';
+ const filters=(receivedSource?'<div class="dst-fields">':fields)+sizeFields;
  let controls=remote?'<p>현재 범위에서 이용 가능 '+pool.length+'문항'+'</p>':'<p role="status">'+escape(remoteStatus)+'</p><button data-time-action="catalog">기존 문항 조회</button>';
  if(shortage){controls+='<p>요청한 '+count+'문항보다 '+(count-pool.length)+'문항 부족해요.</p><div class="dst-actions">';
  if(type&&scopeMode==='specific'&&t?.familyId&&types.filter(x=>x.familyId===t.familyId).length>1)controls+='<button data-time-action="family">'+escape(t.familyId)+' 유형군 보기</button>';
  if(type&&scopeMode!=='unit')controls+='<button data-time-action="unitwide">소단원 전체 유형 보기</button>';
  if(unit)controls+='<button data-time-action="bookwide">같은 교재의 다른 소단원 포함</button>';
  if(level)controls+='<button data-time-action="alllevels">현재 범위에서 여러 단계 섞기</button>';
- if(!unit&&!type&&book&&!pool.length)controls+='<button data-time-action="allbooks">같은 과목의 다른 교재 포함</button>';
+ if(!receivedSource&&!unit&&!type&&book&&!pool.length)controls+='<button data-time-action="allbooks">같은 과목의 다른 교재 포함</button>';
  if(pool.length)controls+='<button data-time-action="fewer">현재 '+pool.length+'문항으로 구성</button>';controls+='</div>';}
  if(quote)controls+='<p><strong>'+selection.length+'문항 · '+Number(quote.chargePoints).toLocaleString()+'P</strong></p><button data-time-action="start">이 조건으로 시작하기</button>';
  else if(remote&&!shortage)controls+='<button data-time-action="quote">시작 전 포인트 확인</button>';
+ if(receivedSource)return filters+controls+(receivedSource.lastSet?' <button data-time-action="resume">이 교재의 이전 세트 열기</button>':'');
  return filters+controls+' <button data-time-action="resume">최근 맞춤 세트 열기</button>';
 }
 function setup(){
+ if(receivedSource)return '<div class="ta-work-v18 sl54-paper-preview"><header class="dst-head"><div><p>받은 자료 · 타임어택</p><h2>'+escape(receivedSource.title)+'</h2></div></header><p>이 교재에 실린 문항 중에서 골라요. 첫 맞춤 세트는 무료이며, 이후에는 시작 전에 문항별 포인트를 확인해요.</p>'+customSetup()+'<div class="dst-actions"><button data-time-action="leave-received">전체 타임어택 보기</button></div></div>';
  const prev=remembered(grade);
  const gradeKeys=[1,2].map(g=>'<button data-time-grade="'+g+'" aria-pressed="'+(grade===g)+'">고'+g+' · '+gradeNames[g]+'</button>').join('');
  const start=prev?(prev.status==='finished'?'채점 결과 다시 보기':'공통 세트 이어 풀기'):'공통 세트 풀기';
@@ -184,6 +228,7 @@ function flushDraft(item){
  });return draftQueue;
 }
 async function action(command){if(busy)return;const sessionEpoch=epoch;notice='';
+ if(command==='leave-received'){receivedSource=null;book='';remoteStatus='';seq++;await loadCatalog();return;}
  if(command==='back'){if(active?.kind==='custom'){busy=true;try{await flushDraft(active);}catch{busy=false;return;}busy=false;}active=null;quote=null;paint();return;}
  if(command==='fixed'){active=remembered(grade)||{kind:'fixed',grade,questionIds:gradeBank().map(q=>q.id),startedAt:Date.now(),durationSeconds:1440,status:'running',responses:{}};saveFixed();paint();return;}
  if(command==='catalog'){await loadCatalog();return;}
@@ -200,9 +245,17 @@ async function action(command){if(busy)return;const sessionEpoch=epoch;notice=''
  if(command==='finish'&&active?.kind==='fixed'){active.status='finished';saveFixed();paint();return;}
  if(!signed()||!service()){notice='로그인과 계정 연결을 확인해 주세요.';paint();return;}
  busy=true;try{
- if(command==='quote'){selection=candidates().map(q=>q.id);for(let i=selection.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[selection[i],selection[j]]=[selection[j],selection[i]];}selection=[...selection.filter(id=>catalogById.get(id)?.sourceKind==='existing_print'),...selection.filter(id=>catalogById.get(id)?.sourceKind!=='existing_print')].slice(0,count);if(selection.length!==count)throw Error('조건에 맞는 문항이 없어요.');const r=await service().quote({questionIds:selection,durationSeconds:minutes*60});if(sessionEpoch!==epoch)return;if(!Number.isSafeInteger(r.chargePoints)||r.chargePoints<0)throw Error('문항별 포인트를 확인할 수 없어요.');quote=r;req=nextRequest();}
- if(command==='start'&&quote){const result=await service().start({questionIds:selection,durationSeconds:minutes*60,catalogVersion:quote.catalogVersion,expectedCharge:quote.chargePoints,requestId:req});if(sessionEpoch!==epoch)return;await accept(result);quote=null;}
- if(command==='resume'){const result=await service().read(lastId?{setId:lastId}:{});if(sessionEpoch!==epoch)return;if(result.set===null){notice='아직 시작한 맞춤 세트가 없어요.';}else{await accept(result);}}
+ if(command==='quote'){selection=candidates().map(q=>q.id);for(let i=selection.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[selection[i],selection[j]]=[selection[j],selection[i]];}selection=[...selection.filter(id=>catalogById.get(id)?.sourceKind==='existing_print'),...selection.filter(id=>catalogById.get(id)?.sourceKind!=='existing_print')].slice(0,count);if(selection.length!==count)throw Error('조건에 맞는 문항이 없어요.');const r=await service().quote({questionIds:selection,durationSeconds:minutes*60});if(sessionEpoch!==epoch)return;if(!Number.isSafeInteger(r.chargePoints)||r.chargePoints<0)throw Error('문항별 포인트를 확인할 수 없어요.');if(receivedSource&&(!Array.isArray(r.questions)||r.questions.length!==selection.length||r.questions.some((q,i)=>q.id!==selection[i]||q.version!==catalogById.get(q.id)?.version))){
+   remote=null;quote=null;remoteStatus='문항의 판이 바뀌었어요. 이 교재에 실린 문항을 다시 확인해 주세요.';return;
+  }
+  quote=r;req=nextRequest();}
+ if(command==='start'&&quote){const result=await service().start({questionIds:selection,durationSeconds:minutes*60,catalogVersion:quote.catalogVersion,expectedCharge:quote.chargePoints,requestId:req});if(sessionEpoch!==epoch)return;if(receivedSource){
+    const set=(result.set||result);receivedSource.lastSet=set.setId;try{localStorage.setItem('ds-received-timed:'+receivedSource.receiptId,set.setId);}catch{}
+  }
+  await accept(result);quote=null;}
+ if(command==='resume'){const setId=receivedSource?receivedSource.lastSet:lastId;if(receivedSource&&!setId)throw Error();const result=await service().read(setId?{setId}:{});if(sessionEpoch!==epoch)return;if(result.set===null){notice='아직 시작한 맞춤 세트가 없어요.';}else{
+    if(receivedSource){const source=receivedSource;const set=result.set||result;const pins=await Promise.all(set.questionIds.map((id,i)=>questionPin(id,set.versions[i])));if(sessionEpoch!==epoch||source!==receivedSource||!pins.every(pin=>source.pins.has(pin)))throw Error();}
+    await accept(result);}}
  if(command==='finish'&&active){
    const item=active;
    if(remaining()>0)await flushDraft(item);
@@ -231,7 +284,7 @@ const mount=()=>{if(signed()&&!remote&&!remoteStatus&&!active)loadCatalog();};
 async function openSaved(id){
  if(!signed()||busy)return;
  if(active?.kind==='custom'&&active.dirty){try{await flushDraft(active);}catch{return;}}
- lastId=id;await action('resume');
+ receivedSource=null;lastId=id;await action('resume');
 }
-window.DSStudentTimed={render:html,printPaper,renderPaper,mount,openSaved};
+window.DSStudentTimed={render:html,printPaper,renderPaper,mount,openSaved,openReceived,canOpenReceived};
 })();

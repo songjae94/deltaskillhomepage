@@ -21,7 +21,7 @@
 @media(max-width:700px){.dsh .sl54-source>iframe{max-width:100%}}
 
 .dsh-navigation .dsh-tabs {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   padding: 5px;
   gap: 5px;
   border: 1px solid #b9c2c8;
@@ -73,3 +73,5 @@
 .ssp-record-counts dd {margin:4px 0 0; font-size:1.5em; font-weight:700}
 .ssp-history details {margin:.6rem 0 1rem}
 .ssp-history summary {cursor:pointer; padding:.5rem 0}
+
+@media(max-width:540px){.dsh-navigation .dsh-tabs>button{flex-direction:column;gap:3px}.dsh-navigation .dsh-tabs strong{font-size:13px}}

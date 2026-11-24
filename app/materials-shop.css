@@ -132,3 +132,30 @@
 @media(max-width:760px){#content .ms-bookshelf{grid-template-columns:repeat(2,minmax(0,1fr));padding:16px;gap:22px 16px}.ms-book-info{min-height:124px}}
 @media(max-width:580px){#content .ms-shop{padding:20px 14px;border-radius:8px}.ms-mast{gap:10px}#content .ms-cart-button{font-size:12px;padding:7px 9px}#content .ms-categories button{font-size:12px;min-height:48px}.ms-categories{gap:6px}#content .ms-bookshelf{padding:12px;gap:22px 10px}#content .ms-stage{padding:14px 10% 20px}.ms-book-info{padding:10px 8px 8px;min-height:130px}#content .ms-book-info h3{font-size:13px}.ms-formats{padding:0 8px 6px}#content .ms-format{grid-template-columns:auto 1fr;font-size:12px;gap:2px}.ms-format small{grid-column:2;text-align:right;font-size:12px}.ms-planned-label{font-size:12px}.ms-price-number{white-space:normal}}
 @media(prefers-reduced-motion:reduce){.ms-book-cover{transition:none}}
+
+/* The cover stands on the shelf. The unit, source and two format prices sit on one paper label. */
+#content .ms-bookshelf {align-items:stretch}
+#content .ms-volume {display:grid;grid-template-rows:auto 1fr auto}
+.ms-stage .ms-look {position:absolute;bottom:7px;right:6px;background:#fffef9f5;color:#35404b;border:1px solid #d6cfc2;border-radius:3px;padding:3px 6px;font-size:11px;font-weight:650;line-height:1.45;box-shadow:0 1px 3px #30261b17}
+#content .ms-book-info {min-height:0;padding:16px 14px 13px}
+#content .ms-book-info small {font-size:13px;font-weight:600;line-height:1.45}
+.ms-book-info small i {padding:0 .4em;font-style:normal;color:#95928a}
+#content .ms-book-info h3 {font-size:clamp(18px,1.65vw,23px);line-height:1.25;margin:7px 0 9px;letter-spacing:-.035em}
+#content .ms-book-info>span {font-size:12px;line-height:1.55;word-break:keep-all;color:#605d58}
+#content .ms-formats {padding:0 14px 7px}
+#content .ms-format {grid-template-columns:auto minmax(0,1fr) auto;gap:6px;min-height:48px;border-top:1px solid #e3dfd7;border-bottom:0;padding:5px 0;font-size:13px}
+#content .ms-format em {display:block;font-family:inherit;font-weight:500;line-height:1.25;font-size:11px;font-style:normal;color:#6a6967}
+#content .ms-format b {font-size:17px;font-weight:730;letter-spacing:-.025em;line-height:1.25;white-space:nowrap}
+#content .ms-format small {grid-column:auto;min-width:0;padding:3px 5px;text-align:center;color:#364253}
+#content .ms-format:enabled small {color:#fff;background:#344357;border-radius:4px}
+#content .ms-format:disabled b {font-weight:600;color:#59616a}
+@media(max-width:580px){
+ #content .ms-book-info {padding:12px 9px 10px}
+ #content .ms-book-info h3 {font-size:18px}
+ #content .ms-book-info small,#content .ms-book-info>span {font-size:12px}
+ #content .ms-formats {padding:0 9px 5px}
+ #content .ms-format {grid-template-columns:1fr auto;gap:2px 3px;min-height:52px}
+ #content .ms-format b {font-size:15px}
+ #content .ms-format small {grid-column:2;justify-self:end;font-size:11px;padding:1px 5px}
+ #content .ms-format em {display:inline;margin-left:3px}
+}

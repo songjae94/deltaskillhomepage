@@ -16,7 +16,6 @@
     if (Array.isArray(saved)) cart = [...new Set(saved.filter(x => typeof x === 'string'))];
   } catch {}
   let scope=null;
-  let studentNavigation = '';
   let products = [], selected = '', status = 'idle', audience = 'teacher';
   function save() {
     try { localStorage.setItem(storageKey, JSON.stringify(cart)); } catch {}
@@ -57,7 +56,11 @@
   function formats(p) {
     return ['pdf','hwpx'].map(fmt => {
       const id=key(p,fmt), available=enabled(p,fmt), added=cart.includes(id);
-      return `<button type="button" class="ms-format" aria-label="${escape(title(p))} ${fmt === 'pdf' ? 'PDF' : '한글'} ${cost(p,fmt)} ${added ? '담김' : '담기'}" data-ms-add="${escape(id)}" ${!available||added?'disabled':''}><span>${fmt==='pdf'?'PDF':'한글'}</span><b>${fmt==='hwpx'&&!cashReady(p)&&publicPoints[p.sku] ? '<span class="ms-planned-label">판매 예정가</span><span class="ms-price-number">'+money(publicPoints[p.sku]*2)+'원</span>' : cost(p,fmt)}</b><small>${!available?'준비 중':added?'담김':'담기 +'}</small></button>`;
+      const planned=fmt==='hwpx'&&!available&&publicPoints[p.sku];
+      const format=fmt==='pdf'?'PDF':'한글';
+      const amount=planned?money(publicPoints[p.sku]*2)+'원':cost(p,fmt);
+      const action=!available?'준비 중':added?'담김':'담기';
+      return `<button type="button" class="ms-format" aria-label="${escape(title(p))} ${format} ${cost(p,fmt)} ${action}" data-ms-add="${escape(id)}" ${!available||added?'disabled':''}><span>${format}${planned?'<em>예정가</em>':''}</span><b>${amount}</b><small>${action}</small></button>`;
     }).join('');
   }
   function coverTile(p) {
@@ -66,16 +69,16 @@
       ? `<img src="${coverURL(p.sku)}" width="630" height="891" alt="${label}, ${p.count}문항 표지">`
       : `<span class="ms-fallback-cover">${label}</span>`;
     const cover = p.sample
-      ? `<a class="ms-book-cover" href="${escape(p.sample)}" target="_blank" rel="noopener" aria-label="${label} 지면 미리보기, 새 창">${art}</a>`
+      ? `<a class="ms-book-cover" href="${escape(p.sample)}" target="_blank" rel="noopener" aria-label="${label} 지면 미리보기, 새 창">${art}<span class="ms-look">미리보기 ↗</span></a>`
       : `<div class="ms-book-cover">${art}</div>`;
-    return `<article class="ms-volume" data-sku="${escape(p.sku)}" aria-label="${label}"><div class="ms-stage">${cover}</div><div class="ms-book-info"><small>${escape(p.subject || p.source)}</small><h3>${label}</h3><span>${p.count}문항</span></div><div class="ms-formats">${formats(p)}</div></article>`;
+    return `<article class="ms-volume" data-sku="${escape(p.sku)}" aria-label="${label}"><div class="ms-stage">${cover}</div><div class="ms-book-info"><small>${escape(p.subject)}<i aria-hidden="true">·</i>${p.count}문항</small><h3>${escape(p.unit||title(p))}</h3><span>${p.sourceId?'연계 · ':''}${escape(p.source)}</span></div><div class="ms-formats">${formats(p)}</div></article>`;
   }
   function items() {
     const list = scope ? products.filter(p => scope.bookId
       ? p.sourceId===scope.bookId && (!scope.unitId || p.no===scope.unitId)
       : p.subject===scope.subject && p.unit===scope.unit)
       : selected ? products.filter(p => p.source === selected) : products;
-    const heading = scope ? scope.label : selected ? '단원별 교재' : '판매 교재';
+    const heading = scope ? scope.label : selected ? '단원별 교재' : audience==='student' ? '문제집 변형문항' : '판매 교재';
     const reset = scope || selected ? '<button type="button" class="ms-clear" data-ms-clear>전체 교재 보기</button>' : '';
     return `<section class="ms-items" aria-label="${escape(selected || '전체')} 판매 교재"><div class="ms-results dl63-head"><h2>${escape(heading)}</h2><span>${list.length}권</span>${reset}</div>${scope && !list.length ? '<p role="status">이 범위에서 구매할 수 있는 자료는 아직 없습니다.</p>' : ''}<div class="ms-bookshelf">${list.map(coverTile).join('')}</div></section>`;
   }
@@ -125,7 +128,7 @@
     const cartButton = `<button class="ms-cart-button" type="button" data-ms-cart aria-label="장바구니 ${count}개"><i aria-hidden="true"></i>장바구니 <b>${count}</b></button>`;
     const tabs = categories.map((c,i) => `<button type="button" ${i?'disabled':'aria-pressed="true"'}><small>${i+1}</small>${c}</button>`).join('');
     const catalog = status === 'error' ? '<p>교재 목록을 불러오지 못했습니다.</p><button data-ms-retry>다시 불러오기</button>' : status !== 'ready' ? '<p role="status">교재 목록을 불러오는 중입니다.</p>' : picker() + items();
-    const navigation = studentNavigation || `<div class="ms-categories" role="group" aria-label="자료 종류">${tabs}</div>`;
+    const navigation = audience==='student' ? '' : `<div class="ms-categories" role="group" aria-label="자료 종류">${tabs}</div>`;
     return `<div class="ms-mast dl63-head"><div><span class="dl63-kicker">시험 범위 자료 고르기</span><h1>내신 자료</h1>${status==='ready' ? `<p>연계 교재 ${grouped().length}종 <i>·</i> 단원별 자료 ${products.length}권</p>` : ''}</div>${cartButton}</div>${navigation}${catalog}`;
   }
   window.addEventListener('ds-point-pdf-update', () => { if (!root()?.querySelector('dialog[open]')) refresh(); });
@@ -134,7 +137,6 @@
   window.DSMaterialsShop = {
     render(options={}) {
       audience=options.audience==='student'?'student':'teacher';
-      studentNavigation=audience==='student'?options.navigation||'':'';
       scope=audience==='student'?options.scope||null:null;
       load();
       return '<section class="ms-shop dl63-page dl63" data-ms-audience="'+audience+'">' + body() + '</section>';

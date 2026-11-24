@@ -5,10 +5,15 @@ if(!area||!entry)return;
 const tabs=[
  ['study','공부하기','M3 5h6c2 0 3 1 3 2 0-1 1-2 3-2h6v14h-6c-2 0-3 1-3 2 0-1-1-2-3-2H3zM12 7v14'],
  ['downloads','자료받기','M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5'],
+ ['create','자료만들기','M7 3h10v5H7zM6 17H4V9h16v8h-2M7 14h10v7H7zM16 11h1'],
  ['timed','타임어택','M9 2h6m-3 0v3m7 2 2-2M12 9v5l3 1M20 14a8 8 0 1 1-16 0 8 8 0 0 1 16 0']
 ];
-const param=new URLSearchParams(location.search).get('studentMode');
-let tab=tabs.some(([key])=>key===param)?param:'study';
+function currentMode(){
+ const params=new URLSearchParams(location.search),mode=params.get('studentMode');
+ if(mode==='downloads'&&params.get('downloadPane')==='print')return 'create';
+ return tabs.some(([key])=>key===mode)?mode:'study';
+}
+let tab=currentMode();
 let guestSubject='대수',guestChoice=null;
 let csatPractice=null,csatArrived=false;
 let sessionEpoch=0,controller=null,bound=null,accountData=null,loading=null;
@@ -21,7 +26,7 @@ function wrapper(legacy){
  const nav='<div class="dsh-navigation"><nav class="tb36-modes dsh-tabs" aria-label="내신 공부하기 메뉴">'+buttons.join('')+'</nav>'+freeStudyNote+'</div>';
  let body='';
  if(tab==='timed')body=window.DSStudentTimed.render();
- if(tab==='downloads')body=window.DSStudentDownloads.render();
+ if(tab==='downloads'||tab==='create')body=window.DSStudentDownloads.render(tab==='create'?'print':'store');
  if(tab==='study'){
  if(signed()&&legacy.includes('data-sl-view="signed-home"'))return '<div class="dsh">'+nav+'<div data-hub-paths>'+window.DSStudentStudyPaths.render({view:'desk'})+'</div></div>';
  if(!signed())body=entry.renderGuestDesk(guestSubject,guestChoice)||legacy;
@@ -62,7 +67,7 @@ function mount(){
  }
  if(bound&&!bound.isConnected){controller?.();controller=null;bound=null;}
  if(location.hash==='#student'&&tab==='timed'&&area.querySelector('.ds-timed')){window.DSStudentTimed.mount?.();return;}
- if(location.hash==='#student'&&tab==='downloads'){const dl=area.querySelector('.sd-downloads');if(dl&&!dl.dataset.hubMounted){dl.dataset.hubMounted='true';window.DSStudentDownloads.mount(dl);}return;}
+ if(location.hash==='#student'&&(tab==='downloads'||tab==='create')){const dl=area.querySelector('.sd-downloads');if(dl&&!dl.dataset.hubMounted){dl.dataset.hubMounted='true';window.DSStudentDownloads.mount(dl);}return;}
  let el=area.querySelector('[data-hub-paths]');const account=inStudentAccount();
  if(account){const root=area.querySelector('.student-account-signed-in');
    const section=root?.querySelector('#account-study');
@@ -94,7 +99,16 @@ document.addEventListener('click',e=>{
  const subject=e.target.closest('[data-hub-guest-subject]'),choice=e.target.closest('[data-hub-guest-choice]');
  if(subject){guestSubject=subject.dataset.hubGuestSubject;guestChoice=null;update();area.querySelector('[data-hub-guest-subject][aria-pressed=true]')?.focus({preventScroll:true});return;}
  if(choice){guestChoice=Number(choice.dataset.hubGuestChoice);for(const key of area.querySelectorAll('[data-hub-guest-choice]'))key.setAttribute('aria-pressed',String(key===choice));return;}
- if(e.target.closest('[data-hub-sync]')){accountData=null;controller?.();controller=null;bound=null;mount();return;}const b=e.target.closest('[data-hub-tab]');if(b){tab=b.dataset.hubTab;const u=new URL(location.href);u.searchParams.set('studentMode',tab);history.replaceState(history.state,'',u);update();area.querySelector('[data-hub-tab][aria-pressed="true"]')?.focus({preventScroll:true});}});
+ if(e.target.closest('[data-hub-sync]')){accountData=null;controller?.();controller=null;bound=null;mount();return;}const b=e.target.closest('[data-hub-tab]');
+ if(b){
+  const next=b.dataset.hubTab;
+  if(tab==='create'&&next!=='create')window.DSDrawTeacherV59?.suspendStudent?.();
+  const u=new URL(location.href);u.searchParams.set('studentMode',next);u.searchParams.delete('downloadPane');
+  if(next==='downloads')for(const key of ['studyBook','studyUnit','studyLocal'])u.searchParams.delete(key);
+  tab=next;history.replaceState(history.state,'',u);update();
+  area.querySelector('[data-hub-tab][aria-pressed="true"]')?.focus({preventScroll:true});
+ }
+});
 document.addEventListener('click',async event=>{
  const button=event.target.closest('[data-time-history-load],[data-time-history-id]');
  if(!button||!signed()||!inStudentAccount())return;
@@ -118,7 +132,18 @@ document.addEventListener('click',async event=>{
  }catch{if(generation===sessionEpoch&&section.isConnected){button.textContent='타임어택 내역 다시 불러오기';}}
  finally{button.disabled=false;}
 });
-window.addEventListener('ds-student-downloads-change',()=>{if(location.hash==='#student'&&tab!=='downloads'){tab='downloads';update();}});
+window.addEventListener('ds-student-downloads-change',event=>{
+ if(location.hash!=='#student')return;
+ const next=event.detail.pane==='print'?'create':'downloads';
+ if(tab==='create'&&next!=='create')window.DSDrawTeacherV59?.suspendStudent?.();
+ tab=next;update();
+});
+window.addEventListener('popstate',()=>{
+ if(location.hash!=='#student')return;
+ const next=currentMode();
+ if(tab==='create'&&next!==tab)window.DSDrawTeacherV59?.suspendStudent?.();
+ tab=next;update();
+});
 window.addEventListener('ds-study-change',()=>{if(csatPractice&&csatArrived)mount();});
 window.addEventListener('hashchange',()=>{csatArrived=location.hash==='#student';if(!csatArrived)csatPractice=null;else if(csatPractice)mount();});
 function sessionChanged(){csatPractice=null;sessionEpoch++;accountData=null;loading=null;controller?.();bound=null;controller=null;update();mount();}

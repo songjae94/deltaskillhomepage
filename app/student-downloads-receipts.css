@@ -1,0 +1,14 @@
+#content .sd-files .ppdf-account {border:0;padding:0;box-shadow:none}
+#content .sd-files h3 {font-size:17px;margin:22px 0 10px}
+.sr-list {list-style:none;padding:0;margin:0}
+.sr-row {display:flex;align-items:center;gap:16px;padding:16px 0;border-top:1px solid #dcdad1}
+.sr-row>img,.sr-format {width:50px;min-width:50px;height:71px;object-fit:cover;box-shadow:1px 2px 4px #26253626;border-radius:1px 3px 3px 1px}
+.sr-format {display:grid;place-items:center;background:#ebeee6;color:#495d58;font-size:12px;font-weight:650}
+.sr-row>div {min-width:0}
+#content .sr-row h4 {font-size:16px;line-height:1.45;margin:0;color:#242636;overflow-wrap:anywhere}
+#content .sr-row p {font-size:13px;color:#595e71;margin:4px 0 8px}
+.sr-actions {display:flex;flex-wrap:wrap;align-items:center;gap:7px}
+#content .sr-actions button {min-height:40px;padding:7px 13px;border-radius:6px;background:#fffefa;color:#344455;border:1px solid #cdd2d4;cursor:pointer;font:inherit;font-size:13px}
+#content .sr-actions button:first-child {background:#2d3544;color:white;border-color:#2d3544}
+.sr-actions span {font-size:12px;color:#616577}
+@media (max-width:620px){.sr-row{gap:10px;align-items:flex-start}.sr-actions{gap:4px}#content .sr-actions button {min-height:44px}}

@@ -72,7 +72,15 @@
   }
   function product(fileId){return state.catalog?.products.find(p=>p.fileId===(fileId.endsWith('.pdf')?fileId:fileId+'.pdf'))||null;}
   async function receive(fileId){
-    if(state.busy)return;const p=product(fileId);if(!token()){location.assign(login());return;}
+    if(state.busy)return;
+    const startingOwner=token();if(!startingOwner){location.assign(login());return;}
+    if(state.phase==='idle')await refresh();
+    else if(state.phase==='loading')await new Promise(resolve=>{
+      const done=()=>{if(token()===startingOwner&&state.phase==='loading')return;window.removeEventListener('ds-point-pdf-update',done);resolve();};
+      window.addEventListener('ds-point-pdf-update',done);done();
+    });
+    if(token()!==startingOwner||state.busy)return;
+    const p=product(fileId);
     if(!p||!p.ready||!state.catalog?.ready||(!p.owned&&state.catalog.available===null)){state.message='구매할 수 있는 PDF 목록과 잔액을 먼저 확인해 주세요.';state.error=true;emit();return;}
     if(!p.owned&&state.catalog.available<p.points){state.message=`잔액이 부족합니다. 필요한 포인트 ${money(p.points)} · 사용 가능 ${money(state.catalog.available)}.`;state.error=true;emit();return;}
     if(!p.owned&&!confirm(`${p.title}\nPDF ${p.fileCount}파일 묶음 · ${money(p.points)} 1회 차감\n구성 파일은 모두 내 파일에 보관됩니다. 구매할까요?`))return;
@@ -85,12 +93,35 @@
     }catch(e){if(token()!==owner)return;state.message=failure(e);state.error=true;if(e.message==='existing_monthly_right'){state.monthlySet=id(e.data?.setId)?e.data.setId:'*';state.message='이용 기간 안에 이미 받은 월 이용권 프린트입니다. 추가 P 구매 대신 내 월벌 자료에서 열어 주세요.';}if(['price_changed','no_points'].includes(e.message))forget(p.fileId);}
     finally{if(token()===owner){await refresh();state.busy=false;emit();}}
   }
-  async function redownload(receiptId){
-    if(state.busy)return;const row=state.receipts.find(r=>r.receiptId===receiptId);if(!row)return;
-    const owner=token();state.busy=true;state.files=[];state.message='내 파일과 다시 받기 주소를 확인하는 중…';state.error=false;emit();
-    try{const result=delivery(await call({action:'point_pdf_redownload',receiptId}),{again:true,count:Number.isSafeInteger(row.fileCount)?row.fileCount:undefined});if(token()!==owner)return;if(result.receiptId!==row.receiptId||result.fileId!==row.fileId||result.points!==row.points)throw Error('unverified_delivery');state.files=result.files;state.message=`다시 받기 · 추가 차감 0 P · 내 파일 ${result.files.length}개 보관 확인. 파일을 열어 기기에 저장해 주세요.`;}
-    catch(e){if(token()!==owner)return;state.message=failure(e);state.error=true;}
-    finally{if(token()===owner){await refresh();state.busy=false;emit();}}
+  async function ownedDelivery(row){
+    const result=delivery(await call({action:'point_pdf_redownload',receiptId:row.receiptId}),{again:true,count:Number.isSafeInteger(row.fileCount)?row.fileCount:undefined});
+    if(result.receiptId!==row.receiptId||result.fileId!==row.fileId||result.points!==row.points)throw Error('unverified_delivery');
+    return result;
+  }
+  async function redownload(receiptId,mode='download'){
+    if(state.busy||!token()||token()!==state.owner)return;
+    const row=state.receipts.find(r=>r.receiptId===receiptId);
+    if(!row||row.redownloadable===false)return;
+    const owner=token(),reading=mode==='read'||mode==='resume';
+    state.busy=true;state.files=[];state.message='내 보관함에서 파일을 확인하고 있어요.';state.error=false;emit();
+    try{
+      const delivery=await ownedDelivery(row),files=delivery.files;
+      if(token()!==owner)return;
+      if(mode==='timed'){
+        if(!window.DSStudentTimed?.canOpenReceived(row)||!document.querySelector('[data-student-receipts]'))throw Error('timed_unavailable');
+        await window.DSStudentTimed.openReceived(row,delivery);
+        if(token()!==owner)return;
+        state.message='';
+      }else if(reading){
+        if(!window.DSReceivedPdf||!document.querySelector('[data-student-receipts]'))throw Error('reader_unavailable');
+        if(!await window.DSReceivedPdf.open({receiptId:row.receiptId,title:row.title||row.fileId,files,resume:mode==='resume'}))throw Error('reader_unavailable');
+        if(token()!==owner)return;
+        state.message='';
+      }else{
+        state.files=files;state.message=`다시 받기 · 추가 차감 0 P · 내 파일 ${files.length}개 보관 확인. 파일을 열어 기기에 저장해 주세요.`;
+      }
+    }catch(e){if(token()!==owner)return;state.message=mode==='timed'?'이 교재의 타임어택을 열지 못했어요. 연결된 문항과 파일을 다시 확인해 주세요.':e.message==='reader_unavailable'?'교재 뷰어를 열지 못했어요. 다시 받기를 이용해 주세요.':failure(e);state.error=true;}
+    finally{if(token()===owner){state.busy=false;emit();}}
   }
   const retry='<button type="button" class="ppdf-quiet" data-ppdf-action="reload">목록·잔액 다시 확인</button>';
   function notice(){return (state.message?`<div class="ppdf-notice${state.error?' ppdf-error':''}" role="status">${h(state.message)}${state.monthlySet?` <a href="${state.monthlySet==='*'?'/my/#pprint':'/my/?passSet='+encodeURIComponent(state.monthlySet)+'#pprint'}">내 월벌 열기 →</a>`:''}</div>`:'')+(state.files.length?`<ul class="ppdf-files">${state.files.map(f=>`<li><a href="${h(f.url)}" target="_blank" rel="noopener noreferrer">${h(f.title)} · 열기/저장 ↗</a></li>`).join('')}</ul>`:'');}
@@ -102,7 +133,8 @@
     const c=state.catalog,subjects=[...new Set(c.products.map(p=>p.subject))],rows=c.products.filter(p=>(!state.selected||p.fileId===state.selected)&&(!state.subject||p.subject===state.subject)&&(!state.term||(p.title+' '+p.subject).includes(state.term)));
     return heading+`<div class="ppdf-wallet"><strong>사용 가능한 포인트</strong><b>${c.available===null?'잔액을 확인할 수 없습니다':money(c.available)}</b>${c.available===0?'<span>현재 사용할 수 있는 포인트가 없습니다.</span>':''}${retry}</div><p class="ppdf-help">PDF 구성 파일 묶음 가격으로 한 번 구매합니다. 한글 원화 구매·월 이용권 벌 수와 별도입니다. 신규 회원 혜택은 미사용 시 1·2·3주차에 3,000·6,000·9,000P로 모아 쓰고, 가입 후 3주가 끝나면 남은 혜택 포인트만 만료됩니다.</p>${!c.ready?'<p role="status">PDF 포인트 구매를 준비하고 있습니다. 준비 완료된 항목만 구매할 수 있습니다.</p>':''}<div class="ppdf-filters"><label>과목<select data-ppdf-subject><option value="">전체 과목</option>${subjects.map(s=>`<option${s===state.subject?' selected':''}>${h(s)}</option>`).join('')}</select></label><label>자료 검색<input data-ppdf-search value="${h(state.term)}" placeholder="자료명·과목"></label></div>${notice()}<ul class="ppdf-products">${rows.map(p=>{const ready=c.ready&&p.ready&&(p.owned||c.available!==null),short=!p.owned&&c.available!==null&&c.available<p.points;return `<li data-ppdf-product="${h(p.fileId)}"${p.fileId===state.selected?' class="ppdf-selected"':''}><div><small>${h(p.subject)} · PDF ${p.fileCount}파일 묶음</small><h3>${h(p.title)}</h3><p>묶음 1회 구매 · 구성 파일 모두 보관</p></div><div class="ppdf-product-price"><strong>${money(p.points)}</strong><button type="button" class="ppdf-primary" data-ppdf-buy="${h(p.fileId)}"${state.busy||!ready||short?' disabled':''}>${p.owned?'이미 보유 · 차감 없이 받기':!p.ready?'파일 준비 중':!c.ready?'구매 정보 확인 필요':c.available===null?'잔액 확인 필요':short?(c.available===0?'포인트 없음':'잔액 부족'):'포인트로 구매'}</button></div></li>`}).join('')||'<li><p>현재 조건에 맞는 승인된 PDF가 없습니다.</p></li>'}</ul>`;
   }
-  function receipts(){
+  function receipts(student=false){
+    if(student&&window.DSStudentReceipts&&state.owner===token()&&token()&&state.receiptPhase==='ready')return notice()+window.DSStudentReceipts.pointList(state.receipts,state.busy);
     let body;if(!token())body=`<p>로그인하면 포인트로 받은 PDF를 다시 받을 수 있습니다.</p><a href="${h(login())}">로그인</a>`;
     else if(['idle','loading'].includes(state.receiptPhase))body='<p role="status">내 파일 수령 기록을 확인하는 중…</p>';
     else if(state.receiptPhase==='error')body='<p role="status">내 파일 수령 기록을 확인하지 못했습니다.</p>'+retry;
@@ -111,16 +143,26 @@
   }
   function renderAll(){
     for(const host of document.querySelectorAll('[data-ppdf-shop],[data-ppdf-receipts]')){
-      if(host.dataset.ppdfRevision===String(state.version))continue;host.dataset.ppdfRevision=String(state.version);host.innerHTML=host.hasAttribute('data-ppdf-shop')?shop():receipts();if(!productFocused&&state.selected&&state.phase==='ready'&&host.hasAttribute('data-ppdf-shop')){const row=[...host.querySelectorAll('[data-ppdf-product]')].find(x=>x.dataset.ppdfProduct===state.selected);if(row){row.scrollIntoView({block:'center'});productFocused=true;}}
+      if(host.dataset.ppdfRevision===String(state.version))continue;host.dataset.ppdfRevision=String(state.version);host.innerHTML=host.hasAttribute('data-ppdf-shop')?shop():receipts(host.hasAttribute('data-student-receipts'));if(!productFocused&&state.selected&&state.phase==='ready'&&host.hasAttribute('data-ppdf-shop')){const row=[...host.querySelectorAll('[data-ppdf-product]')].find(x=>x.dataset.ppdfProduct===state.selected);if(row){row.scrollIntoView({block:'center'});productFocused=true;}}
       if(host.dataset.ppdfBound)continue;host.dataset.ppdfBound='1';
-      host.addEventListener('click',e=>{const buy=e.target.closest('[data-ppdf-buy]'),again=e.target.closest('[data-ppdf-again]'),reload=e.target.closest('[data-ppdf-action="reload"]'),all=e.target.closest('[data-ppdf-action="all"]');if(buy||again||reload||all){e.preventDefault();e.stopPropagation();if(buy)receive(buy.dataset.ppdfBuy);else if(again)redownload(again.dataset.ppdfAgain);else if(all){state.selected='';const u=new URL(location.href);u.searchParams.delete('pointPdf');history.replaceState(null,'',u.pathname+u.search+u.hash);emit();}else refresh();}});
+      host.addEventListener('click',e=>{const read=e.target.closest('[data-ppdf-study]'),timed=e.target.closest('[data-ppdf-timed]');
+        if((read||timed)&&host.hasAttribute('data-student-receipts')){
+          e.preventDefault();if(state.busy||!token()||token()!==state.owner)return;
+          if(read){redownload(read.dataset.ppdfStudy,read.dataset.mode==='resume'?'resume':'read');return;}
+          const row=state.receipts.find(r=>r.receiptId===timed.dataset.ppdfTimed);
+          if(row&&row.redownloadable!==false&&window.DSStudentTimed?.canOpenReceived(row))redownload(row.receiptId,'timed');
+          return;
+        }
+        const buy=e.target.closest('[data-ppdf-buy]'),again=e.target.closest('[data-ppdf-again]'),reload=e.target.closest('[data-ppdf-action="reload"]'),all=e.target.closest('[data-ppdf-action="all"]');if(buy||again||reload||all){e.preventDefault();e.stopPropagation();if(buy)receive(buy.dataset.ppdfBuy);else if(again)redownload(again.dataset.ppdfAgain);else if(all){state.selected='';const u=new URL(location.href);u.searchParams.delete('pointPdf');history.replaceState(null,'',u.pathname+u.search+u.hash);emit();}else refresh();}});
       host.addEventListener('change',e=>{if(e.target.matches('[data-ppdf-subject]')){state.selected='';state.subject=e.target.value;emit();}});
       host.addEventListener('input',e=>{if(e.target.matches('[data-ppdf-search]')){const start=e.target.selectionStart;state.selected='';state.term=e.target.value;emit();const next=host.querySelector('[data-ppdf-search]');next.focus();next.setSelectionRange(start,start);}});
     }
   }
+  window.addEventListener('ds-received-pdf-progress',()=>{state.version++;renderAll();});
   function mount(){
+    if(state.owner!==token())reset();
     if(location.pathname.startsWith('/my/')){const box=document.querySelector('#library');if(box&&!box.querySelector('[data-ppdf-receipts]')){const section=document.createElement('section');section.className='ppdf ppdf-account';section.setAttribute('data-ppdf-receipts','');box.appendChild(section);}}
-    renderAll();if(token()&&state.phase==='idle'&&document.querySelector('[data-ppdf-shop],[data-ppdf-receipts]'))refresh();
+    renderAll();if(token()&&state.phase==='idle'&&document.querySelector('[data-ppdf-shop],[data-ppdf-receipts],.ms-shop[data-ms-audience="student"]'))refresh();
   }
   const shell=mode=>`<section class="ppdf ${mode==='shop'?'ppdf-shop':'ppdf-account'}" data-ppdf-${mode}></section>`;
   if(typeof libraryPage==='function'){
