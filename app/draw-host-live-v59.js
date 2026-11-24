@@ -78,10 +78,13 @@
     if (count(d.retry_after, 0, 86400)) out.retry_after = d.retry_after;
     return out;
   };
+  let guestRetryAt = 0;
   async function guest(body, signal) {
     await slot();
     try {
       if (signal?.aborted) throw fail(0, 'aborted');
+      const remaining = Math.ceil((guestRetryAt - Date.now()) / 1000);
+      if (remaining > 0) throw Object.assign(fail(429,'rate_limited'), {data:{retry_after:remaining}});
       let r, d = null;
       try {
         r = await fetch(EDGE + GATE, { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'omit', cache: 'no-store', body: JSON.stringify(body), signal });
@@ -89,7 +92,14 @@
       } catch { throw fail(signal?.aborted ? 0 : 502, signal?.aborted ? 'aborted' : 'unavailable'); }
       if (r.ok && d && typeof d === 'object' && !Array.isArray(d) && d.ok !== false) return d;
       const name = d && typeof d.error === 'string' ? d.error : '';
-      throw Object.assign(fail(r.status || 502, TRIAL_CODES.has(name) ? name : 'unavailable'), { lost: false, data: refusal(d) });
+      const data = refusal(d) || {};
+      if (r.status === 429) {
+        const raw = r.headers.get('Retry-After');
+        const seconds = raw && (/^\d+$/.test(raw) ? Number(raw) : Math.ceil((Date.parse(raw) - Date.now()) / 1000));
+        if (Number.isFinite(seconds)) data.retry_after = Math.max(data.retry_after || 0, seconds);
+        if (name === 'rate_limited') guestRetryAt = Math.max(guestRetryAt, Date.now() + (data.retry_after || 60) * 1000);
+      }
+      throw Object.assign(fail(r.status || 502, TRIAL_CODES.has(name) ? name : 'unavailable'), { lost: false, data });
     } finally { done(); }
   }
   const trial = {
