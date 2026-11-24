@@ -13,7 +13,7 @@
   const active = () => location.hash==='#csat';
   const tab = () => {const value=new URLSearchParams(location.search).get('csatMode');return Object.hasOwn(tabs,value)?value:'study';};
   const fixtureId = 'SNG-2024-M11#공통#1';
-  let goal='',unit='',index=0,choice=null,feedback=null,notice='',opened=Date.now(),submitId=null,busy=false,ownerEpoch=0;
+  let goal='',unit='',index=0,choice=null,feedback=null,notice='',opened=Date.now(),pendingSubmission=null,busy=false,ownerEpoch=0;
   let recordCache=null,recordsOpen=false,historyLoading=false,historyError=false;
   let studyRows=null,studyRequest=null,studyError=false;
   let pendingQuestion=new URLSearchParams(location.search).get('csatItem');
@@ -40,7 +40,7 @@
     })();
   }
   const current=()=>items()[index];
-  function resetAnswer(){choice=null;feedback=null;notice='';opened=Date.now();submitId=null;}
+  function resetAnswer(){choice=null;feedback=null;notice='';opened=Date.now();pendingSubmission=null;}
   function nav(){
     return '<div class="dsh-navigation"><nav class="tb36-modes dsh-tabs" aria-label="수능 공부 메뉴">'+Object.entries(tabs).map(([id,label],i)=>'<button type="button" data-csat-tab="'+id+'" aria-pressed="'+(tab()===id)+'"><span class="tb36-mode-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="'+icons[i]+'"/></svg></span><strong>'+label+'</strong></button>').join('')+'</nav></div>';
   }
@@ -56,7 +56,7 @@
     if(!q)return '<p role="status">현재 계정에서 풀 수 있는 수능 기출이 아직 없습니다.</p>';
     const units=[...new Set((signed()&&studyRows?studyRows:[...publicBank.values()]).map(q=>q.unit))];
     const status=feedback ? '<div class="ssp-hint" role="status"><strong>'+(feedback.correct?'정답이에요':'다시 풀어볼 문제예요')+'</strong><p>내 답 '+(choice+1)+'번 · 정답 '+(feedback.answer+1)+'번</p>'+paper(q,true)+'</div>' : '';
-    const controls=studyError?'<button data-csat-study-reload>문항 연결 다시 확인</button>':'<div class="csat-check"'+(choice===null?' hidden':'')+'><button class="ssp-primary" data-csat-grade="sure">확신해요 · 채점</button><button data-csat-grade="unsure">헷갈려요 · 채점</button></div>';
+    const controls=pendingSubmission?'<div class="csat-check"><button class="ssp-primary" data-csat-grade="retry">풀이 기록 다시 저장</button></div>':studyError?'<button data-csat-study-reload>문항 연결 다시 확인</button>':'<div class="csat-check"'+(choice===null?' hidden':'')+'><button class="ssp-primary" data-csat-grade="sure">확신해요 · 채점</button><button data-csat-grade="unsure">헷갈려요 · 채점</button></div>';
     return '<section class="ssp ssp-desk sl54-shell student-signed-in csat-desk"><header class="ssil-heading"><h1>수능 공부</h1><a href="#account" data-csat-account>내 수능 기록 ↗</a></header><div class="ssil-main"><div class="ssil-today ssil-live-paper ssp-body"><article class="ssp-paper"><div class="ssp-paper-top"><span>'+escape(q.short)+' · '+escape(q.points)+'점</span><span>'+(index+1)+' / '+rows.length+'</span></div><h2 class="ssp-problem-heading">'+escape(q.unit)+'</h2>'+paper(q)+(feedback?status:controls)+'<div class="csat-pager"><button data-csat-move="-1" '+(!index||busy?'disabled':'')+'>‹ 이전 문제</button><button data-csat-move="1" '+(index===rows.length-1||busy?'disabled':'')+'>다음 문제 ›</button></div></article></div><aside class="ssil-review ssp-desk-controls csat-settings"><div><label>목표 등급<select data-csat-goal>'+option('','등급 선택',goal)+Array.from({length:9},(_,i)=>option(i+1,i+1+'등급',goal)).join('')+'</select></label><label>단원<select data-csat-unit>'+option('','전체 단원',unit)+units.map(v=>option(v,v,unit)).join('')+'</select></label></div><a href="#account" data-csat-account>내 수능 공부 기록 →</a></aside></div><p role="status" class="ssp-live">'+escape(notice)+'</p></section>';
   }
   function page(){
@@ -93,24 +93,25 @@
     const q=publicBank.get(frame.dataset.id),doc=frame.contentDocument;
     if(tab()==='study'&&frame.dataset.csatFrame==='question'&&q&&doc?.body){
       window.DSTimedExam.prepareChoices({root:doc.body,id:q.id,value:choice,choose:button=>{
-        if(!frame.isConnected||current()?.id!==q.id||feedback||busy||(signed()&&!studyRows))return;
+        if(!frame.isConnected||current()?.id!==q.id||feedback||busy||pendingSubmission||(signed()&&!studyRows))return;
         choice=Number(button.dataset.examChoice);
         for(const b of doc.querySelectorAll('[data-exam-choice]'))b.setAttribute('aria-pressed',String(b===button));
         const controls=area.querySelector('.csat-check');if(controls)controls.hidden=false;
       }});
-      if(feedback)for(const b of doc.querySelectorAll('[data-exam-choice]'))b.disabled=true;
+      if(feedback||pendingSubmission)for(const b of doc.querySelectorAll('[data-exam-choice]'))b.disabled=true;
     }
     fit(frame);
   },true);
   async function submit(confidence){
     const q=current();if(!q||choice===null||feedback||busy||(signed()&&!studyRows))return;
-    const epoch=ownerEpoch;busy=true;submitId ||= crypto.randomUUID();
+    const epoch=ownerEpoch;busy=true;
     const controls=area.querySelector('.csat-check');controls?.querySelectorAll('button').forEach(b=>b.disabled=true);
     try{
       if(signed()){
-        const result=await service().submit({questionId:q.id,version:q.version,answer:choice,course:'advanced',confidence,help:false,seconds:Math.min(86400,Math.max(0,Math.round((Date.now()-opened)/1000))),requestId:submitId});
+        pendingSubmission ||= {questionId:q.id,version:q.version,answer:choice,course:'advanced',confidence,help:false,seconds:Math.min(86400,Math.max(0,Math.round((Date.now()-opened)/1000))),requestId:crypto.randomUUID()};
+        const result=await service().submit(pendingSubmission);
         if(epoch!==ownerEpoch)return;
-        feedback={correct:result.record.correct,answer:result.answer};recordCache=null;
+        feedback={correct:result.record.correct,answer:result.answer};pendingSubmission=null;recordCache=null;
       }else{feedback={correct:q.answer===choice,answer:q.answer};notice='로그인하면 다음 풀이부터 마이페이지에 기록됩니다.';}
     }catch{if(epoch===ownerEpoch)notice='풀이 기록을 저장하지 못했어요. 같은 답으로 다시 확인해 주세요.';}
     finally{if(epoch===ownerEpoch){busy=false;paint();}}
