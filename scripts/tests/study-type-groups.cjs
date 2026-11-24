@@ -23,3 +23,7 @@ assert.equal(vm.runInContext('sourceResult.questions.length',resumed),30);
 assert.equal(vm.runInContext('deskType',resumed),'T20');console.log('PASS: resume preserves all 30 questions and saved type');
 
 assert.doesNotMatch(vm.runInContext('remoteTypeNavigation()',context),/10번|11번|교재 \d+/);
+
+assert.equal(vm.runInContext('sourceResult.questions.findIndex(q=>q.id==="r20")',resumed),20);
+assert.equal(vm.runInContext('sourceResult.questions[21].id',resumed),'r21');
+console.log('PASS: resume keeps saved question position and forward order');

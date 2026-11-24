@@ -1111,7 +1111,7 @@ function bind(container,options={}){
    const saved=candidates.find(q=>q.id===pending?.questionId&&q.version===pending?.version);
    if(saved){
     state.course=planCourse=planProfile.need;view='home';current=null;
-    sourceResult={questions:[saved,...candidates.filter(q=>q.id!==saved.id)]};
+    sourceResult={questions:candidates};
     deskType=state.course==='supplement'?saved.originalGroupId||'':saved.typeId||saved.typeIds?.[0]||'';
     void openRemote(saved.id,pending);return;
    }
