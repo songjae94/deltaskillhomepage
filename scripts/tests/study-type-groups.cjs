@@ -1,0 +1,17 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+const source=fs.readFileSync('app/student-study-paths.js','utf8');
+const code=source.slice(source.indexOf(' function remoteTypeGroups(){'),source.indexOf(' async function querySource(){'));
+const rows=Array.from({length:24},(_,i)=>({id:'q'+i,typeIds:['T'+(1+Math.floor(i/2))]}));
+rows.push({id:'shared',typeIds:['T1','T2']});
+const context=vm.createContext({desk:true,state:{course:'types'},sourceResult:{questions:rows},deskType:'',workbookChoices:()=>[{units:[{types:[{id:'T1',label:'첫 유형'},{id:'T2',label:'둘째 유형'}]}]}],esc:x=>String(x),mathContent:x=>String(x)});
+vm.runInContext(code,context);
+assert.equal(vm.runInContext('remoteTypeGroups().length',context),12);
+assert.deepEqual(Array.from(vm.runInContext('sourceRows().map(q=>q.id)',context)),['q0','q1','shared']);
+assert.match(vm.runInContext('remoteTypeNavigation()',context),/첫 유형/);
+context.deskType='T2';assert.deepEqual(Array.from(vm.runInContext('sourceRows().map(q=>q.id)',context)),['q2','q3','shared']);
+context.deskType='T12';assert.deepEqual(Array.from(vm.runInContext('sourceRows().map(q=>q.id)',context)),['q22','q23']);
+assert.match(vm.runInContext('remoteTypeNavigation()',context),/data-ssp-remote-type-step="1" disabled/);
+context.state.course='concept';assert.equal(vm.runInContext('sourceRows().length',context),25);
+context.state.course='supplement';assert.equal(vm.runInContext('sourceRows().length',context),0);
+context.sourceResult={questions:[{id:'a',originalGroupId:'g1',originalQuestionNo:10},{id:'b',originalGroupId:'g1',originalQuestionNo:10},{id:'c',originalGroupId:'g2',originalQuestionNo:11}]};assert.equal(vm.runInContext('remoteTypeGroups().length',context),2);assert.equal(vm.runInContext('sourceRows().length',context),2);assert.match(vm.runInContext('remoteTypeNavigation()',context),/교재 10번/);
+console.log('PASS: all 12 types retained, same-type questions, multi-tag membership, final navigation, supplement unchanged');
