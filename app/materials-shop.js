@@ -29,7 +29,7 @@
         if (!response.ok) throw Error();
         return response.json();
       }));
-      products = library.buildCatalog(catalog, config).filter(i => i.formats.pdf).map(i => ({...i, source: origins[i.sku]?.book || archive, sourceId: origins[i.sku]?.bookId}));
+      products = library.buildCatalog(catalog, config).filter(i => i.formats.pdf || i.formats.hwpx).map(i => ({...i, source: origins[i.sku]?.book || archive, sourceId: origins[i.sku]?.bookId}));
       const restored = Object.entries(origins).filter(([, item]) => item.shelf).map(([sku, item]) => ({
         ...item.shelf, sku, source: item.book, sourceId: item.bookId, restored: true,
         name: [item.shelf.subject, item.shelf.unit, item.shelf.edition].join(' · '), formats: {}
@@ -79,7 +79,7 @@
   }
   const coverSkus = new Set(['NS-CM2-06', 'NS-CM2-07', 'NS-CM2B-06', 'NS-MI1B-05']);
   function formats(p) {
-    return ['pdf','hwpx'].map(fmt => {
+    return ['pdf','hwpx'].filter(fmt => fmt !== 'pdf' || Boolean(p.formats.pdf)).map(fmt => {
       const id=key(p,fmt), available=enabled(p,fmt), added=cart.includes(id);
       const planned=fmt==='hwpx'&&!available&&publicPoints[p.sku];
       const format=fmt==='pdf'?'PDF':'한글';
@@ -101,7 +101,7 @@
     const offer = p.restored
       ? '<div class="ms-formats ms-upcoming"><span>PDF · 한글</span><strong>판매 준비 중</strong></div>'
       : '<div class="ms-formats">' + formats(p) + '</div>';
-    return `<article class="ms-volume" data-sku="${escape(p.sku)}" aria-label="${label}"><div class="ms-stage">${cover}</div><div class="ms-book-info"><small>${meta}</small><h3>${escape(p.unit||title(p))}</h3>${audience==='student'?'':`<span>${isLinked(p)?'연계 · ':''}${escape(displayBook(p.source))}</span>`}</div>${offer}</article>`;
+    return `<article class="ms-volume" data-sku="${escape(p.sku)}" aria-label="${label}"><div class="ms-stage">${cover}</div><div class="ms-book-info"><small>${meta}</small><h3>${escape(p.unit||title(p))}</h3>${p.editionNote?`<span>${escape(p.editionNote)}</span>`:''}${audience==='student'?'':`<span>${isLinked(p)?'연계 · ':''}${escape(displayBook(p.source))}</span>`}</div>${offer}</article>`;
   }
   function items() {
     const list = scope ? products.filter(p => scope.bookId

@@ -724,6 +724,112 @@
           "displayTitle": "공통수학2 · 유리함수와 무리함수 · 2권",
           "displayUnit": "유리함수와 무리함수",
           "displayEdition": "2권"
+        },
+        {
+          "sku": "NS-H24-01",
+          "no": "06",
+          "major": "Ⅲ 함수와 그래프",
+          "unit": "함수",
+          "name": "공통수학2 · 함수 · 1권 · 한글 별도판",
+          "displayTitle": "공통수학2 · 함수 · 1권 · 한글 별도판 · 이전 제작본(PDF와 다른 판)",
+          "displayEdition": "1권 · 한글 별도판",
+          "edition": "1권 · 한글 별도판",
+          "editionNote": "이전 제작본 · 현재 판매 PDF와 다른 판",
+          "composition": "C1",
+          "textbook": null,
+          "count": 101,
+          "pages": null,
+          "price": {
+            "pdf": null,
+            "hwpx": 8400
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-24T00:00:00+09:00",
+          "saleTo": null,
+          "sample": null,
+          "releaseVerified": true,
+          "files": [
+            {
+              "id": "NS-H24-01-L1.hwpx",
+              "fmt": "hwpx",
+              "title": "공통수학2 · 함수 · 1권 · 한글 별도판 · L1",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-H24-01-L2.hwpx",
+              "fmt": "hwpx",
+              "title": "공통수학2 · 함수 · 1권 · 한글 별도판 · L2",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-H24-01-L4.hwpx",
+              "fmt": "hwpx",
+              "title": "공통수학2 · 함수 · 1권 · 한글 별도판 · L4",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
+        },
+        {
+          "sku": "NS-H24-02",
+          "no": "07",
+          "major": "Ⅲ 함수와 그래프",
+          "unit": "유리함수와 무리함수",
+          "name": "공통수학2 · 유리함수와 무리함수 · 1권 · 한글 별도판",
+          "displayTitle": "공통수학2 · 유리함수와 무리함수 · 1권 · 한글 별도판 · 이전 제작본(PDF와 다른 판)",
+          "displayEdition": "1권 · 한글 별도판",
+          "edition": "1권 · 한글 별도판",
+          "editionNote": "이전 제작본 · 현재 판매 PDF와 다른 판",
+          "composition": "C1",
+          "textbook": null,
+          "count": 109,
+          "pages": null,
+          "price": {
+            "pdf": null,
+            "hwpx": 9200
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-24T00:00:00+09:00",
+          "saleTo": null,
+          "sample": null,
+          "releaseVerified": true,
+          "files": [
+            {
+              "id": "NS-H24-02-L1.hwpx",
+              "fmt": "hwpx",
+              "title": "공통수학2 · 유리함수와 무리함수 · 1권 · 한글 별도판 · L1",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-H24-02-L2.hwpx",
+              "fmt": "hwpx",
+              "title": "공통수학2 · 유리함수와 무리함수 · 1권 · 한글 별도판 · L2",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-H24-02-L4.hwpx",
+              "fmt": "hwpx",
+              "title": "공통수학2 · 유리함수와 무리함수 · 1권 · 한글 별도판 · L4",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
         }
       ]
     },
@@ -796,6 +902,59 @@
           "types": [],
           "items": [],
           "packs": []
+        },
+        {
+          "sku": "NS-H24-03",
+          "no": "06",
+          "major": "Ⅲ 함수와 그래프",
+          "unit": "함수",
+          "name": "공통수학2 기초편 · 함수 · 기초편 · 한글 별도판",
+          "displayTitle": "공통수학2 기초편 · 함수 · 기초편 · 한글 별도판 · 이전 제작본(PDF와 다른 판)",
+          "displayEdition": "기초편 · 한글 별도판",
+          "edition": "기초편 · 한글 별도판",
+          "editionNote": "이전 제작본 · 현재 판매 PDF와 다른 판",
+          "composition": "C1",
+          "textbook": null,
+          "count": 54,
+          "pages": null,
+          "price": {
+            "pdf": null,
+            "hwpx": 4600
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-24T00:00:00+09:00",
+          "saleTo": null,
+          "sample": null,
+          "releaseVerified": true,
+          "files": [
+            {
+              "id": "NS-H24-03-L1.hwpx",
+              "fmt": "hwpx",
+              "title": "공통수학2 기초편 · 함수 · 기초편 · 한글 별도판 · L1",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-H24-03-L2.hwpx",
+              "fmt": "hwpx",
+              "title": "공통수학2 기초편 · 함수 · 기초편 · 한글 별도판 · L2",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-H24-03-L4.hwpx",
+              "fmt": "hwpx",
+              "title": "공통수학2 기초편 · 함수 · 기초편 · 한글 별도판 · L4",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
         }
       ]
     },
@@ -863,6 +1022,59 @@
               "from": "2026-11-19T08:44:00+09:00",
               "layout": "4문항 2단",
               "pages": 32
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
+        },
+        {
+          "sku": "NS-H24-04",
+          "no": "05",
+          "major": "Ⅲ 적분",
+          "unit": "부정적분과 정적분",
+          "name": "미적분Ⅰ 기초편 · 부정적분과 정적분 · 기초편 · 한글 별도판",
+          "displayTitle": "미적분Ⅰ 기초편 · 부정적분과 정적분 · 기초편 · 한글 별도판 · 이전 제작본(PDF와 다른 판)",
+          "displayEdition": "기초편 · 한글 별도판",
+          "edition": "기초편 · 한글 별도판",
+          "editionNote": "이전 제작본 · 현재 판매 PDF와 다른 판",
+          "composition": "C1",
+          "textbook": null,
+          "count": 75,
+          "pages": null,
+          "price": {
+            "pdf": null,
+            "hwpx": 6400
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-24T00:00:00+09:00",
+          "saleTo": null,
+          "sample": null,
+          "releaseVerified": true,
+          "files": [
+            {
+              "id": "NS-H24-04-L1.hwpx",
+              "fmt": "hwpx",
+              "title": "미적분Ⅰ 기초편 · 부정적분과 정적분 · 기초편 · 한글 별도판 · L1",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-H24-04-L2.hwpx",
+              "fmt": "hwpx",
+              "title": "미적분Ⅰ 기초편 · 부정적분과 정적분 · 기초편 · 한글 별도판 · L2",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-H24-04-L4.hwpx",
+              "fmt": "hwpx",
+              "title": "미적분Ⅰ 기초편 · 부정적분과 정적분 · 기초편 · 한글 별도판 · L4",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
             }
           ],
           "types": [],
