@@ -1,0 +1,105 @@
+/* Applied only while the responsive student header owns the original links. */
+#header .ds-mobile-header {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  width: 100%;
+  max-width: none;
+  height: 54px;
+  min-height: 54px;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 clamp(12px, 4vw, 32px);
+}
+#header .ds-mobile-header > a { min-height: 44px; }
+#header .ds-mobile-toggle {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  min-height: 44px;
+  margin: 0 -4px 0 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #2e3446;
+  box-shadow: none;
+  cursor: pointer;
+}
+#header .ds-mobile-toggle span,
+#header .ds-mobile-toggle span::before,
+#header .ds-mobile-toggle span::after {
+  display: block;
+  width: 21px;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+}
+#header .ds-mobile-toggle span { position: relative; }
+#header .ds-mobile-toggle span::before,
+#header .ds-mobile-toggle span::after { content: ''; position: absolute; left: 0; }
+#header .ds-mobile-toggle span::before { top: -6px; }
+#header .ds-mobile-toggle span::after { top: 6px; }
+#header .ds-mobile-toggle[aria-expanded="true"] span { background: transparent; }
+#header .ds-mobile-toggle[aria-expanded="true"] span::before { top: 0; transform: rotate(45deg); }
+#header .ds-mobile-toggle[aria-expanded="true"] span::after { top: 0; transform: rotate(-45deg); }
+#header .ds-mobile-menu {
+  position: absolute;
+  z-index: 1;
+  top: calc(100% - 1px);
+  right: clamp(10px, 4vw, 32px);
+  box-sizing: border-box;
+  width: min(257px, calc(100vw - 24px));
+  max-height: calc(100dvh - 66px);
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 6px 12px;
+  border: 1px solid #ccc8c0;
+  border-radius: 6px;
+  color: #263042;
+  background: #fffefa;
+  box-shadow: 0 8px 25px #252c3524;
+}
+#header .ds-mobile-menu[hidden] { display: none; }
+#header .ds-mobile-menu nav,
+#header .ds-mobile-menu .meta {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  min-height: 0;
+  overflow: visible;
+  border: 0;
+}
+#header .ds-mobile-menu .meta { border-top: 1px solid #dcd8d0; }
+#header .ds-mobile-menu .role-switch {
+  align-self: stretch;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 8px 0 2px;
+  padding: 2px;
+  border-radius: 4px;
+  background: #edeae3;
+}
+#header .ds-mobile-menu a {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  min-height: 44px;
+  margin: 0;
+  padding: 6px 9px;
+  border-radius: 3px;
+  color: #273348;
+  text-decoration: none;
+  font-size: 14px;
+}
+#header .ds-mobile-menu nav a[aria-current] { font-weight: 700; background: #f2f0eb; }
+#header .ds-mobile-menu nav a[aria-current]::after { display: none; }
+#header .ds-mobile-menu .role-switch a { justify-content: center; }
+#header .ds-mobile-menu .role-switch a[aria-current] { background: #fffefa; color: #223146; }
+#header .ds-mobile-menu .login { border: 0; background: transparent; }
+#header .ds-mobile-header :is(a,button):focus-visible { outline: 2px solid #3254b4; outline-offset: -2px; }

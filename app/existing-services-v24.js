@@ -97,7 +97,7 @@
       place('account-materials', '기존 이용권과 주문 조회', [pass, ['/my/', '이용권 관리'], orderLookup], main.querySelector('#account-materials'));
       place('account-study', '기존 학습 기록 열기', [notebook, ['/analysis/index.html?view=notes', '수능 분석 기록']], main.querySelector('#account-study'));
     } else if (page === 'student' || page === 'timed') {
-      if (page === 'student' && receivedLink(true)) return;
+      if (page === 'student' && (receivedLink(true) || main.querySelector('.ds-timed'))) return;
       footerLinks([notebook], 'student', '기존 공부 기능');
     } else if (page === 'csat') {
       place('csat', '기존 수능 자료', [['/features/prediction.html', '번호별 예상 주제'], catalog('csat')], main.querySelector('.cl20-archive, .sn27-archive'));

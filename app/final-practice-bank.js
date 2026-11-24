@@ -158,5 +158,77 @@ window.DSFinalPracticeBank = [
     "prompt": "$F(x)=\\displaystyle\\int_0^x(t^2-4t+a)\\,dt$가 $x=1$에서 극값을 갖는다. 구간 $0\\le x\\le4$에서 $F(x)$의 최댓값을 $M$이라 할 때 $3M$을 구하시오.",
     "answer": 4,
     "solution": "$F'(1)=0$에서 $a=3$이고 $F'(x)=(x-1)(x-3)$이다. 양 끝점과 두 극점에서 $F(0)=0$, $F(1)=\\dfrac43$, $F(3)=0$, $F(4)=\\dfrac43$이므로 $3M=4$이다."
+  },
+  {
+    "id": "g1-09",
+    "grade": 1,
+    "level": 2,
+    "version": "final-v2",
+    "unit": "무리함수의 정의역",
+    "prompt": "함수 $y=\\sqrt{7-2x}$의 정의역에 속하는 정수 중 가장 큰 수는?",
+    "options": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5"
+    ],
+    "answerType": "choice",
+    "answer": 2,
+    "solution": "$7-2x\\ge 0$에서 $x\\le\\dfrac{7}{2}$이다. 이를 만족시키는 가장 큰 정수는 $3$이다."
+  },
+  {
+    "id": "g1-10",
+    "grade": 1,
+    "level": 2,
+    "version": "final-v2",
+    "unit": "유리함수의 점근선",
+    "prompt": "함수 $y=\\dfrac{3x+1}{x-2}$의 두 점근선의 교점에서 $x$좌표와 $y$좌표의 합은?",
+    "options": [
+      "2",
+      "3",
+      "4",
+      "5",
+      "6"
+    ],
+    "answerType": "choice",
+    "answer": 3,
+    "solution": "$y=3+\\dfrac{7}{x-2}$이므로 두 점근선은 $x=2$, $y=3$이다. 좌표의 합은 $5$이다."
+  },
+  {
+    "id": "g2-09",
+    "grade": 2,
+    "level": 2,
+    "version": "final-v2",
+    "unit": "정적분",
+    "prompt": "$\\displaystyle\\int_0^2(3x+1)\\,\\mathrm{d}x$의 값은?",
+    "options": [
+      "4",
+      "5",
+      "6",
+      "7",
+      "8"
+    ],
+    "answerType": "choice",
+    "answer": 4,
+    "solution": "$\\left[\\dfrac{3}{2}x^2+x\\right]_0^2=6+2=8$이다."
+  },
+  {
+    "id": "g2-10",
+    "grade": 2,
+    "level": 2,
+    "version": "final-v2",
+    "unit": "다항함수의 적분",
+    "prompt": "함수 $f(x)$가 모든 실수 $x$에 대하여 $f'(x)=4x-1$을 만족시킨다. $f(0)=3$일 때, $f(2)$의 값은?",
+    "options": [
+      "7",
+      "8",
+      "9",
+      "10",
+      "11"
+    ],
+    "answerType": "choice",
+    "answer": 2,
+    "solution": "$f(x)=2x^2-x+C$이고 $f(0)=3$이므로 $C=3$이다. 따라서 $f(2)=8-2+3=9$이다."
   }
 ];
