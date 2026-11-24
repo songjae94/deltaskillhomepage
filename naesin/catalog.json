@@ -157,7 +157,7 @@
           "pages": null,
           "price": {
             "pdf": 1200,
-            "hwpx": 2400
+            "hwpx": 2200
           },
           "taxFreeAmount": {
             "pdf": 0,
@@ -232,7 +232,7 @@
           "pages": null,
           "price": {
             "pdf": 4700,
-            "hwpx": 9400
+            "hwpx": 15600
           },
           "taxFreeAmount": {
             "pdf": 0,
@@ -741,7 +741,7 @@
           "pages": null,
           "price": {
             "pdf": null,
-            "hwpx": 8400
+            "hwpx": 8000
           },
           "taxFreeAmount": {
             "pdf": 0,
@@ -794,7 +794,7 @@
           "pages": null,
           "price": {
             "pdf": null,
-            "hwpx": 9200
+            "hwpx": 9000
           },
           "taxFreeAmount": {
             "pdf": 0,
@@ -919,7 +919,7 @@
           "pages": null,
           "price": {
             "pdf": null,
-            "hwpx": 4600
+            "hwpx": 4400
           },
           "taxFreeAmount": {
             "pdf": 0,
@@ -1044,7 +1044,7 @@
           "pages": null,
           "price": {
             "pdf": null,
-            "hwpx": 6400
+            "hwpx": 6200
           },
           "taxFreeAmount": {
             "pdf": 0,
@@ -2618,7 +2618,7 @@
           "pages": null,
           "price": {
             "pdf": 6000,
-            "hwpx": 12000
+            "hwpx": 12400
           },
           "taxFreeAmount": {
             "pdf": 0,
@@ -2693,7 +2693,7 @@
           "pages": null,
           "price": {
             "pdf": 2400,
-            "hwpx": 4800
+            "hwpx": 5000
           },
           "taxFreeAmount": {
             "pdf": 0,
@@ -2768,7 +2768,7 @@
           "pages": null,
           "price": {
             "pdf": 4100,
-            "hwpx": 8200
+            "hwpx": 7800
           },
           "taxFreeAmount": {
             "pdf": 0,
@@ -2843,7 +2843,7 @@
           "pages": null,
           "price": {
             "pdf": 13700,
-            "hwpx": 27400
+            "hwpx": 32800
           },
           "taxFreeAmount": {
             "pdf": 0,
@@ -2918,7 +2918,7 @@
           "pages": null,
           "price": {
             "pdf": 6300,
-            "hwpx": 12600
+            "hwpx": 15000
           },
           "taxFreeAmount": {
             "pdf": 0,
