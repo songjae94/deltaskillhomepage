@@ -3,14 +3,16 @@
   const policy = "default-src 'none'; img-src data:; style-src 'unsafe-inline'; font-src data:; form-action 'none'; base-uri 'none'";
   const attr = value => String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   const questionTypography = `
+    body article{font-family:"HCR Dotum","HCRDotum","Malgun Gothic","Apple SD Gothic Neo","Noto Sans CJK KR",sans-serif;line-height:1.75;word-break:keep-all;overflow-wrap:break-word}
     body :is(.katex,math){font-size:1em}
+    article math:not([display="block"]){margin-inline:.08em}
     article :is(.bogi,.cond-box){position:relative;box-sizing:border-box;min-width:0;border:1px solid #736f66;padding:.85em .9em;margin:1.15em 0 .8em;break-inside:avoid}
     article .bogi:has(>.bt),article .cond-box:has(>.상자딱지){padding-top:1em}
     article .bogi>.bt,article .cond-box>.상자딱지{position:absolute;top:0;left:50%;transform:translate(-50%,-50%);padding:0 .55em;background:#fff;color:inherit;font-weight:600;line-height:1.15;white-space:nowrap}
     article :is(.bogi .brow,.cond-box .cond-line){margin:0;line-height:1.69}
     article .brow+.brow,article .cond-line+.cond-line{margin-top:.22em}
-    .dte-source-choices .dte-inline-choice{font-size:inherit;align-items:baseline}
-    .dte-source-choices .dte-choice-no{box-sizing:border-box;font-size:1em;line-height:1;inline-size:1.24em;block-size:1.24em;flex-basis:1.24em;display:inline-flex;align-items:center;justify-content:center;align-self:baseline}
+    .dte-source-choices .dte-inline-choice{font-size:inherit;align-items:center}
+    .dte-source-choices .dte-choice-no{box-sizing:border-box;font-size:1em;line-height:inherit;inline-size:auto;block-size:auto;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;align-self:center}
     .dte-source-choices .dte-choice-content{line-height:inherit}
   `;
   function applyTypography(doc){
