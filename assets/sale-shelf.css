@@ -16,3 +16,23 @@
 /* 39 1119: 판매 책 줄이 든 칸은 줄 폭(가로 밀기)에 칸이 늘지 않게 — 375 에서 .chapterStage 격자 열이 720px 로 커져 오른쪽이 잘리던 것 */
 #library .chapterStage{grid-template-columns:minmax(0,1fr)}
 .sale-shelf{min-width:0}
+
+/* The product preview sits on the top leaf of the photographed desk pad. */
+html #lesson-studio .lesson-proof {align-self:start; background:#faf9f5; border:1px solid #d7d3c9; box-shadow:0 3px 8px #352b2215}
+#lesson-studio .lesson-proof a {padding:0 0 12px; gap:9px}
+#lesson-studio .lesson-sheet {
+  position:relative; display:block; width:100%; max-width:none; aspect-ratio:2/3;
+  background:#dfd0ba url("../app/assets/editorial/paper-flatlay-v15.png") center / 100% auto no-repeat;
+  box-shadow:none;
+}
+#lesson-studio .lesson-sheet img {
+  position:absolute; left:11.4%; top:14.7%; width:76%; height:71%;
+  object-fit:contain; object-position:center; mix-blend-mode:multiply;
+}
+#lesson-studio .lesson-proof a:focus-visible {outline:3px solid #345876; outline-offset:-4px}
+#library .sale-shelf:not([hidden]) {
+  padding:16px 16px 20px; border:1px solid #c9bfaf; border-bottom:5px solid #aa967b; border-radius:6px;
+  background:#ded2be url("../app/assets/textures/dl63-ash-wood.webp") center / 530px auto;
+  box-shadow:inset 0 1px #fff8,0 3px 0 #eadfce,0 6px 12px #4336251c;
+}
+#library .sale-card {border-radius:4px; background:#fcfbf7; box-shadow:1px 2px 0 #cdcabd,2px 4px 0 #f5f4ed,3px 7px 10px #43362535}

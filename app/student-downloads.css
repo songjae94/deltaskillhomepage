@@ -79,3 +79,23 @@ html[data-design="b"] body[data-page="student"] #content .sd-print .tb36-count i
 @media screen {
  html[data-design="b"] body[data-page="student"] #content .sd-print .tb36-setup>.ds48-canvas{border:1px solid #c4ccd7;border-radius:7px;overflow:hidden;min-width:0}
 }
+
+#content .sd-tabs {
+  display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:4px;
+  padding:4px; border:1px solid #bec5c7; border-radius:7px;
+  background:linear-gradient(140deg,#edf0ef,#cbd2d4); box-shadow:inset 0 1px #fff,0 2px 3px #27343e1f;
+}
+#content .sd-tabs button {display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:4px 8px; padding:7px 5px; border-radius:4px; line-height:1.4; word-break:keep-all}
+#content .sd-tabs button:disabled {background:#e4e6e4; color:#58616b; box-shadow:none; cursor:default}
+#content .sd-tabs button small {font-size:11px; font-weight:400}
+#content .sd-tabs button:focus-visible {outline:2px solid #274a69; outline-offset:2px}
+.ssp-desk .sd-material-link {display:inline-flex; gap:10px; align-items:center; min-height:44px; margin-top:10px; font-weight:650; color:#344e63; text-decoration:underline; text-underline-offset:4px}
+@media(max-width:620px){#content .sd-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media screen {
+  #content .sd-downloads {max-width:1112px; width:calc(100% - 48px); margin:24px auto 42px; box-shadow:1px 2px #f9f8f1,2px 3px #ccc9be,0 8px 22px #41382c0d}
+  #content .sd-tabs button {min-height:52px}
+  #content .sd-tabs button[aria-pressed=true] {border-bottom:3px solid #a68a65}
+  #content .sd-heading p {max-width:54ch; word-break:keep-all}
+  #content .sd-downloads .ms-mast h2 {margin:0; color:var(--dl-ink); font-size:21px}
+  @media(max-width:700px){#content .sd-downloads {width:calc(100% - 32px);padding:15px 12px 28px} #content .sd-tabs button {min-height:44px}}
+}

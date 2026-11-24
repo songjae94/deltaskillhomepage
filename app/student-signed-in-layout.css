@@ -90,9 +90,9 @@
 @media(max-width:520px){.student-signed-in .ssil-main{padding:12px 12px 15px;gap:20px}.student-signed-in .ssil-today{padding:26px 18px}.student-signed-in .ssil-heading{padding-bottom:17px}.student-signed-in .ssil-shortcuts>a{min-height:105px}.student-signed-in .ssil-review{padding:22px 18px}}
 }
 
-/* Actual question first. Keep the original question/answer renderer and untextured white paper. */
+/* Actual question first. Keep the original question/answer renderer. */
 @media screen{
-.student-signed-in .ssil-main{align-items:start;background:linear-gradient(115deg,#dde3e6,#eef0f0)}
+.student-signed-in .ssil-main{align-items:start;background:linear-gradient(110deg,#fff7,#544a3917),url("assets/textures/dl63-ash-wood.webp") center / 570px auto}
 .student-signed-in .ssil-heading{align-items:center;margin-bottom:18px;padding-bottom:14px}
 #content .student-signed-in .ssil-heading h1{font-size:clamp(23px,2.5vw,30px)!important}
 .student-signed-in .ssil-live-paper{padding:25px 30px}
@@ -115,20 +115,6 @@
 }
 
 @media screen {
-  .student-signed-in .ssil-review .dsh-tabs button {
-    position: relative;
-    min-height: 44px;
-  }
-  .student-signed-in .ssil-review .dsh-tabs button[aria-pressed="true"]::after {
-    content: "";
-    position: absolute;
-    bottom: 4px;
-    left: 32%;
-    right: 32%;
-    height: 2px;
-    background: currentColor;
-    border-radius: 1px;
-  }
   .student-signed-in .ssil-live-paper .sl54-answer-options button[aria-pressed="true"] {
     color: #fff;
     background: linear-gradient(160deg, #394c59, #243540);
@@ -151,5 +137,36 @@
   }
   .student-signed-in .ssil-heading > a {
     min-height: 44px;
+  }
+}
+
+@media screen {
+  .student-signed-in .ssil-live-paper {
+    background: #faf9f4 url("assets/textures/dl63-paper-fiber.webp") center / 320px auto;
+    border-color: #c6c3b7;
+    box-shadow: 1px 2px #fffefa, 2px 3px #c5c0b2, 3px 5px #fffdf7, 4px 6px #b5aea1, 3px 11px 14px #3e322529;
+  }
+  .student-signed-in .ssil-question-body {mix-blend-mode: multiply}
+  .student-signed-in .ssil-live-paper::after {
+    width: 44px;
+    height: 14px;
+    top: -6px;
+    border: 1px solid #768087;
+    border-bottom: 2px solid #596269;
+    background: linear-gradient(178deg, #59636a, #f2f3ef 22%, #b2b8ba 43%, #798387 70%, #e4e7e7 89%);
+    box-shadow: inset 1px 0 #fff9, 1px 3px 3px #29282544;
+  }
+  .student-signed-in .ssil-review {
+    background: linear-gradient(105deg,#0b1c29a6,#263c4d66 13%,#101e2c99),url("assets/textures/teacher-key-surface-v50.svg") center / 320px auto;
+    border-radius: 4px 9px 9px 4px;
+    box-shadow: inset 4px 0 4px #14202999, inset 0 1px #a1b2bd80, 1px 3px #25323c, 4px 8px 12px #2726243b;
+  }
+  .student-signed-in .ssil-review::before {
+    content: "";
+    position: absolute;
+    inset: 6px;
+    border: 1px dashed #adbfcd55;
+    border-radius: 3px 5px 5px 3px;
+    pointer-events: none;
   }
 }
