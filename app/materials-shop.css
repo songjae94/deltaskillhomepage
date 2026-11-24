@@ -168,3 +168,11 @@
 
 #content .ms-items .ms-delivery {margin:0 0 14px;font-size:14px;line-height:1.55;color:#505866;word-break:keep-all}
 #content .ms-results:has(+.ms-delivery) {margin-bottom:4px}
+
+#content .ms-shelf-group {margin:24px 0 32px}
+#content .ms-shelf-group>header {display:flex;align-items:baseline;gap:10px;margin:0 0 10px;padding:0;background:none}
+#content .ms-shelf-group>header h3 {margin:0;color:#27283a;font-size:clamp(17px,1.55vw,21px);line-height:1.35;letter-spacing:-.035em}
+#content .ms-shelf-group>header span {font-size:13px;color:#686665}
+#content .ms-upcoming {display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;justify-content:space-between;padding-block:12px;color:#655c52;border-top:1px solid #ede7dd}
+#content .ms-upcoming span {font-size:12px}
+#content .ms-upcoming strong {font-size:14px;font-weight:650}

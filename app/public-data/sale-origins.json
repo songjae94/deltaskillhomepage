@@ -18,5 +18,93 @@
     "book": "EBS 올림포스 유형편 미적분Ⅰ (2026)",
     "isbn": "9788954798068",
     "bookId": "OL-type-CAL1"
+  },
+  "shelf-18": {
+    "book": "EBS 올림포스 유형편 공통수학2 (2025)",
+    "bookId": "OL-type-CM2",
+    "shelf": {
+      "subject": "공통수학2",
+      "no": "07",
+      "unit": "유리함수와 무리함수",
+      "edition": "기초편",
+      "count": 29
+    }
+  },
+  "shelf-19": {
+    "book": "EBS 올림포스 유형편 미적분Ⅰ (2026)",
+    "bookId": "OL-type-CAL1",
+    "shelf": {
+      "subject": "미적분Ⅰ",
+      "no": "04",
+      "unit": "도함수의 활용",
+      "edition": "1권",
+      "count": 143
+    }
+  },
+  "shelf-20": {
+    "book": "EBS 올림포스 유형편 미적분Ⅰ (2026)",
+    "bookId": "OL-type-CAL1",
+    "shelf": {
+      "subject": "미적분Ⅰ",
+      "no": "04",
+      "unit": "도함수의 활용",
+      "edition": "기초편",
+      "count": 56
+    }
+  },
+  "shelf-21": {
+    "book": "EBS 올림포스 유형편 미적분Ⅰ (2026)",
+    "bookId": "OL-type-CAL1",
+    "shelf": {
+      "subject": "미적분Ⅰ",
+      "no": "05",
+      "unit": "부정적분과 정적분",
+      "edition": "1권",
+      "count": 97
+    }
+  },
+  "shelf-24": {
+    "book": "EBS 올림포스 고난도 미적분Ⅰ",
+    "bookId": "OL-advanced-CAL1",
+    "shelf": {
+      "subject": "미적분Ⅰ",
+      "no": "04",
+      "unit": "도함수의 활용",
+      "edition": "고난도",
+      "count": 327
+    }
+  },
+  "shelf-26": {
+    "book": "EBS 올림포스 고난도 미적분Ⅰ",
+    "bookId": "OL-advanced-CAL1",
+    "shelf": {
+      "subject": "미적분Ⅰ",
+      "no": "06",
+      "unit": "정적분의 활용",
+      "edition": "고난도",
+      "count": 151
+    }
+  },
+  "shelf-27": {
+    "book": "EBS 올림포스 고난도 공통수학2",
+    "bookId": "OL-advanced-CM2",
+    "shelf": {
+      "subject": "공통수학2",
+      "no": "06",
+      "unit": "함수",
+      "edition": "고난도",
+      "count": 112
+    }
+  },
+  "shelf-28": {
+    "book": "EBS 올림포스 고난도 공통수학2",
+    "bookId": "OL-advanced-CM2",
+    "shelf": {
+      "subject": "공통수학2",
+      "no": "07",
+      "unit": "유리함수와 무리함수",
+      "edition": "고난도",
+      "count": 114
+    }
   }
 }
