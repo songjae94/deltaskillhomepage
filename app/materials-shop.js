@@ -67,7 +67,7 @@
   const price = (p, fmt) => fmt === 'pdf' ? (quote(p)?.points ?? publicPoints[p.sku] ?? null) : p.formats.hwpx?.price;
   const cashReady = p => Number.isSafeInteger(p.formats.hwpx?.price) && p.formats.hwpx.price > 0 && p.formats.hwpx.files.length > 0;
   const enabled = (p, fmt) => !p.restored && (fmt === 'pdf' ? Number.isSafeInteger(price(p,fmt)) && price(p,fmt)>0 : cashReady(p));
-  const coverURL = sku => 'public-data/covers/' + encodeURIComponent(sku) + '.webp?v=edition-1124';
+  const coverURL = sku => 'public-data/covers/' + encodeURIComponent(sku) + '.webp?v=editorial-light-1124';
   const cost = (p,fmt) => Number.isSafeInteger(price(p,fmt)) ? money(price(p,fmt)) + (fmt === 'pdf' ? ' P' : '원') : fmt === 'pdf' ? '포인트 가격 확인 중' : publicPoints[p.sku] ? '판매 예정가 ' + money(publicPoints[p.sku] * 2) + '원' : '준비 중';
   const picked = () => products.flatMap(p => ['pdf','hwpx'].filter(fmt => cart.includes(key(p,fmt)) && enabled(p,fmt)).map(fmt => ({p,fmt})));
   function options(query='') {
