@@ -99,8 +99,6 @@
 :where(.dq61-q,.dq61-s) .katex .fbox,:where(.dq61-q,.dq61-s) .katex .boxed{padding:.12em .3em;box-sizing:border-box}
 :where(.dq61-q,.dq61-s) .katex .mord:has(>.vlist-t>.vlist-r>.vlist>span>.fbox){margin-left:.28em;margin-right:.28em}
 :where(.dq61-q,.dq61-s) .빈칸{display:inline-block;min-width:4.2em;padding:.05em .7em;margin:0 .28em; border:1.1px solid #333;text-align:center;line-height:1.35}
-:where(.dq61-q,.dq61-s) .katex .mop + .msupsub{font-size:0.95em}
-:where(.dq61-q,.dq61-s) .katex .op-limits > .vlist-t{font-size:1.1em}
 :where(.dq61-q,.dq61-s) .katex-display{margin:.35em 0}
 :where(.dq61-q,.dq61-s) .ch5 li{flex:0 0 19%}
 :where(.dq61-q,.dq61-s) .ch3 li{flex:0 0 33%}
@@ -115,3 +113,16 @@
 :where(.dq61-q,.dq61-s) .katex{font-size:1em}
 :where(.dq61-q,.dq61-s) .katex .mord.text:not(.katex-sizing){font-size:1em}
 .dq61-q,.dq61-q,:where(.dq61-q,.dq61-s) .brow,:where(.dq61-q,.dq61-s) .ch li{line-height:1.69}
+
+/* Keep only the outer math run at the text size. KaTeX owns its script levels. */
+:is(.dq61-q,.dq61-s,.dq61-answer,.solhead,.ssp-paper,.dst-prompt) :is(.katex,math),
+.qbody .dq59-choices li[data-mark]::before {font-size:1em}
+.ssp-desk .ssp-paper {--study-type-size:clamp(16px,1.1vw + 5px,19px)}
+.ssp-desk .ssp-paper :is(.ssp-prompt,.ssp-options,.ssp-feedback>p,.ssp-solution,.ssp-hint) {font-size:var(--study-type-size)}
+.ssp-desk .ssp-paper .ssp-options label:has(input[type=radio]) {font-size:inherit;align-items:baseline}
+.ssp-desk .ssp-paper .ssp-options .ssp-option-no,
+.ssp-desk .ssp-paper .ssp-options input:checked + .ssp-option-no {font-size:1em;line-height:inherit}
+@media print {.ssp-desk .ssp-paper {--study-type-size:12pt}}
+@media (max-width:400px) {
+  .ssp-desk .ssp-paper .ssp-options {margin-inline:-12px}
+}

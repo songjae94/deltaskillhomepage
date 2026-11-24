@@ -2,6 +2,17 @@
   'use strict';
   const policy = "default-src 'none'; img-src data:; style-src 'unsafe-inline'; font-src data:; form-action 'none'; base-uri 'none'";
   const attr = value => String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  const questionTypography = `
+    body :is(.katex,math){font-size:1em}
+    .dte-source-choices .dte-inline-choice{font-size:inherit;align-items:baseline}
+    .dte-source-choices .dte-choice-no{box-sizing:border-box;font-size:1em;line-height:1;inline-size:1.24em;block-size:1.24em;flex-basis:1.24em;display:inline-flex;align-items:center;justify-content:center;align-self:baseline}
+    .dte-source-choices .dte-choice-content{line-height:inherit}
+  `;
+  function applyTypography(doc){
+    if(!doc?.head||doc===document||doc.getElementById('ds-study-math-size'))return;
+    const style=doc.createElement('style');style.id='ds-study-math-size';
+    style.textContent=questionTypography;doc.head.append(style);
+  }
   function render(html, title) {
     const template = document.createElement('template');
     template.innerHTML = html;
@@ -15,7 +26,7 @@
     }
     const base = 'html,body{margin:0;height:auto;min-height:0}body{display:flow-root;color:#171923;background:white;line-height:1.6;overflow-wrap:break-word}img,svg{max-width:100%}img{height:auto}@media print{body{color:black}}';
     const layout = '<style>.katex-display{max-width:100%;overflow-x:auto;overflow-y:hidden;padding-block:.25em} @media print{.katex-display{overflow:visible}.katex-display>.katex{white-space:normal}}</style>';
-    const doc = '<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="'+attr(policy)+'"><style>'+base+'</style></head><body>'+template.innerHTML+layout+'</body></html>';
+    const doc = '<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="'+attr(policy)+'"><style>'+base+'</style></head><body>'+template.innerHTML+layout+'<style id="ds-study-math-size">'+questionTypography+'</style></body></html>';
     return '<iframe class="ds-student-fragment" title="'+attr(title)+'" sandbox="allow-same-origin" referrerpolicy="no-referrer" style="display:block;width:100%;min-width:0;height:12rem;border:0;background:white" srcdoc="'+attr(doc)+'"></iframe>';
   }
   const observers = new WeakMap();
@@ -45,5 +56,5 @@
     try { return await task; } catch(error) { measured.delete(frame); throw error; }
   }
   document.addEventListener('load',event => { if (event.target?.matches?.('.ds-student-fragment')) fit(event.target).catch(() => {}); },true);
-  window.DSStudentFragment = Object.freeze({render,fit});
+  window.DSStudentFragment = Object.freeze({render,fit,applyTypography});
 })();
