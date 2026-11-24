@@ -55,3 +55,11 @@
   .dsh-navigation .dsh-tabs > button {min-height:44px; justify-content:center; gap:6px; padding:6px 2px}
   .dsh-navigation .tb36-mode-icon svg {width:16px; height:16px}
 }
+
+.dsh-navigation .dsh-free-study {
+  margin: 9px 2px 0;
+  color: #534b40;
+  font-size: 13px;
+  line-height: 1.55;
+  word-break: keep-all;
+}

@@ -49,10 +49,13 @@
   .ssp-desk .ssp-desk-controls :is(nav,.ssp-courses) {display:grid; grid-template-columns:1fr; gap:4px; margin:0 0 15px}
   .ssp-desk .ssp-desk-controls [data-ssp-course] {
     display:flex; width:100%; align-items:center; gap:9px; margin:0;
-    min-height:37px; padding:5px 11px; border:1px solid #8d9ba263; border-radius:3px;
+    min-height:44px; padding:5px 11px; border:1px solid #8d9ba263; border-radius:3px;
     color:#ecf0f2; background:#14273370; box-shadow:inset 0 1px #ffffff0d;
     text-align:left; font-size:14px; line-height:1.4;
   }
+  .ssp-course-name {font-weight:650; word-break:keep-all}
+  .ssp-desk .ssp-course-goal {margin-inline-start:auto; font-size:12px; font-weight:500; color:#dbcbb5; white-space:nowrap}
+  .ssp-desk [aria-pressed=true] .ssp-course-goal {color:#68502c}
   .ssp-desk .ssp-desk-controls [data-ssp-course]::before {
     content:""; flex:0 0 6px; height:6px; border:1px solid currentColor; border-radius:50%;
   }
@@ -61,7 +64,7 @@
     color:#253746; background:linear-gradient(#fbfaf5,#dddcd4);
     border-color:#f1f1e8; box-shadow:inset 0 1px #fff,0 2px 3px #19273288; font-weight:700;
   }
-  .ssp-desk .ssp-desk-controls [aria-pressed=true]::before {background:currentColor}
+  .ssp-desk .ssp-desk-controls [aria-pressed=true]::before {background:#976c36; border-color:#79532c}
   .ssp-desk .ssp-desk-controls label {display:block; color:#e0e6e8; font-size:13px; margin:10px 0 0}
   .ssp-desk .ssp-desk-controls select {
     display:block; width:100%; min-height:38px; margin:4px 0 0; padding:6px 8px;
@@ -72,7 +75,8 @@
   @media(max-width:800px){
     .ssp-desk .ssil-main {grid-template-columns:minmax(0,1fr)}
     .ssp-desk .ssp-desk-controls :is(nav,.ssp-courses){grid-template-columns:repeat(2,minmax(0,1fr))}
-    .ssp-desk .ssp-desk-controls [data-ssp-course]{min-height:44px}
+    .ssp-desk .ssp-desk-controls [data-ssp-course]{display:grid; grid-template-columns:8px 1fr; gap:1px 7px; padding:7px 9px}
+    .ssp-desk .ssp-course-goal{grid-column:2; margin:0; text-align:left}
   }
 }
 @media screen {
@@ -90,3 +94,5 @@
   .ssp-desk .ssp-concept-lesson p {max-width:56ch}
   .ssp-desk .ssp-desk-controls>a {display:inline-flex; align-items:center; min-height:44px}
 }
+
+.ssp-feedback [data-ssp-variant] {border-color:#9a7a50; color:#513a26; background:#faf2e3; font-weight:650}

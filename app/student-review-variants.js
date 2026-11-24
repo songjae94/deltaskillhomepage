@@ -355,10 +355,10 @@
     return candidates.length ? {...candidates[0]} : null;
   }
   function button(record, history) {
-    if (record?.correct !== false) return '';
+    if (!record || !(record.correct === false || record.confidence === 'unsure' || record.help)) return '';
     const q = next(record, history);
     // Only trusted constant/catalogue identifiers are interpolated.
-    return q ? `<button type="button" data-ssp-variant="${q.id}" data-ssp-version="${q.version}" data-ssp-kind="${q.kind}">변형문항 풀기</button>` : '';
+    return q ? `<button type="button" data-ssp-variant="${q.id}" data-ssp-version="${q.version}" data-ssp-kind="${q.kind}">비슷한 문제 풀기</button>` : '';
   }
   window.DSStudentReviewVariants = Object.freeze({next, button});
 })();

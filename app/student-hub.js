@@ -16,7 +16,9 @@ const signed=()=>Boolean(window.DSService?.session());
 const inStudentAccount=()=>location.hash==='#account'&&signed()&&(typeof role==='undefined'||role==='student');
 function wrapper(legacy){
  const buttons=tabs.map(([key,label,path])=>`<button type="button" data-hub-tab="${key}" aria-pressed="${tab===key}"><span class="tb36-mode-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="${path}"/></svg></span><strong>${label}</strong></button>`);
- const nav='<div class="dsh-navigation"><nav class="tb36-modes dsh-tabs" aria-label="내신 공부하기 메뉴">'+buttons.join('')+'</nav></div>';
+ const freeStudyNote=tab==='study' && Date.now()<Date.parse('2027-01-01T00:00:00+09:00')
+  ? '<p class="dsh-free-study">12월 31일까지 내신 화면 학습 무료 · 로그인하면 풀이 기록이 남아요.</p>' : '';
+ const nav='<div class="dsh-navigation"><nav class="tb36-modes dsh-tabs" aria-label="내신 공부하기 메뉴">'+buttons.join('')+'</nav>'+freeStudyNote+'</div>';
  let body='';
  if(tab==='timed')body=window.DSStudentTimed.render();
  if(tab==='downloads')body=window.DSStudentDownloads.render();
