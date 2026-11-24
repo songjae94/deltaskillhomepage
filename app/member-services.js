@@ -25,16 +25,43 @@
   window.dispatchEvent(new Event('ds-session-ready'));
  }
  const ready=memberPreview?refresh():Promise.resolve();
+ let verification=null;
+ function expireCurrent(token,generation){
+  if(generation!==authEpoch||!token||auth?.get()!==token)return;
+  authEpoch++;
+  auth.clear();
+  window.dispatchEvent(new Event('ds-session-change'));
+ }
+ function checkSession(token,generation){
+  if(verification?.token===token&&verification.generation===generation)return verification.task;
+  const check={token,generation};
+  verification=check;
+  check.task=(async()=>{
+   try{
+    const r=await fetch(EDGE+'/api/me',{method:'GET',headers:{Authorization:'Bearer '+token},credentials:'omit',cache:'no-store'});
+    if(r.status!==401)return;
+    const d=await r.json();
+    if(d?.ok===false&&d.error==='unauthorized')expireCurrent(token,generation);
+   }catch{}finally{if(verification===check)verification=null;}
+  })();
+  return check.task;
+ }
  async function request(path,body,needsAuth=true){
   const generation=authEpoch;
   if(memberPreview){await ready;if(path.startsWith('/student-learning'))return local('/study',body===undefined?{action:'load',query:path.split('?')[1]||''}:body);return local('/request',{path,...(body===undefined?{}:{body})})}
   if(!isLiveOrigin)throw new Error('preview_origin');
   const headers={'Content-Type':'application/json'};
-  if(needsAuth){const token=auth?.get();if(!token)throw new Error('unauthorized');headers.Authorization='Bearer '+token}
+  const token=needsAuth?auth?.get():null;
+  if(needsAuth){if(!token)throw new Error('unauthorized');headers.Authorization='Bearer '+token}
   const r=await fetch(EDGE+path,{method:body?'POST':'GET',headers,credentials:'omit',body:body?JSON.stringify(body):undefined});
   const d=await r.json().catch(()=>null);
   if(generation!==authEpoch)throw new Error('session_changed');
-  if(r.status===401&&needsAuth)auth?.clear();
+  if(needsAuth&&auth?.get()!==token)throw new Error('session_changed');
+  if(r.status===401&&needsAuth){
+   if(path==='/api/me'&&body===undefined){
+    if(d?.ok===false&&d.error==='unauthorized')expireCurrent(token,generation);
+   }else await checkSession(token,generation);
+  }
   if(!r.ok||!d||d.ok===false)throw Object.assign(new Error(d?.error||'server'),{status:r.status});
   return d;
  }
