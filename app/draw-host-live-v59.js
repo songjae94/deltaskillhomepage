@@ -129,7 +129,14 @@
       return { status: d.status, items: d.items.map(x => ({ item_id: x.item_id, set_key: x.set_key })), draws: d.draws.map(x => ({ set_key: x.set_key, next_page: x.next_page })) };
     }
   };
+  async function pointWallet(signal) {
+    const w = await call({action:'points'},signal);
+    if (!Number.isSafeInteger(w?.free?.remaining) || w.free.remaining < 0 ||
+        !Number.isSafeInteger(w?.price?.pdf_per_item) || w.price.pdf_per_item < 0) throw fail(502,'unavailable');
+    return {pointRemaining:w.free.remaining,pointPrice:w.price.pdf_per_item};
+  }
   window.DSDrawHostV59 = {
+    pointWallet,
     ready: service.ready,
     signedIn: () => Boolean(service.session()),
     resync: () => window.dispatchEvent(new Event('ds-session-change')),
@@ -140,10 +147,9 @@
           new Set(d.sets.map(r => r.set_key)).size !== d.sets.length) throw fail(502, 'unavailable');
       let wallet=null;
       if(d.sets.some(r=>POINT_PRINT_SETS.has(r.set_key)))try{
-        const w=await call({action:'points'},signal);
-        if(w&&w.free&&Number.isSafeInteger(w.free.remaining)&&w.free.remaining>=0&&w.price&&Number.isSafeInteger(w.price.pdf_per_item)&&w.price.pdf_per_item>=0)wallet=w;
+        wallet=await pointWallet(signal);
       }catch{}
-      return { sets: d.sets.filter(r=>!POINT_PRINT_SETS.has(r.set_key)||wallet).map(r => ({ ...r, ready: true, ...(POINT_PRINT_SETS.has(r.set_key)?{pointPrint:true,pointPrice:wallet.price.pdf_per_item,pointRemaining:wallet.free.remaining}: {}) })) };   // no account tag: the device list stays off here
+      return { sets: d.sets.filter(r=>!POINT_PRINT_SETS.has(r.set_key)||wallet).map(r => ({ ...r, ready: true, ...(POINT_PRINT_SETS.has(r.set_key)?{pointPrint:true,...wallet}: {}) })) };   // no account tag: the device list stays off here
     },
     // Scope requests use only names and opaque public IDs; the gate owns candidate selection.
     scope: {

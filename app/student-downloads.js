@@ -6,8 +6,12 @@ const root=()=>document.querySelector('#content .sd-downloads');
 const active=()=>location.hash==='#student'&&Boolean(rendering||root());
 const isPrintActive=()=>active()&&pane==='print';
 function printHTML(){
- const api=window.DSDrawTeacherV59;if(!api?.renderStudent)return '<p role="status">모의시험지 구성을 불러오고 있어요.</p>';
- const t=document.createElement('template');t.innerHTML=api.renderStudent();t.content.querySelectorAll('.tb36-modes,.tb36-heading,.tb36-design-link,footer').forEach(el=>el.remove());t.content.querySelectorAll('.tb36-section-title h2').forEach(el=>{if(el.textContent==='어떤 수업을 준비하나요?')el.textContent='어떤 조건으로 연습할까요?';});return '<div class="sd-print">'+t.innerHTML+'</div>';
+ const api=window.DSDrawTeacherV59;
+ if(!api?.renderStudent)return '<p role="status">프린트 설정을 불러오고 있어요.</p>';
+ const template=document.createElement('template');
+ template.innerHTML=api.renderStudent();
+ template.content.querySelectorAll('.tb36-modes,.tb36-heading,.existing-services-v24,footer').forEach(el=>el.remove());
+ return '<div class="sd-print">'+template.innerHTML+'</div>';
 }
 function materialLink({bookId,unitId,localUnit}={}){
  const url=new URL(location.href);
@@ -32,7 +36,7 @@ function storeScope(){
 function render(view=pane){pane=view;rendering=true;try{
  const files='<section class="sd-files dl63-receipt" aria-labelledby="sd-files-title"><h2 id="sd-files-title" tabindex="-1">받은 자료</h2><section class="ppdf ppdf-account" data-ppdf-receipts data-student-receipts><p role="status">PDF 보관함을 불러오고 있어요.</p></section><div data-student-acquisitions></div></section>';
  const content=pane==='print'
-  ? '<header class="sd-heading dl63-head"><div><h1>딸깍 만들기</h1><p>단원과 유형을 고르면 내 시험 범위에 맞는 프린트를 만들 수 있어요.</p></div></header>'+printHTML()
+  ? '<header class="sd-heading dl63-head"><div><h1>프린트 만들기</h1></div></header>'+printHTML()
   : (window.DSMaterialsShop?.render({audience:'student',scope:storeScope()})||'<p role="status">교재 자료를 불러오고 있어요.</p>')+files;
  return `<section class="sd-downloads dl63-page dl63" data-sd-view="${pane}"><div class="sd-body">${content}</div></section>`;
 }finally{rendering=false;}}

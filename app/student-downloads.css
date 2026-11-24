@@ -83,3 +83,5 @@ html[data-design="b"] body[data-page="student"] #content .sd-print .tb36-count i
 
 #content .sd-downloads .sd-files {margin-top:32px;scroll-margin-top:80px}
 #sd-files-title{scroll-margin-top:90px}
+
+#content .sd-downloads[data-sd-view="print"] .sd-heading {margin-bottom:16px;padding-bottom:12px}
