@@ -5,12 +5,25 @@
   compactFooter = function() { return originalFooter().replace('<button data-feedback', '<a href="#technology" data-tech-return="footer">델타스킬 기술</a><button data-feedback'); };
   let libraryView = 'school', studyContext = 'school', libraryJump = false;
   const learningPages = ['student','practice','timed','diagnostic','diagnostic-run','diagnostic-result','progress'];
+  let headerLoginTarget = '';
+  window.addEventListener('hashchange', event => {
+    if (new URL(event.oldURL).hash !== '#login') return;
+    if (headerLoginTarget && window.DSLoginReturn === headerLoginTarget && !DSService.session()) window.DSLoginReturn = '';
+    headerLoginTarget = '';
+  });
   function renderHeader(page) {
     // Legacy studio links use the same teacher workspace and visual identity.
     if (page === 'studio') page = 'teacher';
     if (page === 'diagnostic-result' && !localDiagnosticAttempts().length) page = 'diagnostic';
     originalHeader(page);
     const meta = document.querySelector('#header .meta');
+    const login = meta?.querySelector('a[href="#login"]');
+    if (login && (page === 'teacher' || page === 'student')) {
+      login.addEventListener('click', () => {
+        headerLoginTarget = '#' + page;
+        window.DSLoginReturn = headerLoginTarget;
+      });
+    }
     if (meta && DSService.session()) {
       const logout = document.createElement('button');
       logout.type = 'button';

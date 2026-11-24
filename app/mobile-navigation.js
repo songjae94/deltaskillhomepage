@@ -18,12 +18,16 @@
 
     function restore() {
       if (!menu) return;
-      const {header, nav, meta, button, panel} = menu;
+      const {header, nav, meta, account, nextAccountSibling, button, panel} = menu;
       const compactControlFocused = button === document.activeElement;
       menu = null;
       if (!header.isConnected) return;
       if (panel.contains(nav)) header.insertBefore(nav, button);
       if (panel.contains(meta)) header.insertBefore(meta, button);
+      if (account?.parentNode === header) {
+        account.classList.remove('ds-mobile-account');
+        meta.insertBefore(account, nextAccountSibling?.parentNode === meta ? nextAccountSibling : null);
+      }
       button.remove();
       panel.remove();
       header.classList.remove('ds-mobile-header');
@@ -37,6 +41,8 @@
       if (!compact.matches || !header) return;
       const nav = header.querySelector('nav[aria-label="주 메뉴"]');
       const meta = header.querySelector('.meta');
+      const account = meta?.querySelector('a.login');
+      const nextAccountSibling = account?.nextSibling;
       if (!nav || !meta || !nav.querySelector('a[href="#student"]')) return;
       const button = document.createElement('button');
       button.type = 'button';
@@ -48,7 +54,11 @@
       panel.className = 'ds-mobile-menu';
       header.classList.add('ds-mobile-header');
       header.append(button, panel);
-      menu = {header, button, panel, nav, meta};
+      menu = {header, button, panel, nav, meta, account, nextAccountSibling};
+      if (account) {
+        account.classList.add('ds-mobile-account');
+        header.insertBefore(account, button);
+      }
       setOpen(false);
       panel.append(nav, meta);
       button.addEventListener('click', () => setOpen(panel.hidden, true));

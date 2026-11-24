@@ -14,6 +14,24 @@
   padding: 0 clamp(12px, 4vw, 32px);
 }
 #header .ds-mobile-header > a { min-height: 44px; }
+#header .ds-mobile-header > .ds-mobile-account {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0 8px;
+  margin-inline-start: auto;
+  margin-inline-end: -8px;
+  color: #273348;
+  font-size: 14px;
+  font-weight: 650;
+  text-decoration: none;
+}
+@media (max-width: 900px), (pointer: coarse) and (max-width: 1366px) {
+  #header .header .meta > a.login { min-height: 44px; min-width: 44px; display: inline-flex; align-items: center; justify-content: center; }
+}
 #header .ds-mobile-toggle {
   display: grid;
   place-items: center;
