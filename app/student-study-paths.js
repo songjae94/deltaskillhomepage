@@ -959,10 +959,60 @@ function bind(container,options={}){
  const subjects=[...new Set(studyChapters.map(([subject])=>subject))];
  let externalRange=false,planSourceUnit=null,planSourceRows=null;
  let supplyPhase='idle',supplyByBook=new Map();
+ let guestCells=[],guestRange=null,guestQuestion='',guestBusy=false,guestError='',guestLeft=null,guestRequest=0;
+ let guestTicket=null,guestStylePromise=null;
+ function guestMathStyle(){
+  if(!guestStylePromise)guestStylePromise=fetch('/app/assets/vendor/katex-0.18.4/katex-embed.css?v=24.3').then(response=>{if(!response.ok)throw Error('math_style');return response.text();}).then(css=>{if(!css.includes('KaTeX_Main')||!css.includes('data:'))throw Error('math_style');return css;}).catch(error=>{guestStylePromise=null;throw error;});
+  return guestStylePromise;
+ }
+ function guestFailure(error){
+  if(error?.code==='trial_limit')return '오늘 로그인 없이 체험할 수 있는 20문항을 모두 사용했어요. 내일 다시 체험하거나 로그인하고 계속 공부할 수 있어요.';
+  if(error?.status===429||error?.code==='rate_limited')return '요청이 잠시 많아요. 잠시 후 다시 확인해 주세요.';
+  return '공개 체험 문항을 불러오지 못했어요. 잠시 후 다시 확인해 주세요.';
+ }
+ async function loadGuestSupply(generation){
+  supplyPhase='loading';guestCells=[];void guestMathStyle().catch(()=>{});
+  try{
+   const host=window.DSDrawHostV59;await host?.ready;
+   if(typeof host?.trial?.menu!=='function')throw Error('trial_unavailable');
+   const data=await host.trial.menu();
+   if(closed||generation!==epoch||signed())return;
+   if(!Array.isArray(data.cells))throw Error('trial_menu');
+   guestCells=data.cells.filter(cell=>typeof cell.cell_key==='string'&&typeof cell.subject==='string'&&typeof cell.unit==='string'&&cell.size>0);
+   supplyPhase='guest';planMessage='로그인 없이 공개된 대단원 문항을 먼저 풀어볼 수 있어요. 하루 최대 20문항까지 체험할 수 있어요.';
+  }catch(error){if(closed||generation!==epoch||signed())return;supplyPhase='error';planMessage=guestFailure(error);}
+  draw(false);
+ }
+ async function openGuestQuestion(retry=false){
+  if(!guestTrial||signed()||!guestRange||guestBusy)return;
+  const serial=++guestRequest,generation=epoch,cell=guestRange;guestBusy=true;guestError='';view='trial-source';draw(false);
+  try{
+   const api=window.DSDrawHostV59?.trial;if(!api?.draw||!api?.open)throw Error('trial_unavailable');
+   if(!retry||guestTicket?.cell!==cell.cell_key){
+    guestTicket=null;
+    const result=await api.draw(cell.cell_key,1);
+    if(closed||serial!==guestRequest||generation!==epoch||signed())return;
+    if(!Array.isArray(result.items)||result.items.length!==1||typeof result.items[0].item_id!=='string'||typeof result.ticket!=='string')throw Error('trial_draw');
+    guestTicket={cell:cell.cell_key,id:result.items[0].item_id,ticket:result.ticket};guestLeft=result.left;
+   }
+   const item=guestTicket;const opened=await api.open(item.cell,item.id,item.ticket);
+   if(closed||serial!==guestRequest||generation!==epoch||signed())return;
+   if(opened.item_id!==item.id||typeof opened.question_html!=='string'||opened.question_html.length>1048576)throw Error('trial_open');
+   const css=await guestMathStyle();
+   if(closed||serial!==guestRequest||generation!==epoch||signed())return;
+   guestQuestion=fragmentContent('<style>'+css+'</style>'+opened.question_html,'공개 체험 문제');
+  }catch(error){if(closed||serial!==guestRequest||generation!==epoch||signed())return;guestError=guestFailure(error);if(error?.code==='trial_limit')guestLeft=0;}
+  finally{if(serial===guestRequest&&generation===epoch){guestBusy=false;draw(false);}}
+ }
+ function guestQuestionHTML(){
+  const shown=Boolean(guestQuestion),left=Number.isInteger(guestLeft)?`오늘 더 볼 수 있는 공개 문항 ${guestLeft}개`:'공개 문항 체험';
+  return `<article class="ssp-paper"><h2 tabindex="-1">${esc(guestRange?.unit||'공개 문항')} · 체험</h2>${guestBusy?'<p role="status">문제를 불러오고 있어요.</p>':''}${guestQuestion}${guestError?`<p role="status">${esc(guestError)}</p>`:''}${shown?`<p class="ssp-note">${left} · 해설 확인과 학습 기록은 로그인 후 이용할 수 있어요.</p>`:''}<div class="ssp-actions">${guestError&&guestTicket?`<button data-ssp-guest-open-retry ${guestBusy?'disabled':''}>같은 문제 다시 열기</button>`:''}${guestLeft!==0?`<button data-ssp-guest-next ${guestBusy?'disabled':''}>${shown?'다음 문항':'문제 다시 불러오기'}</button>`:''}${shown||guestLeft===0?'<a class="ssp-primary" href="#login">로그인하고 해설·학습 기록 이용하기</a>':''}</div></article>`;
+ }
+
  async function loadSupply(){
   const generation=epoch;
   supplyByBook=new Map();supplyPhase=signed()?'loading':'guest';
-  if(!signed())return;
+  if(!signed()){if(guestTrial)await loadGuestSupply(generation);return;}
   try{
    const result=await window.DSStudentServices.catalog({purpose:'study_free',sourceKind:'existing_print'});
    if(closed||generation!==epoch)return;
@@ -1008,6 +1058,7 @@ function bind(container,options={}){
  function newPlanDraft(){return {goal:'',need:'',subject:'',unit:''};}
  function planUnits(subject,need){
   if(!subjects.includes(subject)||!Object.hasOwn(studyPlan.courses,need))return [];
+  if(guestTrial&&need!=='supplement'){const difficulty={concept:'쉬움',types:'보통',advanced:'어려움'}[need];return guestCells.filter(cell=>cell.subject===subject&&cell.difficulty===difficulty).map(cell=>({id:'trial:'+cell.cell_key,label:cell.unit,group:cell.subject,guestCell:cell}));}
   const availableBooks=workbookChoices().filter(book=>book.subject===subject);
   if(guestTrial&&need==='supplement')return trialBooks.filter(book=>book.subject===subject).flatMap(book=>{
    const rows=BANK.filter(q=>isTrialQuestion(q)&&q.book===book.original&&!q.originalQuestionId);
@@ -1053,7 +1104,7 @@ function bind(container,options={}){
    add(scope);
    if(scope.key!==scope.chapter)for(const leaf of scope.sections[0][1])add(scope,leaf);
   }
-  return units;
+  return units.filter(unit=>!unit.disabled);
  }
  function openFirstQuestion(){
   const first=openingQuestion();
@@ -1078,6 +1129,8 @@ function bind(container,options={}){
   draw(false);
  }
  function startRange(profile,range){
+  if(guestTrial&&range.guestCell){state.course=planCourse=profile.need;planPhase='active';externalRange=false;planSourceRows=null;planSourceUnit=null;guestRange=range.guestCell;guestQuestion='';guestError='';view='trial-source';void openGuestQuestion();return;}
+  guestRequest++;guestRange=null;guestQuestion='';
   planCourse=state.course=profile.need;planPhase='active';deskType='';widen='subunit';
   if(guestTrial&&range.originalBook){
    externalRange=false;planSourceRows=null;planSourceUnit=null;state.book=range.originalBook;
@@ -1100,6 +1153,7 @@ function bind(container,options={}){
   planPhase='active';
   if(supplyPhase==='loading'){planMessage='무료 학습 범위를 확인하고 있어요.';planPhase='return';draw(false);return;}
   const range=planUnits(planProfile.subject,planProfile.need).find(u=>u.id===planProfile.unit);
+  if(guestTrial&&range?.guestCell){startRange(planProfile,range);return;}
   externalRange=Boolean(range?.book&&!range.originalBook);planSourceRows=range?.rows||null;
   planSourceUnit=range?.unitIds?{id:range.id,label:range.label,unitIds:range.unitIds,types:[]}:null;
   if(externalRange){selectedScopeBook=range.book;selectedScopeUnit=range.bookUnit;selectedScopeType='';widen='subunit';}
@@ -1192,6 +1246,7 @@ function bind(container,options={}){
   if(planPhase==='active'){
    if(b.hasAttribute('data-plan-reselect')){
     planDraft={...newPlanDraft(),goal:planProfile?.goal||'',need:planProfile?.need||''};
+    guestRequest++;guestBusy=false;guestRange=null;guestQuestion='';
     planPhase='survey';planStep=planDraft.goal?1:0;planMessage='';draw(false);
    }
    return true;
@@ -1277,6 +1332,7 @@ function bind(container,options={}){
   return result.slice(0,10);
  }
  function deskFilters(){
+  if(guestTrial&&view==='trial-source')return '';
   if(externalRange&&state.course!=='supplement')return '';
   if(externalRange||state.course==='supplement'){
    const books=offeredBooks();
@@ -1559,7 +1615,7 @@ function bind(container,options={}){
   root.querySelector('.ssp-desk-filters').hidden=!filters;
   if(filters!==deskFilterHTML){root.querySelector('.ssp-desk-filters').innerHTML=filters;deskFilterHTML=filters;}
   root.querySelectorAll('.ssp-desk-controls button, .ssp-desk-controls select:not([disabled]), .ssp-desk-controls [data-ssp-busy-lock]').forEach(el=>{if(remoteBusy&&!el.disabled){el.disabled=true;el.dataset.sspBusyLock='';}else if(!remoteBusy&&el.hasAttribute('data-ssp-busy-lock')){el.disabled=false;delete el.dataset.sspBusyLock;}});
-  body.innerHTML=view==='guest-limit'?'<article class="ssp-paper"><h2>공개 체험 세 문제를 모두 열어봤어요.</h2>'+trialNotice()+'</article>':view==='source-question'&&remoteQuestion?remoteQuestionHTML():view==='question'&&current?question():view==='history'?history():view==='result'?result():deskWaiting();
+  body.innerHTML=view==='trial-source'?guestQuestionHTML():view==='guest-limit'?'<article class="ssp-paper"><h2>공개 체험 세 문제를 모두 열어봤어요.</h2>'+trialNotice()+'</article>':view==='source-question'&&remoteQuestion?remoteQuestionHTML():view==='question'&&current?question():view==='history'?history():view==='result'?result():deskWaiting();
   if(guestTrial&&view==='question'&&feedback&&trialOpened.size>=trialLimit)body.insertAdjacentHTML('beforeend',trialNotice());
   if(/못|실패|사라|저장 공간/.test(storageMessage)){const msg=document.createElement('p');msg.className='ssil-sync';msg.textContent=storageMessage;body.append(msg);}
   const material=deskMaterials();if(material)body.insertAdjacentHTML('beforeend',material);
@@ -1593,6 +1649,8 @@ function bind(container,options={}){
   e.preventDefault();if(view!=='history')trialReturnView=view;view='history';draw();return;
  }
  const b=e.target.closest('button');if(!b||!container.contains(b)||b.disabled)return;notice='';
+ if(guestTrial&&b.hasAttribute('data-ssp-guest-next')){void openGuestQuestion();return;}
+ if(guestTrial&&b.hasAttribute('data-ssp-guest-open-retry')){void openGuestQuestion(true);return;}
  if(guestTrial&&b.hasAttribute('data-ssp-trial-return')){view=trialReturnView;draw();return;}
  if(guestTrial&&b.hasAttribute('data-ssp-guest-review')){void reviewPlan();return;}
  if(desk&&handlePlanClick(b))return;
@@ -1702,7 +1760,7 @@ function bind(container,options={}){
   }
  }
  if(e.target.matches('[data-ssp-target]')){desiredCount=Number(e.target.value);draw(false);return;}if(e.target.name==='ssp-remote-choice'){remoteChoice=Number(e.target.value);remoteUnknown=false;save();return;}if(e.target.matches('[data-ssp-remote-integer]')){const value=e.target.value.trim();remoteUnknown=false;remoteChoice=/^-?\d+$/.test(value)&&Number.isSafeInteger(Number(value))&&Math.abs(Number(value))<=1000000000?Number(value):null;save();return;}if(e.target.matches('[data-ssp-free-unit]')){if(Object.hasOwn(FREE_CONCEPTS,e.target.value))freeUnit=e.target.value;draw();return;}if(e.target.matches('[data-ssp-scope-book]')){selectedScopeBook=e.target.value;widen='type';invalidateSource();draw();querySource();return;}if(e.target.matches('[data-ssp-scope-unit]')){selectedScopeUnit=e.target.value;widen='type';invalidateSource();draw();querySource();return;}if(e.target.matches('[data-ssp-scope-type]')){selectedScopeType=e.target.value;widen='type';invalidateSource();draw();querySource();return;}if(e.target.name==='ssp-answer'){choice=Number(e.target.value);const button=container.querySelector('[data-ssp-check]');if(button)button.disabled=false;save();}else if(e.target.name==='ssp-confidence'){confidence=e.target.value;save();}else if(e.target.matches('[data-ssp-grade]')){state.grade=Number(e.target.value);save();draw();}else if(e.target.matches('[data-ssp-reason]')&&feedback){feedback.reason=e.target.value;save(feedback);}}
- function sessionChange(){localDrafts.clear();remoteDrafts.clear();epoch++;invalidateSource();remoteQuestion=null;remoteFeedback=null;remoteOperations.clear();remoteHistory={phase:'idle',records:[],hasMore:false,nextBefore:null};activeOwner=owner();current=null;pool=[];feedback=null;view='home';read();if(desk){openFirstQuestion();void loadSupply();void loadPlan();}notice='로그인 상태가 바뀌어 현재 계정의 기록을 다시 확인했어요.';draw();}
+ function sessionChange(){guestRequest++;guestBusy=false;guestRange=null;guestQuestion='';localDrafts.clear();remoteDrafts.clear();epoch++;invalidateSource();remoteQuestion=null;remoteFeedback=null;remoteOperations.clear();remoteHistory={phase:'idle',records:[],hasMore:false,nextBefore:null};activeOwner=owner();current=null;pool=[];feedback=null;view='home';read();if(desk){openFirstQuestion();void loadSupply();void loadPlan();}notice='로그인 상태가 바뀌어 현재 계정의 기록을 다시 확인했어요.';draw();}
  read();if(desk){openFirstQuestion();void loadSupply();void loadPlan();}container.addEventListener('click',click);container.addEventListener('change',change);window.addEventListener('ds-session-change',sessionChange);if(options.resume&&typeof options.onReady!=='function')resume();draw(false);
  if(signed()&&activeOwner&&typeof options.loadProgress==='function'){const generation=epoch;Promise.resolve().then(()=>options.loadProgress({namespace:'student-paths-v1',ownerKey:activeOwner})).then(raw=>{if(closed||generation!==epoch)return;const remote=clean(raw);let cached=false;try{cached=Boolean(key()&&localStorage.getItem(key()));}catch{}const local=cached?state:remote;state=mergeProgress(remote,local);const comparable=x=>JSON.stringify({...x,records:[...x.records].sort((a,b)=>a.id.localeCompare(b.id))});if(comparable(state)!==comparable(remote)&&(!desk||cached))save();else{try{if(key())localStorage.setItem(key(),JSON.stringify(state));}catch{}emit();}draw(false);notifyReady();}).catch(()=>{if(closed||generation!==epoch)return;storageMessage='계정 기록을 불러오지 못했어요. 현재 기기의 기록을 보여드려요.';draw(false);notifyReady();});}else notifyReady();
  const controller={snapshot:()=>JSON.parse(JSON.stringify({...state,summary:summary(state),tier:tier(state),storage:storageMessage})),showHistory:()=>{view='history';draw();},resume:()=>{const ok=resume();if(ok)draw();return ok;},destroy:()=>{closed=true;epoch++;if(typeof releaseChoiceLayout==='function')releaseChoiceLayout();container.removeEventListener('click',click);container.removeEventListener('change',change);window.removeEventListener('ds-session-change',sessionChange);controllers.delete(container);if(lastController===controller)lastController=null;}};controllers.set(container,controller);lastController=controller;return controller.destroy;
