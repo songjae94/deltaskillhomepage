@@ -1,0 +1,21 @@
+/* The mask uses the same delta-and-arrow silhouette as the site icon. */
+.ds-logo::before,
+#header .brand::before {
+  content: "";
+  display: inline-block;
+  width: 1.16em;
+  height: .95em;
+  flex: 0 0 1.16em;
+  align-self: center;
+  margin-inline-end: .24em;
+  vertical-align: -.04em;
+  background: linear-gradient(150deg, #40596d 9%, #93abbc 34%, #f6fafb 43%, #728a9d 50%, #45617b 67%, #aac2cf 85%);
+  -webkit-mask: url("/logo-192.png") center / 173% auto no-repeat;
+  mask: url("/logo-192.png") center / 173% auto no-repeat;
+}
+html[data-design="b"] body.home-body #header .brand::after {
+  inset-inline-start: 1.4em;
+}
+@media (forced-colors: active) {
+  .ds-logo::before, #header .brand::before { background: LinkText; forced-color-adjust: none; }
+}

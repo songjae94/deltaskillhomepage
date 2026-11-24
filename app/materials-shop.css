@@ -200,3 +200,35 @@
 #content [data-ms-series="SSEN-GEO"] {--ms-series-ink:#684134}
 #content [data-ms-series="DS-PRACTICE-PNC"] {--ms-series-ink:#23333e}
 #content .ms-shelf-group>header h3 {padding-inline-start:10px;border-inline-start:3px solid var(--ms-series-ink);color:var(--ms-series-ink)}
+
+/* A bound paperback standing on the display shelf. */
+#content .ms-shop .ms-stage { perspective: 950px; }
+#content .ms-shop .ms-book-cover {
+  --paper-edge: clamp(3px, .48vw, 6px);
+  transform: rotateY(-10deg) rotateZ(-.55deg);
+  transform-origin: 42% 95%;
+  box-shadow: 3px 4px 3px -2px #362a234f, 8px 8px 12px -6px #362a2366;
+}
+#content .ms-shop .ms-book-cover img { box-shadow: none; }
+#content .ms-shop .ms-book-cover::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, #19181426, #ffffff12 1.1%, #15131c20 2%, #ffffff20 2.8%, transparent 4.5%);
+}
+#content .ms-shop .ms-book-cover::after {
+  inset: 2px calc(-1 * var(--paper-edge)) 0 auto;
+  width: var(--paper-edge);
+  border: 0;
+  border-right: 1px solid #a49e90;
+  background: repeating-linear-gradient(90deg, #eee9df 0 1px, #d6d0c4 1px 2px);
+  box-shadow: none;
+  transform: skewY(-14deg);
+  transform-origin: left bottom;
+}
+#content .ms-shop .ms-book-cover:focus-visible { outline: 2px solid #304768; outline-offset: 6px; }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  #content .ms-shop a.ms-book-cover:hover { transform: translateY(-2px) rotateY(-7deg); }
+}

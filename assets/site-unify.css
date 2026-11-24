@@ -1,3 +1,4 @@
+@import url("/assets/brand-symbol.css");
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css");
 /* 31 창 1118: 사이트 디자인 통일 — DELTASKILL 글자 로고 · 한 머리 · 한 발 · 남색 + 파랑 (형 승인 값)
    모든 쪽에서 다른 css 뒤(</head> 바로 앞)에 건다. 입구 / · /home.html 은 html[data-ds-main] — 판은 그대로 두고 로고 · 머리 글꼴 · 단추 색만. */

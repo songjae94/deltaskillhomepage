@@ -75,6 +75,7 @@
 
   // ── state ──
   let phase = 'setup', menu = [], sel = {}, drawn = null, note = { kind: '', text: '' }, pending = null;
+  let columnRule = false;
   let layout = '2', title = '', page = 0, embedded = 0, printing = false, owner = '', count = 5, withSol = true, waitPrint = false;
   let trialOn = false, limits = null, seenToday = 0, opened = '';
   const frames = new Set();
@@ -310,7 +311,7 @@
         if (pageNote.text) record.content.querySelector(pageNote.placement === 'header' ? '.brand span' : '.foot span').textContent = pageNote.text;
         return record.innerHTML;
       }
-      return `<section class="paper"><header class="head">${brand}<h1>${heading}</h1>${s.showStudentName ? '<span class="student">이름 ______________</span>' : ''}</header><main class="body"><div class="questions">${p.items.map((q, i) => `<article class="question"><div class="qhead"><b>${String(p.offset + i + 1).padStart(2, '0')}</b><small>${tag}</small></div><div class="qbody"><div class="dq61-q">${q.body.innerHTML}</div></div></article>`).join('')}</div></main><footer class="foot"><span>${footText}</span><span${s.showPageNumber ? ` class="pgq" data-i="${index + 1}" data-q="${all.length}"` : ''}>${s.showPageNumber ? index + 1 + ' / ' + total : ''}</span></footer></section>`;
+      return `<section class="paper"><header class="head">${brand}<h1>${heading}</h1>${s.showStudentName ? '<span class="student">이름 ______________</span>' : ''}</header><main class="body"><div class="questions" data-columns="${n===1?1:2}" data-divider="${columnRule?'on':'off'}">${p.items.map((q, i) => `<article class="question"><div class="qhead"><b>${String(p.offset + i + 1).padStart(2, '0')}</b><small>${tag}</small></div><div class="qbody"><div class="dq61-q">${q.body.innerHTML}</div></div></article>`).join('')}</div></main><footer class="foot"><span>${footText}</span><span${s.showPageNumber ? ` class="pgq" data-i="${index + 1}" data-q="${all.length}"` : ''}>${s.showPageNumber ? index + 1 + ' / ' + total : ''}</span></footer></section>`;
     }).join('')}${solutions}${renderScripts}</body></html>`;
     return window.DSDocumentDesign?.decorateDocument(html)||html;
   }
@@ -403,16 +404,29 @@
     }));
     return {labels,items};
   }
+  function paperControls() {
+    const design = window.DSDocumentDesign;
+    const styles = design.designs.map(d => {
+      const selected = design.selected().id === d.id;
+      return `<button type="button" data-document-design="${d.id}" aria-pressed="${selected}"><i class="dq-paper-mark" data-style="${d.name}" aria-hidden="true"></i>${safe(d.name)}</button>`;
+    }).join('');
+    function radio(name,value,checked,attribute,text) {
+      return `<label><input type="radio" name="${name}" ${attribute} value="${value}" ${checked?'checked':''}><span>${text}</span></label>`;
+    }
+    const counts = [1,2,4].map(n => radio('paper-count',n,n===Number(layout),'data-dq-layout',n+'문항')).join('');
+    const divider = Number(layout) > 1 ? `<fieldset><legend>두 단 사이</legend><div>${radio('paper-divider','off',!columnRule,'data-dq-divider','선 없음')}${radio('paper-divider','on',columnRule,'data-dq-divider','선 있음')}</div></fieldset>` : '';
+    return `<div class="dq61-page-options"><fieldset class="dq-paper-styles"><legend>내지 디자인</legend><div>${styles}</div></fieldset><div class="dq-paper-layout"><fieldset><legend>한 쪽 문항 수</legend><div>${counts}</div></fieldset>${divider}</div></div>`;
+  }
   function idle() {
     const list = guest() ? [] : savedList();
-    const data = sampleData(), design = window.DSDocumentDesign;
+    const data = sampleData();
     if (!data) {
       return `<aside class="dq59-stage dq59-idle tb36-order-preview ds48-canvas dq61-desk" aria-label="프린트 자료"><div class="ds48-preview-toolbar"><strong>${safe(sel.subject)} 프린트</strong></div><p class="dq59-saved" role="status">${window.DSPrintScope?.awaitingSupply(sel.subject) ? '검토를 마친 문항부터 프린트로 제공할 예정입니다.' : '이 과목의 프린트 자료를 준비하고 있습니다.'}</p></aside>`;
     }
     const sheet = `<iframe class="dq61-sample-page" title="${data.labels.subject} ${data.labels.unit} 프린트 자료" tabindex="-1" scrolling="no" srcdoc="${safe(documentHTML(0,data))}"></iframe>`;
     const surface = window.DSPrintSurfaceV48.scene(sheet);
     const toolbar = '<strong>프린트 자료</strong><button type="button" class="dq61-sample-link" data-dq-large-sample>크게 보기 ↗</button>';
-    const appearance = `<div class="dq61-page-options"><fieldset><legend>내지 디자인</legend><div>${design.designs.map(d=>`<button type="button" data-document-design="${d.id}" aria-pressed="${design.selected().id===d.id}" title="${safe(d.desc)}">${safe(d.name)}</button>`).join('')}</div></fieldset><fieldset><legend>한 쪽 문항 수</legend><div>${[1,2,4].map(n=>`<label><input type="radio" name="sample-page-count" data-dq-layout value="${n}" ${Number(layout)===n?'checked':''}><span>${n}문항</span></label>`).join('')}</div></fieldset></div>`;
+    const appearance = paperControls();
     return `<aside class="dq59-stage dq59-idle tb36-order-preview ds48-canvas dq61-desk dq61-sample-desk" aria-busy="${Boolean(pending)}"><div class="ds48-preview-toolbar">${toolbar}</div><div class="dq61-sample-window">${surface}</div>${appearance}${list.length && !pending ? `<div class="dq59-saved"><h3>이 기기에 임시 보관한 구성</h3><ul>${list.map((x, i) => `<li><button type="button" data-dq-reopen="${i}"><strong>${safe(x.title)}</strong><small>${safe(label(x.labels))} · ${x.ids.length}문항 · ${safe(x.day)}</small></button><button type="button" data-dq-forget="${i}" aria-label="${safe(x.title)} 지우기">×</button></li>`).join('')}</ul></div>` : ''}</aside>`;
   }
   // The faint card in the next place once today's free questions are used: no question in it.
@@ -469,7 +483,7 @@
     const paper = onLocked ? window.DSPrintSurfaceV48.scene(lockedPaper()) : window.DSPrintSurfaceV48.scene(`<iframe class="dq59-paper" title="${page + 1}쪽 인쇄 지면" scrolling="no" style="width:793.7008px;height:1122.5197px" srcdoc="${safe(documentHTML(pageArg()))}"></iframe>`);
     const nav = Array.from({ length: pages }, (_, i) => { const locked = g && i === pages - 1; return `<button type="button" data-dq-page="${i}" aria-pressed="${page === i}"${locked ? ' class="is-locked"' : ''}>${i + 1} ${i < all.length ? (all[i].designRecord ? '기록면' : '문제') : '정답·해설'}${locked ? ` <span class="dq61-lockmark" aria-hidden="true">${LOCK_SVG}</span>` : ''}</button>`; }).join('');
     const pending2 = !g && withSol && !drawn.solutions && drawn.solOp && !drawn.solOp.failed ? `<button type="button" disabled class="is-waiting">정답·해설 <small data-dq61-done>${drawn.solOp.done} / ${drawn.solOp.total}</small></button>` : '';
-    return `<div class="tb36-workspace dq59-work${g ? ' dq61-guest' : ''}"><aside class="tb36-finish-panel dq59-panel"><div class="tb36-section-title"><b>04</b><h2>보관·출력</h2></div><label>제목<input data-dq-title maxlength="60" value="${safe(title)}"></label><label>한 쪽 문항 수<select data-dq-layout>${[1, 2, 4].map(n => `<option value="${n}" ${Number(layout) === n ? 'selected' : ''}>${n}문항</option>`).join('')}</select></label>${window.DSDocumentDesign?.picker()||''}<a class="tb36-design-link" href="#print-design">학원명·머리말·표지 디자인 <span>↗</span></a>${solBox}${save}${print}<button type="button" class="tb36-quiet" data-dq-review>문항 다시 확인</button>${noteHTML()}</aside><div class="creator-canvas td34-canvas tb36-canvas ds48-canvas dq59-canvas"><div class="creator-canvas-toolbar"><div><strong>인쇄 미리보기</strong><span>${drawn.items.length}문항 · ${pages}쪽</span></div></div><div class="creator-paper-stage">${paper}</div><nav class="tb36-pages" aria-label="미리보기 쪽">${nav}${pending2}</nav><div class="creator-canvas-footer"><span>A4 · 210 × 297 mm</span><span>${g ? '문제 면 · 정답·해설은 로그인 뒤' : solOn() ? '문제 · 정답·해설' : '문제 면'}</span></div></div></div>`;
+    return `<div class="tb36-workspace dq59-work${g ? ' dq61-guest' : ''}"><aside class="tb36-finish-panel dq59-panel"><div class="tb36-section-title"><b>04</b><h2>보관·출력</h2></div><label>제목<input data-dq-title maxlength="60" value="${safe(title)}"></label><a class="tb36-design-link" href="#print-design">학원명·머리말·표지 디자인 <span>↗</span></a>${solBox}${save}${print}<button type="button" class="tb36-quiet" data-dq-review>문항 다시 확인</button>${noteHTML()}</aside><div class="creator-canvas td34-canvas tb36-canvas ds48-canvas dq59-canvas"><div class="creator-canvas-toolbar"><div><strong>인쇄 미리보기</strong><span>${drawn.items.length}문항 · ${pages}쪽</span></div></div><div class="creator-paper-stage">${paper}</div>${paperControls()}<nav class="tb36-pages" aria-label="미리보기 쪽">${nav}${pending2}</nav><div class="creator-canvas-footer"><span>A4 · 210 × 297 mm</span><span>${g ? '문제 면 · 정답·해설은 로그인 뒤' : solOn() ? '문제 · 정답·해설' : '문제 면'}</span></div></div></div>`;
   }
   // Keep the original print workbench: a short conditions form next to the paper.
   function compactPrintForm(form) {
@@ -519,6 +533,7 @@
         .map(([k]) => [k, restored.sel[k]]));
       if (!sel.subject && typeof restored.scope?.subject === 'string') sel.subject = restored.scope.subject;
       count = COUNTS.includes(restored.count) ? restored.count : 5;
+      columnRule = restored.columnRule === true;
       layout = ['1','2','4'].includes(restored.layout) ? restored.layout : '2';
       draftTitle = typeof restored.draftTitle === 'string' ? restored.draftTitle.slice(0,60) : '';
       pageNote = {placement:restored.pageNote?.placement === 'footer' ? 'footer' : 'header',
@@ -813,7 +828,7 @@
       clearTimeout(timer); abort.abort(); dialog.remove(); outputDialog=null;
       if (dialog.returnValue === 'login' && sharedPrint() && location.hash === origin) {
         window.DSPrintLoginReturn?.save(studentSurface() ? '#student' : '#teacher', {
-          sel:{...sel}, count, layout, draftTitle, pageNote:{...pageNote}, withSol,
+          sel:{...sel}, count, layout, columnRule, draftTitle, pageNote:{...pageNote}, withSol,
           design:window.DSDocumentDesign?.selected().id, scope:window.DSPrintScope?.snapshot(),
           openSections:[...document.querySelectorAll('#dq59-form details[data-print-option][open]')].map(box=>box.dataset.printOption)
         });
@@ -875,7 +890,7 @@
       if(d.points&&Number.isSafeInteger(d.points.free_remaining))for(const r of menu)if(r.pointPrint)r.pointRemaining=d.points.free_remaining;
       if (!alive()) return null;
       if (Array.isArray(d?.items) && !d.items.length) { say('empty'); return null; }
-      if (!Array.isArray(d?.items) || !d.items.length || d.items.length > count || new Set(d.items.map(x => x.item_id)).size !== d.items.length || !d.items.every(x => UUID.test(x.item_id) && UUID.test(x.set_key))) throw Error('scope');
+      if (!Array.isArray(d?.items) || !d.items.length || d.items.length > criteria.count || new Set(d.items.map(x => x.item_id)).size !== d.items.length || !d.items.every(x => UUID.test(x.item_id) && UUID.test(x.set_key))) throw Error('scope');
       const items = [];
       // Keep simultaneous opens below the existing member gate limit of four.
       for (let start = 0; start < d.items.length; start += 3) {
@@ -1021,6 +1036,7 @@
     const where = { page: x.page || 0, count: x.count || 5 };
     const job = async (h, signal, alive) => ({ key: x.key, labels: x.labels, status: x.ids.length === where.count ? 'ok' : 'insufficient', reopened: true, title: x.title, ...where, items: await openAll(h, x.key, x.ids, paging(where), signal, alive) });
     job.reopen = true;
+    columnRule = x.columnRule === true;
     layout = ['1', '2', '4'].includes(x.layout) ? x.layout : '2';
     run(job);
   }
@@ -1028,7 +1044,7 @@
     if (drawn?.scoped) { note = {kind: 'savefail', text: '이 구성은 인쇄 / PDF에서 저장할 수 있습니다.'}; rerender(); return; }
     if (!drawn || drawn.guest) return;
     const d = new Date(), day = `${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-    const entry = { pageNote:{...pageNote}, documentDesign: window.DSDocumentDesign?.selected().id || 'DS-FOCUS-V2', title: (title || (studentSurface()?'모의시험지':'수업 프린트')).slice(0, 60), layout, key: drawn.key, labels: drawn.labels, ids: drawn.items.map(q => q.id), page: drawn.page, count: drawn.count, day };
+    const entry = { columnRule, pageNote:{...pageNote}, documentDesign: window.DSDocumentDesign?.selected().id || 'DS-FOCUS-V2', title: (title || (studentSurface()?'모의시험지':'수업 프린트')).slice(0, 60), layout, key: drawn.key, labels: drawn.labels, ids: drawn.items.map(q => q.id), page: drawn.page, count: drawn.count, day };
     say(putSaved([entry, ...savedList().filter(x => x.key !== entry.key || x.ids.join() !== entry.ids.join())]) ? 'saved' : 'savefail'); rerender('[data-dq-save]');
   }
   document.addEventListener('submit', e => { if (e.target.id === 'dq59-form' && here()) { e.preventDefault(); if (sharedPrint()) openOutput(); } });
@@ -1073,6 +1089,11 @@
     if (key && !pending) { window.DSPrintScope?.invalidate(); sel[key] = e.target.value; settle(); note = { kind: '', text: '' }; rerender(`[data-dq-field="${key}"]`); }
     if (e.target.hasAttribute?.('data-student-print-sol')) withSol = e.target.checked;
     if (e.target.hasAttribute?.('data-dq-note-placement')) { pageNote.placement=e.target.value; updateSampleText(); }
+    if (e.target.hasAttribute?.('data-dq-divider')) {
+      columnRule = e.target.value === 'on';
+      rerender('[data-dq-divider]:checked');
+      return;
+    }
     if (e.target.hasAttribute?.('data-dq-layout') && sharedPrint() && phase === 'setup') { layout=e.target.value; rerender('[data-dq-layout]:checked'); return; }
     if (e.target.hasAttribute?.('data-dq-layout')) { layout = e.target.value; page = 0; rerender('[data-dq-layout]'); }
     if (e.target.hasAttribute?.('data-dq-count') && !pending) { window.DSPrintScope?.invalidate(); count = COUNTS.includes(Number(e.target.value)) ? Number(e.target.value) : 5; rerender('[data-dq-count]'); }
