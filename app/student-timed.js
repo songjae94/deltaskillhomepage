@@ -22,11 +22,41 @@ let previousMember=signed(),claiming=false;
 const resultKey='ds-school-timed-submit-v1';
 let resultCache;
 const fixedStorage=()=>csat?localStorage:sessionStorage;
+function logoutMarker(){
+ try{return localStorage.getItem('ds_logout_epoch')||'';}catch{return '';}
+}
 function resultTicket(){
  if(resultCache!==undefined)return resultCache;
  try{return resultCache=JSON.parse(sessionStorage.getItem(resultKey));}catch{return resultCache=null;}
 }
-if(!csat&&location.hash==='#login'&&new URLSearchParams(location.search).get('studentMode')==='timed'&&resultTicket()&&!signed())window.DSLoginReturn='#student';
+let submittingTicket=null;
+function loginTicket(){
+ if(csat||location.hash!=='#login')return null;
+ const ticket=resultTicket();
+ return ticket?.id&&new URLSearchParams(location.search).get('trialLogin')===ticket.id?ticket:null;
+}
+if(loginTicket()&&!signed())window.DSLoginReturn='#student';
+function replaceTrialQuery(key,value){
+ const url=new URL(location.href);url.searchParams.delete('trialLogin');url.searchParams.delete('trialResult');
+ if(key)url.searchParams.set(key,value);
+ history.replaceState(history.state,'',url);
+}
+document.addEventListener('submit',event=>{
+ if(!csat&&event.target.id==='login-form')submittingTicket=loginTicket()?.id||null;
+},true);
+document.addEventListener('click',event=>{
+ const ticket=loginTicket(),link=event.target.closest?.('a[href]');
+ if(!ticket||!link)return;
+ const url=new URL(link.href);
+ if(url.origin!==location.origin||url.pathname!=='/auth/')return;
+ url.searchParams.set('next','/app/?studentMode=timed&trialResult='+ticket.id+'#student');
+ link.href=url.href;
+},true);
+window.addEventListener('hashchange',()=>{
+ if(csat||location.hash==='#login')return;
+ submittingTicket=null;
+ if(new URLSearchParams(location.search).has('trialLogin'))replaceTrialQuery();
+});
 function setTicket(ticket){
  resultCache=ticket;
  try{if(ticket)sessionStorage.setItem(resultKey,JSON.stringify(ticket));else sessionStorage.removeItem(resultKey);}catch{}
@@ -37,6 +67,9 @@ function clearTrial(){
  try{for(const g of [1,2])sessionStorage.removeItem(fixedKey(g));}catch{}
 }
 window.addEventListener('ds-session-change',()=>{
+ if(!csat&&signed()&&submittingTicket&&loginTicket()?.id===submittingTicket){
+  replaceTrialQuery('trialResult',submittingTicket);submittingTicket=null;
+ }
  if(previousMember&&!signed())clearTrial();
  previousMember=signed();accountChanged();
 });
@@ -55,7 +88,7 @@ function fixedQuestions(g){
 function remembered(g){
  try{
   const prior=JSON.parse(fixedStorage().getItem(fixedKey(g))),ids=fixedQuestions(g).map(q=>q.id);
-  if(!csat&&prior?.owner&&!signed())return null;
+  if(!csat&&((prior?.logoutMarker||'')!==logoutMarker()||prior?.owner&&!signed()))return null;
   if(prior?.kind!=='fixed'||prior.grade!==g||!Number.isFinite(prior.startedAt)||!Array.isArray(prior.questionIds))return null;
   return (prior.questionIds.length===ids.length||!csat&&prior.questionIds.length===8)&&prior.questionIds.every((id,i)=>id===ids[i])?prior:null;
  }catch{return null;}
@@ -240,6 +273,8 @@ function startDialog(){
  return '<dialog class="dst-start-dialog" aria-labelledby="dst-confirm-title"><h2 id="dst-confirm-title">'+(dialogMode==='quote'?'시험을 시작할까요?':'시험 조건 확인')+'</h2>'+body+'<div><button autofocus data-time-action="dismiss">'+(dialogMode==='quote'?'취소':'조건 다시 고르기')+'</button>'+button+'</div></dialog>';
 }
 function schoolLogin(){
+ const ticket=resultTicket();if(!ticket?.id)return;
+ replaceTrialQuery('trialLogin',ticket.id);
  window.DSLoginReturn='#student';
  const url=new URL(location.href);url.searchParams.set('studentMode','timed');
  history.replaceState(history.state,'',url);location.hash='#login';
@@ -247,7 +282,7 @@ function schoolLogin(){
 function submitSchoolTrial(set){
  const left=remaining();
  set.submittedAt=Date.now();set.remainingAtSubmit=left;set.timedOut=left===0;set.status='submitted';
- saveFixed();setTicket({grade:set.grade,startedAt:set.startedAt});
+ saveFixed();setTicket({grade:set.grade,startedAt:set.startedAt,id:nextRequest()});
  active=null;exam.reset();
  if(location.hash==='#student'&&document.querySelector(scope))schoolLogin();
 }
@@ -255,6 +290,8 @@ async function restoreSchoolResult(){
  if(csat||!signed()||claiming||active)return;
  const ticket=resultTicket();if(!ticket)return;
  const set=remembered(ticket.grade);
+ const claim=new URLSearchParams(location.search).get('trialResult');
+ if(!ticket.owner&&(!ticket.id||claim!==ticket.id)){clearTrial();paint();return;}
  if(!set||set.startedAt!==ticket.startedAt||!['submitted','finished','expired'].includes(set.status)){setTicket(null);paint();return;}
  const token=window.DSAuth?.get(),generation=epoch;
  claiming=true;
@@ -270,7 +307,7 @@ async function restoreSchoolResult(){
   if(location.hash!=='#student'||!document.querySelector(scope))return;
   grade=set.grade;currentSubject=gradeNames[grade];
   active=set;active.owner=owner;active.status=set.timedOut?'expired':'finished';
-  setTicket({...ticket,owner});saveFixed();exam.reset();paint();showExamStart();
+  setTicket({...ticket,owner});saveFixed();if(claim)replaceTrialQuery();exam.reset();paint();showExamStart();
  }finally{claiming=false;}
 }
 function setup(){
@@ -372,9 +409,10 @@ async function action(command){if(busy)return;const sessionEpoch=epoch;notice=''
   }
   const previous=remembered(grade);
   if(!csat&&previous&&previous.status!=='running'){
-   setTicket({grade,startedAt:previous.startedAt});schoolLogin();return;
+   setTicket({grade,startedAt:previous.startedAt,id:nextRequest()});schoolLogin();return;
   }
   exam.reset();active=previous||{kind:'fixed',grade,questionIds:rows.map(q=>q.id),startedAt:Date.now(),durationSeconds:csat?3000:1200,status:'running',responses:{}};
+  if(!csat&&!previous)active.logoutMarker=logoutMarker();
   saveFixed();paint();showExamStart();return;
  }
  if(command==='catalog'){await loadCatalog();return;}
