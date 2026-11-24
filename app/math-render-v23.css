@@ -7,7 +7,10 @@
    script proportions remain entirely KaTeX/TeX controlled. */
 .ht23-options{font-size:2.15cqw}
 /* R-98: enlarge the containing text line, not fractions or operator scripts. */
-:is(.question-stem,.hero-question,.ht23-question,.solution p,.pc14-stem p,.pc14-solution p,.techv20-equation):has(.wm23-tall){line-height:2}
+/* v66: tall inline formulas carry the R5 marks (인라인분수 · 인라인큰연산) and open their own line;
+   the paragraph keeps one line-height. Pages without the shared render rules keep the old line opening. */
+:is(.question-stem,.hero-question,.ht23-question,.solution p,.pc14-stem p,.pc14-solution p,.techv20-equation):not(:is(.dst-prompt,.ds-render,.ssp-prompt)):has(.wm23-tall){line-height:2}
+.wm23-equation>.katex:is(.인라인분수,.인라인큰연산){display:inline-block;vertical-align:baseline;padding-top:.2em;padding-bottom:.2em}
 /* Explanation layout follows §2; original question alignment is preserved. */
 .solution .wm23-equation[data-display="block"]>.katex-display,
 .pc14-solution .wm23-equation[data-display="block"]>.katex-display{text-align:left}

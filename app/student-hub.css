@@ -84,6 +84,9 @@
 .ds-timed .dst-sheet { position:relative; min-height:310px; padding:clamp(18px,3.5vw,40px); }
 .ds-timed .dst-sheet .quick-question { min-height:142px; }
 .ds-timed .dst-sheet .dst-prompt { line-height:1.95; overflow-wrap:anywhere; }
+/* v66: the timed sheet sets the question like every other surface — 명조 · one size variable · one line-height
+   (draw-math-v61.css :root). Tall inline formulas open their own line (R5). */
+#content .ds-timed .dst-sheet .dst-prompt { font-family:var(--ds-q-serif,"Noto Serif KR",Batang,serif); font-size:var(--ds-q-size,18px); line-height:var(--ds-q-lh,1.69); letter-spacing:0; }
 .ds-timed .dst-sheet .question-no { display:block; margin:16px 0 12px; }
 .ds-timed .dst-sample-label { margin:0 0 12px; color:#546170; font-size:13px; }
 .ds-timed .dst-config { padding:22px; color:#f5f1e9; }

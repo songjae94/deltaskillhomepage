@@ -131,7 +131,7 @@
   #content .ds-timed .dst-sheet .quick-question {min-height:0;margin:0;padding-block:8px 12px}
   #content .ds-timed .dst-sheet .question-no {margin:5px 0 6px}
   #content .ds-timed .dst-sheet .paper-heading {padding-block:3px 9px}
-  #content .ds-timed .dst-sheet .question-stem {font-size:17px;line-height:1.75}
+  #content .ds-timed .dst-sheet .question-stem {font-size:var(--ds-q-size,17px);line-height:var(--ds-q-lh,1.69)}
   #content .ds-timed .dte-clock,#content .ds-timed .dte-summary {min-height:44px;padding:7px 13px;margin-bottom:14px}
   #content .ds-timed .ta-numbers-v18 button {min-height:44px}
 }

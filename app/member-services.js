@@ -46,15 +46,25 @@
   })();
   return check.task;
  }
- async function request(path,body,needsAuth=true){
+ async function request(path,body,needsAuth=true,opts={}){
   const generation=authEpoch;
   if(memberPreview){await ready;if(path.startsWith('/student-learning'))return local('/study',body===undefined?{action:'load',query:path.split('?')[1]||''}:body);return local('/request',{path,...(body===undefined?{}:{body})})}
   if(!isLiveOrigin)throw new Error('preview_origin');
   const headers={'Content-Type':'application/json'};
   const token=needsAuth?auth?.get():null;
   if(needsAuth){if(!token)throw new Error('unauthorized');headers.Authorization='Bearer '+token}
-  const r=await fetch(EDGE+path,{method:body?'POST':'GET',headers,credentials:'omit',body:body?JSON.stringify(body):undefined});
-  const d=await r.json().catch(()=>null);
+  // v66: no endless loading — a call that has not answered in time ends as 'timeout' (the screen offers a retry).
+  // keepalive lets the last progress save leave with the page (pagehide); browsers cap it near 64KB.
+  const payload=body?JSON.stringify(body):undefined;
+  const keepalive=Boolean(opts.keepalive)&&(!payload||payload.length<60000);
+  const ctrl=!keepalive&&typeof AbortController==='function'?new AbortController():null;
+  const timer=ctrl?setTimeout(()=>ctrl.abort(),opts.timeout||30000):0;
+  let r,d;
+  try{
+   r=await fetch(EDGE+path,{method:body?'POST':'GET',headers,credentials:'omit',body:payload,keepalive,signal:ctrl?.signal});
+   d=await r.json().catch(()=>null);
+  }catch(error){throw Object.assign(new Error(ctrl?.signal.aborted?'timeout':'connection_failed'),{status:0});}
+  finally{clearTimeout(timer);}
   if(generation!==authEpoch)throw new Error('session_changed');
   if(needsAuth&&auth?.get()!==token)throw new Error('session_changed');
   if(r.status===401&&needsAuth){
@@ -93,7 +103,7 @@
   }
  }
  function masked(phone){return String(phone||'').replace(/^(\d{3})\d{3,4}(\d{4})$/,'$1-****-$2')}
- function errorText(error){return ({preview_origin:'로그인 연결을 확인해 주세요.',unauthorized:'로그인이 만료되었습니다. 다시 로그인해 주세요.',session_expired:'화면을 새로고침한 뒤 다시 로그인해 주세요.',invalid:'번호 또는 비밀번호를 확인해 주세요.',not_enrolled:'가입되지 않은 번호입니다.',locked:'시도가 많아 잠시 잠겼습니다. 15분 뒤 다시 시도해 주세요.',too_many:'요청이 많습니다. 잠시 후 다시 시도해 주세요.',connection_failed:'연결하지 못했습니다. 잠시 후 다시 시도해 주세요.'})[error?.message]||'불러오지 못했습니다. 다시 시도해 주세요.'}
+ function errorText(error){return ({preview_origin:'로그인 연결을 확인해 주세요.',unauthorized:'로그인이 만료되었습니다. 다시 로그인해 주세요.',session_expired:'화면을 새로고침한 뒤 다시 로그인해 주세요.',invalid:'번호 또는 비밀번호를 확인해 주세요.',not_enrolled:'가입되지 않은 번호입니다.',locked:'시도가 많아 잠시 잠겼습니다. 15분 뒤 다시 시도해 주세요.',too_many:'요청이 많습니다. 잠시 후 다시 시도해 주세요.',timeout:'응답이 늦어요. 잠시 후 다시 시도해 주세요.',connection_failed:'연결하지 못했습니다. 잠시 후 다시 시도해 주세요.'})[error?.message]||'불러오지 못했습니다. 다시 시도해 주세요.'}
  function safeDownloadUrl(value){try{const u=new URL(value);return u.protocol==='https:'&&['cvlrphtupjmaefahodgz.supabase.co','www.deltaskill.co.kr','deltaskill.co.kr'].includes(u.hostname)?u.href:null}catch{return null}}
  function passwordChanged(){legacyPassword=false;try{localStorage.removeItem('ds_pw_old')}catch{}}
  window.addEventListener('storage',e=>{if(e.key==='ds_tk'||e.key==='ds_logout_epoch'){authEpoch++;window.dispatchEvent(new Event('ds-session-change'));}});

@@ -203,19 +203,31 @@
           else if(!display&&/op-limits|op-symbol/.test(html))html=html.replace('class="katex"','class="katex 인라인큰연산"');
         }catch(error){record(error,math);html=null;}
       }
-      if(html===null)html=global.katex.renderToString(toTeX(math.closest('.ssp') && math.querySelector('mfrac') ? studyFormula(math) : math),{displayMode:display,throwOnError:true,trust:false,strict:'error',output:'htmlAndMathml'});
+      if(html===null){
+        // v66: every place sets a body fraction at text size (R4), not only study sheets, and the TeX goes
+        // through the shared preprocessor (math-typeset-v66.js · ops 수식교정.py port) before KaTeX.
+        let tex=toTeX(math.querySelector('mfrac') ? studyFormula(math) : math);
+        if(global.DSMathTypeset)tex=global.DSMathTypeset.prepare(tex,{bodyFrac:false});
+        html=global.katex.renderToString(tex,{displayMode:display,throwOnError:true,trust:false,strict:'error',output:'htmlAndMathml'});
+        if(!display&&/class="mfrac"/.test(html))html=html.replace('class="katex"','class="katex 인라인분수"');
+        else if(!display&&/op-limits|op-symbol/.test(html))html=html.replace('class="katex"','class="katex 인라인큰연산"');
+      }
       const wrapper=document.createElement('span');wrapper.className='wm23-equation';
       wrapper.dataset.display=display?'block':'inline';
       if(canonical)wrapper.dataset.source='tex';
       if(math.querySelector('mfrac,msubsup,munderover,mroot'))wrapper.classList.add('wm23-tall');
-      wrapper.innerHTML=html;originals.set(wrapper,original);math.replaceWith(wrapper);stats.rendered++;
+      wrapper.innerHTML=html;originals.set(wrapper,original);
+      // R14: a formula glued to the previous word gets one word space; a particle after it stays attached.
+      const before=math.previousSibling;
+      if(!display&&before?.nodeType===3&&/[^\s(\[{（「『‘“]$/.test(before.nodeValue||'')&&!/(?:^|[\s(])제$/.test(before.nodeValue||'')&&!/^[,.;:)\]}]/.test(text(original)))wrapper.classList.add('wm23-gap');
+      math.replaceWith(wrapper);stats.rendered++;
     }catch(error){failedNodes.set(math,math.outerHTML);record(error,math);}
   }
   // Short, reviewed concept formulas use the same pinned engine, fonts and strict options.
   // Existing problem/solution documents are not passed through this entry point.
   function renderTeX(tex){
     if(engineStatus()!=='ready')return '<span class="rv56-inline-math math-unavailable">수식 준비 중</span>';
-    try{const source=String(tex).replace(/\\sum(?!\\limits)/g,'\\sum\\limits');return '<span class="wm23-equation rv56-inline-math">'+global.katex.renderToString(source,{displayMode:false,throwOnError:true,trust:false,strict:'error',output:'htmlAndMathml'})+'</span>';}
+    try{let source=String(tex).replace(/\\sum(?!\\limits)/g,'\\sum\\limits');if(global.DSMathTypeset)source=global.DSMathTypeset.prepare(source);return '<span class="wm23-equation rv56-inline-math">'+global.katex.renderToString(source,{displayMode:false,throwOnError:true,trust:false,strict:'error',output:'htmlAndMathml'})+'</span>';}
     catch(error){record(error);return '<span class="rv56-inline-math math-unavailable">수식 확인 필요</span>';}
   }
   const api={expectedVersion,toTeX,engineStatus,renderTeX,failures:()=>failures.slice(),stats:()=>({...stats}),originalMathML:wrapper=>originals.get(wrapper)?.outerHTML||null};

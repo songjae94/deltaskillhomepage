@@ -158,10 +158,9 @@
 .ssp-options:is([data-choice-columns="5"],[data-choice-columns="3"]) label {white-space:nowrap}
 .ssp-options[data-choice-columns="1"] label>span:last-child {white-space:normal;overflow-wrap:anywhere;overflow-x:auto}
 .ssp-desk :is(.ssp-prompt,.ssp-concept-lesson p,.ssp-hint p,.ssp-solution li,.ssp-solution p) {
-  line-height:1.82; color:#232622;
+  line-height:var(--ds-q-lh,1.69); color:#232622;
 }
-.ssp-desk :is(.ssp-prompt,.ssp-concept-lesson p,.ssp-hint p,.ssp-solution li,.ssp-solution p):has(.wm23-tall,.mfrac,.mop.op-limits) {line-height:2.15}
-.ssp-desk .wm23-tall {display:inline-block; vertical-align:baseline; padding-block:.12em}
+/* v66: one line-height for every line; tall inline formulas open their own line (R5 marks · draw-math-v61.css). */
 .ssp-desk .ssp-solution .katex-display,.ssp-desk .ssp-solution .katex-display>.katex {text-align:left}
 .ssp-desk .ssp-solution .wm23-equation[data-display=block] {margin:.45em 0 .55em; padding-inline-start:1.1em}
 
@@ -231,3 +230,7 @@
 }
 
 @media screen{.ssp-desk .ssp-paper-foot:empty{display:none}}
+/* v66: while the next question is on its way the current one stays, dimmed (no blank screen). */
+.ssp-body.ssp-opening .ssp-paper{opacity:.6;transition:opacity .12s ease-out}
+.ssp-body.ssp-opening{cursor:progress}
+@media (prefers-reduced-motion:reduce){.ssp-body.ssp-opening .ssp-paper{transition:none}}

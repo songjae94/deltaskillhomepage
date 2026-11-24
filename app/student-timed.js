@@ -5,7 +5,8 @@ const bank=window.DSFinalPracticeBank;
 const byId=new Map(bank.map(q=>[q.id,q]));
 const gradeNames=['','공통수학2','미적분Ⅰ'];
 const escape=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const math=s=>String(s).split('$').map((part,i)=>i%2?katex.renderToString(part,{throwOnError:false,trust:false,output:'htmlAndMathml'}):escape(part)).join('');
+// v66: shared preprocessor · R5 marks · counted failures (math-typeset-v66.js), same as every other surface.
+const math=s=>window.DSMathTypeset?window.DSMathTypeset.dollars(s,escape):String(s).split('$').map((part,i)=>i%2?katex.renderToString(part,{throwOnError:false,trust:false,output:'htmlAndMathml'}):escape(part)).join('');
 const signed=()=>Boolean(window.DSService?.session());
 const service=()=>window.DSStudentServices;
 const gradeBank=()=>bank.filter(q=>q.grade===grade);

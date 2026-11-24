@@ -60,7 +60,7 @@
     if (b.box) return `<div class="tsc60-box">${b.box.map(l => `<p>${rich(l, tex)}</p>`).join('')}</div>`;
     return '';
   };
-  const question = (item, tex) => `<div class="tsc60-q">${item.body.map(b => block(b, tex)).join('')}<p class="tsc60-choices">${item.choices.map((c, i) => `<span>${circled[i]} ${tex(c, false)}</span>`).join('')}</p></div>`;
+  const question = (item, tex) => `<div class="tsc60-q">${item.body.map(b => block(b, tex)).join('')}<p class="tsc60-choices ${window.DSMathTypeset?.choiceRow(item.choices) || 'ch3'}">${item.choices.map((c, i) => `<span>${circled[i]} ${tex(c, false)}</span>`).join('')}</p></div>`;
 
   function ladder(tex) {
     const rungs = ladderItems.map((item, i) => `<li class="tsc60-rung${item.original ? ' tsc60-rung--original' : ''}" style="--rung:${i}">
@@ -120,10 +120,13 @@
   const tex = (src, display) => `<span class="tsc60-m"${display ? ' data-display=""' : ''} data-tex="${esc(src)}">${esc(src)}</span>`;
   function typeset(root) {
     const run = () => {
-      if (!window.katex) return false;
+      if (!window.katex || !window.DSMathTypeset) return false;
+      // v66: the shared preprocessor and the R5 marks, as on every other surface; a failure is counted
+      // (html[data-math-tex-errors]) and shown as a marked fallback, never a silent red source.
       for (const el of root.querySelectorAll('.tsc60-m[data-tex]')) {
         const src = el.getAttribute('data-tex');
-        try { window.katex.render(src, el, { displayMode: el.hasAttribute('data-display'), throwOnError: false }); el.removeAttribute('data-tex'); } catch (e) { /* the source stays readable */ }
+        el.innerHTML = window.DSMathTypeset.html(src, { display: el.hasAttribute('data-display') });
+        el.removeAttribute('data-tex');
       }
       return true;
     };

@@ -44,16 +44,16 @@ function bindCourse(el,history=false){
  controller?.();bound=el;
  const epoch=sessionEpoch;let retryOperation=null;
  const guard=()=>{if(epoch!==sessionEpoch||!signed()||!accountData?.ownerKey||!window.DSStudentServices)throw Error('다시 로그인해 주세요.');};
- async function send(operation){
+ async function send(operation,keepalive=false){
   for(let tries=0;tries<4;tries++){
-   guard();try{const result=await DSStudentServices.saveProgress(operation.state,{courseId:'student-paths-v1',expectedVersion:operation.expectedVersion,requestId:operation.requestId});guard();if(result.ownerKey!==accountData.ownerKey)throw Error('session_changed');accountData={...accountData,...result};retryOperation=null;return result;}
+   guard();try{const result=await DSStudentServices.saveProgress(operation.state,{courseId:'student-paths-v1',expectedVersion:operation.expectedVersion,requestId:operation.requestId,keepalive});guard();if(result.ownerKey!==accountData.ownerKey)throw Error('session_changed');accountData={...accountData,...result};retryOperation=null;return result;}
    catch(error){if(error.code!=='version_conflict'||tries===3)throw error;if(error.ownerKey&&error.ownerKey!==accountData.ownerKey)throw Error('session_changed');operation={state:window.DSStudentStudyPaths.mergeProgress(error.state,operation.state),expectedVersion:error.version,requestId:crypto.randomUUID()};retryOperation=operation;}
   }
  }
- const options={view:history?'history':'desk',signedIn:signed,ownerKey:()=>accountData?.ownerKey||'',loadProgress:async()=>accountData?.state||{},onProgress:async next=>{
-  guard();if(retryOperation)await send(retryOperation);
+ const options={view:history?'history':'desk',signedIn:signed,ownerKey:()=>accountData?.ownerKey||'',loadProgress:async()=>accountData?.state||{},onProgress:async (next,meta)=>{
+  guard();const keepalive=Boolean(meta?.keepalive);if(retryOperation)await send(retryOperation,keepalive);
   const operation={state:window.DSStudentStudyPaths.mergeProgress(accountData.state,next),expectedVersion:accountData.version,requestId:crypto.randomUUID()};retryOperation=operation;
-  const result=await send(operation);return {saved:true,state:result.state,localOnly:result.localOnly};
+  const result=await send(operation,keepalive);return {saved:true,state:result.state,localOnly:result.localOnly};
  }};
  controller=window.DSStudentStudyPaths.bind(el,options);
  if(!accountData?.ownerKey){const notice=document.createElement('p');notice.className='ssp-note';notice.textContent='계정 기록을 불러오지 못했어요. 현재 화면에서 풀 수 있지만 계정 저장은 연결 후 가능해요. ';const retry=document.createElement('button');retry.dataset.hubSync='';retry.textContent='기록 다시 불러오기';notice.append(retry);el.prepend(notice);}

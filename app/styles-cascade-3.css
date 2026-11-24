@@ -10,7 +10,10 @@
    script proportions remain entirely KaTeX/TeX controlled. */
 .ht23-options{font-size:2.15cqw}
 /* R-98: enlarge the containing text line, not fractions or operator scripts. */
-:is(.question-stem,.hero-question,.ht23-question,.solution p,.pc14-stem p,.pc14-solution p,.techv20-equation):has(.wm23-tall){line-height:2}
+/* v66: tall inline formulas carry the R5 marks (인라인분수 · 인라인큰연산) and open their own line;
+   the paragraph keeps one line-height. Pages without the shared render rules keep the old line opening. */
+:is(.question-stem,.hero-question,.ht23-question,.solution p,.pc14-stem p,.pc14-solution p,.techv20-equation):not(:is(.dst-prompt,.ds-render,.ssp-prompt)):has(.wm23-tall){line-height:2}
+.wm23-equation>.katex:is(.인라인분수,.인라인큰연산){display:inline-block;vertical-align:baseline;padding-top:.2em;padding-bottom:.2em}
 /* Explanation layout follows §2; original question alignment is preserved. */
 .solution .wm23-equation[data-display="block"]>.katex-display,
 .pc14-solution .wm23-equation[data-display="block"]>.katex-display{text-align:left}
@@ -1731,17 +1734,19 @@ html body.working-body[data-page="technology"] #content > .tsc60 ~ .work-footer 
 
 .tsc60-q { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--tsc-line); color: #1f2226; font-family: "Noto Serif KR", "Nanum Myeongjo", "AppleMyungjo", Batang, serif; font-size: 14.5px; line-height: 1.8; font-variant-numeric: lining-nums; }
 .tsc60-q p { margin: 0; }
-.tsc60-q .katex { font-size: 1.06em; }
+.tsc60-q .katex { font-size: 1em; }
 .tsc60-display { margin: .35em 0 .35em .8em; }
 .tsc60-display .katex-display { margin: 0; text-align: left; }
 .tsc60-display .katex-display > .katex { text-align: left; }
 .tsc60-box { margin: .4em 0; padding: 6px 10px; border: 1px solid #8f9097; }
-.tsc60-choices { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 8px; margin-top: 10px !important; font-size: 13px; }
+.tsc60-choices { display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 2px 0; margin-top: 10px !important; font-size: 13px; }
+/* 렌더규격 §2-3: five across · 3+2 · 2+2+1 only, cells pinned so the flow never makes 4+1 */
+.tsc60-choices.ch5 span { flex: 0 0 19%; } .tsc60-choices.ch3 span { flex: 0 0 33%; } .tsc60-choices.ch2 span { flex: 0 0 49%; }
 .tsc60-choices span { white-space: nowrap; }
 .tsc60-answer { display: flex; align-items: baseline; gap: 6px; margin: 14px 0 0; padding-top: 10px; border-top: 1px dashed #d9d6e8; color: var(--tsc-head); font-size: 14px; font-weight: 650; }
 .tsc60-answer > span:first-child { color: var(--tsc-accent); font-size: 12px; font-weight: 700; letter-spacing: .04em; }
 .tsc60-answer-v { font-family: "Noto Serif KR", "Nanum Myeongjo", "AppleMyungjo", Batang, serif; font-size: 14.5px; font-weight: 600; }
-.tsc60-answer .katex { font-size: 1.05em; }
+.tsc60-answer .katex { font-size: 1em; }
 
 /* smaller pairs: same card, badge and source line as the ladder, on the app and on features/variation.html */
 .tsc60-pairs { margin-top: clamp(48px, 7vw, 92px); padding-top: clamp(22px, 3vw, 32px); border-top: 1px solid var(--tsc-line); }
