@@ -195,7 +195,7 @@
           <div class="dst-actions">${!complete?'<button type="button" data-exam-finish-early>제출하고 채점</button>':''}${retryButton}${retry?'<button type="button" data-exam-original>첫 시험 결과</button>':''}
           ${complete && !retry?'<button type="button" data-time-action="print">문제지·해설 인쇄</button>':''}
           <button type="button" data-time-action="back">세트 목록</button></div>
-          ${set.kind==='custom'?'<a href="#account">마이페이지 · 내 시험 기록 →</a>':complete?'<small>이 기기에 저장한 연습 기록</small><a data-time-login href="'+api.guestLoginUrl+'">로그인하고 다음 시험 풀기 →</a>':'<small>이 기기에 저장한 연습 기록</small>'}
+          ${set.kind==='custom'?'<a href="#account">마이페이지 · 내 시험 기록 →</a>':complete&&!api.signed?.()?'<small>이 기기에 저장한 연습 기록</small><a data-time-login href="'+api.guestLoginUrl+'">로그인하고 다음 시험 풀기 →</a>':'<small>이 기기에 저장한 연습 기록</small>'}
         </aside></div>`;
     }
 
