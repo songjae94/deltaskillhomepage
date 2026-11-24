@@ -56,7 +56,7 @@
     return list.map(name => `<button type="button" data-ms-book="${escape(name)}">${escape(bookLabel(name))}<small>${products.filter(p=>p.source===name).length}권</small></button>`).join('') || '<p role="status">검색 결과가 없습니다.</p>';
   }
   function picker() {
-    return `<div class="ms-find"><h2>${audience==='student'?'어떤 부교재로 공부하나요?':'어느 책으로 수업하세요?'}</h2><details class="ms-picker"><summary><span>${escape(bookLabel(scope?.label || selected || (audience==='student'?'공부하는 교재 찾기':'수업 교재 찾기')))}</span><i aria-hidden="true"></i></summary><div class="ms-popup dl63-list-wrap"><input type="search" aria-label="교재 검색" placeholder="교재명으로 검색" data-ms-search><div data-ms-options>${options()}</div></div></details></div>`;
+    return `<details class="ms-picker"><summary><span>${escape(bookLabel(scope?.label || selected || (audience==='student'?'공부하는 교재 찾기':'수업 교재 찾기')))}</span><i aria-hidden="true"></i></summary><div class="ms-popup dl63-list-wrap"><input type="search" aria-label="교재 검색" placeholder="교재명으로 검색" data-ms-search><div data-ms-options>${options()}</div></div></details>`;
   }
   const coverSkus = new Set(['NS-CM2-06', 'NS-CM2-07', 'NS-CM2B-06', 'NS-MI1B-05']);
   function formats(p) {
@@ -82,7 +82,7 @@
     const offer = p.restored
       ? '<div class="ms-formats ms-upcoming"><span>PDF · 한글</span><strong>판매 준비 중</strong></div>'
       : '<div class="ms-formats">' + formats(p) + '</div>';
-    return `<article class="ms-volume" data-sku="${escape(p.sku)}" aria-label="${label}"><div class="ms-stage">${cover}</div><div class="ms-book-info"><small>${meta}</small><h3>${escape(p.unit||title(p))}</h3><span>${p.sourceId?'연계 · ':''}${escape(bookLabel(p.source))}</span></div>${offer}</article>`;
+    return `<article class="ms-volume" data-sku="${escape(p.sku)}" aria-label="${label}"><div class="ms-stage">${cover}</div><div class="ms-book-info"><small>${meta}</small><h3>${escape(p.unit||title(p))}</h3>${audience==='student'?'':`<span>${p.sourceId?'연계 · ':''}${escape(bookLabel(p.source))}</span>`}</div>${offer}</article>`;
   }
   function items() {
     const list = scope ? products.filter(p => scope.bookId
@@ -102,8 +102,12 @@
     ).map(([source, books]) => {
       books.sort((a, b) => a.no.localeCompare(b.no) || (a.edition || a.name).localeCompare(b.edition || b.name, 'ko'));
       const name = escape(bookLabel(source));
-      return `<section class="ms-shelf-group" aria-label="${name}"><header><h3>${name}</h3><span>${books.length}권</span></header><div class="ms-bookshelf">${books.map(coverTile).join('')}</div></section>`;
+      return `<section class="ms-shelf-group" aria-label="${name}"><header><h3>${name}</h3>${audience==='student'?'':`<span>${books.length}권</span>`}</header><div class="ms-bookshelf">${books.map(coverTile).join('')}</div></section>`;
     }).join('');
+    if (audience === 'student') {
+      const empty = list.length ? '' : '<p role="status">이 범위에서 받을 수 있는 자료는 아직 없습니다.</p>';
+      return `<section class="ms-items" aria-label="단원별 교재">${reset ? '<div class="ms-results">' + reset + '</div>' : ''}${empty}${rows}</section>`;
+    }
     return `<section class="ms-items" aria-label="${escape(bookLabel(selected || '전체'))} 판매 교재"><div class="ms-results dl63-head"><h2>${escape(heading)}</h2><span>${list.length}권</span>${reset}</div>${list.length ? '<p class="ms-delivery">구매한 교재는 배송 없이 파일로 내려받습니다.</p>' : ''}${scope && !list.length ? '<p role="status">이 범위에서 구매할 수 있는 자료는 아직 없습니다.</p>' : ''}${rows}</section>`;
   }
 
@@ -150,9 +154,14 @@
   function body() {
     const count = picked().length;
     const cartButton = `<button class="ms-cart-button" type="button" data-ms-cart aria-label="장바구니 ${count}개"><i aria-hidden="true"></i>장바구니 <b>${count}</b></button>`;
+    const notice = status === 'error' ? '<p role="alert">교재 목록을 불러오지 못했습니다.</p><button data-ms-retry>다시 불러오기</button>' : '<p role="status">교재 목록을 불러오는 중입니다.</p>';
+    if (audience === 'student') {
+      const question = '<div class="ms-question"><span class="dl63-kicker">시험 범위 자료 고르기</span><h1>어떤 부교재로 공부하나요?</h1></div>';
+      return `<div class="ms-student-find">${question}${status === 'ready' ? picker() : ''}${cartButton}</div>${status === 'ready' ? items() : notice}`;
+    }
     const tabs = categories.map((c,i) => `<button type="button" ${i?'disabled':'aria-pressed="true"'}><small>${i+1}</small>${c}</button>`).join('');
-    const catalog = status === 'error' ? '<p>교재 목록을 불러오지 못했습니다.</p><button data-ms-retry>다시 불러오기</button>' : status !== 'ready' ? '<p role="status">교재 목록을 불러오는 중입니다.</p>' : picker() + items();
-    const navigation = audience==='student' ? '' : `<div class="ms-categories" role="group" aria-label="자료 종류">${tabs}</div>`;
+    const catalog = status === 'ready' ? '<div class="ms-find"><h2>어느 책으로 수업하세요?</h2>' + picker() + '</div>' + items() : notice;
+    const navigation = `<div class="ms-categories" role="group" aria-label="자료 종류">${tabs}</div>`;
     return `<div class="ms-mast dl63-head"><div><span class="dl63-kicker">시험 범위 자료 고르기</span><h1>내신 자료</h1>${status==='ready' ? `<p>연계 교재 ${grouped().length}종 <i>·</i> 단원별 자료 ${products.length}권</p>` : ''}</div>${cartButton}</div>${navigation}${catalog}`;
   }
   window.addEventListener('ds-point-pdf-update', () => { if (!root()?.querySelector('dialog[open]')) refresh(); });

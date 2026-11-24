@@ -176,3 +176,17 @@
 #content .ms-upcoming {display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;justify-content:space-between;padding-block:12px;color:#655c52;border-top:1px solid #ede7dd}
 #content .ms-upcoming span {font-size:12px}
 #content .ms-upcoming strong {font-size:14px;font-weight:650}
+
+#content .ms-student-find {
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(200px,.95fr) auto;
+  align-items:center;gap:12px 20px;padding:4px 0 20px;border-bottom:1px solid var(--dl-rule-1,#e3e1da)
+}
+#content .ms-question h1 {margin:4px 0 0;font-size:clamp(20px,2.1vw,27px);line-height:1.28;letter-spacing:-.045em;word-break:keep-all}
+#content .ms-student-find .ms-picker {width:100%}
+#content .ms-student-find .ms-cart-button {justify-self:end;white-space:nowrap}
+#content [data-ms-audience="student"] .ms-results {padding:10px 0 0}
+@media(max-width:760px) {
+  #content .ms-student-find {grid-template-columns:minmax(0,1fr) auto;gap:12px;padding-bottom:16px}
+  #content .ms-student-find .ms-picker {grid-column:1 / -1;grid-row:2}
+  #content .ms-student-find .ms-cart-button {grid-column:2;grid-row:1}
+}
