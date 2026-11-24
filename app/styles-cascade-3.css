@@ -1653,6 +1653,23 @@ html[data-interior="v12"] body[data-page="teacher"] .ds48-canvas .ds48-paper-sce
 .hd48-display .ht23-qbody,.hd48-display .ht23-timer{color:#172234}.hd48-display .ht23-timer{font-weight:760}
 @media(max-width:800px){.hd48-chassis{padding:8px;border-radius:20px}.hd48-chassis:before{inset:3px;border-radius:17px}.hd48-chassis>.hd40-screen{border-radius:12px}.hd48-camera{top:2px;width:3px;height:3px;margin-left:-1.5px}}
 
+/* Desktop hero scenes: size and align the visible device, not its old photo margins. */
+@media screen and (min-width:1000px){
+ html[data-design="b"] body.home-body .cinema:is([data-scene="1"],[data-scene="2"]) .hd40-product{
+  width:min(65vw,calc((100svh - 240px)*1074/818));
+  aspect-ratio:1074/818;right:4vw;top:calc(50% - 20px);transform:translateY(-50%);
+ }
+ html[data-design="b"] body.home-body .cinema:is([data-scene="1"],[data-scene="2"]) .hd48-chassis{
+  left:0;top:0;width:100%;
+ }
+ html[data-design="b"] body.home-body .cinema:is([data-scene="1"],[data-scene="2"]) .cinema-copy{
+  left:4vw;top:calc(50% - 20px);bottom:auto;width:25vw;transform:translateY(-50%);
+ }
+ html[data-design="b"] body.home-body .cinema:is([data-scene="1"],[data-scene="2"]) .cinema-copy h1{
+  font-size:clamp(30px,3.5vw,58px);
+ }
+}
+
 
 /* Source: app/technology-hq-v48.css */
 /* HQ source image and source-coordinate highlights: no reconstructed math. */
