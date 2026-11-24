@@ -653,15 +653,16 @@ html[data-design="b"] body[data-page="student"] #content .sd-print .tb36-count i
 
 #content .sd-downloads[data-sd-view="print"] .sd-heading {margin-bottom:16px;padding-bottom:12px}
 
-/* 자료받기 (store · files) frame follows design rules 1118: white card, rule line, no paper texture or shadow.
+/* 자료받기 (store · files) frame, 11-25: no panel — sits on the page like 타임어택 (1112 wide, head rule, plain ground).
    The print pane (자료만들기) keeps its own surface. */
 #content .sd-downloads:not([data-sd-view="print"]) {
-  --dl-ink:#172B43;--dl-sub:#5B6678;--dl-accent:#245BD6;--dl-paper:#fff;--dl-rule-1:#DFE3ED;--dl-rule-2:#DFE3ED;
-  background:#fff;border:1px solid #DFE3ED;border-radius:16px;color:#172B43;box-shadow:none;
+  --dl-ink:#172B43;--dl-sub:#56657A;--dl-accent:#584362;--dl-paper:transparent;--dl-rule-1:#ADB9C6;--dl-rule-2:#D3DAE2;
+  padding:25px 0 48px;margin-top:0;background:none;border:0;border-radius:0;color:#172B43;box-shadow:none;
 }
-#content .sd-downloads:not([data-sd-view="print"]) .sd-files {background:#fff;border:1px solid #DFE3ED;border-radius:16px;box-shadow:none}
-#content .sd-downloads:not([data-sd-view="print"]) .sd-files>h2 {font-size:22px;color:#172B43}
-#content .sd-downloads:not([data-sd-view="print"]) .sd-files>p {font-size:14px;color:#5B6678}
+#content .sd-downloads:not([data-sd-view="print"]) .sd-files {margin-top:56px;padding:24px 0 0;background:none;border:0;border-top:1px solid #ADB9C6;border-radius:0;box-shadow:none}
+#content .sd-downloads:not([data-sd-view="print"]) .sd-files>h2 {font-size:20px;font-weight:700;color:#202C3D;letter-spacing:-.03em}
+#content .sd-downloads:not([data-sd-view="print"]) .sd-files>p {font-size:14px;color:#56657A}
+@media(max-width:700px){#content .sd-downloads:not([data-sd-view="print"]){padding:18px 0 32px}}
 
 
 /* Source: app/student-hub.css */

@@ -2847,15 +2847,16 @@ html[data-purchase="b"] .ppdf :focus-visible {outline:3px solid var(--pb-accent-
 
 
 /* Source: app/materials-shop.css */
-/* Materials shop (student 자료받기 · teacher 내신 자료): one layer, design rules 1118.
-   Colours: ink #172B43 · second #3C4A60 · soft #5B6678 · ground #F7F8FC · card #fff · line #DFE3ED
-   · primary #245BD6 / pressed #1D4DB8 · band #EEF3FF. Pretendard only. Type steps 12 · 14 · 17 · 22.
-   Button radius 10 · card radius 16 · touch 44px · no shadows or textures · one primary button per card. */
+/* Materials shop (student 자료받기 · teacher 내신 자료), 11-25.
+   Same voice as the other student tabs (타임어택 head: h1 30/700 #202C3D, 12px note, 1px #ADB9C6 rule;
+   primary = the plum key of 「시험 시작」). The covers carry the colour: each shelf takes one tone
+   from its own covers (--ms-tone, --ms-deep set inline per shelf). No card boxes, textures or stacked shadows.
+   Pretendard · ink #172B43 · touch 44px. */
 #content .ms-shop {
-  --ms-ink:#172B43; --ms-second:#3C4A60; --ms-soft:#5B6678; --ms-ground:#F7F8FC; --ms-card:#fff;
-  --ms-line:#DFE3ED; --ms-primary:#245BD6; --ms-pressed:#1D4DB8; --ms-band:#EEF3FF;
-  box-sizing:border-box; width:100%; max-width:1120px; margin:0 auto; padding:clamp(16px,3vw,32px);
-  background:var(--ms-card); color:var(--ms-ink); border:1px solid var(--ms-line); border-radius:16px; box-shadow:none;
+  --ms-ink:#172B43; --ms-head:#202C3D; --ms-second:#3C4A60; --ms-soft:#56657A; --ms-rule:#ADB9C6; --ms-line:#D3DAE2;
+  --ms-field:#fff; --ms-hover:#F1F3F6; --ms-key-top:#786280; --ms-key-bottom:#584362; --ms-key-line:#54405B;
+  box-sizing:border-box; width:100%; max-width:1112px; margin:0 auto; padding:0;
+  background:none; color:var(--ms-ink); border:0; border-radius:0; box-shadow:none;
   font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
   font-size:14px; line-height:1.5; letter-spacing:-.01em;
 }
@@ -2864,95 +2865,94 @@ html[data-purchase="b"] .ppdf :focus-visible {outline:3px solid var(--pb-accent-
 #content .ms-shop :is(button,input,summary) { font-family:inherit }
 #content .ms-shop button { cursor:pointer }
 #content .ms-shop :disabled { cursor:default; opacity:1 }
-#content .ms-shop :is(a,button,input,summary):focus-visible { outline:2px solid var(--ms-primary); outline-offset:2px }
-#content .ms-shop .dl63-kicker { color:var(--ms-primary); font-size:12px; font-weight:700; letter-spacing:0 }
+#content .ms-shop :is(a,button,input,summary):focus-visible { outline:2px solid var(--ms-ink); outline-offset:2px }
+#content .ms-shop .dl63-kicker { color:var(--ms-soft); font-size:12px; font-weight:550; letter-spacing:0 }
 
-/* Heads */
-#content .ms-mast { display:flex; align-items:center; justify-content:space-between; gap:16px; margin:0 0 16px; padding:0 0 16px; border-bottom:1px solid var(--ms-line) }
-#content .ms-mast h1, #content .ms-question h1 { margin:4px 0 0; font-size:22px; font-weight:700; line-height:1.3; letter-spacing:-.03em; color:var(--ms-ink); word-break:keep-all }
-#content .ms-mast p { margin-top:4px; font-size:14px; color:var(--ms-soft) }
+/* Page head — same build as 타임어택 */
+#content .ms-top, #content .ms-mast { display:flex; align-items:center; gap:23px; margin:0 0 22px; padding:5px 0 14px; border-bottom:1px solid var(--ms-rule) }
+#content .ms-top h1, #content .ms-mast h1 { margin:0; color:var(--ms-head); font-size:clamp(22px,3vw,30px); font-weight:700; line-height:1.3; letter-spacing:-.035em; word-break:keep-all }
+#content .ms-top > span { color:#506176; font-size:12px; font-weight:550 }
+#content .ms-top .ms-cart-button, #content .ms-mast .ms-cart-button { margin-left:auto }
+#content .ms-mast > div { display:flex; align-items:baseline; flex-wrap:wrap; gap:4px 16px }
+#content .ms-mast > div .dl63-kicker { order:2 }
+#content .ms-mast p { order:3; flex-basis:100%; font-size:13px; color:var(--ms-soft) }
 #content .ms-mast p i { font-style:normal; padding:0 4px }
-#content .ms-student-find { display:grid; grid-template-columns:minmax(0,1fr) minmax(200px,.95fr) auto; align-items:center; gap:12px 20px; padding:0 0 20px; border-bottom:1px solid var(--ms-line) }
-#content .ms-student-find .ms-picker { width:100% }
-#content .ms-student-find .ms-cart-button { justify-self:end }
-#content .ms-cart-button { display:inline-flex; align-items:center; gap:8px; min-height:44px; padding:8px 14px; border:1px solid var(--ms-line); border-radius:10px; background:var(--ms-card); color:var(--ms-ink); font-size:14px; font-weight:600; white-space:nowrap; box-shadow:none }
-#content .ms-cart-button:hover { background:var(--ms-band) }
-#content .ms-cart-button b { min-width:22px; padding:2px 6px; border-radius:10px; background:var(--ms-ink); color:#fff; font-size:12px; text-align:center }
+
+#content .ms-cart-button { display:inline-flex; align-items:center; gap:8px; min-height:44px; padding:8px 14px; border:1px solid #B9C2CB; border-radius:6px; background:var(--ms-field); color:var(--ms-head); font-size:14px; font-weight:600; white-space:nowrap; box-shadow:none }
+#content .ms-cart-button:hover { background:var(--ms-hover) }
+#content .ms-cart-button b { min-width:22px; padding:1px 6px; border-radius:11px; background:var(--ms-head); color:#fff; font-size:12px; font-weight:700; text-align:center; font-variant-numeric:tabular-nums }
 #content .ms-cart-button i { position:relative; display:inline-block; width:14px; height:13px; border:1.5px solid; border-radius:2px }
 #content .ms-cart-button i::before { content:""; position:absolute; width:6px; height:5px; left:2.5px; top:-6px; border:1.5px solid; border-bottom:0; border-radius:4px 4px 0 0 }
 
-/* Teacher category tabs */
-#content .ms-categories { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin:0 0 8px; border:0 }
-#content .ms-categories button { display:flex; align-items:center; justify-content:center; gap:6px; min-height:44px; padding:8px 10px; border:1px solid var(--ms-line); border-radius:10px; background:var(--ms-card); color:var(--ms-soft); font-size:14px; font-weight:500; word-break:keep-all; box-shadow:none }
-#content .ms-categories button[aria-pressed=true] { border-color:var(--ms-primary); background:var(--ms-band); color:var(--ms-primary); font-weight:700; box-shadow:none }
-#content .ms-categories small { font-size:12px; color:inherit }
-
-/* Book picker */
-#content .ms-find { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:20px 0; border-bottom:1px solid var(--ms-line) }
+/* Book picker row */
+#content .ms-student-find { display:flex; align-items:center; gap:12px; margin:0 0 8px }
+#content .ms-student-find .ms-picker { width:min(100%,420px) }
+#content .ms-find { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:8px 0 4px }
 #content .ms-find h2, #content .ms-results h2, #content .ms-order h2 { font-size:17px; font-weight:700; letter-spacing:-.02em; color:var(--ms-ink) }
-#content .ms-picker { position:relative; width:min(52%,430px); min-width:0 }
-#content .ms-picker summary { display:flex; justify-content:space-between; align-items:center; gap:12px; min-height:44px; padding:8px 14px; border:1px solid var(--ms-line); border-radius:10px; background:var(--ms-card); color:var(--ms-ink); list-style:none; font-size:14px; cursor:pointer; box-shadow:none }
+#content .ms-picker { position:relative; width:min(52%,420px); min-width:0 }
+#content .ms-picker summary { display:flex; justify-content:space-between; align-items:center; gap:12px; min-height:44px; padding:8px 14px; border:1px solid #B9C2CB; border-radius:6px; background:var(--ms-field); color:var(--ms-ink); list-style:none; font-size:14px; font-weight:500; cursor:pointer; box-shadow:none }
+#content .ms-picker summary span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
 #content .ms-picker summary::-webkit-details-marker { display:none }
-#content .ms-picker summary i { width:8px; height:8px; margin-right:3px; border:solid currentColor; border-width:0 1.5px 1.5px 0; transform:rotate(45deg) }
+#content .ms-picker summary i { flex:none; width:8px; height:8px; margin-right:3px; border:solid currentColor; border-width:0 1.5px 1.5px 0; transform:rotate(45deg) }
 #content .ms-picker[open] summary i { transform:rotate(225deg) }
-#content .ms-popup { position:absolute; z-index:9; top:calc(100% + 4px); inset-inline:0; padding:8px; background:var(--ms-card); border:1px solid var(--ms-line); border-radius:10px; box-shadow:none }
-#content .ms-popup input { width:100%; min-height:44px; padding:8px 12px; border:1px solid var(--ms-line); border-radius:10px; background:var(--ms-card); color:var(--ms-ink); font-size:14px }
-#content .ms-popup [data-ms-options] { max-height:220px; overflow:auto }
-#content .ms-popup button { display:flex; justify-content:space-between; align-items:center; gap:8px; width:100%; min-height:44px; padding:8px 6px; border:0; border-bottom:1px solid var(--ms-line); border-radius:0; background:transparent; color:var(--ms-ink); font-size:14px; text-align:left }
-#content .ms-popup button:hover { background:var(--ms-band) }
+#content .ms-popup { position:absolute; z-index:9; top:calc(100% + 4px); inset-inline:0; padding:8px; background:var(--ms-field); border:1px solid #B9C2CB; border-radius:6px; box-shadow:0 8px 24px #172B431f }
+#content .ms-popup input { width:100%; min-height:44px; padding:8px 12px; border:1px solid var(--ms-line); border-radius:5px; background:var(--ms-field); color:var(--ms-ink); font-size:14px }
+#content .ms-popup [data-ms-options] { max-height:240px; overflow:auto }
+#content .ms-popup button { display:flex; justify-content:space-between; align-items:center; gap:8px; width:100%; min-height:44px; padding:8px 6px; border:0; border-bottom:1px solid #E6EAEF; border-radius:0; background:transparent; color:var(--ms-ink); font-size:14px; text-align:left }
+#content .ms-popup button:hover { background:var(--ms-hover) }
 #content .ms-popup button small { white-space:nowrap; color:var(--ms-soft); font-size:12px }
 
+/* Teacher category tabs */
+#content .ms-categories { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin:0 0 8px; border:0 }
+#content .ms-categories button { display:flex; align-items:center; justify-content:center; gap:6px; min-height:44px; padding:8px 10px; border:1px solid var(--ms-line); border-radius:6px; background:var(--ms-field); color:var(--ms-soft); font-size:14px; font-weight:500; word-break:keep-all; box-shadow:none }
+#content .ms-categories button[aria-pressed=true] { border-color:var(--ms-head); background:var(--ms-head); color:#fff; font-weight:700 }
+#content .ms-categories small { font-size:12px; color:inherit }
+
 /* Result line */
-#content .ms-results { display:flex; align-items:baseline; gap:8px; margin:0; padding:20px 0 12px }
+#content .ms-results { display:flex; align-items:baseline; gap:8px; margin:0; padding:16px 0 0 }
 #content .ms-results span { color:var(--ms-soft); font-size:14px }
-#content [data-ms-audience="student"] .ms-results { padding:12px 0 0 }
-#content .ms-results .ms-clear { margin-left:auto; min-height:44px; padding:8px 0; border:0; background:none; color:var(--ms-primary); font-size:14px; text-decoration:underline; text-underline-offset:3px }
-#content .ms-items .ms-delivery { margin:0 0 12px; font-size:14px; color:var(--ms-soft); word-break:keep-all }
+#content .ms-results .ms-clear { margin-left:auto; min-height:44px; padding:8px 0; border:0; background:none; color:var(--ms-second); font-size:14px; text-decoration:underline; text-underline-offset:3px }
+#content [data-ms-audience="student"] .ms-results .ms-clear { margin-left:0 }
+#content .ms-items .ms-delivery { margin:4px 0 0; font-size:14px; color:var(--ms-soft); word-break:keep-all }
 
-/* Shelf = one source book */
-#content .ms-shelf-group { margin:24px 0 32px }
-#content .ms-shelf-group > header { display:flex; align-items:baseline; gap:8px; margin:0 0 12px; padding:0; background:none }
-#content .ms-shelf-group > header h3 { margin:0; padding:0; border:0; color:var(--ms-ink); font-size:17px; font-weight:700; line-height:1.35; letter-spacing:-.02em }
-#content .ms-shelf-group > header span { color:var(--ms-soft); font-size:14px }
-#content .ms-bookshelf { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); align-items:stretch; gap:16px; padding:0; border:0; border-radius:0; background:none; box-shadow:none }
+/* Shelf = one series. Its tone runs as the head rule; the covers do the rest. */
+#content .ms-shelf-group { --ms-tone:#8C99A8; --ms-deep:#3C4A60; margin:40px 0 0 }
+#content .ms-shelf-group > header { display:flex; align-items:baseline; gap:10px; margin:0 0 20px; padding:14px 0 0; border-top:4px solid var(--ms-tone); background:none }
+#content .ms-shelf-group > header h3 { margin:0; padding:0; border:0; color:var(--ms-head); font-size:20px; font-weight:700; line-height:1.35; letter-spacing:-.03em; word-break:keep-all }
+#content .ms-shelf-group > header span { margin-left:auto; color:var(--ms-soft); font-size:13px }
+#content .ms-bookshelf { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); align-items:stretch; gap:40px 24px; padding:0; border:0; border-radius:0; background:none; box-shadow:none }
 
-/* Card = one book */
-#content .ms-volume { display:grid; grid-template-rows:auto auto 1fr; min-width:0; max-width:none; margin:0; padding:12px; background:var(--ms-card); border:1px solid var(--ms-line); border-radius:16px; box-shadow:none }
-#content .ms-shop .ms-stage { display:grid; place-items:center; padding:16px 18%; background:var(--ms-ground); border:0; border-radius:10px; box-shadow:none; perspective:none }
-#content .ms-shop .ms-book-cover { position:relative; display:block; width:100%; max-width:none; aspect-ratio:210/297; overflow:hidden; border:1px solid var(--ms-line); border-radius:4px; background:var(--ms-card); color:var(--ms-ink); text-decoration:none; transform:none; box-shadow:none; transition:none }
+/* Card = one book, no box: cover, words, choice, key */
+#content .ms-volume { display:grid; grid-template-rows:auto auto 1fr; min-width:0; max-width:none; margin:0; padding:0; background:none; border:0; border-radius:0; box-shadow:none }
+#content .ms-shop .ms-stage { display:block; padding:0; background:none; border:0; border-radius:0; box-shadow:none; perspective:none }
+#content .ms-shop .ms-book-cover { position:relative; display:block; width:100%; max-width:none; aspect-ratio:720/1018; overflow:hidden; border:1px solid #172B4314; border-radius:4px; background:#EEF1F4; text-decoration:none; transform:none; box-shadow:0 2px 6px #172B431a; transition:none }
 #content .ms-shop .ms-book-cover::before, #content .ms-shop .ms-book-cover::after { content:none; display:none }
-#content .ms-shop .ms-book-cover img { display:block; width:100%; height:100%; object-fit:cover; box-shadow:none }
-#content .ms-shop a.ms-book-cover:hover { border-color:var(--ms-primary); transform:none }
-#content .ms-look { position:absolute; right:6px; bottom:6px; padding:2px 8px; border-radius:10px; background:var(--ms-card); color:var(--ms-primary); border:1px solid var(--ms-line); font-size:12px; font-weight:600; line-height:1.5; box-shadow:none }
+#content .ms-shop .ms-book-cover img { display:block; width:100%; height:100%; object-fit:cover; box-shadow:none; color:transparent; font-size:0 }
+#content .ms-shop a.ms-book-cover:hover { border-color:#172B4340; transform:none }
+#content .ms-look { position:absolute; right:8px; bottom:8px; padding:4px 10px; border-radius:6px; background:#fffffff2; color:var(--ms-head); font-size:12px; font-weight:600; line-height:1.5; box-shadow:0 1px 2px #172B4326 }
 
-/* Text cover for books without a printed jacket: same frame, rule colours only. */
-#content .ms-text-cover { display:grid; grid-template-rows:auto auto 1fr auto; width:100%; height:100%; padding:14% 12% 12%; background:var(--ms-band); border-top:4px solid var(--ms-primary); word-break:keep-all; overflow-wrap:anywhere }
-#content .ms-text-cover small { color:var(--ms-second); font-size:12px; font-weight:600; line-height:1.4 }
-#content .ms-text-cover b { margin-top:10px; color:var(--ms-ink); font-size:17px; font-weight:700; line-height:1.3; letter-spacing:-.02em }
-#content .ms-text-cover span { margin-top:6px; color:var(--ms-soft); font-size:12px; line-height:1.4 }
-#content .ms-text-cover em { align-self:end; padding-top:8px; border-top:1px solid var(--ms-line); color:var(--ms-primary); font-size:12px; font-weight:700; font-style:normal; line-height:1.4 }
-
-#content .ms-book-info { min-height:0; margin:0; padding:12px 2px 8px; background:none; border:0; border-radius:0 }
-#content .ms-book-info small { display:block; color:var(--ms-soft); font-size:12px; font-weight:500; line-height:1.5 }
-#content .ms-book-info h3 { display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden; min-height:calc(17px * 1.35 * 2); margin:2px 0 0; color:var(--ms-ink); font-size:17px; font-weight:700; line-height:1.35; letter-spacing:-.02em; word-break:keep-all; overflow-wrap:anywhere }
+#content .ms-book-info { min-height:0; margin:0; padding:14px 0 14px; background:none; border:0; border-radius:0 }
+#content .ms-book-info small { display:block; color:var(--ms-deep,var(--ms-soft)); font-size:13px; font-weight:600; line-height:1.5; font-variant-numeric:tabular-nums }
+#content .ms-book-info h3 { display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden; min-height:calc(17px * 1.35); margin:2px 0 0; color:var(--ms-ink); font-size:17px; font-weight:700; line-height:1.35; letter-spacing:-.025em; word-break:keep-all; overflow-wrap:anywhere }
 #content .ms-book-info > span { display:block; margin-top:4px; color:var(--ms-soft); font-size:12px; line-height:1.5 }
 
-/* Format choice + the card's one primary button */
+/* Price lines + the card's one key */
 #content .ms-formats { display:flex; flex-direction:column; justify-content:flex-end; gap:8px; margin:0; padding:0; background:none; border:0; border-radius:0; box-shadow:none }
 #content .ms-choice { display:grid; gap:6px }
-#content .ms-shop .ms-pick { display:flex; align-items:center; gap:8px; width:100%; min-height:44px; padding:8px 12px; border:1px solid var(--ms-line); border-radius:10px; background:var(--ms-card); color:var(--ms-second); font-size:14px; text-align:left; box-shadow:none }
-#content .ms-pick span { font-weight:600 }
+#content .ms-shop .ms-pick { display:flex; align-items:center; gap:8px; width:100%; min-height:44px; padding:6px 12px; border:1px solid var(--ms-line); border-radius:6px; background:var(--ms-field); color:var(--ms-second); font-size:14px; line-height:1.3; text-align:left; box-shadow:none }
+#content .ms-pick > span { display:flex; flex-direction:column; min-width:0; font-weight:600 }
+#content .ms-pick > span i { color:var(--ms-soft); font-size:12px; font-weight:500; font-style:normal; white-space:nowrap }
 #content .ms-pick b { margin-left:auto; color:var(--ms-ink); font-weight:700; font-variant-numeric:tabular-nums; white-space:nowrap }
-#content .ms-pick small { color:var(--ms-primary); font-size:12px; font-weight:600; white-space:nowrap }
-#content .ms-shop .ms-pick:hover { background:var(--ms-band) }
-#content .ms-shop .ms-pick[aria-pressed=true] { border-color:var(--ms-primary); background:var(--ms-band); color:var(--ms-primary) }
-#content .ms-shop .ms-add { width:100%; min-height:44px; padding:8px 12px; border:1px solid var(--ms-primary); border-radius:10px; background:var(--ms-primary); color:#fff; font-size:14px; font-weight:700; box-shadow:none }
-#content .ms-shop .ms-add:enabled:hover, #content .ms-shop .ms-add:enabled:active { background:var(--ms-pressed); border-color:var(--ms-pressed) }
-#content .ms-shop .ms-add:disabled { background:var(--ms-band); border-color:var(--ms-band); color:var(--ms-primary) }
+#content .ms-pick small { color:var(--ms-deep,var(--ms-second)); font-size:12px; font-weight:600; white-space:nowrap }
+#content .ms-shop .ms-pick:hover { background:var(--ms-hover) }
+#content .ms-shop .ms-pick[aria-pressed=true] { border-color:var(--ms-head); box-shadow:inset 0 0 0 1px var(--ms-head); background:var(--ms-field); color:var(--ms-head) }
+#content .ms-shop :is(.ms-add,.ms-review-open) { width:100%; min-height:44px; padding:9px 16px; border:1px solid #A18BA8; border-bottom-color:var(--ms-key-line); border-radius:6px; background:linear-gradient(var(--ms-key-top),var(--ms-key-bottom)); color:#fff; font-size:15px; font-weight:700; box-shadow:inset 0 1px #C3A9CA66, 0 2px 3px #211C2B2e }
+#content .ms-shop :is(.ms-add,.ms-review-open):enabled:hover { background:linear-gradient(#6E5876,#4E3B57) }
+#content .ms-shop .ms-add:disabled { background:#F1EDF3; border-color:#D9CFDD; color:#584362; box-shadow:none }
 #content .ms-note { min-height:calc(12px * 1.5); margin:0; color:var(--ms-soft); font-size:12px; line-height:1.5; word-break:keep-all }
 
 /* Cart and order dialogs */
-#content .ms-order { width:min(460px,calc(100% - 28px)); max-height:85dvh; padding:20px; overflow:auto; border:1px solid var(--ms-line); border-radius:16px; background:var(--ms-card); color:var(--ms-ink); font-size:14px; line-height:1.5; box-shadow:none }
+#content .ms-order { width:min(460px,calc(100% - 28px)); max-height:85dvh; padding:20px; overflow:auto; border:1px solid var(--ms-line); border-radius:10px; background:#fff; color:var(--ms-ink); font-size:14px; line-height:1.5; box-shadow:0 16px 40px #172B4333 }
 #content .ms-order::backdrop { background:#172B4366 }
 #content .ms-order header, #content .ms-order li > div, #content .ms-total div, #content .ms-line { display:flex; justify-content:space-between; align-items:center; gap:10px }
 #content .ms-order header { position:static; width:auto; height:auto; padding:0 0 12px; background:none; box-shadow:none }
@@ -2961,31 +2961,34 @@ html[data-purchase="b"] .ppdf :focus-visible {outline:3px solid var(--pb-accent-
 #content .ms-order ul { list-style:none; margin:0; padding:0 }
 #content .ms-line, #content .ms-order li, #content .ms-total { padding:12px 0; border-top:1px solid var(--ms-line) }
 #content .ms-order li strong, #content .ms-line small { display:block; margin:4px 0 }
-#content .ms-order a { color:var(--ms-primary) }
-#content .ms-review-open { width:100%; min-height:44px; padding:8px 12px; border:0; border-radius:10px; background:var(--ms-primary); color:#fff; font-size:14px; font-weight:700; box-shadow:none }
-#content .ms-review-open:hover { background:var(--ms-pressed) }
+#content .ms-order a { color:#584362; font-weight:600 }
+#content .ms-order .ms-review-open { width:100%; min-height:44px; padding:9px 16px; border:1px solid #A18BA8; border-bottom-color:#54405B; border-radius:6px; background:linear-gradient(#786280,#584362); color:#fff; font-size:15px; font-weight:700; box-shadow:inset 0 1px #C3A9CA66 }
 #content .ms-order-note { font-size:12px; line-height:1.6; color:var(--ms-soft) }
 
 @media (max-width:1000px) {
   #content .ms-bookshelf { grid-template-columns:repeat(3,minmax(0,1fr)) }
 }
 @media (max-width:760px) {
-  #content .ms-bookshelf { grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px }
-  #content .ms-student-find { grid-template-columns:minmax(0,1fr) auto; gap:12px; padding-bottom:16px }
-  #content .ms-student-find .ms-picker { grid-column:1 / -1; grid-row:2 }
-  #content .ms-student-find .ms-cart-button { grid-column:2; grid-row:1 }
+  #content .ms-bookshelf { grid-template-columns:repeat(2,minmax(0,1fr)); gap:32px 14px }
+  #content .ms-top { flex-wrap:wrap; gap:4px 12px }
+  #content .ms-top > span { order:3; flex-basis:100% }
+  #content .ms-top .ms-cart-button { order:2 }
+  #content .ms-student-find .ms-picker { width:100% }
+  #content .ms-shelf-group { margin-top:32px }
+  #content .ms-shelf-group > header { margin-bottom:16px }
+  #content .ms-shelf-group > header h3 { font-size:18px }
   #content .ms-note { min-height:calc(12px * 1.5 * 2) }
 }
 @media (max-width:580px) {
-  #content .ms-shop { padding:16px 12px }
   #content .ms-categories { grid-template-columns:repeat(2,minmax(0,1fr)) }
-  #content .ms-find { flex-direction:column; align-items:stretch; gap:8px; padding:14px 0 }
+  #content .ms-find { flex-direction:column; align-items:stretch; gap:8px }
   #content .ms-picker { width:100% }
-  #content .ms-bookshelf { gap:10px }
-  #content .ms-volume { padding:8px }
-  #content .ms-shop .ms-stage { padding:12px 10% }
-  #content .ms-text-cover b { margin-top:6px; font-size:14px }
-  #content .ms-shop .ms-pick { gap:4px; padding:8px }
+  #content .ms-book-info { padding:10px 0 10px }
+  #content .ms-book-info small { font-size:12px }
+  #content .ms-book-info h3 { font-size:15px; min-height:calc(15px * 1.35 * 2) }
+  #content .ms-shop .ms-pick { gap:4px; padding:6px 8px; font-size:13px }
+  #content .ms-pick > span i { font-size:11px }
+  #content .ms-look { right:6px; bottom:6px; padding:2px 7px; font-size:11px }
   #content .ms-pick small { display:none }
 }
 @media (max-width:340px) {

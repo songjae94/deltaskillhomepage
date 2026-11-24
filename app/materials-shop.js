@@ -69,7 +69,14 @@
   const price = (p, fmt) => fmt === 'pdf' ? (quote(p)?.points ?? publicPoints[p.sku] ?? p.formats.pdf?.price ?? null) : p.formats.hwpx?.price;
   const cashReady = p => Number.isSafeInteger(p.formats.hwpx?.price) && p.formats.hwpx.price > 0 && p.formats.hwpx.files.length > 0;
   const enabled = (p, fmt) => !p.restored && (fmt === 'pdf' ? Number.isSafeInteger(price(p,fmt)) && price(p,fmt)>0 : cashReady(p));
-  const coverURL = sku => 'public-data/covers/' + encodeURIComponent(sku) + '.webp?v=editorial-light-1124';
+  const coverURL = sku => 'public-data/covers/' + encodeURIComponent(sku) + '.webp?v=series-1125';
+  // One colour per shelf, taken from that series' new covers (tone = cover colour · deep = text-safe on white).
+  const shelfTones = Object.freeze({
+    'OL-type-CM2':['#8ee0d7','#20776d'], 'OL-advanced-CM2':['#691d2b','#691d2b'], 'DS-PRACTICE-CM2':['#53b4a4','#33776c'], 'DS-PRACTICE-CM2-PASS':['#611422','#611422'],
+    'OL-type-CAL1':['#c0eb7b','#4e7411'], 'OL-advanced-CAL1':['#13286e','#13286e'], 'DS-PRACTICE-MI1':['#8cac38','#596e23'],
+    'DS-PRACTICE-PNC':['#9bd0f1','#1770a8'], 'SSEN-GEO':['#6893c6','#3f6ea7']
+  });
+  const toneStyle = id => { const t = shelfTones[id]; return t ? ` style="--ms-tone:${t[0]};--ms-deep:${t[1]}"` : ''; };
   const cost = (p,fmt) => Number.isSafeInteger(price(p,fmt)) ? money(price(p,fmt)) + (fmt === 'pdf' ? ' P' : '원') : '';
   const picked = () => products.flatMap(p => ['pdf','hwpx'].filter(fmt => cart.includes(key(p,fmt)) && enabled(p,fmt)).map(fmt => ({p,fmt})));
   function options(query='') {
@@ -79,15 +86,8 @@
   function picker() {
     return `<details class="ms-picker"><summary><span>${escape(pickerLabel())}</span><i aria-hidden="true"></i></summary><div class="ms-popup dl63-list-wrap"><input type="search" aria-label="교재 검색" placeholder="교재명으로 검색" data-ms-search><div data-ms-options>${options()}</div></div></details>`;
   }
-  const coverSkus = new Set(['NS-CM2-06', 'NS-CM2-07', 'NS-CM2B-06', 'NS-MI1B-05']);
   const editionOf = p => p.edition || (p.name.includes('기초편') ? '기초편' : '1권');
   const baseEdition = p => editionOf(p).replace(/\s*·\s*한글\s*별도판/, '').trim();
-  const subjectOf = p => String(p.subject || '').replace(/\s+기초편$/, '').trim();
-  function coverSeries(p) {
-    const name = bookLabel(p.source).replace(/^EBS\s+/i, ''), subject = subjectOf(p);
-    const series = subject && name.endsWith(' ' + subject) ? name.slice(0, -subject.length).trim() : name;
-    return series + (isLinked(p) ? ' 연계변형' : '');
-  }
   // One book, one card: a 한글 file catalogued apart joins the PDF card of the same book, unit, edition and item count.
   // Each format keeps its own SKU, price and cart key; only what is for sale is shown.
   function cardsOf(list) {
@@ -110,20 +110,16 @@
     const pickKey = key(pick.p, pick.fmt), label = escape(title(card.main)), added = cart.includes(pickKey);
     const rows = offers.map(({p, fmt}) => {
       const id = key(p, fmt);
-      return `<button type="button" class="ms-pick" aria-pressed="${id === pickKey}" aria-label="${formatLabel(fmt)} ${cost(p, fmt)}${cart.includes(id) ? ' 담김' : ''}" data-ms-pick="${escape(id)}"><span>${formatLabel(fmt)}</span><b>${cost(p, fmt)}</b>${cart.includes(id) ? '<small>담김</small>' : ''}</button>`;
+      const cardOnly = fmt === 'hwpx' ? '<i>카드 결제만</i>' : '';
+      return `<button type="button" class="ms-pick" aria-pressed="${id === pickKey}" aria-label="${formatLabel(fmt)} ${cost(p, fmt)}${fmt === 'hwpx' ? ' 카드 결제만' : ''}${cart.includes(id) ? ' 담김' : ''}" data-ms-pick="${escape(id)}"><span>${formatLabel(fmt)}${cardOnly}</span><b>${cost(p, fmt)}</b>${cart.includes(id) ? '<small>담김</small>' : ''}</button>`;
     }).join('');
     const action = added ? '담김' : '담기';
     return `<div class="ms-choice" role="group" aria-label="${label} 파일 형식">${rows}</div><button type="button" class="ms-add" aria-label="${label} ${formatLabel(pick.fmt)} ${cost(pick.p, pick.fmt)} ${action}" data-ms-add="${escape(pickKey)}" ${added ? 'disabled' : ''}>${action}</button><p class="ms-note">${escape(card.note)}</p>`;
   }
-  function textCover(p) {
-    return `<span class="ms-text-cover" aria-hidden="true"><small>${escape(coverSeries(p))}</small><b>${escape(p.unit || title(p))}</b><span>${escape(subjectOf(p))}</span><em>${escape(baseEdition(p))}</em></span>`;
-  }
   function coverTile(card) {
     const p = card.main, label = escape(title(p));
     cardIndex.set(card.id, card);
-    const art = coverSkus.has(p.sku)
-      ? `<img src="${coverURL(p.sku)}" width="630" height="891" alt="${label} 표지">`
-      : textCover(p);
+    const art = `<img src="${coverURL(p.sku)}" width="720" height="1018" loading="lazy" decoding="async" alt="${label} 표지">`;
     const cover = p.sample
       ? `<a class="ms-book-cover" href="${escape(p.sample)}" target="_blank" rel="noopener" aria-label="${label} 지면 미리보기, 새 창">${art}<span class="ms-look">미리보기 ↗</span></a>`
       : `<div class="ms-book-cover">${art}</div>`;
@@ -151,7 +147,7 @@
     ).map(([source, mains]) => {
       const cards = cardsOf(shelves.get(source)).sort((a, b) => a.main.no.localeCompare(b.main.no) || editionOf(a.main).localeCompare(editionOf(b.main), 'ko'));
       const name = escape(displayBook(source));
-      return `<section class="ms-shelf-group" data-ms-series="${escape(mains[0].sourceId || '')}" aria-label="${name}"><header><h3>${name}</h3>${audience==='student'?'':`<span>${cards.length}권</span>`}</header><div class="ms-bookshelf">${cards.map(coverTile).join('')}</div></section>`;
+      return `<section class="ms-shelf-group" data-ms-series="${escape(mains[0].sourceId || '')}"${toneStyle(mains[0].sourceId)} aria-label="${name}"><header><h3>${name}</h3>${audience==='student'?'':`<span>${cards.length}권</span>`}</header><div class="ms-bookshelf">${cards.map(coverTile).join('')}</div></section>`;
     }).join('');
     if (audience === 'student') {
       const empty = shown ? '' : '<p role="status">이 범위에서 받을 수 있는 자료는 아직 없습니다.</p>';
@@ -205,8 +201,8 @@
     const cartButton = `<button class="ms-cart-button" type="button" data-ms-cart aria-label="장바구니 ${count}개"><i aria-hidden="true"></i>장바구니 <b>${count}</b></button>`;
     const notice = status === 'error' ? '<p role="alert">교재 목록을 불러오지 못했습니다.</p><button data-ms-retry>다시 불러오기</button>' : '<p role="status">교재 목록을 불러오는 중입니다.</p>';
     if (audience === 'student') {
-      const question = '<div class="ms-question"><span class="dl63-kicker">시험 범위 자료 고르기</span><h1>어떤 부교재로 공부하나요?</h1></div>';
-      return `<div class="ms-student-find">${question}${status === 'ready' ? picker() : ''}${cartButton}</div>${status === 'ready' ? items() : notice}`;
+      const top = `<div class="ms-top"><h1>자료받기</h1><span>시험 범위 교재 고르기</span>${cartButton}</div>`;
+      return `${top}${status === 'ready' ? '<div class="ms-student-find">' + picker() + '</div>' + items() : notice}`;
     }
     const tabs = categories.map((c,i) => `<button type="button" ${i?'disabled':'aria-pressed="true"'}><small>${i+1}</small>${c}</button>`).join('');
     const catalog = status === 'ready' ? '<div class="ms-find"><h2>어느 책으로 수업하세요?</h2>' + picker() + '</div>' + items() : notice;
