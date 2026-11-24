@@ -98,7 +98,7 @@ button.dq61-sol:hover{color:var(--ds-ink);background:#f5f3ec}
 .dq61-sol-body .dq59-body{font-size:15px;line-height:1.75}
 .dq61-answer{display:flex;gap:10px;align-items:baseline;margin:0 0 10px;padding-bottom:10px;border-bottom:1px solid var(--ds-rule-1)}
 .dq61-answer b{font-size:13px;font-weight:700;color:var(--ds-accent)}
-.dq61-answer span{font-size:17px;font-weight:700;font-variant-numeric:tabular-nums}
+.dq61-answer>span{font-size:1em;font-weight:700;font-variant-numeric:tabular-nums}
 .dq61-solnone{margin:0;color:var(--ds-sub)}
 .dq61-lockmark{display:inline-grid;place-items:center;width:18px;height:18px;flex:none;color:currentColor}
 .dq61-lockmark svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
@@ -299,3 +299,64 @@ html[data-design="b"] .dq59-panel .tb36-design-link{color:#e6e8f0}
 @container (max-width:660px){.dq61-page-options{grid-template-columns:1fr}.dq61-page-options .dq-paper-layout{justify-content:flex-start}}
 .dq61-sample-desk,.dq59-canvas{container-type:inline-size;min-width:0}
 @media(max-width:700px){.dq61-page-options{grid-template-columns:1fr;gap:13px}.dq61-page-options .dq-paper-layout{justify-content:flex-start}.dq61-page-options button,.dq61-page-options label span{min-height:44px}}
+
+/* The two print workbenches use one large A4 sheet, surrounded by a narrow desk edge. */
+@media screen {
+  #content :is(.dq61-sample-window,.dq59-canvas .creator-paper-stage) .ds48-paper-scene {
+    box-sizing:border-box;
+    display:grid;
+    justify-items:center;
+    width:100%;
+    max-width:none;
+    height:auto;
+    min-height:0;
+    aspect-ratio:auto;
+    padding:clamp(11px,2vw,27px);
+    background:#d6c9b3 url('assets/textures/dl63-ash-wood.webp') center/760px auto;
+  }
+  #content :is(.dq61-sample-window,.dq59-canvas .creator-paper-stage) .ds48-paper-position {
+    position:relative;
+    inset:auto;
+    width:min(100%,794px);
+    aspect-ratio:210/297;
+    margin:0;
+    background:white;
+    box-shadow:0 1px 0 #d1cbbe,1px 2px 0 #f2ede5,2px 4px 6px #43341b45,3px 12px 22px #43341b24;
+  }
+  #content :is(.dq61-sample-desk,.dq59-canvas) .dq61-sample-link {
+    display:inline-flex;align-items:center;justify-content:center;min-height:40px;
+    border:1px solid #c8c3b7;border-radius:5px;background:#fffdf8;padding:4px 12px;color:#393d44;
+    line-height:1.3;font-family:inherit;font-size:13px;font-weight:600;text-decoration:none;cursor:pointer;
+  }
+  #content .dq59-canvas .creator-canvas-toolbar {display:flex;justify-content:space-between;align-items:center;gap:12px}
+  @media(min-width:1001px) {
+    #content :is(.tb36-setup.dq59-setup,.tb36-workspace.dq59-work:has(.dq59-canvas)) {
+      grid-template-columns:minmax(255px,31%) minmax(0,1fr);
+    }
+  }
+  @media(min-width:761px) and (max-width:1000px) {
+    #content :is(.tb36-setup.dq59-setup,.tb36-workspace.dq59-work:has(.dq59-canvas)) {grid-template-columns:minmax(0,1fr)!important}
+    #content :is(.dq61-sample-desk,.dq59-work>.dq59-canvas) {grid-row:1}
+  }
+}
+.ds-print-reader {width:min(100vw - 16px,846px);max-width:none;max-height:none;height:min(94dvh,1200px);padding:0;border:1px solid #b6b1a6;border-radius:8px;background:#e8e3d8;color:#2b3034;overflow:hidden;box-shadow:0 12px 62px #181d244a}
+.ds-print-reader[open] {display:flex;flex-direction:column}
+.ds-print-reader::backdrop {background:#1a2027aa}
+.ds-print-reader header {display:flex;gap:8px;align-items:center;padding:6px 10px;background:#fbf9f3;border-bottom:1px solid #c9c5bb}
+.ds-print-reader header strong {margin-right:auto;font-size:15px}.ds-print-reader form {margin:0}
+.ds-print-reader button {min-height:44px;padding:0 11px;border:1px solid #c8c3b9;border-radius:5px;background:#fffdf9;color:#333942;font:inherit;font-size:14px;cursor:pointer}
+.ds-print-reader button[aria-pressed=true] {background:#343c44;color:#fff}
+.ds-print-reader-scroll {box-sizing:border-box;flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:8px;scrollbar-width:thin}
+.ds-print-reader-page {position:relative;margin:auto;background:#fff;box-shadow:0 2px 8px #34301e33;overflow:hidden}
+.ds-print-reader-page iframe {display:block;border:0;position:absolute;inset:0;width:793.7008px;height:1122.5197px;max-width:none;transform-origin:top left;pointer-events:none}
+
+.dq-paper-actions {display:inline-flex;align-items:center;gap:8px}
+.dq-paper-actions [data-dq-open-settings] {display:none}
+@media(max-width:1000px) {
+  #content .dq-paper-actions [data-dq-open-settings] {display:inline-flex;align-items:center;min-height:42px;color:#394e61;font:inherit;font-size:13px;cursor:pointer}
+  #dq59-form {scroll-margin-top:80px}
+}
+@media screen {
+  #content .sd-downloads:has(.sd-print) {width:100%;max-width:1240px}
+  #content .sd-print>.tb36-surface.dq61-surface {padding-inline:0!important}
+}
