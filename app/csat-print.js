@@ -101,7 +101,7 @@ window.DSCSATPrint = (() => {
       list.innerHTML='<p>'+filtered.length+'문항</p>'+filtered.map((q,i)=>'<label><input type="checkbox" data-print-row="'+i+'" checked><span>'+escape(q.examTitle)+' · '+q.questionNumber+'번<small>'+escape(q.unit)+' · '+levels[level(q)]+'</small></span></label>').join('');
     }
     async function load(){
-      clearOutput();generate.disabled=true;
+      clearOutput();ready=false;rows=[];selection.clear();generate.disabled=true;list.textContent='문항을 확인하고 있어요.';
       try{const next=await catalog();if(!root.isConnected)return;rows=next;ready=true;
         const old=units.value;
         // Only unit names (never question bodies) from the public study bank supply the initial navigation.

@@ -143,7 +143,7 @@ function cleanRemote(r){
 async function loadCatalog(){
  const own=++seq;quote=null;remote=null;remoteStatus='확인 중';paint();
  try{if(!signed()||!service()?.catalog)throw Error();const requested=criteria();const r=await service().catalog(requested);if(own!==seq||!signed())return;
- let rows=cleanRemote(r).filter(q=>q.subject===requested.subject&&(!requested.bookId||(q.bookId===requested.bookId||q.bookIds?.includes(requested.bookId)))&&(!requested.unitIds.length||requested.unitIds.includes(q.unitId)||requested.unitIds.includes(q.subunitId)||q.unitIds?.some(v=>requested.unitIds.includes(v)))&&(!requested.typeIds.length||requested.typeIds.includes(q.typeId)||q.typeIds?.some(v=>requested.typeIds.includes(v))));
+ let rows=cleanRemote(r).filter(q=>q.sourceKind===requested.sourceKind&&q.subject===requested.subject&&(!requested.bookId||(q.bookId===requested.bookId||q.bookIds?.includes(requested.bookId)))&&(!requested.unitIds.length||requested.unitIds.includes(q.unitId)||requested.unitIds.includes(q.subunitId)||q.unitIds?.some(v=>requested.unitIds.includes(v)))&&(!requested.typeIds.length||requested.typeIds.includes(q.typeId)||q.typeIds?.some(v=>requested.typeIds.includes(v))));
  const source=receivedSource;
  if(source){
   const pins=await Promise.all(rows.map(q=>questionPin(q.id,q.version)));
@@ -296,8 +296,8 @@ async function action(command){if(busy)return;const sessionEpoch=epoch;notice=''
   if(!remote)await loadCatalog();
   if(sessionEpoch!==epoch)return;
   if(!remote||candidates().length<count){dialogMode=remote?'short':'error';return;}
-  selection=candidates().map(q=>q.id);for(let i=selection.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[selection[i],selection[j]]=[selection[j],selection[i]];}selection=[...selection.filter(id=>catalogById.get(id)?.sourceKind==='existing_print'),...selection.filter(id=>catalogById.get(id)?.sourceKind!=='existing_print')].slice(0,count);if(selection.length!==count)throw Error('조건에 맞는 문항이 없어요.');const r=await service().quote({questionIds:selection,durationSeconds:minutes*60});if(sessionEpoch!==epoch)return;if(!Number.isSafeInteger(r.chargePoints)||r.chargePoints<0)throw Error('문항별 포인트를 확인할 수 없어요.');if(receivedSource&&(!Array.isArray(r.questions)||r.questions.length!==selection.length||r.questions.some((q,i)=>q.id!==selection[i]||q.version!==catalogById.get(q.id)?.version))){
-   remote=null;quote=null;remoteStatus='문항의 판이 바뀌었어요. 이 교재에 실린 문항을 다시 확인해 주세요.';return;
+  selection=candidates().map(q=>q.id);for(let i=selection.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[selection[i],selection[j]]=[selection[j],selection[i]];}selection=[...selection.filter(id=>catalogById.get(id)?.sourceKind==='existing_print'),...selection.filter(id=>catalogById.get(id)?.sourceKind!=='existing_print')].slice(0,count);if(selection.length!==count)throw Error('조건에 맞는 문항이 없어요.');const r=await service().quote({questionIds:selection,durationSeconds:minutes*60});if(sessionEpoch!==epoch)return;if(!Number.isSafeInteger(r.chargePoints)||r.chargePoints<0)throw Error('문항별 포인트를 확인할 수 없어요.');if(!Array.isArray(r.questions)||r.questions.length!==selection.length||r.questions.some((q,i)=>q.id!==selection[i]||q.version!==catalogById.get(q.id)?.version)){
+   remote=null;quote=null;remoteStatus='문항 목록이 바뀌었어요. 선택한 교재와 단원을 다시 확인해 주세요.';return;
   }
   quote=r;dialogMode='quote';req=nextRequest();}
  if(command==='start'&&quote){
