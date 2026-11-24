@@ -1367,7 +1367,7 @@ function bind(container,options={}){
    }
   }
   const definitions=new Map(workbookChoices().flatMap(book=>book.units.flatMap(unit=>(unit.types||[]).map(type=>[type.id,type.label]))));
-  return [...groups.values()].sort((a,b)=>(state.course==='supplement'?(a.rows[0].originalQuestionNo-b.rows[0].originalQuestionNo):0)||a.id.localeCompare(b.id,undefined,{numeric:true})).map(group=>({...group,label:state.course==='supplement'?'교재 '+group.rows[0].originalQuestionNo+'번 연결 문항':definitions.get(group.id)||group.id}));
+  return [...groups.values()].sort((a,b)=>(state.course==='supplement'?(a.rows[0].originalQuestionNo-b.rows[0].originalQuestionNo):0)||a.id.localeCompare(b.id,undefined,{numeric:true})).map(group=>({...group,label:state.course==='supplement'?(workbookScope().unit?.label||group.rows[0].unit||'선택한 단원')+' · 변형 연습':definitions.get(group.id)||group.id}));
  }
  function sourceRows(){
   const groups=remoteTypeGroups();
