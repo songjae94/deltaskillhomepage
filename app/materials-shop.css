@@ -190,3 +190,13 @@
   #content .ms-student-find .ms-picker {grid-column:1 / -1;grid-row:2}
   #content .ms-student-find .ms-cart-button {grid-column:2;grid-row:1}
 }
+
+/* The catalogue heading carries the same ink colour as the jackets on its shelf. */
+#content .ms-shelf-group {--ms-series-ink:#34414a}
+#content [data-ms-series="OL-type-CM2"] {--ms-series-ink:#243f38}
+#content [data-ms-series="OL-advanced-CM2"] {--ms-series-ink:#333346}
+#content [data-ms-series="OL-type-CAL1"] {--ms-series-ink:#263f55}
+#content [data-ms-series="OL-advanced-CAL1"] {--ms-series-ink:#59383d}
+#content [data-ms-series="SSEN-GEO"] {--ms-series-ink:#684134}
+#content [data-ms-series="DS-PRACTICE-PNC"] {--ms-series-ink:#23333e}
+#content .ms-shelf-group>header h3 {padding-inline-start:10px;border-inline-start:3px solid var(--ms-series-ink);color:var(--ms-series-ink)}

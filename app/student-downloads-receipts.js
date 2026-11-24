@@ -7,7 +7,7 @@
   const disabled=value=>value?' disabled':'';
   function card({title,fileId,meta,actions,format='PDF'}){
     const sku=String(fileId||'').replace(/\.pdf$/i,'');
-    const cover=knownCovers.has(sku)?`<img src="public-data/covers/${sku}.webp?v=shelf-1124" alt="" width="50" height="71">`:`<span class="sr-format" aria-hidden="true">${escape(format||'파일')}</span>`;
+    const cover=knownCovers.has(sku)?`<img src="public-data/covers/${sku}.webp?v=edition-1124" alt="" width="50" height="71">`:`<span class="sr-format" aria-hidden="true">${escape(format||'파일')}</span>`;
     return `<li class="sr-row">${cover}<div><h4>${escape(title)}</h4><p>${escape(meta.filter(Boolean).join(' · '))}</p><div class="sr-actions">${actions}</div></div></li>`;
   }
   function pointList(rows,busy){
