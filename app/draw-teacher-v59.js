@@ -97,7 +97,9 @@
     const prefix = {};
     for (const [k] of FIELDS) {
       const options = rows(prefix);
-      if (!options.some(r => r[k] === sel[k])) sel[k] = options[0]?.[k] ?? '';
+      const scopedSubject = k === 'subject' && window.DSPrintScope?.active() &&
+        window.DSPrintScopeData?.subjects?.some(s => s.subject === sel.subject);
+      if (!scopedSubject && !options.some(r => r[k] === sel[k])) sel[k] = options[0]?.[k] ?? '';
       prefix[k] = sel[k];
     }
   }
@@ -258,7 +260,7 @@
     try { return window.PrintComposerV14.normalizeSettings(studio.printSettings); }
     catch { return { academyName: '', teacherName: '', headerText: '', footerText: '', identityPlacement: 'header', font: 'default', titleAlign: 'left', showStudentName: true, showPageNumber: true }; }
   }
-  function sheets() { const n = Number(layout), out = []; for (let i = 0; i < drawn.items.length; i += n) out.push({ offset: i, items: drawn.items.slice(i, i + n) }); out.push(...(window.DSDocumentDesign?.records(drawn.items)||[])); return out; }
+  function sheets(items = drawn.items) { const n = Number(layout), out = []; for (let i = 0; i < items.length; i += n) out.push({ offset: i, items: items.slice(i, i + n) }); out.push(...(window.DSDocumentDesign?.records(items)||[])); return out; }
   // v61: answers and solutions belong to the set on screen (fetched right after the draw); they go when the set goes.
   function dropFrames() { for (const f of frames) f.remove(); frames.clear(); }
   function dropSolutions(target = drawn) {
@@ -275,23 +277,41 @@
   // Runs inside the print document: site math renderer first, then fit each cell.
   const fitScript = `(async()=>{try{const R=window.WebMathRendererV23;if(R){R.typeset(document.body);await R.prepareFonts();}await Promise.all(Array.from(document.images,i=>i.decode().catch(()=>{})));await document.fonts.ready;await new Promise(r=>{let done=false;const go=()=>{if(!done){done=true;r();}};requestAnimationFrame(()=>requestAnimationFrame(go));setTimeout(go,300);});for(const l of document.querySelectorAll('.dq59-choices[data-auto],.dq59-choices[data-fit="3"]')){if(!l.offsetWidth)continue;const o=['5','3','2','1'];let i=Math.max(0,o.indexOf(l.dataset.auto||l.dataset.fit));for(;i<o.length;i++){l.dataset.fit=o[i];if(Array.from(l.children).every(li=>{const w=li.style.whiteSpace;li.style.whiteSpace='nowrap';const ok=li.scrollWidth<=li.clientWidth+1;li.style.whiteSpace=w;return ok;}))break;}}const wide=el=>el.scrollWidth>el.clientWidth+1;for(const box of document.querySelectorAll('.qbody')){const inner=box.firstElementChild;const blocks=Array.from(inner.querySelectorAll('p,li,td,th,div')).filter(el=>!el.querySelector('p,li,td,th,div,table'));for(const el of blocks){if(wide(el)){el.style.zoom=Math.max(.5,Math.floor(el.clientWidth/el.scrollWidth*100-1)/100);}}let z=1;while(z>.6&&inner.getBoundingClientRect().height>box.clientHeight+1){z=Math.round((z-.04)*100)/100;inner.style.zoom=z;}const edge=box.getBoundingClientRect();if(inner.getBoundingClientRect().height>box.clientHeight+1||Array.from(inner.querySelectorAll('*')).some(el=>{if(el.closest('.katex'))return false;const r=el.getBoundingClientRect();return r.width>0&&(r.right>edge.right+1.5||r.bottom>edge.bottom+1.5||r.left<edge.left-1.5||r.top<edge.top-1.5);}))document.body.dataset.overflow='true';}const flow=document.querySelector('.solflow');if(flow){for(const a of flow.querySelectorAll('.ans[data-tex]')){try{a.innerHTML=window.katex.renderToString(a.dataset.tex,{throwOnError:true,displayMode:false,trust:false,strict:'ignore'});}catch{}}for(const el of Array.from(flow.querySelectorAll('p,li,td,th,div')).filter(el=>!el.querySelector('p,li,td,th,div,table'))){if(wide(el))el.style.zoom=Math.max(.5,Math.floor(el.clientWidth/el.scrollWidth*100-1)/100);}const gap=parseFloat(getComputedStyle(flow).columnGap)||0,fb=flow.getBoundingClientRect(),colW=(fb.width-gap)/2,pitch=colW+gap;const clipped=(f=flow)=>{const fb=f.getBoundingClientRect();return Array.from(f.querySelectorAll('p,li,td,th,div')).filter(el=>!el.querySelector('p,li,td,th,div,table')).some(wide)||Array.from(f.querySelectorAll('*')).some(el=>{const inK=el.closest('.katex');if(inK&&(el.closest('.katex-mathml')||el.ownerSVGElement||el.localName==='svg'||/(^|\\s)(strut|pstrut|vlist-s)(\\s|$)/.test(String(el.className.baseVal??el.className))))return false;const blk=el.closest('p,li,td,th,div,article')||f;return Array.from(el.getClientRects()).some(r=>{if(!(r.width>0))return false;const cy=(r.top+r.bottom)/2,cx=(r.left+r.right)/2;let fr=null,best=Infinity;for(const q of blk.getClientRects()){if(cy<q.top-1||cy>q.bottom+1)continue;const gapx=cx<q.left?q.left-cx:cx>q.right?cx-q.right:0;if(gapx<best){best=gapx;fr=q;}}if(!fr)fr=r;const L=fb.left+Math.floor((fr.left-fb.left+1.5)/pitch)*pitch,side=r.width>colW+1.5||r.left<L-1.5||r.right>L+colW+1.5;return inK?side:(side||r.bottom>fb.bottom+1.5||r.top<fb.top-1.5);});});};window.dqSolClipped=clipped;if(clipped())document.body.dataset.overflow='true';const cols=Math.max(1,Math.round((flow.scrollWidth+gap)/pitch)),n=Math.ceil(cols/2);document.body.dataset.solPages=n;const src=flow.closest('.paper'),only=document.body.dataset.solOnly;const list=only===undefined||only===''?Array.from({length:n},(_,i)=>i):[Math.min(n-1,Number(only))];for(const j of list){const pg=src.cloneNode(true);pg.classList.remove('solmeasure');pg.querySelector('.solflow').style.transform='translateX(-'+(j*2*pitch)+'px)';const no=pg.querySelector('.pgno');if(no&&no.dataset.base!=='')no.textContent=(Number(no.dataset.base)+j+1)+' / '+(Number(no.dataset.base)+n);document.body.insertBefore(pg,src);}src.remove();document.querySelectorAll('.pgq').forEach(e=>{e.textContent=e.dataset.i+' / '+(Number(e.dataset.q)+n);});}}catch{document.body.dataset.renderError='fit';}document.body.dataset.ready='true';})();`;
   const asset = path => safe(new URL(path, location.href).href);
-  function documentHTML(only) {
-    const all = sheets(), s = printSettings(), heading = safe(title || (studentSurface()?'모의시험지':'수업 프린트')), who = [s.academyName, s.teacherName].filter(Boolean).map(safe).join(' · ');
+  function documentHTML(only, sample) {
+    const source = sample || drawn;
+    const defaultTitle = studentSurface()?'모의시험지':'수업 프린트';
+    const settingsTitle = sample ? draftTitle || source.labels.unit+' '+defaultTitle : title;
+    const all = sheets(source.items), s = printSettings(), heading = safe(settingsTitle || defaultTitle), who = [s.academyName, s.teacherName].filter(Boolean).map(safe).join(' · ');
     const top = ['header', 'both'].includes(s.identityPlacement) ? who : '', bottom = ['footer', 'both'].includes(s.identityPlacement) ? who : '';
     const face = s.font === 'serif' ? '"Batang","AppleMyungjo","Noto Serif KR",serif' : '"Malgun Gothic","Apple SD Gothic Neo",Arial,sans-serif';
-    const solOnly = typeof only === 'string' ? Number(only.slice(1)) : null, withSolutions = solOn() && (only === undefined || solOnly !== null);
-    const chosen = only === undefined ? all : solOnly !== null ? [] : all.slice(only, only + 1), n = Number(layout), tag = safe(drawn.labels.unit);
-    const total = all.length + (solOn() ? drawn.solPages || 1 : 0);
-    const brand = `<div class="brand"><strong>${top || (s.identityPlacement === 'none' || bottom ? '' : 'DELTA<em>SKILL</em>')}</strong><span>${safe(s.headerText || drawn.labels.subject + ' · ' + drawn.labels.unit)}</span></div>`;
-    const footText = [bottom, safe(s.footerText || 'DELTASKILL · ' + drawn.labels.unit)].filter(Boolean).join(' · ');
+    const solOnly = typeof only === 'string' ? Number(only.slice(1)) : null, withSolutions = !sample && solOn() && (only === undefined || solOnly !== null);
+    const chosen = only === undefined ? all : solOnly !== null ? [] : all.slice(only, only + 1), n = Number(layout), tag = safe(source.labels.unit);
+    const total = all.length + (!sample && solOn() ? source.solPages || 1 : 0);
+    if (pageNote.text && pageNote.placement === 'header') s.headerText = pageNote.text;
+    if (pageNote.text && pageNote.placement === 'footer') s.footerText = pageNote.text;
+    const brand = `<div class="brand"><strong>${top || (s.identityPlacement === 'none' || bottom ? '' : 'DELTA<em>SKILL</em>')}</strong><span>${safe(s.headerText || source.labels.subject + ' · ' + source.labels.unit)}</span></div>`;
+    const footText = [bottom, safe(s.footerText || 'DELTASKILL · ' + source.labels.unit)].filter(Boolean).join(' · ');
     const answer = a => { const t = String(a ?? '').trim(); return /^[1-5]$/.test(t) ? '①②③④⑤'[t - 1] : /[\\^_{}]/.test(t) ? `<span class="ans" data-tex="${safe(t)}">${safe(t)}</span>` : safe(t); };
-    const solutions = !withSolutions ? '' : `<section class="paper solmeasure"><header class="head">${brand}<h1>정답과 해설</h1><small>${heading}</small></header><main class="body"><div class="solwin"><div class="solflow">${drawn.items.map((q, i) => { const x = drawn.solutions.find(v => v.id === q.id); return `<article class="sol"><div class="solhead"><b>${String(i + 1).padStart(2, '0')}</b><span>${x && !x.missing ? '정답 ' + answer(x.answer) : ''}</span></div><div class="solbody dq61-s">${x && !x.missing ? x.body.innerHTML : '<p class="solnone">이 문항은 해설이 준비되지 않았습니다.</p>'}</div></article>`; }).join('')}</div></div></main><footer class="foot"><span>${footText}</span><span class="pgno" data-base="${s.showPageNumber ? all.length : ''}"></span></footer></section>`;
+    const solutions = !withSolutions ? '' : `<section class="paper solmeasure"><header class="head">${brand}<h1>정답과 해설</h1><small>${heading}</small></header><main class="body"><div class="solwin"><div class="solflow">${source.items.map((q, i) => { const x = source.solutions.find(v => v.id === q.id); return `<article class="sol"><div class="solhead"><b>${String(i + 1).padStart(2, '0')}</b><span>${x && !x.missing ? '정답 ' + answer(x.answer) : ''}</span></div><div class="solbody dq61-s">${x && !x.missing ? x.body.innerHTML : '<p class="solnone">이 문항은 해설이 준비되지 않았습니다.</p>'}</div></article>`; }).join('')}</div></div></main><footer class="foot"><span>${footText}</span><span class="pgno" data-base="${s.showPageNumber ? all.length : ''}"></span></footer></section>`;
     const css = `*{box-sizing:border-box}html,body{margin:0;padding:0;background:#fff;color:#191919;font-family:${face}}body{font-size:12px}.paper{width:210mm;height:297mm;padding:14mm 13mm;position:relative;break-after:page;overflow:hidden}.head{height:25mm;border-bottom:1px solid #353535;margin-bottom:7mm}.brand{display:flex;justify-content:space-between;font-size:9px;letter-spacing:.03em}.head h1{font-size:23px;letter-spacing:-.03em;margin:12px 0 5px;text-align:${s.titleAlign === 'center' ? 'center' : 'left'}}.student{float:right;font-size:10px}.body{height:225mm}.questions{display:grid;grid-template-columns:${n === 1 ? '1fr' : '1fr 1fr'};grid-template-rows:${n === 4 ? '1fr 1fr' : '1fr'};gap:7mm;height:100%}.question{min-width:0;min-height:0;display:flex;flex-direction:column;overflow:hidden}.qhead{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #cfcfcf;padding-bottom:4px;margin-bottom:9px}.qhead b{font-size:17px}.qhead small{font-size:8px;color:#777}.qbody{flex:1;min-height:0;overflow:hidden}.qbody>div{font-size:${n === 4 ? 12 : 13.5}px;line-height:1.75;word-break:keep-all;overflow-wrap:anywhere}.qbody p{margin:0 0 .7em}.qbody img{max-width:100%;height:auto}.qbody math{font-size:1.06em}.qbody .dq59-bogi{position:relative;margin:1.3em 0 .9em;padding:1.1em .9em .6em;border:1px solid #333}.qbody .dq59-cond,.solbody .dq59-cond{margin:.9em 0;padding:.6em .9em;border:1px solid #333}.dq59-cond-line{display:block}.dq59-cond-line+.dq59-cond-line{margin-top:.35em}.qbody .dq59-bogi-title{position:absolute;top:-.8em;left:50%;transform:translateX(-50%);padding:0 .7em;background:#fff;white-space:nowrap}.qbody .dq59-bogi-title:before{content:'〈 '}.qbody .dq59-bogi-title:after{content:' 〉'}.qbody table{border-collapse:collapse;margin:.5em 0}.qbody td,.qbody th{border:1px solid #555;padding:3px 8px;text-align:center}.qbody ol,.qbody ul{margin:.6em 0;padding-left:1.4em}.qbody .dq59-choices{list-style:none;padding:0;margin:1em 0 0;display:grid;gap:.55em 1em;grid-template-columns:repeat(var(--cols),minmax(0,1fr))}.qbody .dq59-choices[data-fit="5"]{--cols:${n === 1 ? 5 : 3}}.qbody .dq59-choices[data-fit="3"]{--cols:3}.qbody .dq59-choices[data-fit="2"]{--cols:2}.qbody .dq59-choices[data-fit="1"]{--cols:1}.qbody .dq59-choices li{position:relative;min-width:0;padding-left:1.6em}.qbody .dq59-choices li:not([data-mark]){padding-left:0}.qbody .dq59-choices li[data-mark]:before{content:attr(data-mark);position:absolute;left:0}.head small{font-size:10px}.solwin{height:225mm;overflow:hidden}.solflow{height:225mm;column-count:2;column-gap:7mm;column-fill:auto;font-size:12px;line-height:1.7;word-break:keep-all;overflow-wrap:anywhere}.sol{margin:0 0 5mm}.solhead{display:flex;gap:10px;align-items:baseline;border-bottom:1px solid #ddd;padding-bottom:3px;margin-bottom:6px;break-after:avoid}.solhead b{font-size:14px}.solhead span{font-size:12px;font-weight:700}.solbody p{margin:0 0 .6em}.solbody img{max-width:100%;height:auto}.solbody table{border-collapse:collapse;margin:.4em 0}.solbody td,.solbody th{border:1px solid #555;padding:2px 6px;text-align:center}.solnone{color:#777}.solmeasure{position:absolute;left:-9999px;top:0}.foot{position:absolute;bottom:10mm;left:13mm;right:13mm;display:flex;justify-content:space-between;font-size:9px;color:#666}@page{size:A4;margin:0}@media print{.paper:last-child{break-after:auto}}`;
-    const html = `<!doctype html><html lang="ko"><meta charset="utf-8"><title>${heading}</title><link rel="stylesheet" href="${asset('assets/vendor/katex-0.18.4/katex-embed.css?v=24.3')}"><link rel="stylesheet" href="${asset('math-render-v23.css?v=24.1')}"><style>${css}</style><link rel="stylesheet" href="${asset('draw-math-v61.css?v=61.0')}"><body${solOnly !== null ? ` data-sol-only="${solOnly}"` : ''}>${chosen.map((p, local) => {
+    const renderScripts = sample ? '' : `<script src="${asset('assets/vendor/katex-0.18.4/katex.min.js')}"><\/script><script src="${asset('math-render-v23.js?v=61.0')}"><\/script><script>${fitScript}<\/script>`;
+    const html = `<!doctype html><html lang="ko"><meta charset="utf-8"><title>${heading}</title><link rel="stylesheet" href="${asset('assets/vendor/katex-0.18.4/katex-embed.css?v=24.3')}"><link rel="stylesheet" href="${asset('math-render-v23.css?v=24.1')}"><style>${css}
+      .sample-question {display:block;width:322px;max-width:100%;height:auto}
+      .paper .head h1,.brand span,.foot span:first-child {overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+      body[data-document-design="DS-MARGIN-V2"] .question {padding-left:2.5mm;border-left:.45mm solid #a1a7bd}
+      body[data-document-design="DS-SEQUENCE-V2"] .qhead {padding-bottom:2mm;border-bottom:.3mm solid #849897}
+      body[data-document-design="DS-SEQUENCE-V2"] .qhead b {border-radius:2px;background:#344c4b;color:#fff;padding:1mm 2mm;font-size:14px!important}
+      body[data-document-design="DS-MARGIN-V2"] .qhead b {color:#515d80}
+    </style><link rel="stylesheet" href="${asset('draw-math-v61.css?v=61.0')}"><body${solOnly !== null ? ` data-sol-only="${solOnly}"` : ''}>${chosen.map((p, local) => {
       const index = only === undefined ? local : only;
-      if(p.designRecord) return window.DSDocumentDesign.recordSheet(p,{title,unit:drawn.labels.unit,index,total});
+      if(p.designRecord) {
+        const record = document.createElement('template');
+        record.innerHTML = window.DSDocumentDesign.recordSheet(p,{title:settingsTitle,unit:source.labels.unit,index,total});
+        if (pageNote.text) record.content.querySelector(pageNote.placement === 'header' ? '.brand span' : '.foot span').textContent = pageNote.text;
+        return record.innerHTML;
+      }
       return `<section class="paper"><header class="head">${brand}<h1>${heading}</h1>${s.showStudentName ? '<span class="student">이름 ______________</span>' : ''}</header><main class="body"><div class="questions">${p.items.map((q, i) => `<article class="question"><div class="qhead"><b>${String(p.offset + i + 1).padStart(2, '0')}</b><small>${tag}</small></div><div class="qbody"><div class="dq61-q">${q.body.innerHTML}</div></div></article>`).join('')}</div></main><footer class="foot"><span>${footText}</span><span${s.showPageNumber ? ` class="pgq" data-i="${index + 1}" data-q="${all.length}"` : ''}>${s.showPageNumber ? index + 1 + ' / ' + total : ''}</span></footer></section>`;
-    }).join('')}${solutions}<script src="${asset('assets/vendor/katex-0.18.4/katex.min.js')}"><\/script><script src="${asset('math-render-v23.js?v=61.0')}"><\/script><script>${fitScript}<\/script></body></html>`;
+    }).join('')}${solutions}${renderScripts}</body></html>`;
     return window.DSDocumentDesign?.decorateDocument(html)||html;
   }
   async function printNow() {
@@ -347,7 +367,11 @@
   function selects() {
     const prefix = {};
     return FIELDS.filter(([k]) => k !== 'unit' || !window.DSPrintScope?.active()).map(([k, name]) => {
-      const options = [...new Set(rows(prefix).map(r => r[k]))];
+      const values = rows(prefix).map(r => r[k]);
+      if (k === 'subject' && window.DSPrintScope?.active())
+        values.push(...(window.DSPrintScopeData?.subjects || []).map(s => s.subject));
+      const options = [...new Set(values)];
+      if (!options.length) return '';
       const html = `<label>${name}<select data-dq-field="${k}" aria-label="${name}" ${pending ? 'disabled' : ''}>${options.map(v => `<option value="${safe(v)}" ${sel[k] === v ? 'selected' : ''}>${safe(k === 'stage' ? v + '단계' : v)}</option>`).join('')}</select></label>`;
       prefix[k] = sel[k];
       return html;
@@ -368,25 +392,32 @@
     const over = trialLimit && count > cap && cap > 0;          // at 0 the faint card on the right is the one notice
     return `<label>문항 수<select data-dq-count aria-label="문항 수" ${pending ? 'disabled' : ''}${over ? ' aria-describedby="dq61-more"' : ''}>${COUNTS.map(n => `<option value="${n}" ${count === n ? 'selected' : ''}>${n}문항${trialLimit && n > cap && cap > 0 ? ' · 로그인하면' : ''}</option>`).join('')}</select>${over ? `<small id="dq61-more" class="dq61-more">${cap > 0 ? `로그인 없이 지금은 ${cap}문항까지 구성할 수 있어요.` : '오늘 로그인 없이 볼 수 있는 문항을 다 봤어요.'} <a href="#login" data-dq61-login>로그인하면 더 ↗</a></small>` : ''}</label>`;
   }
+  function sampleData() {
+    const calculus = (sel.subject || window.DSPrintScopeData?.subjects?.[0]?.subject || '').includes('미적분');
+    const labels = {subject:calculus?'미적분Ⅰ':'공통수학2', unit:calculus?'부정적분과 정적분':'함수'};
+    const prefix = calculus?'integral':'function';
+    const items = Array.from({length:4},(_,i)=>({
+      body:{innerHTML:`<img class="sample-question" src="${asset('public-data/interior-samples/'+prefix+'-q'+(i+1)+'.webp')}" alt="${labels.unit} 공개 견본 ${i+1}번 문제">`}
+    }));
+    return {labels,items};
+  }
   function idle() {
     const list = guest() ? [] : savedList();
-    // Both workbenches show a published problem page before any items are drawn.
-    const calculus = (sel.subject || window.DSPrintScopeData?.subjects?.[0]?.subject || '').includes('미적분');
-    const sampleSku = calculus ? 'NS-MI1B-05' : 'NS-CM2B-06';
-    const labelText = calculus ? '미적분Ⅰ 부정적분과 정적분' : '공통수학2 함수';
-    const image = 'public-data/' + sampleSku + '-1.png';
-    const sheet = `<img class="ds48-original-paper dq61-sample-page" src="${image}" width="804" height="1137" alt="${labelText} 공개 견본의 첫 문제 지면">`;
-    const surface = window.DSPrintSurfaceV48?.scene ? window.DSPrintSurfaceV48.scene(sheet) : sheet;
-    const toolbar = `<strong>프린트 예시</strong><a class="dq61-sample-link" href="${image}" target="_blank" rel="noopener" aria-label="${labelText} 프린트 예시 크게 보기, 새 창">크게 보기 ↗</a>`;
-    return `<aside class="dq59-stage dq59-idle tb36-order-preview ds48-canvas dq61-desk dq61-sample-desk" aria-busy="${Boolean(pending)}"><div class="ds48-preview-toolbar">${toolbar}</div><div class="dq61-sample-window">${surface}</div>${list.length && !pending ? `<div class="dq59-saved"><h3>이 기기에 임시 보관한 구성</h3><ul>${list.map((x, i) => `<li><button type="button" data-dq-reopen="${i}"><strong>${safe(x.title)}</strong><small>${safe(label(x.labels))} · ${x.ids.length}문항 · ${safe(x.day)}</small></button><button type="button" data-dq-forget="${i}" aria-label="${safe(x.title)} 지우기">×</button></li>`).join('')}</ul></div>` : ''}</aside>`;
+    const data = sampleData(), design = window.DSDocumentDesign;
+    const sheet = `<iframe class="dq61-sample-page" title="${data.labels.subject} ${data.labels.unit} 프린트 예시" tabindex="-1" scrolling="no" srcdoc="${safe(documentHTML(0,data))}"></iframe>`;
+    const surface = window.DSPrintSurfaceV48.scene(sheet);
+    const toolbar = '<strong>프린트 예시</strong><button type="button" class="dq61-sample-link" data-dq-large-sample>크게 보기 ↗</button>';
+    const appearance = `<div class="dq61-page-options"><fieldset><legend>내지 디자인</legend><div>${design.designs.map(d=>`<button type="button" data-document-design="${d.id}" aria-pressed="${design.selected().id===d.id}" title="${safe(d.desc)}">${d.label}</button>`).join('')}</div></fieldset><fieldset><legend>한 쪽 문항 수</legend><div>${[1,2,4].map(n=>`<label><input type="radio" name="sample-page-count" data-dq-layout value="${n}" ${Number(layout)===n?'checked':''}><span>${n}문항</span></label>`).join('')}</div></fieldset></div>`;
+    return `<aside class="dq59-stage dq59-idle tb36-order-preview ds48-canvas dq61-desk dq61-sample-desk" aria-busy="${Boolean(pending)}"><div class="ds48-preview-toolbar">${toolbar}</div><div class="dq61-sample-window">${surface}</div>${appearance}${list.length && !pending ? `<div class="dq59-saved"><h3>이 기기에 임시 보관한 구성</h3><ul>${list.map((x, i) => `<li><button type="button" data-dq-reopen="${i}"><strong>${safe(x.title)}</strong><small>${safe(label(x.labels))} · ${x.ids.length}문항 · ${safe(x.day)}</small></button><button type="button" data-dq-forget="${i}" aria-label="${safe(x.title)} 지우기">×</button></li>`).join('')}</ul></div>` : ''}</aside>`;
   }
   // The faint card in the next place once today's free questions are used: no question in it.
   function lockCard(alone) {
     return `<div class="dq61-lockcard${alone ? ' is-alone' : ''}"><span class="dq61-lockmark" aria-hidden="true">${LOCK_SVG}</span><strong>오늘 로그인 없이 볼 수 있는 ${daily()}문항을 다 봤어요.</strong><span>로그인하면 같은 조건으로 더 구성하고, 정답 · 해설까지 이어서 볼 수 있어요.</span>${alone ? '' : '<button type="button" class="dq61-ghost" data-dq61-gate-open="limit">로그인하고 더 구성</button>'}</div>`;
   }
   let draftTitle = '';
+  let pageNote = {placement:'header',text:''};
   function studentOutputSettings() {
-    return `<details class="student-print-settings"><summary>출력 설정</summary><label>프린트 제목<input data-student-print-title maxlength="60" value="${safe(draftTitle)}" placeholder="단원명으로 자동 지정"></label><label>한 쪽 문항 수<select data-dq-layout>${[1,2,4].map(n=>`<option value="${n}" ${Number(layout)===n?'selected':''}>${n}문항</option>`).join('')}</select></label><label><input type="checkbox" data-student-print-sol ${withSol?'checked':''}> 정답·해설 포함</label></details>`;
+    return `<div class="student-print-settings"><label>프린트 제목<input data-student-print-title maxlength="60" value="${safe(draftTitle)}" placeholder="단원명으로 자동 지정"></label><label>문구 위치<select data-dq-note-placement><option value="header" ${pageNote.placement==='header'?'selected':''}>머리말</option><option value="footer" ${pageNote.placement==='footer'?'selected':''}>꼬리말</option></select></label><label>문구<input data-dq-note maxlength="60" value="${safe(pageNote.text)}" placeholder="프린트에 넣을 문구"></label><label><input type="checkbox" data-student-print-sol ${withSol?'checked':''}> 정답·해설 포함</label></div>`;
   }
   function setup() {
     const scope = window.DSPrintScope;
@@ -400,7 +431,7 @@
       (choice.mode !== 'book' || choice.book_id) && (choice.type_mode !== 'specific' || choice.type_ids.length);
     const trial = basic && guest() && current() ? `<button type="button" class="tb36-quiet" data-dq-guest-preview ${pending?'disabled':''}>기본 세트 맛보기</button>` : '';
     const button = `<button type="submit" class="tb36-primary" ${canQuote && !pending ? '' : 'disabled'}>${pending?'문항 준비 중':'출력 / PDF 저장'} <span>→</span></button>`;
-    return `<div class="tb36-setup dq59-setup${guest() ? ' dq61-guest' : ''}"><form id="dq59-form" class="tb36-conditions"><div class="tb36-section-title"><b>01</b><h2>프린트 구성</h2></div>${basic ? meter() : ''}${fields}${scopeHtml}${countField()}${studentOutputSettings()}${window.DSDocumentDesign?.picker()||''}${button}${trial}${noteHTML()}</form>${idle()}</div>`;
+    return `<div class="tb36-setup dq59-setup${guest() ? ' dq61-guest' : ''}"><form id="dq59-form" class="tb36-conditions"><div class="tb36-section-title"><b>01</b><h2>프린트 구성</h2></div>${basic ? meter() : ''}${fields}${scopeHtml}${countField()}${studentOutputSettings()}${button}${trial}${noteHTML()}</form>${idle()}</div>`;
   }
   function solProgress() {
     const op = drawn?.solOp;
@@ -463,7 +494,6 @@
     const optional = [
       form.querySelector('[data-ps-types]')?.closest('fieldset'),
       form.querySelector('[data-dq-field="stage"]')?.closest('label'),
-      form.querySelector('.dd-design-picker'),
       form.querySelector('.student-print-settings')
     ].filter(Boolean);
     for (const control of optional) action.before(control);
@@ -476,11 +506,31 @@
     const root = t.content.firstElementChild, oldSteps = root?.querySelector('.tb36-steps'), oldSetup = root?.querySelector('.tb36-setup');
     if (!oldSteps || !oldSetup) return base();
     if (!menuTried) queueMicrotask(loadMenu);          // first time this screen is drawn (or after a sign-in change)
+    const restored = host()?.signedIn() && window.DSPrintLoginReturn?.take(location.hash);
+    if (restored) {
+      window.DSPrintScope?.restore(restored.scope);
+      sel = Object.fromEntries(FIELDS.filter(([k]) => typeof restored.sel?.[k] === 'string')
+        .map(([k]) => [k, restored.sel[k]]));
+      if (!sel.subject && typeof restored.scope?.subject === 'string') sel.subject = restored.scope.subject;
+      count = COUNTS.includes(restored.count) ? restored.count : 5;
+      layout = ['1','2','4'].includes(restored.layout) ? restored.layout : '2';
+      draftTitle = typeof restored.draftTitle === 'string' ? restored.draftTitle.slice(0,60) : '';
+      pageNote = {placement:restored.pageNote?.placement === 'footer' ? 'footer' : 'header',
+        text:typeof restored.pageNote?.text === 'string' ? restored.pageNote.text.slice(0,60) : ''};
+      withSol = restored.withSol !== false;
+      const designs = window.DSDocumentDesign;
+      if (designs && restored.design !== designs.selected().id) designs.select(restored.design);
+    }
     settle();
     root.classList.add('dq61-surface');
     if (phase === 'setup') oldSteps.remove(); else oldSteps.outerHTML = steps();
     oldSetup.outerHTML = phase === 'setup' || !drawn ? setup() : phase === 'cards' ? cards() : finish();
     compactPrintForm(root.querySelector('#dq59-form'));
+    if (Array.isArray(restored?.openSections)) {
+      root.querySelectorAll('details[data-print-option]').forEach(box=>{
+        box.open = restored.openSections.includes(box.dataset.printOption);
+      });
+    }
     return root.outerHTML;
   }
   teacher = function () {
@@ -521,6 +571,7 @@
     if (drawn.openSol) box.open = true;
   }
   function mount() {
+    window.DSPrintSurfaceV48?.fit(document);
     const box = document.querySelector('#content [data-dq-cards]');
     if (!box || box.childElementCount || !drawn) return;
     const tag = `${drawn.labels.unit} · ${drawn.labels.stage}단계 · ${drawn.labels.difficulty}`;
@@ -754,7 +805,14 @@
     dialog.addEventListener('change',()=>{submit.disabled=!offers.querySelector('input:checked:enabled');});
     dialog.addEventListener('close',()=>{
       clearTimeout(timer); abort.abort(); dialog.remove(); outputDialog=null;
-      if (dialog.returnValue === 'login' && sharedPrint() && location.hash === origin) { goLogin(); return; }
+      if (dialog.returnValue === 'login' && sharedPrint() && location.hash === origin) {
+        window.DSPrintLoginReturn?.save(studentSurface() ? '#student' : '#teacher', {
+          sel:{...sel}, count, layout, draftTitle, pageNote:{...pageNote}, withSol,
+          design:window.DSDocumentDesign?.selected().id, scope:window.DSPrintScope?.snapshot(),
+          openSections:[...document.querySelectorAll('#dq59-form details[data-print-option][open]')].map(box=>box.dataset.printOption)
+        });
+        goLogin(); return;
+      }
       const chosen = offers.querySelector('input:checked:enabled')?.value;
       if (dialog.returnValue !== 'confirm' || !chosen || !quantities[chosen] || !sharedPrint() || location.hash !== origin ||
           !h.signedIn() || (basic && (unit !== sel.unit || !rows(sel).includes(sets[chosen]))) || JSON.stringify(scopeCriteria()) !== JSON.stringify(criteria)) return;
@@ -768,26 +826,32 @@
       submit.value='login'; submit.disabled=false; submit.textContent='로그인'; return;
     }
     const modes = ['received','point'];
-    const checks = modes.map(access_mode=>Promise.resolve().then(()=>basic ?
-      {extraction_ready:Boolean(sets[access_mode]),available_count:sets[access_mode] ? criteria.count : 0} :
-      h.scope.menu({...criteria,access_mode},abort.signal)));
+    const timedOut = new Promise(resolve=>abort.signal.addEventListener('abort',()=>resolve(null),{once:true}));
+    const read = lookup => Promise.race([Promise.resolve().then(lookup).catch(()=>null), timedOut]);
     const walletRow = menu.find(row=>row.pointPrint);
-    checks.push(Promise.resolve().then(()=>basic && !sets.point ? null : h.pointWallet ? h.pointWallet(abort.signal) : walletRow));
-    const timedOut = new Promise(resolve=>abort.signal.addEventListener('abort',()=>resolve([]),{once:true}));
-    const result = await Promise.race([Promise.allSettled(checks),timedOut]);
-    clearTimeout(timer);
-    if (outputDialog !== dialog || !dialog.open) return;
-    const wallet = result[2]?.value;
-    offers.innerHTML = modes.map((mode,index)=>{
-      const r = result[index]?.value, owned = mode === 'received';
+    const walletCheck = read(()=>basic && !sets.point ? null : h.pointWallet ? h.pointWallet(abort.signal) : walletRow);
+    offers.innerHTML = modes.map(mode=>`<label data-print-offer="${mode}">확인 중…</label>`).join('');
+    await Promise.all(modes.map(async mode=>{
+      const owned = mode === 'received';
+      const availability = read(()=>basic ?
+        {extraction_ready:Boolean(sets[mode]),available_count:sets[mode] ? criteria.count : 0} :
+        h.scope.menu({...criteria,access_mode:mode},abort.signal));
+      const [r,wallet] = await Promise.all([availability,owned ? null : walletCheck]);
+      if (outputDialog !== dialog || !dialog.open) return;
       const quantity = Number.isSafeInteger(r?.available_count) && r.extraction_ready ? Math.min(criteria.count,r.available_count) : 0;
       const priceKnown = Number.isSafeInteger(wallet?.pointPrice) && wallet.pointPrice >= 0;
       const allowed = quantity > 0 && (owned || priceKnown);
       if (allowed) quantities[mode] = quantity;
       const cost = owned ? '추가 차감 없음' : priceKnown ? '새 문항당 '+wallet.pointPrice.toLocaleString()+'P · 최대 '+(wallet.pointPrice*quantity).toLocaleString()+'P' : '포인트 가격을 확인하지 못했어요.';
       const detail = !r ? '확인하지 못했어요. 잠시 후 다시 시도해 주세요.' : quantity ? (basic?'최대 ':'')+quantity+'문항 · '+cost : basic ? '이 조건에서 이용할 수 있는 세트가 없어요.' : '선택한 범위에 문항이 없습니다.';
-      return `<label><input type="radio" name="print-access" value="${mode}" ${allowed?'':'disabled'}><span><strong>${owned?(basic?'내 계정으로 이용 가능한 기본 세트':'이미 받은 문항'):'포인트로 받을 문항'}</strong><small>${safe(detail)}</small></span></label>`;
-    }).join('') + (Number.isSafeInteger(wallet?.pointRemaining) ? `<p>사용 가능 포인트 ${wallet.pointRemaining.toLocaleString()}P</p>` : '');
+      offers.querySelector(`[data-print-offer="${mode}"]`).innerHTML = `<input type="radio" name="print-access" value="${mode}" ${allowed?'':'disabled'}><span><strong>${owned?(basic?'내 계정으로 이용 가능한 기본 세트':'이미 받은 문항'):'포인트로 받을 문항'}</strong><small>${safe(detail)}</small></span>`;
+      if (Number.isSafeInteger(wallet?.pointRemaining)) {
+        const balance = document.createElement('p');
+        balance.textContent = '사용 가능 포인트 '+wallet.pointRemaining.toLocaleString()+'P';
+        offers.append(balance);
+      }
+    }));
+    clearTimeout(timer);
   }
 
   let scopePendingJob=null;
@@ -945,6 +1009,8 @@
     const x = savedList()[index];
     if (!x) return;
     const design = window.DSDocumentDesign?.designs.some(d=>d.id===x.documentDesign) ? x.documentDesign : 'DS-FOCUS-V2';
+    draftTitle = x.title;
+    pageNote = {placement:x.pageNote?.placement==='footer'?'footer':'header',text:typeof x.pageNote?.text==='string'?x.pageNote.text.slice(0,60):''};
     window.DSDocumentDesign?.select(design);
     const where = { page: x.page || 0, count: x.count || 5 };
     const job = async (h, signal, alive) => ({ key: x.key, labels: x.labels, status: x.ids.length === where.count ? 'ok' : 'insufficient', reopened: true, title: x.title, ...where, items: await openAll(h, x.key, x.ids, paging(where), signal, alive) });
@@ -956,11 +1022,22 @@
     if (drawn?.scoped) { note = {kind: 'savefail', text: '이 구성은 인쇄 / PDF에서 저장할 수 있습니다.'}; rerender(); return; }
     if (!drawn || drawn.guest) return;
     const d = new Date(), day = `${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-    const entry = { documentDesign: window.DSDocumentDesign?.selected().id || 'DS-FOCUS-V2', title: (title || (studentSurface()?'모의시험지':'수업 프린트')).slice(0, 60), layout, key: drawn.key, labels: drawn.labels, ids: drawn.items.map(q => q.id), page: drawn.page, count: drawn.count, day };
+    const entry = { pageNote:{...pageNote}, documentDesign: window.DSDocumentDesign?.selected().id || 'DS-FOCUS-V2', title: (title || (studentSurface()?'모의시험지':'수업 프린트')).slice(0, 60), layout, key: drawn.key, labels: drawn.labels, ids: drawn.items.map(q => q.id), page: drawn.page, count: drawn.count, day };
     say(putSaved([entry, ...savedList().filter(x => x.key !== entry.key || x.ids.join() !== entry.ids.join())]) ? 'saved' : 'savefail'); rerender('[data-dq-save]');
   }
   document.addEventListener('submit', e => { if (e.target.id === 'dq59-form' && here()) { e.preventDefault(); if (sharedPrint()) openOutput(); } });
   document.addEventListener('click', e => {
+    if (e.target.closest?.('[data-dq-large-sample]')) {
+      const d=document.createElement('dialog');
+      d.className='dq61-large-sample';
+      d.innerHTML='<form method="dialog"><button autofocus aria-label="예시 닫기">닫기 ×</button></form><div class="ds48-paper-position"></div>';
+      const expanded = document.querySelector('.dq61-sample-page').cloneNode();
+      expanded.srcdoc=documentHTML(0,sampleData());
+      d.querySelector('.ds48-paper-position').append(expanded);
+      document.body.append(d); d.showModal(); window.DSPrintSurfaceV48.fit(d);
+      d.addEventListener('close',()=>d.remove(),{once:true});
+      return;
+    }
     const g = e.target.closest?.('[data-dq61-gate-open],[data-dq61-login],[data-dq61-signup]');
     if (g && (here() || g.closest('#dq61-gate'))) {
       if (g.hasAttribute('data-dq61-gate-open')) { e.preventDefault(); openGate(g.dataset.dq61GateOpen); return; }
@@ -989,7 +1066,8 @@
     const key = e.target.dataset?.dqField;
     if (key && !pending) { window.DSPrintScope?.invalidate(); sel[key] = e.target.value; settle(); note = { kind: '', text: '' }; rerender(`[data-dq-field="${key}"]`); }
     if (e.target.hasAttribute?.('data-student-print-sol')) withSol = e.target.checked;
-    if (e.target.hasAttribute?.('data-dq-layout') && sharedPrint() && phase === 'setup') { layout=e.target.value; return; }
+    if (e.target.hasAttribute?.('data-dq-note-placement')) { pageNote.placement=e.target.value; updateSampleText(); }
+    if (e.target.hasAttribute?.('data-dq-layout') && sharedPrint() && phase === 'setup') { layout=e.target.value; rerender('[data-dq-layout]:checked'); return; }
     if (e.target.hasAttribute?.('data-dq-layout')) { layout = e.target.value; page = 0; rerender('[data-dq-layout]'); }
     if (e.target.hasAttribute?.('data-dq-count') && !pending) { window.DSPrintScope?.invalidate(); count = COUNTS.includes(Number(e.target.value)) ? Number(e.target.value) : 5; rerender('[data-dq-count]'); }
     if (e.target.hasAttribute?.('data-dq-sol') && drawn && phase === 'finish') {
@@ -1005,7 +1083,22 @@
     if (window.DSPrintScope?.change(el)) { note = {kind:'',text:''}; rerender(); }
   });
   document.addEventListener('change', e => { if (e.target.hasAttribute?.('data-ps-subject') && !pending) { sel.subject = e.target.value; rerender(); } });
-  document.addEventListener('input', e => { if (e.target.hasAttribute?.('data-dq-title')) title = e.target.value; if (e.target.hasAttribute?.('data-student-print-title')) draftTitle = e.target.value; });
+  function updateSampleText() {
+    const frame = document.querySelector('#content .dq61-sample-page');
+    const paper = frame?.contentDocument?.querySelector('.paper');
+    if (!paper) return;
+    const data=sampleData(), settings=printSettings();
+    paper.querySelector('h1').textContent = draftTitle || data.labels.unit+' '+(studentSurface()?'모의시험지':'수업 프린트');
+    paper.querySelector('.brand span').textContent = (pageNote.placement==='header' && pageNote.text) || settings.headerText || data.labels.subject+' · '+data.labels.unit;
+    const identity = ['footer','both'].includes(settings.identityPlacement) ? [settings.academyName,settings.teacherName].filter(Boolean).join(' · ') : '';
+    paper.querySelector('.foot span').textContent = [identity,(pageNote.placement==='footer' && pageNote.text) || settings.footerText || 'DELTASKILL · '+data.labels.unit].filter(Boolean).join(' · ');
+  }
+  document.addEventListener('load',e=>{if(e.target.matches?.('.dq61-sample-page'))updateSampleText();},true);
+  document.addEventListener('input', e => {
+    if (e.target.hasAttribute?.('data-dq-title')) title = e.target.value;
+    if (e.target.hasAttribute?.('data-student-print-title')) {draftTitle=e.target.value;updateSampleText();}
+    if (e.target.hasAttribute?.('data-dq-note')) {pageNote.text=e.target.value;updateSampleText();}
+  });
   document.addEventListener('change', e => {
     if (!e.target.hasAttribute?.('data-dq-title') || phase !== 'finish' || !drawn) return;
     const paper = document.querySelector('#content iframe.dq59-paper');
@@ -1016,7 +1109,7 @@
   window.addEventListener('ds-session-change', () => { closeOutput(); window.DSPrintScope?.change({hasAttribute:k=>k==='data-ps-mode',dataset:{psMode:'random'}}); stop(); dropSolutions(); drawn = null; owner = ''; phase = 'setup'; note = { kind: '', text: '' }; menu = []; menuGuard?.abort(); menuGuard = null; menuBusy = false; menuTried = false; menuIssue = ''; trialOn = false; limits = null; document.getElementById('dq61-gate')?.close(); if (here()) rerender(); });
   window.addEventListener('hashchange', () => { closeOutput(); if (pending) { stop(); say(''); } if (!here()) { waitPrint = false; document.getElementById('dq61-gate')?.close(); if (phase === 'finish') phase = 'cards'; } });
   window.addEventListener('ds-print-scope-ready', () => { if (phase === 'setup' && here()) rerender(); });
-  window.addEventListener('ds-document-design-change', () => { if (here() && printSurface()) { page=0; rerender(); } });
+  window.addEventListener('ds-document-design-change', () => { if (here() && printSurface()) { page=0; rerender(`[data-document-design="${window.DSDocumentDesign.selected().id}"]`); } });
   window.addEventListener('pagehide', () => { stop(); dropSolutions(); });
   window.DSDrawTeacherV59 = { suspendStudent(){closeOutput();stop();waitPrint=false;document.getElementById('dq61-gate')?.close();},renderStudent:()=>B.withPrintSurface?B.withPrintSurface(mine):mine(),mount, snapshot: () => ({ phase, pending: Boolean(pending), note: { ...note }, count: drawn?.items.length ?? 0, layout, guest: Boolean(drawn?.guest), trial: trialOn, seen: seenToday, sol: drawn?.solOp ? { done: drawn.solOp.done, total: drawn.solOp.total, ready: Boolean(drawn.solutions), failed: drawn.solOp.failed } : null }) };
   if (here() && host()) rerender();                 // the page was first drawn before this file loaded

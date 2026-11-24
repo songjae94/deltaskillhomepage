@@ -47,6 +47,38 @@
     else place(key, label, links, main.querySelector('.work-surface'));
   }
 
+  function receivedLink(student) {
+    const desk = main.querySelector('.dq59-setup, .dq59-work');
+    if (!desk) return false;
+    const key = student ? 'student' : 'teacher';
+    main.querySelector(`[data-existing-services-v24="${key}"]`)?.remove();
+    if (desk.nextElementSibling?.dataset.printReceipts === key) return true;
+    const nav = document.createElement('nav');
+    nav.className = 'existing-services-v24';
+    nav.dataset.printReceipts = key;
+    nav.setAttribute('aria-label', '자료 보관함');
+    const link = document.createElement('a');
+    if (student) {
+      const url = new URL(location.href);
+      url.searchParams.set('studentMode', 'downloads');
+      url.searchParams.set('downloadPane', 'files');
+      for (const key of ['studyBook', 'studyUnit', 'studyLocal']) url.searchParams.delete(key);
+      link.href = url.pathname + url.search + '#student';
+      link.textContent = '내가 받은 자료 보기 →';
+      link.addEventListener('click', event => {
+        if (event.button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || !window.DSStudentDownloads?.open) return;
+        event.preventDefault();
+        window.DSStudentDownloads.open('files');
+      });
+    } else {
+      link.href = '#account';
+      link.textContent = '마이페이지에서 받은 자료 보기 →';
+    }
+    nav.append(link);
+    desk.after(nav);
+    return true;
+  }
+
   function catalog(exam) {
     const audience = typeof role !== 'undefined' && role === 'teacher' ? 'teacher' : 'student';
     return [`/materials/index.html?exam=${exam}&audience=${audience}`, '전체 자료 목록'];
@@ -65,6 +97,7 @@
       place('account-materials', '기존 이용권과 주문 조회', [pass, ['/my/', '이용권 관리'], orderLookup], main.querySelector('#account-materials'));
       place('account-study', '기존 학습 기록 열기', [notebook, ['/analysis/index.html?view=notes', '수능 분석 기록']], main.querySelector('#account-study'));
     } else if (page === 'student' || page === 'timed') {
+      if (page === 'student' && receivedLink(true)) return;
       footerLinks([notebook], 'student', '기존 공부 기능');
     } else if (page === 'csat') {
       place('csat', '기존 수능 자료', [['/features/prediction.html', '번호별 예상 주제'], catalog('csat')], main.querySelector('.cl20-archive, .sn27-archive'));
@@ -72,6 +105,7 @@
       const exam = main.querySelector('.resource-surface')?.dataset.collection === 'exams' ? 'csat' : 'school';
       footerLinks([catalog(exam)], 'library', '기존 자료실 목록');
     } else if (page === 'teacher' || page === 'studio') {
+      if (receivedLink(false)) return;
       footerLinks([['/features/teacher.html?exam=school&audience=teacher', '강사 소개 페이지']], 'teacher', '기존 강사 소개');
     }
   }

@@ -12,16 +12,16 @@
     return /^(https?:\/\/[^/]|\/(?!\/)|#[a-z])/i.test(value) ? escape(value) : '';
   }
 
-  function serviceLink(url, label) {
+  function serviceLink(url, label, sameTab=false) {
     if (url === '#account-password') return `<a href="#account-password">${label}</a>`;
     const href = safeLink(url);
-    return href && !href.startsWith('#') ? `<a href="${href}" target="_blank" rel="noopener">${label}</a>` : '';
+    return href && !href.startsWith('#') ? `<a href="${href}"${sameTab ? '' : ' target="_blank" rel="noopener"'}>${label}</a>` : '';
   }
 
   function login(state = {}) {
     const { busy, error, phone, signupUrl, recoverUrl, socialUrl, nextRole } = state;
     const socialHref = safeLink(socialUrl);
-    const accessLinks = [serviceLink(signupUrl, '회원가입'), serviceLink(recoverUrl, '비밀번호 찾기')].filter(Boolean);
+    const accessLinks = [serviceLink(signupUrl, '회원가입', state.sameTabAuth), serviceLink(recoverUrl, '비밀번호 찾기', state.sameTabAuth)].filter(Boolean);
 
     return `<section class="account-v7 account-surface account-login" aria-labelledby="account-login-title">
       <div class="account-login-panel">

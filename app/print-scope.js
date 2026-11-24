@@ -102,6 +102,18 @@
     else return false;
     invalidate();return true;
   }
+  function restore(saved) {
+    if (!saved || !['random','basic','book'].includes(saved.mode) || typeof saved.subject !== 'string') return;
+    deferAccess = true;
+    state.subject = saved.subject;
+    state.mode = saved.mode;
+    state.book = state.mode === 'book' && books().some(b=>id(b)===saved.book) ? saved.book : '';
+    if (state.mode === 'book' && !state.book) state.mode = 'random';
+    state.units = units().map(id).filter(key=>Array.isArray(saved.units) && saved.units.includes(key));
+    state.typeMode = saved.typeMode === 'specific' ? 'specific' : 'mixed';
+    state.types = types().map(id).filter(key=>Array.isArray(saved.types) && saved.types.includes(key));
+    invalidate();
+  }
   const unitLabels = ids => units().filter(u => ids.includes(id(u))).map(name);
-  window.DSPrintScope={unitLabels,render,change,status,request,check,active,invalidate,snapshot:()=>structuredClone(state)};
+  window.DSPrintScope={unitLabels,render,change,status,request,check,active,invalidate,restore,snapshot:()=>structuredClone(state)};
 })();
