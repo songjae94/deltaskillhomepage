@@ -165,3 +165,6 @@
  #content .ms-format {grid-template-columns:auto minmax(0,1fr) auto;gap:8px}
  #content .ms-format small {grid-column:auto}
 }
+
+#content .ms-items .ms-delivery {margin:0 0 14px;font-size:14px;line-height:1.55;color:#505866;word-break:keep-all}
+#content .ms-results:has(+.ms-delivery) {margin-bottom:4px}
