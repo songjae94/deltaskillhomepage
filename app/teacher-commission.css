@@ -1,0 +1,28 @@
+#content .tb36-modes:has([data-tb36-mode="commission"]){grid-template-columns:repeat(4,minmax(0,1fr))}
+.commission-page{color:#22283b;max-width:1120px;margin:22px auto 0}
+.commission-intro{display:grid;grid-template-columns:1.15fr 1fr;gap:clamp(24px,5vw,72px);align-items:center;padding:clamp(24px,4vw,52px);background:#f5f1e9 url("assets/textures/dl63-paper-fiber.webp") repeat;border:1px solid #d6cfc3;border-radius:5px}
+.commission-page h1,.commission-page h2,.commission-page p{margin:0;word-break:keep-all}
+.commission-intro h1{font-size:clamp(32px,4.4vw,58px);line-height:1.13;letter-spacing:-.06em;color:#202839}
+.commission-intro p,.commission-offers p{margin-top:15px;line-height:1.65;color:#515864}
+.commission-photo{aspect-ratio:1.9;overflow:hidden;border-radius:2px}
+.commission-photo img{width:100%;height:100%;object-fit:cover}
+.commission-offers{display:grid;grid-template-columns:1fr 1fr;gap:clamp(18px,3vw,42px);margin:26px 0}
+.commission-offers article{padding:18px 0;border-top:2px solid #47596a}
+.commission-offers h2{font-size:clamp(20px,2vw,26px)}
+.commission-offers a{display:inline-block;padding:12px 0;color:#265275;font-weight:650;text-underline-offset:4px}
+@media(max-width:680px){#content .tb36-modes:has([data-tb36-mode="commission"]){grid-template-columns:repeat(2,minmax(0,1fr))}.commission-intro{gap:12px;grid-template-columns:1fr}.commission-photo{aspect-ratio:3.4}.commission-offers{grid-template-columns:1fr;gap:4px}.commission-offers p{margin-top:6px}}
+.commission-offers button{cursor:pointer;border:0;border-bottom:1px solid #93816b;background:none;padding:10px 0;color:#303e50;font:inherit;font-weight:650}
+#commission-online{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:clamp(18px,3vw,42px);margin-top:28px}
+#commission-online .cr-entry{grid-column:1/-1;background:#f4f2eb;padding:clamp(16px,3vw,32px);border:1px solid #d0cbbf}
+#commission-online h2,#commission-online legend{font-size:1.35rem;font-weight:700;color:#202839}
+#commission-online .cr-primary,#commission-online form button,#commission-online [data-cr-pay],#commission-online [data-cr-dl]{display:inline-block;margin-top:12px;padding:11px 16px;border-radius:4px;border:1px solid #253746;background:#253746;color:#fff;font:inherit;text-decoration:none;cursor:pointer}
+#commission-online fieldset{min-width:0;margin:0;border:1px solid #d5d0c2;padding:18px;background:#faf8f2}
+#commission-online label{display:grid;gap:6px;margin:12px 0;color:#304052;font-weight:650}
+#commission-online :is(input,textarea,select){box-sizing:border-box;width:100%;min-width:0;max-width:100%;padding:10px;color:#283443;border:1px solid #a9b2ba;border-radius:3px;background:white;font:inherit}
+#commission-online small,#commission-online .cr-order p{font-size:.85rem;color:#545d65}
+#commission-online .cr-history>header,#commission-online .cr-order header{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+#commission-online [data-cr-refresh]{font:inherit;background:none;border:0;text-decoration:underline;cursor:pointer;padding:6px}
+#commission-online .cr-order{margin-top:12px;padding:16px 0;border-top:1px solid #c6bfaf;overflow-wrap:anywhere}
+#commission-online .cr-order strong{font-size:.84rem;color:#37556b}
+#commission-online [data-cr-note]{grid-column:1/-1;font-weight:650}
+@media(max-width:700px){#commission-online{grid-template-columns:1fr}}
