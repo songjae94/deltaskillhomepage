@@ -153,7 +153,23 @@
         style.textContent=choiceStyles;
         doc.head.append(style);
       }
-      list?.classList.add('dte-source-choices');
+      if (!list) {
+        // Some editions put the numbered answers in separate paragraphs or table cells.
+        // Move the existing nodes so their formula layout and accessible math stay intact.
+        list=doc.createElement('ol');
+        const table=rows[0].closest('table');
+        if (table) table.after(list);
+        else rows[0].before(list);
+        rows=rows.map(source=>{
+          const row=doc.createElement('li');
+          row.append(...Array.from(source.childNodes));
+          list.append(row);
+          source.remove();
+          return row;
+        });
+        if (table && !table.textContent.trim() && !table.querySelector('img,svg,math')) table.remove();
+      }
+      list.classList.add('dte-source-choices');
       const value=(retry?retry.answers:set.responses)?.[id];
       rows.forEach((row,index)=>{
         const button=doc.createElement('button');
@@ -174,17 +190,22 @@
           if (host.isConnected && getActive() && current(getActive())===id) selectChoice(button);
         });
       });
+      window.DSChoiceLayout?.mount(list,Array.from(list.querySelectorAll('.dte-inline-choice')));
     }
     const choiceStyles=`
-      .dte-source-choices{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:6px!important;margin:12px 0!important;padding:0!important;list-style:none!important}
-      .dte-source-choices>li{display:block!important;width:auto!important;margin:0!important;padding:0!important;list-style:none!important}
+      .dte-source-choices{display:grid!important;grid-template-columns:minmax(0,1fr)!important;align-items:stretch!important;gap:4px!important;box-sizing:border-box;min-width:0;max-width:100%;margin:12px 0!important;padding:0!important;list-style:none!important}
+      .dte-source-choices[data-choice-columns="5"]{grid-template-columns:repeat(5,minmax(max-content,1fr))!important}
+      .dte-source-choices[data-choice-columns="3"]{grid-template-columns:repeat(3,minmax(max-content,1fr))!important}
+      .dte-source-choices>li{display:flex!important;min-width:0!important;width:auto!important;margin:0!important;padding:0!important;list-style:none!important}
       .dte-source-choices>li::before,.dte-source-choices>li::marker{content:none!important}
-      .dte-inline-choice{box-sizing:border-box;width:100%;min-height:44px;display:flex;align-items:center;gap:10px;padding:7px 10px;border:1px solid #b9b4a8;border-radius:4px;background:#fcfaf4;color:#282c33;cursor:pointer;text-align:start;font:inherit;line-height:1.6}
-      .dte-inline-choice:hover{border-color:#716a60;background:#f5f0e6}
-      .dte-inline-choice[aria-pressed=true]{border-color:#6c5576;background:#eee7f0}
-      .dte-inline-choice:focus-visible{outline:2px solid #755783;outline-offset:-2px}
-      .dte-choice-no{box-sizing:border-box;flex:0 0 21px;height:21px;display:grid;place-items:center;border:1px solid currentColor;border-radius:50%;font:500 13px/1 Arial,sans-serif}
-      .dte-choice-content{min-width:0;max-width:100%;overflow-x:auto}
+      .dte-inline-choice{box-sizing:border-box;width:100%;min-width:0;min-height:44px;display:flex;align-items:center;gap:4px;padding:5px 6px;border:1px solid #c4c1b6;border-radius:4px;background:#fbf9f2;color:#292d31;cursor:pointer;text-align:start;font:inherit;line-height:1.55}
+      .dte-inline-choice:hover{border-color:#949284;background:#f5f2e9}
+      .dte-inline-choice[aria-pressed=true]{border-color:#78668a;background:#eee9f1}
+      .dte-inline-choice:focus-visible{outline:2px solid #766686;outline-offset:-2px}
+      .dte-choice-no{box-sizing:border-box;flex:0 0 16px;height:16px;display:grid;place-items:center;border:1px solid currentColor;border-radius:50%;font:500 11px/1 Arial,sans-serif}
+      .dte-choice-content{min-width:0;max-width:100%;white-space:normal;overflow-wrap:anywhere;overflow-x:auto}
+      .dte-source-choices:is([data-choice-columns="3"],[data-choice-columns="5"]) .dte-choice-content{white-space:nowrap;overflow-wrap:normal}
+      @media(max-width:480px){.dte-inline-choice{gap:3px;padding-inline:4px}}
     `;
     document.addEventListener('load',e=>{
       const frame=e.target;

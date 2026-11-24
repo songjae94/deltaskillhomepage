@@ -1,10 +1,8 @@
 .ds-timed .dte-clock,.ds-timed .dte-summary{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 18px;padding:9px 15px;background:#303b44;color:#fffaf0;border-radius:4px;border-bottom:2px solid #ad9266}
 .ds-timed .dte-clock time,.ds-timed .dte-summary strong{color:inherit;font-size:clamp(22px,3vw,31px);font-weight:650;font-variant-numeric:tabular-nums;line-height:1.2}
 .ds-timed .dte-clock span,.ds-timed .dte-summary span{font-size:14px}
-.ds-timed .dte-choices{display:flex;flex-wrap:wrap;gap:8px;padding-top:14px;border-top:1px solid #d5d0c4}
-.ds-timed .dte-choices button,.ds-timed .dte-entry button,.ds-timed [data-exam-retry],.ds-timed [data-exam-original],.ds-timed [data-exam-submit]{min-height:44px;padding:6px 14px;border:1px solid #a19d93;border-radius:5px;background:#faf8f3;color:#303a40;cursor:pointer;font:inherit}
-.ds-timed .dte-choices button{min-width:44px;font-variant-numeric:tabular-nums}
-.ds-timed .dte-choices button[aria-pressed=true],.ds-timed .dte-entry button,.ds-timed [data-exam-retry]{background:#354b53;border-color:#354b53;color:#fff}
+.ds-timed .dte-entry button,.ds-timed [data-exam-retry],.ds-timed [data-exam-original],.ds-timed [data-exam-submit]{min-height:44px;padding:6px 14px;border:1px solid #a19d93;border-radius:5px;background:#faf8f3;color:#303a40;cursor:pointer;font:inherit}
+.ds-timed .dte-entry button,.ds-timed [data-exam-retry]{background:#354b53;border-color:#354b53;color:#fff}
 .ds-timed .dte-entry{display:flex;align-items:center;flex-wrap:wrap;gap:10px}
 .ds-timed .dte-entry label{display:flex;align-items:center;gap:7px}
 .ds-timed .dte-entry input{max-width:9em}
@@ -119,8 +117,6 @@
   #content .ds-timed .ta-numbers-v18 button {min-height:38px;margin:0;box-shadow:none}
   #content .ds-timed .ta-numbers-v18 .dte-wrong {background:#f6e7df;color:#743c2c;border-color:#bc9181}
   #content .ds-timed .ta-numbers-v18 .dte-right {background:#e1eee7;color:#275246;border-color:#8aa697}
-  #content .ds-timed .dte-choices button {border-color:#aba798;border-radius:5px;background:#fcfaf3;box-shadow:0 1px 2px #392f2114}
-  #content .ds-timed .dte-choices button[aria-pressed=true] {background:#594761;color:white}
   #content .ds-timed :is(button,a,select,summary):focus-visible {outline:3px solid #9c82ac;outline-offset:2px}
 }
 @media screen and (max-width:740px) {
