@@ -163,3 +163,36 @@
 .ssp-desk .wm23-tall {display:inline-block; vertical-align:baseline; padding-block:.12em}
 .ssp-desk .ssp-solution .katex-display,.ssp-desk .ssp-solution .katex-display>.katex {text-align:left}
 .ssp-desk .ssp-solution .wm23-equation[data-display=block] {margin:.45em 0 .55em; padding-inline-start:1.1em}
+
+.ssp-desk .ssp-desk-filters[hidden],.ssp-desk .ssp-plan-status[hidden] {display:none}
+.ssp-desk .ssp-plan-status {margin:.65rem 0;font-size:.9rem;line-height:1.5}
+@media (max-width:800px) {
+ .ssp-desk .ssil-main {display:flex;flex-direction:column}
+ .ssp-desk .ssp-body,.ssp-desk .ssp-desk-controls {width:100%;box-sizing:border-box}
+}
+
+@media screen {
+ #content .ssp-desk.student-signed-in .ssil-heading {display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 8px;padding:0;border:0}
+ #content .ssp-desk.student-signed-in .ssil-heading h1 {font-size:clamp(16px,1.25vw,19px)!important;line-height:1.25!important;letter-spacing:-.035em}
+ #content .ssp-desk.student-signed-in .ssil-heading>a {margin:0;padding:8px 0;font-size:13px;min-height:40px}
+ #content .ssp-desk.student-signed-in {padding-top:8px!important}
+ .ssp-desk .ssp-paper-top {margin-bottom:6px;padding-bottom:4px}
+ #content .ssp-desk .ssp-paper>h2 {font-size:clamp(16px,1.4vw,20px)!important;line-height:1.35!important;margin:6px 0}
+ .ssp-desk .ssp-desk-pager {justify-content:flex-start;gap:8px;margin:2px 0 10px;padding:0;border:0}
+ .ssp-desk .ssp-desk-pager button {height:40px;min-height:40px}
+ .ssp-desk .ssp-concept-lesson {margin-top:20px;border-top:1px solid #bdb6a6}
+ .ssp-desk .ssp-options label:has(input[type=radio]) {
+   display:flex;align-items:center;justify-content:flex-start;gap:.48rem;
+   min-height:48px;padding:8px 10px;border:1px solid #a09786;border-radius:5px;
+   color:#282722;background:#fffcf5;box-shadow:0 1px 2px #40342121;cursor:pointer;
+ }
+ .ssp-desk .ssp-options:not(:disabled) label:has(input[type=radio]):hover {border-color:#6c6658;background:#f3eee3}
+ .ssp-desk .ssp-options label:has(input[type=radio]:checked) {
+   color:#183747;background:#e1ebeb;border-color:#355967;box-shadow:inset 0 0 0 1px #355967;
+ }
+ .ssp-desk .ssp-options .ssp-option-no,.ssp-desk .ssp-options input:checked + .ssp-option-no {
+   display:inline-block;flex:none;width:auto;height:auto;border:0;border-radius:0;
+   background:none;color:inherit;font:20px/1 "Apple Symbols","Segoe UI Symbol","Noto Sans Symbols 2",sans-serif;
+ }
+ .ssp-desk .ssp-options:disabled label {cursor:default}
+}

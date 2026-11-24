@@ -5,6 +5,7 @@ const sourceName=q=>q.sourceLabel||q.sourceTitle||({public_exam:'공개 기출',
 const BANK=[
   {
     "id": "dssp1-c1",
+    "subunit": "유리함수",
     "version": "original-20261124-v1",
     "course": "concept",
     "type": "value",
@@ -37,6 +38,7 @@ const BANK=[
   },
   {
     "id": "dssp1-c2",
+    "subunit": "유리함수",
     "version": "original-20261124-v1",
     "course": "concept",
     "type": "domain",
@@ -67,6 +69,7 @@ const BANK=[
   },
   {
     "id": "dssp1-c3",
+    "subunit": "무리함수",
     "version": "original-20261124-v1",
     "course": "concept",
     "type": "radical-domain",
@@ -99,6 +102,7 @@ const BANK=[
   },
   {
     "id": "dssp1-c4",
+    "subunit": "무리함수",
     "version": "original-20261124-v1",
     "course": "concept",
     "type": "range",
@@ -130,6 +134,7 @@ const BANK=[
   },
   {
     "id": "dssp1-c5",
+    "subunit": "유리함수",
     "version": "original-20261124-v1",
     "course": "concept",
     "type": "translation",
@@ -163,6 +168,7 @@ const BANK=[
   },
   {
     "id": "dssp1-c6",
+    "subunit": "무리함수",
     "version": "original-20261124-v1",
     "course": "concept",
     "type": "radical-equation",
@@ -196,6 +202,7 @@ const BANK=[
   },
   {
     "id": "dssp1-t1",
+    "subunit": "유리함수",
     "version": "original-20261124-v1",
     "course": "types",
     "type": "value",
@@ -230,6 +237,7 @@ const BANK=[
   },
   {
     "id": "dssp1-t2",
+    "subunit": "유리함수",
     "version": "original-20261124-v1",
     "course": "types",
     "type": "translation",
@@ -264,6 +272,7 @@ const BANK=[
   },
   {
     "id": "dssp1-t3",
+    "subunit": "무리함수",
     "version": "original-20261124-v1",
     "course": "types",
     "type": "radical-equation",
@@ -297,6 +306,7 @@ const BANK=[
   },
   {
     "id": "dssp1-t4",
+    "subunit": "무리함수",
     "version": "original-20261124-v1",
     "course": "types",
     "type": "radical-domain",
@@ -327,6 +337,7 @@ const BANK=[
   },
   {
     "id": "dssp1-t5",
+    "subunit": "유리함수",
     "version": "original-20261124-v1",
     "course": "types",
     "type": "range",
@@ -360,6 +371,7 @@ const BANK=[
   },
   {
     "id": "dssp1-t6",
+    "subunit": "무리함수",
     "version": "original-20261124-v1",
     "course": "types",
     "type": "intersection",
@@ -393,6 +405,7 @@ const BANK=[
   },
   {
     "id": "dssp1-s1",
+    "subunit": "유리함수",
     "version": "original-20261124-v1",
     "course": "supplement",
     "type": "value",
@@ -424,6 +437,7 @@ const BANK=[
   },
   {
     "id": "dssp1-s2",
+    "subunit": "유리함수",
     "version": "original-20261124-v1",
     "course": "supplement",
     "type": "value",
@@ -458,6 +472,7 @@ const BANK=[
   },
   {
     "id": "dssp1-s3",
+    "subunit": "유리함수",
     "version": "original-20261124-v1",
     "course": "supplement",
     "type": "translation",
@@ -490,6 +505,7 @@ const BANK=[
   },
   {
     "id": "dssp1-s4",
+    "subunit": "무리함수",
     "version": "original-20261124-v1",
     "course": "supplement",
     "type": "radical-equation",
@@ -523,6 +539,7 @@ const BANK=[
   },
   {
     "id": "dssp1-s5",
+    "subunit": "무리함수",
     "version": "original-20261124-v1",
     "course": "supplement",
     "type": "radical-equation",
@@ -556,6 +573,7 @@ const BANK=[
   },
   {
     "id": "dssp1-s6",
+    "subunit": "무리함수",
     "version": "original-20261124-v1",
     "course": "supplement",
     "type": "radical-domain",
@@ -585,6 +603,7 @@ const BANK=[
   },
   {
     "id": "dssp1-h1",
+    "subunit": "유리함수",
     "version": "original-20261124-v1",
     "course": "advanced",
     "type": "intersection",
@@ -620,6 +639,7 @@ const BANK=[
   },
   {
     "id": "dssp1-h2",
+    "subunit": "무리함수",
     "version": "original-20261124-v1",
     "course": "advanced",
     "type": "radical-equation",
@@ -653,6 +673,7 @@ const BANK=[
   },
   {
     "id": "dssp1-h3",
+    "subunit": "유리함수",
     "version": "original-20261124-v1",
     "course": "advanced",
     "type": "value",
@@ -684,6 +705,7 @@ const BANK=[
   },
   {
     "id": "dssp1-h4",
+    "subunit": "무리함수",
     "version": "original-20261124-v1",
     "course": "advanced",
     "type": "radical-equation",
@@ -717,6 +739,7 @@ const BANK=[
   },
   {
     "id": "dssp1-h5",
+    "subunit": "유리함수",
     "version": "original-20261124-v1",
     "course": "advanced",
     "type": "intersection",
@@ -751,6 +774,7 @@ const BANK=[
   },
   {
     "id": "dssp1-h6",
+    "subunit": "무리함수",
     "version": "original-20261124-v1",
     "course": "advanced",
     "type": "intersection",
@@ -801,34 +825,27 @@ function existingFree(){const publicBank=window.DSBasicExamV34?.questions||[];co
 const controllers=new WeakMap();let lastController=null;
 function blank(){return {version:1,records:[],pending:{},sourcePending:{},grade:3,course:'concept',book:'rational'};}
 function clean(raw){const s=blank();if(!raw||raw.version!==1)return s; s.grade=[1,2,3,4,5,6,7,8,9].includes(raw.grade)?raw.grade:3;s.course=COURSES.some(c=>c.id===raw.course)?raw.course:'concept';s.book=BOOKS.some(b=>b.id===raw.book)?raw.book:'rational';const seen=new Set();for(const r of Array.isArray(raw.records)?raw.records.slice(-250):[]){const q=byId.get(r?.questionId);if(!q||r.version!==q.version||typeof r.id!=='string'||r.id.length>100||seen.has(r.id)||!Number.isFinite(r.at)||!(r.choice===null||Number.isInteger(r.choice)&&r.choice>=0&&r.choice<5))continue;seen.add(r.id);s.records.push({id:r.id,questionId:q.id,version:q.version,course:q.course,type:q.type,level:q.level,at:r.at,updatedAt:Number.isFinite(r.updatedAt)?Math.max(r.at,r.updatedAt):r.at,choice:r.choice,correct:r.choice===q.answer,confidence:r.confidence==='sure'?'sure':'unsure',help:Boolean(r.help),solutionSeen:Boolean(r.solutionSeen),repeated:Boolean(r.repeated),reason:Object.hasOwn(REASONS,r.reason)?r.reason:'',seconds:Math.max(0,Math.min(86400,Number(r.seconds)||0))});}for(const course of COURSES){const p=raw.pending?.[course.id];if(p?.cleared===true&&Number.isFinite(p.updatedAt)){s.pending[course.id]={cleared:true,updatedAt:p.updatedAt};continue;}if(!p||!Array.isArray(p.pool)||!p.pool.length||p.pool.length>24||!p.pool.every(id=>byId.has(id))||!Number.isInteger(p.cursor)||p.cursor<0||p.cursor>=p.pool.length||!Number.isFinite(p.updatedAt))continue;const q=byId.get(p.pool[p.cursor]);const feedback=s.records.find(r=>r.id===p.feedbackId&&r.questionId===q.id);s.pending[course.id]={book:BOOKS.some(b=>b.id===p.book)?p.book:'rational',pool:[...p.pool],cursor:p.cursor,choice:Number.isInteger(p.choice)&&p.choice>=0&&p.choice<5?p.choice:null,confidence:p.confidence==='unsure'?'unsure':'sure',help:Boolean(p.help),hint:Boolean(p.hint),solution:Boolean(p.solution)&&Boolean(feedback),feedbackId:feedback?.id||null,openedAt:Number.isFinite(p.openedAt)?p.openedAt:Date.now(),updatedAt:p.updatedAt};}for(const course of COURSES){const p=raw.sourcePending?.[course.id];if(!p||!Number.isFinite(p.updatedAt))continue;if(p.cleared===true){s.sourcePending[course.id]={cleared:true,updatedAt:p.updatedAt};continue;}if(typeof p.questionId!=='string'||!p.questionId.length||p.questionId.length>160||typeof p.version!=='string'||p.version.length>160||!(p.choice===null||Number.isSafeInteger(p.choice)&&Math.abs(p.choice)<=1000000000)||!Number.isFinite(p.openedAt))continue;s.sourcePending[course.id]={questionId:p.questionId,version:p.version,choice:p.choice,confidence:p.confidence==='unsure'?'unsure':'sure',help:Boolean(p.help),openedAt:p.openedAt,updatedAt:p.updatedAt};}return s;}
-function mergeProgress(remote,local){const r=clean(remote),l=clean(local),map=new Map(r.records.map(v=>[v.id,v]));for(const v of l.records){const old=map.get(v.id);if(!old||v.updatedAt>old.updatedAt)map.set(v.id,v);}const pending={...r.pending};for(const [id,p]of Object.entries(l.pending))if(!pending[id]||p.updatedAt>pending[id].updatedAt)pending[id]=p;const sourcePending={...r.sourcePending};for(const [id,p]of Object.entries(l.sourcePending))if(!sourcePending[id]||p.updatedAt>sourcePending[id].updatedAt)sourcePending[id]=p;return clean({...l,pending,sourcePending,records:[...map.values()].sort((a,b)=>a.at-b.at)});}
+function mergeProgress(remote,local){const r=clean(remote),l=clean(local),map=new Map(r.records.map(v=>[v.id,v]));for(const v of l.records){const old=map.get(v.id);if(!old||v.updatedAt>old.updatedAt)map.set(v.id,v);}const pending={...r.pending};for(const [id,p]of Object.entries(l.pending))if(!pending[id]||p.updatedAt>pending[id].updatedAt)pending[id]=p;const sourcePending={...r.sourcePending};for(const [id,p]of Object.entries(l.sourcePending))if(!sourcePending[id]||p.updatedAt>sourcePending[id].updatedAt)sourcePending[id]=p;const merged=clean({...l,pending,sourcePending,records:[...map.values()].sort((a,b)=>a.at-b.at)});if(remote?.studyPlan)merged.studyPlan=remote.studyPlan;return merged;}
 function latest(state){const map=new Map();for(const r of [...state.records].sort((a,b)=>a.at-b.at))map.set(r.questionId,r);return map;}
 function weak(r){return r&&(!r.correct||r.confidence!=='sure'||r.help||r.reason);}
 function summary(state){const rows=[...latest(state).values()];return {answered:rows.length,correct:rows.filter(r=>r.correct).length,review:rows.filter(weak).length,attempts:state.records.length};}
-function tier(state){const seen=latest(state);let level=state.grade<=2?2:1;while(level<3&&BANK.filter(q=>q.course==='advanced'&&q.level===level).every(q=>{const r=seen.get(q.id);return r?.correct&&r.confidence==='sure'&&!r.help;}))level++;return level;}
+function tier(state,target=state.grade){const seen=latest(state);let level=Number(target)<=2?2:1;while(level<3&&BANK.filter(q=>q.course==='advanced'&&q.level===level).every(q=>{const r=seen.get(q.id);return r?.correct&&r.confidence==='sure'&&!r.help;}))level++;return level;}
 function cards(){return COURSES.map((c,i)=>`<button class="ssp-course" data-ssp-course="${c.id}"><span>0${i+1}</span><strong>${c.name}</strong><small>${c.intro}</small></button>`).join('');}
-const DESK_COURSES=[
- {id:'concept',name:'개념부터 익히기',goal:'기초 다지기',detail:'쉬운 문제로 개념을 하나씩 확인해요.'},
- {id:'types',name:'핵심 유형 풀기',goal:'2등급 목표',detail:'대표 문제를 풀고 헷갈린 유형을 한 번 더 연습해요.'},
- {id:'supplement',name:'부교재 변형 풀기',goal:'1등급 도전',detail:'수업 교재를 고르고, 같은 유형의 새 문제를 풀어요.'},
- {id:'advanced',name:'고난도 도전하기',goal:'1등급 지키기',detail:'어려운 문제에 도전하고, 풀이의 핵심을 확인해요.'}
-];
-function deskCourseButtons(){
- return DESK_COURSES.map(({id,name,goal,detail})=>
-  `<button type="button" data-ssp-course="${id}" aria-pressed="${id==='types'}"><span class="ssp-course-name">${name}</span><small class="ssp-course-goal">${goal}</small><span class="ssp-course-detail">${detail}</span></button>`
- ).join('');
-}
+function openingQuestion(){return BANK.find(q=>q.course==='types'&&!q.originalQuestionId);}
 function deskShell(){
+ const first=openingQuestion();
  return `<section class="ssp ssp-desk sl54-shell student-signed-in" aria-label="내신 공부하기">
   <header class="ssil-heading"><h1>등급을올리는공부부터</h1><a href="#account" data-ssil-account="study">학습 기록 보기 ↗</a></header>
   <div class="ssil-main">
-   <div class="ssil-today ssil-live-paper ssp-body"><p>문항을 준비하고 있어요.</p></div>
+   <div class="ssil-today ssil-live-paper ssp-body"><article class="ssp-paper"><h2 class="ssp-problem-heading">${esc(first.subject)} · ${esc(subunit(first))}</h2><div class="ssp-prompt">${first.prompt}</div></article></div>
    <aside class="ssil-review ssp-desk-controls" aria-label="학습 설정">
-    <nav class="ssp-desk-courses" aria-label="학습 코스">${deskCourseButtons()}</nav>
+    <div data-study-plan aria-label="나의 학습 계획"></div>
+    <p class="ssp-plan-status" aria-live="polite" hidden></p>
     <div class="ssp-desk-filters"></div>
-    <a href="#account" data-ssil-account="study">내 오답·복습 기록 ↗</a>
+
    </aside>
-  </div><div class="ssp-live" aria-live="polite" role="status"></div></section>`;
+  </div><div class="ssp-live" aria-live="polite" role="status"></div>
+  <footer class="ssp-record-link"><a href="#account" data-ssil-account="study">내 공부 기록 <span aria-hidden="true">↗</span></a></footer></section>`;
 }
 function deskSelect(attr,label,items,value){
  return `<label>${esc(label)}<select ${attr}>${items.map(item=>`<option value="${esc(item.id)}" ${item.id===value?'selected':''}>${esc(item.label)}</option>`).join('')}</select></label>`;
@@ -836,16 +853,211 @@ function deskSelect(attr,label,items,value){
 function workbookChoices(){
  return [...new Map([...(window.DSPrintScopeData?.books||[]).map(b=>({...b,series:'쎈'})),...(window.DSWorkbookScope?.books||[])].map(b=>[b.id,b])).values()];
 }
-function subunit(q){return q.prompt.includes('<msqrt>')?'무리함수':'유리함수';}
+// Section names follow the publisher's 2022-revision common mathematics 2 and calculus I contents.
+// https://22txbook.m-teacher.co.kr/book/view?id=62 and https://22txbook.m-teacher.co.kr/book/view?id=67
+const studyChapters=[
+ ['공통수학2','Ⅰ 도형의 방정식',[
+  ['평면좌표와 직선의 방정식',['선분의 내분','직선의 위치 관계','점과 직선 사이의 거리']],
+  ['원의 방정식',['원의 방정식','원과 직선의 위치 관계']],['도형의 이동',['평행이동','대칭이동']]]],
+ ['공통수학2','Ⅱ 집합과 명제',[
+  ['집합',['집합','집합 사이의 포함 관계','교집합과 합집합','여집합과 차집합']],
+  ['명제',['명제와 조건','명제 사이의 관계','명제의 증명']]]],
+ ['공통수학2','Ⅲ 함수와 그래프',[
+  ['함수',['함수','합성함수','역함수']],['유리함수와 무리함수',['유리함수','무리함수']]]],
+ ['미적분Ⅰ','Ⅰ 함수의 극한과 연속',[
+  ['함수의 극한',['함수의 극한','함수의 극한에 대한 성질']],['함수의 연속',['함수의 연속','연속함수의 성질']]]],
+ ['미적분Ⅰ','Ⅱ 미분',[
+  ['미분계수와 도함수',['미분계수','도함수']],
+  ['도함수의 활용',['접선의 방정식','평균값 정리','함수의 증가와 감소, 극대와 극소','함수의 그래프','방정식과 부등식에의 활용','속도와 가속도']]]],
+ ['미적분Ⅰ','Ⅲ 적분',[
+  ['부정적분과 정적분',['부정적분','정적분']],['정적분의 활용',['넓이','속도와 거리']]]]
+];
+const studyScopes=studyChapters.flatMap(([subject,chapter,sections])=>[
+ {key:chapter,subject,chapter,sections},
+ ...sections.map(section=>({key:section[0],subject,chapter,sections:[section]}))
+]);
+// Map publisher unit labels to textbook sections. Catalog requests always use original unit IDs.
+const workbookSectionNames={
+ '평면좌표':'평면좌표와 직선의 방정식','직선의 방정식':'평면좌표와 직선의 방정식',
+ '집합의 뜻과 표현':'집합','집합의 연산':'집합','유리식과 유리함수':'유리함수와 무리함수',
+ '무리식과 무리함수':'유리함수와 무리함수','부정적분':'부정적분과 정적분','정적분':'부정적분과 정적분'
+};
+function workbookRanges(book){
+ const units=book?.units||[];
+ const sections=new Map();
+ for(const unit of units){
+  const title=unit.label.replace(/^\d+\s+/,'').replace(/\s+\(\d+\)$/,'');
+  const key=workbookSectionNames[title]||title;
+  if(!sections.has(key))sections.set(key,[]);
+  sections.get(key).push(unit);
+ }
+ const options=[],seen=new Set();
+ for(const [subject,chapter,entries] of studyChapters){
+  if(book.subject!==subject)continue;
+  const groups=entries.map(([name])=>({name,rows:sections.get(name)||[]})).filter(group=>group.rows.length);
+  if(groups.length>1){
+   options.push({id:'chapter:'+chapter,label:chapter+' · 연결 단원 전체',unitIds:groups.flatMap(group=>group.rows.map(u=>u.id)),types:[]});
+  }
+  for(const {name,rows} of groups){
+   if(rows.length>1)options.push({id:'section:'+name,label:name+' 전체',unitIds:rows.map(u=>u.id),types:[]});
+   options.push(...rows);
+   rows.forEach(u=>seen.add(u.id));
+  }
+ }
+ return options.concat(units.filter(u=>!seen.has(u.id)));
+}
+function subunit(q){return q.subunit||byId.get(q.originalQuestionId)?.subunit||'';}
+function inScope(q,scope){
+ return q.subject===scope.subject&&scope.sections.some(([unit,leaves])=>q.unit===unit&&leaves.includes(subunit(q)));
+}
 function shell(options={}){return `<section class="ssp" aria-label="내신 공부하기"><header class="ssp-heading"><div><p class="ssp-kicker">회원 무료 · 내신 공부</p><h1>내신 공부하기</h1><p>기존 자료에서 공부할 범위를 고르고, 필요한 부분을 복습하세요.</p></div><a href="#account">내 공부 기록</a></header><nav class="ssp-courses" aria-label="공부 코스">${cards()}</nav><div class="ssp-live" aria-live="polite" role="status"></div><div class="ssp-body"><p>공부 화면을 준비하고 있어요.</p></div></section>`;}
-function render(options={}){return options.view==='desk'?deskShell():shell(options);}
+function render(options={}){
+ if(options.view==='history')return '<section class="ssp ssp-account-history" aria-label="내 공부 기록"><div class="ssp-live" aria-live="polite" role="status"></div><div class="ssp-body"></div></section>';
+ return options.view==='desk'?deskShell():shell(options);
+}
 function bind(container,options={}){
  if(!container||typeof container.querySelector!=='function')throw Error('study_container_required');controllers.get(container)?.destroy();
  if(!container.querySelector('.ssp'))container.innerHTML=render(options);
  let readyNotified=false;const notifyReady=()=>{if(readyNotified||closed)return;readyNotified=true;queueMicrotask(()=>{if(!closed)options.onReady?.();});};
  let state=blank(),current=null,pool=[],cursor=0,choice=null,confidence='sure',help=false,hint=false,feedback=null,solution=false,openedAt=Date.now(),notice='',storageMessage='',view=options.view==='history'?'history':'home',closed=false,epoch=0,saveQueue=Promise.resolve();
  const desk=options.view==='desk';
- let deskUnit='',deskType='',deskFilterHTML=null,deskInteracted=false;
+ let deskUnit='',deskType='',deskFilterHTML=null;
+ const studyPlan=window.DSStudentStudyPlan;
+ let planPhase='loading',planProfile=null,planStep=0,planDraft={},planCourse='',planBusy=false,planMessage='';
+ let planHTML=null;
+ const subjects=[...new Set(studyChapters.map(([subject])=>subject))];
+ let externalRange=false;
+ function newPlanDraft(){return {goal:'',need:'',subject:'',unit:''};}
+ function planUnits(subject,need){
+  if(!subjects.includes(subject)||!Object.hasOwn(studyPlan.courses,need))return [];
+  const units=[];
+  const originals=BANK.filter(q=>q.course===need&&!q.originalQuestionId&&q.subject===subject);
+  if(need!=='supplement'){
+   for(const scope of studyScopes.filter(scope=>scope.subject===subject)){
+    const matching=originals.filter(q=>inScope(q,scope));if(!matching.length)continue;
+    units.push({id:scope.key+' 전체',label:scope.key+' 전체',group:scope.chapter,scope:scope.key});
+    if(scope.key!==scope.chapter)for(const leaf of scope.sections[0][1]){
+     if(matching.some(q=>subunit(q)===leaf))units.push({id:leaf,label:leaf,group:scope.chapter,scope:scope.key,leaf});
+    }
+   }
+  }
+  const series={concept:'OL-base-',types:'OL-type-',advanced:'OL-advanced-'};
+  for(const book of workbookChoices().filter(b=>b.subject===subject&&(need==='supplement'||b.id.startsWith(series[need])))){
+   for(const unit of workbookRanges(book))units.push({id:book.id+'/'+unit.id,group:book.label,label:unit.label,book:book.id,bookUnit:unit.id});
+  }
+  return units;
+ }
+ function openFirstQuestion(){
+  const first=openingQuestion();
+  state.course=first.course;deskScope=first.unit;
+  localPage(localSet(first),0,false);
+ }
+ async function loadPlan(){
+  const generation=epoch;
+  planPhase='loading';planStep=0;planDraft=newPlanDraft();planProfile=null;planBusy=false;planMessage='';
+  try{
+   const saved=await window.DSStudyPlanStore.load(activeOwner);
+   if(closed||generation!==epoch)return;
+   planProfile=saved;planPhase=saved?'return':'survey';
+  }catch{
+   if(closed||generation!==epoch)return;
+   planPhase='load-error';planMessage='저장된 학습 계획을 불러오지 못했어요.';
+  }
+  draw(false);
+ }
+ function startRange(profile,range){
+  planCourse=state.course=profile.need;planPhase='active';deskType='';widen='subunit';
+  externalRange=Boolean(range.book);
+  if(range.book){selectedScopeBook=range.book;selectedScopeUnit=range.bookUnit;selectedScopeType='';}
+  else{deskScope=range.scope;deskUnit=range.leaf||'';}
+  startDesk(profile.need);
+  if(current){
+   if(feedback&&cursor+1<pool.length)localPage(pool,cursor+1);
+   save();
+  }
+  draw();
+ }
+ function continuePlan(){
+  planPhase='active';
+  const range=planUnits(planProfile.subject,planProfile.need).find(u=>u.id===planProfile.unit);
+  externalRange=Boolean(range?.book);
+  if(externalRange){selectedScopeBook=range.book;selectedScopeUnit=range.bookUnit;selectedScopeType='';widen='subunit';}
+  if(resume()){
+   planCourse=state.course;
+   if(current&&view==='question'&&sourcePhase!=='opening'){externalRange=false;restoreDeskRange();}
+   draw();return;
+  }
+  if(range){startRange(planProfile,range);return;}
+  planDraft={...newPlanDraft(),goal:planProfile.goal,need:planProfile.need};
+  planPhase='survey';planStep=2;draw(false);
+ }
+ async function finishPlan(unit){
+  if(planBusy||planStep!==2||!planDraft.goal||!planDraft.need)return;
+  const range=planUnits(planDraft.subject,planDraft.need).find(row=>row.id===unit);if(!range)return;
+  planDraft.unit=unit;
+  const profile={...planDraft,updatedAt:Date.now()},generation=epoch;
+  planBusy=true;planProfile=profile;planMessage='';startRange(profile,range);
+  try{
+   const saved=await window.DSStudyPlanStore.save(activeOwner,profile);
+   if(closed||generation!==epoch)return;
+   if(saved.storage==='device')planMessage='선택한 공부를 이 기기에 저장했어요.';
+  }catch{if(!closed&&generation===epoch)planMessage='문제는 계속 풀 수 있어요. 학습 선택을 저장하려면 다시 선택해 주세요.';}
+  finally{if(!closed&&generation===epoch){planBusy=false;draw(false);}}
+ }
+ async function reviewPlan(){
+  if(planBusy)return;
+  const generation=epoch;
+  const local=[...latest(state).values()].reverse().find(weak);
+  if(local){planPhase='active';planCourse=local.course;openOriginal(local.questionId);return;}
+  planBusy=true;planMessage='복습할 기록을 확인하고 있어요.';draw(false);
+  try{
+   const seen=new Set();
+   let before;
+   do{
+    const page=await window.DSStudentServices.history({kind:'free',limit:20,...(before?{before}:{})});
+    if(closed||generation!==epoch)return;
+    if(page.ownerKey!==activeOwner||!Array.isArray(page.records))throw Error('invalid_history');
+    for(const r of page.records){
+     if(seen.has(r.questionId))continue;seen.add(r.questionId);
+     if(r.correct!==false&&r.confidence!=='unsure'&&!r.help)continue;
+     planPhase='active';planMessage='';planCourse=state.course='supplement';view='home';current=null;
+     await openRemote(r.questionId,{...r,choice:null,confidence:'sure',help:false});return;
+    }
+    if(!page.hasMore||!page.nextBefore||before===page.nextBefore)break;
+    before=page.nextBefore;
+   }while(true);
+   planMessage='아직 복습할 문제가 없어요. 이어서 공부하면 틀리거나 헷갈린 문제가 여기에 모여요.';
+  }catch{if(!closed&&generation===epoch)planMessage='복습 기록을 확인하지 못했어요. 잠시 후 다시 눌러 주세요.';}
+  finally{if(!closed&&generation===epoch){planBusy=false;draw(false);}}
+ }
+ function handlePlanClick(b){
+  if(!b.closest('[data-study-plan]'))return false;
+  if(planBusy)return true;
+  const value=b.value;
+  if(b.hasAttribute('data-plan-reload')){loadPlan();return true;}
+  if(planPhase==='return'){
+   planMessage='';
+   if(b.hasAttribute('data-plan-resume'))continuePlan();
+   if(b.hasAttribute('data-plan-review'))void reviewPlan();
+   return true;
+  }
+  if(planPhase==='active'){
+   if(b.hasAttribute('data-plan-reselect')){
+    planDraft={...newPlanDraft(),goal:planProfile?.goal||'',need:planProfile?.need||''};
+    planPhase='survey';planStep=planDraft.goal?1:0;planMessage='';draw(false);
+   }
+   return true;
+  }
+  if(planPhase!=='survey')return true;
+  if(b.hasAttribute('data-plan-answer')&&planStep<2){
+   planDraft[planStep===0?'goal':'need']=value;planStep++;
+   planDraft.subject='';planDraft.unit='';
+  }else if(b.hasAttribute('data-plan-back'))planStep=Math.max(0,planStep-1);
+  draw(false);
+  const pane=container.querySelector('[data-study-plan]');
+  const target=pane.querySelector('h2,h3,legend')||pane;
+  target.tabIndex=-1;target.focus({preventScroll:true});return true;
+ }
  const localDrafts=new Map(),remoteDrafts=new Map();
  function rememberDesk(){
   if(!desk)return;
@@ -875,17 +1087,45 @@ function bind(container,options={}){
   return BANK.filter(q=>q.course===original.course&&(q.id===anchor||q.originalQuestionId===anchor)).slice(0,10).map(q=>q.id);
  }
 
+ let deskScope='유리함수와 무리함수';
  function deskUnits(){
-  const rows=qlist().filter(q=>!q.originalQuestionId);
-  const units=[...new Set(rows.map(subunit))];
-  if(!units.includes(deskUnit))deskUnit=units[0]||'';
-  const unitRows=rows.filter(q=>subunit(q)===deskUnit);
+  const originals=qlist().filter(q=>!q.originalQuestionId);
+  const scope=studyScopes.find(item=>item.key===deskScope);
+  const groupRows=originals.filter(q=>inScope(q,scope));
+  const units=scope.sections.flatMap(([,leaves])=>leaves);
+  if(!units.includes(deskUnit))deskUnit='';
+  const unitRows=groupRows.filter(q=>!deskUnit||subunit(q)===deskUnit);
   const types=[...new Set(unitRows.map(q=>q.type))];
-  if(!types.includes(deskType))deskType=types[0]||'';
-  return {units,types,rows:unitRows.filter(q=>!deskType||q.type===deskType)};
+  if(!types.includes(deskType))deskType='';
+  return {originals,scope,units,groupRows,unitRows,types,rows:unitRows.filter(q=>!deskType||q.type===deskType)};
+ }
+ function restoreDeskRange(){
+  if(!current)return;
+  const rows=pool.map(id=>byId.get(id)).filter(Boolean);
+  deskScope=current.unit;
+  deskUnit=rows.every(q=>subunit(q)===subunit(current))?subunit(current):'';
+  deskType=rows.every(q=>q.type===current.type)?current.type:'';
+ }
+ function deskScopeSelect(originals){
+  return '<label>교과서 단원<select data-ssp-desk-scope>'+studyChapters.map(([subject,chapter])=>{
+   const options=studyScopes.filter(scope=>scope.chapter===chapter).map(scope=>{
+    const available=originals.some(q=>inScope(q,scope));
+    const label=(scope.key===chapter?chapter+' 전체':scope.key)+(available?'':' · 문항 준비 중');
+    return `<option value="${esc(scope.key)}" ${scope.key===deskScope?'selected':''}>${esc(label)}</option>`;
+   }).join('');
+   return `<optgroup label="${esc(subject+' · '+chapter)}">${options}</optgroup>`;
+  }).join('')+'</select></label>';
+ }
+ function deskPool(rows){
+  const groups=rows.map(localSet),result=[];
+  for(let i=0;i<Math.max(0,...groups.map(group=>group.length));i++){
+   for(const group of groups){if(group[i])result.push(group[i]);}
+   if(result.length>=10)break;
+  }
+  return result.slice(0,10);
  }
  function deskFilters(){
-  if(state.course==='supplement'){
+  if(externalRange||state.course==='supplement'){
    const books=workbookChoices();
    if(view==='question'&&current?.book){
     const book=BOOKS.find(b=>b.id===current.book);
@@ -896,46 +1136,46 @@ function bind(container,options={}){
    }
    if(!books.some(b=>b.id===selectedScopeBook))selectedScopeBook=books[0]?.id||'';
    const book=books.find(b=>b.id===selectedScopeBook);
-   const units=book?.units||[];
+   const units=book?workbookRanges(book):[];
    if(!units.some(u=>u.id===selectedScopeUnit))selectedScopeUnit=units[0]?.id||'';
    const types=units.find(u=>u.id===selectedScopeUnit)?.types||[];
    if(!types.some(t=>t.id===selectedScopeType))selectedScopeType='';
    if(!selectedScopeType)widen='subunit';
    return deskSelect('data-ssp-scope-book','부교재',books,selectedScopeBook)
      +deskSelect('data-ssp-scope-unit','단원',units,selectedScopeUnit)
+     +(units.find(u=>u.id===selectedScopeUnit)?.label==='유리함수와 무리함수'?'<p class="ssp-note">이 교재는 유리함수와 무리함수가 한 단원으로 연결돼 있어요.</p>':'')
      +(types.length?deskSelect('data-ssp-scope-type','유형',[{id:'',label:'단원 전체 유형'},...types],selectedScopeType):'')
      +`<nav class="ssp-chapter-nav" aria-label="단원 이동"><button type="button" data-ssp-chapter-step="-1" ${units[0]?.id===selectedScopeUnit||!units.length?'disabled':''}>← 이전 단원</button><button type="button" data-ssp-chapter-step="1" ${units.at(-1)?.id===selectedScopeUnit||!units.length?'disabled':''}>다음 단원 →</button></nav>`;
   }
-  const {units,types}=deskUnits();
-  const grade=state.course==='advanced'?deskSelect('data-ssp-grade','최근 내신 등급',Array.from({length:9},(_,i)=>({id:i+1,label:(i+1)+'등급'})),state.grade):'';
-  return grade+deskSelect('data-ssp-desk-unit','단원',units.map(id=>({id,label:'공통수학2 · '+id})),deskUnit)
-    +deskSelect('data-ssp-desk-type','유형',types.map(id=>({id,label:TYPES[id]})),deskType);
+  const {originals,scope,units,groupRows,types}=deskUnits();
+
+  const rangeLabel=scope.key===scope.chapter?'대단원 전체':scope.key+' 전체';
+  return deskScopeSelect(originals)
+    +deskSelect('data-ssp-desk-unit','소단원',[{id:'',label:rangeLabel},...units.map(id=>({id,label:id+(groupRows.some(q=>subunit(q)===id)?'':' · 문항 준비 중')}))],deskUnit)
+    +(types.length?deskSelect('data-ssp-desk-type','유형',[{id:'',label:'전체 유형'},...types.map(id=>({id,label:TYPES[id]||id}))],deskType):'');
  }
  function startDesk(course,restore=false){
   rememberDesk();
+  if(state.course!==course)deskScope='유리함수와 무리함수';
   state.course=course;view='home';current=null;feedback=null;remoteQuestion=null;remoteFeedback=null;notice='';
   invalidateSource();
   if(restore&&resume(course)){
-   if(current){
-    deskUnit=subunit(current);deskType=current.type;
-    const list=localSet(current);
-    pool=list;cursor=list.indexOf(current.id);
-   }
+   if(current)restoreDeskRange();
    return;
   }
-  if(course==='supplement'){
+  if(externalRange||course==='supplement'){
    deskFilters();
    querySource();
   }else{
    const rows=deskUnits().rows;
-   if(rows.length){const list=localSet(rows[0]);localPage(list,0);}
+   if(rows.length)localPage(deskPool(rows),0);
   }
  }
  function deskWaiting(){
   if(sourcePhase==='opening'||sourcePhase==='loading')return '<p role="status">선택한 범위에서 문제를 불러오고 있어요.</p>';
   if(sourcePhase==='error')return `<p>${esc(sourceError||notice||'문항을 불러오지 못했어요.')}</p><button data-ssp-query>다시 확인</button>`;
-  if(sourcePhase==='ready'&&state.course==='supplement')return `<h2>선택한 범위에 연결된 무료 문항이 없어요.</h2>${widen==='subunit'?'<p>다른 단원이나 교재를 골라 주세요.</p>':'<button data-ssp-widen="subunit">이 단원의 전체 유형에서 찾기</button>'}`;
-  return '<p>수록된 문항을 선택해 주세요.</p>';
+  if(sourcePhase==='ready'&&(externalRange||state.course==='supplement'))return `<h2>선택한 범위에 연결된 무료 문항이 없어요.</h2>${widen==='subunit'?'<p>다른 단원이나 교재를 골라 주세요.</p>':'<button data-ssp-widen="subunit">이 단원의 전체 유형에서 찾기</button>'}`;
+  return '<p>이 범위에는 이 공부 방법으로 풀 수 있는 문항이 아직 연결되지 않았어요. 다른 단원을 선택해 주세요.</p>';
  }
  const signed=()=>typeof options.signedIn==='function'?Boolean(options.signedIn()):typeof options.signedIn==='boolean'?options.signedIn:Boolean(window.DSService?.session?.());
  const owner=()=>signed()&&typeof options.ownerKey==='function'?String(options.ownerKey()||''):signed()?String(options.ownerKey||''):'';
@@ -943,14 +1183,14 @@ function bind(container,options={}){
  const key=()=>activeOwner?'ds-student-paths-v1:'+encodeURIComponent(activeOwner):'';
  const emit=()=>{const detail={source:'student-study-paths',summary:summary(state),storage:storageMessage};window.dispatchEvent(new CustomEvent('ds-student-paths-change',{detail}));};
  function read(){try{const raw=key()?localStorage.getItem(key()):signed()?null:sessionStorage.getItem('ds-student-paths-preview-v1');state=clean(raw?JSON.parse(raw):null);storageMessage=key()?'이 계정의 기기 기록':signed()?'현재 로그인 화면의 기록 · 이 화면을 닫으면 사라져요.':'이 브라우저의 임시 기록';}catch{state=blank();storageMessage='저장 공간을 사용할 수 없어 현재 화면에서만 기록해요.';}}
- function save(record){if(remoteQuestion&&view==='source-question'&&!remoteFeedback)state.sourcePending[state.course]={questionId:remoteQuestion.questionId||remoteQuestion.id,version:remoteQuestion.version,choice:remoteChoice,confidence:remoteConfidence,help:false,openedAt:remoteOpenedAt,updatedAt:Date.now()};if(current&&view==='question')state.pending[state.course]={book:state.book,pool:[...pool],cursor,choice,confidence,help,hint,solution,feedbackId:feedback?.id||null,openedAt,updatedAt:Date.now()};if(record){record.updatedAt=Math.max(Date.now(),(record.updatedAt||record.at||0)+1);state.records=state.records.map(r=>r.id===record.id?record:r);}state=clean(state);try{if(key())localStorage.setItem(key(),JSON.stringify(state));else if(!signed())sessionStorage.setItem('ds-student-paths-preview-v1',JSON.stringify(state));storageMessage=key()?'이 계정의 기기에 저장했어요.':signed()?'현재 로그인 화면에 기록했어요. 계정 저장 연결은 아직 준비 중이에요.':'이 브라우저에 임시 저장했어요.';}catch{storageMessage='기기 저장에 실패했어요. 이 화면을 닫기 전에 기록을 확인하세요.';}
+ function save(record){if(current&&view==='question')state.course=current.course;if(remoteQuestion&&view==='source-question'&&!remoteFeedback)state.sourcePending[state.course]={questionId:remoteQuestion.questionId||remoteQuestion.id,version:remoteQuestion.version,choice:remoteChoice,confidence:remoteConfidence,help:false,openedAt:remoteOpenedAt,updatedAt:Date.now()};if(current&&view==='question')state.pending[state.course]={book:state.book,pool:[...pool],cursor,choice,confidence,help,hint,solution,feedbackId:feedback?.id||null,openedAt,updatedAt:Date.now()};if(record){record.updatedAt=Math.max(Date.now(),(record.updatedAt||record.at||0)+1);state.records=state.records.map(r=>r.id===record.id?record:r);}state=clean(state);try{if(key())localStorage.setItem(key(),JSON.stringify(state));else if(!signed())sessionStorage.setItem('ds-student-paths-preview-v1',JSON.stringify(state));storageMessage=key()?'이 계정의 기기에 저장했어요.':signed()?'현재 로그인 화면에 기록했어요. 계정 저장 연결은 아직 준비 중이에요.':'이 브라우저에 임시 저장했어요.';}catch{storageMessage='기기 저장에 실패했어요. 이 화면을 닫기 전에 기록을 확인하세요.';}
  emit();if(signed()&&activeOwner&&(typeof options.onProgress==='function'||record&&typeof options.onRecord==='function')){const generation=epoch,ownerAtSave=activeOwner,payload=JSON.parse(JSON.stringify(typeof options.onProgress==='function'?state:record));saveQueue=saveQueue.catch(()=>{}).then(async()=>{if(!signed()||ownerAtSave!==owner())return;try{const handler=typeof options.onProgress==='function'?options.onProgress:options.onRecord;const result=await handler(payload,{ownerKey:ownerAtSave,namespace:'student-paths-v1'});if(closed||generation!==epoch)return;if(result?.state)state=mergeProgress(result.state,state);storageMessage=result?.saved===true?'계정에 학습 기록을 저장했어요.':'계정 저장을 확인하지 못했어요. 기기 기록은 유지돼요.';}catch{if(closed||generation!==epoch)return;storageMessage='계정 저장에 실패했어요. 기기 기록은 유지돼요.';}draw(false);emit();});}}
- function qlist(){if(state.course==='supplement')return BANK.filter(q=>q.book===state.book);if(state.course==='advanced')return BANK.filter(q=>q.course==='advanced'&&q.level===tier(state));return BANK.filter(q=>q.course===state.course);}
+ function qlist(){if(state.course==='supplement')return BANK.filter(q=>q.book===state.book);if(state.course==='advanced')return BANK.filter(q=>q.course==='advanced'&&q.level===tier(state,planProfile?.goal));return BANK.filter(q=>q.course===state.course);}
  function resetQuestion(q){current=q;choice=null;confidence='sure';help=false;hint=false;feedback=null;solution=false;openedAt=Date.now();view='question';}
  function resume(course){const originalLatest=Object.entries(state.pending).filter(([id,p])=>(!course||course===id)&&!p.cleared).sort((a,b)=>b[1].updatedAt-a[1].updatedAt)[0],sourceLatest=Object.entries(state.sourcePending).filter(([id,p])=>(!course||course===id)&&!p.cleared).sort((a,b)=>b[1].updatedAt-a[1].updatedAt)[0];if(sourceLatest&&(!course||course===sourceLatest[0])&&(!originalLatest||sourceLatest[1].updatedAt>=originalLatest[1].updatedAt)){state.course=sourceLatest[0];openRemote(sourceLatest[1].questionId,sourceLatest[1]);return true;}const courseId=course||Object.entries(state.pending).filter(([,p])=>!p.cleared).sort((a,b)=>b[1].updatedAt-a[1].updatedAt)[0]?.[0];const p=state.pending[courseId];if(!p||p.cleared)return false;state.course=courseId;state.book=p.book;pool=[...p.pool];cursor=p.cursor;current=byId.get(pool[cursor]);choice=p.choice;confidence=p.confidence;help=p.help;hint=p.hint;solution=p.solution;feedback=state.records.find(r=>r.id===p.feedbackId)||null;openedAt=Date.now();view='question';return true;}
  function begin(ids){pool=(ids||qlist().map(q=>q.id)).filter(id=>byId.has(id));cursor=0;if(!pool.length){notice='지금 선택한 범위에는 문제가 없어요.';return;}resetQuestion(byId.get(pool[0]));}
  function review(type){const seen=latest(state),ids=BANK.filter(q=>(!type||q.type===type)&&weak(seen.get(q.id))).map(q=>q.id);if(!ids.length){notice='현재 복습할 기록이 없어요.';return;}begin(ids);}
- function workbookScope(){const books=workbookChoices();const book=books.find(b=>b.id===selectedScopeBook);const unit=book?.units?.find(u=>u.id===selectedScopeUnit);const type=unit?.types?.find(t=>t.id===selectedScopeType);return {book,unit,type};}
+ function workbookScope(){const books=workbookChoices();const book=books.find(b=>b.id===selectedScopeBook);const unit=(desk&&book?workbookRanges(book):book?.units)?.find(u=>u.id===selectedScopeUnit);const type=unit?.types?.find(t=>t.id===selectedScopeType);return {book,unit,type};}
  function invalidateSource(){sourceGeneration++;sourceResult=null;sourcePhase='idle';sourceError='';}
  function mathContent(value){if(typeof value!=='string')throw Error('invalid_content');const parts=value.split(/(\$\$[\s\S]*?\$\$|\$[^$\n]+\$|\\\[[\s\S]*?\\\]|\\\([\s\S]*?\\\))/g);return parts.map(part=>{let latex='',display=false;if(part.startsWith('$$')&&part.endsWith('$$')){latex=part.slice(2,-2);display=true;}else if(part.startsWith('$')&&part.endsWith('$'))latex=part.slice(1,-1);else if(part.startsWith('\\[')&&part.endsWith('\\]')){latex=part.slice(2,-2);display=true;}else if(part.startsWith('\\(')&&part.endsWith('\\)'))latex=part.slice(2,-2);if(latex){if(!window.katex?.renderToString)throw Error('math_renderer_unavailable');return window.katex.renderToString(latex,{displayMode:display,throwOnError:true,trust:false,strict:'error',maxExpand:1000});}if(/\\[A-Za-z]|\$/.test(part))throw Error('unwrapped_math');return esc(part).replace(/\n/g,'<br>');}).join('');}
  function fragmentContent(html,title){if(typeof html!=='string'||!html.trim()||typeof window.DSStudentFragment?.render!=='function')throw Error('fragment_renderer_unavailable');const rendered=window.DSStudentFragment.render(html,title);if(typeof rendered!=='string')throw Error('invalid_fragment');return rendered;}
@@ -960,10 +1200,10 @@ function bind(container,options={}){
   if(!signed()){sourcePhase='error';sourceError='로그인 후 학생 무료 범위를 확인할 수 있어요.';draw(false);return;}
   if(typeof window.DSStudentServices?.catalog!=='function'){sourcePhase='error';sourceError='자료 연결을 확인하지 못했어요. 잠시 후 다시 확인해 주세요.';draw(false);return;}
   const {book,unit,type}=workbookScope();if(!book||!unit||widen==='type'&&!type||widen==='family'&&!type?.familyId){sourcePhase='error';sourceError='확인할 교재와 범위를 먼저 선택해 주세요.';draw(false);return;}
-  const filters={purpose:'study_free',subject:book.subject,bookId:book.id,unitIds:[unit.id],typeIds:widen==='type'?[type.id]:widen==='family'?(unit.types||[]).filter(t=>t.familyId===type.familyId).map(t=>t.id):[],familyIds:[],scopeLevel:widen==='subunit'?'unit':widen};
+  const filters={purpose:'study_free',subject:book.subject,bookId:book.id,unitIds:unit.unitIds||[unit.id],typeIds:widen==='type'?[type.id]:widen==='family'?(unit.types||[]).filter(t=>t.familyId===type.familyId).map(t=>t.id):[],familyIds:[],scopeLevel:widen==='subunit'?'unit':widen};
   const generation=++sourceGeneration,ownerAtQuery=owner(),sessionAtQuery=epoch;sourcePhase='loading';sourceError='';sourceResult=null;draw(false);
   try{const result=await window.DSStudentServices.catalog(filters);if(closed||generation!==sourceGeneration||sessionAtQuery!==epoch||ownerAtQuery!==owner()||!signed())return;
-   if(!Array.isArray(result.questions)||!result.questions.every(q=>typeof(q.questionId||q.id)==='string'&&typeof q.version==='string'&&q.bookId===book.id&&(Array.isArray(q.unitIds)?q.unitIds:[q.unitId]).includes(unit.id)&&(!['type','family'].includes(filters.scopeLevel)||(Array.isArray(q.typeIds)?q.typeIds:[q.typeId]).some(id=>filters.typeIds.includes(id)))))throw Error('invalid_catalog_scope');
+   if(!Array.isArray(result.questions)||!result.questions.every(q=>typeof(q.questionId||q.id)==='string'&&typeof q.version==='string'&&q.bookId===book.id&&(Array.isArray(q.unitIds)?q.unitIds:[q.unitId]).some(id=>filters.unitIds.includes(id))&&(!['type','family'].includes(filters.scopeLevel)||(Array.isArray(q.typeIds)?q.typeIds:[q.typeId]).some(id=>filters.typeIds.includes(id)))))throw Error('invalid_catalog_scope');
    sourceResult=desk?{...result,questions:result.questions.slice(0,10)}:result;sourcePhase='ready';sourceError='';
    if(desk&&result.questions.length){const first=result.questions[0];await openRemote(first.questionId||first.id);return;}
   }catch{if(closed||generation!==sourceGeneration||sessionAtQuery!==epoch)return;sourcePhase='error';sourceError='이 범위의 무료 이용 가능 수를 확인하지 못했어요. 확인 전에는 다른 자료로 바꾸어 제공하지 않아요.';}
@@ -974,7 +1214,7 @@ function bind(container,options={}){
  const saved=revisit&&remoteDrafts.get(id);if(saved?.version===q.version){remoteChoice=saved.choice;remoteConfidence=saved.confidence;remoteFeedback=saved.feedback;remoteOpenedAt=saved.openedAt;}
  view='source-question';notice='';sourcePhase='ready';if(!draft&&!remoteFeedback)save();draw();}catch{if(closed||generation!==sourceGeneration||sessionAtOpen!==epoch)return;sourcePhase='error';notice='문항의 판이나 열람 형식을 확인하지 못했어요. 다시 범위를 확인해 주세요.';draw(false);}}
  async function submitRemote(){if(!remoteQuestion||remoteBusy||remoteFeedback)return;if(typeof DSStudentServices?.submit!=='function'){notice='답안을 이 화면에 남겼어요. 서버 채점 연결은 아직 준비 중이에요.';draw(false);return;}const id=remoteQuestion.questionId||remoteQuestion.id;let operation=remoteOperations.get(id);if(!operation){if(remoteChoice===null&&!remoteUnknown){notice='답을 입력하거나 모르겠어요를 선택해 주세요.';draw(false);return;}operation={questionId:id,version:remoteQuestion.version,answer:remoteChoice,requestId:crypto.randomUUID(),course:state.course,confidence:remoteConfidence,help:false,seconds:Math.min(86400,Math.max(0,Math.round((Date.now()-remoteOpenedAt)/1000)))};remoteOperations.set(id,operation);}const generation=epoch;remoteBusy=true;notice='답안을 확인하고 있어요.';draw(false);try{const result=await DSStudentServices.submit(operation);if(closed||generation!==epoch||!signed())return;if(!result?.record||result.record.questionId!==id||result.record.version!==operation.version||typeof result.record.correct!=='boolean')throw Error('invalid_grade');if(result.solutionHTML){try{result._safeSolutionFragment=fragmentContent(result.solutionHTML,'제출 후 해설');}catch{result.solutionUnavailable=true;}}if(result.solution){try{(Array.isArray(result.solution)?result.solution:[result.solution]).forEach(mathContent);}catch{result.solution=null;result.solutionUnavailable=true;}}remoteFeedback=result;remoteOperations.delete(id);state.sourcePending[state.course]={cleared:true,updatedAt:Date.now()};save();notice='계정에 풀이 결과를 저장했어요.';remoteHistory.phase='idle';window.dispatchEvent(new CustomEvent('ds-student-free-record',{detail:{record:result.record}}));}catch(error){if(closed||generation!==epoch)return;if([400,403,404,409,422].includes(error?.status)){remoteOperations.delete(id);notice='답안의 형식이나 문항 이용 상태가 바뀌었어요. 범위와 문항을 다시 확인해 주세요.';return;}notice='제출 결과를 확인하지 못했어요. 같은 답안으로 다시 확인해 주세요. 중복으로 새 풀이를 만들지 않아요.';}finally{if(generation===epoch){remoteBusy=false;draw(false);}}}
- function remoteQuestionHTML(){const q=remoteQuestion,id=q.questionId||q.id,frame=q.format==='frame'?safeFrame(q.questionFrame):'';const pending=remoteOperations.has(id);let content=q.format==='sandbox-html'?q._safeFragment+'<p class="ssp-note">긴 수식은 좌우로 밀어서 확인할 수 있어요.</p>':frame?`<iframe class="ssp-server-frame" title="허용된 기존 문항" sandbox="allow-same-origin" referrerpolicy="no-referrer" src="${esc(frame)}"></iframe>`:`<div class="ssp-prompt">${mathContent(q.prompt)}</div>`;const choices=q.answerType==='choice'?(Array.isArray(q.options)&&q.options.length===5?q.options:['1번','2번','3번','4번','5번']):null;return `<article class="ssp-paper"><div class="ssp-paper-top"><span>${esc(sourceName(remoteMetadata))}</span><span>${esc(q.unit||remoteMetadata.unit||'')}</span></div><h2 tabindex="-1">기존 자료 풀기</h2>${desk?itemPager(Math.max(0,sourceRows().findIndex(row=>(row.questionId||row.id)===id)),sourceRows().some(row=>(row.questionId||row.id)===id)?sourceRows().length:1):''}${content}<fieldset class="ssp-options" ${remoteFeedback||remoteBusy||pending?'disabled':''}><legend>답을 입력해 주세요.</legend>${choices?choices.map((text,i)=>`<label><input type="radio" name="ssp-remote-choice" value="${i}" ${remoteChoice===i?'checked':''}><span class="ssp-option-no">${i+1}</span><span>${mathContent(text)}</span></label>`).join(''):`<label>정수 답안 <input type="number" inputmode="numeric" step="1" data-ssp-remote-integer ${Number.isSafeInteger(remoteChoice)?`value="${remoteChoice}"`:''} aria-label="정수 답안"></label>`}</fieldset>${!remoteFeedback?`<fieldset class="ssp-confidence" ${remoteBusy||pending?'disabled':''}><legend>얼마나 확실한가요?</legend><label><input type="radio" name="ssp-remote-confidence" value="sure" ${remoteConfidence==='sure'?'checked':''}>확실해요</label><label><input type="radio" name="ssp-remote-confidence" value="unsure" ${remoteConfidence==='unsure'?'checked':''}>아직 헷갈려요</label></fieldset><div class="ssp-actions"><button class="ssp-primary" data-ssp-remote-submit ${remoteBusy?'disabled':''}>${pending?'같은 답안으로 결과 다시 확인':'답 제출하고 확인'}</button><button data-ssp-remote-unknown ${remoteBusy||pending?'disabled':''}>모르겠어요</button></div>`:`<section class="ssp-feedback"><h3 tabindex="-1">${remoteFeedback.record.correct?'맞았어요.':'조건과 풀이를 다시 확인해 봐요.'}</h3>${variantButton(remoteFeedback.record,remoteHistory.records)}<button data-ssp-remote-retry>같은 문제 다시 풀기</button>${remoteFeedback.answer!==undefined?`<p>정답 ${esc(choices?Number(remoteFeedback.answer)+1+'번':remoteFeedback.answer)}</p>`:''}${remoteFeedback._safeSolutionFragment?`<section class="ssp-solution">${remoteFeedback._safeSolutionFragment}<p class="ssp-note">긴 수식은 좌우로 밀어서 확인할 수 있어요.</p></section>`:''}${remoteFeedback.solutionUnavailable?'<p>해설 표시 형식을 확인하지 못했어요. 채점 결과는 계정에 저장했어요.</p>':''}${remoteFeedback.solution?`<div class="ssp-solution">${(Array.isArray(remoteFeedback.solution)?remoteFeedback.solution:[remoteFeedback.solution]).map(line=>`<p>${mathContent(line)}</p>`).join('')}</div>`:''}${safeFrame(remoteFeedback.solutionFrame)?`<iframe class="ssp-server-frame" title="제출 후 해설" sandbox="allow-same-origin" referrerpolicy="no-referrer" src="${esc(safeFrame(remoteFeedback.solutionFrame))}"></iframe>`:''}</section>`}<footer class="ssp-paper-foot"><span>계정에 허용된 기존 자료</span>${!desk?'<button data-ssp-home>코스로 돌아가기</button>':''}</footer></article>`;}
+ function remoteQuestionHTML(){const q=remoteQuestion,id=q.questionId||q.id,frame=q.format==='frame'?safeFrame(q.questionFrame):'';const pending=remoteOperations.has(id);let content=q.format==='sandbox-html'?q._safeFragment+'<p class="ssp-note">긴 수식은 좌우로 밀어서 확인할 수 있어요.</p>':frame?`<iframe class="ssp-server-frame" title="허용된 기존 문항" sandbox="allow-same-origin" referrerpolicy="no-referrer" src="${esc(frame)}"></iframe>`:`<div class="ssp-prompt">${mathContent(q.prompt)}</div>`;const choices=q.answerType==='choice'?(Array.isArray(q.options)&&q.options.length===5?q.options:Array(5).fill('')):null;return `<article class="ssp-paper"><div class="ssp-paper-top"><span>${esc(sourceName(remoteMetadata))}</span><span>${esc(q.unit||remoteMetadata.unit||'')}</span></div><h2 tabindex="-1">기존 자료 풀기</h2>${desk?itemPager(Math.max(0,sourceRows().findIndex(row=>(row.questionId||row.id)===id)),sourceRows().some(row=>(row.questionId||row.id)===id)?sourceRows().length:1):''}${content}<fieldset class="ssp-options" aria-label="답안" ${remoteFeedback||remoteBusy||pending?'disabled':''}>${choices?choices.map((text,i)=>`<label><input type="radio" name="ssp-remote-choice" value="${i}" ${remoteChoice===i?'checked':''}><span class="ssp-option-no">${"①②③④⑤"[i]}</span><span>${mathContent(text)}</span></label>`).join(''):`<label>정수 답안 <input type="number" inputmode="numeric" step="1" data-ssp-remote-integer ${Number.isSafeInteger(remoteChoice)?`value="${remoteChoice}"`:''} aria-label="정수 답안"></label>`}</fieldset>${!remoteFeedback?`<div class="ssp-actions"><button class="ssp-primary" data-ssp-remote-submit ${remoteBusy?'disabled':''}>${pending?'같은 답안으로 결과 다시 확인':'답 제출하고 확인'}</button><button data-ssp-remote-unknown ${remoteBusy||pending?'disabled':''}>모르겠어요</button></div>`:`<section class="ssp-feedback"><h3 tabindex="-1">${remoteFeedback.record.correct?'맞았어요.':'조건과 풀이를 다시 확인해 봐요.'}</h3>${variantButton(remoteFeedback.record,remoteHistory.records)}<button data-ssp-remote-retry>같은 문제 다시 풀기</button>${remoteFeedback.answer!==undefined?`<p>정답 ${esc(choices?Number(remoteFeedback.answer)+1+'번':remoteFeedback.answer)}</p>`:''}${remoteFeedback._safeSolutionFragment?`<section class="ssp-solution">${remoteFeedback._safeSolutionFragment}<p class="ssp-note">긴 수식은 좌우로 밀어서 확인할 수 있어요.</p></section>`:''}${remoteFeedback.solutionUnavailable?'<p>해설 표시 형식을 확인하지 못했어요. 채점 결과는 계정에 저장했어요.</p>':''}${remoteFeedback.solution?`<div class="ssp-solution">${(Array.isArray(remoteFeedback.solution)?remoteFeedback.solution:[remoteFeedback.solution]).map(line=>`<p>${mathContent(line)}</p>`).join('')}</div>`:''}${safeFrame(remoteFeedback.solutionFrame)?`<iframe class="ssp-server-frame" title="제출 후 해설" sandbox="allow-same-origin" referrerpolicy="no-referrer" src="${esc(safeFrame(remoteFeedback.solutionFrame))}"></iframe>`:''}</section>`}<footer class="ssp-paper-foot"><span>계정에 허용된 기존 자료</span>${options.view==='history'?'<button data-ssp-history>내 공부 기록으로</button>':!desk?'<button data-ssp-home>코스로 돌아가기</button>':''}</footer></article>`;}
  function sourcePanel(){
   const free=existingFree(),units=[...new Set(free.map(q=>q.unit))];if(!units.includes(freeUnit))freeUnit=units[0]||'';
   const list=free.filter(q=>q.unit===freeUnit),freeConcept=FREE_CONCEPTS[freeUnit];
@@ -997,11 +1237,11 @@ function bind(container,options={}){
  if(state.course==='concept')content=`<div class="ssp-concepts">${['value','domain','radical-domain','radical-equation'].map(id=>`<article><h3>${CONCEPTS[id].name}</h3><p>${CONCEPTS[id].body}</p></article>`).join('')}</div>`;
  if(state.course==='types')content=`<div class="ssp-type-list">${BANK.filter(q=>q.course==='types').map(q=>`<button data-ssp-type="${q.type}"><strong>${esc(TYPES[q.type])}</strong><span>대표 문제 1개${weakTypes.includes(q.type)?' · 복습 추천':''}</span></button>`).join('')}</div>`;
  if(state.course==='supplement')content=`<div class="ssp-books" role="group" aria-label="부교재 선택">${BOOKS.map(b=>`<button data-ssp-book="${b.id}" aria-pressed="${state.book===b.id}"><span>${esc(b.source)}</span><strong>${esc(b.title)}</strong><small>${esc(b.description)} · ${b.ids.length}문항</small></button>`).join('')}</div><p class="ssp-note">이곳의 부교재는 직접 만든 온라인 연습본이에요. 다른 출판사의 교재나 기출 원문을 제공하지 않아요.</p>`;
- if(state.course==='advanced')content=`<label class="ssp-grade">최근 내신 등급 <select data-ssp-grade aria-label="최근 내신 등급">${[1,2,3,4,5,6,7,8,9].map(g=>`<option value="${g}" ${g===state.grade?'selected':''}>${g}등급</option>`).join('')}</select></label><p>지금은 <strong>${tier(state)}단계</strong>에서 시작해요. ${state.grade<=2?'선택한 등급을 참고한 출발 단계이며, 실력을 확정한 결과는 아니에요.':'조건 확인부터 시작해요.'} 각 단계의 두 문제를 도움 없이 풀고 확신을 표시하면 다음 단계로 가요.</p><ol class="ssp-steps">${['조건을 놓치지 않기','조건 두 개를 연결하기','교점 개수와 매개변수'].map((n,i)=>`<li ${i+1===tier(state)?'aria-current="step"':''}>${i+1}. ${n}</li>`).join('')}</ol><p class="ssp-note">난도는 교사 관점의 설계 단계예요. 실측 정답률이나 기출 등급을 뜻하지 않아요.</p>`;
+ if(state.course==='advanced')content=`<label class="ssp-grade">최근 내신 등급 <select data-ssp-grade aria-label="최근 내신 등급">${[1,2,3,4,5,6,7,8,9].map(g=>`<option value="${g}" ${g===state.grade?'selected':''}>${g}등급</option>`).join('')}</select></label><p>지금은 <strong>${tier(state)}단계</strong>에서 시작해요. ${state.grade<=2?'선택한 등급을 참고한 출발 단계이며, 실력을 확정한 결과는 아니에요.':'조건 확인부터 시작해요.'} 각 단계의 두 문제를 도움 없이 맞히면 다음 단계로 가요.</p><ol class="ssp-steps">${['조건을 놓치지 않기','조건 두 개를 연결하기','교점 개수와 매개변수'].map((n,i)=>`<li ${i+1===tier(state)?'aria-current="step"':''}>${i+1}. ${n}</li>`).join('')}</ol><p class="ssp-note">난도는 교사 관점의 설계 단계예요. 실측 정답률이나 기출 등급을 뜻하지 않아요.</p>`;
  const c=COURSES.find(c=>c.id===state.course);return `${sourcePanel()}<details class="ssp-extra"><summary>자체 제작 보완연습 · 공통수학2</summary><p class="ssp-note">아래 ${BANK.length}문항은 기존 교재·기출에서 불러온 문항이 아닌 별도 원창작이에요. 쎈·올림포스의 문항 또는 유사 코드 연결로 표시하지 않아요.</p><div class="ssp-panel"><p class="ssp-kicker">${esc(c.intro)}</p><h2>${esc(c.name)}</h2>${content}<div class="ssp-actions">${state.pending[state.course]&&!state.pending[state.course].cleared?'<button class="ssp-primary" data-ssp-resume>풀던 공부 이어하기</button>':''}<button class="ssp-primary" data-ssp-start>${state.pending[state.course]&&!state.pending[state.course].cleared?'새로 공부하기':'공부 시작'} · ${qlist().length}문항</button><button data-ssp-history>내 기록 보기</button></div></div><aside class="ssp-progress"><h2>보완연습 기록</h2><p>풀어 본 문제 <b>${s.answered}</b>개 · 최근 정답 <b>${s.correct}</b>개</p><p>다시 볼 문제 <b>${s.review}</b>개</p>${weakTypes.length?`<h3>이 유형을 다시 볼까요?</h3>${weakTypes.map(t=>`<button data-ssp-review="${t}">${esc(TYPES[t])}</button>`).join('')}`:'<p>한 번의 정답으로 숙달을 판단하지 않아요. 풀고 난 뒤 풀이도 비교해 보세요.</p>'}<p class="ssp-note">${esc(storageMessage)}</p>${signed()&&activeOwner&&typeof options.onProgress==='function'?'<button data-ssp-sync>기록 다시 저장</button>':''}</aside></details>`;}
  const lessonSequences=Object.fromEntries(['concept','types'].map(course=>[course,BANK.filter(q=>q.course===course&&!q.originalQuestionId)]));
  function lessonNavigation(){
-  const sequence=desk&&lessonSequences[current?.course];
+  const sequence=desk&&lessonSequences[current?.course]&&deskUnits().unitRows;
   if(!sequence)return '';
   const index=sequence.findIndex(q=>q.id===(current.originalQuestionId||current.id));
   const isConcept=current.course==='concept',label=isConcept?'개념':'유형';
@@ -1013,26 +1253,88 @@ function bind(container,options={}){
    <button type="button" ${action}="1" ${index===sequence.length-1?'disabled':''}>다음 ${label} →</button></nav>
    <h3>${esc(title)}</h3>${isConcept?`<p>${CONCEPTS[current.type].body}</p>`:''}</section>`;
  }
- function question(){const q=current;if(!q)return home();const concept=CONCEPTS[q.type];const repeated=state.records.some(r=>r.questionId===q.id);return `<article class="ssp-paper"><div class="ssp-paper-top"><span>${esc(TYPES[q.type])} · ${q.level}단계</span><span>${desk?'':(cursor+1)+' / '+pool.length}</span></div><h2 tabindex="-1" class="ssp-problem-heading">${esc(q.subject)} · ${esc(desk?subunit(q):q.unit)}</h2>${lessonNavigation()}${desk?itemPager(cursor,pool.length):''}${repeated?'<p class="ssp-note">전에 풀어 본 문제예요. 이번 결과는 복습 기록으로 남겨요.</p>':''}<div class="ssp-prompt">${q.prompt}</div><fieldset class="ssp-options" ${feedback?'disabled':''}><legend>답을 하나 골라주세요.</legend>${q.options.map((o,i)=>`<label><input type="radio" name="ssp-answer" value="${i}" ${choice===i?'checked':''}><span class="ssp-option-no">${i+1}</span><span>${o}</span></label>`).join('')}</fieldset>${!feedback?`<fieldset class="ssp-confidence"><legend>내 선택이 얼마나 확실한가요?</legend><label><input type="radio" name="ssp-confidence" value="sure" ${confidence==='sure'?'checked':''}>확실해요</label><label><input type="radio" name="ssp-confidence" value="unsure" ${confidence==='unsure'?'checked':''}>아직 헷갈려요</label></fieldset><div class="ssp-actions"><button class="ssp-primary" data-ssp-check ${choice===null?'disabled':''}>답 확인</button><button data-ssp-skip>모르겠어요</button><button data-ssp-hint aria-expanded="${hint}">힌트 ${hint?'접기':'보기'}</button></div>`:''}${hint?`<aside class="ssp-hint"><h3>첫 생각</h3><p>${q.hint}</p><p>${concept.body}</p></aside>`:''}${feedback?`<section class="ssp-feedback"><h3 tabindex="-1">${feedback.choice===null?'함께 다시 확인해 봐요.':feedback.correct?'맞았어요. 풀이의 조건도 확인해 보세요.':'답을 다시 살펴볼까요?'}</h3><p>정답은 ${q.answer+1}번이에요. ${feedback.help?'힌트를 확인한 풀이로 기록했어요.':''}</p><label>어디서 막혔나요? <select data-ssp-reason><option value="">필요하면 기록하기</option>${Object.entries(REASONS).map(([id,label])=>`<option value="${id}" ${feedback.reason===id?'selected':''}>${label}</option>`).join('')}</select></label><div class="ssp-actions"><button data-ssp-solution aria-expanded="${solution}">${solution?'풀이 접기':'해설 보기'}</button><button data-ssp-retry>답을 가리고 다시 풀기</button>${variantButton(feedback,state.records)}${desk?'':`<button class="ssp-primary" data-ssp-next>${cursor+1<pool.length?'다음 문제':'공부 결과 보기'}</button>`}</div>${solution?`<section class="ssp-solution"><h3>조건 → 계산 → 확인</h3><ol>${q.solution.map(s=>`<li>${s}</li>`).join('')}</ol></section>`:''}</section>`:''}<footer class="ssp-paper-foot"><span>델타스킬 자체 제작 · 공통수학2</span>${!desk?'<button data-ssp-home>코스로 돌아가기</button>':''}</footer></article>`;}
- async function loadFreeHistory(more=false){if(!signed()||remoteHistory.phase==='loading')return;if(typeof window.DSStudentServices?.history!=='function'){remoteHistory.phase='unavailable';draw(false);return;}const generation=epoch;remoteHistory.phase='loading';draw(false);try{const result=await DSStudentServices.history({kind:'free',limit:20,...(more&&remoteHistory.nextBefore?{before:remoteHistory.nextBefore}:{})});if(closed||generation!==epoch||!signed())return;if(activeOwner&&result.ownerKey!==activeOwner||!Array.isArray(result.records)||!result.records.every(r=>typeof r.recordId==='string'&&Number.isFinite(Date.parse(r.at))))throw Error('invalid_history');remoteHistory={phase:'ready',records:[...new Map([...(more?remoteHistory.records:[]),...result.records].map(r=>[r.recordId,r])).values()],hasMore:result.hasMore===true,nextBefore:result.nextBefore||null};}catch{if(closed||generation!==epoch)return;remoteHistory.phase='error';}draw(false);}
- function serverHistoryHTML(){if(remoteHistory.phase==='idle')queueMicrotask(()=>loadFreeHistory());const rows=remoteHistory.records;return `<section class="ssp-server-history"><h3>기존 자료 풀이 · 계정 기록</h3>${remoteHistory.phase==='loading'?'<p role="status">계정의 기존 자료 풀이를 불러오고 있어요.</p>':remoteHistory.phase==='error'||remoteHistory.phase==='unavailable'?'<p>기존 자료의 계정 기록을 확인하지 못했어요. 보완연습 기록과 구분해서 다시 불러올 수 있어요.</p><button data-ssp-history-sync>계정 기록 다시 불러오기</button>':!rows.length?'<p>확인된 기존 자료 풀이 기록이 아직 없어요.</p>':''}${rows.length?`<ul>${rows.map(r=>`<li><div><strong>${esc(r.title||r.unit||r.subject||'기존 자료 풀이')}</strong><span>${esc(new Date(r.at).toLocaleDateString('ko-KR'))} · ${r.correct===true?'정답':r.correct===false?'다시 확인':'풀이 기록'}</span></div>${r.questionId?`<button data-ssp-remote="${esc(r.questionId)}">다시 풀기</button>`:''}${variantButton(r,remoteHistory.records)}</li>`).join('')}</ul>`:''}${remoteHistory.hasMore?'<button data-ssp-history-more>이전 계정 기록 더 보기</button>':''}</section>`;}
- function history(){const rows=[...latest(state).values()].reverse();return `<section class="ssp-panel ssp-history"><h2 tabindex="-1">내신 공부 기록</h2>${serverHistoryHTML()}<h3>자체 제작 보완연습 기록</h3><p>${esc(storageMessage)} · 최근 ${state.records.length}회 풀이</p><p>문제별 최근 결과예요. 정답이어도 힌트를 보았거나 헷갈렸다면 복습에 남겨요.</p>${rows.length?`<ul>${rows.map(r=>`<li><div><strong>${esc(TYPES[r.type])}</strong><span>${esc(COURSES.find(c=>c.id===r.course)?.name)} · ${r.level}단계 · ${r.correct?'정답':r.choice===null?'모르겠어요':'오답'}${r.help?' · 도움 받음':''}${r.repeated?' · 재풀이':''}</span>${r.reason?`<small>선택한 복습 이유: ${esc(REASONS[r.reason])}</small>`:''}</div><button data-ssp-open="${r.questionId}">다시 풀기</button>${variantButton(r,state.records)}</li>`).join('')}</ul>`:'<p>아직 공부 기록이 없어요. 원하는 코스에서 첫 문제를 풀어 보세요.</p>'}<div class="ssp-actions"><button class="ssp-primary" data-ssp-review="">틀림·헷갈림 복습</button><button data-ssp-home>코스로 돌아가기</button></div></section>`;}
+ function question(){const q=current;if(!q)return home();const concept=CONCEPTS[q.type];const repeated=state.records.some(r=>r.questionId===q.id);return `<article class="ssp-paper"><div class="ssp-paper-top"><span>${esc(TYPES[q.type])} · ${q.level}단계</span><span>${desk?'':(cursor+1)+' / '+pool.length}</span></div><h2 tabindex="-1" class="ssp-problem-heading">${esc(q.subject)} · ${esc(desk?subunit(q):q.unit)}</h2>${desk?itemPager(cursor,pool.length):''}${repeated?'<p class="ssp-note">전에 풀어 본 문제예요. 이번 결과는 복습 기록으로 남겨요.</p>':''}<div class="ssp-prompt">${q.prompt}</div><fieldset class="ssp-options" aria-label="답안" ${feedback?'disabled':''}>${q.options.map((o,i)=>`<label><input type="radio" name="ssp-answer" value="${i}" ${choice===i?'checked':''}><span class="ssp-option-no">${"①②③④⑤"[i]}</span><span>${o}</span></label>`).join('')}</fieldset>${!feedback?`<div class="ssp-actions"><button class="ssp-primary" data-ssp-check ${choice===null?'disabled':''}>답 확인</button><button data-ssp-skip>모르겠어요</button><button data-ssp-hint aria-expanded="${hint}">힌트 ${hint?'접기':'보기'}</button></div>`:''}${hint?`<aside class="ssp-hint"><h3>첫 생각</h3><p>${q.hint}</p><p>${concept.body}</p></aside>`:''}${feedback?`<section class="ssp-feedback"><h3 tabindex="-1">${feedback.choice===null?'함께 다시 확인해 봐요.':feedback.correct?'맞았어요. 풀이의 조건도 확인해 보세요.':'답을 다시 살펴볼까요?'}</h3><p>정답은 ${q.answer+1}번이에요. ${feedback.help?'힌트를 확인한 풀이로 기록했어요.':''}</p><div class="ssp-actions"><button data-ssp-solution aria-expanded="${solution}">${solution?'풀이 접기':'해설 보기'}</button><button data-ssp-retry>답을 가리고 다시 풀기</button>${variantButton(feedback,state.records)}${desk?'':`<button class="ssp-primary" data-ssp-next>${cursor+1<pool.length?'다음 문제':'공부 결과 보기'}</button>`}</div>${solution?`<section class="ssp-solution"><h3>조건 → 계산 → 확인</h3><ol>${q.solution.map(s=>`<li>${s}</li>`).join('')}</ol></section>`:''}</section>`:''}${lessonNavigation()}<footer class="ssp-paper-foot"><span>델타스킬 자체 제작 · 공통수학2</span>${options.view==='history'?'<button data-ssp-history>내 공부 기록으로</button>':!desk?'<button data-ssp-home>코스로 돌아가기</button>':''}</footer></article>`;}
+ async function loadFreeHistory(more=false){
+  if(!signed()||remoteHistory.phase==='loading')return;
+  if(!activeOwner||typeof window.DSStudentServices?.history!=='function'){remoteHistory.phase='unavailable';draw(false);return;}
+  const generation=epoch;
+  remoteHistory.phase='loading';draw(false);
+  try{
+   const before=more?remoteHistory.nextBefore:null;
+   const page=await DSStudentServices.history({kind:'free',limit:50,...(before?{before}:{})});
+   if(closed||generation!==epoch||!signed())return;
+   if(page.ownerKey!==activeOwner||!Array.isArray(page.records)||!page.records.every(r=>typeof r.recordId==='string'&&
+      typeof r.questionId==='string'&&typeof r.correct==='boolean'&&Number.isFinite(Date.parse(r.at)))||
+      page.hasMore&&(!page.nextBefore||page.nextBefore===before))throw Error('invalid_history');
+   const rows=[...(more?remoteHistory.records:[]),...page.records];
+   remoteHistory={phase:'ready',records:[...new Map(rows.map(r=>[r.recordId,r])).values()],hasMore:page.hasMore,nextBefore:page.nextBefore};
+  }catch{if(closed||generation!==epoch)return;remoteHistory.phase='error';}
+  draw(false);
+ }
+ function recordTitle(r){
+  if(!r.recordId)return TYPES[r.type]||byId.get(r.questionId)?.unit||'보완연습';
+  const book=workbookChoices().find(b=>b.id===r.bookId);
+  const unit=book?.units?.find(u=>u.id===r.unitId);
+  return unit?.types?.find(t=>t.id===r.typeId)?.label||unit?.label||r.unit||r.title||'단원 미분류 문항';
+ }
+ function reviewButton(r,label){
+  const attr=r.recordId?'data-ssp-history-remote':'data-ssp-open';
+  return `<button type="button" ${attr}="${esc(r.questionId)}">${esc(label)}</button>`;
+ }
+ function serverHistoryHTML(){
+  if(remoteHistory.phase==='idle')queueMicrotask(()=>loadFreeHistory());
+  const {records,phase,hasMore}=remoteHistory;
+  let status='';
+  if(phase==='idle'||phase==='loading')status='<p role="status">계정 풀이를 불러오고 있어요.</p>';
+  else if(phase==='error'||phase==='unavailable')status='<p>기존 자료 기록을 모두 확인하지 못했어요.</p><button type="button" data-ssp-history-sync>다시 불러오기</button>';
+  else if(!records.length)status='<p>아직 기존 자료에서 푼 문제가 없어요.</p>';
+  const list=records.map(r=>`<li><div><strong>${esc(recordTitle(r))}</strong><span>${esc(new Date(r.at).toLocaleDateString('ko-KR'))} · ${r.correct?'정답':'오답'}</span></div>${reviewButton(r,'다시 풀기')}${variantButton(r,records)}</li>`).join('');
+  return `<section class="ssp-server-history"><h3>기존 자료 풀이</h3>${status}${list?`<details><summary>불러온 풀이 ${records.length}회</summary><ul>${list}</ul></details>`:''}${hasMore&&phase==='ready'?'<button type="button" data-ssp-history-more>이전 기록 더 보기</button>':''}</section>`;
+ }
+ function history(){
+  const localRows=[...latest(state).values()].sort((a,b)=>b.at-a.at);
+  const recent=new Map();
+  const rows=[...remoteHistory.records,...state.records].sort((a,b)=>(a.recordId?Date.parse(a.at):a.at)-(b.recordId?Date.parse(b.at):b.at));
+  for(const row of rows)recent.set(row.questionId,row);
+  const groups=new Map();
+  for(const row of recent.values()){
+   if(!(row.recordId?row.correct===false:weak(row)))continue;
+   const name=recordTitle(row),group=groups.get(name)||{name,count:0,example:row};
+   group.count++;groups.set(name,group);
+  }
+  const review=[...groups.values()].sort((a,b)=>b.count-a.count);
+  const accountReady=remoteHistory.phase==='ready';
+  const counts=(accountReady||rows.length)?`<dl class="ssp-record-counts"><div><dt>서로 다른 문항</dt><dd>${recent.size}문항</dd></div><div><dt>재풀이 포함 시도</dt><dd>${rows.length}회</dd></div></dl>`:'';
+  const localList=localRows.map(r=>`<li><div><strong>${esc(recordTitle(r))}</strong><span>${r.correct?'정답':r.choice===null?'모르겠어요':'오답'}${r.help?' · 힌트 사용':''}${r.confidence==='unsure'?' · 헷갈림':''}${r.repeated?' · 재풀이':''}</span>${r.reason?`<small>${esc(REASONS[r.reason])}</small>`:''}</div>${reviewButton(r,'다시 풀기')}${variantButton(r,state.records)}</li>`).join('');
+  return `<section class="ssp-panel ssp-history"><h2 tabindex="-1">내 공부 기록</h2>${counts}
+   <p class="ssp-note">내신 화면 학습에서 불러온 기존 자료와 최근 보완연습 최대 250회의 기록이에요.${remoteHistory.hasMore?' 이전 기록을 더 보면 집계도 갱신돼요.':''}</p>
+   ${review.length?`<h3>먼저 복습할 단원·유형</h3><p>같은 문제는 마지막 풀이로 판단해요. 보완연습은 헷갈리거나 힌트를 본 문제도 담아요.</p><ul>${review.slice(0,3).map(g=>`<li><div><strong>${esc(g.name)}</strong><span>다시 볼 문제 ${g.count}개</span></div>${reviewButton(g.example,'복습하기')}</li>`).join('')}</ul>`:accountReady?`<p>${rows.length?'확인한 기록에는 다시 볼 문제가 없어요. 다음 문제로 넘어가 보세요.':'첫 문제를 풀면 이곳에 기록이 쌓여요.'}</p><a href="#student" data-hub-study-link>내신 공부하기 →</a>`:''}
+   ${serverHistoryHTML()}<h3>보완연습 풀이</h3><p class="ssp-note">${esc(storageMessage)}</p>${localList?`<details><summary>문제별 최근 결과 ${localRows.length}개</summary><ul>${localList}</ul></details>`:'<p>확인된 보완연습 풀이가 없어요.</p>'}</section>`;
+ }
  function result(){const rows=pool.map(id=>latest(state).get(id)).filter(Boolean),nextTier=tier(state);return `<section class="ssp-panel"><h2 tabindex="-1">이번 공부를 마쳤어요.</h2><p>${rows.length}문제 중 최근 정답 ${rows.filter(r=>r.correct).length}개 · 다시 볼 문제 ${rows.filter(weak).length}개</p>${state.course==='advanced'?`<p>지금 이어갈 단계는 ${nextTier}단계예요. 재풀이 결과는 새 문제에서의 실력 확인과 구별해요.</p>`:''}<p>${esc(storageMessage)}</p><div class="ssp-actions"><button class="ssp-primary" data-ssp-review="">틀림·실수 복습</button><button data-ssp-home>다음 공부 고르기</button><button data-ssp-history>내 기록 보기</button></div></section>`;}
  function deskMaterials(){
   const render=window.DSStudentDownloads?.materialLink;if(typeof render!=='function')return '';
   if(view==='question'&&current)return render({localUnit:subunit(current)});
-  if(state.course!=='supplement')return '';
+  if(!externalRange&&state.course!=='supplement')return '';
   const {book,unit}=workbookScope();
   if(!book||!unit)return '';
   if(remoteQuestion&&view==='source-question'){
    const metadata=remoteMetadata||{};
-   if(metadata.bookId!==book.id||!(metadata.unitIds||[metadata.unitId]).includes(unit.id))return render({});
+   const match=(metadata.unitIds||[metadata.unitId]).find(id=>(unit.unitIds||[unit.id]).includes(id));
+   return metadata.bookId===book.id&&match?render({bookId:book.id,unitId:match}):render({});
   }
-  return render({bookId:book.id,unitId:unit.id});
+  return unit.unitIds?render({}):render({bookId:book.id,unitId:unit.id});
  }
  function draw(focus=true){if(closed)return;const root=container.querySelector('.ssp');if(!root)return;root.querySelectorAll('[data-ssp-course]').forEach(b=>{b.setAttribute('aria-pressed',String(b.dataset.sspCourse===state.course));});root.querySelector('.ssp-live').textContent=notice;const body=root.querySelector('.ssp-body');
  if(desk){
-  const filters=deskFilters();
+  const planPane=root.querySelector('[data-study-plan]');
+  const markup=planPhase==='loading'?'<p role="status">학습 계획을 불러오고 있어요.</p>':planPhase==='load-error'?'<button type="button" data-plan-reload>다시 불러오기</button>':studyPlan.render({profile:planProfile,draft:planDraft,step:planStep,phase:planPhase,course:planCourse,subjects,units:planPhase==='survey'?planUnits(planDraft.subject,planDraft.need):planUnits(planProfile?.subject,planProfile?.need)});
+  if(markup!==planHTML){planPane.innerHTML=markup;planHTML=markup;}
+  planPane.querySelectorAll('button').forEach(el=>{if(planBusy&&!el.disabled){el.disabled=true;el.dataset.planBusy='';}else if(!planBusy&&el.hasAttribute('data-plan-busy')){el.disabled=false;delete el.dataset.planBusy;}});
+  root.dataset.planPhase=planPhase;
+  const status=root.querySelector('.ssp-plan-status');status.hidden=!planMessage;if(status.textContent!==planMessage)status.textContent=planMessage;
+  const filters=planPhase==='active'?deskFilters():'';
+  root.querySelector('.ssp-desk-filters').hidden=planPhase!=='active';
   if(filters!==deskFilterHTML){root.querySelector('.ssp-desk-filters').innerHTML=filters;deskFilterHTML=filters;}
   root.querySelectorAll('.ssp-desk-controls button, .ssp-desk-controls select:not([disabled]), .ssp-desk-controls [data-ssp-busy-lock]').forEach(el=>{if(remoteBusy&&!el.disabled){el.disabled=true;el.dataset.sspBusyLock='';}else if(!remoteBusy&&el.hasAttribute('data-ssp-busy-lock')){el.disabled=false;delete el.dataset.sspBusyLock;}});
   body.innerHTML=view==='source-question'&&remoteQuestion?remoteQuestionHTML():view==='question'&&current?question():view==='history'?history():view==='result'?result():deskWaiting();
@@ -1044,31 +1346,50 @@ function bind(container,options={}){
  body.innerHTML=view==='source-question'?remoteQuestionHTML():view==='question'?question():view==='history'?history():view==='result'?result():home();const problemFirst=Boolean(body.querySelector('.ssp-paper'));root.classList.toggle('ssp-problem-first',problemFirst);if(problemFirst)root.insertBefore(body,root.firstChild);else root.appendChild(body);if(focus){const el=root.querySelector('.ssp-body h2');if(el){el.tabIndex=-1;el.focus({preventScroll:true});}}}
  function variantButton(record,records){
   if(!record)return '';
-  return window.DSStudentReviewVariants?.button(record,records)||'';
+  const activeIds=view==='question'?pool:view==='source-question'?sourceRows().map(q=>q.questionId||q.id):[];
+  return window.DSStudentReviewVariants?.button(record,records,activeIds)||'';
  }
- function openOriginal(id){
+ function openOriginal(id,keepPool=false){
   const q=byId.get(id);if(!q)return;
+  if(keepPool&&view==='question'&&current?.course===q.course&&pool.includes(id)){
+   if(desk)localPage(pool,pool.indexOf(id),false);
+   else{cursor=pool.indexOf(id);resetQuestion(q);}
+   save();draw();return;
+  }
   state.course=q.course;state.book=q.book||state.book;
-  deskUnit=subunit(q);deskType=q.type;invalidateSource();
+  deskScope=q.unit;deskUnit=subunit(q);deskType=q.type;invalidateSource();
   if(desk){const list=localSet(q);localPage(list,list.indexOf(id),false);}else begin([id]);
   save();draw();
  }
  function check(skip){if(!current||feedback||!skip&&choice===null)return;const r={id:window.crypto?.randomUUID?.()||'ssp-'+Date.now()+'-'+state.records.length,questionId:current.id,version:current.version,course:current.course,type:current.type,level:current.level,at:Date.now(),choice:skip?null:choice,correct:!skip&&choice===current.answer,confidence:skip?'unsure':confidence,help,solutionSeen:false,repeated:state.records.some(r=>r.questionId===current.id),reason:'',seconds:Math.max(0,(Date.now()-openedAt)/1000)};state.records.push(r);feedback=r;save(r);draw();}
  function click(e){const b=e.target.closest('button');if(!b||!container.contains(b)||b.disabled)return;notice='';
+ if(desk&&handlePlanClick(b))return;
  if(b.hasAttribute('data-ssp-variant')){
   if(remoteBusy)return;
-  deskInteracted=true;rememberDesk();
-  if(b.dataset.sspKind==='original')openOriginal(b.dataset.sspVariant);
-  else openRemote(b.dataset.sspVariant,{questionId:b.dataset.sspVariant,version:b.dataset.sspVersion});
+  rememberDesk();
+  const id=b.dataset.sspVariant,version=b.dataset.sspVersion;
+  if(b.dataset.sspKind==='original'){
+   if(byId.get(id)?.version===version)openOriginal(id,true);
+  }else{
+   const match=sourceRows().find(q=>(q.questionId||q.id)===id&&q.version===version);
+   if(match)openRemote(id);
+   else{
+    const target={questionId:id,version};
+    void openRemote(id,target).then(()=>{
+     if(closed||sourcePhase!=='ready'||view!=='source-question'||(remoteQuestion?.questionId||remoteQuestion?.id)!==id||remoteQuestion.version!==version)return;
+     sourceResult={questions:[target]};save();draw(false);
+    });
+   }
+  }
   return;
  }
  if(desk){
-  deskInteracted=true;
+
   if(remoteBusy)return;
   if(b.hasAttribute('data-ssp-chapter-step')){
-   const units=workbookScope().book?.units||[],idx=units.findIndex(u=>u.id===selectedScopeUnit);
+   const book=workbookScope().book;const units=book?workbookRanges(book):[],idx=units.findIndex(u=>u.id===selectedScopeUnit);
    const unit=units[idx+Number(b.dataset.sspChapterStep)];if(!unit)return;
-   selectedScopeUnit=unit.id;selectedScopeType='';widen='subunit';startDesk('supplement');draw(false);return;
+   selectedScopeUnit=unit.id;selectedScopeType='';widen='subunit';startDesk(state.course);draw(false);return;
   }
   if(b.hasAttribute('data-ssp-question-step')){
    const step=Number(b.dataset.sspQuestionStep);rememberDesk();
@@ -1082,10 +1403,10 @@ function bind(container,options={}){
    return;
   }
   if(b.matches('[data-ssp-concept-step],[data-ssp-type-step]')){
-   const sequence=lessonSequences[current?.course]||[];
+   const sequence=deskUnits().unitRows;
    const index=sequence.findIndex(q=>q.id===(current?.originalQuestionId||current?.id));
    const next=sequence[index+Number(b.dataset.sspConceptStep||b.dataset.sspTypeStep)];
-   if(next){rememberDesk();deskUnit=subunit(next);deskType=next.type;localPage(localSet(next),0);save();draw(false);}
+   if(next){rememberDesk();deskType=next.type;localPage(localSet(next),0);save();draw(false);}
    return;
   }
   if(b.hasAttribute('data-ssp-course')||b.hasAttribute('data-ssp-home')){
@@ -1098,28 +1419,40 @@ function bind(container,options={}){
  if(b.hasAttribute('data-ssp-remote-retry')&&remoteQuestion){
   openRemote(remoteQuestion.id||remoteQuestion.questionId,remoteMetadata);return;
  }
+ if(b.hasAttribute('data-ssp-history-remote')){
+  const row=remoteHistory.records.find(r=>r.questionId===b.dataset.sspHistoryRemote);
+  if(row){if(COURSES.some(c=>c.id===row.course))state.course=row.course;openRemote(row.questionId,{questionId:row.questionId,version:row.version},true);}
+  return;
+ }
  if(b.hasAttribute('data-ssp-source-resume')){const p=state.sourcePending[state.course];if(p&&!p.cleared)openRemote(p.questionId,p);return;}if(b.hasAttribute('data-ssp-history-sync')){loadFreeHistory();return;}if(b.hasAttribute('data-ssp-history-more')){loadFreeHistory(true);return;}if(b.hasAttribute('data-ssp-query')){querySource();return;}if(b.hasAttribute('data-ssp-remote')){openRemote(b.dataset.sspRemote);return;}if(b.hasAttribute('data-ssp-remote-submit')){submitRemote();return;}if(b.hasAttribute('data-ssp-remote-unknown')){remoteChoice=null;remoteUnknown=true;submitRemote();return;}if(b.hasAttribute('data-ssp-existing')){const q=existingFree().find(q=>q.id===b.dataset.sspExisting);if(q&&typeof window.DSStudyEntryV54?.openPractice==='function')window.DSStudyEntryV54.openPractice(q.id);return;}if(b.hasAttribute('data-ssp-series')){selectedSeries=b.dataset.sspSeries;widen='type';otherRange=false;invalidateSource();draw();querySource();return;}if(b.hasAttribute('data-ssp-widen')){widen=b.dataset.sspWiden;invalidateSource();draw();querySource();return;}if(b.hasAttribute('data-ssp-other')){otherRange=true;draw();return;}if(b.hasAttribute('data-ssp-course')){state.course=b.dataset.sspCourse;view='home';current=null;invalidateSource();queueMicrotask(querySource);}else if(b.hasAttribute('data-ssp-book')){state.book=b.dataset.sspBook;}else if(b.hasAttribute('data-ssp-resume'))resume(state.course);else if(b.hasAttribute('data-ssp-start'))begin();else if(b.hasAttribute('data-ssp-type'))begin(BANK.filter(q=>q.course==='types'&&q.type===b.dataset.sspType).map(q=>q.id));else if(b.hasAttribute('data-ssp-check'))return check(false);else if(b.hasAttribute('data-ssp-skip'))return check(true);else if(b.hasAttribute('data-ssp-hint')){hint=!hint;help=true;}else if(b.hasAttribute('data-ssp-solution')){solution=!solution;if(solution&&feedback){feedback.solutionSeen=true;save(feedback);}}else if(b.hasAttribute('data-ssp-retry'))resetQuestion(current);else if(b.hasAttribute('data-ssp-next')){if(!feedback)return;if(++cursor<pool.length)resetQuestion(byId.get(pool[cursor]));else {state.pending[state.course]={cleared:true,updatedAt:Date.now()};current=null;view='result';}}else if(b.hasAttribute('data-ssp-review'))review(b.dataset.sspReview);else if(b.hasAttribute('data-ssp-history'))view='history';else if(b.hasAttribute('data-ssp-open'))return openOriginal(b.dataset.sspOpen);else if(b.hasAttribute('data-ssp-home'))view='home';else if(b.hasAttribute('data-ssp-sync')){save();return;}else return;save();draw();}
  function change(e){
  if(desk){
-  deskInteracted=true;
-  if(e.target.matches('[data-ssp-desk-unit],[data-ssp-desk-type],[data-ssp-grade]')){
-   if(e.target.hasAttribute('data-ssp-desk-unit')){deskUnit=e.target.value;deskType='';}
+  if(e.target.matches('[data-plan-subject]')&&planPhase==='survey'){
+   planDraft.subject=e.target.value;planDraft.unit='';draw(false);
+   container.querySelector('[data-plan-unit]')?.focus({preventScroll:true});return;
+  }
+  if(e.target.matches('[data-plan-unit]')&&planPhase==='survey'){void finishPlan(e.target.value);return;}
+
+
+  if(e.target.matches('[data-ssp-desk-scope],[data-ssp-desk-unit],[data-ssp-desk-type],[data-ssp-grade]')){
+   if(e.target.hasAttribute('data-ssp-desk-scope')){deskScope=e.target.value;deskUnit='';deskType='';}
+   else if(e.target.hasAttribute('data-ssp-desk-unit')){deskUnit=e.target.value;deskType='';}
    else if(e.target.hasAttribute('data-ssp-grade'))state.grade=Number(e.target.value);
    else deskType=e.target.value;
-   startDesk(state.course);draw(false);return;
+   startDesk(state.course);if(current)save();draw(false);return;
   }
   if(e.target.matches('[data-ssp-scope-book],[data-ssp-scope-unit],[data-ssp-scope-type]')){
    if(remoteBusy)return;
    if(e.target.hasAttribute('data-ssp-scope-book')){selectedScopeBook=e.target.value;selectedScopeUnit='';selectedScopeType='';}
    else if(e.target.hasAttribute('data-ssp-scope-unit')){selectedScopeUnit=e.target.value;selectedScopeType='';}
    else selectedScopeType=e.target.value;
-   widen=selectedScopeType?'type':'subunit';startDesk('supplement');draw(false);return;
+   widen=selectedScopeType?'type':'subunit';startDesk(state.course);draw(false);return;
   }
  }
- if(e.target.name==='ssp-remote-confidence'){remoteConfidence=e.target.value;save();return;}if(e.target.matches('[data-ssp-target]')){desiredCount=Number(e.target.value);draw(false);return;}if(e.target.name==='ssp-remote-choice'){remoteChoice=Number(e.target.value);remoteUnknown=false;save();return;}if(e.target.matches('[data-ssp-remote-integer]')){const value=e.target.value.trim();remoteUnknown=false;remoteChoice=/^-?\d+$/.test(value)&&Number.isSafeInteger(Number(value))&&Math.abs(Number(value))<=1000000000?Number(value):null;save();return;}if(e.target.matches('[data-ssp-free-unit]')){freeUnit=e.target.value;draw();return;}if(e.target.matches('[data-ssp-scope-book]')){selectedScopeBook=e.target.value;widen='type';invalidateSource();draw();querySource();return;}if(e.target.matches('[data-ssp-scope-unit]')){selectedScopeUnit=e.target.value;widen='type';invalidateSource();draw();querySource();return;}if(e.target.matches('[data-ssp-scope-type]')){selectedScopeType=e.target.value;widen='type';invalidateSource();draw();querySource();return;}if(e.target.name==='ssp-answer'){choice=Number(e.target.value);const button=container.querySelector('[data-ssp-check]');if(button)button.disabled=false;save();}else if(e.target.name==='ssp-confidence'){confidence=e.target.value;save();}else if(e.target.matches('[data-ssp-grade]')){state.grade=Number(e.target.value);save();draw();}else if(e.target.matches('[data-ssp-reason]')&&feedback){feedback.reason=e.target.value;save(feedback);}}
- function sessionChange(){localDrafts.clear();remoteDrafts.clear();epoch++;invalidateSource();remoteQuestion=null;remoteFeedback=null;remoteOperations.clear();remoteHistory={phase:'idle',records:[],hasMore:false,nextBefore:null};activeOwner=owner();current=null;pool=[];feedback=null;view='home';read();if(desk&&signed())startDesk('types',true);notice='로그인 상태가 바뀌어 현재 계정의 기록을 다시 확인했어요.';draw();}
- read();if(desk)startDesk('types',true);container.addEventListener('click',click);container.addEventListener('change',change);window.addEventListener('ds-session-change',sessionChange);if(options.resume&&typeof options.onReady!=='function')resume();draw(false);
- if(signed()&&activeOwner&&typeof options.loadProgress==='function'){const generation=epoch;Promise.resolve().then(()=>options.loadProgress({namespace:'student-paths-v1',ownerKey:activeOwner})).then(raw=>{if(closed||generation!==epoch)return;const remote=clean(raw);let cached=false;try{cached=Boolean(key()&&localStorage.getItem(key()));}catch{}const local=cached?state:remote;state=mergeProgress(remote,local);if(desk&&!deskInteracted)startDesk('types',true);const comparable=x=>JSON.stringify({...x,records:[...x.records].sort((a,b)=>a.id.localeCompare(b.id))});if(comparable(state)!==comparable(remote)&&(!desk||cached))save();else{try{if(key())localStorage.setItem(key(),JSON.stringify(state));}catch{}emit();}draw(false);notifyReady();}).catch(()=>{if(closed||generation!==epoch)return;storageMessage='계정 기록을 불러오지 못했어요. 현재 기기의 기록을 보여드려요.';draw(false);notifyReady();});}else notifyReady();
+ if(e.target.matches('[data-ssp-target]')){desiredCount=Number(e.target.value);draw(false);return;}if(e.target.name==='ssp-remote-choice'){remoteChoice=Number(e.target.value);remoteUnknown=false;save();return;}if(e.target.matches('[data-ssp-remote-integer]')){const value=e.target.value.trim();remoteUnknown=false;remoteChoice=/^-?\d+$/.test(value)&&Number.isSafeInteger(Number(value))&&Math.abs(Number(value))<=1000000000?Number(value):null;save();return;}if(e.target.matches('[data-ssp-free-unit]')){freeUnit=e.target.value;draw();return;}if(e.target.matches('[data-ssp-scope-book]')){selectedScopeBook=e.target.value;widen='type';invalidateSource();draw();querySource();return;}if(e.target.matches('[data-ssp-scope-unit]')){selectedScopeUnit=e.target.value;widen='type';invalidateSource();draw();querySource();return;}if(e.target.matches('[data-ssp-scope-type]')){selectedScopeType=e.target.value;widen='type';invalidateSource();draw();querySource();return;}if(e.target.name==='ssp-answer'){choice=Number(e.target.value);const button=container.querySelector('[data-ssp-check]');if(button)button.disabled=false;save();}else if(e.target.name==='ssp-confidence'){confidence=e.target.value;save();}else if(e.target.matches('[data-ssp-grade]')){state.grade=Number(e.target.value);save();draw();}else if(e.target.matches('[data-ssp-reason]')&&feedback){feedback.reason=e.target.value;save(feedback);}}
+ function sessionChange(){localDrafts.clear();remoteDrafts.clear();epoch++;invalidateSource();remoteQuestion=null;remoteFeedback=null;remoteOperations.clear();remoteHistory={phase:'idle',records:[],hasMore:false,nextBefore:null};activeOwner=owner();current=null;pool=[];feedback=null;view='home';read();if(desk&&signed()){openFirstQuestion();void loadPlan();}notice='로그인 상태가 바뀌어 현재 계정의 기록을 다시 확인했어요.';draw();}
+ read();if(desk){openFirstQuestion();void loadPlan();}container.addEventListener('click',click);container.addEventListener('change',change);window.addEventListener('ds-session-change',sessionChange);if(options.resume&&typeof options.onReady!=='function')resume();draw(false);
+ if(signed()&&activeOwner&&typeof options.loadProgress==='function'){const generation=epoch;Promise.resolve().then(()=>options.loadProgress({namespace:'student-paths-v1',ownerKey:activeOwner})).then(raw=>{if(closed||generation!==epoch)return;const remote=clean(raw);let cached=false;try{cached=Boolean(key()&&localStorage.getItem(key()));}catch{}const local=cached?state:remote;state=mergeProgress(remote,local);const comparable=x=>JSON.stringify({...x,records:[...x.records].sort((a,b)=>a.id.localeCompare(b.id))});if(comparable(state)!==comparable(remote)&&(!desk||cached))save();else{try{if(key())localStorage.setItem(key(),JSON.stringify(state));}catch{}emit();}draw(false);notifyReady();}).catch(()=>{if(closed||generation!==epoch)return;storageMessage='계정 기록을 불러오지 못했어요. 현재 기기의 기록을 보여드려요.';draw(false);notifyReady();});}else notifyReady();
  const controller={snapshot:()=>JSON.parse(JSON.stringify({...state,summary:summary(state),tier:tier(state),storage:storageMessage})),showHistory:()=>{view='history';draw();},resume:()=>{const ok=resume();if(ok)draw();return ok;},destroy:()=>{closed=true;epoch++;container.removeEventListener('click',click);container.removeEventListener('change',change);window.removeEventListener('ds-session-change',sessionChange);controllers.delete(container);if(lastController===controller)lastController=null;}};controllers.set(container,controller);lastController=controller;return controller.destroy;
 }
 window.DSStudentStudyPaths={render,bind,snapshot:()=>lastController?.snapshot()||null,showHistory:()=>lastController?.showHistory(),resume:()=>lastController?.resume()||false,courses:COURSES.map(c=>({...c})),catalog:()=>BANK.map(({id,version,course,type,level,subject,unit,book,sourceKind})=>({id,version,course,type,level,subject,unit,book,sourceKind})),books:BOOKS.map(b=>({...b,ids:[...b.ids]})),validateState:clean,mergeProgress};

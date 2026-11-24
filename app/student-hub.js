@@ -64,7 +64,15 @@ function mount(){
  if(location.hash==='#student'&&tab==='timed'&&area.querySelector('.ds-timed')){window.DSStudentTimed.mount?.();return;}
  if(location.hash==='#student'&&tab==='downloads'){const dl=area.querySelector('.sd-downloads');if(dl&&!dl.dataset.hubMounted){dl.dataset.hubMounted='true';window.DSStudentDownloads.mount(dl);}return;}
  let el=area.querySelector('[data-hub-paths]');const account=inStudentAccount();
- if(account){const root=area.querySelector('.student-account-signed-in');if(root&&!root.querySelector('[data-path-history]')){const div=document.createElement('div');div.setAttribute('data-path-history','');div.innerHTML=window.DSStudentStudyPaths.render({view:'history'});root.append(div);}el=area.querySelector('[data-path-history]');
+ if(account){const root=area.querySelector('.student-account-signed-in');
+   const section=root?.querySelector('#account-study');
+   if(section&&!section.querySelector('[data-path-history]')){
+     const div=document.createElement('div');div.setAttribute('data-path-history','');
+     div.innerHTML=window.DSStudentStudyPaths.render({view:'history'});
+     const heading=section.querySelector('.account-section-heading');
+     if(heading)heading.after(div);else section.prepend(div);
+   }
+   el=section?.querySelector('[data-path-history]');
    if(root&&!root.querySelector('[data-time-history]')){
      const section=document.createElement('section');section.dataset.timeHistory='';section.className='ssp-panel';
      section.innerHTML='<h2>내 타임어택</h2><button data-time-history-load>이전 세트와 포인트 내역 보기</button><div aria-live="polite"></div>';root.append(section);
@@ -74,7 +82,11 @@ function mount(){
  if(!accountData&&!loading&&window.DSStudentServices){const epoch=sessionEpoch;loading=Promise.resolve().then(()=>DSStudentServices.getProgress('student-paths-v1')).then(x=>{if(epoch===sessionEpoch)accountData=x;}).catch(()=>{if(epoch===sessionEpoch)accountData={};}).finally(()=>{if(epoch===sessionEpoch){loading=null;mount();}});return;}
  if(!loading)bindCourse(el,account);
 }
-document.addEventListener('click',e=>{if(e.target.closest('[data-csat-first-question]')){
+document.addEventListener('click',e=>{
+ if(e.target.closest('[data-hub-study-link]')){
+  tab='study';const url=new URL(location.href);url.searchParams.set('studentMode',tab);history.replaceState(history.state,'',url);
+ }
+ if(e.target.closest('[data-csat-first-question]')){
   if(!signed()){location.hash='#login';return;}
   csatPractice='SNG-2024-M11#공통#1';csatArrived=false;tab='study';
   const u=new URL(location.href);u.searchParams.set('studentMode',tab);history.replaceState(history.state,'',u);location.hash='#student';return;

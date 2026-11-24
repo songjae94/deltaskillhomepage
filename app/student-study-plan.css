@@ -1,0 +1,98 @@
+.ssp-desk .ssp-plan {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  color: #f4f2eb;
+}
+.ssp-desk .ssp-plan .ssp-plan-title {
+  margin: 8px 0;
+  color: #f7f4ec;
+  font-size: 19px;
+  line-height: 1.5;
+  letter-spacing: -.025em;
+  word-break: keep-all;
+}
+.ssp-desk .ssp-plan .ssp-plan-progress {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 36px;
+  font-size: 13px;
+  color: #e0ccb0;
+}
+.ssp-desk .ssp-plan progress {
+  appearance: auto;
+  width: 100%;
+  height: 4px;
+  margin: 0 0 4px;
+  border: 0;
+  accent-color: #dcc296;
+}
+.ssp-desk .ssp-plan progress::-webkit-progress-bar {background: #182b39}
+.ssp-desk .ssp-plan progress::-webkit-progress-value {background: #dcc296}
+.ssp-desk .ssp-plan button {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  margin: 0;
+  padding: 9px 12px;
+  border: 1px solid #88939a8a;
+  border-radius: 3px;
+  background: #203342;
+  box-shadow: inset 0 1px #ffffff10;
+  color: #f3f1e9;
+  text-align: left;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.45;
+  word-break: keep-all;
+}
+.ssp-desk .ssp-plan button:enabled:hover {background-color: #354958; color: #fff}
+.ssp-desk .ssp-plan button.ssp-plan-primary,
+.ssp-desk .ssp-plan button[aria-pressed=true] {
+  background: #f5f1e7 url("assets/textures/dl63-paper-fiber.webp") center / 210px auto;
+  border-color: #d8ccb8;
+  color: #273545;
+  font-weight: 650;
+  box-shadow: inset 3px 0 #ad8047, 0 2px 3px #14232e5c;
+}
+.ssp-desk .ssp-plan button.ssp-plan-primary {margin-top: 5px}
+.ssp-desk .ssp-plan button.ssp-plan-primary span {float: right}
+.ssp-desk .ssp-plan button.ssp-plan-link {
+  width: fit-content;
+  min-height: 44px;
+  padding: 5px 2px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: #e1ded6;
+  font-size: 13px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.ssp-desk .ssp-plan :is(button,select):focus-visible {outline: 2px solid #f5d99f; outline-offset: 2px}
+.ssp-desk .ssp-plan .ssp-plan-grades,
+.ssp-desk .ssp-plan .ssp-plan-needs,
+.ssp-desk .ssp-plan .ssp-plan-range {display: grid; gap: 6px}
+.ssp-desk .ssp-plan .ssp-plan-grades {grid-template-columns: repeat(3,minmax(0,1fr))}
+.ssp-desk .ssp-plan .ssp-plan-grades button {text-align: center; padding-inline: 2px; font-variant-numeric: tabular-nums}
+.ssp-desk .ssp-plan .ssp-plan-range {gap: 12px}
+.ssp-desk .ssp-plan .ssp-plan-range label {display: grid; gap: 4px; font-size: 13px; color: #e0ccb0}
+.ssp-desk .ssp-plan .ssp-plan-range select {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  border: 1px solid #d8ccb8;
+  border-radius: 3px;
+  padding: 8px 10px;
+  background-color: #f5f1e7;
+  color: #273545;
+  font: inherit;
+  font-size: 16px;
+}
+.ssp-desk .ssp-plan .ssp-plan-range select:disabled {opacity: .65}
+.ssp-desk .ssp-plan .ssp-plan-current {margin: 0 0 6px; color: #e0ccb0; overflow-wrap: anywhere}
+@media print { .ssp-plan {display:none!important} }

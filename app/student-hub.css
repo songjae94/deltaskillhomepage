@@ -63,3 +63,13 @@
   line-height: 1.55;
   word-break: keep-all;
 }
+
+.ssp-record-link {padding:16px 0 0; text-align:right}
+.ssp-record-link a,.ssp-history a {color:var(--ssp-accent,#344f65); text-underline-offset:4px}
+.ssp-account-history {padding:0; max-width:none}
+.ssp-history .ssp-record-counts {display:flex; flex-wrap:wrap; gap:12px 40px; margin:18px 0; padding-block:14px;
+ border-block:1px solid var(--ssp-line,#c8d1d8)}
+.ssp-record-counts dt {color:var(--ssp-muted); font-size:.9em}
+.ssp-record-counts dd {margin:4px 0 0; font-size:1.5em; font-weight:700}
+.ssp-history details {margin:.6rem 0 1rem}
+.ssp-history summary {cursor:pointer; padding:.5rem 0}

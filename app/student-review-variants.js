@@ -18,11 +18,13 @@
   ];
   const originals = new Set(authoredFamilies.flat().map(id => 'dssp1-' + id));
   const children = new Map();
+  const originalByVariant = new Map();
   for (const q of window.DSStudentDeskPracticeBank || []) {
     const parent = q.originalQuestionId;
     if (q.originalVersion !== 'original-20261124-v1') continue;
     if (!children.has(parent)) children.set(parent, []);
     children.get(parent).push([q.id, q.version]);
+    originalByVariant.set(q.id, parent);
     if (!originals.has(parent)) {
       authoredFamilies.push([parent.slice('dssp1-'.length)]);
       originals.add(parent);
@@ -340,7 +342,7 @@
 ];
   for (const rows of registeredGroups) addGroup(rows, 'registered');
 
-  function next(record, history = []) {
+  function next(record, history = [], activeIds = []) {
     const source = lookup.get(record?.questionId || record?.id);
     if (!source || source.question.version !== record.version) return null;
     const lastAttempt = new Map();
@@ -351,12 +353,17 @@
       if (Number.isFinite(time)) lastAttempt.set(target.id, Math.max(lastAttempt.get(target.id) ?? 0, time));
     }
     const candidates = source.questions.filter(q => q.id !== source.question.id && q.stage !== source.question.stage);
-    candidates.sort((a,b) => (lastAttempt.get(a.id) ?? -1) - (lastAttempt.get(b.id) ?? -1));
+    const active = new Set(activeIds);
+    const origin = id => originalByVariant.get(id) || id;
+    const rank = q => (active.size && !active.has(q.id) ? 2 : 0)
+      + (q.kind === 'original' && origin(q.id) !== origin(source.question.id) ? 1 : 0);
+    candidates.sort((a,b) => rank(a) - rank(b)
+      || (lastAttempt.get(a.id) ?? -1) - (lastAttempt.get(b.id) ?? -1));
     return candidates.length ? {...candidates[0]} : null;
   }
-  function button(record, history) {
+  function button(record, history, activeIds) {
     if (!record || !(record.correct === false || record.confidence === 'unsure' || record.help)) return '';
-    const q = next(record, history);
+    const q = next(record, history, activeIds);
     // Only trusted constant/catalogue identifiers are interpolated.
     return q ? `<button type="button" data-ssp-variant="${q.id}" data-ssp-version="${q.version}" data-ssp-kind="${q.kind}">비슷한 문제 풀기</button>` : '';
   }

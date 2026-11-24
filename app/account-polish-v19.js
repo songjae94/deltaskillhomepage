@@ -64,7 +64,7 @@
     const nav = root.querySelector('.account-nav');
     if (nav) {
       const teacher = state.role === 'teacher';
-      const items = teacher ? [['materials','내 자료'],['designs','내 디자인'],['study','학습 기록']] : [['materials','내 자료'],['study','학습 기록'],['units','단원별 실력'],['designs','내 디자인']];
+      const items = teacher ? [['materials','내 자료'],['designs','내 디자인'],['study','학습 기록']] : [['materials','내 자료'],['study','내 공부 기록'],['units','단원별 실력'],['designs','내 디자인']];
       nav.innerHTML = `<div class="ap19-main-nav">${items.map(([key,label]) => `<button type="button" data-account-section="${key}" aria-controls="account-${key}">${label}<span aria-hidden="true">↗</span></button>`).join('')}</div><div class="ap19-sub-nav"><button type="button" data-account-section="saved" aria-controls="account-saved">저장한 구성 <small>이 기기</small></button>${teacher ? '<button type="button" data-account-section="units" aria-controls="account-units">단원별 실력</button>' : ''}<a href="#account-settings">계정 관리</a><a href="#help">이용 안내</a></div>`;
     }
     const order = state.role === 'teacher' ? ['materials','designs','saved','units','study'] : ['materials','study','units','designs','saved'];
