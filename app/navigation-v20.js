@@ -10,6 +10,15 @@
     if (page === 'studio') page = 'teacher';
     if (page === 'diagnostic-result' && !localDiagnosticAttempts().length) page = 'diagnostic';
     originalHeader(page);
+    const meta = document.querySelector('#header .meta');
+    if (meta && DSService.session()) {
+      const logout = document.createElement('button');
+      logout.type = 'button';
+      logout.className = 'header-account-logout';
+      logout.dataset.accountAction = 'logout';
+      logout.textContent = '로그아웃';
+      meta.append(logout);
+    }
     const nav = document.querySelector('#header nav[aria-label="주 메뉴"]');
     if (!nav) return;
     const teacher = role === 'teacher';

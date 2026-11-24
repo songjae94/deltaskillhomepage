@@ -8,3 +8,15 @@
 .nv20-exam-materials{padding:12px 0 30px}
 }
 @media screen and (max-width:660px){.nv20-collections{gap:28px;margin-bottom:22px;scroll-margin-top:124px}.nv20-collections button{font-size:17px;min-height:53px}}
+
+#header .header-account-logout {
+ display:inline-flex; align-items:center; justify-content:center;
+ min-height:44px; padding:0 4px; border:0; border-radius:3px;
+ color:inherit; background:transparent; box-shadow:none;
+ font:inherit; font-size:13px; font-weight:550; white-space:nowrap; cursor:pointer;
+}
+#header .header-account-logout:focus-visible {outline:2px solid #4664ac;outline-offset:2px}
+#header .ds-mobile-menu .header-account-logout {justify-content:flex-start;padding:6px 9px;color:#273348;font-size:14px}
+@media(max-width:520px){
+ #header .header:not(.ds-mobile-header) .meta:has(.header-account-logout){gap:6px}
+}

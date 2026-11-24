@@ -56,7 +56,14 @@
   if(memberPreview){await ready;try{await local('/logout',{})}finally{if(generation===authEpoch){signedIn=false;csrf='';legacyPassword=false;await refresh()}}return}
   const token=auth?.get();auth?.forget();auth?.clear();window.dispatchEvent(new Event('ds-session-change'));
   try{localStorage.setItem('ds_logout_epoch',String(Date.now()))}catch{}
-  if(token&&isLiveOrigin)await fetch(EDGE+'/api/logout',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:'{}',credentials:'omit'}).catch(()=>{});
+  if(token&&isLiveOrigin){
+   try{
+    const response=await fetch(EDGE+'/api/logout',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:'{}',credentials:'omit',keepalive:true});
+    if(response.status===204||response.status===401)return {remoteConfirmed:true};
+    const result=await response.json().catch(()=>null);
+    return {remoteConfirmed:response.ok&&result?.ok===true};
+   }catch{return {remoteConfirmed:false};}
+  }
  }
  function masked(phone){return String(phone||'').replace(/^(\d{3})\d{3,4}(\d{4})$/,'$1-****-$2')}
  function errorText(error){return ({preview_origin:'로그인 연결을 확인해 주세요.',unauthorized:'로그인이 만료되었습니다. 다시 로그인해 주세요.',session_expired:'화면을 새로고침한 뒤 다시 로그인해 주세요.',invalid:'번호 또는 비밀번호를 확인해 주세요.',not_enrolled:'가입되지 않은 번호입니다.',locked:'시도가 많아 잠시 잠겼습니다. 15분 뒤 다시 시도해 주세요.',too_many:'요청이 많습니다. 잠시 후 다시 시도해 주세요.',connection_failed:'연결하지 못했습니다. 잠시 후 다시 시도해 주세요.'})[error?.message]||'불러오지 못했습니다. 다시 시도해 주세요.'}

@@ -17,6 +17,7 @@ let studio=get('studio-v2',{sku:catalog[0]?.sku,source:'materials',kind:'숫자 
 let library={subject:'전체',term:''},detailSku=catalog[0]?.sku,detailPage=0;
 let loginState={busy:false,error:'',phone:''},accountState={loading:false,error:'',library:[],passSets:[]},downloadMap=new Map(),accountEpoch=0;
 const nativeOrigin=window.DSService.isLiveOrigin;
+let logoutPending=false;
 function toast(message){$('#toast').textContent=message;$('#toast').classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>$('#toast').classList.remove('show'),4000)}
 function brand(){return '<span class="brand">DELTA<span class="delta">SKILL</span></span>'}
 function header(page){
@@ -1113,7 +1114,20 @@ document.addEventListener('click',async e=>{
  if(b.hasAttribute('data-pdf-next')||b.hasAttribute('data-pdf-prev')){const d=catalog.find(v=>v.sku===detailSku);detailPage=Math.max(0,Math.min(d.previewPages.length-1,detailPage+(b.hasAttribute('data-pdf-next')?1:-1)));$('#content').innerHTML=materialPage();return}
  if(b.dataset.useMaterial){studio.sku=b.dataset.useMaterial;studio.source='materials';put('studio-v2',studio);location.hash='#teacher';return}
  if(b.dataset.accountSection){const section=document.getElementById(b.getAttribute('aria-controls'));section?.focus({preventScroll:true});section?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});return}
- if(b.dataset.accountAction==='logout'){clearMemberView();await DSService.logout();location.hash='#login';route();return}
+ if(b.dataset.accountAction==='logout'){
+  if(logoutPending)return;
+  logoutPending=true;b.disabled=true;
+  try {
+   const result=await DSService.logout();
+   if(DSService.session()){toast('로그아웃을 확인하지 못했어요. 다시 시도해 주세요.');return;}
+   clearMemberView();location.hash='#login';route();
+   toast(result?.remoteConfirmed===false?'이 기기에서 로그아웃했습니다. 서버 세션 종료는 확인하지 못했어요.':'로그아웃했습니다.');
+  }catch{
+   if(!DSService.session()){clearMemberView();location.hash='#login';route();}
+   toast(DSService.session()?'로그아웃하지 못했어요. 다시 시도해 주세요.':'이 기기의 연결이 종료됐어요. 서버 세션 상태는 확인하지 못했어요.');
+  }finally{logoutPending=false;if(b.isConnected)b.disabled=false;}
+  return;
+ }
  if(b.dataset.accountAction==='toggle-password'){const field=$('#account-password');if(field){const show=field.type==='password';field.type=show?'text':'password';b.setAttribute('aria-pressed',String(show));b.textContent=show?'숨기기':'보기'}return}
  if(b.dataset.accountAction==='retry'){if(b.dataset.retryTarget==='units')loadUnitDiagnostics();else loadAccount();return}
  if(b.dataset.accountAction==='record'){location.hash='#record/'+encodeURIComponent(b.dataset.recordId);return}
