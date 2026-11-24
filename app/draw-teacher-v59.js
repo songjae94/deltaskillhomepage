@@ -78,6 +78,7 @@
   let columnRule = false;
   let layout = '2', title = '', page = 0, embedded = 0, printing = false, owner = '', count = 5, withSol = true, waitPrint = false;
   let trialOn = false, limits = null, seenToday = 0, opened = '';
+  let approvedTrial = null, trialWake = 0;
   const frames = new Set();
   const studentSurface = () => Boolean(window.DSStudentDownloads?.isPrintActive());
   const here = () => ['#teacher', '#studio'].includes(location.hash) || studentSurface();
@@ -494,7 +495,8 @@ ${css}
     const awaitingSupply = scope?.awaitingSupply(sel.subject);
     const canQuote = awaitingSupply ? false : basic ? Boolean(current()?.ready) : choice &&
       (choice.mode !== 'book' || choice.book_id) && (choice.type_mode !== 'specific' || choice.type_ids.length);
-    const trial = basic && guest() && current() ? `<button type="button" class="tb36-quiet" data-dq-guest-preview ${pending?'disabled':''}>기본 세트 맛보기</button>` : '';
+    const retry = approvedTrial && trialMatches(approvedTrial);
+    const trial = basic && guest() && current() ? `<button type="button" class="tb36-quiet" data-dq-guest-preview ${pending || (retry && Date.now() < approvedTrial.retryAt) ? 'disabled' : ''}>${retry ? '남은 문항 이어 열기' : '기본 세트 맛보기'}</button>` : '';
     const button = `<button type="submit" class="tb36-primary" ${canQuote && !pending ? '' : 'disabled'}>${pending?'문항 준비 중':'출력 / PDF 저장'} <span>→</span></button>`;
     return `<div class="tb36-setup dq59-setup${guest() ? ' dq61-guest' : ''}"><form id="dq59-form" class="tb36-conditions"><div class="tb36-section-title"><b>01</b><h2>프린트 구성</h2></div>${basic ? meter() : ''}${fields}${scopeHtml}${awaitingSupply ? '' : countField()+studentOutputSettings()}${button}${trial}${noteHTML()}</form>${idle()}</div>`;
   }
@@ -601,6 +603,10 @@ ${css}
   }
   teacher = function () {
     const s = B.snapshot();
+    if (!embedded && !studentSurface() && s.mode !== 'print' && (approvedTrial || pending?.guest)) {
+      if (pending?.guest) stop();
+      clearTrial();
+    }
     // Without a draw host (for example a plain static copy) the v58.3 flow stays as it is.
     return embedded || !host() || !here() || s.mode !== 'print' || s.phase !== 'setup' ? base.apply(this, arguments) : mine();
   };
@@ -741,13 +747,13 @@ ${css}
     const h = host();
     if (!h) { say('unconfigured'); rerender(); return; }
     let toPrint = null;
-    const op = { controller: new AbortController() };
+    const op = { controller: new AbortController(), guest:Boolean(job.guest) };
     pending = op;
     const origin = location.hash;
     const alive = () => pending === op && location.hash === origin && sharedPrint();
     if (!job.quiet) say('loading');
     rerender();
-    op.timer = setTimeout(() => { if (pending === op) { stop(); say('unavailable'); rerender(); } }, 25000);
+    op.timer = setTimeout(() => { if (pending === op) { stop(); if (job.guest && approvedTrial) trialInterrupted(); else say('unavailable'); rerender(); } }, 25000);
     try {
       await h.ready;
       if (!alive()) return;
@@ -778,7 +784,7 @@ ${css}
     if (error?.code === 'trial_limit' && error.data?.scope !== 'all') {
       const left = Number.isInteger(error.data?.left) ? error.data.left : 0;
       writeTally(daily() - left);
-      note = left > 0 ? { kind: 'trialleft', text: `오늘 로그인 없이 ${left}문항 더 볼 수 있습니다.` } : { kind: '', text: '' };
+      note = {kind:'trialleft', text:left > 0 ? `오늘 로그인 없이 ${left}문항 더 볼 수 있습니다.` : '오늘 로그인 없이 이용할 수 있는 문항 수를 모두 사용했습니다.'};
       return;
     }
     if (error?.code === 'trial_limit') { say('trialbusy'); return; }
@@ -794,24 +800,78 @@ ${css}
       return { id, body: questionBody(id, payload) };
     }));
   }
+  function clearTrial() {
+    clearTimeout(trialWake);
+    approvedTrial = null;
+    if (note.kind === 'trialresume') note = {kind:'', text:''};
+  }
+  function trialMatches(set) {
+    return guest() && here() && printSurface() && !window.DSPrintScope?.active() &&
+      set.surface === location.hash && set.key === current()?.cell_key && set.count === count;
+  }
+  function wakeTrial(set) {
+    clearTimeout(trialWake);
+    const next = Math.min(set.expiresAt, set.retryAt > Date.now() ? set.retryAt : set.expiresAt);
+    trialWake = setTimeout(() => {
+      if (approvedTrial !== set) return;
+      if (!trialMatches(set)) { clearTrial(); return; }
+      if (Date.now() >= set.expiresAt) {
+        if (pending) stop();
+        clearTrial(); say('trialexpired');
+      } else { trialInterrupted(); wakeTrial(set); }
+      rerender();
+    }, Math.max(1, next - Date.now()));
+  }
+  function trialInterrupted() {
+    const set = approvedTrial;
+    if (!set) return;
+    const wait = Math.max(0, Math.ceil((set.retryAt - Date.now()) / 1000));
+    note = {kind:'trialresume', text:`${set.items.length}문항 중 ${set.bodies.size}문항을 열었습니다. ${wait ? wait + '초 뒤에 ' : ''}남은 문항을 이어 열 수 있습니다.`};
+  }
   function guestDraw() {
+    if (pending) return;
     const row = current(), want = count;
     if (!row) { say('notready'); rerender(); return; }
-    if (want > guestCap(row)) { openGate('limit'); return; }
+    if (approvedTrial && !trialMatches(approvedTrial)) clearTrial();
+    if (approvedTrial && Date.now() >= approvedTrial.expiresAt) {
+      clearTrial(); say('trialexpired'); rerender(); return;
+    }
+    if (approvedTrial && Date.now() < approvedTrial.retryAt) return;
+    if (!approvedTrial && want > guestCap(row)) { openGate('limit'); return; }
     const job = async (h, signal, alive) => {
-      const d = await h.trial.draw(row.cell_key, want, signal);
-      if (!alive()) return null;
-      const ids = d.items.map(x => x.item_id);
-      writeTally(daily() - d.left);                // the server's own count of what is left today
-      const items = await Promise.all(ids.map(async id => {
+      let set = approvedTrial;
+      if (!set) {
+        const issued = Date.now();
+        const d = await h.trial.draw(row.cell_key, want, signal);
+        if (!alive() || !guest()) return null;
+        writeTally(daily() - d.left);
+        // Ticket verification remains on the server. Drop local copies at its one-hour or KST day boundary.
+        const reset = Date.parse(d.resets_at);
+        set = {surface:location.hash, key:row.cell_key, count:want, ticket:d.ticket, status:d.status,
+          items:d.items, bodies:new Map(), expiresAt:Math.min(issued + 3600000, Number.isFinite(reset) ? reset : Infinity), retryAt:0};
+        approvedTrial = set;
+        wakeTrial(set);
+      }
+      for (const {item_id:id} of set.items) {
+        if (set.bodies.has(id)) continue;
+        if (!alive() || approvedTrial !== set || !trialMatches(set)) return null;
         try {
-          const payload = await h.trial.open(row.cell_key, id, d.ticket, signal);
-          if (!alive()) throw Error('stale');
-          return { id, body: questionBody(id, payload) };
-        } catch (error) { throw Object.assign(error, { trialOpen: true }); }
-      }));
+          const payload = await h.trial.open(set.key, id, set.ticket, signal);
+          if (!alive() || approvedTrial !== set) return null;
+          set.bodies.set(id, questionBody(id, payload));
+        } catch (error) {
+          if (!alive() || approvedTrial !== set) return null;
+          if (error?.code === 'rate_limited' || error?.status >= 500 || error?.status === 0) {
+            if (error.status === 429) set.retryAt = Date.now() + (error.data?.retry_after || 60) * 1000;
+            trialInterrupted(); wakeTrial(set); return null;
+          }
+          clearTrial(); throw Object.assign(error, {trialOpen:true});
+        }
+      }
+      const items = set.items.map(({item_id:id}) => ({id,body:set.bodies.get(id)}));
       const labels = Object.fromEntries(FIELDS.map(([k]) => [k, row[k]]));
-      return { guest: true, key: row.cell_key, labels, status: d.status, page: 0, count: want, items, capped: ids.length < want || leftToday() === 0 };
+      clearTrial();
+      return { guest:true, key:set.key, labels, status:set.status, page:0, count:want, items, capped:items.length < want || leftToday() === 0 };
     };
     job.guest = true;
     run(job);
@@ -1134,7 +1194,7 @@ ${css}
     else if (b.hasAttribute('data-dq-review')) { waitPrint = false; phase = 'cards'; note = { kind: '', text: '' }; rerender(); }
     else if (b.hasAttribute('data-dq-menu')) { note = { kind: '', text: '' }; menuTried = false; rerender(); }
     else if (b.hasAttribute('data-dq-guest-preview') && guest() && !window.DSPrintScope?.active()) guestDraw();
-    else if (b.hasAttribute('data-dq-redraw')) { note = { kind: '', text: '' }; if (guest()) guestDraw(); else openOutput(); }
+    else if (b.hasAttribute('data-dq-redraw')) { clearTrial(); note = { kind: '', text: '' }; if (guest()) guestDraw(); else openOutput(); }
     else if (b.hasAttribute('data-dq61-solretry')) { if (drawn && !drawn.guest) { dropSolutions(); note = { kind: '', text: '' }; prefetch(drawn); rerender(); } }
     else if (b.hasAttribute('data-dq-next')) { if (sharedPrint()) { phase='setup'; rerender(); openOutput(); return; } if (drawn && !pending && !drawn.guest) draw({ page: (drawn.page + 2) * drawn.count <= 50 ? drawn.page + 1 : 0 }); }
     else if (b.hasAttribute('data-dq-print')) printWhenReady();
@@ -1145,7 +1205,7 @@ ${css}
   });
   document.addEventListener('change', e => {
     const key = e.target.dataset?.dqField;
-    if (key && !pending) { window.DSPrintScope?.invalidate(); sel[key] = e.target.value; settle(); note = { kind: '', text: '' }; rerender(`[data-dq-field="${key}"]`); }
+    if (key && !pending) { clearTrial(); window.DSPrintScope?.invalidate(); sel[key] = e.target.value; settle(); note = { kind: '', text: '' }; rerender(`[data-dq-field="${key}"]`); }
     if (e.target.hasAttribute?.('data-student-print-sol')) withSol = e.target.checked;
     if (e.target.hasAttribute?.('data-dq-note-placement')) { pageNote.placement=e.target.value; updateSampleText(); }
     if (e.target.hasAttribute?.('data-dq-divider')) {
@@ -1155,7 +1215,7 @@ ${css}
     }
     if (e.target.hasAttribute?.('data-dq-layout') && sharedPrint() && phase === 'setup') { layout=e.target.value; rerender('[data-dq-layout]:checked'); return; }
     if (e.target.hasAttribute?.('data-dq-layout')) { layout = e.target.value; page = 0; rerender('[data-dq-layout]'); }
-    if (e.target.hasAttribute?.('data-dq-count') && !pending) { window.DSPrintScope?.invalidate(); count = COUNTS.includes(Number(e.target.value)) ? Number(e.target.value) : 5; rerender('[data-dq-count]'); }
+    if (e.target.hasAttribute?.('data-dq-count') && !pending) { clearTrial(); window.DSPrintScope?.invalidate(); count = COUNTS.includes(Number(e.target.value)) ? Number(e.target.value) : 5; rerender('[data-dq-count]'); }
     if (e.target.hasAttribute?.('data-dq-sol') && drawn && phase === 'finish') {
       // Switching the answer pages only shows or hides them; what was fetched stays with the set.
       withSol = e.target.checked; page = 0; waitPrint = false;
@@ -1166,9 +1226,9 @@ ${css}
   for (const eventName of ['click', 'change']) document.addEventListener(eventName, e => {
     const el = e.target.closest?.('[data-ps-source],[data-ps-types],[data-ps-unit],[data-ps-type],[data-ps-all]');
     if (!el || pending || (eventName === 'click') !== (el.tagName === 'BUTTON')) return;
-    if (window.DSPrintScope?.change(el)) { note = {kind:'',text:''}; rerender(); }
+    if (window.DSPrintScope?.change(el)) { clearTrial(); note = {kind:'',text:''}; rerender(); }
   });
-  document.addEventListener('change', e => { if (e.target.hasAttribute?.('data-ps-subject') && !pending) { sel.subject = e.target.value; rerender(); } });
+  document.addEventListener('change', e => { if (e.target.hasAttribute?.('data-ps-subject') && !pending) { clearTrial(); sel.subject = e.target.value; rerender(); } });
   function updateSampleText() {
     const frame = document.querySelector('#content .dq61-sample-page');
     const paper = frame?.contentDocument?.querySelector('.paper');
@@ -1192,11 +1252,11 @@ ${css}
   });
   // While a teacher tab stays open the local preview session is kept from idling out.
   setInterval(() => { const h = host(); if (h?.keepAlive && here() && printSurface() && h.signedIn()) h.keepAlive(); }, 10 * 60 * 1000);
-  window.addEventListener('ds-session-change', () => { closeOutput(); window.DSPrintScope?.change({hasAttribute:k=>k==='data-ps-mode',dataset:{psMode:'random'}}); stop(); dropSolutions(); drawn = null; owner = ''; phase = 'setup'; note = { kind: '', text: '' }; menu = []; menuGuard?.abort(); menuGuard = null; menuBusy = false; menuTried = false; menuIssue = ''; trialOn = false; limits = null; document.getElementById('dq61-gate')?.close(); if (here()) rerender(); });
-  window.addEventListener('hashchange', () => { closeOutput(); if (pending) { stop(); say(''); } if (!here()) { waitPrint = false; document.getElementById('dq61-gate')?.close(); if (phase === 'finish') phase = 'cards'; } });
+  window.addEventListener('ds-session-change', () => { clearTrial(); closeOutput(); window.DSPrintScope?.change({hasAttribute:k=>k==='data-ps-mode',dataset:{psMode:'random'}}); stop(); dropSolutions(); drawn = null; owner = ''; phase = 'setup'; note = { kind: '', text: '' }; menu = []; menuGuard?.abort(); menuGuard = null; menuBusy = false; menuTried = false; menuIssue = ''; trialOn = false; limits = null; document.getElementById('dq61-gate')?.close(); if (here()) rerender(); });
+  window.addEventListener('hashchange', () => { clearTrial(); closeOutput(); if (pending) { stop(); say(''); } if (!here()) { waitPrint = false; document.getElementById('dq61-gate')?.close(); if (phase === 'finish') phase = 'cards'; } });
   window.addEventListener('ds-print-scope-ready', () => { if (phase === 'setup' && here()) rerender(); });
   window.addEventListener('ds-document-design-change', () => { if (here() && printSurface()) { page=0; rerender(`[data-document-design="${window.DSDocumentDesign.selected().id}"]`); } });
-  window.addEventListener('pagehide', () => { stop(); dropSolutions(); });
-  window.DSDrawTeacherV59 = { openBook:openOutput, suspendStudent(){closeOutput();stop();waitPrint=false;document.getElementById('dq61-gate')?.close();},renderStudent:()=>B.withPrintSurface?B.withPrintSurface(mine):mine(),mount, snapshot: () => ({ phase, pending: Boolean(pending), note: { ...note }, count: drawn?.items.length ?? 0, layout, guest: Boolean(drawn?.guest), trial: trialOn, seen: seenToday, sol: drawn?.solOp ? { done: drawn.solOp.done, total: drawn.solOp.total, ready: Boolean(drawn.solutions), failed: drawn.solOp.failed } : null }) };
+  window.addEventListener('pagehide', () => { clearTrial(); stop(); dropSolutions(); });
+  window.DSDrawTeacherV59 = { openBook:openOutput, suspendStudent(){clearTrial();closeOutput();stop();waitPrint=false;document.getElementById('dq61-gate')?.close();},renderStudent:()=>B.withPrintSurface?B.withPrintSurface(mine):mine(),mount, snapshot: () => ({ phase, pending: Boolean(pending), note: { ...note }, count: drawn?.items.length ?? 0, layout, guest: Boolean(drawn?.guest), trial: trialOn, seen: seenToday, sol: drawn?.solOp ? { done: drawn.solOp.done, total: drawn.solOp.total, ready: Boolean(drawn.solutions), failed: drawn.solOp.failed } : null }) };
   if (here() && host()) rerender();                 // the page was first drawn before this file loaded
 })();
