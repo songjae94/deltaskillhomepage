@@ -835,7 +835,7 @@ function cards(){return COURSES.map((c,i)=>`<button class="ssp-course" data-ssp-
 function openingQuestion(){return BANK.find(q=>q.course==='types'&&!q.originalQuestionId);}
 function deskShell(){
  const first=openingQuestion();
- return `<section class="ssp ssp-desk sl54-shell student-signed-in" aria-label="내신 공부하기">
+ return `<section class="ssp ssp-desk sl54-shell student-signed-in" data-plan-phase="loading" aria-label="내신 공부하기">
   <header class="ssil-heading"><h1>등급을올리는공부부터</h1><a href="#account" data-ssil-account="study">학습 기록 보기 ↗</a></header>
   <div class="ssil-main">
    <div class="ssil-today ssil-live-paper ssp-body"><article class="ssp-paper"><h2 class="ssp-problem-heading">${esc(first.subject)} · ${esc(subunit(first))}</h2><div class="ssp-prompt">${first.prompt}</div></article></div>
@@ -1145,7 +1145,7 @@ function bind(container,options={}){
   try{
    const saved=await window.DSStudyPlanStore.save(activeOwner,profile);
    if(closed||generation!==epoch)return;
-   if(saved.storage==='device')planMessage='선택한 공부를 이 기기에 저장했어요.';
+   if(saved.storage==='device')planMessage='';
   }catch{if(!closed&&generation===epoch)planMessage='문제는 계속 풀 수 있어요. 학습 선택을 저장하려면 다시 선택해 주세요.';}
   finally{if(!closed&&generation===epoch){planBusy=false;draw(false);}}
  }
@@ -1418,9 +1418,9 @@ function bind(container,options={}){
    <nav aria-label="${label} 이동"><button type="button" ${action}="-1" ${index<=0?'disabled':''}>← 이전 ${label}</button>
    <span>${index+1} / ${sequence.length}</span>
    <button type="button" ${action}="1" ${index===sequence.length-1?'disabled':''}>다음 ${label} →</button></nav>
-   <h3>${esc(title)}</h3>${isConcept?`<p>${CONCEPTS[current.type].body}</p>`:''}</section>`;
+   ${isConcept?`<h3>${esc(title)}</h3><p>${CONCEPTS[current.type].body}</p>`:''}</section>`;
  }
- function question(){const q=current;if(!q)return home();const concept=CONCEPTS[q.type];const repeated=state.records.some(r=>r.questionId===q.id);return `<article class="ssp-paper"><div class="ssp-paper-top"><span>${esc(TYPES[q.type])} · ${q.level}단계</span><span>${desk?'':(cursor+1)+' / '+pool.length}</span></div><h2 tabindex="-1" class="ssp-problem-heading">${esc(q.subject)} · ${esc(desk?subunit(q):q.unit)}</h2>${desk?itemPager(cursor,pool.length):''}${repeated?'<p class="ssp-note">전에 풀어 본 문제예요. 이번 결과는 복습 기록으로 남겨요.</p>':''}<div class="ssp-prompt">${q.prompt}</div><fieldset class="ssp-options" aria-label="답안" ${feedback?'disabled':''}>${q.options.map((o,i)=>`<label><input type="radio" name="ssp-answer" value="${i}" ${choice===i?'checked':''}><span class="ssp-option-no">${"①②③④⑤"[i]}</span><span>${o}</span></label>`).join('')}</fieldset>${!feedback?`<div class="ssp-actions"><button class="ssp-primary" data-ssp-check ${choice===null?'disabled':''}>답 확인</button><button data-ssp-skip>모르겠어요</button><button data-ssp-hint aria-expanded="${hint}">힌트 ${hint?'접기':'보기'}</button></div>`:''}${hint?`<aside class="ssp-hint"><h3>첫 생각</h3><p>${q.hint}</p><p>${concept.body}</p></aside>`:''}${feedback?`<section class="ssp-feedback"><h3 tabindex="-1">${feedback.choice===null?'함께 다시 확인해 봐요.':feedback.correct?'맞았어요. 풀이의 조건도 확인해 보세요.':'답을 다시 살펴볼까요?'}</h3><p>정답은 ${q.answer+1}번이에요. ${feedback.help?'힌트를 확인한 풀이로 기록했어요.':''}</p><div class="ssp-actions"><button data-ssp-solution aria-expanded="${solution}">${solution?'풀이 접기':'해설 보기'}</button><button data-ssp-retry>답을 가리고 다시 풀기</button>${variantButton(feedback,state.records)}${desk?'':`<button class="ssp-primary" data-ssp-next>${cursor+1<pool.length?'다음 문제':'공부 결과 보기'}</button>`}</div>${solution?`<section class="ssp-solution"><h3>조건 → 계산 → 확인</h3><ol>${q.solution.map(s=>`<li>${s}</li>`).join('')}</ol></section>`:''}</section>`:''}${lessonNavigation()}<footer class="ssp-paper-foot"><span>델타스킬 자체 제작 · 공통수학2</span>${options.view==='history'?'<button data-ssp-history>내 공부 기록으로</button>':!desk?'<button data-ssp-home>코스로 돌아가기</button>':''}</footer></article>`;}
+ function question(){const q=current;if(!q)return home();const concept=CONCEPTS[q.type];const repeated=state.records.some(r=>r.questionId===q.id);return `<article class="ssp-paper"><div class="ssp-paper-top"><span>${esc(TYPES[q.type])} · ${q.level}단계</span><span>${desk?'':(cursor+1)+' / '+pool.length}</span></div><h2 tabindex="-1" class="ssp-problem-heading">${esc(q.subject)} · ${esc(desk?subunit(q):q.unit)}</h2>${desk?itemPager(cursor,pool.length):''}${repeated?'<p class="ssp-note">전에 풀어 본 문제예요. 이번 결과는 복습 기록으로 남겨요.</p>':''}<div class="ssp-prompt">${q.prompt}</div><fieldset class="ssp-options" aria-label="답안" ${feedback?'disabled':''}>${q.options.map((o,i)=>`<label><input type="radio" name="ssp-answer" value="${i}" ${choice===i?'checked':''}><span class="ssp-option-no">${"①②③④⑤"[i]}</span><span>${o}</span></label>`).join('')}</fieldset>${!feedback?`<div class="ssp-actions"><button class="ssp-primary" data-ssp-check ${choice===null?'disabled':''}>답 확인</button><button data-ssp-skip>모르겠어요</button><button data-ssp-hint aria-expanded="${hint}">힌트 ${hint?'접기':'보기'}</button></div>`:''}${hint?`<aside class="ssp-hint"><h3>첫 생각</h3><p>${q.hint}</p><p>${concept.body}</p></aside>`:''}${feedback?`<section class="ssp-feedback"><h3 tabindex="-1">${feedback.choice===null?'함께 다시 확인해 봐요.':feedback.correct?'맞았어요. 풀이의 조건도 확인해 보세요.':'답을 다시 살펴볼까요?'}</h3><p>정답은 ${q.answer+1}번이에요. ${feedback.help?'힌트를 확인한 풀이로 기록했어요.':''}</p><div class="ssp-actions"><button data-ssp-solution aria-expanded="${solution}">${solution?'풀이 접기':'해설 보기'}</button><button data-ssp-retry>답을 가리고 다시 풀기</button>${variantButton(feedback,state.records)}${desk?'':`<button class="ssp-primary" data-ssp-next>${cursor+1<pool.length?'다음 문제':'공부 결과 보기'}</button>`}</div>${solution?`<section class="ssp-solution"><h3>조건 → 계산 → 확인</h3><ol>${q.solution.map(s=>`<li>${s}</li>`).join('')}</ol></section>`:''}</section>`:''}${lessonNavigation()}<footer class="ssp-paper-foot">${options.view==='history'?'<button data-ssp-history>내 공부 기록으로</button>':!desk?'<button data-ssp-home>코스로 돌아가기</button>':''}</footer></article>`;}
  async function loadFreeHistory(more=false){
   if(!signed()||remoteHistory.phase==='loading')return;
   if(!activeOwner||typeof window.DSStudentServices?.history!=='function'){remoteHistory.phase='unavailable';draw(false);return;}
@@ -1522,6 +1522,7 @@ function bind(container,options={}){
  if(typeof releaseChoiceLayout==='function')releaseChoiceLayout();
  releaseChoiceLayout=undefined;
  if(desk){
+  const previousPlanPhase=root.dataset.planPhase;
   const planPane=root.querySelector('[data-study-plan]');
   const units=planPhase==='survey'?planUnits(planDraft.subject,planDraft.need).filter(row=>planDraft.need!=='supplement'||row.book===planDraft.book):planUnits(planProfile?.subject,planProfile?.need);
   const markup=planPhase==='loading'?'<p role="status">학습 계획을 불러오고 있어요.</p>':planPhase==='load-error'?'<button type="button" data-plan-reload>다시 불러오기</button>':studyPlan.render({profile:planProfile,draft:planDraft,step:planStep,phase:planPhase,course:planCourse,subjects,books:planDraft.need==='supplement'?bookMenu():[],supplyPhase,units});
@@ -1535,10 +1536,12 @@ function bind(container,options={}){
   root.querySelectorAll('.ssp-desk-controls button, .ssp-desk-controls select:not([disabled]), .ssp-desk-controls [data-ssp-busy-lock]').forEach(el=>{if(remoteBusy&&!el.disabled){el.disabled=true;el.dataset.sspBusyLock='';}else if(!remoteBusy&&el.hasAttribute('data-ssp-busy-lock')){el.disabled=false;delete el.dataset.sspBusyLock;}});
   body.innerHTML=view==='guest-limit'?'<article class="ssp-paper"><h2>공개 체험 세 문제를 모두 열어봤어요.</h2>'+trialNotice()+'</article>':view==='source-question'&&remoteQuestion?remoteQuestionHTML():view==='question'&&current?question():view==='history'?history():view==='result'?result():deskWaiting();
   if(guestTrial&&view==='question'&&feedback&&trialOpened.size>=trialLimit)body.insertAdjacentHTML('beforeend',trialNotice());
-  const msg=document.createElement('p');msg.className='ssil-sync';msg.textContent=storageMessage;body.append(msg);
+  if(/못|실패|사라|저장 공간/.test(storageMessage)){const msg=document.createElement('p');msg.className='ssil-sync';msg.textContent=storageMessage;body.append(msg);}
   const material=deskMaterials();if(material)body.insertAdjacentHTML('beforeend',material);
   mountChoices(body);
-  if(focus)(body.querySelector('.ssp-feedback h3')||body.querySelector('h2'))?.focus({preventScroll:true});
+  const portraitChoices=matchMedia('(max-width:700px), (min-width:701px) and (max-width:1100px) and (orientation:portrait)').matches;
+  if(portraitChoices&&planPhase==='active'&&previousPlanPhase!=='active')requestAnimationFrame(()=>{if(!closed&&root.isConnected&&root.dataset.planPhase==='active')body.scrollIntoView({block:'start',behavior:'instant'});});
+  if(focus&&(!portraitChoices||planPhase==='active'))(body.querySelector('.ssp-feedback h3')||body.querySelector('h2'))?.focus({preventScroll:true});
   return;
  }
  body.innerHTML=view==='source-question'?remoteQuestionHTML():view==='question'?question():view==='history'?history():view==='result'?result():home();mountChoices(body);const problemFirst=Boolean(body.querySelector('.ssp-paper'));root.classList.toggle('ssp-problem-first',problemFirst);if(problemFirst)root.insertBefore(body,root.firstChild);else root.appendChild(body);if(focus){const el=root.querySelector('.ssp-body h2');if(el){el.tabIndex=-1;el.focus({preventScroll:true});}}}

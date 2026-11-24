@@ -29,3 +29,13 @@ html[data-design="b"] body.home-body:has([data-cinema-pause][aria-label="배경 
 @media (prefers-reduced-motion: reduce) {
   html[data-design="b"] body.home-body #header .brand::after { display: none; }
 }
+
+/* Keep the wordmark static; repeated decorative light sweeps add paint work. */
+html[data-design="b"] .header .brand,
+html[data-design="b"] .header .brand.hp28-logo-lit {
+ background:none!important;animation:none!important;
+ color:var(--logo-base,#253248)!important;-webkit-text-fill-color:currentColor!important;
+}
+html[data-design="b"] body.home-body #header .brand::after {display:none;animation:none}
+html[data-design="b"] #intro .intro-word {font-family:Arial,sans-serif;font-weight:900;letter-spacing:-.075em}
+.home-body .hd40-glass-light::before,.home-body .hd40-glass-light::after,.home-body .hd46-metal-lines {animation:none!important;display:none}
