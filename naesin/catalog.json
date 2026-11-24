@@ -214,7 +214,10 @@
           ],
           "types": [],
           "items": [],
-          "packs": []
+          "packs": [],
+          "displayTitle": "공통수학2 · 유리함수와 무리함수 · 기초편",
+          "displayUnit": "유리함수와 무리함수",
+          "displayEdition": "기초편"
         },
         {
           "sku": "NS-R24-27",
@@ -286,7 +289,10 @@
           ],
           "types": [],
           "items": [],
-          "packs": []
+          "packs": [],
+          "displayTitle": "공통수학2 · 함수 · 고난도",
+          "displayUnit": "함수",
+          "displayEdition": "고난도"
         },
         {
           "sku": "NS-R24-28",
@@ -358,7 +364,10 @@
           ],
           "types": [],
           "items": [],
-          "packs": []
+          "packs": [],
+          "displayTitle": "공통수학2 · 유리함수와 무리함수 · 고난도",
+          "displayUnit": "유리함수와 무리함수",
+          "displayEdition": "고난도"
         },
         {
           "sku": "NS-R24-29",
@@ -458,7 +467,10 @@
           ],
           "types": [],
           "items": [],
-          "packs": []
+          "packs": [],
+          "displayTitle": "공통수학2 · 함수 · 고난도 5회분",
+          "displayUnit": "함수",
+          "displayEdition": "고난도 5회분"
         },
         {
           "sku": "NS-R24-30",
@@ -558,7 +570,10 @@
           ],
           "types": [],
           "items": [],
-          "packs": []
+          "packs": [],
+          "displayTitle": "공통수학2 · 유리함수와 무리함수 · 고난도 5회분",
+          "displayUnit": "유리함수와 무리함수",
+          "displayEdition": "고난도 5회분"
         },
         {
           "sku": "NS-R24-35",
@@ -630,7 +645,10 @@
           ],
           "types": [],
           "items": [],
-          "packs": []
+          "packs": [],
+          "displayTitle": "공통수학2 · 함수 · 2권",
+          "displayUnit": "함수",
+          "displayEdition": "2권"
         },
         {
           "sku": "NS-R24-36",
@@ -702,7 +720,10 @@
           ],
           "types": [],
           "items": [],
-          "packs": []
+          "packs": [],
+          "displayTitle": "공통수학2 · 유리함수와 무리함수 · 2권",
+          "displayUnit": "유리함수와 무리함수",
+          "displayEdition": "2권"
         }
       ]
     },
@@ -926,7 +947,10 @@
           ],
           "types": [],
           "items": [],
-          "packs": []
+          "packs": [],
+          "displayTitle": "기하 · 이차곡선 · 기초편",
+          "displayUnit": "이차곡선",
+          "displayEdition": "기초편"
         },
         {
           "sku": "NS-R24-02",
@@ -998,7 +1022,10 @@
           ],
           "types": [],
           "items": [],
-          "packs": []
+          "packs": [],
+          "displayTitle": "기하 · 이차곡선 · 1권",
+          "displayUnit": "이차곡선",
+          "displayEdition": "1권"
         },
         {
           "sku": "NS-R24-03",
@@ -1070,7 +1097,10 @@
           ],
           "types": [],
           "items": [],
-          "packs": []
+          "packs": [],
+          "displayTitle": "기하 · 이차곡선과 직선 · 기초편",
+          "displayUnit": "이차곡선과 직선",
+          "displayEdition": "기초편"
         },
         {
           "sku": "NS-R24-04",
@@ -1142,7 +1172,10 @@
           ],
           "types": [],
           "items": [],
-          "packs": []
+          "packs": [],
+          "displayTitle": "기하 · 이차곡선과 직선 · 1권",
+          "displayUnit": "이차곡선과 직선",
+          "displayEdition": "1권"
         },
         {
           "sku": "NS-R24-05",
@@ -1214,7 +1247,10 @@
           ],
           "types": [],
           "items": [],
-          "packs": []
+          "packs": [],
+          "displayTitle": "기하 · 벡터의 연산 · 기초편",
+          "displayUnit": "벡터의 연산",
+          "displayEdition": "기초편"
         },
         {
           "sku": "NS-R24-06",
@@ -1286,7 +1322,10 @@
           ],
           "types": [],
           "items": [],
-          "packs": []
+          "packs": [],
+          "displayTitle": "기하 · 벡터의 연산 · 1권",
+          "displayUnit": "벡터의 연산",
+          "displayEdition": "1권"
         },
         {
           "sku": "NS-R24-07",
@@ -1358,7 +1397,10 @@
           ],
           "types": [],
           "items": [],
-          "packs": []
+          "packs": [],
+          "displayTitle": "기하 · 평면벡터의 성분과 내적 · 기초편",
+          "displayUnit": "평면벡터의 성분과 내적",
+          "displayEdition": "기초편"
         },
         {
           "sku": "NS-R24-08",
@@ -1430,7 +1472,10 @@
           ],
           "types": [],
           "items": [],
-          "packs": []
+          "packs": [],
+          "displayTitle": "기하 · 평면벡터의 성분과 내적 · 1권",
+          "displayUnit": "평면벡터의 성분과 내적",
+          "displayEdition": "1권"
         },
         {
           "sku": "NS-R24-09",
@@ -1502,7 +1547,10 @@
           ],
           "types": [],
           "items": [],
-          "packs": []
+          "packs": [],
+          "displayTitle": "기하 · 공간도형 · 기초편",
+          "displayUnit": "공간도형",
+          "displayEdition": "기초편"
         },
         {
           "sku": "NS-R24-10",
@@ -1574,7 +1622,10 @@
           ],
           "types": [],
           "items": [],
-          "packs": []
+          "packs": [],
+          "displayTitle": "기하 · 공간도형 · 1권",
+          "displayUnit": "공간도형",
+          "displayEdition": "1권"
         },
         {
           "sku": "NS-R24-11",
@@ -1646,7 +1697,10 @@
           ],
           "types": [],
           "items": [],
-          "packs": []
+          "packs": [],
+          "displayTitle": "기하 · 공간좌표 · 기초편",
+          "displayUnit": "공간좌표",
+          "displayEdition": "기초편"
         },
         {
           "sku": "NS-R24-12",
@@ -1718,7 +1772,10 @@
           ],
           "types": [],
           "items": [],
-          "packs": []
+          "packs": [],
+          "displayTitle": "기하 · 공간좌표 · 1권",
+          "displayUnit": "공간좌표",
+          "displayEdition": "1권"
         }
       ]
     },
@@ -1798,7 +1855,10 @@
           ],
           "types": [],
           "items": [],
-          "packs": []
+          "packs": [],
+          "displayTitle": "확률과 통계 · 확률분포 · 기초편",
+          "displayUnit": "확률분포",
+          "displayEdition": "기초편"
         },
         {
           "sku": "NS-R24-14",
@@ -1870,7 +1930,10 @@
           ],
           "types": [],
           "items": [],
-          "packs": []
+          "packs": [],
+          "displayTitle": "확률과 통계 · 확률분포 · 1권",
+          "displayUnit": "확률분포",
+          "displayEdition": "1권"
         },
         {
           "sku": "NS-R24-31",
@@ -1942,7 +2005,10 @@
           ],
           "types": [],
           "items": [],
-          "packs": []
+          "packs": [],
+          "displayTitle": "확률과 통계 · 조건부확률 · 1권",
+          "displayUnit": "조건부확률",
+          "displayEdition": "1권"
         },
         {
           "sku": "NS-R24-32",
@@ -2014,7 +2080,10 @@
           ],
           "types": [],
           "items": [],
-          "packs": []
+          "packs": [],
+          "displayTitle": "확률과 통계 · 순열과 조합, 이항정리 · 기초편",
+          "displayUnit": "순열과 조합, 이항정리",
+          "displayEdition": "기초편"
         },
         {
           "sku": "NS-R24-33",
@@ -2086,7 +2155,10 @@
           ],
           "types": [],
           "items": [],
-          "packs": []
+          "packs": [],
+          "displayTitle": "확률과 통계 · 확률의 개념과 활용 · 기초편",
+          "displayUnit": "확률의 개념과 활용",
+          "displayEdition": "기초편"
         },
         {
           "sku": "NS-R24-34",
@@ -2158,7 +2230,10 @@
           ],
           "types": [],
           "items": [],
-          "packs": []
+          "packs": [],
+          "displayTitle": "확률과 통계 · 순열과 조합, 이항정리 · 1권",
+          "displayUnit": "순열과 조합, 이항정리",
+          "displayEdition": "1권"
         },
         {
           "sku": "NS-R24-39",
@@ -2230,7 +2305,10 @@
           ],
           "types": [],
           "items": [],
-          "packs": []
+          "packs": [],
+          "displayTitle": "확률과 통계 · 확률의 개념과 활용 · 1권",
+          "displayUnit": "확률의 개념과 활용",
+          "displayEdition": "1권"
         },
         {
           "sku": "NS-R24-40",
@@ -2302,7 +2380,10 @@
           ],
           "types": [],
           "items": [],
-          "packs": []
+          "packs": [],
+          "displayTitle": "확률과 통계 · 조건부확률 · 기초편",
+          "displayUnit": "조건부확률",
+          "displayEdition": "기초편"
         }
       ]
     },
@@ -2382,7 +2463,10 @@
           ],
           "types": [],
           "items": [],
-          "packs": []
+          "packs": [],
+          "displayTitle": "미적분Ⅰ · 도함수의 활용 · 1권",
+          "displayUnit": "도함수의 활용",
+          "displayEdition": "1권"
         },
         {
           "sku": "NS-R24-20",
@@ -2454,7 +2538,10 @@
           ],
           "types": [],
           "items": [],
-          "packs": []
+          "packs": [],
+          "displayTitle": "미적분Ⅰ · 도함수의 활용 · 기초편",
+          "displayUnit": "도함수의 활용",
+          "displayEdition": "기초편"
         },
         {
           "sku": "NS-R24-21",
@@ -2526,7 +2613,10 @@
           ],
           "types": [],
           "items": [],
-          "packs": []
+          "packs": [],
+          "displayTitle": "미적분Ⅰ · 부정적분과 정적분 · 1권",
+          "displayUnit": "부정적분과 정적분",
+          "displayEdition": "1권"
         },
         {
           "sku": "NS-R24-24",
@@ -2598,7 +2688,10 @@
           ],
           "types": [],
           "items": [],
-          "packs": []
+          "packs": [],
+          "displayTitle": "미적분Ⅰ · 도함수의 활용 · 고난도",
+          "displayUnit": "도함수의 활용",
+          "displayEdition": "고난도"
         },
         {
           "sku": "NS-R24-26",
@@ -2670,7 +2763,10 @@
           ],
           "types": [],
           "items": [],
-          "packs": []
+          "packs": [],
+          "displayTitle": "미적분Ⅰ · 정적분의 활용 · 고난도",
+          "displayUnit": "정적분의 활용",
+          "displayEdition": "고난도"
         },
         {
           "sku": "NS-R24-37",
@@ -2742,7 +2838,10 @@
           ],
           "types": [],
           "items": [],
-          "packs": []
+          "packs": [],
+          "displayTitle": "미적분Ⅰ · 도함수의 활용 · 2권",
+          "displayUnit": "도함수의 활용",
+          "displayEdition": "2권"
         },
         {
           "sku": "NS-R24-38",
@@ -2814,7 +2913,10 @@
           ],
           "types": [],
           "items": [],
-          "packs": []
+          "packs": [],
+          "displayTitle": "미적분Ⅰ · 부정적분과 정적분 · 2권",
+          "displayUnit": "부정적분과 정적분",
+          "displayEdition": "2권"
         }
       ]
     }

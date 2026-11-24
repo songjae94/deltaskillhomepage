@@ -296,7 +296,7 @@ function naesinP(c,sku){
   var f=m[2],n=(u.files||[]).filter(function(x){return x.fmt===f;}).length,pr=u.price&&u.price[f];
   if(!pr||!u.taxFreeAmount||u.taxFreeAmount[f]==null||!u.saleFrom||(!u.sample&&u.releaseVerified!==true)||!n)return null; /* 맛보기(sample = 단원 무료 세트) 요구는 그대로 */
   var fn=f==="hwpx"?"한글(HWPX)":"PDF",fs=u.fileSets&&u.fileSets[f],cnt=fs&&fs.kind==="merged"&&n===1?fn+" 합본 1파일":fs&&fs.kind==="types"?fn+" 유형별 파일 "+n+"개":fn+" 파일 "+n+"개";
-  return {noOrigClaim:(u.files||[]).some(function(x){return x.layout;}),name:u.name+(f==="hwpx"?" (한글)":" (PDF)"),price:pr,priceNote:"부가세 포함",comp:cnt+" · "+(u.kind?"":"단원 ")+"변형 문항",start:startText(n),only:fn+" 파일만 받습니다. "+(f==="hwpx"?"PDF는":"한글 파일은")+" 들어 있지 않습니다.",give:"결제 뒤 바로 내려받기",saleFrom:u.saleFrom,saleTo:u.saleTo||undefined,cards:(c.cards||[])};
+  return {noOrigClaim:(u.files||[]).some(function(x){return x.layout;}),name:(u.displayTitle||u.name)+(f==="hwpx"?" (한글)":" (PDF)"),price:pr,priceNote:"부가세 포함",comp:cnt+" · "+(u.kind?"":"단원 ")+"변형 문항",start:startText(n),only:fn+" 파일만 받습니다. "+(f==="hwpx"?"PDF는":"한글 파일은")+" 들어 있지 않습니다.",give:"결제 뒤 바로 내려받기",saleFrom:u.saleFrom,saleTo:u.saleTo||undefined,cards:(c.cards||[])};
 }
 function cartProduct(c){
   var order=window.DeltaFinalsOrder,now=Date.now();
@@ -315,7 +315,7 @@ function cartProduct(c){
     var unit=units.get(parsed[1]),price=unit&&order.unitPrice(unit,parsed[2],now);
     if(!price){cartError="not_on_sale";return null;}
     items.push({kind:"unit",eligible:true,unitId:parsed[1],price:price,
-      name:unit.name+(parsed[2]==="hwpx"?" (한글)":" (PDF)")});
+      name:(unit.displayTitle||unit.name)+(parsed[2]==="hwpx"?" (한글)":" (PDF)")});
   }
   var sum=order.summarize(items);
   if(sum.error){cartError=sum.error==="amount-limit"?"amount_limit":"invalid_cart";return null;}
