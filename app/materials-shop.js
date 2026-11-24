@@ -90,7 +90,7 @@
   }
   function coverTile(p) {
     const label = escape(title(p));
-    const art = p.restored || coverSkus.has(p.sku)
+    const art = (p.restored && p.coverReady !== false) || coverSkus.has(p.sku)
       ? `<img src="${coverURL(p.sku)}" width="630" height="891" alt="${label} 표지">`
       : `<span class="ms-fallback-cover">${label}</span>`;
     const cover = p.sample
