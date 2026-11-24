@@ -10,7 +10,7 @@
       const lists=[...root.querySelectorAll('ol,ul')].filter(el=>
         !el.closest(excludes) && el.children.length===optionCount &&
         [...el.children].every(child=>child.localName==='li' && !/^[(（]?[ㄱ-ㅎ가나다라마바사][.)）]/.test(child.textContent.trim())));
-      const explicit=lists.filter(el=>el.matches('.ch,.dq59-choices,.choices,[data-choices]'));
+      const explicit=lists.filter(el=>el.matches('.ch,.ch1,.ch2,.ch3,.ch5,.dq59-choices,.choices,[data-choices]'));
       // An unlabelled list is safe only when it ends the problem. Earlier lists may be conditions.
       const trailing=lists.filter(el=>{
         const tail=doc.createRange();tail.selectNodeContents(root);tail.setStartAfter(el);
@@ -73,6 +73,8 @@
         const marker=doc.createElement('span');marker.className='dte-choice-no';marker.textContent=String(index+1);
         const body=doc.createElement('span');body.className='dte-choice-content';
         // Canonical PDFs use a circled marker in the first text node. Preserve the math itself.
+        const sourceNumber=row.querySelector(':scope > .선지번호');
+        if (sourceNumber && [numbers[index],String(index+1),String(index+1)+'.',String(index+1)+')'].includes(sourceNumber.textContent.trim())) sourceNumber.remove();
         const walker=doc.createTreeWalker(row,4);
         for(let t=walker.nextNode();t;t=walker.nextNode()) {
           if (!t.textContent.trim()) continue;
@@ -98,6 +100,7 @@
       .dte-choice-content{min-width:0;max-width:100%;white-space:normal;overflow-wrap:anywhere;overflow-x:auto}
       .dte-source-choices:is([data-choice-columns="3"],[data-choice-columns="5"]) .dte-choice-content{white-space:nowrap;overflow-wrap:normal}
       @media(max-width:480px){.dte-inline-choice{gap:3px;padding-inline:4px}}
+      @media(max-width:340px){.dte-source-choices{column-gap:2px!important}.dte-inline-choice{gap:2px;padding-inline:1px}.dte-source-choices .dte-choice-no{font-size:.9em}}
     `;
   function create(api) {
     const scope=api.scope || '.ds-timed';
