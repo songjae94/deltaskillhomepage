@@ -926,24 +926,43 @@ function bind(container,options={}){
  let planPhase='loading',planProfile=null,planStep=0,planDraft={},planCourse='',planBusy=false,planMessage='';
  let planHTML=null;
  const subjects=[...new Set(studyChapters.map(([subject])=>subject))];
- let externalRange=false;
+ let externalRange=false,planSourceUnit=null;
  function newPlanDraft(){return {goal:'',need:'',subject:'',unit:''};}
  function planUnits(subject,need){
   if(!subjects.includes(subject)||!Object.hasOwn(studyPlan.courses,need))return [];
+  const availableBooks=workbookChoices().filter(book=>book.subject===subject);
+  if(need==='supplement')return availableBooks.flatMap(book=>workbookRanges(book).map(unit=>({
+   id:book.id+'/'+unit.id,group:book.label,label:unit.label,book:book.id,bookUnit:unit.id
+  })));
+  const originals=BANK.filter(q=>q.subject===subject&&q.course===need&&!q.originalQuestionId);
+  const edition={concept:'OL-base-',types:'OL-type-',advanced:'OL-advanced-'}[need];
+  const sources=availableBooks.filter(book=>book.id.startsWith(edition));
+  if(need==='types')sources.push(...availableBooks.filter(book=>book.id.startsWith('SSG-')));
+  const leafNames={'유리식과 유리함수':'유리함수','무리식과 무리함수':'무리함수'};
   const units=[];
-  const originals=BANK.filter(q=>q.course===need&&!q.originalQuestionId&&q.subject===subject);
-  if(need!=='supplement'){
-   for(const scope of studyScopes.filter(scope=>scope.subject===subject)){
-    const matching=originals.filter(q=>inScope(q,scope));if(!matching.length)continue;
-    units.push({id:scope.key+' 전체',label:scope.key+' 전체',group:scope.chapter,scope:scope.key});
-    if(scope.key!==scope.chapter)for(const leaf of scope.sections[0][1]){
-     if(matching.some(q=>subunit(q)===leaf))units.push({id:leaf,label:leaf,group:scope.chapter,scope:scope.key,leaf});
+  function add(scope,leaf=''){
+   const id=leaf||scope.key+' 전체';
+   const entry={id,label:id,group:scope.chapter,scope:scope.key,leaf};
+   const matches=originals.some(q=>inScope(q,scope)&&(!leaf||subunit(q)===leaf));
+   if(!matches){
+    const sections=scope.sections.map(([name])=>name);
+    for(const book of sources){
+     const linked=book.units.filter(unit=>{
+      const title=unit.label.replace(/^\d+\s+/,'').replace(/\s+\(\d+\)$/,'');
+      return sections.includes(workbookSectionNames[title]||title)&&(!leaf||(leafNames[title]||title)===leaf);
+     });
+     if(linked.length){
+      entry.book=book.id;entry.bookUnit=linked[0].id;entry.unitIds=linked.map(unit=>unit.id);
+      break;
+     }
     }
+    if(!entry.book){entry.disabled=true;entry.label+=' · 문항 준비 중';}
    }
+   units.push(entry);
   }
-  const series={concept:'OL-base-',types:'OL-type-',advanced:'OL-advanced-'};
-  for(const book of workbookChoices().filter(b=>b.subject===subject&&(need==='supplement'||b.id.startsWith(series[need])))){
-   for(const unit of workbookRanges(book))units.push({id:book.id+'/'+unit.id,group:book.label,label:unit.label,book:book.id,bookUnit:unit.id});
+  for(const scope of studyScopes.filter(scope=>scope.subject===subject)){
+   add(scope);
+   if(scope.key!==scope.chapter)for(const leaf of scope.sections[0][1])add(scope,leaf);
   }
   return units;
  }
@@ -968,6 +987,7 @@ function bind(container,options={}){
  function startRange(profile,range){
   planCourse=state.course=profile.need;planPhase='active';deskType='';widen='subunit';
   externalRange=Boolean(range.book);
+  planSourceUnit=range.unitIds?{id:range.id,label:range.label,unitIds:range.unitIds,types:[]}:null;
   if(range.book){selectedScopeBook=range.book;selectedScopeUnit=range.bookUnit;selectedScopeType='';}
   else{deskScope=range.scope;deskUnit=range.leaf||'';}
   startDesk(profile.need);
@@ -981,21 +1001,24 @@ function bind(container,options={}){
   planPhase='active';
   const range=planUnits(planProfile.subject,planProfile.need).find(u=>u.id===planProfile.unit);
   externalRange=Boolean(range?.book);
+  planSourceUnit=range?.unitIds?{id:range.id,label:range.label,unitIds:range.unitIds,types:[]}:null;
   if(externalRange){selectedScopeBook=range.book;selectedScopeUnit=range.bookUnit;selectedScopeType='';widen='subunit';}
   if(resume()){
    planCourse=state.course;
    if(current&&view==='question'&&sourcePhase!=='opening'){externalRange=false;restoreDeskRange();}
    draw();return;
   }
-  if(range){startRange(planProfile,range);return;}
+  if(range&&!range.disabled){startRange(planProfile,range);return;}
   planDraft={...newPlanDraft(),goal:planProfile.goal,need:planProfile.need};
   planPhase='survey';planStep=2;draw(false);
  }
  async function finishPlan(unit){
   if(planBusy||planStep!==2||!planDraft.goal||!planDraft.need)return;
-  const range=planUnits(planDraft.subject,planDraft.need).find(row=>row.id===unit);if(!range)return;
+  const range=planUnits(planDraft.subject,planDraft.need).find(row=>row.id===unit);
+  if(!range||range.disabled||(planDraft.need==='supplement'&&range.book!==planDraft.book))return;
   planDraft.unit=unit;
-  const profile={...planDraft,updatedAt:Date.now()},generation=epoch;
+  const {goal,need,subject}=planDraft;
+  const profile={goal,need,subject,unit,updatedAt:Date.now()},generation=epoch;
   planBusy=true;planProfile=profile;planMessage='';startRange(profile,range);
   try{
    const saved=await window.DSStudyPlanStore.save(activeOwner,profile);
@@ -1051,7 +1074,7 @@ function bind(container,options={}){
   if(planPhase!=='survey')return true;
   if(b.hasAttribute('data-plan-answer')&&planStep<2){
    planDraft[planStep===0?'goal':'need']=value;planStep++;
-   planDraft.subject='';planDraft.unit='';
+   planDraft.subject='';planDraft.book='';planDraft.unit='';
   }else if(b.hasAttribute('data-plan-back'))planStep=Math.max(0,planStep-1);
   draw(false);
   const pane=container.querySelector('[data-study-plan]');
@@ -1125,6 +1148,7 @@ function bind(container,options={}){
   return result.slice(0,10);
  }
  function deskFilters(){
+  if(externalRange&&state.course!=='supplement')return '';
   if(externalRange||state.course==='supplement'){
    const books=workbookChoices();
    if(view==='question'&&current?.book){
@@ -1190,7 +1214,7 @@ function bind(container,options={}){
  function resume(course){const originalLatest=Object.entries(state.pending).filter(([id,p])=>(!course||course===id)&&!p.cleared).sort((a,b)=>b[1].updatedAt-a[1].updatedAt)[0],sourceLatest=Object.entries(state.sourcePending).filter(([id,p])=>(!course||course===id)&&!p.cleared).sort((a,b)=>b[1].updatedAt-a[1].updatedAt)[0];if(sourceLatest&&(!course||course===sourceLatest[0])&&(!originalLatest||sourceLatest[1].updatedAt>=originalLatest[1].updatedAt)){state.course=sourceLatest[0];openRemote(sourceLatest[1].questionId,sourceLatest[1]);return true;}const courseId=course||Object.entries(state.pending).filter(([,p])=>!p.cleared).sort((a,b)=>b[1].updatedAt-a[1].updatedAt)[0]?.[0];const p=state.pending[courseId];if(!p||p.cleared)return false;state.course=courseId;state.book=p.book;pool=[...p.pool];cursor=p.cursor;current=byId.get(pool[cursor]);choice=p.choice;confidence=p.confidence;help=p.help;hint=p.hint;solution=p.solution;feedback=state.records.find(r=>r.id===p.feedbackId)||null;openedAt=Date.now();view='question';return true;}
  function begin(ids){pool=(ids||qlist().map(q=>q.id)).filter(id=>byId.has(id));cursor=0;if(!pool.length){notice='지금 선택한 범위에는 문제가 없어요.';return;}resetQuestion(byId.get(pool[0]));}
  function review(type){const seen=latest(state),ids=BANK.filter(q=>(!type||q.type===type)&&weak(seen.get(q.id))).map(q=>q.id);if(!ids.length){notice='현재 복습할 기록이 없어요.';return;}begin(ids);}
- function workbookScope(){const books=workbookChoices();const book=books.find(b=>b.id===selectedScopeBook);const unit=(desk&&book?workbookRanges(book):book?.units)?.find(u=>u.id===selectedScopeUnit);const type=unit?.types?.find(t=>t.id===selectedScopeType);return {book,unit,type};}
+ function workbookScope(){const books=workbookChoices();const book=books.find(b=>b.id===selectedScopeBook);const unit=(externalRange&&state.course!=='supplement'&&planSourceUnit)||(desk&&book?workbookRanges(book):book?.units)?.find(u=>u.id===selectedScopeUnit);const type=unit?.types?.find(t=>t.id===selectedScopeType);return {book,unit,type};}
  function invalidateSource(){sourceGeneration++;sourceResult=null;sourcePhase='idle';sourceError='';}
  function mathContent(value){if(typeof value!=='string')throw Error('invalid_content');const parts=value.split(/(\$\$[\s\S]*?\$\$|\$[^$\n]+\$|\\\[[\s\S]*?\\\]|\\\([\s\S]*?\\\))/g);return parts.map(part=>{let latex='',display=false;if(part.startsWith('$$')&&part.endsWith('$$')){latex=part.slice(2,-2);display=true;}else if(part.startsWith('$')&&part.endsWith('$'))latex=part.slice(1,-1);else if(part.startsWith('\\[')&&part.endsWith('\\]')){latex=part.slice(2,-2);display=true;}else if(part.startsWith('\\(')&&part.endsWith('\\)'))latex=part.slice(2,-2);if(latex){if(!window.katex?.renderToString)throw Error('math_renderer_unavailable');return window.katex.renderToString(latex,{displayMode:display,throwOnError:true,trust:false,strict:'error',maxExpand:1000});}if(/\\[A-Za-z]|\$/.test(part))throw Error('unwrapped_math');return esc(part).replace(/\n/g,'<br>');}).join('');}
  function fragmentContent(html,title){if(typeof html!=='string'||!html.trim()||typeof window.DSStudentFragment?.render!=='function')throw Error('fragment_renderer_unavailable');const rendered=window.DSStudentFragment.render(html,title);if(typeof rendered!=='string')throw Error('invalid_fragment');return rendered;}
@@ -1328,13 +1352,13 @@ function bind(container,options={}){
  function draw(focus=true){if(closed)return;const root=container.querySelector('.ssp');if(!root)return;root.querySelectorAll('[data-ssp-course]').forEach(b=>{b.setAttribute('aria-pressed',String(b.dataset.sspCourse===state.course));});root.querySelector('.ssp-live').textContent=notice;const body=root.querySelector('.ssp-body');
  if(desk){
   const planPane=root.querySelector('[data-study-plan]');
-  const markup=planPhase==='loading'?'<p role="status">학습 계획을 불러오고 있어요.</p>':planPhase==='load-error'?'<button type="button" data-plan-reload>다시 불러오기</button>':studyPlan.render({profile:planProfile,draft:planDraft,step:planStep,phase:planPhase,course:planCourse,subjects,units:planPhase==='survey'?planUnits(planDraft.subject,planDraft.need):planUnits(planProfile?.subject,planProfile?.need)});
+  const markup=planPhase==='loading'?'<p role="status">학습 계획을 불러오고 있어요.</p>':planPhase==='load-error'?'<button type="button" data-plan-reload>다시 불러오기</button>':studyPlan.render({profile:planProfile,draft:planDraft,step:planStep,phase:planPhase,course:planCourse,subjects,books:planDraft.need==='supplement'?workbookChoices():[],units:planPhase==='survey'?planUnits(planDraft.subject,planDraft.need).filter(row=>planDraft.need!=='supplement'||row.book===planDraft.book):planUnits(planProfile?.subject,planProfile?.need)});
   if(markup!==planHTML){planPane.innerHTML=markup;planHTML=markup;}
   planPane.querySelectorAll('button').forEach(el=>{if(planBusy&&!el.disabled){el.disabled=true;el.dataset.planBusy='';}else if(!planBusy&&el.hasAttribute('data-plan-busy')){el.disabled=false;delete el.dataset.planBusy;}});
   root.dataset.planPhase=planPhase;
   const status=root.querySelector('.ssp-plan-status');status.hidden=!planMessage;if(status.textContent!==planMessage)status.textContent=planMessage;
   const filters=planPhase==='active'?deskFilters():'';
-  root.querySelector('.ssp-desk-filters').hidden=planPhase!=='active';
+  root.querySelector('.ssp-desk-filters').hidden=!filters;
   if(filters!==deskFilterHTML){root.querySelector('.ssp-desk-filters').innerHTML=filters;deskFilterHTML=filters;}
   root.querySelectorAll('.ssp-desk-controls button, .ssp-desk-controls select:not([disabled]), .ssp-desk-controls [data-ssp-busy-lock]').forEach(el=>{if(remoteBusy&&!el.disabled){el.disabled=true;el.dataset.sspBusyLock='';}else if(!remoteBusy&&el.hasAttribute('data-ssp-busy-lock')){el.disabled=false;delete el.dataset.sspBusyLock;}});
   body.innerHTML=view==='source-question'&&remoteQuestion?remoteQuestionHTML():view==='question'&&current?question():view==='history'?history():view==='result'?result():deskWaiting();
@@ -1427,6 +1451,11 @@ function bind(container,options={}){
  if(b.hasAttribute('data-ssp-source-resume')){const p=state.sourcePending[state.course];if(p&&!p.cleared)openRemote(p.questionId,p);return;}if(b.hasAttribute('data-ssp-history-sync')){loadFreeHistory();return;}if(b.hasAttribute('data-ssp-history-more')){loadFreeHistory(true);return;}if(b.hasAttribute('data-ssp-query')){querySource();return;}if(b.hasAttribute('data-ssp-remote')){openRemote(b.dataset.sspRemote);return;}if(b.hasAttribute('data-ssp-remote-submit')){submitRemote();return;}if(b.hasAttribute('data-ssp-remote-unknown')){remoteChoice=null;remoteUnknown=true;submitRemote();return;}if(b.hasAttribute('data-ssp-existing')){const q=existingFree().find(q=>q.id===b.dataset.sspExisting);if(q&&typeof window.DSStudyEntryV54?.openPractice==='function')window.DSStudyEntryV54.openPractice(q.id);return;}if(b.hasAttribute('data-ssp-series')){selectedSeries=b.dataset.sspSeries;widen='type';otherRange=false;invalidateSource();draw();querySource();return;}if(b.hasAttribute('data-ssp-widen')){widen=b.dataset.sspWiden;invalidateSource();draw();querySource();return;}if(b.hasAttribute('data-ssp-other')){otherRange=true;draw();return;}if(b.hasAttribute('data-ssp-course')){state.course=b.dataset.sspCourse;view='home';current=null;invalidateSource();queueMicrotask(querySource);}else if(b.hasAttribute('data-ssp-book')){state.book=b.dataset.sspBook;}else if(b.hasAttribute('data-ssp-resume'))resume(state.course);else if(b.hasAttribute('data-ssp-start'))begin();else if(b.hasAttribute('data-ssp-type'))begin(BANK.filter(q=>q.course==='types'&&q.type===b.dataset.sspType).map(q=>q.id));else if(b.hasAttribute('data-ssp-check'))return check(false);else if(b.hasAttribute('data-ssp-skip'))return check(true);else if(b.hasAttribute('data-ssp-hint')){hint=!hint;help=true;}else if(b.hasAttribute('data-ssp-solution')){solution=!solution;if(solution&&feedback){feedback.solutionSeen=true;save(feedback);}}else if(b.hasAttribute('data-ssp-retry'))resetQuestion(current);else if(b.hasAttribute('data-ssp-next')){if(!feedback)return;if(++cursor<pool.length)resetQuestion(byId.get(pool[cursor]));else {state.pending[state.course]={cleared:true,updatedAt:Date.now()};current=null;view='result';}}else if(b.hasAttribute('data-ssp-review'))review(b.dataset.sspReview);else if(b.hasAttribute('data-ssp-history'))view='history';else if(b.hasAttribute('data-ssp-open'))return openOriginal(b.dataset.sspOpen);else if(b.hasAttribute('data-ssp-home'))view='home';else if(b.hasAttribute('data-ssp-sync')){save();return;}else return;save();draw();}
  function change(e){
  if(desk){
+  if(e.target.matches('[data-plan-book]')&&planPhase==='survey'&&planDraft.need==='supplement'){
+   const book=workbookChoices().find(b=>b.id===e.target.value);
+   planDraft.book=book?.id||'';planDraft.subject=book?.subject||'';planDraft.unit='';
+   draw(false);container.querySelector('[data-plan-unit]')?.focus({preventScroll:true});return;
+  }
   if(e.target.matches('[data-plan-subject]')&&planPhase==='survey'){
    planDraft.subject=e.target.value;planDraft.unit='';draw(false);
    container.querySelector('[data-plan-unit]')?.focus({preventScroll:true});return;
@@ -1443,6 +1472,14 @@ function bind(container,options={}){
   }
   if(e.target.matches('[data-ssp-scope-book],[data-ssp-scope-unit],[data-ssp-scope-type]')){
    if(remoteBusy)return;
+   if(e.target.hasAttribute('data-ssp-scope-book')&&state.course==='supplement'&&planProfile){
+    const book=workbookChoices().find(b=>b.id===e.target.value);
+    if(book){
+     planDraft={goal:planProfile.goal,need:'supplement',subject:book.subject,book:book.id,unit:''};
+     planStep=2;planPhase='survey';draw(false);
+     container.querySelector('[data-plan-unit]')?.focus({preventScroll:true});return;
+    }
+   }
    if(e.target.hasAttribute('data-ssp-scope-book')){selectedScopeBook=e.target.value;selectedScopeUnit='';selectedScopeType='';}
    else if(e.target.hasAttribute('data-ssp-scope-unit')){selectedScopeUnit=e.target.value;selectedScopeType='';}
    else selectedScopeType=e.target.value;
