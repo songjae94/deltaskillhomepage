@@ -926,6 +926,32 @@ function bind(container,options={}){
  let readyNotified=false;const notifyReady=()=>{if(readyNotified||closed)return;readyNotified=true;queueMicrotask(()=>{if(!closed)options.onReady?.();});};
  let state=blank(),current=null,pool=[],cursor=0,choice=null,confidence='sure',help=false,hint=false,feedback=null,solution=false,openedAt=Date.now(),notice='',storageMessage='',view=options.view==='history'?'history':'home',closed=false,epoch=0,saveQueue=Promise.resolve();
  const desk=options.view==='desk';
+ const guestTrial=desk&&options.guestTrial===true;
+ const trialKey='ds-student-guest-study-v1';
+ const temporaryKey=guestTrial?trialKey:'ds-student-paths-preview-v1';
+ const trialLimit=3;
+ let trialReturnView='question';
+ const isTrialQuestion=q=>q?.sourceKind==='original'&&q.rights==='deltaskill-original';
+ let trialOpened=new Set();
+ if(guestTrial){
+  try{trialOpened=new Set(JSON.parse(sessionStorage.getItem(trialKey+':opened')||'[]').filter(id=>isTrialQuestion(byId.get(id))));}catch{}
+ }
+ function openTrialQuestion(q){
+  if(!isTrialQuestion(q))return false;
+  if(trialOpened.has(q.id))return true;
+  if(trialOpened.size>=trialLimit)return false;
+  trialOpened.add(q.id);
+  try{sessionStorage.setItem(trialKey+':opened',JSON.stringify([...trialOpened]));}catch{}
+  return true;
+ }
+ const trialBooks=BOOKS.map(book=>({id:'original:'+book.id,label:'델타스킬 · '+book.title,subject:'공통수학2',original:book.id}));
+ const bookMenu=()=>guestTrial?[...trialBooks,...workbookChoices()]:offeredBooks();
+ function trialNotice(){
+  const wrong=[...latest(state).values()].reverse().find(weak);
+  return '<div class="ssp-actions"><a class="ssp-primary" href="#login">로그인하고 계속 공부하기</a>'
+   +(wrong?'<button type="button" data-ssp-guest-review>틀린 문제 다시 풀기</button>':'')
+   +(view==='guest-limit'?[...trialOpened].map((id,index)=>'<button type="button" data-ssp-open="'+esc(id)+'">체험 '+(index+1)+'번 다시 보기</button>').join(''):'')+'</div>';
+ }
  let deskUnit='',deskType='',deskFilterHTML=null;
  const studyPlan=window.DSStudentStudyPlan;
  let planPhase='loading',planProfile=null,planStep=0,planDraft={},planCourse='',planBusy=false,planMessage='';
@@ -983,10 +1009,14 @@ function bind(container,options={}){
  function planUnits(subject,need){
   if(!subjects.includes(subject)||!Object.hasOwn(studyPlan.courses,need))return [];
   const availableBooks=workbookChoices().filter(book=>book.subject===subject);
+  if(guestTrial&&need==='supplement')return trialBooks.filter(book=>book.subject===subject).flatMap(book=>{
+   const rows=BANK.filter(q=>isTrialQuestion(q)&&q.book===book.original&&!q.originalQuestionId);
+   return [...new Set(rows.map(subunit))].map(leaf=>({id:book.id+'/'+leaf,label:leaf,book:book.id,originalBook:book.original}));
+  });
   if(need==='supplement')return availableBooks.flatMap(book=>availableRanges(book).map(unit=>({
    id:book.id+'/'+unit.id,group:book.label,label:unit.label,book:book.id,bookUnit:unit.id
   })));
-  const originals=BANK.filter(q=>q.subject===subject&&q.course===need&&!q.originalQuestionId);
+  const originals=BANK.filter(q=>q.subject===subject&&q.course===need&&!q.originalQuestionId&&(!guestTrial||isTrialQuestion(q)));
   const edition={concept:'OL-base-',types:'OL-type-',advanced:'OL-advanced-'}[need];
   const sources=availableBooks.filter(book=>book.id.startsWith(edition));
   if(need==='types')sources.push(...availableBooks.filter(book=>book.id.startsWith('SSG-')));
@@ -1033,6 +1063,10 @@ function bind(container,options={}){
  async function loadPlan(){
   const generation=epoch;
   planPhase='loading';planStep=0;planDraft=newPlanDraft();planProfile=null;planBusy=false;planMessage='';
+  if(guestTrial){
+   try{planProfile=JSON.parse(sessionStorage.getItem(trialKey+':plan'));}catch{}
+   planPhase=planProfile?'return':'survey';draw(false);return;
+  }
   try{
    const saved=await window.DSStudyPlanStore.load(activeOwner);
    if(closed||generation!==epoch)return;
@@ -1045,6 +1079,12 @@ function bind(container,options={}){
  }
  function startRange(profile,range){
   planCourse=state.course=profile.need;planPhase='active';deskType='';widen='subunit';
+  if(guestTrial&&range.originalBook){
+   externalRange=false;planSourceRows=null;planSourceUnit=null;state.book=range.originalBook;
+   const rows=BANK.filter(q=>isTrialQuestion(q)&&q.book===state.book&&!q.originalQuestionId&&subunit(q)===range.label);
+   deskScope=rows[0]?.unit||'';deskUnit=range.label;
+   rememberDesk();invalidateSource();localPage(deskPool(rows),0);save();draw();return;
+  }
   externalRange=Boolean(range.book);planSourceRows=range.rows||null;
   planSourceUnit=range.unitIds?{id:range.id,label:range.label,unitIds:range.unitIds,types:[]}:null;
   if(range.book){selectedScopeBook=range.book;selectedScopeUnit=range.bookUnit;selectedScopeType='';}
@@ -1060,7 +1100,7 @@ function bind(container,options={}){
   planPhase='active';
   if(supplyPhase==='loading'){planMessage='무료 학습 범위를 확인하고 있어요.';planPhase='return';draw(false);return;}
   const range=planUnits(planProfile.subject,planProfile.need).find(u=>u.id===planProfile.unit);
-  externalRange=Boolean(range?.book);planSourceRows=range?.rows||null;
+  externalRange=Boolean(range?.book&&!range.originalBook);planSourceRows=range?.rows||null;
   planSourceUnit=range?.unitIds?{id:range.id,label:range.label,unitIds:range.unitIds,types:[]}:null;
   if(externalRange){selectedScopeBook=range.book;selectedScopeUnit=range.bookUnit;selectedScopeType='';widen='subunit';}
   if(externalRange&&range){
@@ -1096,7 +1136,12 @@ function bind(container,options={}){
    draw(false);return;
   }
   const profile={goal,need,subject,unit,updatedAt:Date.now()},generation=epoch;
-  planBusy=true;planProfile=profile;planMessage='';startRange(profile,range);
+  planProfile=profile;planMessage='';
+  if(guestTrial){
+   try{sessionStorage.setItem(trialKey+':plan',JSON.stringify(profile));}catch{}
+   startRange(profile,range);return;
+  }
+  planBusy=true;startRange(profile,range);
   try{
    const saved=await window.DSStudyPlanStore.save(activeOwner,profile);
    if(closed||generation!==epoch)return;
@@ -1109,6 +1154,7 @@ function bind(container,options={}){
   const generation=epoch;
   const local=[...latest(state).values()].reverse().find(weak);
   if(local){planPhase='active';planCourse=local.course;openOriginal(local.questionId);return;}
+  if(guestTrial){planMessage='이 탭에서 다시 풀 문제가 아직 없어요.';draw(false);return;}
   planBusy=true;planMessage='복습할 기록을 확인하고 있어요.';draw(false);
   try{
    const seen=new Set();
@@ -1155,7 +1201,7 @@ function bind(container,options={}){
    planDraft[planStep===0?'goal':'need']=value;planStep++;
    planDraft.subject='';planDraft.book='';planDraft.unit='';
   }else if(b.hasAttribute('data-plan-back')){
-   window.DSStudyPlanStore.waitingRange?.(activeOwner,null);
+   if(!guestTrial)window.DSStudyPlanStore.waitingRange?.(activeOwner,null);
    planStep=Math.max(0,planStep-1);
   }
   draw(false);
@@ -1171,7 +1217,7 @@ function bind(container,options={}){
  }
  function localPage(list,index,restore=true){
   const q=byId.get(list[index]);if(!q)return;
-  pool=list;cursor=index;resetQuestion(q);
+  pool=list;cursor=index;resetQuestion(q);if(!current)return;
   const draft=restore&&localDrafts.get(q.id);
   if(draft){
    ({choice,confidence,help,hint,solution,feedback,openedAt}=draft);
@@ -1189,7 +1235,7 @@ function bind(container,options={}){
  }
  function localSet(original){
   const anchor=original.originalQuestionId||original.id;
-  return BANK.filter(q=>q.course===original.course&&(q.id===anchor||q.originalQuestionId===anchor)).slice(0,10).map(q=>q.id);
+  return BANK.filter(q=>q.course===original.course&&(!guestTrial||isTrialQuestion(q))&&(q.id===anchor||q.originalQuestionId===anchor)).slice(0,10).map(q=>q.id);
  }
 
  let deskScope='유리함수와 무리함수';
@@ -1290,11 +1336,17 @@ function bind(container,options={}){
  let activeOwner=owner();let selectedSeries='쎈',selectedScopeBook='',selectedScopeUnit='',selectedScopeType='',widen='type',freeUnit=Object.keys(FREE_CONCEPTS)[0];let sourceGeneration=0,sourceResult=null,sourcePhase='idle',sourceError='',remoteQuestion=null,remoteMetadata=null,remoteChoice=null,remoteUnknown=false,desiredCount=3,remoteConfidence='sure',remoteFeedback=null,remoteOpenedAt=0,remoteBusy=false;const remoteOperations=new Map();let remoteHistory={phase:'idle',records:[],hasMore:false,nextBefore:null};
  const key=()=>activeOwner?'ds-student-paths-v1:'+encodeURIComponent(activeOwner):'';
  const emit=()=>{const detail={source:'student-study-paths',summary:summary(state),storage:storageMessage};window.dispatchEvent(new CustomEvent('ds-student-paths-change',{detail}));};
- function read(){try{const raw=key()?localStorage.getItem(key()):signed()?null:sessionStorage.getItem('ds-student-paths-preview-v1');state=clean(raw?JSON.parse(raw):null);storageMessage=key()?'이 계정의 기기 기록':signed()?'현재 로그인 화면의 기록 · 이 화면을 닫으면 사라져요.':'이 브라우저의 임시 기록';}catch{state=blank();storageMessage='저장 공간을 사용할 수 없어 현재 화면에서만 기록해요.';}}
- function save(record){if(current&&view==='question')state.course=current.course;if(remoteQuestion&&view==='source-question'&&!remoteFeedback)state.sourcePending[state.course]={questionId:remoteQuestion.questionId||remoteQuestion.id,version:remoteQuestion.version,choice:remoteChoice,confidence:remoteConfidence,help:false,openedAt:remoteOpenedAt,updatedAt:Date.now()};if(current&&view==='question')state.pending[state.course]={book:state.book,pool:[...pool],cursor,choice,confidence,help,hint,solution,feedbackId:feedback?.id||null,openedAt,updatedAt:Date.now()};if(record){record.updatedAt=Math.max(Date.now(),(record.updatedAt||record.at||0)+1);state.records=state.records.map(r=>r.id===record.id?record:r);}state=clean(state);try{if(key())localStorage.setItem(key(),JSON.stringify(state));else if(!signed())sessionStorage.setItem('ds-student-paths-preview-v1',JSON.stringify(state));storageMessage=key()?'이 계정의 기기에 저장했어요.':signed()?'현재 로그인 화면에 기록했어요. 계정 저장 연결은 아직 준비 중이에요.':'이 브라우저에 임시 저장했어요.';}catch{storageMessage='기기 저장에 실패했어요. 이 화면을 닫기 전에 기록을 확인하세요.';}
+ function read(){try{const raw=key()?localStorage.getItem(key()):signed()?null:sessionStorage.getItem(temporaryKey);state=clean(raw?JSON.parse(raw):null);storageMessage=key()?'이 계정의 기기 기록':signed()?'현재 로그인 화면의 기록 · 이 화면을 닫으면 사라져요.':'이 브라우저의 임시 기록';}catch{state=blank();storageMessage='저장 공간을 사용할 수 없어 현재 화면에서만 기록해요.';}}
+ function save(record){if(current&&view==='question')state.course=current.course;if(remoteQuestion&&view==='source-question'&&!remoteFeedback)state.sourcePending[state.course]={questionId:remoteQuestion.questionId||remoteQuestion.id,version:remoteQuestion.version,choice:remoteChoice,confidence:remoteConfidence,help:false,openedAt:remoteOpenedAt,updatedAt:Date.now()};if(current&&view==='question')state.pending[state.course]={book:state.book,pool:[...pool],cursor,choice,confidence,help,hint,solution,feedbackId:feedback?.id||null,openedAt,updatedAt:Date.now()};if(record){record.updatedAt=Math.max(Date.now(),(record.updatedAt||record.at||0)+1);state.records=state.records.map(r=>r.id===record.id?record:r);}state=clean(state);try{if(key())localStorage.setItem(key(),JSON.stringify(state));else if(!signed())sessionStorage.setItem(temporaryKey,JSON.stringify(state));storageMessage=key()?'이 계정의 기기에 저장했어요.':signed()?'현재 로그인 화면에 기록했어요. 계정 저장 연결은 아직 준비 중이에요.':'이 브라우저에 임시 저장했어요.';}catch{storageMessage='기기 저장에 실패했어요. 이 화면을 닫기 전에 기록을 확인하세요.';}
  emit();if(signed()&&activeOwner&&(typeof options.onProgress==='function'||record&&typeof options.onRecord==='function')){const generation=epoch,ownerAtSave=activeOwner,payload=JSON.parse(JSON.stringify(typeof options.onProgress==='function'?state:record));saveQueue=saveQueue.catch(()=>{}).then(async()=>{if(!signed()||ownerAtSave!==owner())return;try{const handler=typeof options.onProgress==='function'?options.onProgress:options.onRecord;const result=await handler(payload,{ownerKey:ownerAtSave,namespace:'student-paths-v1'});if(closed||generation!==epoch)return;if(result?.state)state=mergeProgress(result.state,state);storageMessage=result?.saved===true?'계정에 학습 기록을 저장했어요.':'계정 저장을 확인하지 못했어요. 기기 기록은 유지돼요.';}catch{if(closed||generation!==epoch)return;storageMessage='계정 저장에 실패했어요. 기기 기록은 유지돼요.';}draw(false);emit();});}}
  function qlist(){if(state.course==='supplement')return BANK.filter(q=>q.book===state.book);if(state.course==='advanced')return BANK.filter(q=>q.course==='advanced'&&q.level===tier(state,planProfile?.goal));return BANK.filter(q=>q.course===state.course);}
- function resetQuestion(q){current=q;choice=null;confidence='sure';help=false;hint=false;feedback=null;solution=false;openedAt=Date.now();view='question';}
+ function resetQuestion(q){
+  if(guestTrial){
+   if(!openTrialQuestion(q)){
+    current=null;feedback=null;view='guest-limit';return;
+   }
+  }
+  current=q;choice=null;confidence='sure';help=false;hint=false;feedback=null;solution=false;openedAt=Date.now();view='question';}
  function resume(course){const originalLatest=Object.entries(state.pending).filter(([id,p])=>(!course||course===id)&&!p.cleared).sort((a,b)=>b[1].updatedAt-a[1].updatedAt)[0],sourceLatest=Object.entries(state.sourcePending).filter(([id,p])=>(!course||course===id)&&!p.cleared&&!heldExam(p.questionId)).sort((a,b)=>b[1].updatedAt-a[1].updatedAt)[0];if(sourceLatest&&(!course||course===sourceLatest[0])&&(!originalLatest||sourceLatest[1].updatedAt>=originalLatest[1].updatedAt)){state.course=sourceLatest[0];openRemote(sourceLatest[1].questionId,sourceLatest[1]);return true;}const courseId=course||Object.entries(state.pending).filter(([,p])=>!p.cleared).sort((a,b)=>b[1].updatedAt-a[1].updatedAt)[0]?.[0];const p=state.pending[courseId];if(!p||p.cleared)return false;state.course=courseId;state.book=p.book;pool=[...p.pool];cursor=p.cursor;current=byId.get(pool[cursor]);choice=p.choice;confidence=p.confidence;help=p.help;hint=p.hint;solution=p.solution;feedback=state.records.find(r=>r.id===p.feedbackId)||null;openedAt=Date.now();view='question';return true;}
  function begin(ids){pool=(ids||qlist().map(q=>q.id)).filter(id=>byId.has(id));cursor=0;if(!pool.length){notice='지금 선택한 범위에는 문제가 없어요.';return;}resetQuestion(byId.get(pool[0]));}
  function review(type){const seen=latest(state),ids=BANK.filter(q=>(!type||q.type===type)&&weak(seen.get(q.id))).map(q=>q.id);if(!ids.length){notice='현재 복습할 기록이 없어요.';return;}begin(ids);}
@@ -1328,7 +1380,7 @@ function bind(container,options={}){
  const saved=revisit&&remoteDrafts.get(id);if(saved?.version===q.version){remoteChoice=saved.choice;remoteConfidence=saved.confidence;remoteFeedback=saved.feedback;remoteOpenedAt=saved.openedAt;}
  view='source-question';notice='';sourcePhase='ready';if(!draft&&!remoteFeedback)save();draw();}catch{if(closed||generation!==sourceGeneration||sessionAtOpen!==epoch)return;sourcePhase='error';notice='문항의 판이나 열람 형식을 확인하지 못했어요. 다시 범위를 확인해 주세요.';draw(false);}}
  async function submitRemote(){if(!remoteQuestion||remoteBusy||remoteFeedback)return;if(typeof DSStudentServices?.submit!=='function'){notice='답안을 이 화면에 남겼어요. 서버 채점 연결은 아직 준비 중이에요.';draw(false);return;}const id=remoteQuestion.questionId||remoteQuestion.id;let operation=remoteOperations.get(id);if(!operation){if(remoteChoice===null&&!remoteUnknown){notice='답을 입력하거나 모르겠어요를 선택해 주세요.';draw(false);return;}operation={questionId:id,version:remoteQuestion.version,answer:remoteChoice,requestId:crypto.randomUUID(),course:state.course,confidence:remoteConfidence,help:false,seconds:Math.min(86400,Math.max(0,Math.round((Date.now()-remoteOpenedAt)/1000)))};remoteOperations.set(id,operation);}const generation=epoch;remoteBusy=true;notice='답안을 확인하고 있어요.';draw(false);try{const result=await DSStudentServices.submit(operation);if(closed||generation!==epoch||!signed())return;if(!result?.record||result.record.questionId!==id||result.record.version!==operation.version||typeof result.record.correct!=='boolean')throw Error('invalid_grade');if(result.solutionHTML){try{result._safeSolutionFragment=fragmentContent(result.solutionHTML,'제출 후 해설');}catch{result.solutionUnavailable=true;}}if(result.solution){try{(Array.isArray(result.solution)?result.solution:[result.solution]).forEach(mathContent);}catch{result.solution=null;result.solutionUnavailable=true;}}remoteFeedback=result;remoteOperations.delete(id);state.sourcePending[state.course]={cleared:true,updatedAt:Date.now()};save();notice='계정에 풀이 결과를 저장했어요.';remoteHistory.phase='idle';window.dispatchEvent(new CustomEvent('ds-student-free-record',{detail:{record:result.record}}));}catch(error){if(closed||generation!==epoch)return;if([400,403,404,409,422].includes(error?.status)){remoteOperations.delete(id);notice='답안의 형식이나 문항 이용 상태가 바뀌었어요. 범위와 문항을 다시 확인해 주세요.';return;}notice='제출 결과를 확인하지 못했어요. 같은 답안으로 다시 확인해 주세요. 중복으로 새 풀이를 만들지 않아요.';}finally{if(generation===epoch){remoteBusy=false;draw(false);}}}
- function remoteQuestionHTML(){const q=remoteQuestion,id=q.questionId||q.id;const pending=remoteOperations.has(id);let content=q.format==='sandbox-html'?q._safeFragment+'<p class="ssp-note">긴 수식은 좌우로 밀어서 확인할 수 있어요.</p>':`<div class="ssp-prompt">${mathContent(q.prompt)}</div>`;const choices=q.answerType==='choice'?(Array.isArray(q.options)&&q.options.length===5?q.options:Array(5).fill('')):null;return `<article class="ssp-paper"><div class="ssp-paper-top"><span>${esc(sourceName(remoteMetadata))}</span><span>${esc(q.unit||remoteMetadata.unit||'')}</span></div><h2 tabindex="-1">기존 자료 풀기</h2>${desk?itemPager(Math.max(0,sourceRows().findIndex(row=>(row.questionId||row.id)===id)),sourceRows().some(row=>(row.questionId||row.id)===id)?sourceRows().length:1):''}${content}<fieldset class="ssp-options" aria-label="답안" ${remoteFeedback||remoteBusy||pending?'disabled':''}>${choices?choices.map((text,i)=>`<label><input type="radio" name="ssp-remote-choice" value="${i}" ${remoteChoice===i?'checked':''}><span class="ssp-option-no">${"①②③④⑤"[i]}</span><span>${mathContent(text)}</span></label>`).join(''):`<label>정수 답안 <input type="number" inputmode="numeric" step="1" data-ssp-remote-integer ${Number.isSafeInteger(remoteChoice)?`value="${remoteChoice}"`:''} aria-label="정수 답안"></label>`}</fieldset>${!remoteFeedback?`<div class="ssp-actions"><button class="ssp-primary" data-ssp-remote-submit ${remoteBusy?'disabled':''}>${pending?'같은 답안으로 결과 다시 확인':'답 제출하고 확인'}</button><button data-ssp-remote-unknown ${remoteBusy||pending?'disabled':''}>모르겠어요</button></div>`:`<section class="ssp-feedback"><h3 tabindex="-1">${remoteFeedback.record.correct?'맞았어요.':'조건과 풀이를 다시 확인해 봐요.'}</h3>${variantButton(remoteFeedback.record,remoteHistory.records)}<button data-ssp-remote-retry>같은 문제 다시 풀기</button>${remoteFeedback.answer!==undefined?`<p>정답 ${esc(choices?Number(remoteFeedback.answer)+1+'번':remoteFeedback.answer)}</p>`:''}${remoteFeedback._safeSolutionFragment?`<section class="ssp-solution">${remoteFeedback._safeSolutionFragment}<p class="ssp-note">긴 수식은 좌우로 밀어서 확인할 수 있어요.</p></section>`:''}${remoteFeedback.solutionUnavailable?'<p>해설 표시 형식을 확인하지 못했어요. 채점 결과는 계정에 저장했어요.</p>':''}${remoteFeedback.solution?`<div class="ssp-solution">${(Array.isArray(remoteFeedback.solution)?remoteFeedback.solution:[remoteFeedback.solution]).map(line=>`<p>${mathContent(line)}</p>`).join('')}</div>`:''}</section>`}<footer class="ssp-paper-foot"><span>계정에 허용된 기존 자료</span>${options.view==='history'?'<button data-ssp-history>내 공부 기록으로</button>':!desk?'<button data-ssp-home>코스로 돌아가기</button>':''}</footer></article>`;}
+ function remoteQuestionHTML(){const q=remoteQuestion,id=q.questionId||q.id;const pending=remoteOperations.has(id);let content=q.format==='sandbox-html'?q._safeFragment+'<p class="ssp-note">긴 수식은 좌우로 밀어서 확인할 수 있어요.</p>':`<div class="ssp-prompt">${mathContent(q.prompt)}</div>`;const choices=q.answerType==='choice'?(Array.isArray(q.options)&&q.options.length===5?q.options:Array(5).fill('')):null;return `<article class="ssp-paper"><div class="ssp-paper-top"><span>${esc(sourceName(remoteMetadata))}</span><span>${esc(q.unit||remoteMetadata.unit||'')}</span></div><h2 tabindex="-1">기존 자료 풀기</h2>${desk?itemPager(Math.max(0,sourceRows().findIndex(row=>(row.questionId||row.id)===id)),sourceRows().some(row=>(row.questionId||row.id)===id)?sourceRows().length:1):''}${content}${q.format==='sandbox-html' && choices ? '' : `<fieldset class="ssp-options" aria-label="답안" ${remoteFeedback||remoteBusy||pending?'disabled':''}>${choices?choices.map((text,i)=>`<label><input type="radio" name="ssp-remote-choice" value="${i}" ${remoteChoice===i?'checked':''}><span class="ssp-option-no">${"①②③④⑤"[i]}</span><span>${mathContent(text)}</span></label>`).join(''):`<label>정수 답안 <input type="number" inputmode="numeric" step="1" data-ssp-remote-integer ${Number.isSafeInteger(remoteChoice)?`value="${remoteChoice}"`:''} aria-label="정수 답안"></label>`}</fieldset>`}${!remoteFeedback?`<div class="ssp-actions"><button class="ssp-primary" data-ssp-remote-submit ${remoteBusy?'disabled':''}>${pending?'같은 답안으로 결과 다시 확인':'답 제출하고 확인'}</button><button data-ssp-remote-unknown ${remoteBusy||pending?'disabled':''}>모르겠어요</button></div>`:`<section class="ssp-feedback"><h3 tabindex="-1">${remoteFeedback.record.correct?'맞았어요.':'조건과 풀이를 다시 확인해 봐요.'}</h3>${variantButton(remoteFeedback.record,remoteHistory.records)}<button data-ssp-remote-retry>같은 문제 다시 풀기</button>${remoteFeedback.answer!==undefined?`<p>정답 ${esc(choices?Number(remoteFeedback.answer)+1+'번':remoteFeedback.answer)}</p>`:''}${remoteFeedback._safeSolutionFragment?`<section class="ssp-solution">${remoteFeedback._safeSolutionFragment}<p class="ssp-note">긴 수식은 좌우로 밀어서 확인할 수 있어요.</p></section>`:''}${remoteFeedback.solutionUnavailable?'<p>해설 표시 형식을 확인하지 못했어요. 채점 결과는 계정에 저장했어요.</p>':''}${remoteFeedback.solution?`<div class="ssp-solution">${(Array.isArray(remoteFeedback.solution)?remoteFeedback.solution:[remoteFeedback.solution]).map(line=>`<p>${mathContent(line)}</p>`).join('')}</div>`:''}</section>`}<footer class="ssp-paper-foot"><span>계정에 허용된 기존 자료</span>${options.view==='history'?'<button data-ssp-history>내 공부 기록으로</button>':!desk?'<button data-ssp-home>코스로 돌아가기</button>':''}</footer></article>`;}
  function sourcePanel(){
   const units=Object.keys(FREE_CONCEPTS);
   const freeConcept=FREE_CONCEPTS[freeUnit];
@@ -1422,6 +1474,9 @@ function bind(container,options={}){
   const accountReady=remoteHistory.phase==='ready';
   const counts=(accountReady||rows.length)?`<dl class="ssp-record-counts"><div><dt>서로 다른 문항</dt><dd>${recent.size}문항</dd></div><div><dt>재풀이 포함 시도</dt><dd>${rows.length}회</dd></div></dl>`:'';
   const localList=localRows.map(r=>`<li><div><strong>${esc(recordTitle(r))}</strong><span>${r.correct?'정답':r.choice===null?'모르겠어요':'오답'}${r.help?' · 힌트 사용':''}${r.confidence==='unsure'?' · 헷갈림':''}${r.repeated?' · 재풀이':''}</span>${r.reason?`<small>${esc(REASONS[r.reason])}</small>`:''}</div>${reviewButton(r,'다시 풀기')}${variantButton(r,state.records)}</li>`).join('');
+  if(guestTrial)return `<section class="ssp-panel ssp-history"><h2 tabindex="-1">내 공부 기록</h2>${counts}
+   <p class="ssp-note">이 탭에서 푼 체험 문제의 기록이에요.</p>${localList?'<ul>'+localList+'</ul>':'<p>첫 문제를 풀면 이곳에 기록이 남아요.</p>'}
+   <button type="button" data-ssp-trial-return>공부로 돌아가기</button></section>`;
   return `<section class="ssp-panel ssp-history"><h2 tabindex="-1">내 공부 기록</h2>${counts}
    <p class="ssp-note">내신 화면 학습에서 불러온 기존 자료와 최근 보완연습 최대 250회의 기록이에요.${remoteHistory.hasMore?' 이전 기록을 더 보면 집계도 갱신돼요.':''}</p>
    ${review.length?`<h3>먼저 복습할 단원·유형</h3><p>같은 문제는 마지막 풀이로 판단해요. 보완연습은 헷갈리거나 힌트를 본 문제도 담아요.</p><ul>${review.slice(0,3).map(g=>`<li><div><strong>${esc(g.name)}</strong><span>다시 볼 문제 ${g.count}개</span></div>${reviewButton(g.example,'복습하기')}</li>`).join('')}</ul>`:accountReady?`<p>${rows.length?'확인한 기록에는 다시 볼 문제가 없어요. 다음 문제로 넘어가 보세요.':'첫 문제를 풀면 이곳에 기록이 쌓여요.'}</p><a href="#student" data-hub-study-link>내신 공부하기 →</a>`:''}
@@ -1443,6 +1498,23 @@ function bind(container,options={}){
  }
  let releaseChoiceLayout;
  function mountChoices(body){
+  if (view==='source-question' && remoteQuestion?.format==='sandbox-html' && remoteQuestion.answerType==='choice') {
+    const q=remoteQuestion, id=q.questionId||q.id, frame=body.querySelector('.ssp-paper iframe.ds-student-fragment');
+    const bind=()=>{
+      const doc=frame?.contentDocument;
+      if (!frame?.isConnected || doc?.URL!=='about:srcdoc' || !doc.body || remoteQuestion!==q || doc.querySelector('.dte-source-choices')) return;
+      const locked=()=>closed || !frame.isConnected || remoteQuestion!==q || remoteFeedback || remoteBusy || remoteOperations.has(id);
+      window.DSTimedExam.prepareChoices({root:doc.body,id,value:remoteChoice,options:q.options||[],math:mathContent,choose:button=>{
+        if (locked()) return;
+        remoteChoice=Number(button.dataset.examChoice); remoteUnknown=false;
+        for (const option of doc.querySelectorAll('[data-exam-choice]')) option.setAttribute('aria-pressed',String(option===button));
+        save();
+      }});
+      if (locked()) for (const button of doc.querySelectorAll('[data-exam-choice]')) button.disabled=true;
+    };
+    if(frame){frame.addEventListener('load',bind,{once:true}); if(frame.contentDocument?.readyState==='complete')bind();}
+    return;
+  }
   const group=body.querySelector('.ssp-options:has(input[type="radio"])');
   if(group)releaseChoiceLayout=window.DSChoiceLayout?.mount(group,group.querySelectorAll('label'));
  }
@@ -1452,7 +1524,7 @@ function bind(container,options={}){
  if(desk){
   const planPane=root.querySelector('[data-study-plan]');
   const units=planPhase==='survey'?planUnits(planDraft.subject,planDraft.need).filter(row=>planDraft.need!=='supplement'||row.book===planDraft.book):planUnits(planProfile?.subject,planProfile?.need);
-  const markup=planPhase==='loading'?'<p role="status">학습 계획을 불러오고 있어요.</p>':planPhase==='load-error'?'<button type="button" data-plan-reload>다시 불러오기</button>':studyPlan.render({profile:planProfile,draft:planDraft,step:planStep,phase:planPhase,course:planCourse,subjects,books:planDraft.need==='supplement'?offeredBooks():[],supplyPhase,units});
+  const markup=planPhase==='loading'?'<p role="status">학습 계획을 불러오고 있어요.</p>':planPhase==='load-error'?'<button type="button" data-plan-reload>다시 불러오기</button>':studyPlan.render({profile:planProfile,draft:planDraft,step:planStep,phase:planPhase,course:planCourse,subjects,books:planDraft.need==='supplement'?bookMenu():[],supplyPhase,units});
   if(markup!==planHTML){planPane.innerHTML=markup;planHTML=markup;}
   planPane.querySelectorAll('button').forEach(el=>{if(planBusy&&!el.disabled){el.disabled=true;el.dataset.planBusy='';}else if(!planBusy&&el.hasAttribute('data-plan-busy')){el.disabled=false;delete el.dataset.planBusy;}});
   root.dataset.planPhase=planPhase;
@@ -1461,7 +1533,8 @@ function bind(container,options={}){
   root.querySelector('.ssp-desk-filters').hidden=!filters;
   if(filters!==deskFilterHTML){root.querySelector('.ssp-desk-filters').innerHTML=filters;deskFilterHTML=filters;}
   root.querySelectorAll('.ssp-desk-controls button, .ssp-desk-controls select:not([disabled]), .ssp-desk-controls [data-ssp-busy-lock]').forEach(el=>{if(remoteBusy&&!el.disabled){el.disabled=true;el.dataset.sspBusyLock='';}else if(!remoteBusy&&el.hasAttribute('data-ssp-busy-lock')){el.disabled=false;delete el.dataset.sspBusyLock;}});
-  body.innerHTML=view==='source-question'&&remoteQuestion?remoteQuestionHTML():view==='question'&&current?question():view==='history'?history():view==='result'?result():deskWaiting();
+  body.innerHTML=view==='guest-limit'?'<article class="ssp-paper"><h2>공개 체험 세 문제를 모두 열어봤어요.</h2>'+trialNotice()+'</article>':view==='source-question'&&remoteQuestion?remoteQuestionHTML():view==='question'&&current?question():view==='history'?history():view==='result'?result():deskWaiting();
+  if(guestTrial&&view==='question'&&feedback&&trialOpened.size>=trialLimit)body.insertAdjacentHTML('beforeend',trialNotice());
   const msg=document.createElement('p');msg.className='ssil-sync';msg.textContent=storageMessage;body.append(msg);
   const material=deskMaterials();if(material)body.insertAdjacentHTML('beforeend',material);
   mountChoices(body);
@@ -1487,7 +1560,13 @@ function bind(container,options={}){
   save();draw();
  }
  function check(skip){if(!current||feedback||!skip&&choice===null)return;const r={id:window.crypto?.randomUUID?.()||'ssp-'+Date.now()+'-'+state.records.length,questionId:current.id,version:current.version,course:current.course,type:current.type,level:current.level,at:Date.now(),choice:skip?null:choice,correct:!skip&&choice===current.answer,confidence:skip?'unsure':confidence,help,solutionSeen:false,repeated:state.records.some(r=>r.questionId===current.id),reason:'',seconds:Math.max(0,(Date.now()-openedAt)/1000)};state.records.push(r);feedback=r;save(r);draw();}
- function click(e){const b=e.target.closest('button');if(!b||!container.contains(b)||b.disabled)return;notice='';
+ function click(e){
+ if(guestTrial&&e.target.closest('[data-ssil-account="study"]')){
+  e.preventDefault();if(view!=='history')trialReturnView=view;view='history';draw();return;
+ }
+ const b=e.target.closest('button');if(!b||!container.contains(b)||b.disabled)return;notice='';
+ if(guestTrial&&b.hasAttribute('data-ssp-trial-return')){view=trialReturnView;draw();return;}
+ if(guestTrial&&b.hasAttribute('data-ssp-guest-review')){void reviewPlan();return;}
  if(desk&&handlePlanClick(b))return;
  if(b.hasAttribute('data-ssp-variant')){
   if(remoteBusy)return;
@@ -1553,12 +1632,12 @@ function bind(container,options={}){
  function change(e){
  if(desk){
   if(e.target.matches('[data-plan-book]')&&planPhase==='survey'&&planDraft.need==='supplement'){
-   const book=workbookChoices().find(b=>b.id===e.target.value);
+   const book=(guestTrial?bookMenu():workbookChoices()).find(b=>b.id===e.target.value);
    planDraft.book=book?.id||'';planDraft.subject=book?.subject||'';planDraft.unit='';
    draw(false);container.querySelector('[data-plan-unit]')?.focus({preventScroll:true});return;
   }
   if(e.target.matches('[data-plan-subject]')&&planPhase==='survey'){
-   window.DSStudyPlanStore.waitingRange?.(activeOwner,null);
+   if(!guestTrial)window.DSStudyPlanStore.waitingRange?.(activeOwner,null);
    planDraft.subject=e.target.value;planDraft.unit='';draw(false);
    container.querySelector('[data-plan-unit]')?.focus({preventScroll:true});return;
   }
@@ -1575,7 +1654,7 @@ function bind(container,options={}){
   if(e.target.matches('[data-ssp-scope-book],[data-ssp-scope-unit],[data-ssp-scope-type]')){
    if(remoteBusy)return;
    if(e.target.hasAttribute('data-ssp-scope-book')&&state.course==='supplement'&&planProfile){
-    const book=workbookChoices().find(b=>b.id===e.target.value);
+    const book=(guestTrial?bookMenu():workbookChoices()).find(b=>b.id===e.target.value);
     if(book){
      planDraft={goal:planProfile.goal,need:'supplement',subject:book.subject,book:book.id,unit:''};
      planStep=2;planPhase='survey';draw(false);

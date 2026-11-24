@@ -59,9 +59,19 @@
     const controls=pendingSubmission?'<div class="csat-check"><button class="ssp-primary" data-csat-grade="retry">풀이 기록 다시 저장</button></div>':studyError?'<button data-csat-study-reload>문항 연결 다시 확인</button>':'<div class="csat-check"'+(choice===null?' hidden':'')+'><button class="ssp-primary" data-csat-grade="sure">확신해요 · 채점</button><button data-csat-grade="unsure">헷갈려요 · 채점</button></div>';
     return '<section class="ssp ssp-desk sl54-shell student-signed-in csat-desk"><header class="ssil-heading"><h1>수능 공부</h1><a href="#account" data-csat-account>내 수능 기록 ↗</a></header><div class="ssil-main"><div class="ssil-today ssil-live-paper ssp-body"><article class="ssp-paper"><div class="ssp-paper-top"><span>'+escape(q.short)+' · '+escape(q.points)+'점</span><span>'+(index+1)+' / '+rows.length+'</span></div><h2 class="ssp-problem-heading">'+escape(q.unit)+'</h2>'+paper(q)+(feedback?status:controls)+'<div class="csat-pager"><button data-csat-move="-1" '+(!index||busy?'disabled':'')+'>‹ 이전 문제</button><button data-csat-move="1" '+(index===rows.length-1||busy?'disabled':'')+'>다음 문제 ›</button></div></article></div><aside class="ssil-review ssp-desk-controls csat-settings"><div><label>목표 등급<select data-csat-goal>'+option('','등급 선택',goal)+Array.from({length:9},(_,i)=>option(i+1,i+1+'등급',goal)).join('')+'</select></label><label>단원<select data-csat-unit>'+option('','전체 단원',unit)+units.map(v=>option(v,v,unit)).join('')+'</select></label></div><a href="#account" data-csat-account>내 수능 공부 기록 →</a></aside></div><p role="status" class="ssp-live">'+escape(notice)+'</p></section>';
   }
+  const launchTime = Date.parse('2026-12-26T00:00:00+09:00');
+  function awaitingLaunch(mode) {
+    return (mode === 'study' || mode === 'mock') && Date.now() < launchTime;
+  }
+  function launchNotice(mode) {
+    const title = mode === 'mock' ? '수능 모의고사' : '수능 공부';
+    return '<section class="ssp ssp-desk sl54-shell csat-desk" aria-labelledby="csat-opening-title"><header class="ssil-heading"><h1 id="csat-opening-title">'+title+'</h1></header><article class="ssp-paper"><h2 class="ssp-problem-heading"><time datetime="2026-12-26">2026년 12월 26일 오픈</time></h2></article></section>';
+  }
   function page(){
     let body;
-    switch(tab()){
+    const mode = tab();
+    if (awaitingLaunch(mode)) body = launchNotice(mode);
+    else switch(mode){
       case 'downloads': body=window.DSCSATMaterials?.render()||'';break;
       case 'create': body=window.DSCSATPrint?.render()||'';break;
       case 'mock': body=window.DSCSATTimed?.render()||'';break;
@@ -137,7 +147,7 @@
   function mockSetup(){
     const signedIn=signed(),available=mockRows?.length;
     const enabled=signedIn&&available>=mockCount;
-    return '<div class="ta-top-v18"><h1>수능 모의고사</h1></div><div class="ta-layout-v18 dst-layout"><div class="ta-main-v18"><article class="quick-paper ta-question-v18 sl54-paper-preview dst-sheet"><div class="paper-heading"><span>공개 기출 미리보기</span></div>'+paper(publicBank.get(fixtureId),'')+'</article></div><aside class="dst-panel sl54-unit-side dst-config"><h2>시험 선택</h2><label>시험 구성<select data-csat-mock-size>'+option(15,'미니 모의고사 · 15문항 · 50분',mockCount)+option(30,'실전 모의고사 · 30문항 · 100분',mockCount)+'</select></label>'+(signedIn?(enabled?'<button class="dst-start" data-time-action="quote">시험 시작</button>':mockError?'<button data-csat-mock-reload>문항 다시 확인</button>':'<p role="status">'+(available===undefined?'출제 가능한 문항을 확인하고 있어요.':available+' / '+mockCount+'문항 준비 · 등록 후 시작할 수 있어요.')+'</p>'):'<a href="#login">로그인하고 시험 선택하기 →</a>')+'</aside></div>';
+    return '<div class="ta-top-v18"><h1>수능 모의고사</h1></div><div class="ta-layout-v18 dst-layout"><div class="ta-main-v18"><article class="quick-paper ta-question-v18 sl54-paper-preview dst-sheet"><div class="paper-heading"><span>공개 기출 미리보기</span></div>'+paper(publicBank.get(fixtureId),'')+'</article></div><aside class="dst-panel sl54-unit-side dst-config"><h2>시험 선택</h2><label>시험 구성<select data-csat-mock-size>'+option(15,'미니 모의고사 · 15문항 · 50분',mockCount)+option(30,'실전 모의고사 · 30문항 · 100분',mockCount)+'</select></label>'+(signedIn?(enabled?'<button class="dst-start" data-time-action="quote">시험 시작</button>':mockError?'<button data-csat-mock-reload>문항 다시 확인</button>':'<p role="status">'+(available===undefined?'출제 가능한 문항을 확인하고 있어요.':available+' / '+mockCount+'문항 준비 · 등록 후 시작할 수 있어요.')+'</p>'):'<button class="dst-start" data-time-action="quote">'+(mockCount===15?window.DSCSATTimed.fixedStartLabel():'시험 시작')+'</button>')+'</aside></div>';
   }
   async function mockSelection(){
     await loadMocks();const rows=[...(mockRows||[])];if(rows.length<mockCount)return [];
@@ -151,7 +161,7 @@
       ids.every((id,i)=>publicBank.has(id)||examSource(rows[i])||mockRows?.some(q=>q.id===id));
   }
   function mount(){
-    if(!active())return;
+    if(!active() || awaitingLaunch(tab()))return;
     if(tab()==='create'){
       const wrapper=area.querySelector('.csat-student');
       if(wrapper && !wrapper.dataset.printMounted && window.DSCSATPrint){wrapper.dataset.printMounted='1';window.DSCSATPrint.mount?.(wrapper);}

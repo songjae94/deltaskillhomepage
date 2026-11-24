@@ -13,8 +13,7 @@ function currentMode(){
  if(mode==='downloads'&&params.get('downloadPane')==='print')return 'create';
  return tabs.some(([key])=>key===mode)?mode:'study';
 }
-let tab=currentMode();
-let guestSubject='대수',guestChoice=null;
+let tab=currentMode(),initialSessionReady=false;
 let csatPractice=null,csatArrived=false;
 let sessionEpoch=0,controller=null,bound=null,accountData=null,loading=null;
 const signed=()=>Boolean(window.DSService?.session());
@@ -28,16 +27,15 @@ function wrapper(legacy){
  if(tab==='timed')body=window.DSStudentTimed.render();
  if(tab==='downloads'||tab==='create')body=window.DSStudentDownloads.render(tab==='create'?'print':'store');
  if(tab==='study'){
- if(signed()&&legacy.includes('data-sl-view="signed-home"'))return '<div class="dsh">'+nav+'<div data-hub-paths>'+window.DSStudentStudyPaths.render({view:'desk'})+'</div></div>';
- if(!signed())body=entry.renderGuestDesk(guestSubject,guestChoice)||legacy;
- else body=legacy;
+ if(!signed()||legacy.includes('data-sl-view="signed-home"'))return '<div class="dsh">'+nav+'<div data-hub-paths>'+window.DSStudentStudyPaths.render({view:'desk'})+'</div></div>';
+ body=legacy;
  }return '<div class="dsh">'+nav+body+'</div>';
 }
 const render=()=>wrapper(entry.render());
 student=render;
 entry.setHostRenderer(legacy=>{
  if(tab!=='study'&&area.querySelector('.dsh-tabs'))return null;
- if(tab==='study'&&area.querySelector('[data-hub-paths]')&&legacy.includes('data-sl-view="signed-home"'))return null;
+ if(tab==='study'&&area.querySelector('[data-hub-paths]')&&(!signed()||legacy.includes('data-sl-view="signed-home"')))return null;
  return wrapper(legacy);
 });
 function update(){if(location.hash==='#student'){area.innerHTML=render();mount();}}
@@ -83,7 +81,13 @@ function mount(){
      section.innerHTML='<h2>내 타임어택</h2><button data-time-history-load>이전 세트와 포인트 내역 보기</button><div aria-live="polite"></div>';root.append(section);
    }
  }
- if(!el||!signed()||bound===el)return;
+ if(!el||bound===el)return;
+ if(!signed()){
+  if(!initialSessionReady)return;
+  controller?.();bound=el;
+  controller=window.DSStudentStudyPaths.bind(el,{view:'desk',guestTrial:true,signedIn:false});
+  return;
+ }
  if(!accountData&&!loading&&window.DSStudentServices){const epoch=sessionEpoch;loading=Promise.resolve().then(()=>DSStudentServices.getProgress('student-paths-v1')).then(x=>{if(epoch===sessionEpoch)accountData=x;}).catch(()=>{if(epoch===sessionEpoch)accountData={};}).finally(()=>{if(epoch===sessionEpoch){loading=null;mount();}});return;}
  if(!loading)bindCourse(el,account);
 }
@@ -96,9 +100,6 @@ document.addEventListener('click',e=>{
   csatPractice='SNG-2024-M11#공통#1';csatArrived=false;tab='study';
   const u=new URL(location.href);u.searchParams.set('studentMode',tab);history.replaceState(history.state,'',u);location.hash='#student';return;
  }
- const subject=e.target.closest('[data-hub-guest-subject]'),choice=e.target.closest('[data-hub-guest-choice]');
- if(subject){guestSubject=subject.dataset.hubGuestSubject;guestChoice=null;update();area.querySelector('[data-hub-guest-subject][aria-pressed=true]')?.focus({preventScroll:true});return;}
- if(choice){guestChoice=Number(choice.dataset.hubGuestChoice);for(const key of area.querySelectorAll('[data-hub-guest-choice]'))key.setAttribute('aria-pressed',String(key===choice));return;}
  if(e.target.closest('[data-hub-sync]')){accountData=null;controller?.();controller=null;bound=null;mount();return;}const b=e.target.closest('[data-hub-tab]');
  if(b){
   const next=b.dataset.hubTab;
@@ -149,5 +150,6 @@ window.addEventListener('hashchange',()=>{csatArrived=location.hash==='#student'
 function sessionChanged(){csatPractice=null;sessionEpoch++;accountData=null;loading=null;controller?.();bound=null;controller=null;update();mount();}
 window.addEventListener('ds-session-change',sessionChanged);window.addEventListener('ds-session-ready',()=>{if(!bound)update();});
 new MutationObserver(mount).observe(area,{subtree:true,childList:true});
+Promise.resolve(window.DSService?.ready).then(()=>{initialSessionReady=true;mount();});
 if(location.hash==='#student')update();else mount();
 })();
