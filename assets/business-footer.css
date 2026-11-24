@@ -22,3 +22,6 @@ footer.business-footer {
 .business-footer .business-info a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
 .business-footer .business-info p { margin: 2px 0; }
 .tablet footer.business-footer { display: none; }
+/* /app/ 화면 아래 사업자 정보(11-24 · 디자인규칙_1118 색) */
+footer.app-business-footer { color: #5B6678; border-top-color: #DFE3ED; margin-top: 40px; padding-bottom: 96px; }
+footer.app-business-footer .business-info a { color: #3C4A60; }
