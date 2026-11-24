@@ -1,6 +1,5 @@
 /* Book form v62: the teacher's "교재 만들기" builds one light book across several subjects and units.
-   Same frame as 프린트 만들기 (steps · dark condition panel · preview). Form and preview skeleton only:
-   no question is fetched here, nothing is sent to a server, and the saved composition stays in this browser. */
+   Linked unit-practice books use the member print gate. Draft configurations stay in this browser. */
 (() => {
   'use strict';
   const builder = window.DSTeacherBuilderV36;
@@ -23,10 +22,12 @@
     { id: 'market', name: '시중 교재', note: '반에서 쓰는 책의 흐름을 바탕으로' }
   ];
   // 시중 교재 목록: 앱 안에 올라온 목록이 있으면 그것만 씀(이름 글자만). 지금 앱에는 목록이 없다.
-  const BOOK_LIST = Array.isArray(window.DSBookTitles) ? window.DSBookTitles.map(String).filter(Boolean) : [];
+  const availableBooks = () => (window.DSWorkbookScope?.books || []).filter(b =>
+    chosen().some(u => u.subject.name === b.subject) && (state.base === 'ebs' ? b.series === '올림포스' : b.series === '쎈'));
   const NOTICE = '출판사의 문항과 해설은 제공하지 않습니다. 델타스킬이 새로 만든 유사 문항만 제공합니다.';
   const LEVELS = [['easy', '쉬움'], ['mid', '보통'], ['hard', '어려움'], ['mix', '섞기']];
   const STRUCTURES = [
+    { id: 'practice', name: '단원 연습', use: '한 단원에서 연계 변형문항을 골라 출력', parts: [['단원 연습', 5, 'mix']] },
     { id: 's1', name: '기본문제 – 예제 – 연습문제', use: '개념을 막 끝낸 반', parts: [['기본문제', 20, 'easy'], ['예제', 15, 'mid'], ['연습문제', 25, 'mix']] },
     { id: 's2', name: '기본문제 – 유형별 문제 – 연습문제', use: '유형을 고르게 익힐 반', parts: [['기본문제', 15, 'easy'], ['유형별 문제', 40, 'mid'], ['연습문제', 20, 'mix']] },
     { id: 's3', name: '개념 확인 – 대표 유형 – 실전 문제', use: '상위권 반', parts: [['개념 확인', 15, 'easy'], ['대표 유형', 30, 'mid'], ['실전 문제', 20, 'hard']] },
@@ -41,7 +42,7 @@
     get(k, f) { try { const v = JSON.parse(localStorage.getItem(k)); return v ?? f; } catch { return f; } },
     put(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch { return false; } }
   };
-  const fresh = () => ({ step: 1, units: [], base: 'exam', book: '', structure: 's1', parts: STRUCTURES[0].parts.map(p => ({ count: p[1], level: p[2] })), layout: 2, documentDesign: window.DSDocumentDesign?.selected().id || 'DS-FOCUS-V2', title: '', academy: '', cover: 'mobileart', view: '', message: '' });
+  const fresh = () => ({ step: 1, units: [], base: 'market', book: '', structure: 'practice', parts: STRUCTURES[0].parts.map(p => ({ count: p[1], level: p[2] })), layout: 2, documentDesign: window.DSDocumentDesign?.selected().id || 'DS-FOCUS-V2', title: '', academy: '', cover: 'mobileart', view: '', message: '' });
   let coverQuery='',coverGroup='';
   let state = Object.assign(fresh(), store.get(KEY, {}));
   state.cover=normalizeCover(state.cover);
@@ -115,9 +116,10 @@
   function bookPicker() {
     if (state.base === 'exam') return '';
     const label = state.base === 'ebs' ? 'EBS 교재 이름' : '시중 교재 이름';
-    const list = BOOK_LIST.length
-      ? `<select data-bf62-field="book" aria-label="${label}"><option value="">책을 고르세요</option>${BOOK_LIST.map(b => `<option ${state.book === b ? 'selected' : ''}>${safe(b)}</option>`).join('')}</select>`
-      : `<p class="bf62-empty">이 화면에 올라온 책 목록이 없습니다. 반에서 쓰는 책 이름을 글자로 적어 주세요.</p><input type="text" maxlength="40" data-bf62-field="book" value="${safe(state.book)}" placeholder="예: 학교 부교재 이름" aria-label="${label}">`;
+    const books = availableBooks();
+    const list = !books.length
+      ? `<label>구성 보관용 교재 이름<input type="text" maxlength="40" data-bf62-field="book" value="${safe(state.book)}"></label><p class="bf62-small">이 범위에 연결된 교재를 준비하고 있습니다.</p>`
+      : `<select data-bf62-field="book" aria-label="${label}"><option value="">연계 교재 선택</option>${state.book && !books.some(b=>b.label===state.book) ? `<option selected>${safe(state.book)}</option>` : ''}${books.map(b=>`<option ${state.book===b.label?'selected':''}>${safe(b.label)}</option>`).join('')}</select>`;
     return `<div class="bf62-book"><span class="bf62-label">${label}${state.base === 'market' ? '' : ' <small>(고르지 않아도 됩니다)</small>'}</span>${list}<p class="bf62-notice" role="note">${NOTICE}</p></div>`;
   }
   function baseForm() {
@@ -127,10 +129,34 @@
     const parts = partsNow(), p = plan();
     return `${stepTitle(3, '부분마다 몇 문항, 어떤 난이도로?')}<p class="bf62-lead">문항 수는 책 전체 기준입니다. 고른 단원 ${p.perUnit}개에 고르게 나눕니다.</p><div class="bf62-parts">${parts.map((x, i) => `<fieldset class="bf62-part"><legend>${safe(x.name)}${x.where === 'end' ? ' <small>책 끝에 한 번</small>' : ''}</legend><label class="bf62-count"><span>문항 수</span><input type="number" min="0" max="100" step="1" inputmode="numeric" value="${x.count}" data-bf62-count="${i}" aria-label="${safe(x.name)} 문항 수"><em>문항</em></label><div class="bf62-levels" role="radiogroup" aria-label="${safe(x.name)} 난이도">${LEVELS.map(([v, t]) => `<label><input type="radio" name="bf62-level-${i}" value="${v}" data-bf62-level="${i}" ${x.level === v ? 'checked' : ''}><span>${t}</span></label>`).join('')}</div></fieldset>`).join('')}</div><div class="bf62-total"><div><span>책 전체</span><strong><b>${total()}</b>문항</strong></div><div><span>어림 쪽 수</span><strong><b>${p.pages}</b>쪽</strong></div><p>표지 · 차례 · 정답과 해설을 넣은 어림입니다. 한 쪽 ${state.layout}문항 기준이며 다음 걸음에서 바꿀 수 있습니다.</p></div>`;
   }
+  // Match the chapter names in the verified textbook index. Unknown chapters never broaden the draw.
+  const chapterNames = {
+    'cm2:0': /^(평면좌표|직선의 방정식|원의 방정식|도형의 이동)$/,
+    'cm2:1': /^(집합|집합의 뜻과 표현|집합의 연산|명제)$/,
+    'cm2:2': /^(함수|유리식과 유리함수|무리식과 무리함수|유리함수와 무리함수)$/,
+    'ca1:0': /^함수의 (극한|연속)$/,
+    'ca1:1': /^(미분계수와 도함수|도함수의 활용(?: \(\d\))?)$/,
+    'ca1:2': /^(부정적분|정적분|부정적분과 정적분|정적분의 활용)$/
+  };
+  function outputPlan() {
+    const units = chosen(), parts = partsNow().filter(p => p.count);
+    if (units.length !== 1) return {reason:'실제 출력은 한 과목의 대단원 하나씩 지원합니다.'};
+    if (state.base === 'exam') return {reason:'기출 출처 확인을 마친 교재용 문항을 준비하고 있습니다.'};
+    const book = availableBooks().find(b => b.label === state.book && b.subject === units[0].subject.name);
+    if (!book) return {reason:'바탕 단계에서 연결된 교재를 선택해 주세요.'};
+    const match = chapterNames[units[0].key];
+    const ids = book.units.filter(u => match?.test(u.label.replace(/^\d+\s+/,''))).map(u=>u.id);
+    if (!ids.length) return {reason:'선택한 교재에서 이 단원에 연결된 문항을 준비하고 있습니다.'};
+    if (state.structure !== 'practice' || parts.length !== 1 || parts[0].level !== 'mix' || total()>20)
+      return {reason:'현재는 단원 연습 구성으로 난이도를 섞어 1~20문항을 출력할 수 있습니다.'};
+    return {criteria:{subject:book.subject,mode:'book',book_id:book.id,subunit_ids:ids,type_mode:'mixed',type_ids:[],count:total()},
+      cover:coverModel(),layout:String(state.layout),title:title(),unit:units[0].unit,book:book.label};
+  }
   function makeArea() {
     const signed = Boolean(window.DSService?.session?.());
     const saved = store.get(SAVED, []);
-    const head = `<div class="bf62-make"><h3>구성 보관</h3><p>지금은 구성과 지면 견본을 확인하는 단계입니다. 실제 문항이 담긴 교재 파일 생성은 아직 연결되지 않았습니다.</p><button type="button" class="bf62-cover-print" data-bf62-print-cover>표지 인쇄 / PDF <span>↗</span></button>`;
+    const plan = outputPlan();
+    const head = `<div class="bf62-make"><h3>교재 출력</h3><p>${safe(plan.reason || '교재에 연결된 문항 수와 사용할 포인트를 확인한 뒤 표지와 본문을 함께 PDF로 저장할 수 있습니다.')}</p>${signed && !plan.reason ? '<button type="button" class="tb36-primary" data-bf62-output>문항 확인하고 교재 만들기 →</button>' : ''}<button type="button" class="bf62-cover-print" data-bf62-print-cover>표지 인쇄 / PDF <span>↗</span></button>`;
     if (!signed) {
       const signup = window.DSService?.accountLinks ? window.DSService.accountLinks('signup') : '';
       return `${head}<p>로그인하면 이 구성을 보관할 수 있습니다. 로그인 뒤 이 화면으로 돌아오며 고른 구성은 그대로 남습니다.</p><button type="button" class="tb36-primary" data-bf62-login>로그인하고 이어 가기 <span>→</span></button>${signup ? `<a class="bf62-signup" href="${safe(signup)}" target="_blank" rel="noopener">처음이면 회원가입 <span aria-hidden="true">↗</span></a><p class="bf62-small">가입은 새 창에서 열립니다. 가입을 마치고 이 창에서 로그인하면 됩니다.</p>` : ''}</div>`;
@@ -244,6 +270,7 @@
     swap('.bf62-preview', preview());
     const focusCover=document.activeElement?.hasAttribute?.('data-bf62-cover')?document.activeElement.value:null;
     const oldScroll=root.querySelector('.bf62-covers')?.scrollTop||0;
+    if (state.step===4) swap('.bf62-make',makeArea());
     if(window.DSBookCoverV65){
       swap('.bf62-covers',window.DSBookCoverV65.options(coverModel(),coverQuery,coverGroup));
       swap('.bc65-current',window.DSBookCoverV65.status(coverModel()));
@@ -285,12 +312,18 @@
   }
   document.addEventListener('click', e => {
     if (!routeHere() || !isBook()) return;
-    const b = e.target.closest('[data-bf62-step],[data-bf62-next],[data-bf62-view],[data-bf62-login],[data-bf62-save],[data-bf62-open],[data-bf62-print-cover]');
+    const b = e.target.closest('[data-bf62-step],[data-bf62-next],[data-bf62-view],[data-bf62-login],[data-bf62-save],[data-bf62-open],[data-bf62-print-cover],[data-bf62-output]');
     if (!b || b.disabled) return;
     if (b.hasAttribute('data-bf62-next')) { goStep(state.step + 1); return; }
     if (b.dataset.bf62Step) { goStep(b.dataset.bf62Step); return; }
     if (b.dataset.bf62View) { state.view = b.dataset.bf62View; persist(); const el = document.querySelector('.bf62-preview'); if (el) el.outerHTML = preview(); document.querySelector(`[data-bf62-view="${state.view}"]`)?.focus({ preventScroll: true }); return; }
     if (b.hasAttribute('data-bf62-login')) { persist(); window.DSLoginReturn = '#teacher'; location.hash = '#login'; return; }
+    if (b.hasAttribute('data-bf62-output')) {
+      const plan = outputPlan();
+      if (!plan.reason && window.DSDrawTeacherV59?.openBook) window.DSDrawTeacherV59.openBook(plan);
+      else { state.message = plan.reason || '출력 서비스를 불러오지 못했습니다.'; rerender(); }
+      return;
+    }
     if (b.hasAttribute('data-bf62-print-cover')) { printCover(); return; }
     if (b.hasAttribute('data-bf62-save')) { saveConfig(); return; }
     if (b.dataset.bf62Open) { const x = store.get(SAVED, [])[Number(b.dataset.bf62Open)]; if (x?.config) { state = Object.assign(fresh(), x.config, { message: '보관한 구성을 다시 열었습니다.' }); state.cover=normalizeCover(state.cover);if(state.documentDesign)window.DSDocumentDesign?.select(state.documentDesign); rerender(); } }
@@ -300,14 +333,14 @@
     const t = e.target;
     if (t.dataset.bf62Unit) { const k = t.dataset.bf62Unit; state.units = t.checked ? [...new Set([...state.units, k])] : state.units.filter(x => x !== k); state.message = ''; rerender(`[data-bf62-unit="${k}"]`); return; }
     if (t.dataset.bf62All) { const s = SUBJECTS.find(x => x.id === t.dataset.bf62All); const keys = s.units.map((_, i) => unitKey(s, i)); state.units = t.checked ? [...new Set([...state.units, ...keys])] : state.units.filter(x => !keys.includes(x)); state.message = ''; rerender(`[data-bf62-all="${s.id}"]`); return; }
-    if (t.hasAttribute('data-bf62-base')) { state.base = t.value; if (t.value === 'exam') state.book = ''; state.message = ''; rerender(`[data-bf62-base][value="${t.value}"]`); return; }
+    if (t.hasAttribute('data-bf62-base')) { state.base = t.value; state.book = ''; state.message = ''; rerender(`[data-bf62-base][value="${t.value}"]`); return; }
     if (t.hasAttribute('data-bf62-structure')) { setStructure(t.value); rerender(`[data-bf62-structure][value="${t.value}"]`); return; }
     if (t.dataset.bf62Level) { const i = Number(t.dataset.bf62Level); state.parts[i] = { ...state.parts[i], level: t.value }; softUpdate(); return; }
     if (t.dataset.bf62Count) { const i = Number(t.dataset.bf62Count); t.value = clampCount(t.value); state.parts[i] = { ...state.parts[i], count: Number(t.value) }; softUpdate(); return; }
     if (t.hasAttribute('data-bf62-layout')) { state.layout = Number(t.value); softUpdate(); return; }
     if(t.hasAttribute('data-bf62-cover-group')){coverGroup=t.value;softUpdate();document.querySelector('.bf62-covers')?.scrollTo(0,0);return;}
     if (t.hasAttribute('data-bf62-cover')) { state.cover = normalizeCover(t.value); state.view = 'cover'; softUpdate(); return; }
-    if (t.tagName === 'SELECT' && t.dataset.bf62Field === 'book') { state.book = t.value; softUpdate(); }
+    if (t.tagName === 'SELECT' && t.dataset.bf62Field === 'book') { state.book = t.value; rerender('[data-bf62-field="book"]'); }
   });
   document.addEventListener('input', e => {
     if (!routeHere() || !isBook()) return;

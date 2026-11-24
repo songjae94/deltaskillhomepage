@@ -260,6 +260,7 @@
   const expandedSheets = new WeakMap();
   function sheets(items = drawn.items) {
     const limit = Number(layout), saved = expandedSheets.get(items), out = [];
+    if (drawn?.bookCover && items === drawn.items) out.push({front:'표지'}, {front:'차례'});
     const expanded = saved?.layout === layout ? saved.indexes : null;
     for (let i = 0; i < items.length;) {
       const start = i, roomy = expanded?.has(i) === true;
@@ -303,7 +304,11 @@
     const solutions = !withSolutions ? '' : `<section class="paper solmeasure"><header class="head">${brand}<h1>정답과 해설</h1><small>${heading}</small></header><main class="body"><div class="solwin"><div class="solflow">${source.items.map((q, i) => { const x = source.solutions.find(v => v.id === q.id); return `<article class="sol"><div class="solhead"><b>${String(i + 1).padStart(2, '0')}</b><span>${x && !x.missing ? '정답 ' + answer(x.answer) : ''}</span></div><div class="solbody dq61-s">${x && !x.missing ? x.body.innerHTML : '<p class="solnone">이 문항은 해설이 준비되지 않았습니다.</p>'}</div></article>`; }).join('')}</div></div></main><footer class="foot"><span>${footText}</span><span class="pgno" data-base="${s.showPageNumber ? all.length : ''}"></span></footer></section>`;
     const css = `:root{--question-type-size:13.5px}*{box-sizing:border-box}html,body{margin:0;padding:0;background:#fff;color:#191919;font-family:${face}}body{font-size:12px}.paper{width:210mm;height:297mm;padding:14mm 13mm;position:relative;break-after:page;overflow:hidden}.head{height:25mm;border-bottom:1px solid #353535;margin-bottom:7mm}.brand{display:flex;justify-content:space-between;font-size:9px;letter-spacing:.03em}.head h1{font-size:23px;letter-spacing:-.03em;margin:12px 0 5px;text-align:${s.titleAlign === 'center' ? 'center' : 'left'}}.student{float:right;font-size:10px}.body{height:225mm}.questions{display:grid;grid-template-columns:${n === 1 ? '1fr' : '1fr 1fr'};grid-template-rows:${n === 4 ? '1fr 1fr' : '1fr'};gap:7mm;height:100%}.question{min-width:0;min-height:0;display:flex;flex-direction:column;overflow:hidden}.qhead{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #cfcfcf;padding-bottom:4px;margin-bottom:9px}.qhead b{font-size:17px}.qhead small{font-size:8px;color:#777}.qbody{flex:1;min-height:0;overflow:hidden}.qbody>div{font-size:var(--question-type-size);line-height:1.75;word-break:keep-all;overflow-wrap:anywhere}.qbody p{margin:0 0 .7em}.qbody img{max-width:100%;height:auto}.qbody math{font-size:1em}.qbody .dq59-bogi{position:relative;margin:1.3em 0 .9em;padding:1.1em .9em .6em;border:1px solid #333}.qbody .dq59-cond,.solbody .dq59-cond{margin:.9em 0;padding:.6em .9em;border:1px solid #333}.dq59-cond-line{display:block}.dq59-cond-line+.dq59-cond-line{margin-top:.35em}.qbody .dq59-bogi-title{position:absolute;top:-.8em;left:50%;transform:translateX(-50%);padding:0 .7em;background:#fff;white-space:nowrap}.qbody .dq59-bogi-title:before{content:'〈 '}.qbody .dq59-bogi-title:after{content:' 〉'}.qbody table{border-collapse:collapse;margin:.5em 0}.qbody td,.qbody th{border:1px solid #555;padding:3px 8px;text-align:center}.qbody ol,.qbody ul{margin:.6em 0;padding-left:1.4em}.qbody .dq59-choices{list-style:none;padding:0;margin:1em 0 0;display:grid;gap:.55em 1em;grid-template-columns:repeat(var(--cols),minmax(0,1fr))}.qbody .dq59-choices[data-fit="5"]{--cols:5}.qbody .dq59-choices[data-fit="3"]{--cols:3}.qbody .dq59-choices[data-fit="2"]{--cols:2}.qbody .dq59-choices[data-fit="1"]{--cols:1}.qbody .dq59-choices li{position:relative;min-width:0;padding-left:1.6em}.qbody .dq59-choices li:not([data-mark]){padding-left:0}.qbody .dq59-choices li[data-mark]:before{content:attr(data-mark);position:absolute;left:0}.head small{font-size:10px}.solwin{height:225mm;overflow:hidden}.solflow{height:225mm;column-count:2;column-gap:7mm;column-fill:auto;font-size:var(--question-type-size);line-height:1.7;word-break:keep-all;overflow-wrap:anywhere}.sol{margin:0 0 5mm}.solhead{display:flex;gap:10px;align-items:baseline;border-bottom:1px solid #ddd;padding-bottom:3px;margin-bottom:6px;break-after:avoid}.solhead b{font-size:14px}.solhead>span{font-size:inherit;font-weight:700}.solbody p{margin:0 0 .6em}.solbody img{max-width:100%;height:auto}.solbody table{border-collapse:collapse;margin:.4em 0}.solbody td,.solbody th{border:1px solid #555;padding:2px 6px;text-align:center}.solnone{color:#777}.solmeasure{position:absolute;left:-9999px;top:0}.foot{position:absolute;bottom:10mm;left:13mm;right:13mm;display:flex;justify-content:space-between;font-size:9px;color:#666}@page{size:A4;margin:0}@media print{.paper:last-child{break-after:auto}}`;
     const renderScripts = sample ? '' : `<script src="${asset('assets/vendor/katex-0.18.4/katex.min.js')}"><\/script><script src="${asset('math-render-v23.js?v=61.0')}"><\/script><script>${fitScript}<\/script>`;
-    const html = `<!doctype html><html lang="ko"><meta charset="utf-8"><title>${heading}</title><link rel="stylesheet" href="${asset('assets/vendor/katex-0.18.4/katex-embed.css?v=24.3')}"><link rel="stylesheet" href="${asset('math-render-v23.css?v=24.1')}"><style>${css}
+    const coverModel = !sample && source.bookCover && {...source.bookCover,title:settingsTitle};
+    const cover = coverModel ? `<section class="paper bc65-cover-page" style="padding:0">${window.DSBookCoverV65.render(coverModel)}</section>` : '';
+    const coverCSS = coverModel ? window.DSBookCoverV65.css : '';
+    const html = `<!doctype html><html lang="ko"><meta charset="utf-8"><title>${heading}</title><link rel="stylesheet" href="${asset('assets/vendor/katex-0.18.4/katex-embed.css?v=24.3')}"><link rel="stylesheet" href="${asset('math-render-v23.css?v=24.1')}"><style>${coverCSS}
+${css}
       .sample-question {display:block;width:322px;max-width:100%;height:auto}
       .paper .head h1,.brand span,.foot span:first-child {overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
       body[data-document-design="DS-MARGIN-V2"] .question {padding-left:2.5mm;border-left:.45mm solid #a1a7bd}
@@ -313,6 +318,14 @@
       .paper .questions[data-roomy="1"]{grid-template-columns:1fr;grid-template-rows:1fr}
     </style><link rel="stylesheet" href="${asset('draw-math-v61.css?v=scale-1124-1')}"><body${solOnly !== null ? ` data-sol-only="${solOnly}"` : ''}>${chosen.map((p, local) => {
       const index = only === undefined ? local : only;
+      if (p.front === '표지') return cover;
+      if (p.front === '차례') {
+        const sections = [['단원 연습 · '+source.items.length+'문항', 3]];
+        const recordAt = all.findIndex(sheet=>sheet.designRecord);
+        if (recordAt >= 0) sections.push(['풀이 기록',recordAt+1]);
+        if (solOn()) sections.push(['정답과 해설',all.length+1]);
+        return `<section class="paper"><header class="head">${brand}<h1>차례</h1></header><main class="body"><h2>${tag}</h2>${sections.map(([name,start])=>`<p style="display:flex;justify-content:space-between;border-bottom:1px solid #ccc;padding:3mm 0"><span>${safe(name)}</span><span>${start}쪽</span></p>`).join('')}</main><footer class="foot"><span>${footText}</span><span>2</span></footer></section>`;
+      }
       if(p.designRecord) {
         const record = document.createElement('template');
         record.innerHTML = window.DSDocumentDesign.recordSheet(p,{title:settingsTitle,unit:source.labels.unit,index,total});
@@ -349,11 +362,13 @@
       const crowded = [...body.querySelectorAll('.questions:not([data-roomy="1"]) .question[data-needs-space]')];
       if(crowded.length && Number(layout)>1){
         const saved = expandedSheets.get(target.items);
-        const expanded = saved?.layout === layout ? saved.indexes : new Set();
+        if (drawn?.bookCover && items === drawn.items) out.push({front:'표지'}, {front:'차례'});
+    const expanded = saved?.layout === layout ? saved.indexes : new Set();
         for(const box of crowded)expanded.add(Number(box.dataset.sourceIndex));
         expandedSheets.set(target.items,{layout,indexes:expanded});
         await loadPaper();
       }
+      if ([...f.contentDocument.querySelectorAll('.bc65-cover img')].some(i=>!i.naturalWidth)) { toast('표지 이미지를 불러오지 못했습니다. 다시 출력해 주세요.'); return; }
       if (target !== drawn || origin !== location.hash || !sharedPrint() || !host()?.signedIn()) return;
       if (f.contentDocument.body.dataset.overflow) { toast('한 쪽의 너비나 높이를 넘는 수식이 있어 인쇄 전에 배치를 확인해야 합니다.'); return; }
       f.contentWindow.focus(); f.contentWindow.print();
@@ -507,11 +522,11 @@
     const solBox = g ? `<button type="button" class="dq59-check dq61-check-locked" data-dq61-gate-open="solution"><span class="dq61-box" aria-hidden="true">${LOCK_SVG}</span><span>정답 · 해설 면 붙이기</span></button>`
       : `<label class="dq59-check"><input type="checkbox" data-dq-sol ${withSol ? 'checked' : ''}><span>정답 · 해설 면 붙이기</span></label>${solProgress()}`;
     // v61.4: a guest gets no keep box — the member screen has none either on the live connection (no owner tag).
-    const save = g ? ''
+    const save = drawn.bookCover ? '<div class="tb36-save dq59-save"><a href="/my/#library">내가 받은 자료 확인 ↗</a><p>편집한 교재는 인쇄 창에서 PDF로 저장하세요.</p></div>' : g ? ''
       : owner && !drawn.scoped ? `<div class="tb36-save dq59-save"><strong>이 기기에 임시 보관</strong><p>문항 글은 저장하지 않습니다. 다시 열 때 서버가 권한을 확인합니다.</p><button type="button" data-dq-save>임시 보관</button></div>` : '';
     const print = g ? `<button type="button" class="tb36-primary" data-dq61-gate-open="print">인쇄 / PDF <span>↗</span></button>` : `<button type="button" class="tb36-primary" data-dq-print ${waitPrint ? 'aria-busy="true"' : ''}>인쇄 / PDF <span>↗</span></button>`;
     const paper = onLocked ? window.DSPrintSurfaceV48.scene(lockedPaper()) : window.DSPrintSurfaceV48.scene(`<iframe class="dq59-paper" title="${page + 1}쪽 인쇄 지면" scrolling="no" style="width:793.7008px;height:1122.5197px" srcdoc="${safe(documentHTML(pageArg()))}"></iframe>`);
-    const nav = Array.from({ length: pages }, (_, i) => { const locked = g && i === pages - 1; return `<button type="button" data-dq-page="${i}" aria-pressed="${page === i}"${locked ? ' class="is-locked"' : ''}>${i + 1} ${i < all.length ? (all[i].designRecord ? '기록면' : '문제') : '정답·해설'}${locked ? ` <span class="dq61-lockmark" aria-hidden="true">${LOCK_SVG}</span>` : ''}</button>`; }).join('');
+    const nav = Array.from({ length: pages }, (_, i) => { const locked = g && i === pages - 1; return `<button type="button" data-dq-page="${i}" aria-pressed="${page === i}"${locked ? ' class="is-locked"' : ''}>${i + 1} ${i < all.length ? (all[i].front || (all[i].designRecord ? '기록면' : '문제')) : '정답·해설'}${locked ? ` <span class="dq61-lockmark" aria-hidden="true">${LOCK_SVG}</span>` : ''}</button>`; }).join('');
     const pending2 = !g && withSol && !drawn.solutions && drawn.solOp && !drawn.solOp.failed ? `<button type="button" disabled class="is-waiting">정답·해설 <small data-dq61-done>${drawn.solOp.done} / ${drawn.solOp.total}</small></button>` : '';
     return `<div class="tb36-workspace dq59-work${g ? ' dq61-guest' : ''}"><aside class="tb36-finish-panel dq59-panel"><div class="tb36-section-title"><b>04</b><h2>보관·출력</h2></div><label>제목<input data-dq-title maxlength="60" value="${safe(title)}"></label><a class="tb36-design-link" href="#print-design">학원명·머리말·표지 디자인 <span>↗</span></a>${solBox}${save}${print}<button type="button" class="tb36-quiet" data-dq-review>문항 다시 확인</button>${noteHTML()}</aside><div class="creator-canvas td34-canvas tb36-canvas ds48-canvas dq59-canvas"><div class="creator-canvas-toolbar"><div><strong>인쇄 미리보기</strong><span>${drawn.items.length}문항 · ${pages}쪽</span></div>${onLocked ? '' : '<button type="button" class="dq61-sample-link" aria-haspopup="dialog" data-dq-large-sample>원본 크기 ↗</button>'}</div><div class="creator-paper-stage">${paper}</div>${paperControls()}<nav class="tb36-pages" aria-label="미리보기 쪽">${nav}${pending2}</nav><div class="creator-canvas-footer"><span>A4 · 210 × 297 mm</span><span>${g ? '문제 면 · 정답·해설은 로그인 뒤' : solOn() ? '문제 · 정답·해설' : '문제 면'}</span></div></div></div>`;
   }
@@ -831,10 +846,11 @@
   });
   let outputDialog = null;
   function closeOutput() { outputDialog?.close(); }
-  async function openOutput() {
+  async function openOutput(book = null) {
     const h = host();
-    if (outputDialog || pending || !sharedPrint() || window.DSPrintScope?.awaitingSupply(sel.subject)) return;
-    const criteria = scopeCriteria();
+    const active = () => book ? here() && !studentSurface() && B.snapshot().mode === 'book' : sharedPrint();
+    if (outputDialog || pending || !active() || (!book && window.DSPrintScope?.awaitingSupply(sel.subject))) return;
+    const criteria = book ? book.criteria : scopeCriteria();
     const origin = location.hash;
     const basic = criteria.mode === 'basic';
     const unit = sel.unit;
@@ -849,13 +865,14 @@
     dialog.className = 'student-print-confirm';
     dialog.setAttribute('aria-labelledby','student-print-confirm-title');
     dialog.innerHTML = '<h2 id="student-print-confirm-title">출력할 문항 선택</h2><p class="student-print-selection"></p><div data-print-offers role="status">선택한 범위의 문항을 확인하고 있어요.</div><form method="dialog"><button value="cancel" autofocus>취소</button><button type="submit" value="confirm" disabled>확인하고 출력 / PDF 저장</button></form>';
-    dialog.querySelector('.student-print-selection').textContent = [criteria.subject,criteria.count+'문항'].join(' · ');
+    dialog.querySelector('.student-print-selection').textContent = [criteria.subject,...(book?[book.book,book.unit]:[]),criteria.count+'문항'].join(' · ');
     const offers = dialog.querySelector('[data-print-offers]');
     const submit = dialog.querySelector('[value="confirm"]');
     let quantities = {};
     dialog.addEventListener('change',()=>{submit.disabled=!offers.querySelector('input:checked:enabled');});
     dialog.addEventListener('close',()=>{
       clearTimeout(timer); abort.abort(); dialog.remove(); outputDialog=null;
+      if (book && dialog.returnValue === 'login' && active() && location.hash === origin) { goLogin(); return; }
       if (dialog.returnValue === 'login' && sharedPrint() && location.hash === origin) {
         window.DSPrintLoginReturn?.save(studentSurface() ? '#student' : '#teacher', {
           sel:{...sel}, count, layout, columnRule, draftTitle, pageNote:{...pageNote}, withSol,
@@ -865,10 +882,19 @@
         goLogin(); return;
       }
       const chosen = offers.querySelector('input:checked:enabled')?.value;
-      if (dialog.returnValue !== 'confirm' || !chosen || !quantities[chosen] || !sharedPrint() || location.hash !== origin ||
-          !h.signedIn() || (basic && (unit !== sel.unit || !rows(sel).includes(sets[chosen]))) || JSON.stringify(scopeCriteria()) !== JSON.stringify(criteria)) return;
+      if (dialog.returnValue !== 'confirm' || !chosen || !quantities[chosen] || !active() || location.hash !== origin ||
+          !h.signedIn() || (basic && (unit !== sel.unit || !rows(sel).includes(sets[chosen]))) || (!book && JSON.stringify(scopeCriteria()) !== JSON.stringify(criteria))) return;
+      if (book) {
+        B.switchMode('print');
+        layout = book.layout;
+        draftTitle = book.title;
+        count = criteria.count;
+        withSol = true;
+        columnRule = false;
+        pageNote = {placement:'header', text:book.cover.academy};
+      }
       if (basic) draw(undefined,sets[chosen]);
-      else scopedDraw({...criteria,access_mode:chosen,count:quantities[chosen]});
+      else scopedDraw({...criteria,access_mode:chosen,count:quantities[chosen]},book);
     }, {once:true});
     document.body.append(dialog); dialog.showModal();
     if (!h?.signedIn()) {
@@ -891,10 +917,10 @@
       if (outputDialog !== dialog || !dialog.open) return;
       const quantity = Number.isSafeInteger(r?.available_count) && r.extraction_ready ? Math.min(criteria.count,r.available_count) : 0;
       const priceKnown = Number.isSafeInteger(wallet?.pointPrice) && wallet.pointPrice >= 0;
-      const allowed = quantity > 0 && (owned || priceKnown);
+      const allowed = quantity > 0 && (!book || quantity === criteria.count) && (owned || priceKnown);
       if (allowed) quantities[mode] = quantity;
       const cost = owned ? '추가 차감 없음' : priceKnown ? '새 문항당 '+wallet.pointPrice.toLocaleString()+'P · 최대 '+(wallet.pointPrice*quantity).toLocaleString()+'P' : '포인트 가격을 확인하지 못했어요.';
-      const detail = !r ? '확인하지 못했어요. 잠시 후 다시 시도해 주세요.' : quantity ? (basic?'최대 ':'')+quantity+'문항 · '+cost : basic ? '이 조건에서 이용할 수 있는 세트가 없어요.' : '선택한 범위에 문항이 없습니다.';
+      const detail = book && r && quantity < criteria.count ? '선택 범위 '+quantity+'문항 · 요청 '+criteria.count+'문항을 채울 수 없습니다.' : !r ? '확인하지 못했어요. 잠시 후 다시 시도해 주세요.' : quantity ? (basic?'최대 ':'')+quantity+'문항 · '+cost : basic ? '이 조건에서 이용할 수 있는 세트가 없어요.' : '선택한 범위에 문항이 없습니다.';
       offers.querySelector(`[data-print-offer="${mode}"]`).innerHTML = `<input type="radio" name="print-access" value="${mode}" ${allowed?'':'disabled'}><span><strong>${owned?(basic?'내 계정으로 이용 가능한 기본 세트':'이미 받은 문항'):'포인트로 받을 문항'}</strong><small>${safe(detail)}</small></span>`;
       if (Number.isSafeInteger(wallet?.pointRemaining)) {
         const balance = document.createElement('p');
@@ -907,7 +933,7 @@
 
   let scopePendingJob=null;
   try{scopePendingJob=JSON.parse(sessionStorage.getItem('ds-print-pending-job')||'null');}catch{}
-  function scopedDraw(confirmed) {
+  function scopedDraw(confirmed, book = null) {
     const scope = window.DSPrintScope, row = current();
     if (!host()?.signedIn()) { goLogin(); return; }
     if (!confirmed && !scope?.status(host()).ready) { note = { kind: 'notready', text: scope?.status(host()).reason || TEXT.notready }; rerender(); return; }
@@ -939,7 +965,7 @@
       const unit = chosen.length ? chosen.join(' · ') : criteria.mode === 'book' ? '교재 연계 범위' : criteria.access_mode==='received' ? '기수령 자료 범위' : '선별본 전체 범위';
       return {
         said: {kind:missing.length?'insufficient':'ok',text:`${items.length}문항을 구성했습니다.${d.points?' '+d.points.charged.toLocaleString()+'P 사용 · 현재 '+d.points.free_remaining.toLocaleString()+'P':criteria.access_mode==='received'?' 기수령 권리 확인 · 추가 차감 없음':''}${missing.length?' · '+missing.join(' · ')+' 문항은 포함되지 않았습니다.':''}`},
-        printOnReady: Boolean(confirmed), title: confirmed ? draftTitle : '', key: d.items[0].set_key, scoped: true, claimed: true, labels: { ...sel, unit },
+        bookCover:book ? {...book.cover,count:items.length} : null, printOnReady: Boolean(confirmed), title: confirmed ? draftTitle : '', key: d.items[0].set_key, scoped: true, claimed: true, labels: book ? {subject:criteria.subject,unit:book.unit,stage:'',difficulty:''} : { ...sel, unit },
         status: items.length === count ? 'ok' : 'insufficient', count, page: 0, items
       };
     });
@@ -1171,6 +1197,6 @@
   window.addEventListener('ds-print-scope-ready', () => { if (phase === 'setup' && here()) rerender(); });
   window.addEventListener('ds-document-design-change', () => { if (here() && printSurface()) { page=0; rerender(`[data-document-design="${window.DSDocumentDesign.selected().id}"]`); } });
   window.addEventListener('pagehide', () => { stop(); dropSolutions(); });
-  window.DSDrawTeacherV59 = { suspendStudent(){closeOutput();stop();waitPrint=false;document.getElementById('dq61-gate')?.close();},renderStudent:()=>B.withPrintSurface?B.withPrintSurface(mine):mine(),mount, snapshot: () => ({ phase, pending: Boolean(pending), note: { ...note }, count: drawn?.items.length ?? 0, layout, guest: Boolean(drawn?.guest), trial: trialOn, seen: seenToday, sol: drawn?.solOp ? { done: drawn.solOp.done, total: drawn.solOp.total, ready: Boolean(drawn.solutions), failed: drawn.solOp.failed } : null }) };
+  window.DSDrawTeacherV59 = { openBook:openOutput, suspendStudent(){closeOutput();stop();waitPrint=false;document.getElementById('dq61-gate')?.close();},renderStudent:()=>B.withPrintSurface?B.withPrintSurface(mine):mine(),mount, snapshot: () => ({ phase, pending: Boolean(pending), note: { ...note }, count: drawn?.items.length ?? 0, layout, guest: Boolean(drawn?.guest), trial: trialOn, seen: seenToday, sol: drawn?.solOp ? { done: drawn.solOp.done, total: drawn.solOp.total, ready: Boolean(drawn.solutions), failed: drawn.solOp.failed } : null }) };
   if (here() && host()) rerender();                 // the page was first drawn before this file loaded
 })();
