@@ -5,7 +5,7 @@
  const times=[0,1500,2900,4300,7400],duration=10000;
  let host=null,frame=null,ready=false,manual=false,active=-1,panels=[],models=[],generation=0;
  const esc=s=>String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
- const styles=()=>Array.from(document.querySelectorAll('link[rel="stylesheet"]')).filter(l=>!/(hero-|entrance-|ipad-hardware)/.test(l.href)).map(l=>'<link rel="stylesheet" href="'+esc(l.href)+'">').join('');
+ const styles=()=>Array.from(document.querySelectorAll('link[rel="stylesheet"]')).flatMap(l=>l.dataset.sourceStyles?JSON.parse(l.dataset.sourceStyles):[l.href]).filter(href=>!/(hero-|entrance-|ipad-hardware)/.test(href)).map(href=>'<link rel="stylesheet" href="'+esc(new URL(href,location.href).href)+'">').join('');
  const shell=first=>'<html lang="ko" data-design="b" data-review="'+new URLSearchParams(location.search).has('hero-review')+'"><head><meta charset="utf-8"><base href="'+esc(location.href)+'">'+styles()+'<link rel="stylesheet" href="hero-print-embed-v44.css?v=52.1"></head><body><main id="content"><section class="hp45-panel is-active" data-panel="0" aria-hidden="false">'+builder.renderEmbedded(first)+'</section></main></body></html>';
  const clone=m=>structuredClone(m);
  function fitPanel(panel){builder.fitLivePreviews(panel);}

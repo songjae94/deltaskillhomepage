@@ -1075,7 +1075,11 @@ function route(){
  if(page!=='practice'){clearInterval(clock);timed=false}
  if(['teacher','studio','classroom','print-design'].includes(page))role='teacher';if(['student','practice','progress','timed','diagnostic','diagnostic-run','diagnostic-result'].includes(page))role='student';put('role',role);
  if(page==='practice'){if(ended){ended=false;questionIndex=0;selected='';checked=false;hintUsed=false;sessionResults=[];timed=false;qbank=regularBank}renderPractice()}
- else{header(page);$('#content').innerHTML=views[page]()}
+ else{header(page);
+  // The student hub mounts the final desk once its dependencies are ready.
+  // Do not download images from the superseded student landing page first.
+  if(page==='student'&&!window.DSStudentStudyPaths)return;
+  $('#content').innerHTML=views[page]()}
  if(page==='home'){cinemaIndex=0;playCinema()}
  if(['diagnostic','diagnostic-run'].includes(page))renderDiagnostic();else clearInterval(diagnosticClock);
  if(['account','account-settings'].includes(page))loadAccount();if(page==='record'){if(!learningState.available)loadAccount();loadRecord(recordId)}
@@ -1169,5 +1173,6 @@ window.addEventListener('storage',e=>{if(e.key==='ds_tk'||e.key==='ds_logout_epo
 window.addEventListener('ds-session-ready',()=>{header(location.hash.slice(1)||'home');if(['#account','#account-settings'].includes(location.hash))loadAccount();if(location.hash.startsWith('#record/')){loadAccount();loadRecord(recordState.id)}});
 window.addEventListener('ds-session-change',()=>{if(!DSService.session()){clearMemberView();refreshAccount();if(location.hash.startsWith('#record/'))renderRecord();header(location.hash.slice(1)||'home')}});
 window.addEventListener('hashchange',route);route();
-// Enter the homepage immediately, including first visits from search.
-// The intro remains available only through the explicit replay control.
+// Preserve the approved logo introduction on the first homepage visit.
+// Direct study links never wait for the introduction.
+try{if((!location.hash||location.hash==='#home')&&!sessionStorage.getItem('ds-next-intro')){sessionStorage.setItem('ds-next-intro','1');intro()}}catch{}

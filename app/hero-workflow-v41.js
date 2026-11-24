@@ -152,7 +152,9 @@
  window.addEventListener('pagehide',stop);
  const content=document.getElementById('content');if(content)new MutationObserver(mount).observe(content,{childList:true});
  new ResizeObserver(()=>{if(root)paint();}).observe(document.documentElement);
- for(const src of ['reference-print-v14/NS-CM2-07-L4.png','assets/hero-v40/tablet-studio.png']){const image=new Image();image.src=src;}
+ let assetsWarmed=false;
+ const warmAssets=()=>{if(assetsWarmed||!document.querySelector('.home-body .cinema'))return;assetsWarmed=true;for(const src of ['reference-print-v14/NS-CM2-07-L4.png','assets/hero-v40/tablet-studio.png']){const image=new Image();image.src=src;}};
+ window.addEventListener('hashchange',warmAssets);warmAssets();
  window.DSHeroWorkflowV41=Object.freeze({durations,refresh:mount,reviewAt:ms=>{pause();seek(ms);}});
  const stage=document.querySelector('.home-body .cinema');if(stage)window.showCinema(Number(stage.dataset.scene)||0);
 })();
