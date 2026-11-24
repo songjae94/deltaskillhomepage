@@ -69,12 +69,12 @@
   const price = (p, fmt) => fmt === 'pdf' ? (quote(p)?.points ?? publicPoints[p.sku] ?? p.formats.pdf?.price ?? null) : p.formats.hwpx?.price;
   const cashReady = p => Number.isSafeInteger(p.formats.hwpx?.price) && p.formats.hwpx.price > 0 && p.formats.hwpx.files.length > 0;
   const enabled = (p, fmt) => !p.restored && (fmt === 'pdf' ? Number.isSafeInteger(price(p,fmt)) && price(p,fmt)>0 : cashReady(p));
-  const coverURL = sku => 'public-data/covers/' + encodeURIComponent(sku) + '.webp?v=series-1125';
+  const coverURL = sku => 'public-data/covers/' + encodeURIComponent(sku) + '.webp?v=cover-r2-1125';
   // One colour per shelf, taken from that series' new covers (tone = cover colour · deep = text-safe on white).
   const shelfTones = Object.freeze({
-    'OL-type-CM2':['#8ee0d7','#20776d'], 'OL-advanced-CM2':['#691d2b','#691d2b'], 'DS-PRACTICE-CM2':['#53b4a4','#33776c'], 'DS-PRACTICE-CM2-PASS':['#611422','#611422'],
-    'OL-type-CAL1':['#c0eb7b','#4e7411'], 'OL-advanced-CAL1':['#13286e','#13286e'], 'DS-PRACTICE-MI1':['#8cac38','#596e23'],
-    'DS-PRACTICE-PNC':['#9bd0f1','#1770a8'], 'SSEN-GEO':['#6893c6','#3f6ea7']
+    'OL-type-CM2':['#8ee0d7','#20776d'], 'OL-advanced-CM2':['#691d2b','#691d2b'], 'DS-PRACTICE-CM2':['#136561','#136561'], 'DS-PRACTICE-CM2-PASS':['#611422','#611422'],
+    'OL-type-CAL1':['#c0eb7b','#4e7411'], 'OL-advanced-CAL1':['#13286e','#13286e'], 'DS-PRACTICE-MI1':['#4a5e14','#4a5e14'],
+    'DS-PRACTICE-PNC':['#9bd0f1','#1770a8'], 'SSEN-GEO':['#7868f0','#5a4bd0']
   });
   const toneStyle = id => { const t = shelfTones[id]; return t ? ` style="--ms-tone:${t[0]};--ms-deep:${t[1]}"` : ''; };
   const cost = (p,fmt) => Number.isSafeInteger(price(p,fmt)) ? money(price(p,fmt)) + (fmt === 'pdf' ? ' P' : '원') : '';
