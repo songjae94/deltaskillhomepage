@@ -1,0 +1,8 @@
+.csat-print .ssp-desk-controls>label{display:grid;gap:5px;margin-bottom:14px;font-weight:650}
+.csat-print select{width:100%;min-height:44px;padding:7px 10px;background:#fffdf7;color:#283036;border:1px solid #b9b5a9;border-radius:4px;font:inherit}
+.csat-print [data-print-build]{width:100%;min-height:44px}.csat-print [data-print-build]:disabled{opacity:.65}
+.csat-print [data-print-list]{padding:14px 0;color:#414748;line-height:1.7}
+.csat-print [data-print-list] label{display:flex;align-items:center;gap:12px;min-height:48px;padding:8px 0;border-bottom:1px solid #dad6c9;cursor:pointer}
+.csat-print [data-print-list] label small{display:block;color:#565c63}
+.csat-print [data-print-list] input{width:18px;height:18px;accent-color:#62516f}
+.csat-print [data-print-result]{display:grid;gap:8px;margin-top:10px}.csat-print [data-print-result] a{color:inherit;text-underline-offset:3px}
