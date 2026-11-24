@@ -8,7 +8,8 @@
     advanced: '고난도 도전'
   });
   const questions = ['목표 등급은?', '지금 필요한 공부는?', '어떤 과목과 단원을 공부할까요?'];
-  const gradeValues = Array.from({length: 9}, (_, i) => String(i + 1));
+  const gradeValues = Array.from({length: 5}, (_, i) => String(i + 1));
+  const isGoal = value => gradeValues.includes(value);
   const escape = text => String(text ?? '').replace(/[&<>"']/g, c =>
     ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'})[c]);
 
@@ -96,5 +97,5 @@
     </section>`;
   }
 
-  window.DSStudentStudyPlan = Object.freeze({render, courses});
+  window.DSStudentStudyPlan = Object.freeze({render, courses, isGoal});
 })();

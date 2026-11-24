@@ -7,7 +7,7 @@
 
   function normalize(value) {
     const grade = v => typeof v === 'string' && /^[1-9]$/.test(v);
-    if (!value || !grade(value.goal) || !courses.includes(value.need) ||
+    if (!value || !window.DSStudentStudyPlan.isGoal(value.goal) || !courses.includes(value.need) ||
         !Number.isSafeInteger(value.updatedAt) || value.updatedAt < 1) return null;
     if (Object.hasOwn(value, 'subject') || Object.hasOwn(value, 'unit')) {
       const {goal, need, subject, updatedAt} = value;
@@ -30,11 +30,16 @@
     }
   }
 
+  function needsNewGoal(value) {
+    return typeof value?.goal === 'string' && /^[6-9]$/.test(value.goal);
+  }
+
   function readCache(owner) {
     try {
       const cached = JSON.parse(window.localStorage.getItem(keyFor(owner)));
       const profile = normalize(cached?.profile);
-      return profile ? {profile, pending: cached.pending === true} : null;
+      if (profile) return {profile, pending: cached.pending === true};
+      return needsNewGoal(cached?.profile) ? {profile: null, pending: false} : null;
     } catch { return null; }
   }
 
@@ -101,6 +106,11 @@
     try {
       const latest = await remote(owner, epoch);
       const profile = normalize(latest.state.studyPlan);
+      if (needsNewGoal(latest.state.studyPlan) &&
+          !(local?.pending && local.profile.updatedAt > latest.state.studyPlan.updatedAt)) {
+        cache(owner, latest.state.studyPlan, false);
+        return null;
+      }
       if (profile && !(local?.pending && local.profile.updatedAt > profile.updatedAt)) {
         cache(owner, profile, false);
         return profile;

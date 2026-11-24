@@ -149,13 +149,14 @@
 
 /* Typeset only the surrounding Korean line. The pinned math font owns the glyph metrics. */
 .ssp-desk .ssp-paper {container-type:inline-size}
-.ssp-desk .ssp-paper .ssp-options:has([type=radio]) {grid-template-columns:repeat(5,minmax(0,1fr))}
-@container (max-width: 590px) {
-  .ssp-desk .ssp-paper .ssp-options:has([type=radio]) {grid-template-columns:repeat(3,minmax(0,1fr))}
+/* Column counts come from the rendered answers, including their math glyphs. */
+.ssp .ssp-paper .ssp-options:has(input[type=radio]) {
+  grid-template-columns:minmax(0,1fr);min-inline-size:0;gap:5px;
 }
-@container (max-width: 420px) {
-  .ssp-desk .ssp-paper .ssp-options:has([type=radio]) {grid-template-columns:repeat(2,minmax(0,1fr))}
-}
+.ssp .ssp-paper .ssp-options:has(input[type=radio])[data-choice-columns="5"] {grid-template-columns:repeat(5,minmax(max-content,1fr))}
+.ssp .ssp-paper .ssp-options:has(input[type=radio])[data-choice-columns="3"] {grid-template-columns:repeat(3,minmax(max-content,1fr))}
+.ssp-options:is([data-choice-columns="5"],[data-choice-columns="3"]) label {white-space:nowrap}
+.ssp-options[data-choice-columns="1"] label>span:last-child {white-space:normal;overflow-wrap:anywhere;overflow-x:auto}
 .ssp-desk :is(.ssp-prompt,.ssp-concept-lesson p,.ssp-hint p,.ssp-solution li,.ssp-solution p) {
   line-height:1.82; color:#232622;
 }
@@ -182,8 +183,8 @@
  .ssp-desk .ssp-desk-pager button {height:40px;min-height:40px}
  .ssp-desk .ssp-concept-lesson {margin-top:20px;border-top:1px solid #bdb6a6}
  .ssp-desk .ssp-options label:has(input[type=radio]) {
-   display:flex;align-items:center;justify-content:flex-start;gap:.48rem;
-   min-height:48px;padding:8px 10px;border:1px solid #a09786;border-radius:5px;
+   display:flex;align-items:center;justify-content:center;gap:5px;
+   min-height:44px;padding:7px 6px;border:1px solid #bdb6a8;border-radius:5px;
    color:#282722;background:#fffcf5;box-shadow:0 1px 2px #40342121;cursor:pointer;
  }
  .ssp-desk .ssp-options:not(:disabled) label:has(input[type=radio]):hover {border-color:#6c6658;background:#f3eee3}
@@ -195,4 +196,13 @@
    background:none;color:inherit;font:20px/1 "Apple Symbols","Segoe UI Symbol","Noto Sans Symbols 2",sans-serif;
  }
  .ssp-desk .ssp-options:disabled label {cursor:default}
+}
+
+@media screen {
+ .ssp-desk .ssp-options[data-choice-columns="1"] label {justify-content:flex-start}
+ @container (max-width:340px) {
+   .ssp-desk .ssp-paper .ssp-options:has(input[type=radio]) {column-gap:3px}
+   .ssp-desk .ssp-options label:has(input[type=radio]) {gap:2px;padding-inline:2px}
+   .ssp-desk .ssp-options .ssp-option-no,.ssp-desk .ssp-options input:checked + .ssp-option-no {font-size:16px}
+ }
 }

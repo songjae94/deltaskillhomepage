@@ -1090,6 +1090,7 @@ function bind(container,options={}){
   }
   if(planPhase!=='survey')return true;
   if(b.hasAttribute('data-plan-answer')&&planStep<2){
+   if(planStep===0&&!studyPlan.isGoal(value)||planStep===1&&!Object.hasOwn(studyPlan.courses,value))return true;
    planDraft[planStep===0?'goal':'need']=value;planStep++;
    planDraft.subject='';planDraft.book='';planDraft.unit='';
   }else if(b.hasAttribute('data-plan-back')){
@@ -1373,7 +1374,14 @@ function bind(container,options={}){
   }
   return unit.unitIds?render({}):render({bookId:book.id,unitId:unit.id});
  }
+ let releaseChoiceLayout;
+ function mountChoices(body){
+  const group=body.querySelector('.ssp-options:has(input[type="radio"])');
+  if(group)releaseChoiceLayout=window.DSChoiceLayout?.mount(group,group.querySelectorAll('label'));
+ }
  function draw(focus=true){if(closed)return;const root=container.querySelector('.ssp');if(!root)return;root.querySelectorAll('[data-ssp-course]').forEach(b=>{b.setAttribute('aria-pressed',String(b.dataset.sspCourse===state.course));});root.querySelector('.ssp-live').textContent=notice;const body=root.querySelector('.ssp-body');
+ if(typeof releaseChoiceLayout==='function')releaseChoiceLayout();
+ releaseChoiceLayout=undefined;
  if(desk){
   const planPane=root.querySelector('[data-study-plan]');
   const units=planPhase==='survey'?planUnits(planDraft.subject,planDraft.need).filter(row=>planDraft.need!=='supplement'||row.book===planDraft.book):planUnits(planProfile?.subject,planProfile?.need);
@@ -1391,10 +1399,11 @@ function bind(container,options={}){
   body.innerHTML=awaiting?`<section class="ssp-paper" role="status"><h2 tabindex="-1">${esc(planDraft.subject)} · ${esc(studyPlan.courses[planDraft.need])}</h2><p>${planDraft.unit?esc(planDraft.unit.replace(/ 전체$/,''))+' 문항을 준비하고 있어요.':'이 과목의 학습 문항을 준비하고 있어요.'}</p></section>`:view==='source-question'&&remoteQuestion?remoteQuestionHTML():view==='question'&&current?question():view==='history'?history():view==='result'?result():deskWaiting();
   const msg=document.createElement('p');msg.className='ssil-sync';msg.textContent=storageMessage;body.append(msg);
   const material=awaiting?'':deskMaterials();if(material)body.insertAdjacentHTML('beforeend',material);
+  mountChoices(body);
   if(focus)(body.querySelector('.ssp-feedback h3')||body.querySelector('h2'))?.focus({preventScroll:true});
   return;
  }
- body.innerHTML=view==='source-question'?remoteQuestionHTML():view==='question'?question():view==='history'?history():view==='result'?result():home();const problemFirst=Boolean(body.querySelector('.ssp-paper'));root.classList.toggle('ssp-problem-first',problemFirst);if(problemFirst)root.insertBefore(body,root.firstChild);else root.appendChild(body);if(focus){const el=root.querySelector('.ssp-body h2');if(el){el.tabIndex=-1;el.focus({preventScroll:true});}}}
+ body.innerHTML=view==='source-question'?remoteQuestionHTML():view==='question'?question():view==='history'?history():view==='result'?result():home();mountChoices(body);const problemFirst=Boolean(body.querySelector('.ssp-paper'));root.classList.toggle('ssp-problem-first',problemFirst);if(problemFirst)root.insertBefore(body,root.firstChild);else root.appendChild(body);if(focus){const el=root.querySelector('.ssp-body h2');if(el){el.tabIndex=-1;el.focus({preventScroll:true});}}}
  function variantButton(record,records){
   if(!record)return '';
   const activeIds=view==='question'?pool:view==='source-question'?sourceRows().map(q=>q.questionId||q.id):[];
@@ -1518,7 +1527,7 @@ function bind(container,options={}){
  function sessionChange(){localDrafts.clear();remoteDrafts.clear();epoch++;invalidateSource();remoteQuestion=null;remoteFeedback=null;remoteOperations.clear();remoteHistory={phase:'idle',records:[],hasMore:false,nextBefore:null};activeOwner=owner();current=null;pool=[];feedback=null;view='home';read();if(desk&&signed()){openFirstQuestion();void loadPlan();}notice='로그인 상태가 바뀌어 현재 계정의 기록을 다시 확인했어요.';draw();}
  read();if(desk){openFirstQuestion();void loadPlan();}container.addEventListener('click',click);container.addEventListener('change',change);window.addEventListener('ds-session-change',sessionChange);if(options.resume&&typeof options.onReady!=='function')resume();draw(false);
  if(signed()&&activeOwner&&typeof options.loadProgress==='function'){const generation=epoch;Promise.resolve().then(()=>options.loadProgress({namespace:'student-paths-v1',ownerKey:activeOwner})).then(raw=>{if(closed||generation!==epoch)return;const remote=clean(raw);let cached=false;try{cached=Boolean(key()&&localStorage.getItem(key()));}catch{}const local=cached?state:remote;state=mergeProgress(remote,local);const comparable=x=>JSON.stringify({...x,records:[...x.records].sort((a,b)=>a.id.localeCompare(b.id))});if(comparable(state)!==comparable(remote)&&(!desk||cached))save();else{try{if(key())localStorage.setItem(key(),JSON.stringify(state));}catch{}emit();}draw(false);notifyReady();}).catch(()=>{if(closed||generation!==epoch)return;storageMessage='계정 기록을 불러오지 못했어요. 현재 기기의 기록을 보여드려요.';draw(false);notifyReady();});}else notifyReady();
- const controller={snapshot:()=>JSON.parse(JSON.stringify({...state,summary:summary(state),tier:tier(state),storage:storageMessage})),showHistory:()=>{view='history';draw();},resume:()=>{const ok=resume();if(ok)draw();return ok;},destroy:()=>{closed=true;epoch++;container.removeEventListener('click',click);container.removeEventListener('change',change);window.removeEventListener('ds-session-change',sessionChange);controllers.delete(container);if(lastController===controller)lastController=null;}};controllers.set(container,controller);lastController=controller;return controller.destroy;
+ const controller={snapshot:()=>JSON.parse(JSON.stringify({...state,summary:summary(state),tier:tier(state),storage:storageMessage})),showHistory:()=>{view='history';draw();},resume:()=>{const ok=resume();if(ok)draw();return ok;},destroy:()=>{closed=true;epoch++;if(typeof releaseChoiceLayout==='function')releaseChoiceLayout();container.removeEventListener('click',click);container.removeEventListener('change',change);window.removeEventListener('ds-session-change',sessionChange);controllers.delete(container);if(lastController===controller)lastController=null;}};controllers.set(container,controller);lastController=controller;return controller.destroy;
 }
 window.DSStudentStudyPaths={render,bind,snapshot:()=>lastController?.snapshot()||null,showHistory:()=>lastController?.showHistory(),resume:()=>lastController?.resume()||false,courses:COURSES.map(c=>({...c})),catalog:()=>BANK.map(({id,version,course,type,level,subject,unit,book,sourceKind})=>({id,version,course,type,level,subject,unit,book,sourceKind})),books:BOOKS.map(b=>({...b,ids:[...b.ids]})),validateState:clean,mergeProgress};
 })();
