@@ -61,6 +61,7 @@ td.num{text-align:right;font-variant-numeric:tabular-nums}
       <button onclick="show('main')" id="backBtn" hidden>← 목록</button>
       <button onclick="openCohort()" id="cohortBtn" hidden>반별 현황</button>
       <button onclick="window.print()" id="printBtn" hidden>인쇄 / PDF</button>
+      <a id="commissionLink" href="commission.html" hidden>맞춤 제작 의뢰</a>
       <button onclick="doLogout()">로그아웃</button>
     </div>
   </div>
@@ -163,6 +164,7 @@ function mergeByPhone(students) {
 async function loadMain() {
   const j = await api({ action: "students" });
   CACHE = j;
+  document.getElementById("commissionLink").hidden = DEMO || j.role !== "owner";
   const studs = mergeByPhone(j.students);
   const nSub = {};
   let last7 = 0;
