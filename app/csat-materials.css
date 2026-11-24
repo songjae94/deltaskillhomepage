@@ -1,0 +1,20 @@
+.csat-materials {color:#292f34;margin:0 auto;padding:clamp(14px,2.5vw,32px);max-width:1160px}
+.csat-materials h2,.csat-materials h3,.csat-materials p {margin:0}
+.csm-heading,.csm-paid {border-block-start:2px solid #5a5550;padding-block:16px}
+.csat-materials h2 {font-size:clamp(19px,2.6vw,27px);line-height:1.35}
+.csm-heading p,.csm-paid p,.csm-book>p,.csm-related p {color:#575a5c;font-size:14px;line-height:1.65;margin-top:5px}
+.csm-shelf {display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,285px),1fr));gap:12px}
+.csm-book {min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:18px clamp(14px,2vw,24px);border:1px solid #cfc8b8;border-top:3px solid #928168;background:#fffdf7;border-radius:4px;box-shadow:0 2px 5px #302a2410}
+.csm-book small {color:#675b49;font-size:13px}
+.csm-book h3 {font-size:20px;line-height:1.45}
+.csm-controls {margin-top:auto;padding-top:6px;display:flex;align-items:flex-start;flex-wrap:wrap;gap:3px 10px}
+.csm-controls details[open] {flex-basis:100%}
+.csm-analysis p {font-size:14px;line-height:1.7;margin:8px 0}
+.csat-materials :is(.csm-link,summary) {display:inline-flex;align-items:center;gap:5px;box-sizing:border-box;min-height:44px;color:#344957;text-decoration:underline;text-underline-offset:3px;font-size:14px;font-weight:550;cursor:pointer}
+.csat-materials :is(.csm-primary,.csm-analysis summary) {font-weight:700}
+.csat-materials summary::after {content:'⌄';font-size:16px}
+.csat-materials details[open]>summary::after {transform:rotate(180deg)}
+.csm-papers div {display:flex;flex-wrap:wrap;gap:0 14px}
+.csm-related {padding:12px 0 16px}
+.csm-paid {margin-top:6px}
+.csat-materials :is(a,summary):focus-visible {outline:2px solid #3b6175;outline-offset:2px}
