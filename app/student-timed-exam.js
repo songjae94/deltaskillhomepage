@@ -35,12 +35,7 @@
       focusQuestion();
     }
     function answerBox(q, id, value, last) {
-      if (q.answerType === 'choice') {
-        return '<div class="dte-choices" role="group" aria-label="답 선택">' +
-          Array.from({ length:q.options?.length || 5 }, (_, i) =>
-            `<button type="button" data-exam-choice="${i}" data-exam-id="${escape(id)}" aria-label="${i+1}번 선택" aria-pressed="${present(value) && Number(value)===i}">${i+1}</button>`
-          ).join('') + '</div>';
-      }
+      if (q.answerType === 'choice') return '';
       return `<div class="dte-entry"><label>정답 <input type="text" maxlength="12" autocomplete="off" data-exam-input="${escape(id)}" aria-label="${page+1}번 답" value="${escape(value ?? '')}"></label>
         <button type="button" data-exam-next>${last?'채점하기':'다음 문항 →'}</button></div>`;
     }
@@ -71,9 +66,16 @@
       const wrong = set.questionIds.filter(k=>!isRight(set,k));
       const result = complete ? `<div class="dte-summary" role="status"><span>${retry?'오답 재도전 결과':set.timedOut || set.status==='expired'?'시간 종료 · 채점 결과':'채점 결과'}</span><strong>${score} / ${ids.length} 정답</strong></div>` : '';
       const time = !settled(set) ? `<div class="dte-clock"><span>남은 시간</span><time data-time-clock role="timer" aria-label="남은 시간">${clock()}</time></div>` : '';
-      const unfilledExcludingThis = ids.some(k=>k!==id && !present(answers[k]));
-      const box = complete ? feedback(set,id,answers[id],retry?Number(answers[id])===Number(expected(set,id)):isRight(set,id)) :
-        answerBox(q,id,answers[id],!unfilledExcludingThis);
+
+      const box = complete ? feedback(set,id,answers[id],retry?present(answers[id]) && Number(answers[id])===Number(expected(set,id)):isRight(set,id)) :
+        answerBox(q,id,answers[id],page===ids.length-1);
+      const sheet=paperQuestion(q,page,ids.length,box);
+      const canChoose=!complete && q.answerType==='choice';
+      if (canChoose) requestAnimationFrame(() => {
+        const host=document.querySelector('.ds-timed [data-exam-paper-id]');
+        if (host?.dataset.examPaperId===id) bindPaper(host);
+      });
+      const edge=(step,label,glyph,disabled)=>`<button type="button" class="dte-edge" data-exam-${step} aria-label="${label}" title="${label}" ${disabled?'disabled':''}><span aria-hidden="true">${glyph}</span></button>`;
       const numbers = ids.map((k,i) => {
         const marked = present(answers[k]);
         const correct = retry ? marked && Number(answers[k])===Number(expected(set,k)) : isRight(set,k);
@@ -83,18 +85,133 @@
       const retryButton = complete && wrong.length ? `<button type="button" data-exam-retry>틀린 문제 다시 풀기 · ${wrong.length}문항</button>` : '';
       return `<div class="ta-top-v18"><h1>${escape(title())}</h1></div>
         <div class="ta-layout-v18 dst-layout"><div class="ta-main-v18" data-time-form>
-          ${time}${result}${paperQuestion(q,page,ids.length,box)}
+          ${time}${result}<div class="dte-paper-frame" ${canChoose?'data-exam-paper-id="'+escape(id)+'"':''}>
+          ${edge('prev','이전 문항','‹',page===0)}${sheet}${edge('forward',page===ids.length-1 && !complete?'제출하고 채점':'다음 문항','›',page===ids.length-1 && complete)}</div>
           ${finishFailed && !complete?'<button type="button" data-exam-submit>채점 다시 시도</button>':''}
         </div>
         <aside class="ta-answer-sheet-v18"><div class="ta-answer-heading-v18"><h2>${retry?'오답 재도전':'답안'}</h2><span data-time-answered>${nowAnswered} / ${ids.length}</span></div>
           <nav class="ta-numbers-v18" aria-label="문항 이동">${numbers}</nav>
-          <div class="dst-actions">${retryButton}${retry?'<button type="button" data-exam-original>첫 시험 결과</button>':''}
+          <div class="dst-actions">${!complete?'<button type="button" data-exam-finish-early>제출하고 채점</button>':''}${retryButton}${retry?'<button type="button" data-exam-original>첫 시험 결과</button>':''}
           ${complete && !retry?'<button type="button" data-time-action="print">문제지·해설 인쇄</button>':''}
           <button type="button" data-time-action="back">세트 목록</button></div>
           ${set.kind==='custom'?'<a href="#account">마이페이지 · 내 시험 기록 →</a>':'<small>이 기기에 저장한 연습 기록</small>'}
         </aside></div>`;
     }
 
+    // The original math and images stay in their source document, including sandboxed sheets.
+    // Only the answer list gets controls. Lists within conditions or solution content are excluded.
+    function bindPaper(host) {
+      if (!host.isConnected) return;
+      const frame=host.querySelector('.dst-prompt iframe');
+      const doc=frame?.contentDocument || document;
+      if (frame && (!doc.body || doc.URL==='about:blank')) return;
+      const root=frame?doc.body:host.querySelector('.dst-prompt');
+      if (!root || root.querySelector('.dte-inline-choice')) return;
+      const set=getActive(),id=host.dataset.examPaperId;
+      if (!set || id!==current(set)) return;
+      const q=known(id),options=Array.isArray(q.options)?q.options:[];
+      const optionCount=options.length||5;
+      const excludes='li,table,.bogi,.cond,.cond-box,.condition,.conditions,.katex,[data-condition]';
+      const lists=[...root.querySelectorAll('ol,ul')].filter(el=>
+        !el.closest(excludes) && el.children.length===optionCount &&
+        [...el.children].every(child=>child.localName==='li' && !/^[(（]?[ㄱ-ㅎ가나다라마바사][.)）]/.test(child.textContent.trim())));
+      const explicit=lists.filter(el=>el.matches('.ch,.dq59-choices,.choices,[data-choices]'));
+      // An unlabelled list is safe only when it ends the problem. Earlier lists may be conditions.
+      const trailing=lists.filter(el=>{
+        const tail=doc.createRange();tail.selectNodeContents(root);tail.setStartAfter(el);
+        const remainder=tail.cloneContents();remainder.querySelectorAll('style,script').forEach(n=>n.remove());
+        return !remainder.textContent.trim() && !remainder.querySelector('img,svg,math,table');
+      });
+      let list=explicit.length===1?explicit[0]:trailing.length===1?trailing[0]:null;
+      let rows=list ? [...list.children] : [];
+      const numbers='①②③④⑤';
+      if (!rows.length) {
+        const blocks=[...root.querySelectorAll('p,div,td')].filter(el=>
+          /^[①②③④⑤]/.test(el.textContent.trim()) && !el.closest('.bogi,.cond,.cond-box,.condition,.conditions,[data-condition]') && !el.querySelector('p,div,td'));
+        if (blocks.length===optionCount && blocks.every((el,i)=>el.textContent.trim().startsWith(numbers[i]))) rows=blocks;
+      }
+      if (!rows.length && options.length>=2 && options.length<=5 && options.every(x=>['string','number'].includes(typeof x))) {
+        list=doc.createElement('ol');
+        rows=options.map(option=>{
+          const row=doc.createElement('li');
+          row.innerHTML=api.math(String(option));
+          list.append(row);return row;
+        });
+        root.append(list);
+      }
+      if (!rows.length) {
+        if (!root.querySelector('.dte-choice-issue')) {
+          const note=doc.createElement('p');note.className='dte-choice-issue';
+          note.setAttribute('role','status');
+          note.textContent='이 문항의 선택지를 확인할 수 없습니다. 화살표로 다른 문항을 풀어 주세요.';
+          root.append(note);
+        }
+        return;
+      }
+      if (!doc.getElementById('dte-choice-style')) {
+        const style=doc.createElement('style');style.id='dte-choice-style';
+        style.textContent=choiceStyles;
+        doc.head.append(style);
+      }
+      list?.classList.add('dte-source-choices');
+      const value=(retry?retry.answers:set.responses)?.[id];
+      rows.forEach((row,index)=>{
+        const button=doc.createElement('button');
+        button.type='button';button.className='dte-inline-choice';
+        button.dataset.examChoice=String(index);button.dataset.examId=id;
+        button.setAttribute('aria-pressed',String(present(value) && Number(value)===index));
+        const marker=doc.createElement('span');marker.className='dte-choice-no';marker.textContent=String(index+1);
+        const body=doc.createElement('span');body.className='dte-choice-content';
+        // Canonical PDFs use a circled marker in the first text node. Preserve the math itself.
+        const walker=doc.createTreeWalker(row,4);
+        for(let t=walker.nextNode();t;t=walker.nextNode()) {
+          if (!t.textContent.trim()) continue;
+          if (t.textContent.trimStart().startsWith(numbers[index])) t.textContent=t.textContent.replace(/^\s*[①②③④⑤]\s*/,'');
+          break;
+        }
+        body.append(...Array.from(row.childNodes));button.append(marker,body);row.append(button);
+        if (frame) button.addEventListener('click',()=>{
+          if (host.isConnected && getActive() && current(getActive())===id) selectChoice(button);
+        });
+      });
+    }
+    const choiceStyles=`
+      .dte-source-choices{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:6px!important;margin:12px 0!important;padding:0!important;list-style:none!important}
+      .dte-source-choices>li{display:block!important;width:auto!important;margin:0!important;padding:0!important;list-style:none!important}
+      .dte-source-choices>li::before,.dte-source-choices>li::marker{content:none!important}
+      .dte-inline-choice{box-sizing:border-box;width:100%;min-height:44px;display:flex;align-items:center;gap:10px;padding:7px 10px;border:1px solid #b9b4a8;border-radius:4px;background:#fcfaf4;color:#282c33;cursor:pointer;text-align:start;font:inherit;line-height:1.6}
+      .dte-inline-choice:hover{border-color:#716a60;background:#f5f0e6}
+      .dte-inline-choice[aria-pressed=true]{border-color:#6c5576;background:#eee7f0}
+      .dte-inline-choice:focus-visible{outline:2px solid #755783;outline-offset:-2px}
+      .dte-choice-no{box-sizing:border-box;flex:0 0 21px;height:21px;display:grid;place-items:center;border:1px solid currentColor;border-radius:50%;font:500 13px/1 Arial,sans-serif}
+      .dte-choice-content{min-width:0;max-width:100%;overflow-x:auto}
+    `;
+    document.addEventListener('load',e=>{
+      const frame=e.target;
+      if (frame?.matches?.('.dst-prompt iframe')) {
+        const host=frame.closest('.ds-timed [data-exam-paper-id]');
+        if (host) bindPaper(host);
+      }
+    },true);
+    function finishPractice() {
+      if (retry) { retry.complete=true;page=0;repaintQuestion(); }
+      else void submit();
+    }
+    function confirmFinish() {
+      const set=getActive();
+      if (!set || finishing || (retry ? retry.complete : settled(set))) return;
+      const ids=retry?.ids || set.questionIds,answers=retry?retry.answers:set.responses;
+      const blanks=ids.filter(id=>!present(answers?.[id])).length;
+      if (!blanks) { finishPractice();return; }
+      const root=document.querySelector('.ds-timed');
+      if (!root || root.querySelector('.dte-submit-dialog')) return;
+      const dialog=document.createElement('dialog');
+      dialog.className='dst-start-dialog dte-submit-dialog';
+      dialog.setAttribute('aria-labelledby','dte-submit-title');
+      dialog.innerHTML=`<h2 id="dte-submit-title">이대로 제출할까요?</h2><p>아직 풀지 않은 ${blanks}문항은 오답으로 채점합니다.</p><div><button type="button" data-exam-continue autofocus>계속 풀기</button><button type="button" data-exam-confirm-submit>제출하기</button></div>`;
+      dialog.addEventListener('close',()=>dialog.remove(),{once:true});
+      root.append(dialog);dialog.showModal();
+    }
     async function submit() {
       if (finishing || settled(getActive())) return;
       const key = setKey;
@@ -109,20 +226,28 @@
         }
       }
     }
-    function advance(id, value) {
-      const set = getActive();
-      if (!set || current(set)!==id || finishing || (retry ? retry.complete : settled(set))) return;
-      if (!retry && remaining()===0) { void submit(); return; }
+    function selectChoice(button) {
+      const set=getActive(), id=button.dataset.examId;
+      if (!set || finishing || current(set)!==id || (retry?retry.complete:settled(set))) return;
+      if (!retry && remaining()===0) { void submit();return; }
+      const value=button.dataset.examChoice;
       if (retry) retry.answers[id]=value;
       else recordAnswer(id,value);
-      const answers = retry ? retry.answers : set.responses;
-      const ids = retry?.ids || set.questionIds;
-      for (let offset=1; offset<ids.length; offset++) {
-        const next=(page+offset)%ids.length;
-        if (!present(answers?.[ids[next]])) { page=next; repaintQuestion(); return; }
+      const box=button.parentElement.closest('.dte-source-choices') || button.closest('body');
+      for(const option of box.querySelectorAll('.dte-inline-choice')) {
+        option.setAttribute('aria-pressed',String(option===button));
       }
-      if (retry) { retry.complete=true; page=0; repaintQuestion(); }
-      else void submit();
+      const mark=document.querySelector('.ds-timed .ta-numbers-v18 [aria-current]');
+      mark?.classList.add('is-answered');
+      mark?.setAttribute('aria-label',(page+1)+'번 문항 · 응답');
+      const counter=document.querySelector('.ds-timed [data-time-answered]');
+      const ids=retry?.ids || set.questionIds,answers=retry?retry.answers:set.responses;
+      if (counter) counter.textContent=ids.filter(k=>present(answers?.[k])).length+' / '+ids.length;
+    }
+    function forward() {
+      const set=getActive(),ids=retry?.ids || set.questionIds;
+      if (page<ids.length-1) { page++;repaintQuestion(); }
+      else if (!(retry?retry.complete:settled(set))) confirmFinish();
     }
     function confirmInput() {
       const set=getActive();
@@ -133,7 +258,10 @@
         input.setCustomValidity('답을 정수로 입력해 주세요.');
         input.reportValidity();input.focus();return;
       }
-      advance(current(set),value);
+      if (!retry && remaining()===0) { void submit();return; }
+      if (retry) retry.answers[current(set)]=value;
+      else recordAnswer(current(set),value);
+      forward();
     }
     function input(el) {
       if (!el.matches?.('[data-exam-input]')) return false;
@@ -151,8 +279,17 @@
       const set=getActive();
       if (!set || !button) return false;
       if (button.hasAttribute('data-exam-choice')) {
-        advance(button.dataset.examId,button.dataset.examChoice);return true;
+        selectChoice(button);return true;
       }
+      if (button.hasAttribute('data-exam-prev') || button.hasAttribute('data-exam-forward')) {
+        const ids=retry?.ids||set.questionIds,target=page+(button.hasAttribute('data-exam-prev')?-1:1);
+        if (target>=0 && target<ids.length) { page=target;repaintQuestion(); }
+        else if (target===ids.length) forward();
+        return true;
+      }
+      if (button.hasAttribute('data-exam-finish-early')) {confirmFinish();return true;}
+      if (button.hasAttribute('data-exam-continue')) {button.closest('dialog')?.close();return true;}
+      if (button.hasAttribute('data-exam-confirm-submit')) {button.closest('dialog')?.close();finishPractice();return true;}
       if (button.hasAttribute('data-exam-next')) { confirmInput(); return true; }
       if (button.hasAttribute('data-exam-submit')) { void submit(); return true; }
       if (button.hasAttribute('data-time-index')) {

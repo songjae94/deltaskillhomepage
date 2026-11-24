@@ -146,3 +146,25 @@
   #content .ds-timed .dst-config>.dst-fields>label {min-width:0}
   #content .ds-timed .dst-config select {width:100%;text-overflow:ellipsis}
 }
+
+/* Keep the arrows at the edges of the sheet, outside the question and its answers. */
+.ds-timed .dte-paper-frame {position:relative;box-sizing:border-box;margin-inline:0}
+.ds-timed .dte-paper-frame .dst-sheet {padding-inline:clamp(44px,4.2vw,58px)!important}
+.ds-timed .dte-edge {
+  position:absolute;z-index:2;top:44%;transform:translateY(-50%);
+  display:grid;place-items:center;width:36px;min-height:48px;margin:0;padding:0;
+  border:1px solid #b9b1a1;border-radius:5px;background:#f8f4ea;color:#3f464b;
+  box-shadow:0 1px 3px #433e351c;cursor:pointer;
+}
+.ds-timed .dte-edge span {font:400 29px/1 Arial,sans-serif}
+.ds-timed .dte-edge[data-exam-prev]{left:0}
+.ds-timed .dte-edge[data-exam-forward]{right:0}
+.ds-timed .dte-edge:disabled{opacity:.38;cursor:default}
+.ds-timed [data-exam-finish-early],.ds-timed .dte-submit-dialog [data-exam-confirm-submit] {
+  min-height:44px;padding:8px 14px;border:1px solid #61516c;border-radius:5px;background:#66536e;color:white;cursor:pointer;font:inherit;font-weight:650
+}
+@media(max-width:740px){
+  .ds-timed .dte-edge{width:32px;min-height:48px}
+  .ds-timed .dte-paper-frame .dst-sheet{padding-inline:36px!important}
+  .ds-timed .dte-entry{gap:6px}
+}

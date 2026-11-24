@@ -88,7 +88,7 @@ function paperQuestion(q,index,total,answerBox=''){
 }
 const exam=window.DSTimedExam.create({
  getActive:()=>active,known,clock,remaining,title,paperQuestion,questionContent,displayedAnswer,
- recordAnswer,finish:()=>action('finish'),paint,escape
+ recordAnswer,finish:()=>action('finish'),paint,escape,math
 });
 const catalogById=new Map(), resources=new Map();
 let receivedSource=null;
