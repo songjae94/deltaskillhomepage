@@ -17,6 +17,8 @@
   } catch {}
   let scope=null;
   let products = [], selected = '', status = 'idle', audience = 'teacher';
+  // Cards on screen, and the file format each card currently has chosen.
+  const cardIndex = new Map(), chosen = new Map();
   function save() {
     try { localStorage.setItem(storageKey, JSON.stringify(cart)); } catch {}
   }
@@ -68,40 +70,65 @@
   const cashReady = p => Number.isSafeInteger(p.formats.hwpx?.price) && p.formats.hwpx.price > 0 && p.formats.hwpx.files.length > 0;
   const enabled = (p, fmt) => !p.restored && (fmt === 'pdf' ? Number.isSafeInteger(price(p,fmt)) && price(p,fmt)>0 : cashReady(p));
   const coverURL = sku => 'public-data/covers/' + encodeURIComponent(sku) + '.webp?v=editorial-light-1124';
-  const cost = (p,fmt) => Number.isSafeInteger(price(p,fmt)) ? money(price(p,fmt)) + (fmt === 'pdf' ? ' P' : '원') : fmt === 'pdf' ? '포인트 가격 확인 중' : publicPoints[p.sku] ? '판매 예정가 ' + money(publicPoints[p.sku] * 2) + '원' : '준비 중';
+  const cost = (p,fmt) => Number.isSafeInteger(price(p,fmt)) ? money(price(p,fmt)) + (fmt === 'pdf' ? ' P' : '원') : '';
   const picked = () => products.flatMap(p => ['pdf','hwpx'].filter(fmt => cart.includes(key(p,fmt)) && enabled(p,fmt)).map(fmt => ({p,fmt})));
   function options(query='') {
     const list = grouped().filter(name => [name,displayBook(name)].some(label => normalize(label).includes(normalize(query))));
-    return list.map(name => `<button type="button" data-ms-book="${escape(name)}">${escape(displayBook(name))}<small>${products.filter(p=>p.source===name).length}권</small></button>`).join('') || '<p role="status">검색 결과가 없습니다.</p>';
+    return list.map(name => `<button type="button" data-ms-book="${escape(name)}">${escape(displayBook(name))}<small>${cardsOf(products.filter(p=>p.source===name)).length}권</small></button>`).join('') || '<p role="status">검색 결과가 없습니다.</p>';
   }
   function picker() {
     return `<details class="ms-picker"><summary><span>${escape(pickerLabel())}</span><i aria-hidden="true"></i></summary><div class="ms-popup dl63-list-wrap"><input type="search" aria-label="교재 검색" placeholder="교재명으로 검색" data-ms-search><div data-ms-options>${options()}</div></div></details>`;
   }
   const coverSkus = new Set(['NS-CM2-06', 'NS-CM2-07', 'NS-CM2B-06', 'NS-MI1B-05']);
-  function formats(p) {
-    return ['pdf','hwpx'].filter(fmt => fmt !== 'pdf' || Boolean(p.formats.pdf)).map(fmt => {
-      const id=key(p,fmt), available=enabled(p,fmt), added=cart.includes(id);
-      const planned=fmt==='hwpx'&&!available&&publicPoints[p.sku];
-      const format=fmt==='pdf'?'PDF':'한글';
-      const amount=planned?money(publicPoints[p.sku]*2)+'원':cost(p,fmt);
-      const action=!available?'준비 중':added?'담김':'담기';
-      return `<button type="button" class="ms-format" aria-label="${escape(title(p))} ${format} ${cost(p,fmt)} ${action}" data-ms-add="${escape(id)}" ${!available||added?'disabled':''}><span>${format}${planned?'<em>예정가</em>':''}</span><b>${amount}</b><small>${action}</small></button>`;
-    }).join('');
+  const editionOf = p => p.edition || (p.name.includes('기초편') ? '기초편' : '1권');
+  const baseEdition = p => editionOf(p).replace(/\s*·\s*한글\s*별도판/, '').trim();
+  const subjectOf = p => String(p.subject || '').replace(/\s+기초편$/, '').trim();
+  function coverSeries(p) {
+    const name = bookLabel(p.source).replace(/^EBS\s+/i, ''), subject = subjectOf(p);
+    const series = subject && name.endsWith(' ' + subject) ? name.slice(0, -subject.length).trim() : name;
+    return series + (isLinked(p) ? ' 연계변형' : '');
   }
-  function coverTile(p) {
-    const label = escape(title(p));
-    const art = (p.restored && p.coverReady !== false) || coverSkus.has(p.sku)
+  // One book, one card: a 한글 file catalogued apart joins the PDF card of the same book, unit, edition and item count.
+  // Each format keeps its own SKU, price and cart key; only what is for sale is shown.
+  function cardsOf(list) {
+    const pool = list.filter(p => !p.restored), twins = new Map(), joined = new Set();
+    for (const p of pool) {
+      if (!p.formats.pdf || p.formats.hwpx) continue;
+      const twin = pool.find(q => q !== p && !joined.has(q) && !q.formats.pdf && q.formats.hwpx && q.sourceId === p.sourceId && q.no === p.no && q.count === p.count && baseEdition(q) === baseEdition(p));
+      if (twin) { twins.set(p, twin); joined.add(twin); }
+    }
+    return pool.filter(p => !joined.has(p)).map(p => {
+      const twin = twins.get(p);
+      return {id: p.sku, main: p, parts: twin ? [{p, fmts: ['pdf']}, {p: twin, fmts: ['hwpx']}] : [{p, fmts: ['pdf', 'hwpx']}], note: twin ? '한글은 PDF와 다른 판입니다' : p.editionNote || ''};
+    }).filter(card => offersOf(card).length);
+  }
+  const offersOf = card => card.parts.flatMap(({p, fmts}) => fmts.filter(fmt => enabled(p, fmt)).map(fmt => ({p, fmt})));
+  function formats(card) {
+    const offers = offersOf(card);
+    if (!offers.length) return '';
+    const pick = offers.find(o => key(o.p, o.fmt) === chosen.get(card.id)) || offers.find(o => !cart.includes(key(o.p, o.fmt))) || offers[0];
+    const pickKey = key(pick.p, pick.fmt), label = escape(title(card.main)), added = cart.includes(pickKey);
+    const rows = offers.map(({p, fmt}) => {
+      const id = key(p, fmt);
+      return `<button type="button" class="ms-pick" aria-pressed="${id === pickKey}" aria-label="${formatLabel(fmt)} ${cost(p, fmt)}${cart.includes(id) ? ' 담김' : ''}" data-ms-pick="${escape(id)}"><span>${formatLabel(fmt)}</span><b>${cost(p, fmt)}</b>${cart.includes(id) ? '<small>담김</small>' : ''}</button>`;
+    }).join('');
+    const action = added ? '담김' : '담기';
+    return `<div class="ms-choice" role="group" aria-label="${label} 파일 형식">${rows}</div><button type="button" class="ms-add" aria-label="${label} ${formatLabel(pick.fmt)} ${cost(pick.p, pick.fmt)} ${action}" data-ms-add="${escape(pickKey)}" ${added ? 'disabled' : ''}>${action}</button><p class="ms-note">${escape(card.note)}</p>`;
+  }
+  function textCover(p) {
+    return `<span class="ms-text-cover" aria-hidden="true"><small>${escape(coverSeries(p))}</small><b>${escape(p.unit || title(p))}</b><span>${escape(subjectOf(p))}</span><em>${escape(baseEdition(p))}</em></span>`;
+  }
+  function coverTile(card) {
+    const p = card.main, label = escape(title(p));
+    cardIndex.set(card.id, card);
+    const art = coverSkus.has(p.sku)
       ? `<img src="${coverURL(p.sku)}" width="630" height="891" alt="${label} 표지">`
-      : `<span class="ms-fallback-cover">${label}</span>`;
+      : textCover(p);
     const cover = p.sample
       ? `<a class="ms-book-cover" href="${escape(p.sample)}" target="_blank" rel="noopener" aria-label="${label} 지면 미리보기, 새 창">${art}<span class="ms-look">미리보기 ↗</span></a>`
       : `<div class="ms-book-cover">${art}</div>`;
-    const edition = p.edition || (p.name.includes('기초편') ? '기초편' : '1권');
-    const meta = p.count ? `${edition}<i aria-hidden="true">·</i>${p.count}문항` : edition;
-    const offer = p.restored
-      ? '<div class="ms-formats ms-upcoming"><span>PDF · 한글</span><strong>판매 준비 중</strong></div>'
-      : '<div class="ms-formats">' + formats(p) + '</div>';
-    return `<article class="ms-volume" data-sku="${escape(p.sku)}" aria-label="${label}"><div class="ms-stage">${cover}</div><div class="ms-book-info"><small>${meta}</small><h3>${escape(p.unit||title(p))}</h3>${p.editionNote?`<span>${escape(p.editionNote)}</span>`:''}${audience==='student'?'':`<span>${isLinked(p)?'연계 · ':''}${escape(displayBook(p.source))}</span>`}</div>${offer}</article>`;
+    const meta = escape(editionOf(p)) + (p.count ? ` · ${p.count}문항` : '');
+    return `<article class="ms-volume" data-ms-card="${escape(card.id)}" data-sku="${escape(p.sku)}" aria-label="${label}"><div class="ms-stage">${cover}</div><div class="ms-book-info"><small>${meta}</small><h3>${escape(p.unit||title(p))}</h3>${audience==='student'?'':`<span>${isLinked(p)?'연계 · ':''}${escape(displayBook(p.source))}</span>`}</div><div class="ms-formats">${formats(card)}</div></article>`;
   }
   function items() {
     const list = scope ? products.filter(p => scope.bookId
@@ -115,19 +142,22 @@
       if (!shelves.has(book.source)) shelves.set(book.source, []);
       shelves.get(book.source).push(book);
     }
-    const rows = [...shelves].sort(([, a], [, b]) =>
+    cardIndex.clear();
+    const shelfCards = [...shelves].map(([source, books]) => [source, cardsOf(books).map(card => card.main)]).filter(([, books]) => books.length);
+    const shown = shelfCards.reduce((sum, [, books]) => sum + books.length, 0);
+    const rows = shelfCards.sort(([, a], [, b]) =>
       a[0].subject.localeCompare(b[0].subject, 'ko') ||
       Number(a[0].sourceId?.includes('-advanced-') || false) - Number(b[0].sourceId?.includes('-advanced-') || false)
-    ).map(([source, books]) => {
-      books.sort((a, b) => a.no.localeCompare(b.no) || (a.edition || a.name).localeCompare(b.edition || b.name, 'ko'));
+    ).map(([source, mains]) => {
+      const cards = cardsOf(shelves.get(source)).sort((a, b) => a.main.no.localeCompare(b.main.no) || editionOf(a.main).localeCompare(editionOf(b.main), 'ko'));
       const name = escape(displayBook(source));
-      return `<section class="ms-shelf-group" data-ms-series="${escape(books[0].sourceId || '')}" aria-label="${name}"><header><h3>${name}</h3>${audience==='student'?'':`<span>${books.length}권</span>`}</header><div class="ms-bookshelf">${books.map(coverTile).join('')}</div></section>`;
+      return `<section class="ms-shelf-group" data-ms-series="${escape(mains[0].sourceId || '')}" aria-label="${name}"><header><h3>${name}</h3>${audience==='student'?'':`<span>${cards.length}권</span>`}</header><div class="ms-bookshelf">${cards.map(coverTile).join('')}</div></section>`;
     }).join('');
     if (audience === 'student') {
-      const empty = list.length ? '' : '<p role="status">이 범위에서 받을 수 있는 자료는 아직 없습니다.</p>';
+      const empty = shown ? '' : '<p role="status">이 범위에서 받을 수 있는 자료는 아직 없습니다.</p>';
       return `<section class="ms-items" aria-label="단원별 교재">${reset ? '<div class="ms-results">' + reset + '</div>' : ''}${empty}${rows}</section>`;
     }
-    return `<section class="ms-items" aria-label="${escape(bookLabel(selected || '전체'))} 판매 교재"><div class="ms-results dl63-head"><h2>${escape(heading)}</h2><span>${list.length}권</span>${reset}</div>${list.length ? '<p class="ms-delivery">구매한 교재는 배송 없이 파일로 내려받습니다.</p>' : ''}${scope && !list.length ? '<p role="status">이 범위에서 구매할 수 있는 자료는 아직 없습니다.</p>' : ''}${rows}</section>`;
+    return `<section class="ms-items" aria-label="${escape(bookLabel(selected || '전체'))} 판매 교재"><div class="ms-results dl63-head"><h2>${escape(heading)}</h2><span>${shown}권</span>${reset}</div>${shown ? '<p class="ms-delivery">구매한 교재는 배송 없이 파일로 내려받습니다.</p>' : ''}${scope && !shown ? '<p role="status">이 범위에서 구매할 수 있는 자료는 아직 없습니다.</p>' : ''}${rows}</section>`;
   }
 
   const formatLabel = fmt => fmt === 'pdf' ? 'PDF' : '한글';
@@ -181,7 +211,7 @@
     const tabs = categories.map((c,i) => `<button type="button" ${i?'disabled':'aria-pressed="true"'}><small>${i+1}</small>${c}</button>`).join('');
     const catalog = status === 'ready' ? '<div class="ms-find"><h2>어느 책으로 수업하세요?</h2>' + picker() + '</div>' + items() : notice;
     const navigation = `<div class="ms-categories" role="group" aria-label="자료 종류">${tabs}</div>`;
-    return `<div class="ms-mast dl63-head"><div><span class="dl63-kicker">시험 범위 자료 고르기</span><h1>내신 자료</h1>${status==='ready' ? `<p>연계 교재 ${new Set(products.filter(isLinked).map(p=>p.sourceId)).size}종 <i>·</i> 단원별 자료 ${products.length}권</p>` : ''}</div>${cartButton}</div>${navigation}${catalog}`;
+    return `<div class="ms-mast dl63-head"><div><span class="dl63-kicker">시험 범위 자료 고르기</span><h1>내신 자료</h1>${status==='ready' ? `<p>연계 교재 ${new Set(products.filter(isLinked).map(p=>p.sourceId)).size}종 <i>·</i> 단원별 자료 ${cardsOf(products).length}권</p>` : ''}</div>${cartButton}</div>${navigation}${catalog}`;
   }
   function updateCartCount(panel) {
     const opener=panel.querySelector('[data-ms-cart]'), count=picked().length;
@@ -191,15 +221,15 @@
   window.addEventListener('ds-point-pdf-update', () => {
     const panel=root();
     if (!panel || panel.querySelector('dialog[open]')) return;
-    for (const tile of panel.querySelectorAll('.ms-volume')) {
-      const product=products.find(p=>p.sku===tile.dataset.sku);
-      if (product && !product.restored) {
+    for (const tile of panel.querySelectorAll('[data-ms-card]')) {
+      const card=cardIndex.get(tile.dataset.msCard);
+      if (card) {
         const offers=tile.querySelector('.ms-formats');
-        const updated=formats(product);
+        const updated=formats(card);
         if (offers.innerHTML!==updated) {
-          const focused=offers.contains(document.activeElement) && document.activeElement.dataset.msAdd;
+          const focused=offers.contains(document.activeElement) && document.activeElement.className;
           offers.innerHTML=updated;
-          if (focused) [...offers.querySelectorAll('button')].find(b=>b.dataset.msAdd===focused)?.focus({preventScroll:true});
+          if (focused) offers.querySelector('.'+focused.split(' ')[0])?.focus({preventScroll:true});
         }
       }
     }
@@ -247,15 +277,17 @@
     if(b.hasAttribute('data-ms-cart')){openCart(panel);return;}
     if(b.hasAttribute('data-ms-review')){panel.querySelector('.ms-cart-sheet')?.close();reviewOrder(panel);return;}
     if(b.hasAttribute('data-ms-retry')){status='idle';load();refresh();return;}
+    if(b.dataset.msPick){const tile=b.closest('[data-ms-card]'),card=cardIndex.get(tile?.dataset.msCard);if(!card)return;chosen.set(card.id,b.dataset.msPick);tile.querySelector('.ms-formats').innerHTML=formats(card);[...tile.querySelectorAll('[data-ms-pick]')].find(x=>x.dataset.msPick===b.dataset.msPick)?.focus({preventScroll:true});return;}
     if(b.dataset.msBook){clearScope();selected=b.dataset.msBook;refresh();root().querySelector('summary').focus({preventScroll:true});}
     if(b.dataset.msAdd&&!cart.includes(b.dataset.msAdd)){const match=products.find(p=>['pdf','hwpx'].some(fmt=>key(p,fmt)===b.dataset.msAdd&&enabled(p,fmt)));if(!match)return;cart.push(b.dataset.msAdd);save();refresh();}
     if(b.dataset.msRemove){
       cart=cart.filter(k=>k!==b.dataset.msRemove);save();
       const sheet = panel.querySelector('.ms-cart-sheet');
       if (sheet) {
-        const oldButton = [...panel.querySelectorAll('[data-ms-add]')].find(button => button.dataset.msAdd === b.dataset.msRemove);
-        const product = products.find(p => ['pdf','hwpx'].some(fmt => key(p,fmt) === b.dataset.msRemove));
-        if (oldButton && product) oldButton.closest('.ms-formats').innerHTML = formats(product);
+        for (const tile of panel.querySelectorAll('[data-ms-card]')) {
+          const card = cardIndex.get(tile.dataset.msCard);
+          if (card?.parts.some(({p}) => ['pdf','hwpx'].some(fmt => key(p,fmt) === b.dataset.msRemove))) tile.querySelector('.ms-formats').innerHTML = formats(card);
+        }
         sheet.innerHTML = cartContents();
         sheet.querySelector('button')?.focus();
         updateCartCount(panel);
