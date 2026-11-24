@@ -425,7 +425,7 @@
     }
     const sheet = `<iframe class="dq61-sample-page" title="${data.labels.subject} ${data.labels.unit} 프린트 자료" tabindex="-1" scrolling="no" srcdoc="${safe(documentHTML(0,data))}"></iframe>`;
     const surface = window.DSPrintSurfaceV48.scene(sheet);
-    const toolbar = '<strong>프린트 자료</strong><button type="button" class="dq61-sample-link" data-dq-large-sample>크게 보기 ↗</button>';
+    const toolbar = '<strong>프린트 자료</strong><span class="dq-paper-actions"><button type="button" data-dq-open-settings>구성 설정 ↓</button><button type="button" class="dq61-sample-link" aria-haspopup="dialog" data-dq-large-sample>원본 크기 ↗</button></span>';
     const appearance = paperControls();
     return `<aside class="dq59-stage dq59-idle tb36-order-preview ds48-canvas dq61-desk dq61-sample-desk" aria-busy="${Boolean(pending)}"><div class="ds48-preview-toolbar">${toolbar}</div><div class="dq61-sample-window">${surface}</div>${appearance}${list.length && !pending ? `<div class="dq59-saved"><h3>이 기기에 임시 보관한 구성</h3><ul>${list.map((x, i) => `<li><button type="button" data-dq-reopen="${i}"><strong>${safe(x.title)}</strong><small>${safe(label(x.labels))} · ${x.ids.length}문항 · ${safe(x.day)}</small></button><button type="button" data-dq-forget="${i}" aria-label="${safe(x.title)} 지우기">×</button></li>`).join('')}</ul></div>` : ''}</aside>`;
   }
@@ -483,7 +483,7 @@
     const paper = onLocked ? window.DSPrintSurfaceV48.scene(lockedPaper()) : window.DSPrintSurfaceV48.scene(`<iframe class="dq59-paper" title="${page + 1}쪽 인쇄 지면" scrolling="no" style="width:793.7008px;height:1122.5197px" srcdoc="${safe(documentHTML(pageArg()))}"></iframe>`);
     const nav = Array.from({ length: pages }, (_, i) => { const locked = g && i === pages - 1; return `<button type="button" data-dq-page="${i}" aria-pressed="${page === i}"${locked ? ' class="is-locked"' : ''}>${i + 1} ${i < all.length ? (all[i].designRecord ? '기록면' : '문제') : '정답·해설'}${locked ? ` <span class="dq61-lockmark" aria-hidden="true">${LOCK_SVG}</span>` : ''}</button>`; }).join('');
     const pending2 = !g && withSol && !drawn.solutions && drawn.solOp && !drawn.solOp.failed ? `<button type="button" disabled class="is-waiting">정답·해설 <small data-dq61-done>${drawn.solOp.done} / ${drawn.solOp.total}</small></button>` : '';
-    return `<div class="tb36-workspace dq59-work${g ? ' dq61-guest' : ''}"><aside class="tb36-finish-panel dq59-panel"><div class="tb36-section-title"><b>04</b><h2>보관·출력</h2></div><label>제목<input data-dq-title maxlength="60" value="${safe(title)}"></label><a class="tb36-design-link" href="#print-design">학원명·머리말·표지 디자인 <span>↗</span></a>${solBox}${save}${print}<button type="button" class="tb36-quiet" data-dq-review>문항 다시 확인</button>${noteHTML()}</aside><div class="creator-canvas td34-canvas tb36-canvas ds48-canvas dq59-canvas"><div class="creator-canvas-toolbar"><div><strong>인쇄 미리보기</strong><span>${drawn.items.length}문항 · ${pages}쪽</span></div></div><div class="creator-paper-stage">${paper}</div>${paperControls()}<nav class="tb36-pages" aria-label="미리보기 쪽">${nav}${pending2}</nav><div class="creator-canvas-footer"><span>A4 · 210 × 297 mm</span><span>${g ? '문제 면 · 정답·해설은 로그인 뒤' : solOn() ? '문제 · 정답·해설' : '문제 면'}</span></div></div></div>`;
+    return `<div class="tb36-workspace dq59-work${g ? ' dq61-guest' : ''}"><aside class="tb36-finish-panel dq59-panel"><div class="tb36-section-title"><b>04</b><h2>보관·출력</h2></div><label>제목<input data-dq-title maxlength="60" value="${safe(title)}"></label><a class="tb36-design-link" href="#print-design">학원명·머리말·표지 디자인 <span>↗</span></a>${solBox}${save}${print}<button type="button" class="tb36-quiet" data-dq-review>문항 다시 확인</button>${noteHTML()}</aside><div class="creator-canvas td34-canvas tb36-canvas ds48-canvas dq59-canvas"><div class="creator-canvas-toolbar"><div><strong>인쇄 미리보기</strong><span>${drawn.items.length}문항 · ${pages}쪽</span></div>${onLocked ? '' : '<button type="button" class="dq61-sample-link" aria-haspopup="dialog" data-dq-large-sample>원본 크기 ↗</button>'}</div><div class="creator-paper-stage">${paper}</div>${paperControls()}<nav class="tb36-pages" aria-label="미리보기 쪽">${nav}${pending2}</nav><div class="creator-canvas-footer"><span>A4 · 210 × 297 mm</span><span>${g ? '문제 면 · 정답·해설은 로그인 뒤' : solOn() ? '문제 · 정답·해설' : '문제 면'}</span></div></div></div>`;
   }
   // Keep the original print workbench: a short conditions form next to the paper.
   function compactPrintForm(form) {
@@ -1049,15 +1049,18 @@
   }
   document.addEventListener('submit', e => { if (e.target.id === 'dq59-form' && here()) { e.preventDefault(); if (sharedPrint()) openOutput(); } });
   document.addEventListener('click', e => {
-    if (e.target.closest?.('[data-dq-large-sample]')) {
-      const d=document.createElement('dialog');
-      d.className='dq61-large-sample';
-      d.innerHTML='<form method="dialog"><button autofocus aria-label="프린트 닫기">닫기 ×</button></form><div class="ds48-paper-position"></div>';
-      const expanded = document.querySelector('.dq61-sample-page').cloneNode();
-      expanded.srcdoc=documentHTML(0,sampleData());
-      d.querySelector('.ds48-paper-position').append(expanded);
-      document.body.append(d); d.showModal(); window.DSPrintSurfaceV48.fit(d);
-      d.addEventListener('close',()=>d.remove(),{once:true});
+    if (e.target.closest?.('[data-dq-open-settings]')) {
+      const form = document.getElementById('dq59-form');
+      if (form) {
+        form.querySelector('select,button')?.focus({preventScroll:true});
+        form.scrollIntoView({block:'start'});
+      }
+      return;
+    }
+    const enlarge = e.target.closest?.('[data-dq-large-sample]');
+    if (enlarge) {
+      const source = enlarge.closest('.ds48-canvas')?.querySelector('.ds48-paper-position > iframe');
+      if (source) window.DSPrintSurfaceV48.openPaper(source);
       return;
     }
     const g = e.target.closest?.('[data-dq61-gate-open],[data-dq61-login],[data-dq61-signup]');
