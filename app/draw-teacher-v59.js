@@ -411,9 +411,25 @@ ${css}
     const total = daily(), used = Math.min(total, seenToday);
     return `<div class="dq61-meter" role="group" aria-label="로그인 없이 볼 수 있는 문항"><p><span>로그인 없이 ${total}문항 중</span><b>${used}문항</b></p><i aria-hidden="true"><em style="width:${Math.round(used / total * 100)}%"></em></i></div>`;
   }
+  // Legacy set labels can combine several stages. A scoped request accepts one
+  // exact value per filter. Keep user choices separate from the legacy set cursor.
+  let scopeLevels = {subject:'', stage:'', difficulty:''};
+  function scopedLevels() {
+    if (scopeLevels.subject !== sel.subject) scopeLevels = {subject:sel.subject, stage:'', difficulty:''};
+    return scopeLevels;
+  }
+  function scopeLevelSelect(k,name) {
+    const levels = scopedLevels();
+    const values = [...new Set(rows({subject:sel.subject}).flatMap(row => row[k].split(/\s*·\s*/)).filter(Boolean))];
+    if (!values.length && !levels[k]) return '';
+    if (levels[k] && !values.includes(levels[k])) values.push(levels[k]);
+    const options = values.map(v => `<option value="${safe(v)}" ${v === levels[k] ? 'selected' : ''}>${safe(k === 'stage' ? v + '단계' : v)}</option>`).join('');
+    return `<label>${name}<select data-dq-scope-level="${k}" aria-label="${name}" ${pending ? 'disabled' : ''}><option value="">전체</option>${options}</select></label>`;
+  }
   function selects() {
     const prefix = {};
     return FIELDS.filter(([k]) => k !== 'unit' || !window.DSPrintScope?.active()).map(([k, name]) => {
+      if (window.DSPrintScope?.active() && (k === 'stage' || k === 'difficulty')) return scopeLevelSelect(k,name);
       const values = rows(prefix).map(r => r[k]);
       if (k === 'subject')
         values.push(...(window.DSPrintScopeData?.subjects || []).map(s => s.subject));
@@ -560,7 +576,8 @@ ${css}
     if (!action) return;
     const optional = [
       form.querySelector('[data-ps-types]')?.closest('fieldset'),
-      form.querySelector('[data-dq-field="stage"]')?.closest('label'),
+      form.querySelector('[data-dq-field="stage"],[data-dq-scope-level="stage"]')?.closest('label'),
+      form.querySelector('[data-dq-scope-level="difficulty"]')?.closest('label'),
       form.querySelector('.student-print-settings')
     ].filter(Boolean);
     for (const control of optional) action.before(control);
@@ -579,6 +596,10 @@ ${css}
       sel = Object.fromEntries(FIELDS.filter(([k]) => typeof restored.sel?.[k] === 'string')
         .map(([k]) => [k, restored.sel[k]]));
       if (!sel.subject && typeof restored.scope?.subject === 'string') sel.subject = restored.scope.subject;
+      const savedLevels = restored.scopeLevels;
+      if (savedLevels?.subject === sel.subject && ['stage','difficulty'].every(k => typeof savedLevels[k] === 'string' && savedLevels[k].length <= 60)) {
+        scopeLevels = {subject:sel.subject, stage:savedLevels.stage, difficulty:savedLevels.difficulty};
+      }
       count = COUNTS.includes(restored.count) ? restored.count : 5;
       columnRule = restored.columnRule === true;
       layout = ['1','2','4'].includes(restored.layout) ? restored.layout : '2';
@@ -902,7 +923,7 @@ ${css}
   }
   const scopeCriteria = () => ({
     ...window.DSPrintScope.request(), subject:sel.subject || window.DSPrintScopeData?.books?.[0]?.subject,
-    stage:sel.stage, difficulty:sel.difficulty, count
+    stage:scopedLevels().stage || undefined, difficulty:scopedLevels().difficulty || undefined, count
   });
   let outputDialog = null;
   function closeOutput() { outputDialog?.close(); }
@@ -935,7 +956,7 @@ ${css}
       if (book && dialog.returnValue === 'login' && active() && location.hash === origin) { goLogin(); return; }
       if (dialog.returnValue === 'login' && sharedPrint() && location.hash === origin) {
         window.DSPrintLoginReturn?.save(studentSurface() ? '#student' : '#teacher', {
-          sel:{...sel}, count, layout, columnRule, draftTitle, pageNote:{...pageNote}, withSol,
+          sel:{...sel}, scopeLevels:{...scopedLevels()}, count, layout, columnRule, draftTitle, pageNote:{...pageNote}, withSol,
           design:window.DSDocumentDesign?.selected().id, scope:window.DSPrintScope?.snapshot(),
           openSections:[...document.querySelectorAll('#dq59-form details[data-print-option][open]')].map(box=>box.dataset.printOption)
         });
@@ -964,7 +985,9 @@ ${css}
     }
     const modes = ['received','point'];
     const timedOut = new Promise(resolve=>abort.signal.addEventListener('abort',()=>resolve(null),{once:true}));
-    const read = lookup => Promise.race([Promise.resolve().then(lookup).catch(()=>null), timedOut]);
+    const read = lookup => Promise.race([Promise.resolve().then(lookup).catch(error => ({
+      denied: error?.status === 403 && error?.code === 'forbidden'
+    })), timedOut]);
     const walletRow = menu.find(row=>row.pointPrint);
     const walletCheck = read(()=>basic && !sets.point ? null : h.pointWallet ? h.pointWallet(abort.signal) : walletRow);
     offers.innerHTML = modes.map(mode=>`<label data-print-offer="${mode}">확인 중…</label>`).join('');
@@ -980,8 +1003,24 @@ ${css}
       const allowed = quantity > 0 && (!book || quantity === criteria.count) && (owned || priceKnown);
       if (allowed) quantities[mode] = quantity;
       const cost = owned ? '추가 차감 없음' : priceKnown ? '새 문항당 '+wallet.pointPrice.toLocaleString()+'P · 최대 '+(wallet.pointPrice*quantity).toLocaleString()+'P' : '포인트 가격을 확인하지 못했어요.';
-      const detail = book && r && quantity < criteria.count ? '선택 범위 '+quantity+'문항 · 요청 '+criteria.count+'문항을 채울 수 없습니다.' : !r ? '확인하지 못했어요. 잠시 후 다시 시도해 주세요.' : quantity ? (basic?'최대 ':'')+quantity+'문항 · '+cost : basic ? '이 조건에서 이용할 수 있는 세트가 없어요.' : '선택한 범위에 문항이 없습니다.';
+      let detail;
+      if (owned && r?.denied) detail = '이 계정으로 이 범위에서 다시 출력할 수 있는 이용권 자료가 없어요.';
+      else if (!r || 'denied' in r) detail = '확인하지 못했어요. 잠시 후 다시 시도해 주세요.';
+      else if (!owned && wallet?.denied) {
+        const stock = r.available_count > 0 ? '선택 범위 ' + r.available_count + '문항 · ' : '';
+        detail = stock + '현재 계정에서 프린트 포인트를 사용할 수 없어요.';
+      } else if (!owned && r.available_count > 0 && (!r.extraction_ready || !priceKnown)) {
+        detail = '선택 범위 ' + r.available_count + '문항 · 포인트 사용 가능 여부를 확인하지 못했어요.';
+      } else if (book && quantity < criteria.count) detail = '선택 범위 '+quantity+'문항 · 요청 '+criteria.count+'문항을 채울 수 없습니다.';
+      else if (quantity) detail = (basic?'최대 ':'')+quantity+'문항 · '+cost;
+      else detail = basic ? '이 조건에서 이용할 수 있는 세트가 없어요.' : '선택한 범위에 문항이 없습니다.';
       offers.querySelector(`[data-print-offer="${mode}"]`).innerHTML = `<input type="radio" name="print-access" value="${mode}" ${allowed?'':'disabled'}><span><strong>${owned?(basic?'내 계정으로 이용 가능한 기본 세트':'이미 받은 문항'):'포인트로 받을 문항'}</strong><small>${safe(detail)}</small></span>`;
+      if (!owned && wallet?.denied) {
+        const account = document.createElement('a');
+        account.href = '/my/#welcome';
+        account.textContent = '마이페이지에서 포인트 확인';
+        offers.append(account);
+      }
       if (Number.isSafeInteger(wallet?.pointRemaining)) {
         const balance = document.createElement('p');
         balance.textContent = '사용 가능 포인트 '+wallet.pointRemaining.toLocaleString()+'P';
@@ -1025,7 +1064,7 @@ ${css}
       const unit = chosen.length ? chosen.join(' · ') : criteria.mode === 'book' ? '교재 연계 범위' : criteria.access_mode==='received' ? '기수령 자료 범위' : '선별본 전체 범위';
       return {
         said: {kind:missing.length?'insufficient':'ok',text:`${items.length}문항을 구성했습니다.${d.points?' '+d.points.charged.toLocaleString()+'P 사용 · 현재 '+d.points.free_remaining.toLocaleString()+'P':criteria.access_mode==='received'?' 기수령 권리 확인 · 추가 차감 없음':''}${missing.length?' · '+missing.join(' · ')+' 문항은 포함되지 않았습니다.':''}`},
-        bookCover:book ? {...book.cover,count:items.length} : null, printOnReady: Boolean(confirmed), title: confirmed ? draftTitle : '', key: d.items[0].set_key, scoped: true, claimed: true, labels: book ? {subject:criteria.subject,unit:book.unit,stage:'',difficulty:''} : { ...sel, unit },
+        bookCover:book ? {...book.cover,count:items.length} : null, printOnReady: Boolean(confirmed), title: confirmed ? draftTitle : '', key: d.items[0].set_key, scoped: true, claimed: true, labels: book ? {subject:criteria.subject,unit:book.unit,stage:'',difficulty:''} : {...sel, unit, stage:criteria.stage || '전체', difficulty:criteria.difficulty || '전체' },
         status: items.length === count ? 'ok' : 'insufficient', count, page: 0, items
       };
     });
@@ -1204,6 +1243,11 @@ ${css}
     else if (b.dataset.dqForget) { const list = savedList(); list.splice(Number(b.dataset.dqForget), 1); putSaved(list); rerender(); }
   });
   document.addEventListener('change', e => {
+    const level = e.target.dataset?.dqScopeLevel;
+    if (!pending && ['stage','difficulty'].includes(level)) {
+      scopedLevels()[level] = e.target.value; clearTrial(); window.DSPrintScope?.invalidate();
+      note = {kind:'', text:''}; rerender(`[data-dq-scope-level="${level}"]`); return;
+    }
     const key = e.target.dataset?.dqField;
     if (key && !pending) { clearTrial(); window.DSPrintScope?.invalidate(); sel[key] = e.target.value; settle(); note = { kind: '', text: '' }; rerender(`[data-dq-field="${key}"]`); }
     if (e.target.hasAttribute?.('data-student-print-sol')) withSol = e.target.checked;
@@ -1252,7 +1296,7 @@ ${css}
   });
   // While a teacher tab stays open the local preview session is kept from idling out.
   setInterval(() => { const h = host(); if (h?.keepAlive && here() && printSurface() && h.signedIn()) h.keepAlive(); }, 10 * 60 * 1000);
-  window.addEventListener('ds-session-change', () => { clearTrial(); closeOutput(); window.DSPrintScope?.change({hasAttribute:k=>k==='data-ps-mode',dataset:{psMode:'random'}}); stop(); dropSolutions(); drawn = null; owner = ''; phase = 'setup'; note = { kind: '', text: '' }; menu = []; menuGuard?.abort(); menuGuard = null; menuBusy = false; menuTried = false; menuIssue = ''; trialOn = false; limits = null; document.getElementById('dq61-gate')?.close(); if (here()) rerender(); });
+  window.addEventListener('ds-session-change', () => { scopeLevels = {subject:'',stage:'',difficulty:''}; clearTrial(); closeOutput(); window.DSPrintScope?.change({hasAttribute:k=>k==='data-ps-mode',dataset:{psMode:'random'}}); stop(); dropSolutions(); drawn = null; owner = ''; phase = 'setup'; note = { kind: '', text: '' }; menu = []; menuGuard?.abort(); menuGuard = null; menuBusy = false; menuTried = false; menuIssue = ''; trialOn = false; limits = null; document.getElementById('dq61-gate')?.close(); if (here()) rerender(); });
   window.addEventListener('hashchange', () => { clearTrial(); closeOutput(); if (pending) { stop(); say(''); } if (!here()) { waitPrint = false; document.getElementById('dq61-gate')?.close(); if (phase === 'finish') phase = 'cards'; } });
   window.addEventListener('ds-print-scope-ready', () => { if (phase === 'setup' && here()) rerender(); });
   window.addEventListener('ds-document-design-change', () => { if (here() && printSurface()) { page=0; rerender(`[data-document-design="${window.DSDocumentDesign.selected().id}"]`); } });
