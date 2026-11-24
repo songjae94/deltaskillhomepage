@@ -49,7 +49,7 @@
   function chooseRange(draft, subjects, units) {
     const selectedSubject = subjects.includes(draft.subject) ? draft.subject : '';
     const selectedUnit = units.some(u => u.id === draft.unit) ? draft.unit : '';
-    const placeholder = !selectedSubject ? '과목을 먼저 선택하세요' : units.length ? '단원을 선택하세요' : '연결된 단원이 아직 없어요';
+    const placeholder = !selectedSubject ? '과목을 먼저 선택하세요' : units.some(u => u.pending) && units.every(u => u.pending || u.disabled) ? '교과서 단원 보기' : units.length ? '단원을 선택하세요' : '연결된 단원이 아직 없어요';
     return `<div class="ssp-plan-range">
       <label>과목<select data-plan-subject required>
         ${option('', '과목을 선택하세요', selectedSubject)}${subjects.map(s => option(s, s, selectedSubject)).join('')}

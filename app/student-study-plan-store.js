@@ -12,7 +12,7 @@
     if (Object.hasOwn(value, 'subject') || Object.hasOwn(value, 'unit')) {
       const {goal, need, subject, updatedAt} = value;
       const unit = typeof value.unit === 'string' ? value.unit.trim() : '';
-      if (!['공통수학2','미적분Ⅰ'].includes(subject) || !unit || unit.length > 110) return null;
+      if (!['공통수학2','미적분Ⅰ','기하','확률과 통계'].includes(subject) || !unit || unit.length > 110) return null;
       return {goal, need, subject, unit, updatedAt};
     }
     if (!(grade(value.previous) || value.previous === 'unknown') ||
@@ -117,5 +117,19 @@
     return local?.profile || null;
   }
 
-  window.DSStudyPlanStore = Object.freeze({load, save});
+  // Unreleased ranges stay in this tab and never replace the member's active study plan.
+  function waitingRange(owner, update) {
+    if (!/^[a-f0-9]{64}$/.test(owner)) return null;
+    const key = keyFor(owner) + '.waiting';
+    try {
+      if (update === null) sessionStorage.removeItem(key);
+      else if (update) {
+        const profile = normalize(update);
+        if (profile) sessionStorage.setItem(key, JSON.stringify(profile));
+      }
+      return normalize(JSON.parse(sessionStorage.getItem(key)));
+    } catch { return null; }
+  }
+
+  window.DSStudyPlanStore = Object.freeze({load, save, waitingRange});
 })();

@@ -97,7 +97,7 @@
     const prefix = {};
     for (const [k] of FIELDS) {
       const options = rows(prefix);
-      const scopedSubject = k === 'subject' && window.DSPrintScope?.active() &&
+      const scopedSubject = k === 'subject' &&
         window.DSPrintScopeData?.subjects?.some(s => s.subject === sel.subject);
       if (!scopedSubject && !options.some(r => r[k] === sel[k])) sel[k] = options[0]?.[k] ?? '';
       prefix[k] = sel[k];
@@ -368,7 +368,7 @@
     const prefix = {};
     return FIELDS.filter(([k]) => k !== 'unit' || !window.DSPrintScope?.active()).map(([k, name]) => {
       const values = rows(prefix).map(r => r[k]);
-      if (k === 'subject' && window.DSPrintScope?.active())
+      if (k === 'subject')
         values.push(...(window.DSPrintScopeData?.subjects || []).map(s => s.subject));
       const options = [...new Set(values)];
       if (!options.length) return '';
@@ -393,20 +393,25 @@
     return `<label>문항 수<select data-dq-count aria-label="문항 수" ${pending ? 'disabled' : ''}${over ? ' aria-describedby="dq61-more"' : ''}>${COUNTS.map(n => `<option value="${n}" ${count === n ? 'selected' : ''}>${n}문항${trialLimit && n > cap && cap > 0 ? ' · 로그인하면' : ''}</option>`).join('')}</select>${over ? `<small id="dq61-more" class="dq61-more">${cap > 0 ? `로그인 없이 지금은 ${cap}문항까지 구성할 수 있어요.` : '오늘 로그인 없이 볼 수 있는 문항을 다 봤어요.'} <a href="#login" data-dq61-login>로그인하면 더 ↗</a></small>` : ''}</label>`;
   }
   function sampleData() {
-    const calculus = (sel.subject || window.DSPrintScopeData?.subjects?.[0]?.subject || '').includes('미적분');
-    const labels = {subject:calculus?'미적분Ⅰ':'공통수학2', unit:calculus?'부정적분과 정적분':'함수'};
-    const prefix = calculus?'integral':'function';
+    const subject = sel.subject || window.DSPrintScopeData?.subjects?.[0]?.subject;
+    const sample = {'미적분Ⅰ':['부정적분과 정적분','integral'], '공통수학2':['함수','function']}[subject];
+    if (!sample) return null;
+    const [unit,prefix] = sample;
+    const labels = {subject,unit};
     const items = Array.from({length:4},(_,i)=>({
-      body:{innerHTML:`<img class="sample-question" src="${asset('public-data/interior-samples/'+prefix+'-q'+(i+1)+'.webp')}" alt="${labels.unit} 공개 견본 ${i+1}번 문제">`}
+      body:{innerHTML:`<img class="sample-question" src="${asset('public-data/interior-samples/'+prefix+'-q'+(i+1)+'.webp')}" alt="${labels.unit} 공개 프린트 ${i+1}번 문제">`}
     }));
     return {labels,items};
   }
   function idle() {
     const list = guest() ? [] : savedList();
     const data = sampleData(), design = window.DSDocumentDesign;
-    const sheet = `<iframe class="dq61-sample-page" title="${data.labels.subject} ${data.labels.unit} 프린트 예시" tabindex="-1" scrolling="no" srcdoc="${safe(documentHTML(0,data))}"></iframe>`;
+    if (!data) {
+      return `<aside class="dq59-stage dq59-idle tb36-order-preview ds48-canvas dq61-desk" aria-label="프린트 자료"><div class="ds48-preview-toolbar"><strong>${safe(sel.subject)} 프린트</strong></div><p class="dq59-saved" role="status">${window.DSPrintScope?.awaitingSupply(sel.subject) ? '검토를 마친 문항부터 프린트로 제공할 예정입니다.' : '이 과목의 프린트 자료를 준비하고 있습니다.'}</p></aside>`;
+    }
+    const sheet = `<iframe class="dq61-sample-page" title="${data.labels.subject} ${data.labels.unit} 프린트 자료" tabindex="-1" scrolling="no" srcdoc="${safe(documentHTML(0,data))}"></iframe>`;
     const surface = window.DSPrintSurfaceV48.scene(sheet);
-    const toolbar = '<strong>프린트 예시</strong><button type="button" class="dq61-sample-link" data-dq-large-sample>크게 보기 ↗</button>';
+    const toolbar = '<strong>프린트 자료</strong><button type="button" class="dq61-sample-link" data-dq-large-sample>크게 보기 ↗</button>';
     const appearance = `<div class="dq61-page-options"><fieldset><legend>내지 디자인</legend><div>${design.designs.map(d=>`<button type="button" data-document-design="${d.id}" aria-pressed="${design.selected().id===d.id}" title="${safe(d.desc)}">${d.label}</button>`).join('')}</div></fieldset><fieldset><legend>한 쪽 문항 수</legend><div>${[1,2,4].map(n=>`<label><input type="radio" name="sample-page-count" data-dq-layout value="${n}" ${Number(layout)===n?'checked':''}><span>${n}문항</span></label>`).join('')}</div></fieldset></div>`;
     return `<aside class="dq59-stage dq59-idle tb36-order-preview ds48-canvas dq61-desk dq61-sample-desk" aria-busy="${Boolean(pending)}"><div class="ds48-preview-toolbar">${toolbar}</div><div class="dq61-sample-window">${surface}</div>${appearance}${list.length && !pending ? `<div class="dq59-saved"><h3>이 기기에 임시 보관한 구성</h3><ul>${list.map((x, i) => `<li><button type="button" data-dq-reopen="${i}"><strong>${safe(x.title)}</strong><small>${safe(label(x.labels))} · ${x.ids.length}문항 · ${safe(x.day)}</small></button><button type="button" data-dq-forget="${i}" aria-label="${safe(x.title)} 지우기">×</button></li>`).join('')}</ul></div>` : ''}</aside>`;
   }
@@ -427,11 +432,12 @@
       guest:guest(), deferAccess:true, hasLegacySets:listed().length>0}) || '';
     const choice = scope?.request();
     const basic = choice?.mode === 'basic';
-    const canQuote = basic ? Boolean(current()?.ready) : choice &&
+    const awaitingSupply = scope?.awaitingSupply(sel.subject);
+    const canQuote = awaitingSupply ? false : basic ? Boolean(current()?.ready) : choice &&
       (choice.mode !== 'book' || choice.book_id) && (choice.type_mode !== 'specific' || choice.type_ids.length);
     const trial = basic && guest() && current() ? `<button type="button" class="tb36-quiet" data-dq-guest-preview ${pending?'disabled':''}>기본 세트 맛보기</button>` : '';
     const button = `<button type="submit" class="tb36-primary" ${canQuote && !pending ? '' : 'disabled'}>${pending?'문항 준비 중':'출력 / PDF 저장'} <span>→</span></button>`;
-    return `<div class="tb36-setup dq59-setup${guest() ? ' dq61-guest' : ''}"><form id="dq59-form" class="tb36-conditions"><div class="tb36-section-title"><b>01</b><h2>프린트 구성</h2></div>${basic ? meter() : ''}${fields}${scopeHtml}${countField()}${studentOutputSettings()}${button}${trial}${noteHTML()}</form>${idle()}</div>`;
+    return `<div class="tb36-setup dq59-setup${guest() ? ' dq61-guest' : ''}"><form id="dq59-form" class="tb36-conditions"><div class="tb36-section-title"><b>01</b><h2>프린트 구성</h2></div>${basic ? meter() : ''}${fields}${scopeHtml}${awaitingSupply ? '' : countField()+studentOutputSettings()}${button}${trial}${noteHTML()}</form>${idle()}</div>`;
   }
   function solProgress() {
     const op = drawn?.solOp;
@@ -782,7 +788,7 @@
   function closeOutput() { outputDialog?.close(); }
   async function openOutput() {
     const h = host();
-    if (outputDialog || pending || !sharedPrint()) return;
+    if (outputDialog || pending || !sharedPrint() || window.DSPrintScope?.awaitingSupply(sel.subject)) return;
     const criteria = scopeCriteria();
     const origin = location.hash;
     const basic = criteria.mode === 'basic';
@@ -1030,7 +1036,7 @@
     if (e.target.closest?.('[data-dq-large-sample]')) {
       const d=document.createElement('dialog');
       d.className='dq61-large-sample';
-      d.innerHTML='<form method="dialog"><button autofocus aria-label="예시 닫기">닫기 ×</button></form><div class="ds48-paper-position"></div>';
+      d.innerHTML='<form method="dialog"><button autofocus aria-label="프린트 닫기">닫기 ×</button></form><div class="ds48-paper-position"></div>';
       const expanded = document.querySelector('.dq61-sample-page').cloneNode();
       expanded.srcdoc=documentHTML(0,sampleData());
       d.querySelector('.ds48-paper-position').append(expanded);

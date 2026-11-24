@@ -10,6 +10,8 @@
   const id = x => String(x.id || x.key || '');
   const books = () => (window.DSWorkbookScope?.books || data().books || []).filter(b => !b.subject || b.subject === state.subject);
   const book = () => books().find(b => id(b) === state.book);
+  const awaitingSupply = subject => data().subjects?.some(s => s.subject === subject && s.printSupply === 'pending');
+
   function units() {
     if (state.mode === 'book') {
       const picked=book();
@@ -41,6 +43,7 @@
     if (!active()) return {ready:true,count:null,reason:''};
     if (state.mode === 'book' && !book()) return {ready:false,count:0,reason:'연계할 교재를 골라 주세요.'};
     if (state.typeMode === 'specific' && !state.types.length) return {ready:false,count:0,reason:'구성할 유형을 골라 주세요.'};
+    if (awaitingSupply(state.subject)) return {ready:false,count:0,reason:'이 과목의 프린트 문항을 준비하고 있습니다.'};
     const count = Number.isInteger(availability?.available_count) ? availability.available_count : 0;
     const ready = availability?.extraction_ready === true && host?.scope?.version === 1 && count > 0;
     return {ready,count,verified:Boolean(availability && !availability.failed),reason:ready ? '' : checking ? '구성 가능한 문항을 확인하고 있습니다.' : !host?.signedIn() ? '로그인하면 선택한 범위의 문항을 확인할 수 있습니다.' : availability?.failed ? '선택한 범위의 문항 수를 확인하지 못했습니다.' : count > 0 ? '범위를 더 좁혀 구성해 주세요.' : '이 범위에서 지금 구성할 수 있는 문항이 없습니다. 다른 범위를 선택해 주세요.'};
@@ -50,12 +53,13 @@
     if (state.subject !== subject) {
       state.subject = subject;
       state.book = '';
-      if (state.mode === 'book') state.mode = 'random';
+      if (state.mode === 'book' || awaitingSupply(subject)) state.mode = 'random';
       state.units = [];
       state.types = [];
       state.typeMode = 'mixed';
       invalidate();
     }
+    if (awaitingSupply(subject)) return '';
     if (!deferAccess) check(host,{subject,stage,difficulty,count});
     const disabled = pending ? ' disabled' : '';
     const basic = guest || hasLegacySets || state.mode === 'basic'
@@ -115,5 +119,5 @@
     invalidate();
   }
   const unitLabels = ids => units().filter(u => ids.includes(id(u))).map(name);
-  window.DSPrintScope={unitLabels,render,change,status,request,check,active,invalidate,restore,snapshot:()=>structuredClone(state)};
+  window.DSPrintScope={awaitingSupply,unitLabels,render,change,status,request,check,active,invalidate,restore,snapshot:()=>structuredClone(state)};
 })();

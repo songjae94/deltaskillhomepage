@@ -75,3 +75,29 @@
 .ssp-history summary {cursor:pointer; padding:.5rem 0}
 
 @media(max-width:540px){.dsh-navigation .dsh-tabs>button{flex-direction:column;gap:3px}.dsh-navigation .dsh-tabs strong{font-size:13px}}
+
+/* Time attack shares the original question paper and answer sheet. */
+.ds-timed.ta-work-v18 { display:block; width:calc(100% - 48px); max-width:1112px; margin:20px auto; }
+.ds-timed .ta-top-v18 { padding-bottom:14px; margin-bottom:22px; }
+.ds-timed .ta-top-v18 h1 { margin:0; font-size:clamp(22px,3vw,30px); }
+.ds-timed .dst-layout { display:grid; grid-template-columns:minmax(0,1.6fr) minmax(275px,1fr); gap:24px; align-items:start; }
+.ds-timed .dst-sheet { position:relative; min-height:310px; padding:clamp(18px,3.5vw,40px); }
+.ds-timed .dst-sheet .quick-question { min-height:142px; }
+.ds-timed .dst-sheet .dst-prompt { line-height:1.95; overflow-wrap:anywhere; }
+.ds-timed .dst-sheet .question-no { display:block; margin:16px 0 12px; }
+.ds-timed .dst-sample-label { margin:0 0 12px; color:#546170; font-size:13px; }
+.ds-timed .dst-config { padding:22px; color:#f5f1e9; }
+.ds-timed .dst-config h2 { margin:0 0 14px; font-size:20px; color:inherit; }
+.ds-timed .dst-config .dst-fields { grid-template-columns:1fr; gap:10px; margin:12px 0; }
+.ds-timed .dst-config label { color:#f1eee6; }
+.ds-timed .dst-pair { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.ds-timed .dst-config select,.ds-timed .dst-sheet :is(select,input) { width:100%; min-height:40px; padding:7px 10px; border:1px solid #949b9d; border-radius:4px; background:#fffefb; color:#222e37; }
+.ds-timed .dst-sheet :is(select,input) { width:auto; min-width:86px; margin-inline-start:8px; }
+.ds-timed .dst-config :is(a,summary) { color:#f4eee4; text-underline-offset:3px; }
+.ds-timed .dst-config :is(summary,select) { cursor:pointer; }
+.ds-timed .dst-config p { font-size:14px; }
+.ds-timed .dst-config .dst-footnote { color:#e2ddd4; font-size:13px; }
+.ds-timed .dst-grades { display:flex; flex-wrap:wrap; gap:6px; }
+.ds-timed .dst-grades button[aria-pressed=true],.ds-timed .dst-config button:is([data-time-action="start"],[data-time-action="fixed"],[data-time-action="quote"]) { background:#f5e2bd; color:#332b25; border:1px solid #bfa679; }
+.ds-timed .dst-feedback { border-top:1px solid #c9c4b7; padding-top:14px; line-height:1.85; }
+@media(max-width:740px){.ds-timed.ta-work-v18{width:calc(100% - 28px)}.ds-timed .dst-layout{grid-template-columns:minmax(0,1fr);gap:18px}.ds-timed .dst-sheet{min-height:230px}.ds-timed .dst-sheet .quick-question{min-height:92px}}

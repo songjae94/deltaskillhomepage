@@ -106,5 +106,159 @@
       "edition": "고난도",
       "count": 114
     }
+  },
+  "shelf-1": {
+    "book": "쎈 기하",
+    "bookId": "SSEN-GEO",
+    "shelf": {
+      "subject": "기하",
+      "no": "01",
+      "unit": "이차곡선",
+      "edition": "기초편",
+      "count": 29
+    }
+  },
+  "shelf-2": {
+    "book": "쎈 기하",
+    "bookId": "SSEN-GEO",
+    "shelf": {
+      "subject": "기하",
+      "no": "01",
+      "unit": "이차곡선",
+      "edition": "1권",
+      "count": 99
+    }
+  },
+  "shelf-3": {
+    "book": "쎈 기하",
+    "bookId": "SSEN-GEO",
+    "shelf": {
+      "subject": "기하",
+      "no": "02",
+      "unit": "이차곡선과 직선",
+      "edition": "기초편",
+      "count": 15
+    }
+  },
+  "shelf-4": {
+    "book": "쎈 기하",
+    "bookId": "SSEN-GEO",
+    "shelf": {
+      "subject": "기하",
+      "no": "02",
+      "unit": "이차곡선과 직선",
+      "edition": "1권",
+      "count": 92
+    }
+  },
+  "shelf-5": {
+    "book": "쎈 기하",
+    "bookId": "SSEN-GEO",
+    "shelf": {
+      "subject": "기하",
+      "no": "03",
+      "unit": "벡터의 연산",
+      "edition": "기초편",
+      "count": 20
+    }
+  },
+  "shelf-6": {
+    "book": "쎈 기하",
+    "bookId": "SSEN-GEO",
+    "shelf": {
+      "subject": "기하",
+      "no": "03",
+      "unit": "벡터의 연산",
+      "edition": "1권",
+      "count": 54
+    }
+  },
+  "shelf-7": {
+    "book": "쎈 기하",
+    "bookId": "SSEN-GEO",
+    "shelf": {
+      "subject": "기하",
+      "no": "04",
+      "unit": "평면벡터의 성분과 내적",
+      "edition": "기초편",
+      "count": 46
+    }
+  },
+  "shelf-8": {
+    "book": "쎈 기하",
+    "bookId": "SSEN-GEO",
+    "shelf": {
+      "subject": "기하",
+      "no": "04",
+      "unit": "평면벡터의 성분과 내적",
+      "edition": "1권",
+      "count": 105
+    }
+  },
+  "shelf-9": {
+    "book": "쎈 기하",
+    "bookId": "SSEN-GEO",
+    "shelf": {
+      "subject": "기하",
+      "no": "05",
+      "unit": "공간도형",
+      "edition": "기초편",
+      "count": 10
+    }
+  },
+  "shelf-10": {
+    "book": "쎈 기하",
+    "bookId": "SSEN-GEO",
+    "shelf": {
+      "subject": "기하",
+      "no": "05",
+      "unit": "공간도형",
+      "edition": "1권",
+      "count": 78
+    }
+  },
+  "shelf-11": {
+    "book": "쎈 기하",
+    "bookId": "SSEN-GEO",
+    "shelf": {
+      "subject": "기하",
+      "no": "06",
+      "unit": "공간좌표",
+      "edition": "기초편",
+      "count": 17
+    }
+  },
+  "shelf-12": {
+    "book": "쎈 기하",
+    "bookId": "SSEN-GEO",
+    "shelf": {
+      "subject": "기하",
+      "no": "06",
+      "unit": "공간좌표",
+      "edition": "1권",
+      "count": 98
+    }
+  },
+  "shelf-13": {
+    "book": "델타스킬 예상문제집 확률과 통계",
+    "bookId": "DS-PRACTICE-PNC",
+    "shelf": {
+      "subject": "확률과 통계",
+      "no": "04",
+      "unit": "확률분포",
+      "edition": "기초편",
+      "count": 78
+    }
+  },
+  "shelf-14": {
+    "book": "델타스킬 예상문제집 확률과 통계",
+    "bookId": "DS-PRACTICE-PNC",
+    "shelf": {
+      "subject": "확률과 통계",
+      "no": "04",
+      "unit": "확률분포",
+      "edition": "1권",
+      "count": 73
+    }
   }
 }
