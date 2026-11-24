@@ -19,378 +19,140 @@
     "isbn": "9788954798068",
     "bookId": "OL-type-CAL1"
   },
-  "shelf-18": {
+  "NS-R24-01": {
+    "book": "쎈 기하",
+    "bookId": "SSEN-GEO"
+  },
+  "NS-R24-02": {
+    "book": "쎈 기하",
+    "bookId": "SSEN-GEO"
+  },
+  "NS-R24-03": {
+    "book": "쎈 기하",
+    "bookId": "SSEN-GEO"
+  },
+  "NS-R24-04": {
+    "book": "쎈 기하",
+    "bookId": "SSEN-GEO"
+  },
+  "NS-R24-05": {
+    "book": "쎈 기하",
+    "bookId": "SSEN-GEO"
+  },
+  "NS-R24-06": {
+    "book": "쎈 기하",
+    "bookId": "SSEN-GEO"
+  },
+  "NS-R24-07": {
+    "book": "쎈 기하",
+    "bookId": "SSEN-GEO"
+  },
+  "NS-R24-08": {
+    "book": "쎈 기하",
+    "bookId": "SSEN-GEO"
+  },
+  "NS-R24-09": {
+    "book": "쎈 기하",
+    "bookId": "SSEN-GEO"
+  },
+  "NS-R24-10": {
+    "book": "쎈 기하",
+    "bookId": "SSEN-GEO"
+  },
+  "NS-R24-11": {
+    "book": "쎈 기하",
+    "bookId": "SSEN-GEO"
+  },
+  "NS-R24-12": {
+    "book": "쎈 기하",
+    "bookId": "SSEN-GEO"
+  },
+  "NS-R24-13": {
+    "book": "델타스킬 예상문제집 확률과 통계",
+    "bookId": "DS-PRACTICE-PNC"
+  },
+  "NS-R24-14": {
+    "book": "델타스킬 예상문제집 확률과 통계",
+    "bookId": "DS-PRACTICE-PNC"
+  },
+  "NS-R24-18": {
     "book": "EBS 올림포스 유형편 공통수학2 (2025)",
-    "bookId": "OL-type-CM2",
-    "shelf": {
-      "subject": "공통수학2",
-      "no": "07",
-      "unit": "유리함수와 무리함수",
-      "edition": "기초편",
-      "count": 29
-    }
+    "bookId": "OL-type-CM2"
   },
-  "shelf-19": {
+  "NS-R24-19": {
     "book": "EBS 올림포스 유형편 미적분Ⅰ (2026)",
-    "bookId": "OL-type-CAL1",
-    "shelf": {
-      "subject": "미적분Ⅰ",
-      "no": "04",
-      "unit": "도함수의 활용",
-      "edition": "1권",
-      "count": 143
-    }
+    "bookId": "OL-type-CAL1"
   },
-  "shelf-20": {
+  "NS-R24-20": {
     "book": "EBS 올림포스 유형편 미적분Ⅰ (2026)",
-    "bookId": "OL-type-CAL1",
-    "shelf": {
-      "subject": "미적분Ⅰ",
-      "no": "04",
-      "unit": "도함수의 활용",
-      "edition": "기초편",
-      "count": 56
-    }
+    "bookId": "OL-type-CAL1"
   },
-  "shelf-21": {
+  "NS-R24-21": {
     "book": "EBS 올림포스 유형편 미적분Ⅰ (2026)",
-    "bookId": "OL-type-CAL1",
-    "shelf": {
-      "subject": "미적분Ⅰ",
-      "no": "05",
-      "unit": "부정적분과 정적분",
-      "edition": "1권",
-      "count": 97
-    }
+    "bookId": "OL-type-CAL1"
   },
-  "shelf-24": {
+  "NS-R24-24": {
     "book": "EBS 올림포스 고난도 미적분Ⅰ",
-    "bookId": "OL-advanced-CAL1",
-    "shelf": {
-      "subject": "미적분Ⅰ",
-      "no": "04",
-      "unit": "도함수의 활용",
-      "edition": "고난도",
-      "count": 327
-    }
+    "bookId": "OL-advanced-CAL1"
   },
-  "shelf-26": {
+  "NS-R24-26": {
     "book": "EBS 올림포스 고난도 미적분Ⅰ",
-    "bookId": "OL-advanced-CAL1",
-    "shelf": {
-      "subject": "미적분Ⅰ",
-      "no": "06",
-      "unit": "정적분의 활용",
-      "edition": "고난도",
-      "count": 151
-    }
+    "bookId": "OL-advanced-CAL1"
   },
-  "shelf-27": {
+  "NS-R24-27": {
     "book": "EBS 올림포스 고난도 공통수학2",
-    "bookId": "OL-advanced-CM2",
-    "shelf": {
-      "subject": "공통수학2",
-      "no": "06",
-      "unit": "함수",
-      "edition": "고난도",
-      "count": 112
-    }
+    "bookId": "OL-advanced-CM2"
   },
-  "shelf-28": {
+  "NS-R24-28": {
     "book": "EBS 올림포스 고난도 공통수학2",
-    "bookId": "OL-advanced-CM2",
-    "shelf": {
-      "subject": "공통수학2",
-      "no": "07",
-      "unit": "유리함수와 무리함수",
-      "edition": "고난도",
-      "count": 114
-    }
+    "bookId": "OL-advanced-CM2"
   },
-  "shelf-1": {
-    "book": "쎈 기하",
-    "bookId": "SSEN-GEO",
-    "shelf": {
-      "subject": "기하",
-      "no": "01",
-      "unit": "이차곡선",
-      "edition": "기초편",
-      "count": 29
-    }
-  },
-  "shelf-2": {
-    "book": "쎈 기하",
-    "bookId": "SSEN-GEO",
-    "shelf": {
-      "subject": "기하",
-      "no": "01",
-      "unit": "이차곡선",
-      "edition": "1권",
-      "count": 99
-    }
-  },
-  "shelf-3": {
-    "book": "쎈 기하",
-    "bookId": "SSEN-GEO",
-    "shelf": {
-      "subject": "기하",
-      "no": "02",
-      "unit": "이차곡선과 직선",
-      "edition": "기초편",
-      "count": 15
-    }
-  },
-  "shelf-4": {
-    "book": "쎈 기하",
-    "bookId": "SSEN-GEO",
-    "shelf": {
-      "subject": "기하",
-      "no": "02",
-      "unit": "이차곡선과 직선",
-      "edition": "1권",
-      "count": 92
-    }
-  },
-  "shelf-5": {
-    "book": "쎈 기하",
-    "bookId": "SSEN-GEO",
-    "shelf": {
-      "subject": "기하",
-      "no": "03",
-      "unit": "벡터의 연산",
-      "edition": "기초편",
-      "count": 20
-    }
-  },
-  "shelf-6": {
-    "book": "쎈 기하",
-    "bookId": "SSEN-GEO",
-    "shelf": {
-      "subject": "기하",
-      "no": "03",
-      "unit": "벡터의 연산",
-      "edition": "1권",
-      "count": 54
-    }
-  },
-  "shelf-7": {
-    "book": "쎈 기하",
-    "bookId": "SSEN-GEO",
-    "shelf": {
-      "subject": "기하",
-      "no": "04",
-      "unit": "평면벡터의 성분과 내적",
-      "edition": "기초편",
-      "count": 46
-    }
-  },
-  "shelf-8": {
-    "book": "쎈 기하",
-    "bookId": "SSEN-GEO",
-    "shelf": {
-      "subject": "기하",
-      "no": "04",
-      "unit": "평면벡터의 성분과 내적",
-      "edition": "1권",
-      "count": 105
-    }
-  },
-  "shelf-9": {
-    "book": "쎈 기하",
-    "bookId": "SSEN-GEO",
-    "shelf": {
-      "subject": "기하",
-      "no": "05",
-      "unit": "공간도형",
-      "edition": "기초편",
-      "count": 10
-    }
-  },
-  "shelf-10": {
-    "book": "쎈 기하",
-    "bookId": "SSEN-GEO",
-    "shelf": {
-      "subject": "기하",
-      "no": "05",
-      "unit": "공간도형",
-      "edition": "1권",
-      "count": 78
-    }
-  },
-  "shelf-11": {
-    "book": "쎈 기하",
-    "bookId": "SSEN-GEO",
-    "shelf": {
-      "subject": "기하",
-      "no": "06",
-      "unit": "공간좌표",
-      "edition": "기초편",
-      "count": 17
-    }
-  },
-  "shelf-12": {
-    "book": "쎈 기하",
-    "bookId": "SSEN-GEO",
-    "shelf": {
-      "subject": "기하",
-      "no": "06",
-      "unit": "공간좌표",
-      "edition": "1권",
-      "count": 98
-    }
-  },
-  "shelf-13": {
-    "book": "델타스킬 예상문제집 확률과 통계",
-    "bookId": "DS-PRACTICE-PNC",
-    "shelf": {
-      "subject": "확률과 통계",
-      "no": "04",
-      "unit": "확률분포",
-      "edition": "기초편",
-      "count": 78
-    }
-  },
-  "shelf-14": {
-    "book": "델타스킬 예상문제집 확률과 통계",
-    "bookId": "DS-PRACTICE-PNC",
-    "shelf": {
-      "subject": "확률과 통계",
-      "no": "04",
-      "unit": "확률분포",
-      "edition": "1권",
-      "count": 73
-    }
-  },
-  "shelf-29": {
+  "NS-R24-29": {
     "book": "델타스킬 고난도 이용권 자료 공통수학2",
-    "bookId": "DS-PRACTICE-CM2-PASS",
-    "shelf": {
-      "subject": "공통수학2",
-      "no": "06",
-      "unit": "함수",
-      "edition": "이용권 5벌",
-      "coverReady": false
-    }
+    "bookId": "DS-PRACTICE-CM2-PASS"
   },
-  "shelf-30": {
+  "NS-R24-30": {
     "book": "델타스킬 고난도 이용권 자료 공통수학2",
-    "bookId": "DS-PRACTICE-CM2-PASS",
-    "shelf": {
-      "subject": "공통수학2",
-      "no": "07",
-      "unit": "유리함수와 무리함수",
-      "edition": "이용권 5벌",
-      "coverReady": false
-    }
+    "bookId": "DS-PRACTICE-CM2-PASS"
   },
-  "shelf-31": {
+  "NS-R24-31": {
     "book": "델타스킬 예상문제집 확률과 통계",
-    "bookId": "DS-PRACTICE-PNC",
-    "shelf": {
-      "subject": "확률과 통계",
-      "no": "03",
-      "unit": "03 단원",
-      "edition": "1권",
-      "coverReady": false
-    }
+    "bookId": "DS-PRACTICE-PNC"
   },
-  "shelf-32": {
+  "NS-R24-32": {
     "book": "델타스킬 예상문제집 확률과 통계",
-    "bookId": "DS-PRACTICE-PNC",
-    "shelf": {
-      "subject": "확률과 통계",
-      "no": "01",
-      "unit": "01 단원",
-      "edition": "기초편",
-      "coverReady": false
-    }
+    "bookId": "DS-PRACTICE-PNC"
   },
-  "shelf-33": {
+  "NS-R24-33": {
     "book": "델타스킬 예상문제집 확률과 통계",
-    "bookId": "DS-PRACTICE-PNC",
-    "shelf": {
-      "subject": "확률과 통계",
-      "no": "02",
-      "unit": "02 단원",
-      "edition": "기초편",
-      "coverReady": false
-    }
+    "bookId": "DS-PRACTICE-PNC"
   },
-  "shelf-34": {
-    "book": "델타스킬 예상문제집 확률과 통계",
-    "bookId": "DS-PRACTICE-PNC",
-    "shelf": {
-      "subject": "확률과 통계",
-      "no": "01",
-      "unit": "01 단원",
-      "edition": "1권",
-      "coverReady": false
-    }
-  },
-  "shelf-35": {
+  "NS-R24-35": {
     "book": "델타스킬 예상문제집 공통수학2",
-    "bookId": "DS-PRACTICE-CM2",
-    "shelf": {
-      "subject": "공통수학2",
-      "no": "06",
-      "unit": "함수",
-      "edition": "2권",
-      "coverReady": false
-    }
+    "bookId": "DS-PRACTICE-CM2"
   },
-  "shelf-36": {
+  "NS-R24-36": {
     "book": "델타스킬 예상문제집 공통수학2",
-    "bookId": "DS-PRACTICE-CM2",
-    "shelf": {
-      "subject": "공통수학2",
-      "no": "07",
-      "unit": "유리함수와 무리함수",
-      "edition": "2권",
-      "coverReady": false
-    }
+    "bookId": "DS-PRACTICE-CM2"
   },
-  "shelf-37": {
-    "book": "델타스킬 예상문제집 미적분Ⅰ",
-    "bookId": "DS-PRACTICE-MI1",
-    "shelf": {
-      "subject": "미적분Ⅰ",
-      "no": "04",
-      "unit": "도함수의 활용",
-      "edition": "2권",
-      "coverReady": false
-    }
-  },
-  "shelf-38": {
-    "book": "델타스킬 예상문제집 미적분Ⅰ",
-    "bookId": "DS-PRACTICE-MI1",
-    "shelf": {
-      "subject": "미적분Ⅰ",
-      "no": "05",
-      "unit": "부정적분과 정적분",
-      "edition": "2권",
-      "coverReady": false
-    }
-  },
-  "shelf-39": {
+  "NS-R24-34": {
     "book": "델타스킬 예상문제집 확률과 통계",
-    "bookId": "DS-PRACTICE-PNC",
-    "shelf": {
-      "subject": "확률과 통계",
-      "no": "02",
-      "unit": "02 단원",
-      "edition": "1권",
-      "coverReady": false
-    }
+    "bookId": "DS-PRACTICE-PNC"
   },
-  "shelf-40": {
+  "NS-R24-37": {
+    "book": "델타스킬 예상문제집 미적분Ⅰ",
+    "bookId": "DS-PRACTICE-MI1"
+  },
+  "NS-R24-38": {
+    "book": "델타스킬 예상문제집 미적분Ⅰ",
+    "bookId": "DS-PRACTICE-MI1"
+  },
+  "NS-R24-39": {
     "book": "델타스킬 예상문제집 확률과 통계",
-    "bookId": "DS-PRACTICE-PNC",
-    "shelf": {
-      "subject": "확률과 통계",
-      "no": "03",
-      "unit": "03 단원",
-      "edition": "기초편",
-      "coverReady": false
-    }
+    "bookId": "DS-PRACTICE-PNC"
+  },
+  "NS-R24-40": {
+    "book": "델타스킬 예상문제집 확률과 통계",
+    "bookId": "DS-PRACTICE-PNC"
   }
 }

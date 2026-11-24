@@ -143,6 +143,566 @@
           "types": [],
           "items": [],
           "packs": []
+        },
+        {
+          "sku": "NS-R24-18",
+          "no": "07",
+          "major": "",
+          "unit": "유리함수와 무리함수",
+          "name": "공통수학2 공수2 기초편 07 기초편",
+          "edition": "기초편",
+          "composition": "C1",
+          "textbook": null,
+          "count": 29,
+          "pages": null,
+          "price": {
+            "pdf": 1200,
+            "hwpx": 2400
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-24T00:00:00+09:00",
+          "saleTo": null,
+          "sample": null,
+          "releaseVerified": true,
+          "releaseEvidenceSHA": "8d79af9c63b305113a62856caef659aa0f40132bbf4e911be78c8658d1ea78e9",
+          "files": [
+            {
+              "id": "NS-R24-18-L1.pdf",
+              "fmt": "pdf",
+              "title": "공통수학2 공수2 기초편 07 기초편 · L1 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-18-L2.pdf",
+              "fmt": "pdf",
+              "title": "공통수학2 공수2 기초편 07 기초편 · L2 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-18-L4.pdf",
+              "fmt": "pdf",
+              "title": "공통수학2 공수2 기초편 07 기초편 · L4 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            },
+            {
+              "id": "NS-R24-18-L1.hwpx",
+              "fmt": "hwpx",
+              "title": "공통수학2 공수2 기초편 07 기초편 · L1 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-18-L2.hwpx",
+              "fmt": "hwpx",
+              "title": "공통수학2 공수2 기초편 07 기초편 · L2 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-18-L4.hwpx",
+              "fmt": "hwpx",
+              "title": "공통수학2 공수2 기초편 07 기초편 · L4 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
+        },
+        {
+          "sku": "NS-R24-27",
+          "no": "06",
+          "major": "",
+          "unit": "함수",
+          "name": "공통수학2 고난도 06 판매판(우리문항만)",
+          "edition": "고난도",
+          "composition": "C1",
+          "textbook": null,
+          "count": 112,
+          "pages": null,
+          "price": {
+            "pdf": 4700,
+            "hwpx": 9400
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-24T00:00:00+09:00",
+          "saleTo": null,
+          "sample": null,
+          "releaseVerified": true,
+          "releaseEvidenceSHA": "5e728a75d5ca5cfafa65b8a3d2bc57cca9be7bafc685971976fde7d940c566f6",
+          "files": [
+            {
+              "id": "NS-R24-27-S1.pdf",
+              "fmt": "pdf",
+              "title": "공통수학2 고난도 06 판매판(우리문항만) · S1 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S1 벌"
+            },
+            {
+              "id": "NS-R24-27-S2.pdf",
+              "fmt": "pdf",
+              "title": "공통수학2 고난도 06 판매판(우리문항만) · S2 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S2 벌"
+            },
+            {
+              "id": "NS-R24-27-S3.pdf",
+              "fmt": "pdf",
+              "title": "공통수학2 고난도 06 판매판(우리문항만) · S3 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S3 벌"
+            },
+            {
+              "id": "NS-R24-27-S1.hwpx",
+              "fmt": "hwpx",
+              "title": "공통수학2 고난도 06 판매판(우리문항만) · S1 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S1 벌"
+            },
+            {
+              "id": "NS-R24-27-S2.hwpx",
+              "fmt": "hwpx",
+              "title": "공통수학2 고난도 06 판매판(우리문항만) · S2 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S2 벌"
+            },
+            {
+              "id": "NS-R24-27-S3.hwpx",
+              "fmt": "hwpx",
+              "title": "공통수학2 고난도 06 판매판(우리문항만) · S3 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S3 벌"
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
+        },
+        {
+          "sku": "NS-R24-28",
+          "no": "07",
+          "major": "",
+          "unit": "유리함수와 무리함수",
+          "name": "공통수학2 고난도 07 판매판(고07)",
+          "edition": "고난도",
+          "composition": "C1",
+          "textbook": null,
+          "count": 114,
+          "pages": null,
+          "price": {
+            "pdf": 4800,
+            "hwpx": 9600
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-24T00:00:00+09:00",
+          "saleTo": null,
+          "sample": null,
+          "releaseVerified": true,
+          "releaseEvidenceSHA": "4fe039528347d346bebd9a0132710d90559ebff67c564388aad7137f68998e2e",
+          "files": [
+            {
+              "id": "NS-R24-28-S1.pdf",
+              "fmt": "pdf",
+              "title": "공통수학2 고난도 07 판매판(고07) · S1 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S1 벌"
+            },
+            {
+              "id": "NS-R24-28-S2.pdf",
+              "fmt": "pdf",
+              "title": "공통수학2 고난도 07 판매판(고07) · S2 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S2 벌"
+            },
+            {
+              "id": "NS-R24-28-S3.pdf",
+              "fmt": "pdf",
+              "title": "공통수학2 고난도 07 판매판(고07) · S3 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S3 벌"
+            },
+            {
+              "id": "NS-R24-28-S1.hwpx",
+              "fmt": "hwpx",
+              "title": "공통수학2 고난도 07 판매판(고07) · S1 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S1 벌"
+            },
+            {
+              "id": "NS-R24-28-S2.hwpx",
+              "fmt": "hwpx",
+              "title": "공통수학2 고난도 07 판매판(고07) · S2 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S2 벌"
+            },
+            {
+              "id": "NS-R24-28-S3.hwpx",
+              "fmt": "hwpx",
+              "title": "공통수학2 고난도 07 판매판(고07) · S3 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S3 벌"
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
+        },
+        {
+          "sku": "NS-R24-29",
+          "no": "06",
+          "major": "",
+          "unit": "함수",
+          "name": "공통수학2 고난도 이용권 벌 06 벌 5(PASS-공수2고난도06)",
+          "edition": "이용권 5벌",
+          "composition": "C1",
+          "textbook": null,
+          "count": 100,
+          "pages": null,
+          "price": {
+            "pdf": 4200,
+            "hwpx": 8400
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-24T00:00:00+09:00",
+          "saleTo": null,
+          "sample": null,
+          "releaseVerified": true,
+          "releaseEvidenceSHA": "913f5bf06a3cae2d17339e655c5e57f1038ec60f626b98b07f822284eb984a82",
+          "files": [
+            {
+              "id": "NS-R24-29-S1.pdf",
+              "fmt": "pdf",
+              "title": "공통수학2 고난도 이용권 벌 06 벌 5(PASS-공수2고난도06) · S1 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S1 벌"
+            },
+            {
+              "id": "NS-R24-29-S2.pdf",
+              "fmt": "pdf",
+              "title": "공통수학2 고난도 이용권 벌 06 벌 5(PASS-공수2고난도06) · S2 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S2 벌"
+            },
+            {
+              "id": "NS-R24-29-S3.pdf",
+              "fmt": "pdf",
+              "title": "공통수학2 고난도 이용권 벌 06 벌 5(PASS-공수2고난도06) · S3 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S3 벌"
+            },
+            {
+              "id": "NS-R24-29-S4.pdf",
+              "fmt": "pdf",
+              "title": "공통수학2 고난도 이용권 벌 06 벌 5(PASS-공수2고난도06) · S4 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S4 벌"
+            },
+            {
+              "id": "NS-R24-29-S5.pdf",
+              "fmt": "pdf",
+              "title": "공통수학2 고난도 이용권 벌 06 벌 5(PASS-공수2고난도06) · S5 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S5 벌"
+            },
+            {
+              "id": "NS-R24-29-S1.hwpx",
+              "fmt": "hwpx",
+              "title": "공통수학2 고난도 이용권 벌 06 벌 5(PASS-공수2고난도06) · S1 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S1 벌"
+            },
+            {
+              "id": "NS-R24-29-S2.hwpx",
+              "fmt": "hwpx",
+              "title": "공통수학2 고난도 이용권 벌 06 벌 5(PASS-공수2고난도06) · S2 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S2 벌"
+            },
+            {
+              "id": "NS-R24-29-S3.hwpx",
+              "fmt": "hwpx",
+              "title": "공통수학2 고난도 이용권 벌 06 벌 5(PASS-공수2고난도06) · S3 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S3 벌"
+            },
+            {
+              "id": "NS-R24-29-S4.hwpx",
+              "fmt": "hwpx",
+              "title": "공통수학2 고난도 이용권 벌 06 벌 5(PASS-공수2고난도06) · S4 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S4 벌"
+            },
+            {
+              "id": "NS-R24-29-S5.hwpx",
+              "fmt": "hwpx",
+              "title": "공통수학2 고난도 이용권 벌 06 벌 5(PASS-공수2고난도06) · S5 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S5 벌"
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
+        },
+        {
+          "sku": "NS-R24-30",
+          "no": "07",
+          "major": "",
+          "unit": "유리함수와 무리함수",
+          "name": "공통수학2 고난도 이용권 벌 07 벌 5(PASS-공수2고난도07)",
+          "edition": "이용권 5벌",
+          "composition": "C1",
+          "textbook": null,
+          "count": 100,
+          "pages": null,
+          "price": {
+            "pdf": 4200,
+            "hwpx": 8400
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-24T00:00:00+09:00",
+          "saleTo": null,
+          "sample": null,
+          "releaseVerified": true,
+          "releaseEvidenceSHA": "c670005cac12db182fc1c355313bebb1be3114b6fb5a133f1b29a8f2a410ca78",
+          "files": [
+            {
+              "id": "NS-R24-30-S1.pdf",
+              "fmt": "pdf",
+              "title": "공통수학2 고난도 이용권 벌 07 벌 5(PASS-공수2고난도07) · S1 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S1 벌"
+            },
+            {
+              "id": "NS-R24-30-S2.pdf",
+              "fmt": "pdf",
+              "title": "공통수학2 고난도 이용권 벌 07 벌 5(PASS-공수2고난도07) · S2 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S2 벌"
+            },
+            {
+              "id": "NS-R24-30-S3.pdf",
+              "fmt": "pdf",
+              "title": "공통수학2 고난도 이용권 벌 07 벌 5(PASS-공수2고난도07) · S3 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S3 벌"
+            },
+            {
+              "id": "NS-R24-30-S4.pdf",
+              "fmt": "pdf",
+              "title": "공통수학2 고난도 이용권 벌 07 벌 5(PASS-공수2고난도07) · S4 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S4 벌"
+            },
+            {
+              "id": "NS-R24-30-S5.pdf",
+              "fmt": "pdf",
+              "title": "공통수학2 고난도 이용권 벌 07 벌 5(PASS-공수2고난도07) · S5 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S5 벌"
+            },
+            {
+              "id": "NS-R24-30-S1.hwpx",
+              "fmt": "hwpx",
+              "title": "공통수학2 고난도 이용권 벌 07 벌 5(PASS-공수2고난도07) · S1 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S1 벌"
+            },
+            {
+              "id": "NS-R24-30-S2.hwpx",
+              "fmt": "hwpx",
+              "title": "공통수학2 고난도 이용권 벌 07 벌 5(PASS-공수2고난도07) · S2 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S2 벌"
+            },
+            {
+              "id": "NS-R24-30-S3.hwpx",
+              "fmt": "hwpx",
+              "title": "공통수학2 고난도 이용권 벌 07 벌 5(PASS-공수2고난도07) · S3 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S3 벌"
+            },
+            {
+              "id": "NS-R24-30-S4.hwpx",
+              "fmt": "hwpx",
+              "title": "공통수학2 고난도 이용권 벌 07 벌 5(PASS-공수2고난도07) · S4 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S4 벌"
+            },
+            {
+              "id": "NS-R24-30-S5.hwpx",
+              "fmt": "hwpx",
+              "title": "공통수학2 고난도 이용권 벌 07 벌 5(PASS-공수2고난도07) · S5 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S5 벌"
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
+        },
+        {
+          "sku": "NS-R24-35",
+          "no": "06",
+          "major": "",
+          "unit": "함수",
+          "name": "공통수학2 공수2 단원 문제집 2권 06 2권",
+          "edition": "2권",
+          "composition": "C1",
+          "textbook": null,
+          "count": 39,
+          "pages": null,
+          "price": {
+            "pdf": 1600,
+            "hwpx": 3200
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-24T00:00:00+09:00",
+          "saleTo": null,
+          "sample": null,
+          "releaseVerified": true,
+          "releaseEvidenceSHA": "89805798d79db559e6f88c35822907768e4ce4f2c0435fd548b0cf53a9257bef",
+          "files": [
+            {
+              "id": "NS-R24-35-L1.pdf",
+              "fmt": "pdf",
+              "title": "공통수학2 공수2 단원 문제집 2권 06 2권 · L1 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-35-L2.pdf",
+              "fmt": "pdf",
+              "title": "공통수학2 공수2 단원 문제집 2권 06 2권 · L2 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-35-L4.pdf",
+              "fmt": "pdf",
+              "title": "공통수학2 공수2 단원 문제집 2권 06 2권 · L4 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            },
+            {
+              "id": "NS-R24-35-L1.hwpx",
+              "fmt": "hwpx",
+              "title": "공통수학2 공수2 단원 문제집 2권 06 2권 · L1 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-35-L2.hwpx",
+              "fmt": "hwpx",
+              "title": "공통수학2 공수2 단원 문제집 2권 06 2권 · L2 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-35-L4.hwpx",
+              "fmt": "hwpx",
+              "title": "공통수학2 공수2 단원 문제집 2권 06 2권 · L4 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
+        },
+        {
+          "sku": "NS-R24-36",
+          "no": "07",
+          "major": "",
+          "unit": "유리함수와 무리함수",
+          "name": "공통수학2 공수2 단원 문제집 2권 07 2권",
+          "edition": "2권",
+          "composition": "C1",
+          "textbook": null,
+          "count": 35,
+          "pages": null,
+          "price": {
+            "pdf": 1500,
+            "hwpx": 3000
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-24T00:00:00+09:00",
+          "saleTo": null,
+          "sample": null,
+          "releaseVerified": true,
+          "releaseEvidenceSHA": "02a89eb4d173783471880b6eed3d70b5d89ba89b7ab5ca962000e16903ef2d9c",
+          "files": [
+            {
+              "id": "NS-R24-36-L1.pdf",
+              "fmt": "pdf",
+              "title": "공통수학2 공수2 단원 문제집 2권 07 2권 · L1 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-36-L2.pdf",
+              "fmt": "pdf",
+              "title": "공통수학2 공수2 단원 문제집 2권 07 2권 · L2 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-36-L4.pdf",
+              "fmt": "pdf",
+              "title": "공통수학2 공수2 단원 문제집 2권 07 2권 · L4 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            },
+            {
+              "id": "NS-R24-36-L1.hwpx",
+              "fmt": "hwpx",
+              "title": "공통수학2 공수2 단원 문제집 2권 07 2권 · L1 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-36-L2.hwpx",
+              "fmt": "hwpx",
+              "title": "공통수학2 공수2 단원 문제집 2권 07 2권 · L2 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-36-L4.hwpx",
+              "fmt": "hwpx",
+              "title": "공통수학2 공수2 단원 문제집 2권 07 2권 · L4 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
         }
       ]
     },
@@ -282,6 +842,1974 @@
               "from": "2026-11-19T08:44:00+09:00",
               "layout": "4문항 2단",
               "pages": 32
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
+        }
+      ]
+    },
+    {
+      "subject": "기하",
+      "code": "GEO",
+      "grade": "고2",
+      "textbooks": [],
+      "units": [
+        {
+          "sku": "NS-R24-01",
+          "no": "01",
+          "major": "",
+          "unit": "이차곡선",
+          "name": "기하(쎈) 쎈 기하 01 기초편",
+          "edition": "기초편",
+          "composition": "C1",
+          "textbook": null,
+          "count": 29,
+          "pages": null,
+          "price": {
+            "pdf": 1200,
+            "hwpx": 2400
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-24T00:00:00+09:00",
+          "saleTo": null,
+          "sample": null,
+          "releaseVerified": true,
+          "releaseEvidenceSHA": "af5bcdc5005b32859f1c03bdb23ad661dcda51b9653fdd58ca11bdd54cba291c",
+          "files": [
+            {
+              "id": "NS-R24-01-L1.pdf",
+              "fmt": "pdf",
+              "title": "기하(쎈) 쎈 기하 01 기초편 · L1 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-01-L2.pdf",
+              "fmt": "pdf",
+              "title": "기하(쎈) 쎈 기하 01 기초편 · L2 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-01-L4.pdf",
+              "fmt": "pdf",
+              "title": "기하(쎈) 쎈 기하 01 기초편 · L4 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            },
+            {
+              "id": "NS-R24-01-L1.hwpx",
+              "fmt": "hwpx",
+              "title": "기하(쎈) 쎈 기하 01 기초편 · L1 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-01-L2.hwpx",
+              "fmt": "hwpx",
+              "title": "기하(쎈) 쎈 기하 01 기초편 · L2 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-01-L4.hwpx",
+              "fmt": "hwpx",
+              "title": "기하(쎈) 쎈 기하 01 기초편 · L4 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
+        },
+        {
+          "sku": "NS-R24-02",
+          "no": "01",
+          "major": "",
+          "unit": "이차곡선",
+          "name": "기하(쎈) 쎈 기하 01 1권",
+          "edition": "1권",
+          "composition": "C1",
+          "textbook": null,
+          "count": 99,
+          "pages": null,
+          "price": {
+            "pdf": 4200,
+            "hwpx": 8400
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-24T00:00:00+09:00",
+          "saleTo": null,
+          "sample": null,
+          "releaseVerified": true,
+          "releaseEvidenceSHA": "3074646cb121943ae60b7bbbc071c8ed2c192a5b2999f2f6308caade93c6c330",
+          "files": [
+            {
+              "id": "NS-R24-02-L1.pdf",
+              "fmt": "pdf",
+              "title": "기하(쎈) 쎈 기하 01 1권 · L1 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-02-L2.pdf",
+              "fmt": "pdf",
+              "title": "기하(쎈) 쎈 기하 01 1권 · L2 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-02-L4.pdf",
+              "fmt": "pdf",
+              "title": "기하(쎈) 쎈 기하 01 1권 · L4 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            },
+            {
+              "id": "NS-R24-02-L1.hwpx",
+              "fmt": "hwpx",
+              "title": "기하(쎈) 쎈 기하 01 1권 · L1 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-02-L2.hwpx",
+              "fmt": "hwpx",
+              "title": "기하(쎈) 쎈 기하 01 1권 · L2 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-02-L4.hwpx",
+              "fmt": "hwpx",
+              "title": "기하(쎈) 쎈 기하 01 1권 · L4 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
+        },
+        {
+          "sku": "NS-R24-03",
+          "no": "02",
+          "major": "",
+          "unit": "이차곡선과 직선",
+          "name": "기하(쎈) 쎈 기하 02 기초편",
+          "edition": "기초편",
+          "composition": "C1",
+          "textbook": null,
+          "count": 15,
+          "pages": null,
+          "price": {
+            "pdf": 600,
+            "hwpx": 1200
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-24T00:00:00+09:00",
+          "saleTo": null,
+          "sample": null,
+          "releaseVerified": true,
+          "releaseEvidenceSHA": "2530fa8f693bbfc5087b1ba689fdb627a53c6acbf0843e6a9a11139aa9c11869",
+          "files": [
+            {
+              "id": "NS-R24-03-L1.pdf",
+              "fmt": "pdf",
+              "title": "기하(쎈) 쎈 기하 02 기초편 · L1 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-03-L2.pdf",
+              "fmt": "pdf",
+              "title": "기하(쎈) 쎈 기하 02 기초편 · L2 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-03-L4.pdf",
+              "fmt": "pdf",
+              "title": "기하(쎈) 쎈 기하 02 기초편 · L4 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            },
+            {
+              "id": "NS-R24-03-L1.hwpx",
+              "fmt": "hwpx",
+              "title": "기하(쎈) 쎈 기하 02 기초편 · L1 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-03-L2.hwpx",
+              "fmt": "hwpx",
+              "title": "기하(쎈) 쎈 기하 02 기초편 · L2 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-03-L4.hwpx",
+              "fmt": "hwpx",
+              "title": "기하(쎈) 쎈 기하 02 기초편 · L4 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
+        },
+        {
+          "sku": "NS-R24-04",
+          "no": "02",
+          "major": "",
+          "unit": "이차곡선과 직선",
+          "name": "기하(쎈) 쎈 기하 02 1권",
+          "edition": "1권",
+          "composition": "C1",
+          "textbook": null,
+          "count": 92,
+          "pages": null,
+          "price": {
+            "pdf": 3900,
+            "hwpx": 7800
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-24T00:00:00+09:00",
+          "saleTo": null,
+          "sample": null,
+          "releaseVerified": true,
+          "releaseEvidenceSHA": "f1f3daeffab2a348c00228be575a18f4f1a0d52a8cfd55428ed6dae172146133",
+          "files": [
+            {
+              "id": "NS-R24-04-L1.pdf",
+              "fmt": "pdf",
+              "title": "기하(쎈) 쎈 기하 02 1권 · L1 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-04-L2.pdf",
+              "fmt": "pdf",
+              "title": "기하(쎈) 쎈 기하 02 1권 · L2 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-04-L4.pdf",
+              "fmt": "pdf",
+              "title": "기하(쎈) 쎈 기하 02 1권 · L4 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            },
+            {
+              "id": "NS-R24-04-L1.hwpx",
+              "fmt": "hwpx",
+              "title": "기하(쎈) 쎈 기하 02 1권 · L1 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-04-L2.hwpx",
+              "fmt": "hwpx",
+              "title": "기하(쎈) 쎈 기하 02 1권 · L2 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-04-L4.hwpx",
+              "fmt": "hwpx",
+              "title": "기하(쎈) 쎈 기하 02 1권 · L4 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
+        },
+        {
+          "sku": "NS-R24-05",
+          "no": "03",
+          "major": "",
+          "unit": "벡터의 연산",
+          "name": "기하(쎈) 쎈 기하 03 기초편",
+          "edition": "기초편",
+          "composition": "C1",
+          "textbook": null,
+          "count": 20,
+          "pages": null,
+          "price": {
+            "pdf": 800,
+            "hwpx": 1600
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-24T00:00:00+09:00",
+          "saleTo": null,
+          "sample": null,
+          "releaseVerified": true,
+          "releaseEvidenceSHA": "936a5a4df298f02679146025eff600fba4fe6e92580c04e609873549b606ec57",
+          "files": [
+            {
+              "id": "NS-R24-05-L1.pdf",
+              "fmt": "pdf",
+              "title": "기하(쎈) 쎈 기하 03 기초편 · L1 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-05-L2.pdf",
+              "fmt": "pdf",
+              "title": "기하(쎈) 쎈 기하 03 기초편 · L2 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-05-L4.pdf",
+              "fmt": "pdf",
+              "title": "기하(쎈) 쎈 기하 03 기초편 · L4 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            },
+            {
+              "id": "NS-R24-05-L1.hwpx",
+              "fmt": "hwpx",
+              "title": "기하(쎈) 쎈 기하 03 기초편 · L1 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-05-L2.hwpx",
+              "fmt": "hwpx",
+              "title": "기하(쎈) 쎈 기하 03 기초편 · L2 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-05-L4.hwpx",
+              "fmt": "hwpx",
+              "title": "기하(쎈) 쎈 기하 03 기초편 · L4 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
+        },
+        {
+          "sku": "NS-R24-06",
+          "no": "03",
+          "major": "",
+          "unit": "벡터의 연산",
+          "name": "기하(쎈) 쎈 기하 03 1권",
+          "edition": "1권",
+          "composition": "C1",
+          "textbook": null,
+          "count": 54,
+          "pages": null,
+          "price": {
+            "pdf": 2300,
+            "hwpx": 4600
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-24T00:00:00+09:00",
+          "saleTo": null,
+          "sample": null,
+          "releaseVerified": true,
+          "releaseEvidenceSHA": "1b596d48118641bd9dc89c1aef8853ae130d6ef7241021d9dc368019249e7457",
+          "files": [
+            {
+              "id": "NS-R24-06-L1.pdf",
+              "fmt": "pdf",
+              "title": "기하(쎈) 쎈 기하 03 1권 · L1 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-06-L2.pdf",
+              "fmt": "pdf",
+              "title": "기하(쎈) 쎈 기하 03 1권 · L2 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-06-L4.pdf",
+              "fmt": "pdf",
+              "title": "기하(쎈) 쎈 기하 03 1권 · L4 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            },
+            {
+              "id": "NS-R24-06-L1.hwpx",
+              "fmt": "hwpx",
+              "title": "기하(쎈) 쎈 기하 03 1권 · L1 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-06-L2.hwpx",
+              "fmt": "hwpx",
+              "title": "기하(쎈) 쎈 기하 03 1권 · L2 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-06-L4.hwpx",
+              "fmt": "hwpx",
+              "title": "기하(쎈) 쎈 기하 03 1권 · L4 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
+        },
+        {
+          "sku": "NS-R24-07",
+          "no": "04",
+          "major": "",
+          "unit": "평면벡터의 성분과 내적",
+          "name": "기하(쎈) 쎈 기하 04 기초편",
+          "edition": "기초편",
+          "composition": "C1",
+          "textbook": null,
+          "count": 46,
+          "pages": null,
+          "price": {
+            "pdf": 1900,
+            "hwpx": 3800
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-24T00:00:00+09:00",
+          "saleTo": null,
+          "sample": null,
+          "releaseVerified": true,
+          "releaseEvidenceSHA": "18163c6e57050981f940dcb15fb606378b87c08633b4e33145603c90acb63539",
+          "files": [
+            {
+              "id": "NS-R24-07-L1.pdf",
+              "fmt": "pdf",
+              "title": "기하(쎈) 쎈 기하 04 기초편 · L1 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-07-L2.pdf",
+              "fmt": "pdf",
+              "title": "기하(쎈) 쎈 기하 04 기초편 · L2 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-07-L4.pdf",
+              "fmt": "pdf",
+              "title": "기하(쎈) 쎈 기하 04 기초편 · L4 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            },
+            {
+              "id": "NS-R24-07-L1.hwpx",
+              "fmt": "hwpx",
+              "title": "기하(쎈) 쎈 기하 04 기초편 · L1 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-07-L2.hwpx",
+              "fmt": "hwpx",
+              "title": "기하(쎈) 쎈 기하 04 기초편 · L2 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-07-L4.hwpx",
+              "fmt": "hwpx",
+              "title": "기하(쎈) 쎈 기하 04 기초편 · L4 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
+        },
+        {
+          "sku": "NS-R24-08",
+          "no": "04",
+          "major": "",
+          "unit": "평면벡터의 성분과 내적",
+          "name": "기하(쎈) 쎈 기하 04 1권",
+          "edition": "1권",
+          "composition": "C1",
+          "textbook": null,
+          "count": 105,
+          "pages": null,
+          "price": {
+            "pdf": 4400,
+            "hwpx": 8800
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-24T00:00:00+09:00",
+          "saleTo": null,
+          "sample": null,
+          "releaseVerified": true,
+          "releaseEvidenceSHA": "42a4fac45910a90392c48678ed0345a9eff1e0f83734a4fa6f36f73521e19148",
+          "files": [
+            {
+              "id": "NS-R24-08-L1.pdf",
+              "fmt": "pdf",
+              "title": "기하(쎈) 쎈 기하 04 1권 · L1 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-08-L2.pdf",
+              "fmt": "pdf",
+              "title": "기하(쎈) 쎈 기하 04 1권 · L2 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-08-L4.pdf",
+              "fmt": "pdf",
+              "title": "기하(쎈) 쎈 기하 04 1권 · L4 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            },
+            {
+              "id": "NS-R24-08-L1.hwpx",
+              "fmt": "hwpx",
+              "title": "기하(쎈) 쎈 기하 04 1권 · L1 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-08-L2.hwpx",
+              "fmt": "hwpx",
+              "title": "기하(쎈) 쎈 기하 04 1권 · L2 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-08-L4.hwpx",
+              "fmt": "hwpx",
+              "title": "기하(쎈) 쎈 기하 04 1권 · L4 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
+        },
+        {
+          "sku": "NS-R24-09",
+          "no": "05",
+          "major": "",
+          "unit": "공간도형",
+          "name": "기하(쎈) 쎈 기하 05 기초편",
+          "edition": "기초편",
+          "composition": "C1",
+          "textbook": null,
+          "count": 10,
+          "pages": null,
+          "price": {
+            "pdf": 400,
+            "hwpx": 800
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-24T00:00:00+09:00",
+          "saleTo": null,
+          "sample": null,
+          "releaseVerified": true,
+          "releaseEvidenceSHA": "8e25a9e0a43ae475b6928844c8409feed82aea10a31ac308159efdfdb7264e67",
+          "files": [
+            {
+              "id": "NS-R24-09-L1.pdf",
+              "fmt": "pdf",
+              "title": "기하(쎈) 쎈 기하 05 기초편 · L1 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-09-L2.pdf",
+              "fmt": "pdf",
+              "title": "기하(쎈) 쎈 기하 05 기초편 · L2 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-09-L4.pdf",
+              "fmt": "pdf",
+              "title": "기하(쎈) 쎈 기하 05 기초편 · L4 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            },
+            {
+              "id": "NS-R24-09-L1.hwpx",
+              "fmt": "hwpx",
+              "title": "기하(쎈) 쎈 기하 05 기초편 · L1 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-09-L2.hwpx",
+              "fmt": "hwpx",
+              "title": "기하(쎈) 쎈 기하 05 기초편 · L2 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-09-L4.hwpx",
+              "fmt": "hwpx",
+              "title": "기하(쎈) 쎈 기하 05 기초편 · L4 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
+        },
+        {
+          "sku": "NS-R24-10",
+          "no": "05",
+          "major": "",
+          "unit": "공간도형",
+          "name": "기하(쎈) 쎈 기하 05 1권",
+          "edition": "1권",
+          "composition": "C1",
+          "textbook": null,
+          "count": 78,
+          "pages": null,
+          "price": {
+            "pdf": 3300,
+            "hwpx": 6600
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-24T00:00:00+09:00",
+          "saleTo": null,
+          "sample": null,
+          "releaseVerified": true,
+          "releaseEvidenceSHA": "d90a4b4c4d7112e7a0af4fb0f4fb374a9aa4c1905f00a0e2fa9e89947c2b3f4c",
+          "files": [
+            {
+              "id": "NS-R24-10-L1.pdf",
+              "fmt": "pdf",
+              "title": "기하(쎈) 쎈 기하 05 1권 · L1 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-10-L2.pdf",
+              "fmt": "pdf",
+              "title": "기하(쎈) 쎈 기하 05 1권 · L2 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-10-L4.pdf",
+              "fmt": "pdf",
+              "title": "기하(쎈) 쎈 기하 05 1권 · L4 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            },
+            {
+              "id": "NS-R24-10-L1.hwpx",
+              "fmt": "hwpx",
+              "title": "기하(쎈) 쎈 기하 05 1권 · L1 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-10-L2.hwpx",
+              "fmt": "hwpx",
+              "title": "기하(쎈) 쎈 기하 05 1권 · L2 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-10-L4.hwpx",
+              "fmt": "hwpx",
+              "title": "기하(쎈) 쎈 기하 05 1권 · L4 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
+        },
+        {
+          "sku": "NS-R24-11",
+          "no": "06",
+          "major": "",
+          "unit": "공간좌표",
+          "name": "기하(쎈) 쎈 기하 06 기초편",
+          "edition": "기초편",
+          "composition": "C1",
+          "textbook": null,
+          "count": 17,
+          "pages": null,
+          "price": {
+            "pdf": 700,
+            "hwpx": 1400
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-24T00:00:00+09:00",
+          "saleTo": null,
+          "sample": null,
+          "releaseVerified": true,
+          "releaseEvidenceSHA": "aa17e1dfcf6f7606db2772eb64c686078d85ceba7045cffd2d453fcba11e60da",
+          "files": [
+            {
+              "id": "NS-R24-11-L1.pdf",
+              "fmt": "pdf",
+              "title": "기하(쎈) 쎈 기하 06 기초편 · L1 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-11-L2.pdf",
+              "fmt": "pdf",
+              "title": "기하(쎈) 쎈 기하 06 기초편 · L2 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-11-L4.pdf",
+              "fmt": "pdf",
+              "title": "기하(쎈) 쎈 기하 06 기초편 · L4 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            },
+            {
+              "id": "NS-R24-11-L1.hwpx",
+              "fmt": "hwpx",
+              "title": "기하(쎈) 쎈 기하 06 기초편 · L1 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-11-L2.hwpx",
+              "fmt": "hwpx",
+              "title": "기하(쎈) 쎈 기하 06 기초편 · L2 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-11-L4.hwpx",
+              "fmt": "hwpx",
+              "title": "기하(쎈) 쎈 기하 06 기초편 · L4 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
+        },
+        {
+          "sku": "NS-R24-12",
+          "no": "06",
+          "major": "",
+          "unit": "공간좌표",
+          "name": "기하(쎈) 쎈 기하 06 1권",
+          "edition": "1권",
+          "composition": "C1",
+          "textbook": null,
+          "count": 98,
+          "pages": null,
+          "price": {
+            "pdf": 4100,
+            "hwpx": 8200
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-24T00:00:00+09:00",
+          "saleTo": null,
+          "sample": null,
+          "releaseVerified": true,
+          "releaseEvidenceSHA": "077643fbf0a9816ac0488da651ffe43c676c54b5df1b08e649e9b92328e89bba",
+          "files": [
+            {
+              "id": "NS-R24-12-L1.pdf",
+              "fmt": "pdf",
+              "title": "기하(쎈) 쎈 기하 06 1권 · L1 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-12-L2.pdf",
+              "fmt": "pdf",
+              "title": "기하(쎈) 쎈 기하 06 1권 · L2 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-12-L4.pdf",
+              "fmt": "pdf",
+              "title": "기하(쎈) 쎈 기하 06 1권 · L4 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            },
+            {
+              "id": "NS-R24-12-L1.hwpx",
+              "fmt": "hwpx",
+              "title": "기하(쎈) 쎈 기하 06 1권 · L1 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-12-L2.hwpx",
+              "fmt": "hwpx",
+              "title": "기하(쎈) 쎈 기하 06 1권 · L2 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-12-L4.hwpx",
+              "fmt": "hwpx",
+              "title": "기하(쎈) 쎈 기하 06 1권 · L4 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
+        }
+      ]
+    },
+    {
+      "subject": "확률과 통계",
+      "code": "PNC",
+      "grade": "고2",
+      "textbooks": [],
+      "units": [
+        {
+          "sku": "NS-R24-13",
+          "no": "04",
+          "major": "",
+          "unit": "확률분포",
+          "name": "확률과통계 확통 유형편 04 기초편",
+          "edition": "기초편",
+          "composition": "C1",
+          "textbook": null,
+          "count": 78,
+          "pages": null,
+          "price": {
+            "pdf": 3300,
+            "hwpx": 6600
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-24T00:00:00+09:00",
+          "saleTo": null,
+          "sample": null,
+          "releaseVerified": true,
+          "releaseEvidenceSHA": "f01dfadf2b588c20b4c52f95779ffcdde3a32e5440697096e9e7f0489fa29d2c",
+          "files": [
+            {
+              "id": "NS-R24-13-L1.pdf",
+              "fmt": "pdf",
+              "title": "확률과통계 확통 유형편 04 기초편 · L1 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-13-L2.pdf",
+              "fmt": "pdf",
+              "title": "확률과통계 확통 유형편 04 기초편 · L2 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-13-L4.pdf",
+              "fmt": "pdf",
+              "title": "확률과통계 확통 유형편 04 기초편 · L4 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            },
+            {
+              "id": "NS-R24-13-L1.hwpx",
+              "fmt": "hwpx",
+              "title": "확률과통계 확통 유형편 04 기초편 · L1 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-13-L2.hwpx",
+              "fmt": "hwpx",
+              "title": "확률과통계 확통 유형편 04 기초편 · L2 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-13-L4.hwpx",
+              "fmt": "hwpx",
+              "title": "확률과통계 확통 유형편 04 기초편 · L4 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
+        },
+        {
+          "sku": "NS-R24-14",
+          "no": "04",
+          "major": "",
+          "unit": "확률분포",
+          "name": "확률과통계 확통 유형편 04 1권",
+          "edition": "1권",
+          "composition": "C1",
+          "textbook": null,
+          "count": 73,
+          "pages": null,
+          "price": {
+            "pdf": 3100,
+            "hwpx": 6200
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-24T00:00:00+09:00",
+          "saleTo": null,
+          "sample": null,
+          "releaseVerified": true,
+          "releaseEvidenceSHA": "89057936064de5261a320b27a43b43ea63ddef6d1083073790a838c1e1eafb46",
+          "files": [
+            {
+              "id": "NS-R24-14-L1.pdf",
+              "fmt": "pdf",
+              "title": "확률과통계 확통 유형편 04 1권 · L1 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-14-L2.pdf",
+              "fmt": "pdf",
+              "title": "확률과통계 확통 유형편 04 1권 · L2 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-14-L4.pdf",
+              "fmt": "pdf",
+              "title": "확률과통계 확통 유형편 04 1권 · L4 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            },
+            {
+              "id": "NS-R24-14-L1.hwpx",
+              "fmt": "hwpx",
+              "title": "확률과통계 확통 유형편 04 1권 · L1 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-14-L2.hwpx",
+              "fmt": "hwpx",
+              "title": "확률과통계 확통 유형편 04 1권 · L2 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-14-L4.hwpx",
+              "fmt": "hwpx",
+              "title": "확률과통계 확통 유형편 04 1권 · L4 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
+        },
+        {
+          "sku": "NS-R24-31",
+          "no": "03",
+          "major": "",
+          "unit": "03 단원",
+          "name": "확률과통계 확통 유형편 03 1권",
+          "edition": "1권",
+          "composition": "C1",
+          "textbook": null,
+          "count": 53,
+          "pages": null,
+          "price": {
+            "pdf": 2200,
+            "hwpx": 4400
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-24T00:00:00+09:00",
+          "saleTo": null,
+          "sample": null,
+          "releaseVerified": true,
+          "releaseEvidenceSHA": "0fe1cc9b7a225eb8afbb397032eb388aef59489fa8b4425c417dfc7d18ab2019",
+          "files": [
+            {
+              "id": "NS-R24-31-L1.pdf",
+              "fmt": "pdf",
+              "title": "확률과통계 확통 유형편 03 1권 · L1 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-31-L2.pdf",
+              "fmt": "pdf",
+              "title": "확률과통계 확통 유형편 03 1권 · L2 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-31-L4.pdf",
+              "fmt": "pdf",
+              "title": "확률과통계 확통 유형편 03 1권 · L4 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            },
+            {
+              "id": "NS-R24-31-L1.hwpx",
+              "fmt": "hwpx",
+              "title": "확률과통계 확통 유형편 03 1권 · L1 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-31-L2.hwpx",
+              "fmt": "hwpx",
+              "title": "확률과통계 확통 유형편 03 1권 · L2 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-31-L4.hwpx",
+              "fmt": "hwpx",
+              "title": "확률과통계 확통 유형편 03 1권 · L4 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
+        },
+        {
+          "sku": "NS-R24-32",
+          "no": "01",
+          "major": "",
+          "unit": "01 단원",
+          "name": "확률과통계 확통 유형편 01 기초편",
+          "edition": "기초편",
+          "composition": "C1",
+          "textbook": null,
+          "count": 42,
+          "pages": null,
+          "price": {
+            "pdf": 1800,
+            "hwpx": 3600
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-24T00:00:00+09:00",
+          "saleTo": null,
+          "sample": null,
+          "releaseVerified": true,
+          "releaseEvidenceSHA": "174773d32581a69b6d1066168e11a5fdec0b690c7b9261938c5f3948175ac6c6",
+          "files": [
+            {
+              "id": "NS-R24-32-L1.pdf",
+              "fmt": "pdf",
+              "title": "확률과통계 확통 유형편 01 기초편 · L1 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-32-L2.pdf",
+              "fmt": "pdf",
+              "title": "확률과통계 확통 유형편 01 기초편 · L2 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-32-L4.pdf",
+              "fmt": "pdf",
+              "title": "확률과통계 확통 유형편 01 기초편 · L4 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            },
+            {
+              "id": "NS-R24-32-L1.hwpx",
+              "fmt": "hwpx",
+              "title": "확률과통계 확통 유형편 01 기초편 · L1 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-32-L2.hwpx",
+              "fmt": "hwpx",
+              "title": "확률과통계 확통 유형편 01 기초편 · L2 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-32-L4.hwpx",
+              "fmt": "hwpx",
+              "title": "확률과통계 확통 유형편 01 기초편 · L4 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
+        },
+        {
+          "sku": "NS-R24-33",
+          "no": "02",
+          "major": "",
+          "unit": "02 단원",
+          "name": "확률과통계 확통 유형편 02 기초편",
+          "edition": "기초편",
+          "composition": "C1",
+          "textbook": null,
+          "count": 30,
+          "pages": null,
+          "price": {
+            "pdf": 1300,
+            "hwpx": 2600
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-24T00:00:00+09:00",
+          "saleTo": null,
+          "sample": null,
+          "releaseVerified": true,
+          "releaseEvidenceSHA": "4269b1eb5dd5b797e004f82f6ff9d00c5162fcd04b0fbcdf0dbc0d3cfe3612cc",
+          "files": [
+            {
+              "id": "NS-R24-33-L1.pdf",
+              "fmt": "pdf",
+              "title": "확률과통계 확통 유형편 02 기초편 · L1 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-33-L2.pdf",
+              "fmt": "pdf",
+              "title": "확률과통계 확통 유형편 02 기초편 · L2 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-33-L4.pdf",
+              "fmt": "pdf",
+              "title": "확률과통계 확통 유형편 02 기초편 · L4 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            },
+            {
+              "id": "NS-R24-33-L1.hwpx",
+              "fmt": "hwpx",
+              "title": "확률과통계 확통 유형편 02 기초편 · L1 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-33-L2.hwpx",
+              "fmt": "hwpx",
+              "title": "확률과통계 확통 유형편 02 기초편 · L2 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-33-L4.hwpx",
+              "fmt": "hwpx",
+              "title": "확률과통계 확통 유형편 02 기초편 · L4 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
+        },
+        {
+          "sku": "NS-R24-34",
+          "no": "01",
+          "major": "",
+          "unit": "01 단원",
+          "name": "확률과통계 확통 유형편 01 1권",
+          "edition": "1권",
+          "composition": "C1",
+          "textbook": null,
+          "count": 72,
+          "pages": null,
+          "price": {
+            "pdf": 3000,
+            "hwpx": 6000
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-24T00:00:00+09:00",
+          "saleTo": null,
+          "sample": null,
+          "releaseVerified": true,
+          "releaseEvidenceSHA": "2d7fc2cdee111b49a421274714db86667c1e26d439b4727a3109cdcbb686d572",
+          "files": [
+            {
+              "id": "NS-R24-34-L1.pdf",
+              "fmt": "pdf",
+              "title": "확률과통계 확통 유형편 01 1권 · L1 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-34-L2.pdf",
+              "fmt": "pdf",
+              "title": "확률과통계 확통 유형편 01 1권 · L2 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-34-L4.pdf",
+              "fmt": "pdf",
+              "title": "확률과통계 확통 유형편 01 1권 · L4 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            },
+            {
+              "id": "NS-R24-34-L1.hwpx",
+              "fmt": "hwpx",
+              "title": "확률과통계 확통 유형편 01 1권 · L1 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-34-L2.hwpx",
+              "fmt": "hwpx",
+              "title": "확률과통계 확통 유형편 01 1권 · L2 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-34-L4.hwpx",
+              "fmt": "hwpx",
+              "title": "확률과통계 확통 유형편 01 1권 · L4 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
+        },
+        {
+          "sku": "NS-R24-39",
+          "no": "02",
+          "major": "",
+          "unit": "02 단원",
+          "name": "확률과통계 확통 유형편 02 1권",
+          "edition": "1권",
+          "composition": "C1",
+          "textbook": null,
+          "count": 53,
+          "pages": null,
+          "price": {
+            "pdf": 2200,
+            "hwpx": 4400
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-24T00:00:00+09:00",
+          "saleTo": null,
+          "sample": null,
+          "releaseVerified": true,
+          "releaseEvidenceSHA": "87f2e041dbcb9ae346d95051b4bb5a7b4e7973ac8737b08453d3d1e97ee7ddae",
+          "files": [
+            {
+              "id": "NS-R24-39-L1.pdf",
+              "fmt": "pdf",
+              "title": "확률과통계 확통 유형편 02 1권 · L1 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-39-L2.pdf",
+              "fmt": "pdf",
+              "title": "확률과통계 확통 유형편 02 1권 · L2 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-39-L4.pdf",
+              "fmt": "pdf",
+              "title": "확률과통계 확통 유형편 02 1권 · L4 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            },
+            {
+              "id": "NS-R24-39-L1.hwpx",
+              "fmt": "hwpx",
+              "title": "확률과통계 확통 유형편 02 1권 · L1 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-39-L2.hwpx",
+              "fmt": "hwpx",
+              "title": "확률과통계 확통 유형편 02 1권 · L2 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-39-L4.hwpx",
+              "fmt": "hwpx",
+              "title": "확률과통계 확통 유형편 02 1권 · L4 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
+        },
+        {
+          "sku": "NS-R24-40",
+          "no": "03",
+          "major": "",
+          "unit": "03 단원",
+          "name": "확률과통계 확통 유형편 03 기초편",
+          "edition": "기초편",
+          "composition": "C1",
+          "textbook": null,
+          "count": 43,
+          "pages": null,
+          "price": {
+            "pdf": 1800,
+            "hwpx": 3600
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-24T00:00:00+09:00",
+          "saleTo": null,
+          "sample": null,
+          "releaseVerified": true,
+          "releaseEvidenceSHA": "478b7bb3fb55d2e170b8ebf5dc3f339d6739e10171f025edde9a31c4adff19bb",
+          "files": [
+            {
+              "id": "NS-R24-40-L1.pdf",
+              "fmt": "pdf",
+              "title": "확률과통계 확통 유형편 03 기초편 · L1 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-40-L2.pdf",
+              "fmt": "pdf",
+              "title": "확률과통계 확통 유형편 03 기초편 · L2 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-40-L4.pdf",
+              "fmt": "pdf",
+              "title": "확률과통계 확통 유형편 03 기초편 · L4 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            },
+            {
+              "id": "NS-R24-40-L1.hwpx",
+              "fmt": "hwpx",
+              "title": "확률과통계 확통 유형편 03 기초편 · L1 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-40-L2.hwpx",
+              "fmt": "hwpx",
+              "title": "확률과통계 확통 유형편 03 기초편 · L2 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-40-L4.hwpx",
+              "fmt": "hwpx",
+              "title": "확률과통계 확통 유형편 03 기초편 · L4 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
+        }
+      ]
+    },
+    {
+      "subject": "미적분Ⅰ",
+      "code": "R24",
+      "grade": "고2",
+      "textbooks": [],
+      "units": [
+        {
+          "sku": "NS-R24-19",
+          "no": "04",
+          "major": "",
+          "unit": "도함수의 활용",
+          "name": "미적분Ⅰ 미적분Ⅰ 단원 문제집(B) 04 1권",
+          "edition": "1권",
+          "composition": "C1",
+          "textbook": null,
+          "count": 143,
+          "pages": null,
+          "price": {
+            "pdf": 6000,
+            "hwpx": 12000
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-24T00:00:00+09:00",
+          "saleTo": null,
+          "sample": null,
+          "releaseVerified": true,
+          "releaseEvidenceSHA": "e2a7effd587524514265cb7deef5db4f2c8bce90569c129590a7884b02d207c5",
+          "files": [
+            {
+              "id": "NS-R24-19-S1.pdf",
+              "fmt": "pdf",
+              "title": "미적분Ⅰ 미적분Ⅰ 단원 문제집(B) 04 1권 · S1 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S1 벌"
+            },
+            {
+              "id": "NS-R24-19-S2.pdf",
+              "fmt": "pdf",
+              "title": "미적분Ⅰ 미적분Ⅰ 단원 문제집(B) 04 1권 · S2 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S2 벌"
+            },
+            {
+              "id": "NS-R24-19-S3.pdf",
+              "fmt": "pdf",
+              "title": "미적분Ⅰ 미적분Ⅰ 단원 문제집(B) 04 1권 · S3 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S3 벌"
+            },
+            {
+              "id": "NS-R24-19-S1.hwpx",
+              "fmt": "hwpx",
+              "title": "미적분Ⅰ 미적분Ⅰ 단원 문제집(B) 04 1권 · S1 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S1 벌"
+            },
+            {
+              "id": "NS-R24-19-S2.hwpx",
+              "fmt": "hwpx",
+              "title": "미적분Ⅰ 미적분Ⅰ 단원 문제집(B) 04 1권 · S2 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S2 벌"
+            },
+            {
+              "id": "NS-R24-19-S3.hwpx",
+              "fmt": "hwpx",
+              "title": "미적분Ⅰ 미적분Ⅰ 단원 문제집(B) 04 1권 · S3 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S3 벌"
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
+        },
+        {
+          "sku": "NS-R24-20",
+          "no": "04",
+          "major": "",
+          "unit": "도함수의 활용",
+          "name": "미적분Ⅰ 미적분Ⅰ 단원 문제집(B) 04 기초편",
+          "edition": "기초편",
+          "composition": "C1",
+          "textbook": null,
+          "count": 56,
+          "pages": null,
+          "price": {
+            "pdf": 2400,
+            "hwpx": 4800
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-24T00:00:00+09:00",
+          "saleTo": null,
+          "sample": null,
+          "releaseVerified": true,
+          "releaseEvidenceSHA": "01fd414874e897a9fc1964c82f421645533993ea2f56b5ce9930ba4ba27633f0",
+          "files": [
+            {
+              "id": "NS-R24-20-S1.pdf",
+              "fmt": "pdf",
+              "title": "미적분Ⅰ 미적분Ⅰ 단원 문제집(B) 04 기초편 · S1 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S1 벌"
+            },
+            {
+              "id": "NS-R24-20-S2.pdf",
+              "fmt": "pdf",
+              "title": "미적분Ⅰ 미적분Ⅰ 단원 문제집(B) 04 기초편 · S2 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S2 벌"
+            },
+            {
+              "id": "NS-R24-20-S3.pdf",
+              "fmt": "pdf",
+              "title": "미적분Ⅰ 미적분Ⅰ 단원 문제집(B) 04 기초편 · S3 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S3 벌"
+            },
+            {
+              "id": "NS-R24-20-S1.hwpx",
+              "fmt": "hwpx",
+              "title": "미적분Ⅰ 미적분Ⅰ 단원 문제집(B) 04 기초편 · S1 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S1 벌"
+            },
+            {
+              "id": "NS-R24-20-S2.hwpx",
+              "fmt": "hwpx",
+              "title": "미적분Ⅰ 미적분Ⅰ 단원 문제집(B) 04 기초편 · S2 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S2 벌"
+            },
+            {
+              "id": "NS-R24-20-S3.hwpx",
+              "fmt": "hwpx",
+              "title": "미적분Ⅰ 미적분Ⅰ 단원 문제집(B) 04 기초편 · S3 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S3 벌"
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
+        },
+        {
+          "sku": "NS-R24-21",
+          "no": "05",
+          "major": "",
+          "unit": "부정적분과 정적분",
+          "name": "미적분Ⅰ 미적분Ⅰ 단원 문제집(B) 05 1권",
+          "edition": "1권",
+          "composition": "C1",
+          "textbook": null,
+          "count": 97,
+          "pages": null,
+          "price": {
+            "pdf": 4100,
+            "hwpx": 8200
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-24T00:00:00+09:00",
+          "saleTo": null,
+          "sample": null,
+          "releaseVerified": true,
+          "releaseEvidenceSHA": "209a5a51ca1e92ef9837bec44a56bfe8faf3421c1403745050fd58675169765b",
+          "files": [
+            {
+              "id": "NS-R24-21-S1.pdf",
+              "fmt": "pdf",
+              "title": "미적분Ⅰ 미적분Ⅰ 단원 문제집(B) 05 1권 · S1 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S1 벌"
+            },
+            {
+              "id": "NS-R24-21-S2.pdf",
+              "fmt": "pdf",
+              "title": "미적분Ⅰ 미적분Ⅰ 단원 문제집(B) 05 1권 · S2 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S2 벌"
+            },
+            {
+              "id": "NS-R24-21-S3.pdf",
+              "fmt": "pdf",
+              "title": "미적분Ⅰ 미적분Ⅰ 단원 문제집(B) 05 1권 · S3 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S3 벌"
+            },
+            {
+              "id": "NS-R24-21-S1.hwpx",
+              "fmt": "hwpx",
+              "title": "미적분Ⅰ 미적분Ⅰ 단원 문제집(B) 05 1권 · S1 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S1 벌"
+            },
+            {
+              "id": "NS-R24-21-S2.hwpx",
+              "fmt": "hwpx",
+              "title": "미적분Ⅰ 미적분Ⅰ 단원 문제집(B) 05 1권 · S2 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S2 벌"
+            },
+            {
+              "id": "NS-R24-21-S3.hwpx",
+              "fmt": "hwpx",
+              "title": "미적분Ⅰ 미적분Ⅰ 단원 문제집(B) 05 1권 · S3 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S3 벌"
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
+        },
+        {
+          "sku": "NS-R24-24",
+          "no": "04",
+          "major": "",
+          "unit": "도함수의 활용",
+          "name": "미적분Ⅰ 고난도 04 판매판(우리문항만)",
+          "edition": "고난도",
+          "composition": "C1",
+          "textbook": null,
+          "count": 327,
+          "pages": null,
+          "price": {
+            "pdf": 13700,
+            "hwpx": 27400
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-24T00:00:00+09:00",
+          "saleTo": null,
+          "sample": null,
+          "releaseVerified": true,
+          "releaseEvidenceSHA": "96ba0c3115abdafb3f774a8d7f7e2c4d5a48b94e2a845d5737f23ba0b82f8bb6",
+          "files": [
+            {
+              "id": "NS-R24-24-S1.pdf",
+              "fmt": "pdf",
+              "title": "미적분Ⅰ 고난도 04 판매판(우리문항만) · S1 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S1 벌"
+            },
+            {
+              "id": "NS-R24-24-S2.pdf",
+              "fmt": "pdf",
+              "title": "미적분Ⅰ 고난도 04 판매판(우리문항만) · S2 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S2 벌"
+            },
+            {
+              "id": "NS-R24-24-S3.pdf",
+              "fmt": "pdf",
+              "title": "미적분Ⅰ 고난도 04 판매판(우리문항만) · S3 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S3 벌"
+            },
+            {
+              "id": "NS-R24-24-S1.hwpx",
+              "fmt": "hwpx",
+              "title": "미적분Ⅰ 고난도 04 판매판(우리문항만) · S1 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S1 벌"
+            },
+            {
+              "id": "NS-R24-24-S2.hwpx",
+              "fmt": "hwpx",
+              "title": "미적분Ⅰ 고난도 04 판매판(우리문항만) · S2 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S2 벌"
+            },
+            {
+              "id": "NS-R24-24-S3.hwpx",
+              "fmt": "hwpx",
+              "title": "미적분Ⅰ 고난도 04 판매판(우리문항만) · S3 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S3 벌"
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
+        },
+        {
+          "sku": "NS-R24-26",
+          "no": "06",
+          "major": "",
+          "unit": "정적분의 활용",
+          "name": "미적분Ⅰ 고난도 06 판매판(우리문항만)",
+          "edition": "고난도",
+          "composition": "C1",
+          "textbook": null,
+          "count": 151,
+          "pages": null,
+          "price": {
+            "pdf": 6300,
+            "hwpx": 12600
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-24T00:00:00+09:00",
+          "saleTo": null,
+          "sample": null,
+          "releaseVerified": true,
+          "releaseEvidenceSHA": "67462449fecc3c447555fe0b6cc034cdb3c441f52842ef69dcd4549abebea3d1",
+          "files": [
+            {
+              "id": "NS-R24-26-S1.pdf",
+              "fmt": "pdf",
+              "title": "미적분Ⅰ 고난도 06 판매판(우리문항만) · S1 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S1 벌"
+            },
+            {
+              "id": "NS-R24-26-S2.pdf",
+              "fmt": "pdf",
+              "title": "미적분Ⅰ 고난도 06 판매판(우리문항만) · S2 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S2 벌"
+            },
+            {
+              "id": "NS-R24-26-S3.pdf",
+              "fmt": "pdf",
+              "title": "미적분Ⅰ 고난도 06 판매판(우리문항만) · S3 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S3 벌"
+            },
+            {
+              "id": "NS-R24-26-S1.hwpx",
+              "fmt": "hwpx",
+              "title": "미적분Ⅰ 고난도 06 판매판(우리문항만) · S1 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S1 벌"
+            },
+            {
+              "id": "NS-R24-26-S2.hwpx",
+              "fmt": "hwpx",
+              "title": "미적분Ⅰ 고난도 06 판매판(우리문항만) · S2 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S2 벌"
+            },
+            {
+              "id": "NS-R24-26-S3.hwpx",
+              "fmt": "hwpx",
+              "title": "미적분Ⅰ 고난도 06 판매판(우리문항만) · S3 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "S3 벌"
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
+        },
+        {
+          "sku": "NS-R24-37",
+          "no": "04",
+          "major": "",
+          "unit": "도함수의 활용",
+          "name": "미적분Ⅰ 미적분Ⅰ 단원 문제집 2권 04 2권",
+          "edition": "2권",
+          "composition": "C1",
+          "textbook": null,
+          "count": 53,
+          "pages": null,
+          "price": {
+            "pdf": 2200,
+            "hwpx": 4400
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-24T00:00:00+09:00",
+          "saleTo": null,
+          "sample": null,
+          "releaseVerified": true,
+          "releaseEvidenceSHA": "c7c38a4be0a4cbb507be31809495d39a03ba2f15e06df3690fe98aa0b3a22c40",
+          "files": [
+            {
+              "id": "NS-R24-37-L1.pdf",
+              "fmt": "pdf",
+              "title": "미적분Ⅰ 미적분Ⅰ 단원 문제집 2권 04 2권 · L1 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-37-L2.pdf",
+              "fmt": "pdf",
+              "title": "미적분Ⅰ 미적분Ⅰ 단원 문제집 2권 04 2권 · L2 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-37-L4.pdf",
+              "fmt": "pdf",
+              "title": "미적분Ⅰ 미적분Ⅰ 단원 문제집 2권 04 2권 · L4 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            },
+            {
+              "id": "NS-R24-37-L1.hwpx",
+              "fmt": "hwpx",
+              "title": "미적분Ⅰ 미적분Ⅰ 단원 문제집 2권 04 2권 · L1 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-37-L2.hwpx",
+              "fmt": "hwpx",
+              "title": "미적분Ⅰ 미적분Ⅰ 단원 문제집 2권 04 2권 · L2 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-37-L4.hwpx",
+              "fmt": "hwpx",
+              "title": "미적분Ⅰ 미적분Ⅰ 단원 문제집 2권 04 2권 · L4 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            }
+          ],
+          "types": [],
+          "items": [],
+          "packs": []
+        },
+        {
+          "sku": "NS-R24-38",
+          "no": "05",
+          "major": "",
+          "unit": "부정적분과 정적분",
+          "name": "미적분Ⅰ 미적분Ⅰ 단원 문제집 2권 05 2권",
+          "edition": "2권",
+          "composition": "C1",
+          "textbook": null,
+          "count": 39,
+          "pages": null,
+          "price": {
+            "pdf": 1600,
+            "hwpx": 3200
+          },
+          "taxFreeAmount": {
+            "pdf": 0,
+            "hwpx": 0
+          },
+          "saleFrom": "2026-11-24T00:00:00+09:00",
+          "saleTo": null,
+          "sample": null,
+          "releaseVerified": true,
+          "releaseEvidenceSHA": "356c74263df3b812f82e0533fc8f246b63fe15137966c32b18a6909e624164f2",
+          "files": [
+            {
+              "id": "NS-R24-38-L1.pdf",
+              "fmt": "pdf",
+              "title": "미적분Ⅰ 미적분Ⅰ 단원 문제집 2권 05 2권 · L1 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-38-L2.pdf",
+              "fmt": "pdf",
+              "title": "미적분Ⅰ 미적분Ⅰ 단원 문제집 2권 05 2권 · L2 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-38-L4.pdf",
+              "fmt": "pdf",
+              "title": "미적분Ⅰ 미적분Ⅰ 단원 문제집 2권 05 2권 · L4 (PDF)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
+            },
+            {
+              "id": "NS-R24-38-L1.hwpx",
+              "fmt": "hwpx",
+              "title": "미적분Ⅰ 미적분Ⅰ 단원 문제집 2권 05 2권 · L1 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "1문항 1쪽"
+            },
+            {
+              "id": "NS-R24-38-L2.hwpx",
+              "fmt": "hwpx",
+              "title": "미적분Ⅰ 미적분Ⅰ 단원 문제집 2권 05 2권 · L2 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "2문항 2단"
+            },
+            {
+              "id": "NS-R24-38-L4.hwpx",
+              "fmt": "hwpx",
+              "title": "미적분Ⅰ 미적분Ⅰ 단원 문제집 2권 05 2권 · L4 (한글)",
+              "from": "2026-11-24T00:00:00+09:00",
+              "layout": "4문항 2단"
             }
           ],
           "types": [],

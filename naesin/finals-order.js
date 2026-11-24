@@ -4,7 +4,7 @@
   const UNIT_SKU = /^(NS-[A-Z0-9]+-\d{2})\.(pdf|hwpx)$/;
   const MAX_UNITS = 3;
   const MAX_CHARGE = 59000;
-  const FULL_REFUND = "여러 권을 한 번에 결제한 주문도 받은 파일만 뺍니다. 환불액은 결제금액에서 받은 파일 값의 합(파일 하나 = 그 책 값의 3분의 1 · 원 아래 버림)을 뺀 금액입니다.";
+  const FULL_REFUND = "여러 권을 한 번에 결제한 주문도 받은 파일만 뺍니다. 환불액은 결제금액에서 받은 파일 값의 합(파일 하나 = 그 책 값을 제공 파일 수로 나눈 값 · 원 아래 버림)을 뺀 금액입니다.";
   const MULTI_DOWNLOAD = "내려받거나 열람한 파일은 청약철회가 제한되고, 받지 않은 파일 몫은 결제일부터 7일 안에 환불받을 수 있습니다.";
   const won = new Intl.NumberFormat("ko-KR");
   const money = amount => won.format(amount) + "원";
@@ -45,7 +45,7 @@
     const from = Date.parse(unit.saleFrom);
     const until = unit.saleTo ? Date.parse(unit.saleTo) : Infinity;
     return Number.isSafeInteger(price) && price > 0 && Number.isSafeInteger(tax) && tax >= 0 && tax <= price &&
-      now >= from && now < until && unit.sample && unit.files?.some(file => file.fmt === format) ? price : null;
+      now >= from && now < until && (unit.sample || unit.releaseVerified === true) && unit.files?.some(file => file.fmt === format) ? price : null;
   }
 
   function render(panel, items) {

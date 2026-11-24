@@ -294,7 +294,7 @@ function naesinP(c,sku){
   var u=null;((c&&c.subjects)||[]).forEach(function(s){(s.units||[]).forEach(function(x){if(x.sku===m[1])u=x;(x.items||[]).concat(x.packs||[]).forEach(function(i){if(i.sku===m[1])u=i;});});});
   if(!u)return null;
   var f=m[2],n=(u.files||[]).filter(function(x){return x.fmt===f;}).length,pr=u.price&&u.price[f];
-  if(!pr||!u.taxFreeAmount||u.taxFreeAmount[f]==null||!u.saleFrom||!u.sample||!n)return null; /* 맛보기(sample = 단원 무료 세트) 요구는 그대로 */
+  if(!pr||!u.taxFreeAmount||u.taxFreeAmount[f]==null||!u.saleFrom||(!u.sample&&u.releaseVerified!==true)||!n)return null; /* 맛보기(sample = 단원 무료 세트) 요구는 그대로 */
   var fn=f==="hwpx"?"한글(HWPX)":"PDF",fs=u.fileSets&&u.fileSets[f],cnt=fs&&fs.kind==="merged"&&n===1?fn+" 합본 1파일":fs&&fs.kind==="types"?fn+" 유형별 파일 "+n+"개":fn+" 파일 "+n+"개";
   return {noOrigClaim:(u.files||[]).some(function(x){return x.layout;}),name:u.name+(f==="hwpx"?" (한글)":" (PDF)"),price:pr,priceNote:"부가세 포함",comp:cnt+" · "+(u.kind?"":"단원 ")+"변형 문항",start:startText(n),only:fn+" 파일만 받습니다. "+(f==="hwpx"?"PDF는":"한글 파일은")+" 들어 있지 않습니다.",give:"결제 뒤 바로 내려받기",saleFrom:u.saleFrom,saleTo:u.saleTo||undefined,cards:(c.cards||[])};
 }
@@ -350,7 +350,7 @@ function showProduct(){
   if(P.cards&&P.cards.length)host.appendChild(el("p","hint","결제창에서 사용할 수 있는 카드가 표시됩니다.")); /* 라이브 계약 카드 확인 전에는 목록을 적지 않음 */
   var fx=el("div","fix");fx.innerHTML=cart?'<p>내려받거나 열람한 파일은 청약철회가 제한됩니다. <a href="/refund/">환불·청약철회 안내</a></p>':NS?FIX.replace("디지털콘텐츠(PDF)","디지털콘텐츠(고른 형식의 파일)").replace(P&&P.noOrigClaim?/<p>유료 PDF에는[^<]*<\/p>/:"유료 PDF에는",P&&P.noOrigClaim?"":"유료 파일에는"):FIX;host.appendChild(fx);
   $("pay").textContent=won(amount)+" 결제하기";
-  var s1=$("sum1");if(NS&&s1&&s1.firstChild&&s1.firstChild.nodeType===3)s1.firstChild.nodeValue=s1.firstChild.nodeValue.replace("받기 전이면 결제일부터 7일 안 전액 환불 · 일부 받았으면 받은 파일 값을 뺀 만큼 7일 안 환불 · 받은 파일은 청약철회 제한","받기 전이면 결제일부터 7일 안 전액 환불 · 일부 받았으면 결제금액에서 받은 파일 값(파일 하나 = 그 책 값의 3분의 1)을 뺀 만큼 7일 안 환불 · 받은 파일은 청약철회 제한"); /* 내신 환불 셈(받은 파일 값 = 책 값 ÷ 3) */
+  var s1=$("sum1");if(NS&&s1&&s1.firstChild&&s1.firstChild.nodeType===3)s1.firstChild.nodeValue=s1.firstChild.nodeValue.replace("받기 전이면 결제일부터 7일 안 전액 환불 · 일부 받았으면 받은 파일 값을 뺀 만큼 7일 안 환불 · 받은 파일은 청약철회 제한","받기 전이면 결제일부터 7일 안 전액 환불 · 일부 받았으면 결제금액에서 받은 파일 값(파일 하나 = 그 책 값을 제공 파일 수로 나눈 값)을 뺀 만큼 7일 안 환불 · 받은 파일은 청약철회 제한"); /* 내신 환불 셈(받은 파일 값 = 책 값 ÷ 3) */
   return true;
 }
 function okEmail(s){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);}
