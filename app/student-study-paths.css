@@ -96,3 +96,70 @@
 }
 
 .ssp-feedback [data-ssp-variant] {border-color:#9a7a50; color:#513a26; background:#faf2e3; font-weight:650}
+
+@media screen {
+  /* Keep the printed face level while the sheet edges cast shadows on the wood. */
+  .ssp-desk .ssp-body.ssil-live-paper {
+    border:1px solid #c4bcac;
+    border-top-color:#fffef9;
+    border-radius:1px 2px 3px 1px;
+    background:
+      linear-gradient(102deg, #c0aa851c, transparent 5%, #ffffff4a 40%, transparent 88%, #aa96741a),
+      url("assets/textures/dl63-paper-fiber.webp") left top / 210px auto,
+      #fcfaf4;
+    box-shadow:inset 1px 0 #fff, 1px 2px #fdfcf6, 1px 3px #b4ad9f,
+      3px 5px #f4f0e6, 3px 6px #aaa291, 3px 8px 5px #392a1721, 7px 15px 18px -7px #44321e55;
+    padding:clamp(23px,3vw,43px) clamp(19px,3.2vw,48px) 25px;
+  }
+  .ssp-desk .ssp-paper-top {border-bottom:3px double #686a62; color:#464840}
+  .ssp-desk .ssp-options label {
+    position:relative; background:transparent; border:1px solid transparent; border-radius:2px;
+    color:#262621; gap:7px; min-height:46px; padding:5px;
+  }
+  .ssp-desk .ssp-options label:has(input[type=radio]):hover {background:#a7987512}
+  .ssp-desk .ssp-options label:has(input[type=radio]:focus-visible) {outline:2px solid #506677; outline-offset:2px}
+  .ssp-desk .ssp-options input[type=radio] {position:absolute; width:1px; height:1px; opacity:0}
+  .ssp-desk .ssp-options .ssp-option-no {
+    display:inline-grid; place-items:center; width:1.35em; height:1.35em; flex:0 0 1.35em;
+    border:1px solid currentColor; border-radius:50%; font:14px/1 Georgia,serif;
+  }
+  .ssp-desk .ssp-options input:checked + .ssp-option-no {color:white; background:#334d60; border-color:#334d60}
+  .ssp-desk .ssp-options label:has(input:checked) {border-color:#8095a066; background:#71879a12}
+  .ssp-desk .ssp-desk-controls nav.ssp-desk-courses {display:grid; grid-template-columns:1fr; gap:5px; margin:0 0 17px}
+  .ssp-desk .ssp-desk-courses [data-ssp-course] {
+    display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:3px 6px;
+    position:relative; border:0; border-bottom:1px solid #0b17266b; border-radius:1px 4px 4px 1px;
+    min-height:44px; padding:8px 11px 8px 14px; color:#e9e7df; background:#243443;
+    box-shadow:inset 2px 0 #a39275, inset 0 1px #ffffff16;
+  }
+  .ssp-desk .ssp-desk-courses [data-ssp-course]::before {content:none}
+  .ssp-desk .ssp-desk-courses .ssp-course-name {font-size:15px; line-height:1.45}
+  .ssp-desk .ssp-desk-courses .ssp-course-goal {grid-column:2; margin:0; color:#d9c8ac; font-size:12px}
+  .ssp-desk .ssp-desk-courses .ssp-course-detail {display:none}
+  .ssp-desk .ssp-desk-courses [aria-pressed=true] {
+    color:#253342; background:#faf7ef url("assets/textures/dl63-paper-fiber.webp") center / 230px;
+    box-shadow:inset 4px 0 #ab7840, 1px 3px 4px #10192466;
+  }
+  .ssp-desk .ssp-desk-courses [aria-pressed=true] .ssp-course-goal {color:#785324}
+  .ssp-desk .ssp-desk-courses [aria-pressed=true] .ssp-course-detail {
+    display:block; grid-column:1/-1; color:#555952; font-size:13px; line-height:1.55; font-weight:400; word-break:keep-all;
+  }
+  .ssp-desk .ssp-desk-filters {border-top:1px solid #c8c0aa55; padding-top:5px}
+}
+
+/* Typeset only the surrounding Korean line. The pinned math font owns the glyph metrics. */
+.ssp-desk .ssp-paper {container-type:inline-size}
+.ssp-desk .ssp-paper .ssp-options:has([type=radio]) {grid-template-columns:repeat(5,minmax(0,1fr))}
+@container (max-width: 590px) {
+  .ssp-desk .ssp-paper .ssp-options:has([type=radio]) {grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@container (max-width: 420px) {
+  .ssp-desk .ssp-paper .ssp-options:has([type=radio]) {grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+.ssp-desk :is(.ssp-prompt,.ssp-concept-lesson p,.ssp-hint p,.ssp-solution li,.ssp-solution p) {
+  line-height:1.82; color:#232622;
+}
+.ssp-desk :is(.ssp-prompt,.ssp-concept-lesson p,.ssp-hint p,.ssp-solution li,.ssp-solution p):has(.wm23-tall,.mfrac,.mop.op-limits) {line-height:2.15}
+.ssp-desk .wm23-tall {display:inline-block; vertical-align:baseline; padding-block:.12em}
+.ssp-desk .ssp-solution .katex-display,.ssp-desk .ssp-solution .katex-display>.katex {text-align:left}
+.ssp-desk .ssp-solution .wm23-equation[data-display=block] {margin:.45em 0 .55em; padding-inline-start:1.1em}

@@ -20,7 +20,7 @@ const BANK=[
       "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mn>6</mn></mrow></math>"
     ],
     "answer": 2,
-    "hint": "분자와 분모의 x에 같은 수 3을 넣어 보세요.",
+    "hint": "분자와 분모의 <math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>x</mi></mrow></math>에 같은 수 3을 넣어 보세요.",
     "solution": [
       "분모가 0이 아닌지 먼저 확인한다.",
       "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>f</mi><mo stretchy=\"false\">(</mo><mn>3</mn><mo stretchy=\"false\">)</mo><mo>=</mo><mfrac><mrow><mn>8</mn></mrow><mrow><mn>2</mn></mrow></mfrac><mo>=</mo><mn>4</mn></mrow></math>"
@@ -148,7 +148,7 @@ const BANK=[
     "hint": "분모가 0인 수직선과 바깥에 더한 수를 나타내는 수평선을 찾아보세요.",
     "solution": [
       "점근선은 <math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>x</mi><mo>=</mo><mn>2</mn></mrow></math>와 <math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>y</mi><mo>=</mo><mn>1</mn></mrow></math>이다.",
-      "두 직선의 교점은 (2, 1)이다."
+      "두 직선의 교점은 <math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mo>(</mo><mn>2</mn><mo>,</mo><mn>1</mn><mo>)</mo></mrow></math>이다."
     ],
     "verification": {
       "method": "asymptote-center",
@@ -211,7 +211,7 @@ const BANK=[
       "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mn>6</mn></mrow></math>"
     ],
     "answer": 3,
-    "hint": "a≠1을 확인하고 양변에 a−1을 곱하세요.",
+    "hint": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>a</mi><mo>≠</mo><mn>1</mn></mrow></math>을 확인하고 양변에 <math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>a</mi><mo>−</mo><mn>1</mn></mrow></math>을 곱하세요.",
     "solution": [
       "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mn>2</mn><mi>a</mi><mo>+</mo><mn>2</mn><mo>=</mo><mn>3</mn><mo stretchy=\"false\">(</mo><mi>a</mi><mo>−</mo><mn>1</mn><mo stretchy=\"false\">)</mo></mrow></math>",
       "정리하면<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>a</mi><mo stretchy=\"false\">=</mo><mn>5</mn></mrow></math>이다.<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>a</mi><mo stretchy=\"false\">≠</mo><mn>1</mn></mrow></math>이고, 원래 식에 대입하면 3이 된다."
@@ -236,7 +236,7 @@ const BANK=[
     "level": 2,
     "subject": "공통수학2",
     "unit": "유리함수와 무리함수",
-    "prompt": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>y</mi><mo>=</mo><mfrac><mrow><mi>k</mi></mrow><mrow><mi>x</mi><mo>−</mo><mn>1</mn></mrow></mfrac><mo>+</mo><mn>2</mn></mrow></math>의 그래프가 점 (3, 5)를 지날 때, 상수<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>k</mi></mrow></math>의 값은?",
+    "prompt": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>y</mi><mo>=</mo><mfrac><mrow><mi>k</mi></mrow><mrow><mi>x</mi><mo>−</mo><mn>1</mn></mrow></mfrac><mo>+</mo><mn>2</mn></mrow></math>의 그래프가 점 <math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mo>(</mo><mn>3</mn><mo>,</mo><mn>5</mn><mo>)</mo></mrow></math>를 지날 때, 상수<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>k</mi></mrow></math>의 값은?",
     "options": [
       "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mn>2</mn></mrow></math>",
       "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mn>3</mn></mrow></math>",
@@ -245,7 +245,7 @@ const BANK=[
       "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mn>6</mn></mrow></math>"
     ],
     "answer": 4,
-    "hint": "주어진 점의 x좌표와 y좌표를 함께 대입하세요.",
+    "hint": "주어진 점의 <math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>x</mi></mrow></math>좌표와 <math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>y</mi></mrow></math>좌표를 함께 대입하세요.",
     "solution": [
       "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mn>5</mn><mo>=</mo><mfrac><mrow><mi>k</mi></mrow><mrow><mn>2</mn></mrow></mfrac><mo>+</mo><mn>2</mn></mrow></math>",
       "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>k</mi><mo>=</mo><mn>6</mn></mrow></math>이다."
@@ -279,10 +279,10 @@ const BANK=[
       "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mn>5</mn></mrow></math>"
     ],
     "answer": 4,
-    "hint": "오른쪽 x−2도 0 이상이어야 해요.",
+    "hint": "오른쪽 <math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>x</mi><mo>−</mo><mn>2</mn></mrow></math>도 0 이상이어야 해요.",
     "solution": [
       "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>x</mi><mo>≥</mo><mn>2</mn></mrow></math>이어야 한다. 양변을 제곱하면 <math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>x</mi><mo>+</mo><mn>4</mn><mo>=</mo><msup><mi>x</mi><mn>2</mn></msup><mo>−</mo><mn>4</mn><mi>x</mi><mo>+</mo><mn>4</mn></mrow></math>이다.",
-      "정리하면<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>x</mi><mo stretchy=\"false\">(</mo><mi>x</mi><mo stretchy=\"false\">−</mo><mn>5</mn><mo stretchy=\"false\">)</mo><mo stretchy=\"false\">=</mo><mn>0</mn></mrow></math>이다. 후보 0, 5 중<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>x</mi><mo stretchy=\"false\">≥</mo><mn>2</mn></mrow></math>인 5만 원래 식을 만족한다."
+      "정리하면<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>x</mi><mo stretchy=\"false\">(</mo><mi>x</mi><mo stretchy=\"false\">−</mo><mn>5</mn><mo stretchy=\"false\">)</mo><mo stretchy=\"false\">=</mo><mn>0</mn></mrow></math>이다. 후보 <math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mn>0</mn><mo>,</mo><mn>5</mn></mrow></math> 중<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>x</mi><mo stretchy=\"false\">≥</mo><mn>2</mn></mrow></math>인 5만 원래 식을 만족한다."
     ],
     "verification": {
       "method": "radical-linear",
@@ -312,7 +312,7 @@ const BANK=[
       "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>x</mi><mo>≤</mo><mn>0</mn></mrow></math>"
     ],
     "answer": 1,
-    "hint": "근호 안의 x 앞 계수가 음수인 점에 주의하세요.",
+    "hint": "근호 안의 <math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>x</mi></mrow></math> 앞 계수가 음수인 점에 주의하세요.",
     "solution": [
       "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mn>4</mn><mo>−</mo><mi>x</mi><mo>≥</mo><mn>0</mn></mrow></math>에서 <math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>x</mi><mo>≤</mo><mn>4</mn></mrow></math>이다.",
       "따라서 정의역은<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>x</mi><mo stretchy=\"false\">≤</mo><mn>4</mn></mrow></math>인 모든 실수의 집합이다."
@@ -342,7 +342,7 @@ const BANK=[
       "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mn>3</mn></mrow></math>"
     ],
     "answer": 4,
-    "hint": "분자를 3(x+2)−7로 바꾸어 보세요.",
+    "hint": "분자를 <math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mn>3</mn><mo>(</mo><mi>x</mi><mo>+</mo><mn>2</mn><mo>)</mo><mo>−</mo><mn>7</mn></mrow></math>로 바꾸어 보세요.",
     "solution": [
       "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>f</mi><mo stretchy=\"false\">(</mo><mi>x</mi><mo stretchy=\"false\">)</mo><mo>=</mo><mn>3</mn><mo>−</mo><mfrac><mrow><mn>7</mn></mrow><mrow><mi>x</mi><mo>+</mo><mn>2</mn></mrow></mfrac></mrow></math>",
       "분수 부분은 0이 될 수 없다. 따라서 함수값은 3이 될 수 없고, 나머지 모든 실숫값은 가능하다."
@@ -375,10 +375,10 @@ const BANK=[
       "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mn>6</mn></mrow></math>"
     ],
     "answer": 4,
-    "hint": "직선의 y값도 음수가 될 수 없으므로 x≥4가 필요해요.",
+    "hint": "직선의 <math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>y</mi></mrow></math>값도 음수가 될 수 없으므로 <math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>x</mi><mo>≥</mo><mn>4</mn></mrow></math>가 필요해요.",
     "solution": [
       "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>x</mi><mo>≥</mo><mn>4</mn></mrow></math>에서 <math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>x</mi><mo>−</mo><mn>2</mn><mo>=</mo><msup><mi>x</mi><mn>2</mn></msup><mo>−</mo><mn>8</mn><mi>x</mi><mo>+</mo><mn>16</mn></mrow></math>을 푼다.",
-      "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mo stretchy=\"false\">(</mo><mi>x</mi><mo stretchy=\"false\">−</mo><mn>3</mn><mo stretchy=\"false\">)</mo><mo stretchy=\"false\">(</mo><mi>x</mi><mo stretchy=\"false\">−</mo><mn>6</mn><mo stretchy=\"false\">)</mo><mo stretchy=\"false\">=</mo><mn>0</mn></mrow></math>의 후보 중<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>x</mi><mo stretchy=\"false\">≥</mo><mn>4</mn></mrow></math>인 6만 남는다.<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>y</mi><mo stretchy=\"false\">=</mo><mn>2</mn></mrow></math>이므로 교점은 (6, 2)이다."
+      "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mo stretchy=\"false\">(</mo><mi>x</mi><mo stretchy=\"false\">−</mo><mn>3</mn><mo stretchy=\"false\">)</mo><mo stretchy=\"false\">(</mo><mi>x</mi><mo stretchy=\"false\">−</mo><mn>6</mn><mo stretchy=\"false\">)</mo><mo stretchy=\"false\">=</mo><mn>0</mn></mrow></math>의 후보 중<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>x</mi><mo stretchy=\"false\">≥</mo><mn>4</mn></mrow></math>인 6만 남는다.<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>y</mi><mo stretchy=\"false\">=</mo><mn>2</mn></mrow></math>이므로 교점은 <math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mo>(</mo><mn>6</mn><mo>,</mo><mn>2</mn><mo>)</mo></mrow></math>이다."
     ],
     "verification": {
       "method": "radical-linear",
@@ -439,7 +439,7 @@ const BANK=[
       "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mn>5</mn></mrow></math>"
     ],
     "answer": 2,
-    "hint": "a≠1을 확인하고 분모를 곱하세요.",
+    "hint": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>a</mi><mo>≠</mo><mn>1</mn></mrow></math>을 확인하고 분모를 곱하세요.",
     "solution": [
       "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mn>3</mn><mi>a</mi><mo>+</mo><mn>1</mn><mo>=</mo><mn>5</mn><mo stretchy=\"false\">(</mo><mi>a</mi><mo>−</mo><mn>1</mn><mo stretchy=\"false\">)</mo></mrow></math>",
       "정리하면<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mn>2</mn><mi>a</mi><mo stretchy=\"false\">=</mo><mn>6</mn></mrow></math>이므로<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>a</mi><mo stretchy=\"false\">=</mo><mn>3</mn></mrow></math>이다. 원래 식에서도 성립한다."
@@ -473,9 +473,9 @@ const BANK=[
       "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mo stretchy=\"false\">(</mo><mn>0</mn><mo>,</mo><mrow><mo>−</mo><mn>3</mn></mrow><mo stretchy=\"false\">)</mo></mrow></math>"
     ],
     "answer": 3,
-    "hint": "x+1=x−(−1)로 읽어 보세요.",
+    "hint": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>x</mi><mo>+</mo><mn>1</mn><mo>=</mo><mi>x</mi><mo>−</mo><mo>(</mo><mo>−</mo><mn>1</mn><mo>)</mo></mrow></math>로 읽어 보세요.",
     "solution": [
-      "점근선은<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>x</mi><mo stretchy=\"false\">=</mo><mo stretchy=\"false\">−</mo><mn>1</mn></mrow></math>과<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>y</mi><mo stretchy=\"false\">=</mo><mo stretchy=\"false\">−</mo><mn>3</mn></mrow></math>이다. 따라서 교점은 (−1, −3)이다."
+      "점근선은<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>x</mi><mo stretchy=\"false\">=</mo><mo stretchy=\"false\">−</mo><mn>1</mn></mrow></math>과<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>y</mi><mo stretchy=\"false\">=</mo><mo stretchy=\"false\">−</mo><mn>3</mn></mrow></math>이다. 따라서 교점은 <math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mo>(</mo><mo>−</mo><mn>1</mn><mo>,</mo><mo>−</mo><mn>3</mn><mo>)</mo></mrow></math>이다."
     ],
     "verification": {
       "method": "asymptote-center",
@@ -538,10 +538,10 @@ const BANK=[
       "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mn>6</mn></mrow></math>"
     ],
     "answer": 3,
-    "hint": "오른쪽 x가 0 이상인지 확인하세요.",
+    "hint": "오른쪽 <math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>x</mi></mrow></math>가 0 이상인지 확인하세요.",
     "solution": [
       "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>x</mi><mo>≥</mo><mn>0</mn></mrow></math>에서 양변을 제곱하면 <math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>x</mi><mo>+</mo><mn>6</mn><mo>=</mo><msup><mi>x</mi><mn>2</mn></msup></mrow></math>이다.",
-      "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mo stretchy=\"false\">(</mo><mi>x</mi><mo stretchy=\"false\">−</mo><mn>3</mn><mo stretchy=\"false\">)</mo><mo stretchy=\"false\">(</mo><mi>x</mi><mo stretchy=\"false\">+</mo><mn>2</mn><mo stretchy=\"false\">)</mo><mo stretchy=\"false\">=</mo><mn>0</mn></mrow></math>의 후보 3, −2 중<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>x</mi><mo stretchy=\"false\">≥</mo><mn>0</mn></mrow></math>인 3만 해이다."
+      "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mo stretchy=\"false\">(</mo><mi>x</mi><mo stretchy=\"false\">−</mo><mn>3</mn><mo stretchy=\"false\">)</mo><mo stretchy=\"false\">(</mo><mi>x</mi><mo stretchy=\"false\">+</mo><mn>2</mn><mo stretchy=\"false\">)</mo><mo stretchy=\"false\">=</mo><mn>0</mn></mrow></math>의 후보 <math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mn>3</mn><mo>,</mo><mo>−</mo><mn>2</mn></mrow></math> 중<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>x</mi><mo stretchy=\"false\">≥</mo><mn>0</mn></mrow></math>인 3만 해이다."
     ],
     "verification": {
       "method": "radical-linear",
@@ -600,7 +600,7 @@ const BANK=[
       "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mn>4</mn></mrow></math>"
     ],
     "answer": 3,
-    "hint": "x≠1을 확인하고 두 y값을 같게 두세요.",
+    "hint": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>x</mi><mo>≠</mo><mn>1</mn></mrow></math>을 확인하고 두 <math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>y</mi></mrow></math>값을 같게 두세요.",
     "solution": [
       "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mn>2</mn><mo>=</mo><mo stretchy=\"false\">(</mo><mi>x</mi><mo>−</mo><mn>2</mn><mo stretchy=\"false\">)</mo><mo stretchy=\"false\">(</mo><mi>x</mi><mo>−</mo><mn>1</mn><mo stretchy=\"false\">)</mo></mrow></math>",
       "정리하면<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>x</mi><mo stretchy=\"false\">(</mo><mi>x</mi><mo stretchy=\"false\">−</mo><mn>3</mn><mo stretchy=\"false\">)</mo><mo stretchy=\"false\">=</mo><mn>0</mn></mrow></math>이다. 0과 3은 모두<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>x</mi><mo stretchy=\"false\">≠</mo><mn>1</mn></mrow></math>을 만족하므로 합은 3이다."
@@ -668,7 +668,7 @@ const BANK=[
       "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mn>3</mn></mrow></math>"
     ],
     "answer": 0,
-    "hint": "먼저 a를 정한 뒤 새로운 방정식을 풀어 보세요.",
+    "hint": "먼저 <math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>a</mi></mrow></math>를 정한 뒤 새로운 방정식을 풀어 보세요.",
     "solution": [
       "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>f</mi><mo stretchy=\"false\">(</mo><mn>3</mn><mo stretchy=\"false\">)</mo><mo stretchy=\"false\">=</mo><mn>3</mn><mi>a</mi><mo stretchy=\"false\">+</mo><mn>1</mn><mo stretchy=\"false\">=</mo><mn>7</mn></mrow></math>이므로<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>a</mi><mo stretchy=\"false\">=</mo><mn>2</mn></mrow></math>이다.",
       "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mfrac><mrow><mn>2</mn><mi>b</mi><mo>+</mo><mn>1</mn></mrow><mrow><mi>b</mi><mo>−</mo><mn>2</mn></mrow></mfrac><mo>=</mo><mn>1</mn></mrow></math>에서<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mn>2</mn><mi>b</mi><mo stretchy=\"false\">+</mo><mn>1</mn><mo stretchy=\"false\">=</mo><mi>b</mi><mo stretchy=\"false\">−</mo><mn>2</mn></mrow></math>이므로<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>b</mi><mo stretchy=\"false\">=</mo><mo stretchy=\"false\">−</mo><mn>3</mn></mrow></math>이다.<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>b</mi><mo stretchy=\"false\">≠</mo><mn>2</mn></mrow></math>이고 원래 식도 만족한다."
@@ -702,7 +702,7 @@ const BANK=[
     "hint": "이번에는 해가 아닌 값을 묻고 있어요.",
     "solution": [
       "원래 식은<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>x</mi><mo stretchy=\"false\">≥</mo><mn>1</mn></mrow></math>을 요구한다. 제곱하면<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><msup><mi>x</mi><mn>2</mn></msup><mo stretchy=\"false\">−</mo><mn>3</mn><mi>x</mi><mo stretchy=\"false\">−</mo><mn>4</mn><mo stretchy=\"false\">=</mo><mn>0</mn><mo stretchy=\"false\">,</mo></mrow></math>즉<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mo stretchy=\"false\">(</mo><mi>x</mi><mo stretchy=\"false\">−</mo><mn>4</mn><mo stretchy=\"false\">)</mo><mo stretchy=\"false\">(</mo><mi>x</mi><mo stretchy=\"false\">+</mo><mn>1</mn><mo stretchy=\"false\">)</mo><mo stretchy=\"false\">=</mo><mn>0</mn></mrow></math>이다.",
-      "후보 4, −1 중 −1은<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>x</mi><mo stretchy=\"false\">≥</mo><mn>1</mn></mrow></math>을 만족하지 않으므로 원래 식의 해가 아니다."
+      "후보 <math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mn>4</mn><mo>,</mo><mo>−</mo><mn>1</mn></mrow></math> 중 <math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mo>−</mo><mn>1</mn></mrow></math>은<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>x</mi><mo stretchy=\"false\">≥</mo><mn>1</mn></mrow></math>을 만족하지 않으므로 원래 식의 해가 아니다."
     ],
     "verification": {
       "method": "radical-rejected",
@@ -766,7 +766,7 @@ const BANK=[
       "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mfrac><mrow><mrow><mo>−</mo><mn>2</mn></mrow></mrow><mrow><mn>1</mn></mrow></mfrac></mrow></math>"
     ],
     "answer": 2,
-    "hint": "t=√(x+2)로 놓으면 t≥0, x=t²−2예요.",
+    "hint": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>t</mi><mo>=</mo><msqrt><mrow><mi>x</mi><mo>+</mo><mn>2</mn></mrow></msqrt></mrow></math>로 놓으면 <math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>t</mi><mo>≥</mo><mn>0</mn></mrow></math>, <math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>x</mi><mo>=</mo><msup><mi>t</mi><mn>2</mn></msup><mo>−</mo><mn>2</mn></mrow></math>예요.",
     "solution": [
       "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>t</mi><mo stretchy=\"false\">=</mo><msqrt><mi>x</mi><mo stretchy=\"false\">+</mo><mn>2</mn></msqrt><mo stretchy=\"false\">≥</mo><mn>0</mn></mrow></math>으로 놓으면<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>t</mi><mo stretchy=\"false\">=</mo><msup><mi>t</mi><mn>2</mn></msup><mo stretchy=\"false\">−</mo><mn>2</mn><mo stretchy=\"false\">−</mo><mi>a</mi><mo stretchy=\"false\">,</mo></mrow></math>즉<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><msup><mi>t</mi><mn>2</mn></msup><mo stretchy=\"false\">−</mo><mi>t</mi><mo stretchy=\"false\">−</mo><mo stretchy=\"false\">(</mo><mi>a</mi><mo stretchy=\"false\">+</mo><mn>2</mn><mo stretchy=\"false\">)</mo><mo stretchy=\"false\">=</mo><mn>0</mn></mrow></math>이다.",
       "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>a</mi><mo stretchy=\"false\">&lt;</mo><mo stretchy=\"false\">−</mo><mn>2</mn></mrow></math>이므로 두 근의 곱은 양수이고 합은 1이다. 실근이 존재하면 두 근이 모두 양수이므로, 교점이 한 개이려면 중근이어야 한다.",
@@ -789,7 +789,7 @@ const byId=new Map(BANK.map(q=>[q.id,q]));
 const COURSES=[{id:'concept',name:'이론과 기본개념',intro:'개념을 읽고 쉬운 문제로 확인해요.'},{id:'types',name:'주요 유형',intro:'대표 문제를 풀고 약한 유형을 다시 공부해요.'},{id:'supplement',name:'부교재로 연습',intro:'교재와 범위를 골라 온라인으로 풀어요.'},{id:'advanced',name:'고난도 도전',intro:'시작 단계와 풀이 결과에 맞춰 한 단계씩 올라가요.'}];
 const TYPES={value:'함숫값과 역으로 대입하기',domain:'분모와 정의역',translation:'평행이동과 점근선',range:'함수의 치역','radical-domain':'근호 안의 조건','radical-equation':'무리방정식과 무연근',intersection:'두 그래프의 교점'};
 const BOOKS=[{id:'rational',title:'유리함수 핵심 연습',description:'함숫값 · 역으로 대입하기 · 점근선',source:'델타스킬 자체 제작',ids:['dssp1-s1','dssp1-s2','dssp1-s3']},{id:'radical',title:'무리함수 핵심 연습',description:'근호의 조건 · 제곱과 검산',source:'델타스킬 자체 제작',ids:['dssp1-s4','dssp1-s5','dssp1-s6']}];
-const CONCEPTS={value:{name:'대입하기 전에 분모 확인',body:'유리함수의 함숫값은 분자와 분모에 같은 수를 대입해 구해요. 먼저 그 수에서 분모가 0이 아닌지 확인하세요.'},domain:{name:'분모는 0이 될 수 없어요',body:'유리식은 분모가 0인 곳에서 정의되지 않아요. 약분이 되더라도 처음 주어진 식에서 제외한 값은 함부로 되돌릴 수 없어요.'},translation:{name:'점근선 두 개로 위치 읽기',body:'기본 유리함수를 좌우·위아래로 옮기면 두 점근선도 함께 옮겨져요. 분모가 0인 수직선과 함수값이 가까워지는 수평선을 구별하세요.'},range:{name:'치역은 실제로 나오는 함숫값',body:'제곱근의 값은 0 이상이에요. 유리함수에서는 분수 부분이 0이 될 수 있는지 따져, 빠지는 함숫값을 확인해요.'},'radical-domain':{name:'근호 안은 0 이상',body:'실수 범위에서 제곱근 안의 식은 0 이상이어야 해요. 부등식을 풀 때 음수로 나누면 부등호 방향이 바뀌는 것도 확인하세요.'},'radical-equation':{name:'제곱하기 전 부호, 제곱한 뒤 검산',body:'제곱근은 음수가 아니므로 반대쪽도 0 이상이어야 해요. 제곱하면 원래 식을 만족하지 않는 근이 생길 수 있어, 마지막에 반드시 대입해 확인해요.'},intersection:{name:'같은 점에서는 두 y값이 같아요',body:'두 함수식을 같게 놓아 x좌표의 후보를 구해요. 분모가 0이 되는 값과 근호의 조건을 다시 확인한 뒤 y좌표를 구하세요.'}};
+const CONCEPTS={value:{name:'대입하기 전에 분모 확인',body:'유리함수의 함숫값은 분자와 분모에 같은 수를 대입해 구해요. 먼저 그 수에서 분모가 0이 아닌지 확인하세요.'},domain:{name:'분모는 0이 될 수 없어요',body:'유리식은 분모가 0인 곳에서 정의되지 않아요. 약분이 되더라도 처음 주어진 식에서 제외한 값은 함부로 되돌릴 수 없어요.'},translation:{name:'점근선 두 개로 위치 읽기',body:'기본 유리함수를 좌우·위아래로 옮기면 두 점근선도 함께 옮겨져요. 분모가 0인 수직선과 함수값이 가까워지는 수평선을 구별하세요.'},range:{name:'치역은 실제로 나오는 함숫값',body:'제곱근의 값은 0 이상이에요. 유리함수에서는 분수 부분이 0이 될 수 있는지 따져, 빠지는 함숫값을 확인해요.'},'radical-domain':{name:'근호 안은 0 이상',body:'실수 범위에서 제곱근 안의 식은 0 이상이어야 해요. 부등식을 풀 때 음수로 나누면 부등호 방향이 바뀌는 것도 확인하세요.'},'radical-equation':{name:'제곱하기 전 부호, 제곱한 뒤 검산',body:'제곱근은 음수가 아니므로 반대쪽도 0 이상이어야 해요. 제곱하면 원래 식을 만족하지 않는 근이 생길 수 있어, 마지막에 반드시 대입해 확인해요.'},intersection:{name:'같은 점에서는 두 y값이 같아요',body:'두 함수식을 같게 놓아 <math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>x</mi></mrow></math>좌표의 후보를 구해요. 분모가 0이 되는 값과 근호의 조건을 다시 확인한 뒤 <math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>y</mi></mrow></math>좌표를 구하세요.'}};
 const REASONS={concept:'개념을 다시 확인할래요',condition:'조건이나 질문을 놓쳤어요',calculation:'계산을 다시 확인할래요',unknown:'아직 이유를 모르겠어요'};
 const FREE_CONCEPTS={
  '지수와 로그':{title:'같은 밑으로 바꾸고 지수를 비교해요',body:'거듭제곱의 곱에서는 지수를 더하고, 거듭제곱을 다시 거듭제곱하면 지수를 곱해요. 로그는 주어진 수가 밑의 몇 제곱인지 나타내요. 로그의 밑은 양수이면서 1이 아니어야 하고, 진수는 양수여야 해요.',formula:'<math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mi>a</mi><mi>p</mi></msup><mo>×</mo><msup><mi>a</mi><mi>q</mi></msup><mo>=</mo><msup><mi>a</mi><mrow><mi>p</mi><mo>+</mo><mi>q</mi></mrow></msup><mspace width="1em"/><mo>(</mo><mi>a</mi><mo>&gt;</mo><mn>0</mn><mo>)</mo></mrow></math>'},
@@ -808,14 +808,14 @@ function summary(state){const rows=[...latest(state).values()];return {answered:
 function tier(state){const seen=latest(state);let level=state.grade<=2?2:1;while(level<3&&BANK.filter(q=>q.course==='advanced'&&q.level===level).every(q=>{const r=seen.get(q.id);return r?.correct&&r.confidence==='sure'&&!r.help;}))level++;return level;}
 function cards(){return COURSES.map((c,i)=>`<button class="ssp-course" data-ssp-course="${c.id}"><span>0${i+1}</span><strong>${c.name}</strong><small>${c.intro}</small></button>`).join('');}
 const DESK_COURSES=[
- {id:'concept',name:'개념부터 익히기',goal:'기초 다지기'},
- {id:'types',name:'핵심 유형 풀기',goal:'2등급 목표'},
- {id:'supplement',name:'부교재 변형 풀기',goal:'1등급 도전'},
- {id:'advanced',name:'고난도 도전하기',goal:'1등급 지키기'}
+ {id:'concept',name:'개념부터 익히기',goal:'기초 다지기',detail:'쉬운 문제로 개념을 하나씩 확인해요.'},
+ {id:'types',name:'핵심 유형 풀기',goal:'2등급 목표',detail:'대표 문제를 풀고 헷갈린 유형을 한 번 더 연습해요.'},
+ {id:'supplement',name:'부교재 변형 풀기',goal:'1등급 도전',detail:'수업 교재를 고르고, 같은 유형의 새 문제를 풀어요.'},
+ {id:'advanced',name:'고난도 도전하기',goal:'1등급 지키기',detail:'어려운 문제에 도전하고, 풀이의 핵심을 확인해요.'}
 ];
 function deskCourseButtons(){
- return DESK_COURSES.map(({id,name,goal})=>
-  `<button type="button" data-ssp-course="${id}" aria-pressed="${id==='types'}"><span class="ssp-course-name">${name}</span><small class="ssp-course-goal">${goal}</small></button>`
+ return DESK_COURSES.map(({id,name,goal,detail})=>
+  `<button type="button" data-ssp-course="${id}" aria-pressed="${id==='types'}"><span class="ssp-course-name">${name}</span><small class="ssp-course-goal">${goal}</small><span class="ssp-course-detail">${detail}</span></button>`
  ).join('');
 }
 function deskShell(){
@@ -1011,9 +1011,9 @@ function bind(container,options={}){
    <nav aria-label="${label} 이동"><button type="button" ${action}="-1" ${index<=0?'disabled':''}>← 이전 ${label}</button>
    <span>${index+1} / ${sequence.length}</span>
    <button type="button" ${action}="1" ${index===sequence.length-1?'disabled':''}>다음 ${label} →</button></nav>
-   <h3>${esc(title)}</h3>${isConcept?`<p>${esc(CONCEPTS[current.type].body)}</p>`:''}</section>`;
+   <h3>${esc(title)}</h3>${isConcept?`<p>${CONCEPTS[current.type].body}</p>`:''}</section>`;
  }
- function question(){const q=current;if(!q)return home();const concept=CONCEPTS[q.type];const repeated=state.records.some(r=>r.questionId===q.id);return `<article class="ssp-paper"><div class="ssp-paper-top"><span>${esc(TYPES[q.type])} · ${q.level}단계</span><span>${desk?'':(cursor+1)+' / '+pool.length}</span></div><h2 tabindex="-1" class="ssp-problem-heading">${esc(q.subject)} · ${esc(desk?subunit(q):q.unit)}</h2>${lessonNavigation()}${desk?itemPager(cursor,pool.length):''}${repeated?'<p class="ssp-note">전에 풀어 본 문제예요. 이번 결과는 복습 기록으로 남겨요.</p>':''}<div class="ssp-prompt">${q.prompt}</div><fieldset class="ssp-options" ${feedback?'disabled':''}><legend>답을 하나 골라주세요.</legend>${q.options.map((o,i)=>`<label><input type="radio" name="ssp-answer" value="${i}" ${choice===i?'checked':''}><span class="ssp-option-no">${i+1}</span><span>${o}</span></label>`).join('')}</fieldset>${!feedback?`<fieldset class="ssp-confidence"><legend>내 선택이 얼마나 확실한가요?</legend><label><input type="radio" name="ssp-confidence" value="sure" ${confidence==='sure'?'checked':''}>확실해요</label><label><input type="radio" name="ssp-confidence" value="unsure" ${confidence==='unsure'?'checked':''}>아직 헷갈려요</label></fieldset><div class="ssp-actions"><button class="ssp-primary" data-ssp-check ${choice===null?'disabled':''}>답 확인</button><button data-ssp-skip>모르겠어요</button><button data-ssp-hint aria-expanded="${hint}">힌트 ${hint?'접기':'보기'}</button></div>`:''}${hint?`<aside class="ssp-hint"><h3>첫 생각</h3><p>${esc(q.hint)}</p><p>${esc(concept.body)}</p></aside>`:''}${feedback?`<section class="ssp-feedback"><h3 tabindex="-1">${feedback.choice===null?'함께 다시 확인해 봐요.':feedback.correct?'맞았어요. 풀이의 조건도 확인해 보세요.':'답을 다시 살펴볼까요?'}</h3><p>정답은 ${q.answer+1}번이에요. ${feedback.help?'힌트를 확인한 풀이로 기록했어요.':''}</p><label>어디서 막혔나요? <select data-ssp-reason><option value="">필요하면 기록하기</option>${Object.entries(REASONS).map(([id,label])=>`<option value="${id}" ${feedback.reason===id?'selected':''}>${label}</option>`).join('')}</select></label><div class="ssp-actions"><button data-ssp-solution aria-expanded="${solution}">${solution?'풀이 접기':'해설 보기'}</button><button data-ssp-retry>답을 가리고 다시 풀기</button>${variantButton(feedback,state.records)}${desk?'':`<button class="ssp-primary" data-ssp-next>${cursor+1<pool.length?'다음 문제':'공부 결과 보기'}</button>`}</div>${solution?`<section class="ssp-solution"><h3>조건 → 계산 → 확인</h3><ol>${q.solution.map(s=>`<li>${s}</li>`).join('')}</ol></section>`:''}</section>`:''}<footer class="ssp-paper-foot"><span>델타스킬 자체 제작 · 공통수학2</span>${!desk?'<button data-ssp-home>코스로 돌아가기</button>':''}</footer></article>`;}
+ function question(){const q=current;if(!q)return home();const concept=CONCEPTS[q.type];const repeated=state.records.some(r=>r.questionId===q.id);return `<article class="ssp-paper"><div class="ssp-paper-top"><span>${esc(TYPES[q.type])} · ${q.level}단계</span><span>${desk?'':(cursor+1)+' / '+pool.length}</span></div><h2 tabindex="-1" class="ssp-problem-heading">${esc(q.subject)} · ${esc(desk?subunit(q):q.unit)}</h2>${lessonNavigation()}${desk?itemPager(cursor,pool.length):''}${repeated?'<p class="ssp-note">전에 풀어 본 문제예요. 이번 결과는 복습 기록으로 남겨요.</p>':''}<div class="ssp-prompt">${q.prompt}</div><fieldset class="ssp-options" ${feedback?'disabled':''}><legend>답을 하나 골라주세요.</legend>${q.options.map((o,i)=>`<label><input type="radio" name="ssp-answer" value="${i}" ${choice===i?'checked':''}><span class="ssp-option-no">${i+1}</span><span>${o}</span></label>`).join('')}</fieldset>${!feedback?`<fieldset class="ssp-confidence"><legend>내 선택이 얼마나 확실한가요?</legend><label><input type="radio" name="ssp-confidence" value="sure" ${confidence==='sure'?'checked':''}>확실해요</label><label><input type="radio" name="ssp-confidence" value="unsure" ${confidence==='unsure'?'checked':''}>아직 헷갈려요</label></fieldset><div class="ssp-actions"><button class="ssp-primary" data-ssp-check ${choice===null?'disabled':''}>답 확인</button><button data-ssp-skip>모르겠어요</button><button data-ssp-hint aria-expanded="${hint}">힌트 ${hint?'접기':'보기'}</button></div>`:''}${hint?`<aside class="ssp-hint"><h3>첫 생각</h3><p>${q.hint}</p><p>${concept.body}</p></aside>`:''}${feedback?`<section class="ssp-feedback"><h3 tabindex="-1">${feedback.choice===null?'함께 다시 확인해 봐요.':feedback.correct?'맞았어요. 풀이의 조건도 확인해 보세요.':'답을 다시 살펴볼까요?'}</h3><p>정답은 ${q.answer+1}번이에요. ${feedback.help?'힌트를 확인한 풀이로 기록했어요.':''}</p><label>어디서 막혔나요? <select data-ssp-reason><option value="">필요하면 기록하기</option>${Object.entries(REASONS).map(([id,label])=>`<option value="${id}" ${feedback.reason===id?'selected':''}>${label}</option>`).join('')}</select></label><div class="ssp-actions"><button data-ssp-solution aria-expanded="${solution}">${solution?'풀이 접기':'해설 보기'}</button><button data-ssp-retry>답을 가리고 다시 풀기</button>${variantButton(feedback,state.records)}${desk?'':`<button class="ssp-primary" data-ssp-next>${cursor+1<pool.length?'다음 문제':'공부 결과 보기'}</button>`}</div>${solution?`<section class="ssp-solution"><h3>조건 → 계산 → 확인</h3><ol>${q.solution.map(s=>`<li>${s}</li>`).join('')}</ol></section>`:''}</section>`:''}<footer class="ssp-paper-foot"><span>델타스킬 자체 제작 · 공통수학2</span>${!desk?'<button data-ssp-home>코스로 돌아가기</button>':''}</footer></article>`;}
  async function loadFreeHistory(more=false){if(!signed()||remoteHistory.phase==='loading')return;if(typeof window.DSStudentServices?.history!=='function'){remoteHistory.phase='unavailable';draw(false);return;}const generation=epoch;remoteHistory.phase='loading';draw(false);try{const result=await DSStudentServices.history({kind:'free',limit:20,...(more&&remoteHistory.nextBefore?{before:remoteHistory.nextBefore}:{})});if(closed||generation!==epoch||!signed())return;if(activeOwner&&result.ownerKey!==activeOwner||!Array.isArray(result.records)||!result.records.every(r=>typeof r.recordId==='string'&&Number.isFinite(Date.parse(r.at))))throw Error('invalid_history');remoteHistory={phase:'ready',records:[...new Map([...(more?remoteHistory.records:[]),...result.records].map(r=>[r.recordId,r])).values()],hasMore:result.hasMore===true,nextBefore:result.nextBefore||null};}catch{if(closed||generation!==epoch)return;remoteHistory.phase='error';}draw(false);}
  function serverHistoryHTML(){if(remoteHistory.phase==='idle')queueMicrotask(()=>loadFreeHistory());const rows=remoteHistory.records;return `<section class="ssp-server-history"><h3>기존 자료 풀이 · 계정 기록</h3>${remoteHistory.phase==='loading'?'<p role="status">계정의 기존 자료 풀이를 불러오고 있어요.</p>':remoteHistory.phase==='error'||remoteHistory.phase==='unavailable'?'<p>기존 자료의 계정 기록을 확인하지 못했어요. 보완연습 기록과 구분해서 다시 불러올 수 있어요.</p><button data-ssp-history-sync>계정 기록 다시 불러오기</button>':!rows.length?'<p>확인된 기존 자료 풀이 기록이 아직 없어요.</p>':''}${rows.length?`<ul>${rows.map(r=>`<li><div><strong>${esc(r.title||r.unit||r.subject||'기존 자료 풀이')}</strong><span>${esc(new Date(r.at).toLocaleDateString('ko-KR'))} · ${r.correct===true?'정답':r.correct===false?'다시 확인':'풀이 기록'}</span></div>${r.questionId?`<button data-ssp-remote="${esc(r.questionId)}">다시 풀기</button>`:''}${variantButton(r,remoteHistory.records)}</li>`).join('')}</ul>`:''}${remoteHistory.hasMore?'<button data-ssp-history-more>이전 계정 기록 더 보기</button>':''}</section>`;}
  function history(){const rows=[...latest(state).values()].reverse();return `<section class="ssp-panel ssp-history"><h2 tabindex="-1">내신 공부 기록</h2>${serverHistoryHTML()}<h3>자체 제작 보완연습 기록</h3><p>${esc(storageMessage)} · 최근 ${state.records.length}회 풀이</p><p>문제별 최근 결과예요. 정답이어도 힌트를 보았거나 헷갈렸다면 복습에 남겨요.</p>${rows.length?`<ul>${rows.map(r=>`<li><div><strong>${esc(TYPES[r.type])}</strong><span>${esc(COURSES.find(c=>c.id===r.course)?.name)} · ${r.level}단계 · ${r.correct?'정답':r.choice===null?'모르겠어요':'오답'}${r.help?' · 도움 받음':''}${r.repeated?' · 재풀이':''}</span>${r.reason?`<small>선택한 복습 이유: ${esc(REASONS[r.reason])}</small>`:''}</div><button data-ssp-open="${r.questionId}">다시 풀기</button>${variantButton(r,state.records)}</li>`).join('')}</ul>`:'<p>아직 공부 기록이 없어요. 원하는 코스에서 첫 문제를 풀어 보세요.</p>'}<div class="ssp-actions"><button class="ssp-primary" data-ssp-review="">틀림·헷갈림 복습</button><button data-ssp-home>코스로 돌아가기</button></div></section>`;}

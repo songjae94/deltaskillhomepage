@@ -158,6 +158,26 @@
     }
     return 'ready';
   }
+  // In an authored study sheet, body fractions use full-size numerator and denominator.
+  // Preserve compact TeX style inside other fractions, exponents, indices and limits.
+  function studyFormula(math) {
+    const source=math.cloneNode(true);
+    for(const fraction of source.querySelectorAll('mfrac')){
+      let child=fraction, compact=false;
+      for(let parent=child.parentElement;parent;child=parent,parent=parent.parentElement){
+        const name=tag(parent);
+        if(name==='mfrac'||name==='mstyle'||
+          (['msup','msub','msubsup','mroot','munder','mover','munderover'].includes(name)&&parent.firstElementChild!==child)){
+          compact=true;break;
+        }
+      }
+      if(compact)continue;
+      const style=document.createElementNS(namespace,'mstyle');
+      style.setAttribute('displaystyle','true');
+      fraction.replaceWith(style);style.append(fraction);
+    }
+    return source;
+  }
   function renderMath(math) {
     if(math.isConnected===false)return;
     if(math.closest('.katex,.wm23-equation'))return;
@@ -183,7 +203,7 @@
           else if(!display&&/op-limits|op-symbol/.test(html))html=html.replace('class="katex"','class="katex 인라인큰연산"');
         }catch(error){record(error,math);html=null;}
       }
-      if(html===null)html=global.katex.renderToString(toTeX(math),{displayMode:display,throwOnError:true,trust:false,strict:'error',output:'htmlAndMathml'});
+      if(html===null)html=global.katex.renderToString(toTeX(math.closest('.ssp') && math.querySelector('mfrac') ? studyFormula(math) : math),{displayMode:display,throwOnError:true,trust:false,strict:'error',output:'htmlAndMathml'});
       const wrapper=document.createElement('span');wrapper.className='wm23-equation';
       wrapper.dataset.display=display?'block':'inline';
       if(canonical)wrapper.dataset.source='tex';
