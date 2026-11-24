@@ -88,6 +88,7 @@
   const rows = prefix => listed().filter(r => FIELDS.every(([k]) => !(k in prefix) || r[k] === prefix[k]));
   const current = () => listed().find(r => FIELDS.every(([k]) => r[k] === sel[k]));
   const label = r => `${r.subject} · ${r.unit} · ${r.stage}단계 · ${r.difficulty}`;
+  const guestSettings = () => Boolean(host()?.trial && !host().signedIn());
   const guest = () => { const h = host(); return Boolean(trialOn && h?.trial && !h.signedIn()); };
   const daily = () => limits?.daily_items ?? TRIAL_DAILY;
   const leftToday = () => Math.max(0, daily() - seenToday);
@@ -99,7 +100,7 @@
     const prefix = {};
     for (const [k] of FIELDS) {
       const options = rows(prefix);
-      const scopedSubject = k === 'subject' &&
+      const scopedSubject = !guestSettings() && k === 'subject' &&
         window.DSPrintScopeData?.subjects?.some(s => s.subject === sel.subject);
       if (!scopedSubject && !options.some(r => r[k] === sel[k])) sel[k] = options[0]?.[k] ?? '';
       prefix[k] = sel[k];
@@ -420,10 +421,10 @@
   }
   function selects() {
     const prefix = {};
-    return FIELDS.filter(([k]) => k !== 'unit' || !window.DSPrintScope?.active()).map(([k, name]) => {
-      if (window.DSPrintScope?.active() && (k === 'stage' || k === 'difficulty')) return scopeLevelSelect(k,name);
+    return FIELDS.filter(([k]) => k !== 'unit' || guestSettings() || !window.DSPrintScope?.active()).map(([k, name]) => {
+      if (!guestSettings() && window.DSPrintScope?.active() && (k === 'stage' || k === 'difficulty')) return scopeLevelSelect(k,name);
       const values = rows(prefix).map(r => r[k]);
-      if (k === 'subject')
+      if (k === 'subject' && !guestSettings())
         values.push(...(window.DSPrintScopeData?.subjects || []).map(s => s.subject));
       const options = [...new Set(values)];
       if (!options.length) return '';
@@ -434,6 +435,7 @@
   }
   function menuFields() {
     if (menu.length) return selects();
+    if (guestSettings()) return '<p class="dq59-lead" role="status">'+(menuBusy || !menuTried ? '공개 문항의 과목·대단원·난도를 불러오는 중입니다.' : safe(note.kind === menuIssue && note.text ? note.text : TEXT[menuIssue] || '공개 문항 목록을 확인하지 못했습니다.'))+'</p>';
     const subjects = window.DSPrintScopeData?.subjects || [];
     const subject = subjects.length ? `<label>과목<select data-ps-subject>${subjects.map(s => `<option value="${safe(s.subject)}" ${sel.subject === s.subject ? 'selected' : ''}>${safe(s.subject)}</option>`).join('')}</select></label>` : '';
     if (subjects.length && window.DSPrintScope?.active()) return subject;
@@ -443,7 +445,7 @@
   }
   function countField() {
     const row = current(), cap = guest() ? guestCap(row) : 20;
-    const trialLimit = guest() && !window.DSPrintScope?.active();
+    const trialLimit = guest();
     const over = trialLimit && count > cap && cap > 0;          // at 0 the faint card on the right is the one notice
     return `<label>문항 수<select data-dq-count aria-label="문항 수" ${pending ? 'disabled' : ''}${over ? ' aria-describedby="dq61-more"' : ''}>${COUNTS.map(n => `<option value="${n}" ${count === n ? 'selected' : ''}>${n}문항${trialLimit && n > cap && cap > 0 ? ' · 로그인하면' : ''}</option>`).join('')}</select>${over ? `<small id="dq61-more" class="dq61-more">${cap > 0 ? `로그인 없이 지금은 ${cap}문항까지 구성할 수 있어요.` : '오늘 로그인 없이 볼 수 있는 문항을 다 봤어요.'} <a href="#login" data-dq61-login>로그인하면 더 ↗</a></small>` : ''}</label>`;
   }
@@ -495,13 +497,13 @@
   function setup() {
     const scope = window.DSPrintScope;
     const fields = menuFields();
-    const scopeHtml = scope?.render({subject:sel.subject || window.DSPrintScopeData?.books?.[0]?.subject,
+    const scopeHtml = guestSettings() ? '' : scope?.render({subject:sel.subject || window.DSPrintScopeData?.books?.[0]?.subject,
       stage:sel.stage, difficulty:sel.difficulty, count, host:host(), pending:Boolean(pending),
       guest:guest(), deferAccess:true, hasLegacySets:listed().length>0}) || '';
     const choice = scope?.request();
-    const basic = choice?.mode === 'basic';
-    const awaitingSupply = scope?.awaitingSupply(sel.subject);
-    const canQuote = awaitingSupply ? false : basic ? Boolean(current()?.ready) : choice &&
+    const basic = guestSettings() || choice?.mode === 'basic';
+    const awaitingSupply = !guestSettings() && scope?.awaitingSupply(sel.subject);
+    const canQuote = guestSettings() ? Boolean(guest() && current()?.ready) : awaitingSupply ? false : basic ? Boolean(current()?.ready) : choice &&
       (choice.mode !== 'book' || choice.book_id) && (choice.type_mode !== 'specific' || choice.type_ids.length);
     const retry = approvedTrial && trialMatches(approvedTrial);
     const row = current();
@@ -509,8 +511,8 @@
     const trialLabel = retry ? '남은 문항 이어 열기' : previewCount
       ? safe(row.unit)+' 기본 '+previewCount+'문항 체험' : '로그인하고 더 구성';
     const trial = guest() && row && !awaitingSupply ? `<button type="button" class="tb36-quiet" data-dq-guest-preview ${pending || (retry && Date.now() < approvedTrial.retryAt) ? 'disabled' : ''}>${trialLabel}</button>` : '';
-    const button = `<button type="submit" class="tb36-primary" ${canQuote && !pending ? '' : 'disabled'}>${pending?'문항 준비 중':'출력 / PDF 저장'} <span>→</span></button>`;
-    return `<div class="tb36-setup dq59-setup${guest() ? ' dq61-guest' : ''}"><form id="dq59-form" class="tb36-conditions"><div class="tb36-section-title"><b>01</b><h2>프린트 구성</h2></div>${basic ? meter() : ''}${fields}${scopeHtml}${awaitingSupply ? '' : countField()+studentOutputSettings()}${trial}${button}${noteHTML()}</form>${idle()}</div>`;
+    const button = `<button type="submit" class="tb36-primary" ${canQuote && !pending ? '' : 'disabled'}>${pending?'문항 준비 중':guestSettings()?'문항 만들기':'출력 / PDF 저장'} <span>→</span></button>`;
+    return `<div class="tb36-setup dq59-setup${guest() ? ' dq61-guest' : ''}"><form id="dq59-form" class="tb36-conditions"><div class="tb36-section-title"><b>01</b><h2>프린트 구성</h2></div>${basic ? meter() : ''}${fields}${scopeHtml}${awaitingSupply ? '' : countField()+studentOutputSettings()}${guestSettings()?'':trial}${button}${noteHTML()}</form>${idle()}</div>`;
   }
   function solProgress() {
     const op = drawn?.solOp;
@@ -538,7 +540,7 @@
     // v61.4: a guest gets no keep box — the member screen has none either on the live connection (no owner tag).
     const save = g ? ''
       : owner && !drawn.scoped ? `<div class="tb36-save dq59-save"><strong>이 기기에 임시 보관</strong><p>문항 글은 저장하지 않습니다. 다시 열 때 서버가 권한을 확인합니다.</p><button type="button" data-dq-save>임시 보관</button></div>` : '';
-    const print = g ? `<button type="button" class="tb36-primary" data-dq61-gate-open="print">인쇄 / PDF <span>↗</span></button>` : `<button type="button" class="tb36-primary" data-dq-print ${waitPrint ? 'aria-busy="true"' : ''}>인쇄 / PDF <span>↗</span></button>`;
+    const print = g ? `<button type="button" class="tb36-primary" data-dq61-gate-open="print">로그인하고 인쇄 / PDF <span>↗</span></button>` : `<button type="button" class="tb36-primary" data-dq-print ${waitPrint ? 'aria-busy="true"' : ''}>인쇄 / PDF <span>↗</span></button>`;
     const paper = onLocked ? window.DSPrintSurfaceV48.scene(lockedPaper()) : window.DSPrintSurfaceV48.scene(`<iframe class="dq59-paper" title="${page + 1}쪽 인쇄 지면" scrolling="no" style="width:793.7008px;height:1122.5197px" srcdoc="${safe(documentHTML(pageArg()))}"></iframe>`);
     const nav = Array.from({ length: pages }, (_, i) => { const locked = g && i === pages - 1; return `<button type="button" data-dq-page="${i}" aria-pressed="${page === i}"${locked ? ' class="is-locked"' : ''}>${i + 1} ${i < all.length ? (all[i].designRecord ? '기록면' : '문제') : '정답·해설'}${locked ? ` <span class="dq61-lockmark" aria-hidden="true">${LOCK_SVG}</span>` : ''}</button>`; }).join('');
     const pending2 = !g && withSol && !drawn.solutions && drawn.solOp && !drawn.solOp.failed ? `<button type="button" disabled class="is-waiting">정답·해설 <small data-dq61-done>${drawn.solOp.done} / ${drawn.solOp.total}</small></button>` : '';
@@ -731,7 +733,8 @@
           if (menuGuard !== guard) return;
           trialOn = false; menu = [];
           menuIssue = [401, 403, 404, 502, 503].includes(error?.status) ? 'unauthorized' : 'menufail';
-          if (!window.DSPrintScope?.active()) say(menuIssue);   // trial not on the server yet (401) or its pool not ready (502 · 503) = sign-in line
+          if (error?.status === 429 || ['trial_limit','rate_limited'].includes(error?.code)) { guestRefusal(error); menuIssue = note.kind; }
+          else if (!window.DSPrintScope?.active()) say(menuIssue);   // trial not on the server yet (401) or its pool not ready (502 · 503) = sign-in line
         }
       } else {
         trialOn = false;
@@ -897,8 +900,8 @@
   }
   // next = { page } keeps the set and count of what is on screen and turns to another slice of it.
   function draw(next, confirmedSet) {
-    if (!confirmedSet && !next && window.DSPrintScope?.active()) { scopedDraw(); return; }
     if (!next && guest()) { guestDraw(); return; }
+    if (!confirmedSet && !next && window.DSPrintScope?.active()) { scopedDraw(); return; }
     const row = confirmedSet || current(), from = next && drawn ? drawn : null;
     if (!from && !row?.ready) { say('notready'); rerender(); return; }
     const want = from ? from.count : count, pageNo = from ? next.page : 0;
@@ -927,6 +930,7 @@
   function closeOutput() { outputDialog?.close(); }
   async function openOutput() {
     const h = host();
+    if (guest() && sharedPrint()) { guestDraw(); return; }
     if (outputDialog || pending || !sharedPrint() || window.DSPrintScope?.awaitingSupply(sel.subject)) return;
     const criteria = scopeCriteria();
     const origin = location.hash;
