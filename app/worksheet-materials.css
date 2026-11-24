@@ -1,0 +1,74 @@
+/* Screen surfaces use the timber at the top of the original flat-lay photograph.
+   The white sheet and pen in the middle of that photograph are outside the crop. */
+@media screen {
+  #content {
+    --ds-wood-photo: url("assets/textures/worksheet-flatlay.webp");
+    --ds-wood-light: linear-gradient(110deg, #fff8 0%, #fff3 48%, #976c3c0c 100%);
+    --ds-sheet-fibre: url("assets/textures/dl63-paper-fiber.webp");
+    --ds-sheet-light: linear-gradient(106deg, #c8b79416, #fff4 12%, transparent 75%, #a28c6210);
+  }
+
+  #content .ssp-desk .ssil-main,
+  #content .ds-timed .dst-layout,
+  #content :is(.dq61-sample-window,.dq59-canvas .creator-paper-stage) .ds48-paper-scene,
+  #content .ms-shop .ms-bookshelf {
+    background-color: #dfd1bb;
+    position:relative;
+    isolation:isolate;
+    background-image:var(--ds-wood-light),url("assets/textures/dl63-ash-wood.webp");
+    background-size:auto,570px auto;
+    border-color: #c8b9a3;
+    box-shadow: inset 0 1px #fff9, inset 0 -2px 3px #846b4a22, 0 2px 4px #544a3816;
+  }
+
+  #content .ssp-desk .ssil-main::before,
+  #content .ds-timed .dst-layout::before,
+  #content :is(.dq61-sample-window,.dq59-canvas .creator-paper-stage) .ds48-paper-scene::after,
+  #content .ms-shop .ms-bookshelf::before {
+    /* Use a photographic strip at its natural scale even on a tall mobile desk. */
+    content:"";position:absolute;inset:1px;z-index:-1;pointer-events:none;
+    border:0 solid transparent;border-radius:inherit;clip-path:inset(0 round 5px);
+    border-image-source:var(--ds-wood-photo);
+    border-image-slice:0 0 1352 0 fill;
+    border-image-width:0;
+    border-image-repeat:round round;
+    opacity:.67;
+  }
+
+  #content :is(.dq61-sample-window,.dq59-canvas .creator-paper-stage) .ds48-paper-scene::after {display:block!important}
+
+  #content :is(.dq61-sample-window,.dq59-canvas .creator-paper-stage) .ds48-paper-position,
+  #content .ssp-desk .ssil-live-paper,
+  #content .ds-timed .dst-sheet {
+    background-color: #fbfaf6;
+    background-image: var(--ds-sheet-light), var(--ds-sheet-fibre);
+    background-size: 100% 100%, 256px 256px;
+    background-position: left top;
+  }
+
+  /* A white source frame takes on the same sheet tone as its surrounding margin. */
+  #content :is(.ssp-desk .ssil-live-paper,.ds-timed .dst-sheet,.ds48-paper-position) {isolation:isolate}
+  #content .ssp-body .ds-student-fragment,
+  #content .csat-desk .csat-frame,
+  #content .ds-timed .dst-sheet .ds-student-fragment,
+  #content .ds48-paper-position iframe {mix-blend-mode:multiply}
+
+  #content .ms-shop .ms-volume .ms-stage {
+    position:relative;
+    border-bottom-color:#b8a487;
+  }
+  #content .ms-shop .ms-stage::after {
+    content:"";
+    position:absolute;
+    left:0;right:0;bottom:-5px;height:5px;
+    background:linear-gradient(#fff5,#7b63452a 72%,#755c402e),var(--ds-wood-photo) 50% 3% / 740px auto;
+    pointer-events:none;
+  }
+
+  #commission-online :is(.cr-entry,.cr-history,fieldset) {
+    border:1px solid #d0c8b8;
+    background:#fbf9f4 var(--ds-sheet-fibre) 0 0 / 256px;
+    box-shadow:0 1px #fcfbf6,0 2px #c9c0b0,1px 5px 9px #40352112;
+  }
+  #commission-online .cr-history {padding:18px}
+}
