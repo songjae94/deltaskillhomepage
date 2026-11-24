@@ -60,7 +60,21 @@ function bindCourse(el,history=false){
  controller=window.DSStudentStudyPaths.bind(el,options);
  if(!accountData?.ownerKey){const notice=document.createElement('p');notice.className='ssp-note';notice.textContent='계정 기록을 불러오지 못했어요. 현재 화면에서 풀 수 있지만 계정 저장은 연결 후 가능해요. ';const retry=document.createElement('button');retry.dataset.hubSync='';retry.textContent='기록 다시 불러오기';notice.append(retry);el.prepend(notice);}
 }
+function prepareGuestFrame(frame){
+ if(!frame?.matches?.('.dsh-guest [data-guest-question] iframe[data-sl-frame]')||!frame.isConnected)return;
+ const doc=frame.contentDocument;
+ if(!doc?.body||doc.URL==='about:blank'||doc.readyState==='loading'||doc.body.dataset.guestChoicesReady)return;
+ const id=frame.closest('[data-guest-question]').dataset.guestQuestion;
+ doc.body.dataset.guestChoicesReady='true';
+ window.DSTimedExam.prepareChoices({root:doc.body,id,value:guestChoice,choose:button=>{
+  if(!frame.isConnected||signed()||location.hash!=='#student'||tab!=='study')return;
+  guestChoice=Number(button.dataset.examChoice);
+  for(const key of doc.querySelectorAll('[data-exam-choice]'))key.setAttribute('aria-pressed',String(key===button));
+ }});
+}
+area.addEventListener('load',event=>prepareGuestFrame(event.target),true);
 function mount(){
+ prepareGuestFrame(area.querySelector('.dsh-guest [data-guest-question] iframe[data-sl-frame]'));
  if(csatArrived&&csatPractice&&location.hash==='#student'&&signed()){
   const id=csatPractice,phase=entry.snapshot().cloud.phase;
   if(phase==='ready'||phase==='saving'){csatPractice=null;entry.openPractice(id);return;}
@@ -96,9 +110,8 @@ document.addEventListener('click',e=>{
   csatPractice='SNG-2024-M11#공통#1';csatArrived=false;tab='study';
   const u=new URL(location.href);u.searchParams.set('studentMode',tab);history.replaceState(history.state,'',u);location.hash='#student';return;
  }
- const subject=e.target.closest('[data-hub-guest-subject]'),choice=e.target.closest('[data-hub-guest-choice]');
+ const subject=e.target.closest('[data-hub-guest-subject]');
  if(subject){guestSubject=subject.dataset.hubGuestSubject;guestChoice=null;update();area.querySelector('[data-hub-guest-subject][aria-pressed=true]')?.focus({preventScroll:true});return;}
- if(choice){guestChoice=Number(choice.dataset.hubGuestChoice);for(const key of area.querySelectorAll('[data-hub-guest-choice]'))key.setAttribute('aria-pressed',String(key===choice));return;}
  if(e.target.closest('[data-hub-sync]')){accountData=null;controller?.();controller=null;bound=null;mount();return;}const b=e.target.closest('[data-hub-tab]');
  if(b){
   const next=b.dataset.hubTab;
