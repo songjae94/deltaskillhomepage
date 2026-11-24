@@ -145,6 +145,13 @@
     const path = location.pathname + location.search + target;
     return '/auth/?mode=signup&next=' + encodeURIComponent(/^\/[A-Za-z0-9_\-./?#=&%]*$/.test(path) && !path.startsWith('//') ? path : location.pathname + target);
   }
+  function keepPrintSettings() {
+    window.DSPrintLoginReturn?.save(studentSurface() ? '#student' : '#teacher', {
+      sel:{...sel}, scopeLevels:{...scopedLevels()}, count, layout, columnRule, draftTitle, pageNote:{...pageNote}, withSol,
+      design:window.DSDocumentDesign?.selected().id, scope:window.DSPrintScope?.snapshot(),
+      openSections:[...document.querySelectorAll('#dq59-form details[data-print-option][open]')].map(box=>box.dataset.printOption)
+    });
+  }
   function goLogin() { window.DSLoginReturn = studentSurface() ? '#student' : '#teacher'; location.hash = '#login'; }
 
   // ── question markup: copy supported static nodes into a new tree ──
@@ -497,9 +504,13 @@
     const canQuote = awaitingSupply ? false : basic ? Boolean(current()?.ready) : choice &&
       (choice.mode !== 'book' || choice.book_id) && (choice.type_mode !== 'specific' || choice.type_ids.length);
     const retry = approvedTrial && trialMatches(approvedTrial);
-    const trial = basic && guest() && current() ? `<button type="button" class="tb36-quiet" data-dq-guest-preview ${pending || (retry && Date.now() < approvedTrial.retryAt) ? 'disabled' : ''}>${retry ? '남은 문항 이어 열기' : '기본 세트 맛보기'}</button>` : '';
+    const row = current();
+    const previewCount = retry ? approvedTrial.count : Math.min(count, 5, guestCap(row));
+    const trialLabel = retry ? '남은 문항 이어 열기' : previewCount
+      ? safe(row.unit)+' 기본 '+previewCount+'문항 체험' : '로그인하고 더 구성';
+    const trial = guest() && row && !awaitingSupply ? `<button type="button" class="tb36-quiet" data-dq-guest-preview ${pending || (retry && Date.now() < approvedTrial.retryAt) ? 'disabled' : ''}>${trialLabel}</button>` : '';
     const button = `<button type="submit" class="tb36-primary" ${canQuote && !pending ? '' : 'disabled'}>${pending?'문항 준비 중':'출력 / PDF 저장'} <span>→</span></button>`;
-    return `<div class="tb36-setup dq59-setup${guest() ? ' dq61-guest' : ''}"><form id="dq59-form" class="tb36-conditions"><div class="tb36-section-title"><b>01</b><h2>프린트 구성</h2></div>${basic ? meter() : ''}${fields}${scopeHtml}${awaitingSupply ? '' : countField()+studentOutputSettings()}${button}${trial}${noteHTML()}</form>${idle()}</div>`;
+    return `<div class="tb36-setup dq59-setup${guest() ? ' dq61-guest' : ''}"><form id="dq59-form" class="tb36-conditions"><div class="tb36-section-title"><b>01</b><h2>프린트 구성</h2></div>${basic ? meter() : ''}${fields}${scopeHtml}${awaitingSupply ? '' : countField()+studentOutputSettings()}${trial}${button}${noteHTML()}</form>${idle()}</div>`;
   }
   function solProgress() {
     const op = drawn?.solOp;
@@ -812,8 +823,9 @@
     if (note.kind === 'trialresume') note = {kind:'', text:''};
   }
   function trialMatches(set) {
-    return guest() && here() && printSurface() && !window.DSPrintScope?.active() &&
-      set.surface === location.hash && set.key === current()?.cell_key && set.count === count;
+    return guest() && here() && printSurface() && set.surface === location.hash &&
+      set.key === current()?.cell_key && set.requested === count &&
+      set.scope === JSON.stringify(window.DSPrintScope?.request());
   }
   function wakeTrial(set) {
     clearTimeout(trialWake);
@@ -836,14 +848,15 @@
   }
   function guestDraw() {
     if (pending) return;
-    const row = current(), want = count;
+    const row = current();
     if (!row) { say('notready'); rerender(); return; }
     if (approvedTrial && !trialMatches(approvedTrial)) clearTrial();
     if (approvedTrial && Date.now() >= approvedTrial.expiresAt) {
       clearTrial(); say('trialexpired'); rerender(); return;
     }
     if (approvedTrial && Date.now() < approvedTrial.retryAt) return;
-    if (!approvedTrial && want > guestCap(row)) { openGate('limit'); return; }
+    const want = approvedTrial?.count ?? Math.min(count, 5, guestCap(row));
+    if (!want) { openGate('limit'); return; }
     const job = async (h, signal, alive) => {
       let set = approvedTrial;
       if (!set) {
@@ -853,7 +866,7 @@
         writeTally(daily() - d.left);
         // Ticket verification remains on the server. Drop local copies at its one-hour or KST day boundary.
         const reset = Date.parse(d.resets_at);
-        set = {surface:location.hash, key:row.cell_key, count:want, ticket:d.ticket, status:d.status,
+        set = {surface:location.hash, key:row.cell_key, requested:count, scope:JSON.stringify(window.DSPrintScope?.request()), count:want, ticket:d.ticket, status:d.status,
           items:d.items, bodies:new Map(), expiresAt:Math.min(issued + 3600000, Number.isFinite(reset) ? reset : Infinity), retryAt:0};
         approvedTrial = set;
         wakeTrial(set);
@@ -938,11 +951,7 @@
     dialog.addEventListener('close',()=>{
       clearTimeout(timer); abort.abort(); dialog.remove(); outputDialog=null;
       if (dialog.returnValue === 'login' && sharedPrint() && location.hash === origin) {
-        window.DSPrintLoginReturn?.save(studentSurface() ? '#student' : '#teacher', {
-          sel:{...sel}, scopeLevels:{...scopedLevels()}, count, layout, columnRule, draftTitle, pageNote:{...pageNote}, withSol,
-          design:window.DSDocumentDesign?.selected().id, scope:window.DSPrintScope?.snapshot(),
-          openSections:[...document.querySelectorAll('#dq59-form details[data-print-option][open]')].map(box=>box.dataset.printOption)
-        });
+        keepPrintSettings();
         goLogin(); return;
       }
       const chosen = offers.querySelector('input:checked:enabled')?.value;
@@ -1195,7 +1204,8 @@
     if (g && (here() || g.closest('#dq61-gate'))) {
       if (g.hasAttribute('data-dq61-gate-open')) { e.preventDefault(); openGate(g.dataset.dq61GateOpen); return; }
       const want = opened || 'more';
-      if (drawn?.guest && !sharedPrint()) keepBack(want === 'limit' ? 'more' : want);
+      if (sharedPrint()) keepPrintSettings();
+      else if (drawn?.guest) keepBack(want === 'limit' ? 'more' : want);
       if (g.hasAttribute('data-dq61-login')) { e.preventDefault(); document.getElementById('dq61-gate')?.close(); goLogin(); }
       return;                                    // the sign-up link goes on as a normal link
     }
@@ -1205,7 +1215,7 @@
     else if (b.hasAttribute('data-dq-finish')) { if (pending) return; phase = 'finish'; page = 0; note = { kind: '', text: '' }; rerender(); }
     else if (b.hasAttribute('data-dq-review')) { waitPrint = false; phase = 'cards'; note = { kind: '', text: '' }; rerender(); }
     else if (b.hasAttribute('data-dq-menu')) { note = { kind: '', text: '' }; menuTried = false; rerender(); }
-    else if (b.hasAttribute('data-dq-guest-preview') && guest() && !window.DSPrintScope?.active()) guestDraw();
+    else if (b.hasAttribute('data-dq-guest-preview') && guest()) guestDraw();
     else if (b.hasAttribute('data-dq-redraw')) { clearTrial(); note = { kind: '', text: '' }; if (guest()) guestDraw(); else openOutput(); }
     else if (b.hasAttribute('data-dq61-solretry')) { if (drawn && !drawn.guest) { dropSolutions(); note = { kind: '', text: '' }; prefetch(drawn); rerender(); } }
     else if (b.hasAttribute('data-dq-next')) { if (sharedPrint()) { phase='setup'; rerender(); openOutput(); return; } if (drawn && !pending && !drawn.guest) draw({ page: (drawn.page + 2) * drawn.count <= 50 ? drawn.page + 1 : 0 }); }
