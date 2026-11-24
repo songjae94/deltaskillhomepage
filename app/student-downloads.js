@@ -29,17 +29,24 @@ function storeScope(){
  if(['유리함수','무리함수'].includes(local))return {subject:'공통수학2',unit:'유리함수와 무리함수',label:'공통수학2 · 유리함수와 무리함수'};
  return null;
 }
+function categoryNavigation(){
+ const labels=['부교재(변형)연습','단원평가(모의내신)','받은자료'];
+ const buttons=panes.map((id,i)=>`<button type="button" data-sd-pane="${id}" aria-pressed="${pane===id}"><small>${i+1}</small>${labels[i]}</button>`).join('');
+ return `<nav class="ms-categories" aria-label="자료받기 메뉴">${buttons}<button type="button" disabled title="준비 중"><small>4</small>수업자료(학원수업)</button></nav>`;
+}
 function render(){rendering=true;try{
- const copy={
-  store:['내 교재로 한 번 더 풀어볼까?','수업에서 쓰는 책과 단원을 고르면 연습 자료와 가격을 볼 수 있어요.'],
-  print:['우리 학교 시험처럼 풀어보기','시험 범위와 유형을 골라 나만의 모의내신 시험지를 만들어 보세요.'],
-  files:['받아 둔 자료, 다시 펼쳐보기','받은 PDF는 포인트를 더 쓰지 않고 다시 열 수 있어요.']
- }[pane];
- const tabs=panes.map((id,i)=>'<button type="button" data-sd-pane="'+id+'" aria-pressed="'+(pane===id)+'">'+['부교재(변형)연습','단원평가(모의내신)','받은자료'][i]+'</button>').join('')+'<button type="button" disabled>수업자료(학원수업)<small>준비 중</small></button>';let body;
- if(pane==='store')body=(window.DSMaterialsShop?.render({audience:'student',scope:storeScope()})||'<p role="status">교재 자료를 불러오고 있어요.</p>')+'<details class="sd-owned"><summary>이미 받은 PDF와 구매 결과 확인</summary><section class="ppdf ppdf-account" data-ppdf-receipts><p role="status">PDF 보관함을 불러오고 있어요.</p></section></details>';
- else if(pane==='print')body=printHTML();
- else body='<section class="sd-files dl63-receipt"><h2>내가 받은 자료</h2><p>자료 이름을 눌러 PDF를 열어 보세요.</p><section class="ppdf ppdf-account" data-ppdf-receipts><p role="status">PDF 보관함을 불러오고 있어요.</p></section><a href="#account">한글 구매·월 이용권 자료와 전체 보관함 보기 →</a></section>';
- return '<section class="sd-downloads dl63-page dl63" data-sd-view="'+pane+'"><nav class="sd-tabs" aria-label="자료받기 메뉴">'+tabs+'</nav><header class="sd-heading dl63-head"><div><h1>'+copy[0]+'</h1><p>'+copy[1]+'</p></div><a href="#account">마이페이지 →</a></header><div class="sd-body">'+body+'</div></section>';
+ const navigation=categoryNavigation();
+ let content;
+ if(pane==='store'){
+  content=window.DSMaterialsShop?.render({audience:'student',scope:storeScope(),navigation})||navigation+'<p role="status">교재 자료를 불러오고 있어요.</p>';
+ }else{
+  const isPrint=pane==='print';
+  const heading=isPrint?'단원평가(모의내신)':'받은자료';
+  const description=isPrint?'시험 범위와 유형을 골라 나만의 모의시험지를 만들어 보세요.':'받은 PDF는 포인트를 더 쓰지 않고 다시 열 수 있어요.';
+  const body=isPrint?printHTML():'<section class="sd-files dl63-receipt"><h2>내가 받은 자료</h2><section class="ppdf ppdf-account" data-ppdf-receipts><p role="status">PDF 보관함을 불러오고 있어요.</p></section><a href="#account">한글 구매·월 이용권 자료와 전체 보관함 보기 →</a></section>';
+  content=`<header class="sd-heading dl63-head"><div><h1>${heading}</h1><p>${description}</p></div></header>${navigation}${body}`;
+ }
+ return `<section class="sd-downloads dl63-page dl63" data-sd-view="${pane}"><div class="sd-body">${content}</div></section>`;
 }finally{rendering=false;}}
 function mount(container){const box=container?.matches?.('.sd-downloads')?container:container?.querySelector?.('.sd-downloads')||root();if(!box)return;window.DSDrawTeacherV59?.mount?.();window.DSTeacherBuilderV36?.fitLivePreviews?.(box);}
 function refresh(focus){const old=root();if(!old)return;const t=document.createElement('template');t.innerHTML=render();old.replaceWith(t.content);mount();if(focus)root()?.querySelector(focus)?.focus({preventScroll:true});}

@@ -16,6 +16,7 @@
     if (Array.isArray(saved)) cart = [...new Set(saved.filter(x => typeof x === 'string'))];
   } catch {}
   let scope=null;
+  let studentNavigation = '';
   let products = [], selected = '', status = 'idle', audience = 'teacher';
   function save() {
     try { localStorage.setItem(storageKey, JSON.stringify(cart)); } catch {}
@@ -124,7 +125,8 @@
     const cartButton = `<button class="ms-cart-button" type="button" data-ms-cart aria-label="장바구니 ${count}개"><i aria-hidden="true"></i>장바구니 <b>${count}</b></button>`;
     const tabs = categories.map((c,i) => `<button type="button" ${i?'disabled':'aria-pressed="true"'}><small>${i+1}</small>${c}</button>`).join('');
     const catalog = status === 'error' ? '<p>교재 목록을 불러오지 못했습니다.</p><button data-ms-retry>다시 불러오기</button>' : status !== 'ready' ? '<p role="status">교재 목록을 불러오는 중입니다.</p>' : picker() + items();
-    return `<div class="ms-mast dl63-head"><div>${audience==='student'?'<h2>교재 서점</h2>':'<span class="dl63-kicker">시험 범위 자료 고르기</span><h1>내신 자료</h1>'}${status==='ready' ? `<p>연계 교재 ${grouped().length}종 <i>·</i> 단원별 자료 ${products.length}권</p>` : ''}</div>${cartButton}</div><div class="ms-categories" role="group" aria-label="자료 종류">${tabs}</div>${catalog}`;
+    const navigation = studentNavigation || `<div class="ms-categories" role="group" aria-label="자료 종류">${tabs}</div>`;
+    return `<div class="ms-mast dl63-head"><div><span class="dl63-kicker">시험 범위 자료 고르기</span><h1>내신 자료</h1>${status==='ready' ? `<p>연계 교재 ${grouped().length}종 <i>·</i> 단원별 자료 ${products.length}권</p>` : ''}</div>${cartButton}</div>${navigation}${catalog}`;
   }
   window.addEventListener('ds-point-pdf-update', () => { if (!root()?.querySelector('dialog[open]')) refresh(); });
   const root = () => document.querySelector('#content .ms-shop');
@@ -132,6 +134,7 @@
   window.DSMaterialsShop = {
     render(options={}) {
       audience=options.audience==='student'?'student':'teacher';
+      studentNavigation=audience==='student'?options.navigation||'':'';
       scope=audience==='student'?options.scope||null:null;
       load();
       return '<section class="ms-shop dl63-page dl63" data-ms-audience="'+audience+'">' + body() + '</section>';
