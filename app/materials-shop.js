@@ -114,7 +114,8 @@
       return `<button type="button" class="ms-pick" aria-pressed="${id === pickKey}" aria-label="${formatLabel(fmt)} ${cost(p, fmt)}${fmt === 'hwpx' ? ' 카드 결제만' : ''}${cart.includes(id) ? ' 담김' : ''}" data-ms-pick="${escape(id)}"><span>${formatLabel(fmt)}${cardOnly}</span><b>${cost(p, fmt)}</b>${cart.includes(id) ? '<small>담김</small>' : ''}</button>`;
     }).join('');
     const action = added ? '담김' : '담기';
-    return `<div class="ms-choice" role="group" aria-label="${label} 파일 형식">${rows}</div><button type="button" class="ms-add" aria-label="${label} ${formatLabel(pick.fmt)} ${cost(pick.p, pick.fmt)} ${action}" data-ms-add="${escape(pickKey)}" ${added ? 'disabled' : ''}>${action}</button><p class="ms-note">${escape(card.note)}</p>`;
+    const buyNow = `<button type="button" class="ms-buy-now" aria-label="${label} ${formatLabel(pick.fmt)} ${cost(pick.p, pick.fmt)} 바로 구매" data-ms-buy="${escape(pickKey)}">바로 구매</button>`;
+    return `<div class="ms-choice" role="group" aria-label="${label} 파일 형식">${rows}</div><div class="ms-acts"><button type="button" class="ms-add" aria-label="${label} ${formatLabel(pick.fmt)} ${cost(pick.p, pick.fmt)} ${action}" data-ms-add="${escape(pickKey)}" ${added ? 'disabled' : ''}>${action}</button>${buyNow}</div><p class="ms-note">${escape(card.note)}</p>`;
   }
   function coverTile(card) {
     const p = card.main, label = escape(title(p));
@@ -179,8 +180,8 @@
     panel.append(dialog);
     dialog.showModal();
   }
-  function reviewOrder(panel) {
-    const entries = picked();
+  function reviewOrder(panel, only) {
+    const entries = only || picked();
     if (!entries.length) return;
     const dialog = document.createElement('dialog');
     dialog.className = 'ms-order dl63-receipt';
@@ -206,11 +207,26 @@
       const first = pdfs[0];
       pay = `<a class="ms-review-open ms-pay" data-ms-pay ${audience==='student'?'data-ms-point-receive="'+escape(key(first.p,'pdf'))+'"':''} href="/app/?pointPdf=${encodeURIComponent(key(first.p,'pdf'))}#library">${pdfs.length > 1 ? '첫 PDF ' : 'PDF '}포인트로 받기 · ${cost(first.p,'pdf')}</a>`;
     }
-    dialog.innerHTML = `<header><h2 id="ms-order-title">주문 내용 확인</h2><form method="dialog"><button type="submit" aria-label="주문 내용 닫기">닫기</button></form></header><ul>${lines}</ul>${totals(entries)}<p class="ms-order-note">PDF는 묶음마다 한 번만 차감합니다. 구매 화면에서 잔액과 보유 권리를 확인하며, 이미 보유한 PDF는 추가 차감하지 않습니다. 한글(HWPX)은 포인트로 결제할 수 없고 카드 결제만 됩니다.</p>${pay}<form method="dialog"><button type="submit" value="basket" class="ms-review-back">장바구니로 돌아가기</button></form>`;
+    dialog.innerHTML = `<header><h2 id="ms-order-title">주문 내용 확인</h2><form method="dialog"><button type="submit" aria-label="주문 내용 닫기">닫기</button></form></header><ul>${lines}</ul>${totals(entries)}<p class="ms-order-note">PDF는 묶음마다 한 번만 차감합니다. 구매 화면에서 잔액과 보유 권리를 확인하며, 이미 보유한 PDF는 추가 차감하지 않습니다. 한글(HWPX)은 포인트로 결제할 수 없고 카드 결제만 됩니다.</p>${pay}<form method="dialog"><button type="submit" value="${only ? '' : 'basket'}" class="ms-review-back">${only ? '계속 고르기' : '장바구니로 돌아가기'}</button></form>`;
     dialog.addEventListener('close', () => { dialog.remove(); if (dialog.returnValue === 'basket') openCart(panel); else panel.querySelector('[data-ms-cart]')?.focus({preventScroll:true}); }, {once:true});
     panel.append(dialog);
     dialog.showModal();
   }
+  /* 11-25 58: 시중 교재 판매 사이트(교보문고 · YES24)처럼 담기를 누르면 바로 팝업 — 장바구니 가기 / 계속 고르기.
+     장바구니는 3권까지(한 번 결제 3권과 같은 잣대) — 넘으면 담지 않고 같은 팝업에서 알린다. */
+  function addedPopup(panel, item, full) {
+    const dialog = document.createElement('dialog');
+    dialog.className = 'ms-order ms-added dl63-receipt';
+    dialog.setAttribute('aria-labelledby','ms-added-title');
+    const head = full ? '장바구니는 3권까지 담을 수 있습니다' : '장바구니에 담았습니다';
+    const what = item ? `<p class="ms-added-item"><strong>${escape(title(item.p))}</strong><small>${formatLabel(item.fmt)} · ${cost(item.p,item.fmt)}</small></p>` : '';
+    const tail = full ? '<p class="ms-order-note">장바구니에서 하나를 빼거나, 지금 담긴 것을 먼저 결제해 주세요.</p>' : '';
+    dialog.innerHTML = `<header><h2 id="ms-added-title">${head}</h2></header>${what}${tail}<p class="ms-added-count">장바구니 ${picked().length} / 3권</p><form method="dialog" class="ms-added-acts"><button type="submit" value="cart" class="ms-review-open">장바구니 가기</button><button type="submit" value="" class="ms-review-back">계속 고르기</button></form>`;
+    dialog.addEventListener('close', () => { dialog.remove(); if (dialog.returnValue === 'cart') openCart(panel); else panel.querySelector('[data-ms-cart]')?.focus({preventScroll:true}); }, {once:true});
+    panel.append(dialog);
+    dialog.showModal();
+  }
+  const offerOf = id => { for (const p of products) for (const fmt of ['pdf','hwpx']) if (key(p,fmt) === id && enabled(p,fmt)) return {p, fmt}; return null; };
   function body() {
     const count = picked().length;
     const cartButton = `<button class="ms-cart-button" type="button" data-ms-cart aria-label="장바구니 ${count}개"><i aria-hidden="true"></i>장바구니 <b>${count}</b></button>`;
@@ -290,7 +306,8 @@
     if(b.hasAttribute('data-ms-retry')){status='idle';load();refresh();return;}
     if(b.dataset.msPick){const tile=b.closest('[data-ms-card]'),card=cardIndex.get(tile?.dataset.msCard);if(!card)return;chosen.set(card.id,b.dataset.msPick);tile.querySelector('.ms-formats').innerHTML=formats(card);[...tile.querySelectorAll('[data-ms-pick]')].find(x=>x.dataset.msPick===b.dataset.msPick)?.focus({preventScroll:true});return;}
     if(b.dataset.msBook){clearScope();selected=b.dataset.msBook;refresh();root().querySelector('summary').focus({preventScroll:true});}
-    if(b.dataset.msAdd&&!cart.includes(b.dataset.msAdd)){const match=products.find(p=>['pdf','hwpx'].some(fmt=>key(p,fmt)===b.dataset.msAdd&&enabled(p,fmt)));if(!match)return;cart.push(b.dataset.msAdd);save();refresh();}
+    if(b.dataset.msAdd&&!cart.includes(b.dataset.msAdd)){const item=offerOf(b.dataset.msAdd);if(!item)return;if(picked().length>=3){addedPopup(panel,item,true);return;}cart.push(b.dataset.msAdd);save();refresh();const fresh=root();if(fresh)addedPopup(fresh,item,false);return;}
+    if(b.dataset.msBuy){const item=offerOf(b.dataset.msBuy);if(item)reviewOrder(panel,[item]);return;}
     if(b.dataset.msRemove){
       cart=cart.filter(k=>k!==b.dataset.msRemove);save();
       const sheet = panel.querySelector('.ms-cart-sheet');
