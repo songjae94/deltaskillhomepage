@@ -6,7 +6,7 @@
   const date=value=>Number.isFinite(Date.parse(value))?new Intl.DateTimeFormat('ko-KR',{year:'numeric',month:'long',day:'numeric',timeZone:'Asia/Seoul'}).format(new Date(value)):'';
   const disabled=value=>value?' disabled':'';
   function card({title,fileId,meta,actions,format='PDF'}){
-    const sku=String(fileId||'').replace(/\.pdf$/i,'');
+    const sku=String(fileId||'').replace(/\.(pdf|hwpx)$/i,'');
     const cover=knownCovers.has(sku)?`<img src="public-data/covers/${sku}.webp?v=cover-r2-1125" alt="" width="50" height="71">`:`<span class="sr-format" aria-hidden="true">${escape(format||'파일')}</span>`;
     return `<li class="sr-row">${cover}<div><h4>${escape(title)}</h4><p>${escape(meta.filter(Boolean).join(' · '))}</p><div class="sr-actions">${actions}</div></div></li>`;
   }
@@ -15,13 +15,14 @@
     if(!rows.length)return heading+'<p>포인트로 구매한 교재가 여기에 보관돼요.</p>';
     return heading+'<ul class="sr-list">'+rows.map(row=>{
       const key=escape(row.receiptId),ready=row.fileStored===true&&row.fileState==='stored'&&row.redownloadable!==false;
-      const resume=window.DSReceivedPdf?.hasProgress(row.receiptId);
-      const actions=ready?
+      const hwpx=/\.hwpx$/i.test(String(row.fileId||''));
+      const resume=!hwpx&&window.DSReceivedPdf?.hasProgress(row.receiptId);
+      const actions=ready&&hwpx?`<button type="button" data-ppdf-again="${key}"${disabled(busy)}>다시 받기</button>`:ready?
         `<button type="button" data-ppdf-study="${key}" data-mode="${resume?'resume':'read'}"${disabled(busy)}>${resume?'이어풀기':'바로 풀기'}</button>
           <button type="button" data-ppdf-again="${key}"${disabled(busy)}>다시 받기</button>
           ${window.DSStudentTimed?.canOpenReceived(row)?`<button type="button" data-ppdf-timed="${key}"${disabled(busy)}>타임어택</button>`:'<span>타임어택 문항 연결 준비 중</span>'}`:
         (row.redownloadable===false?'<span>지금은 다시 받을 수 없어요</span>':`<button type="button" data-ppdf-again="${key}"${disabled(busy)}>다시 받기</button><span>보관 상태 확인 필요</span>`);
-      return card({title:row.title||row.fileId,fileId:row.fileId,meta:[row.subject,'PDF',row.points.toLocaleString('ko-KR')+' P',date(row.receivedAt)],actions});
+      return card({title:row.title||row.fileId,fileId:row.fileId,format:hwpx?'한글':'PDF',meta:[row.subject,hwpx?'한글':'PDF',row.points.toLocaleString('ko-KR')+' P',date(row.receivedAt)],actions});
     }).join('')+'</ul>';
   }
   window.DSStudentReceipts={pointList};
