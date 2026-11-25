@@ -37,7 +37,10 @@
   const h = value => String(value ?? '').replace(/[&<>"']/g, c => entities[c]);
   const won = n => Number(n).toLocaleString('ko-KR') + '원';
   const pointQuote = item => window.DSPointPdf?.product(item.sku + '.pdf');
-  const shownPrice = (item,fmt) => fmt === 'pdf' ? (pointQuote(item) ? pointQuote(item).points.toLocaleString('ko-KR') + ' P' : '포인트 가격 확인 중') : won(item.formats[fmt].price);
+  // 57 1125: 손님은 포인트 목록(회원 부름)을 못 읽는다 — 판매 목록 값으로 보이고(materials-shop 과 같은 잣대), 값이 없을 때만 로그인 권함.
+  const publicPoints = item => Number.isSafeInteger(item.formats?.pdf?.price) ? item.formats.pdf.price : null;
+  const signedIn = () => Boolean(window.DSAuth?.get?.());
+  const shownPrice = (item,fmt) => fmt === 'pdf' ? (pointQuote(item) ? pointQuote(item).points.toLocaleString('ko-KR') + ' P' : publicPoints(item) !== null ? publicPoints(item).toLocaleString('ko-KR') + ' P' : signedIn() ? '포인트 가격 확인 중' : '로그인하면 포인트 값이 보여요') : won(item.formats[fmt].price);
   const abs = path => /^https:\/\//.test(path) ? path : ORIGIN + path;
   const outLink = (href, body, cls = '') => `<a class="${cls}" href="${h(abs(href))}" target="_blank" rel="noopener">${body}<span aria-hidden="true">↗</span><span class="sr-only"> 새 탭</span></a>`;
 
@@ -119,7 +122,7 @@
     const lay = v.files.filter(x => x.layout).map(x => `<li><span>${h(x.layout)}</span><b>${x.pages ? x.pages + '쪽' : ''}</b></li>`).join('');
     const quote = f === 'pdf' ? pointQuote(item) : null;
     const point = POINT_PDF && quote && typeof window.DSPointService?.redeemPdf === 'function'
-      ? `<button type="button" class="dl63-point" data-dl63-point="${h(item.sku)}"${window.DSPointPdf.availability(item.sku) ? '' : ' disabled'}>${quote.owned ? '이미 보유 · 차감 없이 받기' : '포인트로 묶음 받기'}</button>` : '';
+      ? `<button type="button" class="dl63-point" data-dl63-point="${h(item.sku)}"${window.DSPointPdf.availability(item.sku) ? '' : ' disabled'}>${quote.owned ? '이미 보유 · 차감 없이 받기' : '포인트로 묶음 받기'}</button>` : POINT_PDF && f === 'pdf' && !signedIn() ? '<a class="dl63-point" href="#login">로그인하고 포인트로 받기</a><p class="dl63-note">가입하면 받는 포인트로 PDF를 받을 수 있어요.</p>' : '';
     return `<div class="dl63-receipt">
       <span class="dl63-kicker">고른 자료</span>
       <h3>${h(item.name)}</h3>

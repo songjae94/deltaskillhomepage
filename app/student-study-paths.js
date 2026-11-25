@@ -966,7 +966,7 @@ function bind(container,options={}){
   return guestStylePromise;
  }
  function guestFailure(error){
-  if(error?.code==='trial_limit')return '오늘 로그인 없이 체험할 수 있는 20문항을 모두 사용했어요. 내일 다시 체험하거나 로그인하고 계속 공부할 수 있어요.';
+  if(error?.code==='trial_limit')return '오늘 로그인 없이 풀 수 있는 문항을 모두 풀었어요. 로그인하면 이어서 공부할 수 있어요.';
   if(error?.status===429||error?.code==='rate_limited')return '요청이 잠시 많아요. 잠시 후 다시 확인해 주세요.';
   return '공개 체험 문항을 불러오지 못했어요. 잠시 후 다시 확인해 주세요.';
  }
@@ -979,7 +979,7 @@ function bind(container,options={}){
    if(closed||generation!==epoch||signed())return;
    if(!Array.isArray(data.cells))throw Error('trial_menu');
    guestCells=data.cells.filter(cell=>typeof cell.cell_key==='string'&&typeof cell.subject==='string'&&typeof cell.unit==='string'&&cell.size>0);
-   supplyPhase='guest';planMessage='로그인 없이 공개된 대단원 문항을 먼저 풀어볼 수 있어요. 하루 최대 20문항까지 체험할 수 있어요.';
+   supplyPhase='guest';planMessage='로그인 없이 공개된 대단원 문항을 바로 풀어볼 수 있어요. 로그인하면 푼 기록이 남아요.';
   }catch(error){if(closed||generation!==epoch||signed())return;supplyPhase='error';planMessage=guestFailure(error);}
   draw(false);
  }
