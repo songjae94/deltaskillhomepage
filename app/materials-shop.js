@@ -191,7 +191,22 @@
         : cashReady(p) ? `<a href="${escape(library.checkoutHref(p,fmt))}">한글 카드 결제하기</a><small>한글은 포인트 사용 불가 · 카드 결제만</small>` : '<small>한글 준비 중</small>';
       return `<li><small>${escape(displayBook(p.source))}</small><strong>${escape(title(p))}</strong><div><span>${formatLabel(fmt)} · ${cost(p,fmt)}</span>${action}</div></li>`;
     }).join('');
-    dialog.innerHTML = `<header><h2 id="ms-order-title">주문 내용 확인</h2><form method="dialog"><button type="submit" aria-label="주문 내용 닫기">닫기</button></form></header><ul>${lines}</ul>${totals(entries)}<p class="ms-order-note">PDF는 묶음마다 한 번만 차감합니다. 구매 화면에서 잔액과 보유 권리를 확인하며, 이미 보유한 PDF는 추가 차감하지 않습니다. 한글(HWPX)은 포인트로 결제할 수 없고 카드 결제만 됩니다.</p><form method="dialog"><button type="submit" value="basket" class="ms-review-open">장바구니로 돌아가기</button></form>`;
+    /* 11-25 58: 이 창의 큰 단추가 「장바구니로 돌아가기」 하나뿐이라 결제로 이어지지 않았다.
+       한글은 장바구니 그대로 주문서(/checkout · 3권까지 한 번에 · 토스 카드 결제)로, PDF만 담았으면 포인트 받기로 잇는다. */
+    const cash = entries.filter(({p,fmt}) => fmt === 'hwpx' && cashReady(p));
+    const pdfs = entries.filter(({fmt}) => fmt === 'pdf');
+    let pay = '';
+    if (cash.length > 3) pay = '<p class="ms-order-note" role="alert">한글 카드 결제는 한 번에 3권까지입니다. 장바구니에서 빼고 다시 결제해 주세요.</p>';
+    else if (cash.length) {
+      const q = new URLSearchParams();
+      for (const {p} of cash) q.append(cash.length === 1 ? 'sku' : 'skus', key(p,'hwpx'));
+      const sum = cash.reduce((s, {p}) => s + price(p,'hwpx'), 0);
+      pay = `<a class="ms-review-open ms-pay" data-ms-pay href="/checkout/?${q}">한글 ${cash.length}권 카드 결제하기 · ${money(sum)}원</a>${pdfs.length ? '<p class="ms-order-note">PDF는 포인트로 받습니다. 위 목록의 「포인트 구매 확인」을 눌러 주세요.</p>' : ''}`;
+    } else if (pdfs.length) {
+      const first = pdfs[0];
+      pay = `<a class="ms-review-open ms-pay" data-ms-pay ${audience==='student'?'data-ms-point-receive="'+escape(key(first.p,'pdf'))+'"':''} href="/app/?pointPdf=${encodeURIComponent(key(first.p,'pdf'))}#library">${pdfs.length > 1 ? '첫 PDF ' : 'PDF '}포인트로 받기 · ${cost(first.p,'pdf')}</a>`;
+    }
+    dialog.innerHTML = `<header><h2 id="ms-order-title">주문 내용 확인</h2><form method="dialog"><button type="submit" aria-label="주문 내용 닫기">닫기</button></form></header><ul>${lines}</ul>${totals(entries)}<p class="ms-order-note">PDF는 묶음마다 한 번만 차감합니다. 구매 화면에서 잔액과 보유 권리를 확인하며, 이미 보유한 PDF는 추가 차감하지 않습니다. 한글(HWPX)은 포인트로 결제할 수 없고 카드 결제만 됩니다.</p>${pay}<form method="dialog"><button type="submit" value="basket" class="ms-review-back">장바구니로 돌아가기</button></form>`;
     dialog.addEventListener('close', () => { dialog.remove(); if (dialog.returnValue === 'basket') openCart(panel); else panel.querySelector('[data-ms-cart]')?.focus({preventScroll:true}); }, {once:true});
     panel.append(dialog);
     dialog.showModal();

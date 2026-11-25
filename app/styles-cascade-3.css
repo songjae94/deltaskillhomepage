@@ -2963,6 +2963,8 @@ html[data-purchase="b"] .ppdf :focus-visible {outline:3px solid var(--pb-accent-
 #content .ms-order li strong, #content .ms-line small { display:block; margin:4px 0 }
 #content .ms-order a { color:#584362; font-weight:600 }
 #content .ms-order .ms-review-open { width:100%; min-height:44px; padding:9px 16px; border:1px solid #A18BA8; border-bottom-color:#54405B; border-radius:6px; background:linear-gradient(#786280,#584362); color:#fff; font-size:15px; font-weight:700; box-shadow:inset 0 1px #C3A9CA66 }
+#content .ms-order a.ms-pay { display:flex; align-items:center; justify-content:center; margin-top:4px; color:#fff; text-decoration:none; text-align:center }
+#content .ms-order .ms-review-back { width:100%; min-height:44px; margin-top:8px; padding:8px 16px; border:1px solid var(--ms-line); border-radius:6px; background:#fff; color:var(--ms-soft); font-size:14px; font-weight:600 }
 #content .ms-order-note { font-size:12px; line-height:1.6; color:var(--ms-soft) }
 
 @media (max-width:1000px) {
