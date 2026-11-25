@@ -12,7 +12,7 @@
   const MAIL = 'admin@deltaskill.co.kr';
   // 「포인트로 받기」 스위치 — 기본 꺼짐. 켜도 포인트 서버(window.DSPointService.redeemPdf)가 없으면 아무것도 그리지 않는다.
   const POINT_PDF = true;
-  const UPLOAD_POINTS = '5,000';
+  const UPLOAD_POINTS = '10,000';
   const FORMATS = { pdf: 'PDF', hwpx: '한글(HWPX)' };
   const GRADES = { 1: '1학년', 2: '2학년', 3: '3학년' };
   const SEMESTERS = { 1: '1학기', 2: '2학기' };
@@ -36,11 +36,12 @@
   const entities = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
   const h = value => String(value ?? '').replace(/[&<>"']/g, c => entities[c]);
   const won = n => Number(n).toLocaleString('ko-KR') + '원';
-  const pointQuote = item => window.DSPointPdf?.product(item.sku + '.pdf');
+  // 11-25 61: PDF · 한글 모두 포인트 — 꼴마다 서버 포인트 목록 SKU(<책 SKU>.pdf · .hwpx).
   // 57 1125: 손님은 포인트 목록(회원 부름)을 못 읽는다 — 판매 목록 값으로 보이고(materials-shop 과 같은 잣대), 값이 없을 때만 로그인 권함.
-  const publicPoints = item => Number.isSafeInteger(item.formats?.pdf?.price) ? item.formats.pdf.price : null;
+  const pointQuote = (item, fmt = 'pdf') => window.DSPointPdf?.product(item.sku + '.' + fmt);
+  const publicPoints = (item, fmt = 'pdf') => Number.isSafeInteger(item.formats?.[fmt]?.price) ? item.formats[fmt].price : null;
   const signedIn = () => Boolean(window.DSAuth?.get?.());
-  const shownPrice = (item,fmt) => fmt === 'pdf' ? (pointQuote(item) ? pointQuote(item).points.toLocaleString('ko-KR') + ' P' : publicPoints(item) !== null ? publicPoints(item).toLocaleString('ko-KR') + ' P' : signedIn() ? '포인트 가격 확인 중' : '로그인하면 포인트 값이 보여요') : won(item.formats[fmt].price);
+  const shownPrice = (item,fmt) => pointQuote(item,fmt) ? pointQuote(item,fmt).points.toLocaleString('ko-KR') + ' P' : publicPoints(item,fmt) !== null ? publicPoints(item,fmt).toLocaleString('ko-KR') + ' P' : signedIn() ? '포인트 가격 확인 중' : '로그인하면 포인트 값이 보여요';
   const abs = path => /^https:\/\//.test(path) ? path : ORIGIN + path;
   const outLink = (href, body, cls = '') => `<a class="${cls}" href="${h(abs(href))}" target="_blank" rel="noopener">${body}<span aria-hidden="true">↗</span><span class="sr-only"> 새 탭</span></a>`;
 
@@ -120,9 +121,9 @@
     const f = fmtOf(item), v = item.formats[f];
     const fmts = Object.keys(item.formats).map(k => `<button type="button" class="dl63-fmt" data-dl63-fmt="${k}" aria-pressed="${k === f}"><span>${FORMATS[k]}</span><b>${shownPrice(item,k)}</b></button>`).join('');
     const lay = v.files.filter(x => x.layout).map(x => `<li><span>${h(x.layout)}</span><b>${x.pages ? x.pages + '쪽' : ''}</b></li>`).join('');
-    const quote = f === 'pdf' ? pointQuote(item) : null;
+    const quote = pointQuote(item, f), pointId = item.sku + '.' + f;
     const point = POINT_PDF && quote && typeof window.DSPointService?.redeemPdf === 'function'
-      ? `<button type="button" class="dl63-point" data-dl63-point="${h(item.sku)}"${window.DSPointPdf.availability(item.sku) ? '' : ' disabled'}>${quote.owned ? '이미 보유 · 차감 없이 받기' : '포인트로 묶음 받기'}</button>` : POINT_PDF && f === 'pdf' && !signedIn() ? '<a class="dl63-point" href="#login">로그인하고 포인트로 받기</a><p class="dl63-note">가입하면 받는 포인트로 PDF를 받을 수 있어요.</p>' : '';
+      ? `<button type="button" class="dl63-point" data-dl63-point="${h(pointId)}"${window.DSPointPdf.availability(pointId) ? '' : ' disabled'}>${quote.owned ? '이미 보유 · 차감 없이 받기' : '포인트로 묶음 받기'}</button>` : POINT_PDF && !signedIn() ? '<a class="dl63-point" href="#login">로그인하고 포인트로 받기</a><p class="dl63-note">가입하면 받는 포인트로 PDF · 한글을 받을 수 있어요.</p>' : '';
     return `<div class="dl63-receipt">
       <span class="dl63-kicker">고른 자료</span>
       <h3>${h(item.name)}</h3>
@@ -130,8 +131,9 @@
       <div class="dl63-fmts" role="group" aria-label="받을 꼴">${fmts}</div>
       <div class="dl63-get"><p><strong>받는 것</strong><span>${FORMATS[f]} ${v.files.length}파일</span></p>${lay ? `<ul>${lay}</ul>` : ''}</div>
       <p class="dl63-total"><span>값</span><b>${shownPrice(item,f)}</b></p>
-      ${f === 'pdf' && POINT_PDF ? (quote ? '<p class="dl63-small">구성 '+v.files.length+'파일 · 묶음 가격 1회 차감</p>' : window.DSAuth && !window.DSAuth.has() ? `<a class="dl63-buy" href="${h(window.DSAuth.loginUrl('/app/?pointPdf=' + encodeURIComponent(item.sku + '.pdf') + '#library'))}">로그인하고 포인트로 받기</a>` : '<p class="dl63-small">포인트 가격과 파일을 확인하는 중입니다.</p>') : `${f === 'hwpx' ? '<p class="dl63-small">한글은 포인트 사용 불가 · 카드 결제만</p>' : ''}<a class="dl63-buy" data-dl63-buy href="${h(checkoutHref(item, f))}" target="_blank" rel="noopener">구매하기<span aria-hidden="true">↗</span><span class="sr-only"> 새 탭</span></a>`}
+      ${POINT_PDF ? (quote ? '<p class="dl63-small">구성 '+v.files.length+'파일 · 묶음 가격 1회 차감</p>' : window.DSAuth && !window.DSAuth.has() ? `<a class="dl63-buy" href="${h(window.DSAuth.loginUrl('/app/?pointPdf=' + encodeURIComponent(pointId) + '#library'))}">로그인하고 포인트로 받기</a>` : '<p class="dl63-small">포인트 가격과 파일을 확인하는 중입니다.</p>') : `<a class="dl63-buy" data-dl63-buy href="${h(checkoutHref(item, f))}" target="_blank" rel="noopener">구매하기<span aria-hidden="true">↗</span><span class="sr-only"> 새 탭</span></a>`}
       ${point}
+      ${f === 'hwpx' ? `<a class="dl63-small dl63-card-pay" data-dl63-buy href="${h(checkoutHref(item, f))}" target="_blank" rel="noopener">한글 카드로 결제 · ${won(v.price)}<span aria-hidden="true">↗</span><span class="sr-only"> 새 탭</span></a>` : ''}
       <div class="dl63-sub">
         ${item.sample ? `<a href="${h(item.sample)}" download>미리보기 ${item.previewPages || ''}쪽 PDF<span aria-hidden="true">↓</span></a>` : ''}
         ${materialSku() === item.sku ? '' : `<a href="#material/${encodeURIComponent(item.sku)}">지면 보기</a>`}
@@ -206,7 +208,7 @@
         <li><b>한 회차</b>한 학교의 한 학년도 · 학년 · 학기 · 시험(중간 · 기말) · 과목 시험지 한 벌입니다.</li>
         <li><b>처음만</b>같은 회차가 먼저 올라와 있으면 지급되지 않습니다.</li>
         <li><b>읽을 수 있게</b>흐림 · 잘림 · 빠진 쪽으로 글자와 수식을 읽을 수 없으면 지급되지 않습니다.</li>
-        <li><b>검수 뒤</b>포인트는 검수를 마친 뒤 지급합니다.</li>
+        <li><b>검수 뒤 지급</b>포인트는 검수를 마친 뒤 지급합니다. 같은 시험지가 먼저 들어왔으면 지급하지 않습니다. 받은 포인트는 2026년 12월 31일 23:59(한국시간)에 만료됩니다.</li>
         <li><b>가리고</b>학생 이름 · 학번 · 필기 · 점수는 가리고 올려 주세요.</li>
         <li><b>저작권</b>직접 받은 시험지만 올려 주세요. 시험지의 저작권은 학교와 출제 교사에게 있습니다.</li>
       </ol>

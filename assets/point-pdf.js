@@ -1,4 +1,4 @@
-/* Approved existing PDF bundles only. Prices, ownership, debits and archives belong to member-library. */
+/* Approved existing PDF and HWPX bundles. Prices, ownership, debits and archives belong to member-library. */
 (() => {
   'use strict';
   if(window.DSPointPdf)return;
@@ -9,6 +9,8 @@
   const id=v=>typeof v==='string'&&/^[A-Za-z0-9._:-]{1,160}$/.test(v);
   const uuid=v=>typeof v==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(v);
   const money=v=>v.toLocaleString('ko-KR')+' P';
+  const FILE=/\.(pdf|hwpx)$/;
+  const kind=v=>/\.hwpx$/.test(String(v||''))?'한글':'PDF';
   const token=()=>window.DSAuth?.get?.()||'';
   const login=()=>window.DSAuth?.loginUrl?.(location.pathname+location.search+location.hash)||'/auth/?next='+encodeURIComponent(location.pathname+location.search+location.hash);
   const when=v=>typeof v==='string'&&Number.isFinite(Date.parse(v))?new Intl.DateTimeFormat('ko-KR',{timeZone:'Asia/Seoul',year:'numeric',month:'long',day:'numeric'}).format(new Date(v)):'';
@@ -19,7 +21,7 @@
     if(!d||typeof d.ready!=='boolean'||!Array.isArray(d.products)||d.products.length>10000)throw Error('invalid_catalog');
     const seen=new Set();const products=d.products.map(p=>{
       const fileCount=Number.isSafeInteger(p.fileCount)?p.fileCount:Array.isArray(p.files)?p.files.length:0;
-      if(!p||!id(p.fileId)||!p.fileId.endsWith('.pdf')||seen.has(p.fileId)||typeof p.title!=='string'||!p.title||p.title.length>250||!int(p.points)||p.points<1||typeof p.ready!=='boolean'||typeof p.owned!=='boolean'||!Number.isSafeInteger(fileCount)||fileCount<1||fileCount>500)throw Error('invalid_catalog');
+      if(!p||!id(p.fileId)||!FILE.test(p.fileId)||seen.has(p.fileId)||typeof p.title!=='string'||!p.title||p.title.length>250||!int(p.points)||p.points<1||typeof p.ready!=='boolean'||typeof p.owned!=='boolean'||!Number.isSafeInteger(fileCount)||fileCount<1||fileCount>500)throw Error('invalid_catalog');
       seen.add(p.fileId);return {...p,fileCount,subject:typeof p.subject==='string'?p.subject:'기타'};
     });
     const free=d.balance?.free_remaining;
@@ -35,7 +37,7 @@
     if(again&&d.charged!==0)throw Error('unverified_delivery');
     if(!again&&d.charged!==0&&(d.charged!==expected||d.points!==expected))throw Error('unverified_delivery');
     if(count&&d.files.length!==count)throw Error('unverified_delivery');
-    const seen=new Set(),files=d.files.map(f=>{const url=safeUrl(f?.url);if(!f||!id(f.fileId)||seen.has(f.fileId)||!url)throw Error('unverified_delivery');seen.add(f.fileId);return {fileId:f.fileId,title:typeof f.title==='string'?f.title:'PDF 파일',url};});
+    const seen=new Set(),files=d.files.map(f=>{const url=safeUrl(f?.url);if(!f||!id(f.fileId)||seen.has(f.fileId)||!url)throw Error('unverified_delivery');seen.add(f.fileId);return {fileId:f.fileId,title:typeof f.title==='string'?f.title:kind(f.fileId)+' 파일',url};});
     if(Array.isArray(expectedFiles)&&expectedFiles.length){const ids=expectedFiles.map(x=>x.fileId).sort();if(JSON.stringify(ids)!==JSON.stringify(files.map(x=>x.fileId).sort()))throw Error('unverified_delivery');}
     return {...d,files};
   }
@@ -68,9 +70,9 @@
   function failure(e){
     if(e.message==='price_changed')return '가격이 바뀌었습니다. 새 목록과 묶음 가격을 확인한 뒤 다시 선택해 주세요.';
     if(e.message==='no_points'){const x=e.data;return int(x?.required)&&int(x?.remaining)&&int(x?.shortage)?`잔액이 부족합니다. 필요한 포인트 ${money(x.required)} · 사용 가능 ${money(x.remaining)} · 부족 ${money(x.shortage)}.`:'사용 가능한 포인트가 부족합니다. 잔액을 다시 확인해 주세요.';}
-    return ({hwpx_cash_only:'한글(HWPX) 파일은 포인트로 받을 수 없습니다. 한글은 카드 결제로만 구매할 수 있습니다.',unauthorized:'로그인한 뒤 이용해 주세요.',file_not_ready:'실제 PDF 파일을 준비하고 있습니다. 보관이 확인된 파일만 받을 수 있습니다.',not_ready:'포인트 PDF 구매를 준비하고 있습니다.',disabled:'포인트 사용을 준비하고 있습니다. 사용 가능한 잔액이 확인되면 구매할 수 있습니다.',not_owned:'이 계정의 PDF 수령 기록을 찾을 수 없습니다.',network:'수령 결과를 확인하지 못했습니다. 내 파일과 잔액을 확인한 뒤 같은 상품으로 다시 시도해 주세요.',unverified_delivery:'수령 파일과 차감을 확인하지 못했습니다. 내 파일과 잔액을 다시 확인해 주세요.'})[e.message]||'요청 결과를 확인하지 못했습니다. 내 파일과 잔액을 확인한 뒤 다시 시도해 주세요.';
+    return ({unauthorized:'로그인한 뒤 이용해 주세요.',file_not_ready:'실제 파일을 준비하고 있습니다. 보관이 확인된 파일만 받을 수 있습니다.',not_ready:'포인트 자료 구매를 준비하고 있습니다.',disabled:'포인트 사용을 준비하고 있습니다. 사용 가능한 잔액이 확인되면 구매할 수 있습니다.',not_owned:'이 계정의 자료 수령 기록을 찾을 수 없습니다.',network:'수령 결과를 확인하지 못했습니다. 내 파일과 잔액을 확인한 뒤 같은 상품으로 다시 시도해 주세요.',unverified_delivery:'수령 파일과 차감을 확인하지 못했습니다. 내 파일과 잔액을 다시 확인해 주세요.'})[e.message]||'요청 결과를 확인하지 못했습니다. 내 파일과 잔액을 확인한 뒤 다시 시도해 주세요.';
   }
-  function product(fileId){return state.catalog?.products.find(p=>p.fileId===(fileId.endsWith('.pdf')?fileId:fileId+'.pdf'))||null;}
+  function product(fileId){fileId=String(fileId||'');return state.catalog?.products.find(p=>p.fileId===(FILE.test(fileId)?fileId:fileId+'.pdf'))||null;}
   async function receive(fileId){
     if(state.busy)return;
     const startingOwner=token();if(!startingOwner){location.assign(login());return;}
@@ -80,11 +82,10 @@
       window.addEventListener('ds-point-pdf-update',done);done();
     });
     if(token()!==startingOwner||state.busy)return;
-    if(!/\.pdf$/.test(String(fileId||''))){state.message='한글(HWPX) 파일은 포인트로 받을 수 없습니다. 한글은 카드 결제로만 구매할 수 있습니다.';state.error=true;emit();return;}
     const p=product(fileId);
-    if(!p||!p.ready||!state.catalog?.ready||(!p.owned&&state.catalog.available===null)){state.message='구매할 수 있는 PDF 목록과 잔액을 먼저 확인해 주세요.';state.error=true;emit();return;}
+    if(!p||!p.ready||!state.catalog?.ready||(!p.owned&&state.catalog.available===null)){state.message='구매할 수 있는 자료 목록과 잔액을 먼저 확인해 주세요.';state.error=true;emit();return;}
     if(!p.owned&&state.catalog.available<p.points){state.message=`잔액이 부족합니다. 필요한 포인트 ${money(p.points)} · 사용 가능 ${money(state.catalog.available)}.`;state.error=true;emit();return;}
-    if(!p.owned&&!confirm(`${p.title}\nPDF ${p.fileCount}파일 묶음 · ${money(p.points)} 1회 차감\n구성 파일은 모두 내 파일에 보관됩니다. 구매할까요?`))return;
+    if(!p.owned&&!confirm(`${p.title}\n${kind(p.fileId)} ${p.fileCount}파일 묶음 · ${money(p.points)} 1회 차감\n구성 파일은 모두 내 파일에 보관됩니다. 구매할까요?`))return;
     const owner=token();state.busy=true;state.message='묶음 수령과 포인트 차감을 확인하는 중…';state.error=false;state.files=[];state.monthlySet='';emit();
     try{
       const requestId=await pendingId(p.fileId,p.points);if(token()!==owner)return;
@@ -127,20 +128,20 @@
   const retry='<button type="button" class="ppdf-quiet" data-ppdf-action="reload">목록·잔액 다시 확인</button>';
   function notice(){return (state.message?`<div class="ppdf-notice${state.error?' ppdf-error':''}" role="status">${h(state.message)}${state.monthlySet?` <a href="${state.monthlySet==='*'?'/my/#pprint':'/my/?passSet='+encodeURIComponent(state.monthlySet)+'#pprint'}">내 월벌 열기 →</a>`:''}</div>`:'')+(state.files.length?`<ul class="ppdf-files">${state.files.map(f=>`<li><a href="${h(f.url)}" target="_blank" rel="noopener noreferrer">${h(f.title)} · 열기/저장 ↗</a></li>`).join('')}</ul>`:'');}
   function shop(){
-    const heading='<header class="ppdf-heading"><div><span>PDF 포인트 자료</span><h2>필요한 자료를 내 파일로</h2></div><div><a href="#account">내 파일 보기 →</a>'+(state.selected?' <button type="button" class="ppdf-quiet" data-ppdf-action="all">전체 PDF 목록</button>':'')+'</div></header>';
+    const heading='<header class="ppdf-heading"><div><span>포인트 자료 · PDF · 한글</span><h2>필요한 자료를 내 파일로</h2></div><div><a href="#account">내 파일 보기 →</a>'+(state.selected?' <button type="button" class="ppdf-quiet" data-ppdf-action="all">전체 자료 목록</button>':'')+'</div></header>';
     if(!token())return heading+`<p>포인트 구매 목록과 사용 가능한 잔액은 로그인한 뒤 확인할 수 있습니다.</p><a class="ppdf-primary" href="${h(login())}">로그인하고 확인</a>`;
-    if(state.phase==='idle'||state.phase==='loading')return heading+'<p role="status">승인된 PDF 목록과 잔액을 확인하는 중…</p>';
-    if(state.phase==='error')return heading+'<p role="status">포인트 PDF 목록과 잔액을 확인하지 못했습니다.</p>'+retry+notice();
+    if(state.phase==='idle'||state.phase==='loading')return heading+'<p role="status">승인된 자료 목록과 잔액을 확인하는 중…</p>';
+    if(state.phase==='error')return heading+'<p role="status">포인트 자료 목록과 잔액을 확인하지 못했습니다.</p>'+retry+notice();
     const c=state.catalog,subjects=[...new Set(c.products.map(p=>p.subject))],rows=c.products.filter(p=>(!state.selected||p.fileId===state.selected)&&(!state.subject||p.subject===state.subject)&&(!state.term||(p.title+' '+p.subject).includes(state.term)));
-    return heading+`<div class="ppdf-wallet"><strong>사용 가능한 포인트</strong><b>${c.available===null?'잔액을 확인할 수 없습니다':money(c.available)}</b>${c.available===0?'<span>현재 사용할 수 있는 포인트가 없습니다.</span>':''}${retry}</div><p class="ppdf-help">PDF 구성 파일 묶음 가격으로 한 번 구매합니다. 한글(HWPX)은 포인트로 받을 수 없고 카드 결제로만 구매합니다. 월 이용권 벌 수와도 별도입니다. 신규 회원 혜택은 미사용 시 1·2·3주차에 3,000·6,000·9,000P로 모아 쓰고, 가입 후 3주가 끝나면 남은 혜택 포인트만 만료됩니다.</p>${!c.ready?'<p role="status">PDF 포인트 구매를 준비하고 있습니다. 준비 완료된 항목만 구매할 수 있습니다.</p>':''}<div class="ppdf-filters"><label>과목<select data-ppdf-subject><option value="">전체 과목</option>${subjects.map(s=>`<option${s===state.subject?' selected':''}>${h(s)}</option>`).join('')}</select></label><label>자료 검색<input data-ppdf-search value="${h(state.term)}" placeholder="자료명·과목"></label></div>${notice()}<ul class="ppdf-products">${rows.map(p=>{const ready=c.ready&&p.ready&&(p.owned||c.available!==null),short=!p.owned&&c.available!==null&&c.available<p.points;return `<li data-ppdf-product="${h(p.fileId)}"${p.fileId===state.selected?' class="ppdf-selected"':''}><div><small>${h(p.subject)} · PDF ${p.fileCount}파일 묶음</small><h3>${h(p.title)}</h3><p>묶음 1회 구매 · 구성 파일 모두 보관</p></div><div class="ppdf-product-price"><strong>${money(p.points)}</strong><button type="button" class="ppdf-primary" data-ppdf-buy="${h(p.fileId)}"${state.busy||!ready||short?' disabled':''}>${p.owned?'이미 보유 · 차감 없이 받기':!p.ready?'파일 준비 중':!c.ready?'구매 정보 확인 필요':c.available===null?'잔액 확인 필요':short?(c.available===0?'포인트 없음':'잔액 부족'):'포인트로 구매'}</button></div></li>`}).join('')||'<li><p>현재 조건에 맞는 승인된 PDF가 없습니다.</p></li>'}</ul>`;
+    return heading+`<div class="ppdf-wallet"><strong>사용 가능한 포인트</strong><b>${c.available===null?'잔액을 확인할 수 없습니다':money(c.available)}</b>${c.available===0?'<span>현재 사용할 수 있는 포인트가 없습니다.</span>':''}${retry}</div><p class="ppdf-help">PDF와 한글(HWPX) 모두 구성 파일 묶음 가격으로 한 번 구매합니다. 월 이용권 벌 수와는 별도입니다. 2026년 12월 31일까지 모든 회원에게 50,000P를 드리며, 남은 포인트는 12월 31일 23:59(한국시간)에 만료됩니다.</p>${!c.ready?'<p role="status">포인트 자료 구매를 준비하고 있습니다. 준비 완료된 항목만 구매할 수 있습니다.</p>':''}<div class="ppdf-filters"><label>과목<select data-ppdf-subject><option value="">전체 과목</option>${subjects.map(s=>`<option${s===state.subject?' selected':''}>${h(s)}</option>`).join('')}</select></label><label>자료 검색<input data-ppdf-search value="${h(state.term)}" placeholder="자료명·과목"></label></div>${notice()}<ul class="ppdf-products">${rows.map(p=>{const ready=c.ready&&p.ready&&(p.owned||c.available!==null),short=!p.owned&&c.available!==null&&c.available<p.points;return `<li data-ppdf-product="${h(p.fileId)}"${p.fileId===state.selected?' class="ppdf-selected"':''}><div><small>${h(p.subject)} · ${kind(p.fileId)} ${p.fileCount}파일 묶음</small><h3>${h(p.title)}</h3><p>묶음 1회 구매 · 구성 파일 모두 보관</p></div><div class="ppdf-product-price"><strong>${money(p.points)}</strong><button type="button" class="ppdf-primary" data-ppdf-buy="${h(p.fileId)}"${state.busy||!ready||short?' disabled':''}>${p.owned?'이미 보유 · 차감 없이 받기':!p.ready?'파일 준비 중':!c.ready?'구매 정보 확인 필요':c.available===null?'잔액 확인 필요':short?(c.available===0?'포인트 없음':'잔액 부족'):'포인트로 구매'}</button></div></li>`}).join('')||'<li><p>현재 조건에 맞는 승인된 자료가 없습니다.</p></li>'}</ul>`;
   }
   function receipts(student=false){
     if(student&&window.DSStudentReceipts&&state.owner===token()&&token()&&state.receiptPhase==='ready')return notice()+window.DSStudentReceipts.pointList(state.receipts,state.busy);
-    let body;if(!token())body=`<p>로그인하면 포인트로 받은 PDF를 다시 받을 수 있습니다.</p><a href="${h(login())}">로그인</a>`;
+    let body;if(!token())body=`<p>로그인하면 포인트로 받은 자료를 다시 받을 수 있습니다.</p><a href="${h(login())}">로그인</a>`;
     else if(['idle','loading'].includes(state.receiptPhase))body='<p role="status">내 파일 수령 기록을 확인하는 중…</p>';
     else if(state.receiptPhase==='error')body='<p role="status">내 파일 수령 기록을 확인하지 못했습니다.</p>'+retry;
-    else body=state.receipts.length?`<ul class="ppdf-receipts">${state.receipts.map(r=>`<li><div><h4>${h(r.title||r.fileId)}</h4><p>${h(r.subject||'PDF')} · 구매 당시 ${money(r.points)}${when(r.receivedAt)?' · '+h(when(r.receivedAt)):''}</p><small>${r.fileStored===true&&r.fileState==='stored'?'내 파일 보관 확인':'보관 상태 확인 필요'}</small></div><button type="button" class="ppdf-quiet" data-ppdf-again="${h(r.receiptId)}"${state.busy||r.redownloadable===false?' disabled':''}>다시 받기 · 0 P</button></li>`).join('')}</ul>`:'<p>서버에 확인된 포인트 PDF 수령 내역이 없습니다.</p>';
-    return '<h3>포인트로 받은 PDF · 내 파일</h3><p class="ppdf-help">이미 받은 상품의 구성 파일은 혜택 포인트가 만료된 뒤에도 추가 P 차감 없이 다시 받을 수 있습니다.</p>'+notice()+body;
+    else body=state.receipts.length?`<ul class="ppdf-receipts">${state.receipts.map(r=>`<li><div><h4>${h(r.title||r.fileId)}</h4><p>${h(r.subject||kind(r.fileId))} · 구매 당시 ${money(r.points)}${when(r.receivedAt)?' · '+h(when(r.receivedAt)):''}</p><small>${r.fileStored===true&&r.fileState==='stored'?'내 파일 보관 확인':'보관 상태 확인 필요'}</small></div><button type="button" class="ppdf-quiet" data-ppdf-again="${h(r.receiptId)}"${state.busy||r.redownloadable===false?' disabled':''}>다시 받기 · 0 P</button></li>`).join('')}</ul>`:'<p>서버에 확인된 포인트 자료 수령 내역이 없습니다.</p>';
+    return '<h3>포인트로 받은 자료 · 내 파일</h3><p class="ppdf-help">이미 받은 상품의 구성 파일은 포인트가 만료된 뒤에도 추가 P 차감 없이 다시 받을 수 있습니다.</p>'+notice()+body;
   }
   function renderAll(){
     for(const host of document.querySelectorAll('[data-ppdf-shop],[data-ppdf-receipts]')){
