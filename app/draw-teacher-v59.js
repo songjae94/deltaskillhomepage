@@ -1017,6 +1017,9 @@
       } else if (!owned && r.available_count > 0 && (!r.extraction_ready || !priceKnown)) {
         detail = '선택 범위 ' + r.available_count + '문항 · 포인트 사용 가능 여부를 확인하지 못했어요.';
       } else if (quantity) detail = (basic?'최대 ':'')+quantity+'문항 · '+cost;
+      // 11/25 37: 포인트 범위가 비었을 때 까닭을 나눔(서버 scope_menu 의 pool_count · owned_count). 수가 없으면 지금 글 그대로.
+      else if (!basic && !owned && r.pool_count === 0 && criteria.mode === 'book') detail = '이 교재는 아직 포인트로 받을 수 없어요.';
+      else if (!basic && !owned && Number.isSafeInteger(r.pool_count) && r.pool_count > 0 && r.available_count === 0) detail = '이 범위의 포인트 문항을 모두 받았어요.';
       else detail = basic ? '이 조건에서 이용할 수 있는 세트가 없어요.' : '선택한 범위에 문항이 없습니다.';
       offers.querySelector(`[data-print-offer="${mode}"]`).innerHTML = `<input type="radio" name="print-access" value="${mode}" ${allowed?'':'disabled'}><span><strong>${owned?(basic?'내 계정으로 이용 가능한 기본 세트':'이미 받은 문항'):'포인트로 받을 문항'}</strong><small>${safe(detail)}</small></span>`;
       if (!owned && wallet?.denied) {
