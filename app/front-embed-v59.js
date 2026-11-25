@@ -147,7 +147,7 @@
       <ul class="fx60-rail" aria-label="단계로 넘기기">${rail}</ul>
       <ol class="fx60-track">${cards}</ol>
       <a class="fx60-more" href="#technology">더 보기 · 델타스킬 기술 <span aria-hidden="true">→</span></a>
-      <p class="fx60-cite"><span>변형 관련 특허 출원 5건</span> · <span>원문항 출처: 한국교육과정평가원</span> <span>2027학년도 대학수학능력시험</span></p>
+      <p class="fx60-cite"><span>특허 출원 5건(그중 변형 문항 생성 1건)</span> · <span>원문항 출처: 한국교육과정평가원</span> <span>2027학년도 대학수학능력시험</span></p>
     </section>`;
   };
 
