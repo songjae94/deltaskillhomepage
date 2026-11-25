@@ -344,7 +344,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   <p class="copy">© 2026 델타스킬. All rights reserved.</p>
 </div>
 </footer>
-<script src="/auth.js"></script>
+<script src="/auth.js?v=h32-86"></script>
 <script src="/assets/textbook-name.js?v=39-1119"></script>
 <script src="/assets/sheet-preview.js?v=39-1119"></script>
 <script>
@@ -455,7 +455,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
           b.disabled=false;
           if(r&&r.ok&&r.url){msg.textContent="내려받기를 시작합니다.";location.href=r.url;return;}
           /* 로그인이 풀림(만료 · 다른 기기에서 로그아웃 · 탈퇴) — 다른 화면(pilot)과 같이 토큰을 짝으로 지우고 로그인으로 안내한다 */
-          if(o.s===401&&r&&r.error==="unauthorized"){if(window.DSAuth)window.DSAuth.clear();toLogin();return;}
+          if(o.s===401&&r&&r.error==="unauthorized"){/* H32(관문 86): 한 번 더 묻고 잃었을 때만 지움 */var D=window.DSAuth;b.disabled=true;(D&&D.clearIfLost?D.clearIfLost(tk):Promise.resolve((D&&D.clear(),true))).then(function(gone){b.disabled=false;if(gone){toLogin();return;}msg.textContent="요청이 많습니다. 잠시 후 다시 시도해 주세요.";});return;}
           msg.textContent=r&&r.error==="not_yet"?"아직 제공 전입니다.":r&&r.error==="file_not_ready"?"파일을 받지 못했습니다. 잠시 뒤 다시 시도해 주세요.":"내려받기를 시작하지 못했습니다. 잠시 뒤 다시 시도해 주세요.";
         });
     };

@@ -30,11 +30,16 @@
   if(memberPreview){await ready;if(path.startsWith('/student-learning'))return local('/study',body===undefined?{action:'load',query:path.split('?')[1]||''}:body);return local('/request',{path,...(body===undefined?{}:{body})})}
   if(!isLiveOrigin)throw new Error('preview_origin');
   const headers={'Content-Type':'application/json'};
-  if(needsAuth){const token=auth?.get();if(!token)throw new Error('unauthorized');headers.Authorization='Bearer '+token}
+  const token=needsAuth?auth?.get():null;
+  if(needsAuth){if(!token)throw new Error('unauthorized');headers.Authorization='Bearer '+token}
   const r=await fetch(EDGE+path,{method:body?'POST':'GET',headers,credentials:'omit',body:body?JSON.stringify(body):undefined});
   const d=await r.json().catch(()=>null);
   if(generation!==authEpoch)throw new Error('session_changed');
-  if(r.status===401&&needsAuth)auth?.clear();
+  if(r.status===401&&needsAuth){
+   // H32(관문 86): 401 하나로 지우지 않음 — 한도 밖 길로 한 번 더 묻고 잃었을 때만 지움.
+   const gone=typeof auth?.clearIfLost==='function'?await auth.clearIfLost(token):(auth?.clear(),true);
+   if(!gone&&d?.error==='unauthorized')throw Object.assign(new Error('too_many'),{status:429});
+  }
   if(!r.ok||!d||d.ok===false)throw Object.assign(new Error(d?.error||'server'),{status:r.status});
   return d;
  }

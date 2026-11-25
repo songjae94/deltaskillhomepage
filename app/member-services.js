@@ -37,12 +37,17 @@
   const check={token,generation};
   verification=check;
   check.task=(async()=>{
+   // H32(관문 86): api/me 를 다시 부르면 같은 auth_verify 한도에 걸린다 — 한도 밖 길(DSAuth.lost · welcome-points)로 묻고, 잃었을 때만 지운다.
    try{
-    const r=await fetch(EDGE+'/api/me',{method:'GET',headers:{Authorization:'Bearer '+token},credentials:'omit',cache:'no-store'});
-    if(r.status!==401)return;
-    const d=await r.json();
-    if(d?.ok===false&&d.error==='unauthorized')expireCurrent(token,generation);
-   }catch{}finally{if(verification===check)verification=null;}
+    let gone=false;
+    if(typeof auth?.lost==='function')gone=await auth.lost(token);
+    else{
+     const r=await fetch(EDGE+'/api/me',{method:'GET',headers:{Authorization:'Bearer '+token},credentials:'omit',cache:'no-store'});
+     if(r.status===401){const d=await r.json();gone=d?.ok===false&&d.error==='unauthorized';}
+    }
+    if(gone)expireCurrent(token,generation);
+    return gone;
+   }catch{return false}finally{if(verification===check)verification=null;}
   })();
   return check.task;
  }
@@ -68,9 +73,9 @@
   if(generation!==authEpoch)throw new Error('session_changed');
   if(needsAuth&&auth?.get()!==token)throw new Error('session_changed');
   if(r.status===401&&needsAuth){
-   if(path==='/api/me'&&body===undefined){
-    if(d?.ok===false&&d.error==='unauthorized')expireCurrent(token,generation);
-   }else await checkSession(token,generation);
+   const gone=await checkSession(token,generation);
+   // 토큰이 살아 있는데 401 = 서버 확인 한도 · 오류(H32) — 로그인 만료로 말하지 않고 잠시 뒤 다시.
+   if(!gone&&d?.error==='unauthorized')throw Object.assign(new Error('too_many'),{status:429});
   }
   if(!r.ok||!d||d.ok===false)throw Object.assign(new Error(d?.error||'server'),{status:r.status});
   return d;

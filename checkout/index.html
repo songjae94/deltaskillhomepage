@@ -178,7 +178,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
 </div>
 </footer>
 <script src="/naesin/finals-order.js"></script>
-<script src="/auth.js?v=home-logout-r2-1123"></script>
+<script src="/auth.js?v=h32-86"></script>
 <script src="/assets/textbook-name.js?v=38-1119"></script>
 <script>
 "use strict";
@@ -456,7 +456,7 @@ function boot(){
       try{sessionStorage.setItem("ds_order",JSON.stringify(cart?{orderId:r.orderId,email:email,skus:skus}:{orderId:r.orderId,email:email,sku:sku}));}catch(_){}
       setMsg($("msg"),"결제창을 여는 중…");
       return payReq(r,email,name);
-    }).catch(function(e){if(e&&e.error==="login_required"){if(window.DSAuth)DSAuth.clear();toLogin();return;} /* 토큰이 풀렸거나 없으면 서버가 401 login_required — 토큰을 지우고(auth 쪽이 바로 되돌려 보내지 않게) 로그인으로 */if(sameAccount()){busy=false;update();setMsg($("msg"),errText(e),true);}});
+    }).catch(function(e){if(e&&e.error==="login_required"){/* H32(관문 86): 한 번 더 묻고 잃었을 때만 지움 */var D=window.DSAuth;(D&&D.clearIfLost?D.clearIfLost(D.get()):Promise.resolve((D&&D.clear(),true))).then(function(gone){if(gone){toLogin();return;}if(sameAccount()){busy=false;update();setMsg($("msg"),"요청이 많습니다. 잠시 후 다시 시도해 주세요.",true);}});return;} /* 토큰이 풀렸거나 없으면 서버가 401 login_required — 토큰을 지우고(auth 쪽이 바로 되돌려 보내지 않게) 로그인으로 */if(sameAccount()){busy=false;update();setMsg($("msg"),errText(e),true);}});
   });
 }
 if(!LOGIN_GATE&&!window.POINT_PDF_TARGET){ /* 로그인 문지기를 지난 뒤에만 주문서를 그린다 */

@@ -217,7 +217,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   <p class="copy">© 2026 델타스킬. All rights reserved.</p>
 </div>
 </footer>
-<script src="/auth.js?v=home-logout-r2-1123"></script>
+<script src="/auth.js?v=h32-86"></script>
 <script src="/assets/textbook-name.js?v=38-1119"></script>
 <script src="/assets/member-prints.js?v=1"></script><script>
 "use strict";
@@ -237,7 +237,8 @@ async function fnCall(name, body){
   try{ r = await fetch(FN + name, {method:"POST", credentials:"omit", headers:{"Content-Type":"application/json","Authorization":"Bearer "+t}, body:JSON.stringify(body)}); }
   catch(_){ throw new Error("network"); }
   try{ j = await r.json(); }catch(_){}
-  if(r.status === 401){ if(window.DSAuth) DSAuth.clear(); goLogin(); throw new Error("login_required"); }
+  /* H32(관문 86): 401 하나로 지우지 않음 — 한도 밖 길(DSAuth.clearIfLost)로 한 번 더 묻고 잃었을 때만 지우고 로그인으로 */
+  if(r.status === 401){ const gone = window.DSAuth && DSAuth.clearIfLost ? await DSAuth.clearIfLost(t) : (window.DSAuth && DSAuth.clear(), true); if(gone){ goLogin(); throw new Error("login_required"); } throw new Error("too_many"); }
   if(!r.ok || !j) throw new Error((j && j.error) || ("HTTP " + r.status));
   return j;
 }

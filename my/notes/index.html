@@ -92,7 +92,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   <p class="pb-help my-back"><a href="/app/">← 델타스킬 첫 화면으로 돌아가기</a></p>
 </div>
 
-<script src="/auth.js?v=home-logout-r2-1123"></script>
+<script src="/auth.js?v=h32-86"></script>
 <script>
 const API = window.DSAuth ? window.DSAuth.api : "https://cvlrphtupjmaefahodgz.supabase.co/functions/v1/api";
 /* 토큰은 항상 '어느 번호의 토큰인지'(ds_tk_ph)와 함께 다룬다 — 파일럿 저장 시 번호가 어긋나면 토큰이 폐기돼 저장이 막힌다 */
@@ -177,7 +177,7 @@ function scoreChart(points,subj){
   return `<svg viewBox="0 0 ${W} ${H}" width="100%" style="max-width:440px;display:block;margin:6px auto;background:var(--card);border:1px solid var(--line);border-radius:10px" role="img" aria-label="회차별 자기채점 점수 추이">${g}</svg>`;
 }
 
-async function api(path,opt){opt=opt||{};const method=opt.method||"GET";const auth=opt.auth!==false;const h={"Content-Type":"application/json"};if(auth){const t=TK.get();if(!t)throw new Error("no_token");h["Authorization"]="Bearer "+t;}const r=await fetch(API+path,{method,headers:h,body:opt.body?JSON.stringify(opt.body):undefined});let j=null;try{j=await r.json();}catch(_){}if(r.status===401&&auth){TK.clear();boot();}if(!r.ok||!j||j.ok===false)throw new Error((j&&j.error)||("HTTP "+r.status));return j;}
+async function api(path,opt){opt=opt||{};const method=opt.method||"GET";const auth=opt.auth!==false;const h={"Content-Type":"application/json"};if(auth){const t=TK.get();if(!t)throw new Error("no_token");h["Authorization"]="Bearer "+t;}const r=await fetch(API+path,{method,headers:h,body:opt.body?JSON.stringify(opt.body):undefined});let j=null;try{j=await r.json();}catch(_){}if(r.status===401&&auth){/* H32(관문 86): 잃은 토큰일 때만 지움 */const t0=h["Authorization"].slice(7);const gone=window.DSAuth&&DSAuth.lost?await DSAuth.lost(t0):true;if(gone){if(TK.get()===t0)TK.clear();boot();}else throw new Error("too_many");}if(!r.ok||!j||j.ok===false)throw new Error((j&&j.error)||("HTTP "+r.status));return j;}
 
 /* 파일럿이 읽는 로컬 프로필(ds_students)을 여기서도 남긴다.
    ⚠️ 이걸 빠뜨리면 마이페이지에서 '수정하기'로 넘어갔을 때 파일럿이 프로필을 못 찾아

@@ -32,7 +32,11 @@
     // A reply that belongs to an earlier sign-in is dropped before it is used or clears anything.
     if ((window.DSAuth?.get?.() || '') !== token) throw fail(502, 'unavailable');
     if (r.ok && d && typeof d === 'object' && d.ok !== false) return d;
-    if (r.status === 401) window.DSAuth?.clear?.();          // the same as the site's own member calls
+    // H32(관문 86): cleared only when the token is really gone (DSAuth.clearIfLost asks outside the auth_verify rate bucket).
+    if (r.status === 401) {
+      const gone = typeof window.DSAuth?.clearIfLost === 'function' ? await window.DSAuth.clearIfLost(token) : (window.DSAuth?.clear?.(), true);
+      if (!gone) { retryAt = Date.now() + 60000; throw Object.assign(fail(429, 'rate_limited'), { data: null }); }
+    }
     const name = d && typeof d.error === 'string' ? d.error : '';
     const error = fail(r.status || 502, CODES.has(name) || REFUSALS.has(name) ? name : 'unavailable');
     if (r.status === 429) retryAt = Date.now() + 60000;      // the gate's stated wait
