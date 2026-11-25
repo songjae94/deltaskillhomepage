@@ -20,6 +20,18 @@
     const style=doc.createElement('style');style.id='ds-study-math-size';
     style.textContent=questionTypography;doc.head.append(style);
   }
+  // 1125 렌더고침(F5): 공부하기 문항도 뽑기 · 인쇄와 같은 한 길(MathML → 원본 TeX → KaTeX 0.18.4 · 형 1122 「같은 기준」)로 짓는다.
+  // 엔진이 없거나 실패하면 지금처럼 원래 MathML 을 그대로 둔다(수학 내용 바꿈 0).
+  function canonicalMath(template) {
+    const R = window.WebMathRendererV23;
+    if (!R || typeof R.typeset !== 'function' || !window.katex || !template.content.querySelector('math')) return template.innerHTML;
+    const host = document.createElement('div');
+    host.hidden = true;
+    host.setAttribute('aria-hidden', 'true');
+    host.append(template.content.cloneNode(true));
+    document.body.append(host);
+    try { R.typeset(host); return host.innerHTML; } catch { return template.innerHTML; } finally { host.remove(); }
+  }
   function render(html, title) {
     const template = document.createElement('template');
     template.innerHTML = html;
@@ -34,7 +46,7 @@
     const base = 'html,body{margin:0;height:auto;min-height:0}body{display:flow-root;color:#171923;background:white;line-height:1.6;overflow-wrap:break-word}img,svg{max-width:100%}img{height:auto}@media print{body{color:black}}';
     // R-112: a formula is never broken, on screen or in print.
     const layout = '<style>.katex-display{max-width:100%;overflow-x:auto;overflow-y:hidden;padding-block:.25em} @media print{.katex-display{overflow:visible}}</style>';
-    const doc = '<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="'+attr(policy)+'"><style>'+base+'</style></head><body class="ds-render">'+withMath(expand(template.innerHTML))+layout+'<style id="ds-render-rules">'+renderRules()+'</style><style id="ds-study-math-size">'+questionTypography+'</style></body></html>';
+    const doc = '<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="'+attr(policy)+'"><style>'+base+'</style></head><body class="ds-render">'+withMath(expand(canonicalMath(template)))+layout+'<style id="ds-render-rules">'+renderRules()+'</style><style id="ds-study-math-size">'+questionTypography+'</style></body></html>';
     return '<iframe class="ds-student-fragment" title="'+attr(title)+'" sandbox="allow-same-origin" referrerpolicy="no-referrer" style="display:block;width:100%;min-width:0;height:'+(lastHeight.get(title)||'12rem')+';border:0;background:white" srcdoc="'+attr(doc)+'"></iframe>';
   }
   // v66: the frame gets the same canonical render rules as the page (draw-math-v61.css, one source):
