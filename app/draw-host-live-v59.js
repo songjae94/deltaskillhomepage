@@ -3,7 +3,7 @@
    member calls; the signature is made on the server. */
 (() => {
   'use strict';
-  const POINT_PRINT_SETS=new Set(["d209f5b5-3cc1-40eb-b246-52392410e326", "24d02d3a-7883-43b8-af3f-59c536cd9f28"]);
+  const POINT_PRINT_SETS=new Set(["d209f5b5-3cc1-40eb-b246-52392410e326", "24d02d3a-7883-43b8-af3f-59c536cd9f28", "ca5bd920-3816-4ff7-849e-a8bdad7cb81f", "e65f29f6-85f4-4925-a8fa-8844c64b9a4d", "8a75a9b5-53fa-46de-b346-009fbb81869c", "93603a30-1cdc-46d9-a955-4c09e8aad1bf", "c3d53bc3-498a-4e7c-8ba6-7b14ba7d6601", "8dc2f11b-496d-40c8-a61b-eaa4431a6504"]);   // point plan r3 (f815ac69): 쎈 선별 2 + 올림포스 정답 대조 통과 6
   const ENABLED = true;                          // the gate
   const POINTS = true;                          // v60 point board: off until the point functions are on the server
   const TRIAL = true;                            // v61 guest trial (contract r4 · 판 A): on — the gate answers trial_menu · trial_draw · trial_open; switched off on the server = sign-in line
