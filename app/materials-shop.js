@@ -47,7 +47,7 @@
   const isLinked = p => Boolean(p?.sourceId) && !p.sourceId.startsWith('DS-PRACTICE-');
   function displayBook(source) {
     const name = bookLabel(source);
-    if (audience !== 'student') return name;
+    // 11-25 71 H30: 선생님 쪽도 학생 쪽과 같은 제목(EBS 뺌 · 연계변형) — 제목은 이 한 자리에서.
     const plain = name.replace(/^EBS\s+/i, '');
     const row = products.find(p => p.source === source && p.sourceId);
     if (!row) return plain;
@@ -125,7 +125,7 @@
       ? `<a class="ms-book-cover" href="${escape(p.sample)}" target="_blank" rel="noopener" aria-label="${label} 지면 미리보기, 새 창">${art}<span class="ms-look">미리보기 ↗</span></a>`
       : `<div class="ms-book-cover">${art}</div>`;
     const meta = escape(editionOf(p)) + (p.count ? ` · ${p.count}문항` : '');
-    return `<article class="ms-volume" data-ms-card="${escape(card.id)}" data-sku="${escape(p.sku)}" aria-label="${label}"><div class="ms-stage">${cover}</div><div class="ms-book-info"><small>${meta}</small><h3>${escape(p.unit||title(p))}</h3>${audience==='student'?'':`<span>${isLinked(p)?'연계 · ':''}${escape(displayBook(p.source))}</span>`}</div><div class="ms-formats">${formats(card)}</div></article>`;
+    return `<article class="ms-volume" data-ms-card="${escape(card.id)}" data-sku="${escape(p.sku)}" aria-label="${label}"><div class="ms-stage">${cover}</div><div class="ms-book-info"><small>${meta}</small><h3>${escape(p.unit||title(p))}</h3>${audience==='student'?'':`<span>${escape(displayBook(p.source))}</span>`}</div><div class="ms-formats">${formats(card)}</div></article>`;
   }
   function items() {
     const list = scope ? products.filter(p => scope.bookId
@@ -154,7 +154,7 @@
       const empty = shown ? '' : '<p role="status">이 범위에서 받을 수 있는 자료는 아직 없습니다.</p>';
       return `<section class="ms-items" aria-label="단원별 교재">${reset ? '<div class="ms-results">' + reset + '</div>' : ''}${empty}${rows}</section>`;
     }
-    return `<section class="ms-items" aria-label="${escape(bookLabel(selected || '전체'))} 판매 교재"><div class="ms-results dl63-head"><h2>${escape(heading)}</h2><span>${shown}권</span>${reset}</div>${shown ? '<p class="ms-delivery">구매한 교재는 배송 없이 파일로 내려받습니다.</p>' : ''}${scope && !shown ? '<p role="status">이 범위에서 구매할 수 있는 자료는 아직 없습니다.</p>' : ''}${rows}</section>`;
+    return `<section class="ms-items" aria-label="${escape(selected ? displayBook(selected) : '전체')} 판매 교재"><div class="ms-results dl63-head"><h2>${escape(heading)}</h2><span>${shown}권</span>${reset}</div>${shown ? '<p class="ms-delivery">구매한 교재는 배송 없이 파일로 내려받습니다.</p>' : ''}${scope && !shown ? '<p role="status">이 범위에서 구매할 수 있는 자료는 아직 없습니다.</p>' : ''}${rows}</section>`;
   }
 
   const formatLabel = fmt => fmt === 'pdf' ? 'PDF' : '한글';
