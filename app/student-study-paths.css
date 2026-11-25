@@ -234,3 +234,6 @@
 .ssp-body.ssp-opening .ssp-paper{opacity:.6;transition:opacity .12s ease-out}
 .ssp-body.ssp-opening{cursor:progress}
 @media (prefers-reduced-motion:reduce){.ssp-body.ssp-opening .ssp-paper{transition:none}}
+
+/* 11/25 61: 375 폭 — 로그인 안내 단추가 3열 칸 하나에 눌리지 않게 한 줄 전체 */
+#content .ssp-desk .ssp-paper>.ssp-actions>a.ssp-primary{grid-column:1/-1;display:flex;align-items:center;justify-content:center;min-height:44px;padding:8px 12px;text-align:center;white-space:normal;word-break:keep-all}

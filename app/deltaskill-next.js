@@ -598,7 +598,7 @@ teacher=function(){return teacherBeforeCopy13().replace('<h2>인쇄 구성</h2>'
       if (!area) return;
       if (document.fonts?.ready) await document.fonts.ready;
       const pages = renderPages(c);
-      if (!pages.length) return;
+      if (!pages.length) { if (typeof toast === 'function') toast('인쇄할 문항이 없어요. 먼저 문항을 골라 주세요.'); return; }
       area.innerHTML = pages.join('');
       window.WebMathRendererV23?.typeset(area);
       if (document.fonts?.ready) await document.fonts.ready;

@@ -27,7 +27,7 @@
   function renderPages(c=config()){return c.canonical?sequence(c).map((p,i)=>renderPage(c,p,i)):original.renderPages(c);}
   let printing=false;
   async function printConfig(c=config()){
-    if(!c.canonical)return original.printConfig(c);if(printing||!c.questions.length)return;
+    if(!c.canonical)return original.printConfig(c);if(printing)return;if(!c.questions.length){toast('인쇄할 문항이 없어요. 먼저 문항을 골라 주세요.');return;}
     printing=true;const f=document.createElement('iframe');f.style.cssText='position:fixed;left:-10000px;top:0;width:794px;height:1123px;border:0';f.title='인쇄용 실제 디지털 지면';f.srcdoc=documentHTML(c);document.body.append(f);
     try{await new Promise((resolve,reject)=>{const started=Date.now(),timer=setInterval(()=>{const d=f.contentDocument;if(d?.body?.dataset.ready==='true'){clearInterval(timer);d.body.dataset.renderError?reject(Error('render')):resolve();}else if(Date.now()-started>18000){clearInterval(timer);reject(Error('load'));}},80);});
       const d=f.contentDocument;const overflow=Array.from(d.querySelectorAll('.body')).some(x=>x.scrollHeight>x.clientHeight+2);if(overflow)throw Error('overflow');
