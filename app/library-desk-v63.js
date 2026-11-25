@@ -41,7 +41,8 @@
   const abs = path => /^https:\/\//.test(path) ? path : ORIGIN + path;
   const outLink = (href, body, cls = '') => `<a class="${cls}" href="${h(abs(href))}" target="_blank" rel="noopener">${body}<span aria-hidden="true">↗</span><span class="sr-only"> 새 탭</span></a>`;
 
-  const state = { load: 'idle', items: [], hasHwp: false, subject: '', sku: '', fmt: 'pdf', uploadOpen: false, uploadMsg: null };
+  /* 들어온 주소의 pointPdf(=책 SKU.pdf)를 처음 고른 자료로 — 없으면 목록 첫 책(11-25 30: 다른 책이 골라져 보였다) */
+  const state = { load: 'idle', items: [], hasHwp: false, subject: '', sku: (new URLSearchParams(location.search).get('pointPdf') || '').replace(/\.(pdf|hwpx)$/, ''), fmt: 'pdf', uploadOpen: false, uploadMsg: null };
 
   /* ---------- 판매 목록 ---------- */
   function filesOf(u, f) { return ((u && u.files) || []).filter(x => x.fmt === f); }
@@ -75,7 +76,7 @@
   function confirmHref(item, f) {
     if (!item.book) return ORIGIN + '/naesin/?' + new URLSearchParams({ s: item.code });
     const q = new URLSearchParams({ s: item.code });
-    q.set('b', item.book.id); q.set('p', 'detail'); q.set('c', item.composition); q.set('u', item.no); q.set('f', f); q.set('v', 'confirm');
+    q.set('b', item.book.id); q.set('p', 'detail'); q.set('c', item.composition); q.set('u', item.no); q.set('x', item.sku); q.set('f', f); q.set('v', 'confirm');
     return ORIGIN + '/naesin/?' + q;
   }
   const checkoutHref = (item, f) => ORIGIN + '/checkout/?sku=' + encodeURIComponent(item.sku + '.' + f);
@@ -126,7 +127,7 @@
       <div class="dl63-fmts" role="group" aria-label="받을 꼴">${fmts}</div>
       <div class="dl63-get"><p><strong>받는 것</strong><span>${FORMATS[f]} ${v.files.length}파일</span></p>${lay ? `<ul>${lay}</ul>` : ''}</div>
       <p class="dl63-total"><span>값</span><b>${shownPrice(item,f)}</b></p>
-      ${f === 'pdf' && POINT_PDF ? (quote ? '<p class="dl63-small">구성 '+v.files.length+'파일 · 묶음 가격 1회 차감</p>' : '<p class="dl63-small">포인트 가격과 파일을 확인하는 중입니다.</p>') : `${f === 'hwpx' ? '<p class="dl63-small">한글은 포인트 사용 불가 · 카드 결제만</p>' : ''}<a class="dl63-buy" data-dl63-buy href="${h(checkoutHref(item, f))}" target="_blank" rel="noopener">구매하기<span aria-hidden="true">↗</span><span class="sr-only"> 새 탭</span></a>`}
+      ${f === 'pdf' && POINT_PDF ? (quote ? '<p class="dl63-small">구성 '+v.files.length+'파일 · 묶음 가격 1회 차감</p>' : window.DSAuth && !window.DSAuth.has() ? `<a class="dl63-buy" href="${h(window.DSAuth.loginUrl('/app/?pointPdf=' + encodeURIComponent(item.sku + '.pdf') + '#library'))}">로그인하고 포인트로 받기</a>` : '<p class="dl63-small">포인트 가격과 파일을 확인하는 중입니다.</p>') : `${f === 'hwpx' ? '<p class="dl63-small">한글은 포인트 사용 불가 · 카드 결제만</p>' : ''}<a class="dl63-buy" data-dl63-buy href="${h(checkoutHref(item, f))}" target="_blank" rel="noopener">구매하기<span aria-hidden="true">↗</span><span class="sr-only"> 새 탭</span></a>`}
       ${point}
       <div class="dl63-sub">
         ${item.sample ? `<a href="${h(item.sample)}" download>미리보기 ${item.previewPages || ''}쪽 PDF<span aria-hidden="true">↓</span></a>` : ''}

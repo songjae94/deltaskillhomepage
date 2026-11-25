@@ -395,7 +395,10 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   function bookNote(b){return (b.edition?b.edition+" 기준 · ":"")+"문항 원문은 담지 않습니다";}
   function comp(id){var r=null;CAT.compositions.forEach(function(c){if(c.id===id)r=c;});return r;}
   function comps(f){return CAT.compositions.filter(f);}
-  function unitsOf(q,s){var want=(q.u||"").split(",");return s.units.filter(function(u){return want.indexOf(u.no)>=0;});}
+  /* 11-24 판 늘림 뒤 한 과목에 같은 단원 번호의 책이 여럿 — 번호만으로 고르면 여럿이 걸려 「받을 내용 확인」이 안 열리고 상세선택만 오갔다(11-25 30).
+     x(책 SKU)가 있으면 그 책 · 없으면 번호마다 이 쪽에서 파는 책 하나(없으면 목록 첫 책). */
+  function oneEach(us){var at={},o=[];us.forEach(function(u){var i=at[u.no];if(i==null){at[u.no]=o.length;o.push(u);}else if(!canBuyAny(o[i])&&canBuyAny(u))o[i]=u;});return o;}
+  function unitsOf(q,s){var want=(q.u||"").split(","),r=s.units.filter(function(u){return want.indexOf(u.no)>=0;});if(q.x){var k=r.filter(function(u){return u.sku===q.x;});if(k.length)return k;}return oneEach(r);}
   function rangeOf(q,s){var a=-1,b=-1;s.units.forEach(function(u,i){if(u.no===q.from)a=i;if(u.no===q.to)b=i;});if(a<0||b<0||a>b)return [];return s.units.slice(a,b+1);}
   function counts(q){var o={};(q.n||"").split(",").forEach(function(x){var m=/^(\d\d):(\d{1,3})$/.exec(x);if(m&&+m[2]>0)o[m[1]]=+m[2];});return o;}
   function total(q){var m=/^\d{1,3}$/.exec(q.n||"");return m&&+m[0]>0?+m[0]:0;}
@@ -638,7 +641,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     add(hd,el("span",null,b.grade+" · "+b.sn),h3,el("small",null,b.count+"문항"+(TB&&TB[b.sku]?" · "+TB[b.sku]:""))); /* 원 교재 이름 — 로그인 뒤 서버 응답으로만 */
     var got=el("p","pb-get");add(got,el("b",null,"받는 것"));
     got.appendChild(document.createTextNode(fmtName(b.fm)+" "+b.nf+"파일"+(b.lay.length?" · "+b.lay.map(function(x){return x.layout+(x.pages?" "+x.pages+"쪽":"");}).join(" · "):"")));
-    var bk=b.p.s.textbooks[0],more=bk?link("pb-more",{s:b.p.s.code,b:bk.id,p:"detail",c:b.p.c,u:b.no,v:"confirm",f:b.fm},"받을 내용 · 환불 자세히"):null;
+    var bk=b.p.s.textbooks[0],more=bk?link("pb-more",{s:b.p.s.code,b:bk.id,p:"detail",c:b.p.c,u:b.no,x:b.sku,v:"confirm",f:b.fm},"받을 내용 · 환불 자세히"):null;
     if(more)more.setAttribute("aria-label","받을 내용 · 환불 자세히: "+bookTitle(b));
     var buy=el("div","pb-buy"),pr=el("p","pb-price",b.fm==="pdf"?"P 가격 확인":won(b.price));add(pr,el("small",null,b.fm==="pdf"?"서버 승인 가격표":"부가세 포함"));
     var go1=el("a","btn buy pk-go",b.fm==="pdf"?"포인트로 받기":"구매하기");go1.href=b.fm==="pdf"?"/app/?pointPdf="+encodeURIComponent(b.sku+".pdf")+"#library":"/checkout/?sku="+encodeURIComponent(b.sku+"."+b.fm);go1.dataset.fk="buy-"+b.sku;go1.setAttribute("aria-label",(b.fm==="pdf"?"포인트로 받기: ":"구매하기: ")+bookTitle(b));
@@ -776,7 +779,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
       var chosen=(st.u||"").split(",").filter(Boolean);
       function group(makeRow){
         var major=null,ul=null;
-        s.units.forEach(function(u){
+        oneEach(s.units).forEach(function(u){
           if(u.major!==major){major=u.major;add(us,el("p","mj",major));ul=el("ul","picks");add(us,ul);}
           add(ul,makeRow(u));
         });
@@ -791,7 +794,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
         });
         add(us,fl);
       }else if(c.pick==="unit"||c.pick==="unitItems"||c.pick==="type"){
-        group(function(u){var li=el("li"),row=radioRow("unit",u.no,chosen.indexOf(u.no)>=0,u.no+" "+u.unit,null,null,function(){upd({u:u.no,t:null},c.pick==="type");});row.querySelector("input").dataset.fk="u-"+u.no;add(li,row);return li;});
+        group(function(u){var li=el("li"),row=radioRow("unit",u.no,chosen.indexOf(u.no)>=0,u.no+" "+u.unit,null,null,function(){upd({u:u.no,x:null,t:null},c.pick==="type");});row.querySelector("input").dataset.fk="u-"+u.no;add(li,row);return li;});
       }else{
         var ns=counts(st);
         group(function(u){
