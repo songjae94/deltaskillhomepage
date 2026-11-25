@@ -83,8 +83,9 @@ const examNames={HP26_03:'3월 학평',HP26_05:'5월 학평',HP26_07:'7월 학�
 const examName=code=>String(code||'').startsWith('자유:')?String(code).slice(3):examNames[code]||'이전 시험';
 const finiteScore=value=>value===null||value===undefined||value===''?undefined:Number.isFinite(Number(value))?Number(value):undefined;
 let learningState={loading:false,error:'',available:false,records:[],summary:{}},recordState={id:'',loading:false,error:'',responses:[],onlyWrong:false},passwordState={busy:false,error:'',done:false};
-function loginPage(){const resume=window.DSPrintLoginReturn;const originView=['#student','#teacher'].includes(window.DSLoginReturn)?window.DSLoginReturn:'';
- const authLink=mode=>{
+/* 11/25 61: 로그인은 /auth/ 한 곳 — 앱 안 #login(옛 로그인 화면)은 열지 않고 손님을 바로 /auth/ 로 보낸다. 돌아올 곳(next)은 로그인 단추를 누른 쪽(back) · 인쇄 이어가기 · 학생/선생님 화면 순. */
+let lastNonLoginHref='';
+function loginAuthLink(mode,back){const resume=window.DSPrintLoginReturn;const originView=['#student','#teacher'].includes(window.DSLoginReturn)?window.DSLoginReturn:'';
   const url=new URL(DSService.accountLinks(mode));
   if(resume?.route())return resume.accountLink(url.href);
   if(originView){
@@ -92,9 +93,11 @@ function loginPage(){const resume=window.DSPrintLoginReturn;const originView=['#
    const value=new URLSearchParams(location.search).get(key);
    const query=value&&/^[a-z-]{1,24}$/.test(value)?'?'+key+'='+value:'';
    url.searchParams.set('next','/app/'+query+originView);
-  }
+  }else if(back&&/^\/app\/[A-Za-z0-9_\-.\/?#=&%]*$/.test(back))url.searchParams.set('next',back);
   return url.href;
- };
+}
+function loginPage(){const resume=window.DSPrintLoginReturn;const originView=['#student','#teacher'].includes(window.DSLoginReturn)?window.DSLoginReturn:'';
+ const authLink=mode=>loginAuthLink(mode,'');
  return DSAccountViews.login({...loginState,signupUrl:authLink('signup'),recoverUrl:authLink('reset'),socialUrl:authLink(''),sameTabAuth:Boolean(resume?.route()||originView),nextRole:role}).replace('</h1>',diagnosticResumePending()&&!DSService.session()?'</h1><p class="account-subtitle" role="status">진단 1번 문항까지 풀었습니다. 로그인하면 2번 문항부터 이어집니다.</p>':'</h1>')+`<div class="login-return">${link(role==='teacher'?'teacher':'student','둘러보기 계속')}<a href="#help">이용 안내</a></div>`}
 function accountProps(){const results=get('results-v2',[]),saved=get('saved-v2',[]);return {...accountState,signedIn:DSService.session(),passwordUrl:'#account-password',role,learning:learningState,unitDiagnostics:{...unitDiagnostics,localAttempts:localDiagnosticAttempts()},localSaved:saved.map(v=>({...v,kind:v.source==='practice'?'학습지':'내신자료'})),localStats:{sessions:results.length,total:results.reduce((s,r)=>s+r.questions.filter(q=>!q.skipped).length,0),correct:results.reduce((s,r)=>s+r.questions.filter(q=>q.correct).length,0),saved:saved.length}}}
 function accountPage(){return (DSService.session()&&DSService.needsPasswordUpdate()?`<aside class="account-security-notice"><span>비밀번호를 영문·숫자 8자 이상으로 바꿔 주세요.</span><a href="#account-password">변경하기</a></aside>`:'')+DSAccountViews.account(accountProps())}
@@ -1067,6 +1070,8 @@ function cinemaScreen(index){
 }
 function route(){
  let page=location.hash.slice(1)||'home';if(page==='content')return;
+ if(page==='login'&&!DSService.session()&&DSService.isLiveOrigin){location.replace(loginAuthLink('',lastNonLoginHref));return}
+ if(page!=='login')lastNonLoginHref=location.pathname+location.search+location.hash;
  if(diagnosticResumePending()){if(!diagnosticGuest()&&diagnosticState.active&&page==='account'){clearDiagnosticResume();location.replace('#diagnostic-run');return}if(diagnosticGuest()&&!['login','diagnostic','diagnostic-run'].includes(page))clearDiagnosticResume()}
  if(page.startsWith('material/')){try{detailSku=decodeURIComponent(page.slice(9))}catch{detailSku=''}detailPage=0;page='material'}
  let recordId='';if(page.startsWith('record/')){try{recordId=decodeURIComponent(page.slice(7))}catch{}recordState.id=recordId;page='record'}
