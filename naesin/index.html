@@ -188,6 +188,7 @@ html main .chips a[aria-current="true"]{background:#172B43;border-color:#172B43;
 .pk-tile b{display:block;font-size:14px;line-height:1.35}
 .pk-tile small{display:block;font-size:12.5px;color:#5B6678;line-height:1.4;margin-top:2px}
 .pk-thumb{flex:none;display:block;width:52px;aspect-ratio:210/297;background:#fff;box-shadow:0 0 0 1px #DFE3ED;overflow:hidden}
+.pk-cover{display:flex;flex-direction:column;justify-content:center;gap:3px;width:100%;height:100%;padding:4px;box-sizing:border-box;background:#F4F6FB;text-align:center;color:#0B1F3A;overflow:hidden}.pk-cover small{font-size:8px;color:#5A6478}.pk-cover b{font-size:9px;line-height:1.25;word-break:keep-all}
 .pk-thumb img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
 img.ds-sheet:not(.on){visibility:hidden}
 .pk [aria-pressed="true"]{border-color:#245BD6!important;box-shadow:inset 0 0 0 1px #245BD6;background:#EEF3FF!important;color:#245BD6}
@@ -622,7 +623,10 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     i.addEventListener("error",function(){if(onFail)onFail();if(b.pv&&window.DSSheet){var r=DSSheet.img(b.pv.url,1,alt||"");if(i.parentNode)i.parentNode.replaceChild(r,i);}else i.classList.remove("on");},{once:true});
     i.src="/naesin/preview/"+encodeURIComponent(b.sku)+"-L"+k+".png?v=38r2ch-1119";return i;
   }
-  function thumb(b,alt){var t=el("span","pk-thumb");add(t,layImg(b,"2",alt||""));return t;}
+  /* 첫 쪽 그림이 리포에 있는 책 — 나머지는 요청하지 않고(404 0) 책 이름 · 과목 표지로 */
+  var PVPNG={"NS-CM2-06":1,"NS-CM2-07":1,"NS-CM2B-06":1,"NS-MI1B-05":1};
+  function coverBox(b){var c=el("span","pk-cover");c.setAttribute("aria-hidden","true");add(c,el("small",null,b.sn||""),el("b",null,(b.no||"")+" "+(b.unit||"")));return c;}
+  function thumb(b,alt){var t=el("span","pk-thumb");if(PVPNG[b.sku])add(t,layImg(b,"2",alt||""));else if(b.pv&&window.DSSheet)add(t,DSSheet.img(b.pv.url,1,alt||""));else add(t,coverBox(b));return t;}
   function bookTitle(b){return b.sn+" "+b.no+" "+b.unit+(b.ed?" · "+b.ed:"");}
   /* ① 지금 파는 책 — 자료실(/app/#library) 카드 목록과 같은 꼴.
      카드 하나 = 책 하나(과목 · 단원 · 문항 수 · 받는 것 · 값 · 작은 지면) · 카드에서 바로 「담기」 / 「구매하기」. 쪽 구성은 고름이 아니라 「받는 것」 한 줄(한 값에 PDF 셋이 다 들어 있음).
