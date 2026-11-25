@@ -147,6 +147,8 @@ window.addEventListener('popstate',()=>{
 });
 window.addEventListener('ds-study-change',()=>{if(csatPractice&&csatArrived)mount();});
 window.addEventListener('hashchange',()=>{csatArrived=location.hash==='#student';if(!csatArrived)csatPractice=null;else if(csatPractice)mount();});
+/* 11/25 60: 다른 저장 길(공부 계획 저장)이 올린 진행 판을 받아 둔다 — 낡은 판으로 보내 409 가 나던 것(부딪침 길은 그대로) */
+addEventListener('ds-progress-saved',e=>{const d=e.detail;if(accountData?.ownerKey&&d?.ownerKey===accountData.ownerKey&&Number.isSafeInteger(d.version)&&d.version>(accountData.version||0))accountData={...accountData,...d};});
 function sessionChanged(){csatPractice=null;sessionEpoch++;accountData=null;loading=null;controller?.();bound=null;controller=null;update();mount();}
 window.addEventListener('ds-session-change',sessionChanged);window.addEventListener('ds-session-ready',()=>{if(!bound)update();});
 new MutationObserver(mount).observe(area,{subtree:true,childList:true});
