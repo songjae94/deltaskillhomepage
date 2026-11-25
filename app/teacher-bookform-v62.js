@@ -131,7 +131,8 @@
     const signed = Boolean(window.DSService?.session?.());
     const saved = store.get(SAVED, []);
     const head = `<div class="bf62-make"><h3>구성 보관</h3><p>지금은 구성과 지면 견본을 확인하는 단계입니다. 실제 문항이 담긴 교재 파일 생성은 아직 연결되지 않았습니다.</p><button type="button" class="bf62-cover-print" data-bf62-print-cover>표지 인쇄 / PDF <span>↗</span></button>`;
-    if (!signed) {
+    // 11/25 61: a guest saves once in this browser like a member; from the second save the sign-in card opens (guest-first-use-v61)
+    if (!signed && !window.DSGuestFirstUse) {
       const signup = window.DSService?.accountLinks ? window.DSService.accountLinks('signup') : '';
       return `${head}<p>로그인하면 이 구성을 보관할 수 있습니다. 로그인 뒤 이 화면으로 돌아오며 고른 구성은 그대로 남습니다.</p><button type="button" class="tb36-primary" data-bf62-login>로그인하고 이어 가기 <span>→</span></button>${signup ? `<a class="bf62-signup" href="${safe(signup)}" target="_blank" rel="noopener">처음이면 회원가입 <span aria-hidden="true">↗</span></a><p class="bf62-small">가입은 새 창에서 열립니다. 가입을 마치고 이 창에서 로그인하면 됩니다.</p>` : ''}</div>`;
     }
