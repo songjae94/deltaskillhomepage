@@ -8,7 +8,9 @@
   const data = () => window.DSPrintScopeData || {books:[]};
   const name = x => x.label || x.name || x.title || x.id;
   const id = x => String(x.id || x.key || '');
-  const books = () => (window.DSWorkbookScope?.books || data().books || []).filter(b => !b.subject || b.subject === state.subject);
+  // Point print scope: list only workbooks that the approved scope data actually links (no empty book choices).
+  const scopedBookIds = () => new Set((data().books || []).map(id));
+  const books = () => { const ok = scopedBookIds(); return (window.DSWorkbookScope?.books || data().books || []).filter(b => (!b.subject || b.subject === state.subject) && (!ok.size || ok.has(id(b)))); };
   const book = () => books().find(b => id(b) === state.book);
   const awaitingSupply = subject => data().subjects?.some(s => s.subject === subject && s.printSupply === 'pending');
 

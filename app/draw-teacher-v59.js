@@ -1032,6 +1032,13 @@
       }
     }));
     clearTimeout(timer);
+    // Preselect the first usable offer (received → point) so a lone choice is not left greyed out.
+    if (outputDialog !== dialog || !dialog.open) return;
+    if (!offers.querySelector('input:checked:enabled')) {
+      const first = modes.map(mode=>offers.querySelector(`[data-print-offer="${mode}"] input:enabled`)).find(Boolean);
+      if (first) first.checked = true;
+    }
+    submit.disabled = !offers.querySelector('input:checked:enabled');
   }
 
   let scopePendingJob=null;

@@ -18,7 +18,7 @@ const space=csat?'csat':'school';
 const guestLoginUrl=csat?'/auth/?next='+encodeURIComponent('/app/?csatMode=mock#csat'):'#login';
 const scope='.ds-timed[data-timed-space="'+space+'"]';
 const label=q=>gradeNames[q.grade]+' · '+q.unit;
-function accountChanged(){currentSubject=subjects[0];grade=1;book='';unit='';type='';level='';count=10;minutes=20;exam.reset();dialogMode='';receivedSource=null;epoch++;seq++;remote=null;remoteStatus='';resources.clear();catalogById.clear();active=null;quote=null;notice='';busy=false;selection=[];}
+function accountChanged(){currentSubject=subjects[0];grade=1;book='';unit='';type='';level='';count=10;minutes=20;exam.reset();dialogMode='';receivedSource=null;epoch++;seq++;remote=null;remoteStatus='';resources.clear();catalogById.clear();filledUnits.clear();active=null;quote=null;notice='';busy=false;selection=[];}
 let previousMember=signed(),claiming=false;
 const resultKey='ds-school-timed-submit-v1';
 let resultCache;
@@ -165,7 +165,10 @@ let receivedSource=null;
 let remote=null,remoteStatus='',seq=0,type='',scopeMode='specific';
 function subjectBooks(){return (window.DSWorkbookScope?.books||[]).filter(b=>b.subject===currentSubject);}
 function selectedBook(){return subjectBooks().find(b=>b.id===book);}
-function unitOptions(){if(book)return selectedBook()?.units||[];return [...new Map(subjectBooks().flatMap(b=>b.units).map(u=>[u.id,u])).values()];}
+// Units that hold questions, learned from the subject-wide (all units · all types) catalog of the same subject and book.
+const filledUnits=new Map();
+const filledKey=()=>currentSubject+'|'+(book||'')+'|'+(receivedSource?.receiptId||'');
+function unitOptions(){const all=book?selectedBook()?.units||[]:[...new Map(subjectBooks().flatMap(b=>b.units).map(u=>[u.id,u])).values()];const filled=filledUnits.get(filledKey());return filled?all.filter(u=>filled.has(u.id)||u.id===unit):all;}
 function typeOptions(){return unitOptions().filter(u=>!unit||u.id===unit).flatMap(u=>u.types||[]);}
 function criteria(){
  const t=typeOptions().find(t=>t.id===type);
@@ -217,6 +220,7 @@ async function loadCatalog(){
   if(own!==seq||!signed()||source!==receivedSource)return;
   rows=rows.filter((q,i)=>source.pins.has(pins[i]));
  }
+ if(!requested.unitIds.length&&!requested.typeIds.length)filledUnits.set(filledKey(),new Set(rows.flatMap(q=>[q.unitId,q.subunitId,...(Array.isArray(q.unitIds)?q.unitIds:[])]).filter(v=>typeof v==='string')));
  remote={rows,catalogVersion:r.catalogVersion};for(const q of rows)catalogById.set(q.id,q);remoteStatus='';}
  catch{if(own===seq)remoteStatus='문항 자료를 불러오지 못했어요. 다시 확인해 주세요.';}
  if(own===seq)paint();
