@@ -1633,7 +1633,7 @@ function bind(container,options={}){
   const markup=planPhase==='loading'?'<p role="status">학습 계획을 불러오고 있어요.</p>':planPhase==='load-error'?'<button type="button" data-plan-reload>다시 불러오기</button>':studyPlan.render({profile:planProfile,draft:planDraft,step:planStep,phase:planPhase,course:planCourse,subjects,books:planDraft.need==='supplement'?bookMenu():[],supplyPhase,units});
   if(markup!==planHTML){planPane.innerHTML=markup;planHTML=markup;}
   planPane.querySelectorAll('button').forEach(el=>{if(planBusy&&!el.disabled){el.disabled=true;el.dataset.planBusy='';}else if(!planBusy&&el.hasAttribute('data-plan-busy')){el.disabled=false;delete el.dataset.planBusy;}});
-  root.dataset.planPhase=planPhase;
+  root.dataset.planPhase=planPhase;root.dataset.sspView=view; /* H29-11(관문 91): 기록 보기는 계획 단계와 상관없이 보임(세로 화면 CSS) */
   const status=root.querySelector('.ssp-plan-status');status.hidden=!planMessage;if(status.textContent!==planMessage)status.textContent=planMessage;
   const filters=planPhase==='active'?deskFilters():'';
   root.querySelector('.ssp-desk-filters').hidden=!filters;
@@ -1670,7 +1670,7 @@ function bind(container,options={}){
  function check(skip){if(!current||feedback||!skip&&choice===null)return;const r={id:window.crypto?.randomUUID?.()||'ssp-'+Date.now()+'-'+state.records.length,questionId:current.id,version:current.version,course:current.course,type:current.type,level:current.level,at:Date.now(),choice:skip?null:choice,correct:!skip&&choice===current.answer,confidence:skip?'unsure':confidence,help,solutionSeen:false,repeated:state.records.some(r=>r.questionId===current.id),reason:'',seconds:Math.max(0,(Date.now()-openedAt)/1000)};state.records.push(r);feedback=r;save(r);draw();}
  function click(e){
  if(guestTrial&&e.target.closest('[data-ssil-account="study"]')){
-  e.preventDefault();if(view!=='history')trialReturnView=view;view='history';draw();return;
+  e.preventDefault();if(view!=='history')trialReturnView=view;view='history';draw();container.querySelector('.ssp-body')?.scrollIntoView?.({block:'start'});return;
  }
  const b=e.target.closest('button');if(!b||!container.contains(b)||b.disabled)return;notice='';
  if(guestTrial&&b.hasAttribute('data-ssp-guest-next')){void openGuestQuestion();return;}
