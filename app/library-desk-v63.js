@@ -131,7 +131,7 @@
       ${point}
       <div class="dl63-sub">
         ${item.sample ? `<a href="${h(item.sample)}" download>미리보기 ${item.previewPages || ''}쪽 PDF<span aria-hidden="true">↓</span></a>` : ''}
-        <a href="#material/${encodeURIComponent(item.sku)}">지면 보기</a>
+        ${materialSku() === item.sku ? '' : `<a href="#material/${encodeURIComponent(item.sku)}">지면 보기</a>`}
         ${outLink(confirmHref(item, f).replace(ORIGIN, ''), '받을 내용 · 환불 자세히')}
       </div>
       <p class="dl63-small">결제는 로그인 후 진행됩니다.</p>
@@ -285,7 +285,57 @@
     return template.innerHTML;
   };
 
+  /* ---------- 상세 쪽(#material/<SKU>) — 11-25 44 ----------
+     옛 상세 쪽은 window.DSCatalog(공개 미리보기 4책)만 읽어, 판매 목록(/naesin/catalog.json)에만 있는 책은
+     「자료를 찾을 수 없습니다.」로 막혔다. DSCatalog 에 없는 책은 판매 목록 값으로 상세 쪽을 그린다(값 · 구매 고리는 목록 받침 상자와 같은 receipt()). */
+  function materialSku() {
+    const page = location.hash.slice(1);
+    if (!page.startsWith('material/')) return '';
+    try { return decodeURIComponent(page.slice('material/'.length)); } catch { return ''; }
+  }
+  function saleDetail(item) {
+    const others = state.items.filter(v => v.sku !== item.sku && v.subject === item.subject).slice(0, 3);
+    return `<section class="work-surface material-detail dl63-detail" data-dl63-detail="${h(item.sku)}">
+      <nav class="page-breadcrumb" aria-label="현재 위치"><a href="#library">내신 자료</a><span>/</span><span>${h(item.subject)}</span></nav>
+      <div class="dl63-grid dl63-detail-grid">
+        <div class="dl63-detail-main">
+          <span class="page-kicker">${h(item.grade)} · ${h(item.subject)}</span><h1 style="margin:4px 0 12px">${h(item.no)} ${h(item.unit)}</h1>
+          ${item.thumb ? `<img class="dl63-detail-thumb" src="${h(item.thumb)}" width="804" height="1137" style="display:block;width:100%;max-width:520px;height:auto;margin-bottom:16px;border-radius:6px;box-shadow:0 2px 10px #0000001f" alt="${h(item.unit)} 미리보기 1쪽">` : ''}
+          <p class="dl63-book-note">${BOOK_NOTE}</p>
+          <div class="detail-owned-link"><span>이미 구매하셨나요?</span><a href="#account">내 자료에서 찾기</a></div>
+        </div>
+        <aside class="dl63-desk" aria-label="고른 자료" aria-live="polite" data-dl63-receipt>${receipt(item)}</aside>
+      </div>
+      ${others.length ? `<section class="detail-related"><div class="between"><h2>함께 볼 자료</h2><a href="#library">전체 자료</a></div><div>${others.map(v => `<a href="#material/${encodeURIComponent(v.sku)}"><span>${h(v.subject)}</span><strong>${h(v.no)} ${h(v.name)}</strong><small>${v.count}문항</small></a>`).join('')}</div></section>` : ''}
+    </section>`;
+  }
+  if (typeof materialPage === 'function') {
+    const beforeMaterial = materialPage;
+    materialPage = function () {
+      const sku = materialSku();
+      const inPreview = (Array.isArray(window.DSCatalog) ? window.DSCatalog : []).some(d => d.sku === sku);
+      if (!sku || inPreview || !/^NS-[A-Z0-9]+-\d+$/.test(sku)) return beforeMaterial.apply(this, arguments);
+      if (state.load === 'error') return `<section class="work-surface material-detail dl63-detail" data-dl63-detail-wait="${h(sku)}">${shopBody()}</section>`;
+      if (state.load !== 'ready') {
+        load();
+        return `<section class="work-surface material-detail dl63-detail" data-dl63-detail-wait="${h(sku)}"><div class="dl63-state dl63-loading" role="status"><span></span><span></span><span></span><p>자료를 불러오는 중</p></div></section>`;
+      }
+      const item = state.items.find(v => v.sku === sku);
+      if (!item) return beforeMaterial.apply(this, arguments);
+      state.sku = item.sku;
+      if (!item.formats[state.fmt]) state.fmt = Object.keys(item.formats)[0];
+      return saleDetail(item);
+    };
+  }
+  /* 판매 목록이 다 온 뒤 기다리던 상세 쪽을 다시 그린다 */
+  function repaintDetailWait() {
+    const wait = main.querySelector('[data-dl63-detail-wait]');
+    if (wait && wait.dataset.dl63DetailWait === materialSku()) main.innerHTML = materialPage();
+  }
+
   function repaintShop() {
+    repaintDetailWait();
+    if (main.querySelector('[data-dl63-detail]')) repaintPick();
     const box = main.querySelector('[data-dl63-shop]');
     if (box) box.innerHTML = shopBody();
   }
@@ -349,4 +399,6 @@
 
   window.DSLibraryDeskV63 = Object.freeze({ buildCatalog: build, checkoutHref, reload() { state.load = 'idle'; load(); } });
   if (location.hash === '#library') main.innerHTML = libraryPage();
+  /* 처음 들어온 주소가 판매 목록에만 있는 책의 상세 쪽이면 다시 그린다(첫 그리기는 이 파일이 실리기 전 옛 상세 쪽으로 됐다) */
+  else if (materialSku() && main.querySelector('.simple-empty')) main.innerHTML = materialPage();
 })();

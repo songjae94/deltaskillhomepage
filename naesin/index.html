@@ -467,7 +467,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     return null;
   }
   function sellable(u,f,now){
-    if(!u||!priceAt(u,f)||!u.taxFreeAmount||u.taxFreeAmount[f]==null||!u.saleFrom||!u.sample||!filesAt(u,f).length)return false; /* 맛보기(sample = 단원 무료 세트) 요구는 그대로 */
+    if(!u||!priceAt(u,f)||!u.taxFreeAmount||u.taxFreeAmount[f]==null||!u.saleFrom||(!u.sample&&u.releaseVerified!==true)||!filesAt(u,f).length)return false; /* 맛보기(sample) 또는 검증 판(releaseVerified · 11-24 늘린 책) — checkout · 자료실과 같은 잣대(11-25 44) */
     if(now<Date.parse(u.saleFrom))return false;
     return !(u.saleTo&&now>=Date.parse(u.saleTo));
   }

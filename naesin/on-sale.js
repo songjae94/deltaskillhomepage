@@ -6,7 +6,7 @@
   function files(u,f){return ((u&&u.files)||[]).filter(function(x){return x.fmt===f;});}
   function open(u,f,now){
     var pr=u&&u.price&&u.price[f];
-    if(!pr||!u.taxFreeAmount||u.taxFreeAmount[f]==null||!u.saleFrom||!u.sample||!files(u,f).length)return false;
+    if(!pr||!u.taxFreeAmount||u.taxFreeAmount[f]==null||!u.saleFrom||(!u.sample&&u.releaseVerified!==true)||!files(u,f).length)return false; /* checkout · 자료실과 같은 잣대(11-25 44) */
     if(now<Date.parse(u.saleFrom))return false;
     return !(u.saleTo&&now>=Date.parse(u.saleTo));
   }
@@ -17,7 +17,7 @@
       (s.units||[]).forEach(function(u){
         var f=open(u,"pdf",now)?"pdf":open(u,"hwpx",now)?"hwpx":"";if(!f)return;
         var b=(s.textbooks||[])[0],q=new URLSearchParams({s:s.code});
-        if(b){q.set("b",b.id);q.set("p","detail");q.set("c",u.composition||"C1");q.set("u",u.no);q.set("f",f);q.set("v","confirm");}
+        if(b){q.set("b",b.id);q.set("p","detail");q.set("c",u.composition||"C1");q.set("u",u.no);q.set("x",u.sku);q.set("f",f);q.set("v","confirm");}
         o.push({sku:u.sku,name:u.name||(s.subject+" · "+u.no+" "+u.unit),grade:s.grade,subject:s.subject,count:u.count||0,
           price:u.price[f],fmt:f,preview:u.preview&&u.preview.url||"",unit:u.no+" "+u.unit,nfiles:files(u,f).length,layouts:files(u,f).map(function(x){return x.layout;}).filter(Boolean),href:"/naesin/?"+q});
       });
