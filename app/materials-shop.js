@@ -294,7 +294,7 @@
   document.addEventListener('click',e=>{
     if(e.target.closest('[data-open-naesin]')) {if(location.hash==='#student'&&window.DSStudentDownloads){e.preventDefault();window.DSStudentDownloads.open('store');return;}e.preventDefault();location.hash='teacher';setTimeout(()=>builder.switchMode('materials'),0);return;}
     const panel=root(); if(!panel) return;
-    const point=e.target.closest('[data-ms-point-receive]');if(point&&panel.contains(point)){e.preventDefault();const id=point.dataset.msPointReceive;window.DSStudentDownloads?.open('files');window.DSPointPdf?.receive(id);return;}
+    const point=e.target.closest('[data-ms-point-receive]');if(point&&panel.contains(point)){e.preventDefault();const id=point.dataset.msPointReceive;if(window.DSAuth&&!window.DSAuth.has()){location.assign(window.DSAuth.loginUrl(location.pathname+location.search+location.hash));return;}window.DSStudentDownloads?.open('files');window.DSPointPdf?.receive(id);return;}
     const picker=panel.querySelector('.ms-picker'); if(picker?.open&&!picker.contains(e.target)) picker.open=false;
     const b=e.target.closest('button'); if(!b||!panel.contains(b)) return;
     if(b.hasAttribute('data-ms-clear')){clearScope();selected='';refresh();root()?.querySelector('.ms-picker summary')?.focus();return;}
