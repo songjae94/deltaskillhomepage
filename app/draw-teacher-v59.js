@@ -1050,18 +1050,22 @@
       if (!alive()) return null;
       if (Array.isArray(d?.items) && !d.items.length) { say('empty'); return null; }
       if (!Array.isArray(d?.items) || !d.items.length || d.items.length > criteria.count || new Set(d.items.map(x => x.item_id)).size !== d.items.length || !d.items.every(x => UUID.test(x.item_id) && UUID.test(x.set_key))) throw Error('scope');
-      const items = [];
-      // Keep simultaneous opens below the existing member gate limit of four.
-      for (let start = 0; start < d.items.length; start += 3) {
-        if (!alive()) throw Error('stale');
-        const batch = await Promise.all(d.items.slice(start, start + 3).map(async x => {
-          const pg = x.paging || {};
-          const payload = await h.open(x.set_key, x.item_id, pg, signal);
+      const items = new Array(d.items.length);
+      // Keep simultaneous opens below the existing member gate limit of four: three workers, each takes the
+      // next question as soon as its own call returns (no waiting for the slowest of a batch of three).
+      let nextOpen = 0, broken = false;   // one failure stops the other two from taking more
+      const opener = async () => {
+        while (nextOpen < d.items.length && !broken) {
           if (!alive()) throw Error('stale');
-          return { id: x.item_id, set: x.set_key, paging: pg, body: questionBody(x.item_id, payload) };
-        }));
-        items.push(...batch);
-      }
+          const at = nextOpen++, x = d.items[at], pg = x.paging || {};
+          try {
+            const payload = await h.open(x.set_key, x.item_id, pg, signal);
+            if (!alive()) throw Error('stale');
+            items[at] = { id: x.item_id, set: x.set_key, paging: pg, body: questionBody(x.item_id, payload) };
+          } catch (error) { broken = true; throw error; }
+        }
+      };
+      await Promise.all([opener(), opener(), opener()]);
       scopePendingJob=null;try{sessionStorage.removeItem('ds-print-pending-job');}catch{}
       const chosen = scope.unitLabels(criteria.subunit_ids);
       const missing = scope.unitLabels(d.unrepresented_subunits || []);

@@ -22,7 +22,7 @@ html #lesson-studio .lesson-proof {align-self:start; background:#faf9f5; border:
 #lesson-studio .lesson-proof a {padding:0 0 12px; gap:9px}
 #lesson-studio .lesson-sheet {
   position:relative; display:block; width:100%; max-width:none; aspect-ratio:2/3;
-  background:#dfd0ba url("../app/assets/editorial/paper-flatlay-v15.png") center / 100% auto no-repeat;
+  background:#dfd0ba url("../app/assets/editorial/paper-flatlay-v15.webp") center / 100% auto no-repeat;
   box-shadow:none;
 }
 #lesson-studio .lesson-sheet img {

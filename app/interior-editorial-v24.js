@@ -2,8 +2,8 @@
 (() => {
   'use strict';
   const images = {
-    upload: ['assets/editorial/paper-flatlay-v15.png', '원목 책상 위 원고지와 필기 도구'],
-    diagnostic: ['assets/editorial/cool-study-v13.png', '빛이 드는 책상 위 학습 패드']
+    upload: ['assets/editorial/paper-flatlay-v15.webp', '원목 책상 위 원고지와 필기 도구'],
+    diagnostic: ['assets/editorial/cool-study-v13.webp', '빛이 드는 책상 위 학습 패드']
   };
   function photo(kind) {
     const [src, alt] = images[kind];
@@ -28,7 +28,7 @@
     const preview = item?.previewPages?.[0];
     if (!picture || !preview || !/^public-data\/[A-Za-z0-9-]+\.png$/.test(preview)) return html;
     const scene = document.createElement('div'); scene.className = 'ie24-document-still-life'; scene.setAttribute('aria-hidden', 'true');
-    const background = document.createElement('img'); background.className = 'ie24-desk'; background.src = 'assets/editorial/paper-flatlay-v15.png'; background.alt = '';
+    const background = document.createElement('img'); background.className = 'ie24-desk'; background.src = 'assets/editorial/paper-flatlay-v15.webp'; background.alt = '';
     const page = document.createElement('img'); page.className = 'ie24-real-page'; page.src = preview; page.alt = ''; page.width = 804; page.height = 1137;
     scene.append(background, page); picture.replaceWith(scene);
     return template.innerHTML;

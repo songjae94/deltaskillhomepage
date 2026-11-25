@@ -120,7 +120,8 @@ function rxOf(exam,area,no){const E=(RX.exams||{})[exam];if(!E)return null;const
  if(!e)return null;const t=(RX.tools||{})[e];return t&&t.ladder&&t.ladder.length?t:null;}
 function useName(u){return typeof u==="string"?u:((u&&u.skill)||"");}
 /* 해설실(/sol/) 등재 회차 — 새 회차 해설을 올리면 여기와 /sol/ 페이지를 함께 늘린다 (0902) */
-const SOL_EXAMS={MP27_09:1};
+/* 11-25 해설실(/sol/) 내림(abcc716) — 보기 단추 · 칸이 404 로 가지 않게 비움. 해설실을 다시 열면 회차를 다시 넣는다. */
+const SOL_EXAMS={};
 /* 1007 옛 회차 코드 별칭 표는 공개 소스에서 삭제. 별칭이 필요하면 서버(exam_aliases) 쪽에서 바꿔 내려준다.
    여기서는 코드를 그대로 쓴다 — 목록에 없는 옛 코드는 「지원하지 않음」으로 안내한다. */
 const normExam=c=>c;
