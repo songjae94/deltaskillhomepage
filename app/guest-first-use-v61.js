@@ -68,11 +68,12 @@
     return d;
   }
   // go: only for a feature the server counts — 「로그인 없이 계속」 does the action as asked
-  function prompt(f, go) {
+  // need: a members-only step (11/25 79 H31a) — the card asks to sign in without saying 「한 번 써 보셨어요」
+  function prompt(f, go, need) {
     const d = dialog();
     d._go = go || null;
     const signup = '/auth/?mode=signup&next=' + encodeURIComponent(nextPath());
-    d.innerHTML = `<div class="gf61-card"><button type="button" class="gf61-x" data-gf61="close" aria-label="닫기">×</button><span class="gf61-kicker">${esc(f.name)}</span><h2 id="gf61-title">한 번 써 보셨어요.</h2><p>${go ? '로그인하면 기록이 남고, 정답 · 해설까지 이어서 볼 수 있어요.' : '두 번째부터는 로그인하고 이어서 쓸 수 있어요. 가입하면 이 화면으로 돌아와요.'}</p><div class="gf61-actions"><button type="button" class="gf61-primary" data-gf61="login">로그인</button><a class="gf61-ghost" href="${esc(signup)}">회원가입</a></div>${go ? '<button type="button" class="gf61-later" data-gf61="go">로그인 없이 계속</button>' : ''}</div>`;
+    d.innerHTML = `<div class="gf61-card"><button type="button" class="gf61-x" data-gf61="close" aria-label="닫기">×</button><span class="gf61-kicker">${esc(f.name)}</span><h2 id="gf61-title">${need ? '로그인하고 이어서 쓸 수 있어요.' : '한 번 써 보셨어요.'}</h2><p>${need ? '이 단계는 로그인한 뒤에 열려요. 가입하면 이 화면으로 돌아와요.' : go ? '로그인하면 기록이 남고, 정답 · 해설까지 이어서 볼 수 있어요.' : '두 번째부터는 로그인하고 이어서 쓸 수 있어요. 가입하면 이 화면으로 돌아와요.'}</p><div class="gf61-actions"><button type="button" class="gf61-primary" data-gf61="login">로그인</button><a class="gf61-ghost" href="${esc(signup)}">회원가입</a></div>${go ? '<button type="button" class="gf61-later" data-gf61="go">로그인 없이 계속</button>' : ''}</div>`;
     if (!d.open) { try { d.showModal(); } catch { d.setAttribute('open', ''); } }
     d.querySelector('[data-gf61="login"]')?.focus();
   }
@@ -114,6 +115,6 @@
   window.DSGuestFirstUse = {
     features: () => FEATURES.map(f => ({ key: f.key, name: f.name, server: Boolean(f.server), uses: uses(f.key) })),
     used: key => uses(key) >= 1,
-    prompt: key => { const f = FEATURES.find(x => x.key === key); if (f) prompt(f); }
+    prompt: (key, opts) => { const f = FEATURES.find(x => x.key === key); if (f) prompt(f, null, Boolean(opts?.need)); }
   };
 })();

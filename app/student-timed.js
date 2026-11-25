@@ -255,6 +255,9 @@ function customSetup(){
 function startDialog(){
  if(!dialogMode)return '';
  let body='',button='';
+ if(dialogMode==='member-login'){
+  return '<dialog class="dst-start-dialog" aria-labelledby="dst-confirm-title"><h2 id="dst-confirm-title">로그인이 필요해요</h2><p>이 시험은 로그인 후 이용할 수 있어요.</p><div><button autofocus data-time-action="dismiss">돌아가기</button><a data-time-login href="'+guestLoginUrl+'">로그인</a></div></dialog>';
+ }
  if(dialogMode==='member-mock'){
   return '<dialog class="dst-start-dialog" aria-labelledby="dst-confirm-title"><h2 id="dst-confirm-title">실전 모의고사</h2><p>30문항 · 100분 시험은 로그인 후 이용할 수 있어요.</p><div><button autofocus data-time-action="dismiss">돌아가기</button><a data-time-login href="'+guestLoginUrl+'">로그인</a></div></dialog>';
  }
@@ -419,7 +422,7 @@ async function action(command){if(busy)return;const sessionEpoch=epoch;notice=''
  if(command==='catalog'){await loadCatalog();return;}
  if(command==='print'){printPaper(active.questionIds,title(),['finished','expired'].includes(active.status));return;}
  if(command==='finish'&&active?.kind==='fixed'){if(!csat&&!signed()){submitSchoolTrial(active);return;}active.timedOut=remaining()===0;active.status=active.timedOut?'expired':'finished';saveFixed();paint();return;}
- if(!signed()||!service()){notice='로그인과 계정 연결을 확인해 주세요.';paint();return;}
+ if(!signed()){dialogMode='';quote=null;if(!csat&&window.DSGuestFirstUse?.prompt){paint();window.DSGuestFirstUse.prompt('timed',{need:true});return;}if(csat){dialogMode='member-login';paint();return;}notice='로그인하고 이어서 이용해 주세요.';paint();return;}if(!service()){notice='로그인과 계정 연결을 확인해 주세요.';paint();return;}
  busy=true;try{
  if(command==='quote'){
   if(csat){
