@@ -364,7 +364,7 @@
         expandedSheets.set(target.items,{layout,indexes:expanded});
         await loadPaper();
       }
-      if (target !== drawn || origin !== location.hash || !sharedPrint() || !host()?.signedIn()) return;
+      if (target !== drawn || origin !== location.hash || !sharedPrint() || !(host()?.signedIn() || target.guest)) return;
       if (f.contentDocument.body.dataset.overflow) { toast('한 쪽의 너비나 높이를 넘는 수식이 있어 인쇄 전에 배치를 확인해야 합니다.'); return; }
       f.contentWindow.focus(); f.contentWindow.print();
     } catch { toast('지면을 완전히 불러오지 못했습니다. 인쇄하지 않고 구성을 유지합니다.'); }
@@ -372,7 +372,9 @@
   }
   // v61: answer pages on and still arriving — say so, wait for the rest, then the same printNow().
   async function printWhenReady() {
-    if (!drawn || drawn.guest) return;
+    if (!drawn) return;
+    // 11/25 61 (형 H07): a guest prints the question pages once (no answer pages · no points); from the second press the sign-in card (guest-first-use-v61)
+    if (drawn.guest) { printNow(); return; }
     const op = drawn.solOp;
     if (sharedPrint() && withSol && !drawn.solutions && (!op || op.failed)) {
       say('solfail'); rerender('[data-dq-print]'); return;
@@ -547,7 +549,7 @@
     // v61.4: a guest gets no keep box — the member screen has none either on the live connection (no owner tag).
     const save = g ? ''
       : owner && !drawn.scoped ? `<div class="tb36-save dq59-save"><strong>이 기기에 임시 보관</strong><p>문항 글은 저장하지 않습니다. 다시 열 때 서버가 권한을 확인합니다.</p><button type="button" data-dq-save>임시 보관</button></div>` : '';
-    const print = g ? `<button type="button" class="tb36-primary" data-dq61-gate-open="print">로그인하고 인쇄 / PDF <span>↗</span></button>` : `<button type="button" class="tb36-primary" data-dq-print ${waitPrint ? 'aria-busy="true"' : ''}>인쇄 / PDF <span>↗</span></button>`;
+    const print = g ? `<button type="button" class="tb36-primary" data-dq-print>문제지 인쇄 / PDF <span>↗</span></button>` : `<button type="button" class="tb36-primary" data-dq-print ${waitPrint ? 'aria-busy="true"' : ''}>인쇄 / PDF <span>↗</span></button>`;
     const paper = onLocked ? window.DSPrintSurfaceV48.scene(lockedPaper()) : window.DSPrintSurfaceV48.scene(`<iframe class="dq59-paper" title="${page + 1}쪽 인쇄 지면" scrolling="no" style="width:793.7008px;height:1122.5197px" srcdoc="${safe(documentHTML(pageArg()))}"></iframe>`);
     const nav = Array.from({ length: pages }, (_, i) => { const locked = g && i === pages - 1; return `<button type="button" data-dq-page="${i}" aria-pressed="${page === i}"${locked ? ' class="is-locked"' : ''}>${i + 1} ${i < all.length ? (all[i].designRecord ? '기록면' : '문제') : '정답·해설'}${locked ? ` <span class="dq61-lockmark" aria-hidden="true">${LOCK_SVG}</span>` : ''}</button>`; }).join('');
     const pending2 = !g && withSol && !drawn.solutions && drawn.solOp && !drawn.solOp.failed ? `<button type="button" disabled class="is-waiting">정답·해설 <small data-dq61-done>${drawn.solOp.done} / ${drawn.solOp.total}</small></button>` : '';
