@@ -192,11 +192,14 @@
     }).join('');
     /* 11-25 61: PDF · 한글 모두 포인트로 받는다(2026-12-31 까지 무료 기간). 큰 단추 = 포인트 받기.
        한글 카드 결제(/checkout · 3권까지)는 닫지 않고 둘째 길로 남긴다. */
-    const cash = entries.filter(({p,fmt}) => fmt === 'hwpx' && cashReady(p));
+    // H28-20(관문 88): 포인트로 이미 받은 한글은 카드 결제에 넣지 않는다(이중 지불 막음) — 다시 받기만.
+    const ownedNow = (p, fmt) => quote(p, fmt)?.owned === true;
+    const cash = entries.filter(({p,fmt}) => fmt === 'hwpx' && cashReady(p) && !ownedNow(p, fmt));
+    const ownedCash = entries.filter(({p,fmt}) => fmt === 'hwpx' && cashReady(p) && ownedNow(p, fmt)).length;
     let pay = '';
     if (entries.length) {
       const first = entries[0], id = key(first.p, first.fmt);
-      pay = `<a class="ms-review-open ms-pay" data-ms-pay ${audience==='student'?'data-ms-point-receive="'+escape(id)+'"':''} href="/app/?pointPdf=${encodeURIComponent(id)}#library">${entries.length > 1 ? '첫 자료 ' : formatLabel(first.fmt)+' '}포인트로 받기 · ${cost(first.p,first.fmt)}</a>${entries.length > 1 ? '<p class="ms-order-note">나머지는 위 목록의 「포인트 구매 확인」을 눌러 받습니다.</p>' : ''}`;
+      pay = `<a class="ms-review-open ms-pay" data-ms-pay ${audience==='student'?'data-ms-point-receive="'+escape(id)+'"':''} href="/app/?pointPdf=${encodeURIComponent(id)}#library">${entries.length > 1 ? '첫 자료 ' : formatLabel(first.fmt)+' '}${ownedNow(first.p,first.fmt) ? '보유 자료 다시 받기 · 차감 없음' : '포인트로 받기 · ' + cost(first.p,first.fmt)}</a>${entries.length > 1 ? '<p class="ms-order-note">나머지는 위 목록의 「포인트 구매 확인」을 눌러 받습니다.</p>' : ''}`;
     }
     if (cash.length && cash.length <= 3) {
       const q = new URLSearchParams();
@@ -204,6 +207,7 @@
       const won = cash.reduce((s, {p}) => s + p.formats.hwpx.price, 0);
       pay += `<a class="ms-review-back ms-card-pay" href="/checkout/?${q}">한글 ${cash.length}권 카드로 결제 · ${money(won)}원</a>`;
     }
+    if (ownedCash) pay += '<p class="ms-order-note">이미 받은 한글은 카드 결제에서 뺐습니다. 다시 받기는 차감 없이 됩니다.</p>';
     dialog.innerHTML = `<header><h2 id="ms-order-title">주문 내용 확인</h2><form method="dialog"><button type="submit" aria-label="주문 내용 닫기">닫기</button></form></header><ul>${lines}</ul>${totals(entries)}<p class="ms-order-note">PDF와 한글(HWPX) 모두 묶음마다 한 번만 포인트를 차감합니다. 구매 화면에서 잔액과 보유 권리를 확인하며, 이미 보유한 자료는 추가 차감하지 않습니다.</p>${pay}<form method="dialog"><button type="submit" value="${only ? '' : 'basket'}" class="ms-review-back">${only ? '계속 고르기' : '장바구니로 돌아가기'}</button></form>`;
     dialog.addEventListener('close', () => { dialog.remove(); if (dialog.returnValue === 'basket') openCart(panel); else panel.querySelector('[data-ms-cart]')?.focus({preventScroll:true}); }, {once:true});
     panel.append(dialog);

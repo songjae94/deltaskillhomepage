@@ -371,6 +371,22 @@ function update(){
   $("pay").disabled=!(ready&&apiBase(cfg)&&!busy&&okEmail($("em").value.trim())&&$("nm").value.trim()&&agreed());
 }
 function stop(text){ready=false;var n=$("paynote");n.textContent=text;n.hidden=false;$("pay").disabled=true;}
+/* H28-20(관문 88): 포인트로 이미 받은 파일은 카드로 다시 사지 않는다(이중 지불 막음). 회원 자료 목록(member-library point_pdf_catalog)에서
+   이 주문의 파일이 하나라도 보유면 결제를 열지 않고 자료실 다시 받기(차감 없음)로 보낸다. 확인을 못 하면 결제도 열지 않는다. */
+var LIB="https://cvlrphtupjmaefahodgz.supabase.co/functions/v1/member-library",owned={state:"wait",ids:[]};
+function checkOwned(){
+  var ids=(cart?skus:[sku]).filter(function(s){return /^NS-[A-Z0-9-]+\.(pdf|hwpx)$/.test(s);});
+  if(!NS||!ids.length||!(window.DSAuth&&DSAuth.has())){owned.state="ok";return Promise.resolve();}
+  return fetch(LIB,{method:"POST",credentials:"omit",cache:"no-store",headers:{"Content-Type":"application/json",Authorization:"Bearer "+DSAuth.get()},body:JSON.stringify({action:"point_pdf_catalog"})})
+    .then(function(r){return r.ok?r.json():Promise.reject(r.status);})
+    .then(function(d){if(!d||!Array.isArray(d.products))throw 0;owned.ids=d.products.filter(function(p){return p&&p.owned===true&&ids.indexOf(p.fileId)>=0;}).map(function(p){return p.fileId;});owned.state=owned.ids.length?"owned":"ok";})
+    .catch(function(){owned.state="error";});
+}
+function ownedStop(){
+  stop("이미 포인트로 받은 자료입니다. 다시 결제하지 않아도 자료실에서 차감 없이 다시 받을 수 있습니다.");$("f").hidden=true;
+  var a=el("a","btn pri","자료실에서 다시 받기");a.href="/app/?pointPdf="+encodeURIComponent(owned.ids[0])+"#library";a.setAttribute("data-owned-redownload","");
+  var d=el("div","acts");d.appendChild(a);$("prod").appendChild(el("p","msg err","이미 받은 자료라 결제를 열지 않았습니다."));$("prod").appendChild(d);
+}
 /* 수능 판매 스위치(1104): live 에서 내신 밖 상품은 pay-config.json 의 SUNEUNG_SALE_OPEN 이 정확히 true 일 때만 주문서를 연다. test 동작은 이 값을 보지 않는다. 서버 표지는 products.ts 의 같은 이름 값. */
 function suneungClosed(){
   ready=false;$("pay").disabled=true;$("f").hidden=true;
@@ -422,7 +438,7 @@ function boot(){
   $("ca").addEventListener("change",function(){var v=$("ca").checked;["c1","c2","c3","c4"].forEach(function(i){$(i).checked=v;});update();});
   /* 로그인 회원은 회원 정보의 이름을 미리 채운다(이메일은 회원 정보에 없어 직접 적음) */
   if(window.DSAuth&&DSAuth.has()){fetch(DSAuth.api+"/me",{headers:{Authorization:"Bearer "+DSAuth.get()},credentials:"omit"}).then(function(r){return r.ok?r.json():null;}).then(function(m){var n=m&&typeof m.name==="string"?m.name.trim().slice(0,40):"";if(n&&!$("nm").value){$("nm").value=n;update();}}).catch(function(){});}
-  loadCfg().then(function(c){
+  Promise.all([loadCfg(),checkOwned()]).then(function(all){var c=all[0];
     if(!sameAccount())return;
     cfg=c||{};
     var mode=cfg.PAY_MODE;
@@ -431,6 +447,8 @@ function boot(){
     if(!NS&&cfg.SUNEUNG_SALE_OPEN!==true){suneungClosed();return;}
     if(mode==="live"&&NS&&!cart&&!onSale(P)){P=null;ready=false;$("pay").disabled=true;$("f").hidden=true;showProduct();return;} /* 내신은 판매일을 공지하지 않는다 — 판매 시각 전이면 값이 빈 상품과 같이 「이 상품은 판매하지 않습니다.」(출시 예정 글 없음) */
     if(mode==="live"&&!cart&&!onSale(P)){stop("지금은 이 상품의 판매 기간이 아닙니다. 제공: "+P.give);return;}
+    if(owned.state==="owned"){ownedStop();return;}
+    if(owned.state!=="ok"){stop("받은 자료를 확인하지 못해 지금은 결제를 열 수 없습니다. 잠시 뒤 새로고침해 주세요.");return;}
     loadSdk().then(function(){
       if(!sameAccount())return;
       document.documentElement.setAttribute("data-toss-sdk","loaded");
@@ -440,7 +458,7 @@ function boot(){
   });
   $("f").addEventListener("submit",function(ev){
     ev.preventDefault();
-    if($("pay").disabled||!sameAccount())return;
+    if($("pay").disabled||!sameAccount()||owned.state!=="ok")return;
     var email=$("em").value.trim(),name=$("nm").value.trim();
     busy=true;update();setMsg($("msg"),"주문을 만드는 중…");
     var body={email:email,name:name,method:pickMethod(),agree:{terms:$("c1").checked,privacy:$("c2").checked,digital:$("c3").checked,minor:$("c4").checked}};

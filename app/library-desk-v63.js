@@ -133,7 +133,7 @@
       <p class="dl63-total"><span>값</span><b>${shownPrice(item,f)}</b></p>
       ${POINT_PDF ? (quote ? '<p class="dl63-small">구성 '+v.files.length+'파일 · 묶음 가격 1회 차감</p>' : window.DSAuth && !window.DSAuth.has() ? `<a class="dl63-buy" href="${h(window.DSAuth.loginUrl('/app/?pointPdf=' + encodeURIComponent(pointId) + '#library'))}">로그인하고 포인트로 받기</a>` : '<p class="dl63-small">포인트 가격과 파일을 확인하는 중입니다.</p>') : `<a class="dl63-buy" data-dl63-buy href="${h(checkoutHref(item, f))}" target="_blank" rel="noopener">구매하기<span aria-hidden="true">↗</span><span class="sr-only"> 새 탭</span></a>`}
       ${point}
-      ${f === 'hwpx' ? `<a class="dl63-small dl63-card-pay" data-dl63-buy href="${h(checkoutHref(item, f))}" target="_blank" rel="noopener">한글 카드로 결제 · ${won(v.price)}<span aria-hidden="true">↗</span><span class="sr-only"> 새 탭</span></a>` : ''}
+      ${f === 'hwpx' && quote?.owned !== true ? `<a class="dl63-small dl63-card-pay" data-dl63-buy href="${h(checkoutHref(item, f))}" target="_blank" rel="noopener">한글 카드로 결제 · ${won(v.price)}<span aria-hidden="true">↗</span><span class="sr-only"> 새 탭</span></a>` : ''}
       <div class="dl63-sub">
         ${item.sample ? `<a href="${h(item.sample)}" download>미리보기 ${item.previewPages || ''}쪽 PDF<span aria-hidden="true">↓</span></a>` : ''}
         ${materialSku() === item.sku ? '' : `<a href="#material/${encodeURIComponent(item.sku)}">지면 보기</a>`}
