@@ -1430,7 +1430,9 @@ function bind(container,options={}){
    }
   }
   const definitions=new Map(workbookChoices().flatMap(book=>book.units.flatMap(unit=>(unit.types||[]).map(type=>[type.id,type.label]))));
-  return [...groups.values()].sort((a,b)=>(state.course==='supplement'?(a.rows[0].originalQuestionNo-b.rows[0].originalQuestionNo):0)||a.id.localeCompare(b.id,undefined,{numeric:true})).map(group=>({...group,label:state.course==='supplement'?(workbookScope().unit?.label||group.rows[0].unit||'선택한 단원')+' · 변형 연습':definitions.get(group.id)||group.id}));
+  const rank=window.DSWorkbookScope?.typeOrder||{},at=id=>rank[id]??Number.MAX_SAFE_INTEGER;
+  // 유형 키는 서버 토큰이다(분류 비노출) — 차례는 typeOrder 로, 제목은 사람이 읽는 이름으로만 그린다(키를 화면에 그리지 않음).
+  return [...groups.values()].sort((a,b)=>(state.course==='supplement'?(a.rows[0].originalQuestionNo-b.rows[0].originalQuestionNo):0)||at(a.id)-at(b.id)||a.id.localeCompare(b.id,undefined,{numeric:true})).map((group,index)=>({...group,label:state.course==='supplement'?(workbookScope().unit?.label||group.rows[0].unit||'선택한 단원')+' · 변형 연습':definitions.get(group.id)||group.rows.find(q=>q.typeLabel)?.typeLabel||'유형 '+(index+1)}));
  }
  function sourceRows(){
   const groups=remoteTypeGroups();
