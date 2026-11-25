@@ -1034,6 +1034,12 @@
         offers.append(balance);
       }
     }));
+    // 11/25 53: 고를 수 있는 길이 하나라도 열리면 미리 골라 둠(이미 받은 문항 먼저 · 차감 없음) — 고르지 않은 채 「확인하고 출력」이 잠겨 있던 흠(형 18시대).
+    if (outputDialog === dialog && dialog.open && !offers.querySelector('input:checked')) {
+      const open = [...offers.querySelectorAll('input[name="print-access"]:enabled')];
+      const pick = open.find(x=>x.value==='received') || open[0];
+      if (pick) { pick.checked = true; submit.disabled = false; }
+    }
     clearTimeout(timer);
   }
 
