@@ -21,13 +21,41 @@
       }
       return picked?.units||[];
     }
+    // 11/25 61(밤 점검 흠 14): 교재 없이 구성의 단원은 교재마다의 목차를 교과 단원 이름으로 묶는다(쎈 「04 도함수의 활용 (1)」 · 올림포스 「04 도함수의 활용」 → 「도함수의 활용」).
+    //   묶은 단원은 서버에 교재마다의 원래 단원 id 를 다 보낸다(서버 거름 · 셈 그대로). 한 과목 안에서 한 id 가 두 이름에 걸리면 그 id 는 어느 묶음에도 넣지 않는다(엉뚱한 문항이 섞이지 않게 · 전체 범위로는 그대로 뽑힘).
+    const grouped = commonUnits();
+    if (grouped.length) return grouped;
     const common = data().subjects?.find(s => (s.subject || s.id) === state.subject);
-    return common?.units || [...new Map(books().flatMap(b => b.units || []).map(u => [id(u),u])).values()];
+    return common?.units || [];
   }
+  const ALIAS = {'함수의 극한':'함수의 극한과 연속','함수의 연속':'함수의 극한과 연속','도함수의 활용 (1)':'도함수의 활용','도함수의 활용 (2)':'도함수의 활용','도함수의 활용 (3)':'도함수의 활용',
+    '부정적분':'부정적분과 정적분','정적분':'부정적분과 정적분','집합의 뜻과 표현':'집합','집합의 연산':'집합','유리식과 유리함수':'유리함수와 무리함수','무리식과 무리함수':'유리함수와 무리함수'};
+  const plainLabel = u => { const l = String(name(u)).replace(/^\d+\s+/,'').trim(); return ALIAS[l] || l; };
+  let groupedKey = '', groupedUnits = [];
+  function commonUnits() {
+    const list = books();
+    const key = state.subject + '|' + list.map(id).join(',');
+    if (key === groupedKey) return groupedUnits;
+    const groups = new Map(), owner = new Map(), clash = new Set();
+    for (const b of list) for (const u of b.units || []) {
+      const label = plainLabel(u), raw = id(u);
+      if (!label || !raw) continue;
+      if (owner.has(raw) && owner.get(raw) !== label) clash.add(raw); else owner.set(raw, label);
+      if (!groups.has(label)) groups.set(label, {id:'u:'+label, label, ids:[], types:new Map()});
+      const g = groups.get(label);
+      if (!g.ids.includes(raw)) g.ids.push(raw);
+      (u.types || []).forEach(t => g.types.set(id(t), t));
+    }
+    groupedUnits = [...groups.values()].map(g => ({id:g.id, label:g.label, ids:g.ids.filter(x => !clash.has(x)), types:[...g.types.values()]})).filter(g => g.ids.length);
+    groupedKey = key;
+    return groupedUnits;
+  }
+  // 고른 단원(묶음 id) → 서버에 보낼 원래 단원 id
+  const rawUnits = keys => { const all = units(); return [...new Set(keys.flatMap(k => all.find(u => id(u) === k)?.ids || [k]))]; };
   const selectedUnits = () => units().filter(u => state.units.includes(id(u)));
   const types = () => [...new Map((state.units.length ? selectedUnits() : units()).flatMap(u => u.types || []).map(t => [id(t),t])).values()];
   const active = () => state.mode !== 'basic';
-  const request = () => ({access_mode:state.accessMode,mode:state.mode, book_id:state.mode === 'book' ? state.book : null, subunit_ids:[...state.units], type_mode:state.typeMode, type_ids:state.typeMode === 'specific' ? [...state.types] : []});
+  const request = () => ({access_mode:state.accessMode,mode:state.mode, book_id:state.mode === 'book' ? state.book : null, subunit_ids:state.mode === 'random' ? rawUnits(state.units) : [...state.units], type_mode:state.typeMode, type_ids:state.typeMode === 'specific' ? [...state.types] : []});
   function invalidate() { availability = null; checkKey = ''; guard?.abort(); guard = null; checking = false; }
   async function check(host, context) {
     if (!active() || (state.mode === 'book' && !book()) || (state.typeMode === 'specific' && !state.types.length)) return;
@@ -118,6 +146,7 @@
     state.types = types().map(id).filter(key=>Array.isArray(saved.types) && saved.types.includes(key));
     invalidate();
   }
-  const unitLabels = ids => units().filter(u => ids.includes(id(u))).map(name);
+  // 묶은 단원은 그 안의 원래 id 가 다 들어 있을 때만 이름을 낸다(고른 단원 · 빠진 단원 둘 다 같은 셈).
+  const unitLabels = ids => units().filter(u => Array.isArray(u.ids) ? u.ids.every(x => ids.includes(x)) : ids.includes(id(u))).map(name);
   window.DSPrintScope={awaitingSupply,unitLabels,render,change,status,request,check,active,invalidate,restore,snapshot:()=>structuredClone(state)};
 })();
