@@ -16,20 +16,35 @@
     ? clock.format(new Date(value)) : '';
   const number = points => points.toLocaleString('ko-KR');
   const unavailable = '<p>포인트 잔액을 확인할 수 없습니다. 잠시 후 다시 확인해 주세요.</p>';
+  // 무료 기간 판(2026-12-31 까지 · 50,000P 한 번 · 보상 포함 합) — 서버가 mode:'free_period' 로 돌려줌.
+  const freeEnd = Date.parse('2027-01-01T00:00:00+09:00');
+  const freeOk = s => s && s.mode === 'free_period' && s.ready === true && s.status === 'active' && s.eligible === true &&
+    Number.isInteger(s.weekly) && s.weekly > 0 && s.weekly <= 1000000 && s.total_cap === s.weekly &&
+    Number.isInteger(s.remaining) && s.remaining >= 0 && s.remaining <= s.weekly && !!date(s.expires_at);
+  const welcomeOk = s => s && s.ready === true && s.status === 'active' && s.eligible === true && Number.isInteger(s.period_index) &&
+    s.period_index >= 1 && s.period_index <= 3 && s.weekly === 3000 &&
+    Number.isInteger(s.remaining) && s.remaining >= 0 && s.remaining <= s.period_index * 3000;
   function balance(s) {
     if (!s) return unavailable;
+    if (s.mode === 'free_period') {
+      if (s.status === 'pending') return '<p>회원 기록을 확인하고 있습니다. 마이페이지에서 포인트 상태를 다시 확인해 주세요.</p>';
+      if (!freeOk(s)) return unavailable;
+      return '<p class="wp-period">무료 기간 · 2026년 12월 31일까지</p><p class="wp-balance"><strong>'+
+        number(s.remaining)+' P</strong> 사용 가능</p><dl class="wp-facts"><div><dt>받은 포인트</dt><dd>'+number(s.weekly)+' P</dd></div><div><dt>만료</dt><dd>2026년 12월 31일 23:59 (한국시간)</dd></div></dl>';
+    }
+    if (Date.now() >= freeEnd && (s.status === 'ineligible' || s.status === 'expired'))
+      return '<p>2026년 12월 31일로 무료 기간 포인트가 만료되었습니다. 이미 받은 파일은 <a href="/my/#library">내 파일에서 다시 받기</a>로 이용할 수 있습니다.</p>';
     if (s.status === 'ineligible') return '<p>신규 가입 3주 혜택 대상이 아닙니다.</p>';
     if (s.status === 'expired') return '<p>가입 후 3주가 지나 남은 혜택 포인트가 만료되었습니다. 이미 받은 파일은 <a href="/my/#library">내 파일에서 다시 받기</a>로 이용할 수 있습니다.</p>';
     if (s.status === 'pending') return '<p>가입 기록을 확인하고 있습니다. 마이페이지에서 지급 상태를 다시 확인해 주세요.</p>';
-    if (s.ready !== true || s.status !== 'active' || s.eligible !== true || !Number.isInteger(s.period_index) ||
-        s.period_index < 1 || s.period_index > 3 || s.weekly !== 3000 ||
-        !Number.isInteger(s.remaining) || s.remaining < 0 || s.remaining > s.period_index * 3000 ||
-        !date(s.period_end) || !date(s.expires_at)) return unavailable;
+    if (!welcomeOk(s) || !date(s.period_end) || !date(s.expires_at)) return unavailable;
     return '<p class="wp-period">가입 '+s.period_index+'주차 · 총 3주</p><p class="wp-balance"><strong>'+
       number(s.remaining)+' P</strong> 사용 가능</p><dl class="wp-facts"><div><dt>지금까지 누적 지급</dt><dd>'+number(s.period_index * 3000)+' P</dd></div><div><dt>'+
       (s.period_index === 3 ? '혜택 종료 · 잔액 만료' : '다음 3,000 P 지급')+'</dt><dd>'+date(s.period_end)+' (한국시간)</dd></div></dl>';
   }
-  const policy = '가입 직후와 7일·14일 뒤에 3,000P씩 지급됩니다. 쓰지 않으면 1·2·3주차에 3,000·6,000·9,000P로 모아 쓸 수 있습니다. 가입 후 3주가 끝나면 남은 혜택 포인트는 만료되며, 이미 받은 파일은 다시 받을 수 있습니다.';
+  const freePolicy = '2026년 12월 31일까지 모든 회원에게 50,000P를 한 번 드립니다. PDF와 한글 자료를 포인트로 받을 수 있고, 남은 포인트는 12월 31일 23:59(한국시간)에 만료됩니다. 2027년 1월 1일부터 유료로 바뀌며, 이미 받은 파일은 계속 다시 받을 수 있습니다.';
+  const welcomePolicy = '가입 직후와 7일·14일 뒤에 3,000P씩 지급됩니다. 쓰지 않으면 1·2·3주차에 3,000·6,000·9,000P로 모아 쓸 수 있습니다. 가입 후 3주가 끝나면 남은 혜택 포인트는 만료되며, 이미 받은 파일은 다시 받을 수 있습니다.';
+  const policy = s => s?.mode === 'free_period' || (!s?.mode && Date.now() < freeEnd && s?.status !== 'active') ? freePolicy : welcomePolicy;
   function membership(pass) {
     const next = date(pass?.nextChargeAt), end = date(pass?.endsAt);
     if (pass?.status === 'ACTIVE') return '<p class="wp-period">이용 중'+(next ? ' · 다음 결제 '+next : '')+'</p>';
@@ -40,10 +55,11 @@
   }
   function panel(s, options = {}) {
     const newPrice = price();
-    const points = '<section class="wp-section"><h2>신규 회원 포인트</h2>'+balance(s)+
-      '<p class="wp-help">'+policy+'</p>'+
-      (s?.ready === true && s.status === 'active' && s.eligible === true && Number.isInteger(s.remaining) && s.remaining >= 0 && s.remaining <= s.period_index * 3000
-        ? '<a class="wp-link" href="/app/#library">포인트로 PDF 고르기 →</a>' : '')+'</section>';
+    const free = s?.mode === 'free_period';
+    const points = '<section class="wp-section"><h2>'+(free || (!s && Date.now() < freeEnd) ? '무료 기간 포인트' : '신규 회원 포인트')+'</h2>'+balance(s)+
+      '<p class="wp-help">'+policy(s)+'</p>'+
+      (free ? (freeOk(s) ? '<a class="wp-link" href="/app/#library">포인트로 자료 고르기 →</a>' : '')
+        : welcomeOk(s) ? '<a class="wp-link" href="/app/#library">포인트로 PDF 고르기 →</a>' : '')+'</section>';
     if (options.signup) return points+'<section class="wp-section wp-signup-offer"><h2>월 이용권 신규 가입 요금</h2>'+priceMarkup()+'</section><div class="wp-actions"><a class="wp-link" href="/my/#welcome">내 포인트 확인 →</a><a href="/pass/#product">월 '+number(newPrice)+'원 이용권 안내</a></div>';
     const subscribed = ['ACTIVE','CANCEL_SCHEDULED','RENEWING','RENEW_RETRY'].includes(options.pass?.status);
     const canJoin = ['NONE', 'RENEW_FAILED', 'REFUNDED'].includes(options.pass?.status);
