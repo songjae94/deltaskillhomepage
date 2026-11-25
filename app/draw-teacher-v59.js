@@ -995,45 +995,73 @@
     })), timedOut]);
     const walletRow = menu.find(row=>row.pointPrint);
     const walletCheck = read(()=>basic && !sets.point ? null : h.pointWallet ? h.pointWallet(abort.signal) : walletRow);
-    offers.innerHTML = modes.map(mode=>`<label data-print-offer="${mode}">확인 중…</label>`).join('');
+    // 11/25 60(형 흠): 결과를 다 모은 뒤 한 번에 그림 · 첫 글(h2)을 고른 길의 물음으로 — 받은 문항이 없으면 「n문항 · nP 를 차감하고 출력할까요?」 · 포인트 길을 미리 골라 둠.
+    //   받은 문항이 있을 때만 「다시 출력(0P)」 고름을 보임 · 남은 포인트 · 출력 뒤 포인트를 함께 · 포인트가 모자라거나 범위를 다 받았으면 단추를 잠그고 까닭을 맨 위에.
+    const res = {};
     await Promise.all(modes.map(async mode=>{
       const owned = mode === 'received';
       const availability = read(()=>basic ?
         {extraction_ready:Boolean(sets[mode]),available_count:sets[mode] ? criteria.count : 0} :
         h.scope.menu({...criteria,access_mode:mode},abort.signal));
       const [r,wallet] = await Promise.all([availability,owned ? null : walletCheck]);
-      if (outputDialog !== dialog || !dialog.open) return;
       const quantity = Number.isSafeInteger(r?.available_count) && r.extraction_ready ? Math.min(criteria.count,r.available_count) : 0;
       const priceKnown = Number.isSafeInteger(wallet?.pointPrice) && wallet.pointPrice >= 0;
-      const allowed = quantity > 0 && (owned || priceKnown);
-      if (allowed) quantities[mode] = quantity;
-      const cost = owned ? '추가 차감 없음' : priceKnown ? '새 문항당 '+wallet.pointPrice.toLocaleString()+'P · 최대 '+(wallet.pointPrice*quantity).toLocaleString()+'P' : '포인트 가격을 확인하지 못했어요.';
-      let detail;
-      if (owned && r?.denied) detail = '이 계정으로 이 범위에서 다시 출력할 수 있는 이용권 자료가 없어요.';
+      const remaining = Number.isSafeInteger(wallet?.pointRemaining) ? wallet.pointRemaining : null;
+      const need = priceKnown ? wallet.pointPrice*quantity : null;
+      let allowed = quantity > 0 && (owned || priceKnown);
+      let detail, short = false;
+      if (owned && r?.denied) detail = '';
       else if (!r || 'denied' in r) detail = '확인하지 못했어요. 잠시 후 다시 시도해 주세요.';
       else if (!owned && wallet?.denied) {
         const stock = r.available_count > 0 ? '선택 범위 ' + r.available_count + '문항 · ' : '';
         detail = stock + '현재 계정에서 프린트 포인트를 사용할 수 없어요.';
       } else if (!owned && r.available_count > 0 && (!r.extraction_ready || !priceKnown)) {
         detail = '선택 범위 ' + r.available_count + '문항 · 포인트 사용 가능 여부를 확인하지 못했어요.';
-      } else if (quantity) detail = (basic?'최대 ':'')+quantity+'문항 · '+cost;
+      } else if (!owned && quantity && remaining !== null && remaining < (basic ? wallet.pointPrice : need)) {
+        allowed = false; short = true;
+        detail = '포인트가 모자라요 · 필요 '+need.toLocaleString()+'P · 남은 포인트 '+remaining.toLocaleString()+'P';
+      } else if (quantity) detail = owned ? (basic?'내 계정으로 이용 가능한 기본 세트 · ':'이미 받은 문항 ')+quantity+'문항 · 추가 차감 없음' : quantity+'문항 · 새 문항당 '+wallet.pointPrice.toLocaleString()+'P · '+(basic?'최대 ':'')+need.toLocaleString()+'P 차감';
       // 11/25 37: 포인트 범위가 비었을 때 까닭을 나눔(서버 scope_menu 의 pool_count · owned_count). 수가 없으면 지금 글 그대로.
       else if (!basic && !owned && r.pool_count === 0 && criteria.mode === 'book') detail = '이 교재는 아직 포인트로 받을 수 없어요.';
       else if (!basic && !owned && Number.isSafeInteger(r.pool_count) && r.pool_count > 0 && r.available_count === 0) detail = '이 범위의 포인트 문항을 모두 받았어요.';
       else detail = basic ? '이 조건에서 이용할 수 있는 세트가 없어요.' : '선택한 범위에 문항이 없습니다.';
-      offers.querySelector(`[data-print-offer="${mode}"]`).innerHTML = `<input type="radio" name="print-access" value="${mode}" ${allowed?'':'disabled'}><span><strong>${owned?(basic?'내 계정으로 이용 가능한 기본 세트':'이미 받은 문항'):'포인트로 받을 문항'}</strong><small>${safe(detail)}</small></span>`;
-      if (!owned && wallet?.denied) {
-        const account = document.createElement('a');
-        account.href = '/my/#welcome';
-        account.textContent = '마이페이지에서 포인트 확인';
-        offers.append(account);
-      }
-      if (Number.isSafeInteger(wallet?.pointRemaining)) {
-        const balance = document.createElement('p');
-        balance.textContent = '사용 가능 포인트 '+wallet.pointRemaining.toLocaleString()+'P';
-        offers.append(balance);
-      }
+      if (allowed) quantities[mode] = quantity;
+      res[mode] = {quantity,allowed,detail,need,remaining,short,wallet};
     }));
+    if (outputDialog !== dialog || !dialog.open) return;
+    const R = res.received, P = res.point;
+    const title = dialog.querySelector('#student-print-confirm-title');
+    const ask = {
+      received: (basic?'기본 세트 ':'이미 받은 ')+R.quantity+'문항을 다시 출력할까요? (0P)',
+      point: P.quantity+'문항 · '+(basic?'최대 ':'')+(P.need ?? 0).toLocaleString()+'P 를 차감하고 출력할까요?'
+    };
+    const label = (mode,head,x) => `<label data-print-offer="${mode}"><input type="radio" name="print-access" value="${mode}" ${x.allowed?'':'disabled'}><span><strong>${head}</strong><small>${safe(x.detail)}</small></span></label>`;
+    const parts = [];
+    if (R.allowed) parts.push(label('received','다시 출력(0P)',R));
+    // 받은 문항이 없을 때 「다시 출력」 줄은 내지 않음 · 확인을 못 한 때만 그 까닭을 남김
+    else if (R.detail && R.detail.startsWith('확인하지 못했어요')) parts.push(label('received','다시 출력(0P)',R));
+    parts.push(label('point',R.allowed?'새 문항 받기(포인트)':'포인트로 받을 문항',P));
+    offers.innerHTML = parts.join('') + '<p data-print-balance hidden></p>' + (!R.allowed && P.allowed ? '<small>이미 받은 문항이 없어 새 문항을 포인트로 받아요.</small>' : '');
+    if (P.wallet?.denied || P.short) {
+      const account = document.createElement('a');
+      account.href = '/my/#welcome';
+      account.textContent = '마이페이지에서 포인트 확인';
+      offers.append(account);
+    }
+    const balance = offers.querySelector('[data-print-balance]');
+    const pick = R.allowed ? 'received' : P.allowed ? 'point' : '';
+    if (pick) offers.querySelector(`input[value="${pick}"]`).checked = true;
+    const refresh = () => {
+      const chosen = offers.querySelector('input:checked:enabled')?.value;
+      submit.disabled = !chosen;
+      title.textContent = chosen ? ask[chosen] : (P.detail || R.detail || '출력할 수 있는 문항이 없어요.');
+      if (P.remaining !== null) {
+        balance.hidden = false;
+        balance.textContent = '남은 포인트 '+P.remaining.toLocaleString()+'P' + (chosen ? ' → 출력 뒤 '+(P.remaining-(chosen==='point'?P.need:0)).toLocaleString()+'P' : '');
+      }
+    };
+    dialog.addEventListener('change',refresh);
+    refresh();
     clearTimeout(timer);
   }
 
