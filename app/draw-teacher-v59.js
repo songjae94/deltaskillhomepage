@@ -965,9 +965,9 @@
         }
       }
     }
-    // Keep the first question independent while one later batch is in flight.
-    // The host still enforces its shared request limit; preview rows paint in order.
-    const workers = Math.min(openGroup ? Math.min(parallel, 2) : parallel, rows.length);
+    // The live guest batch gate enforces a stricter rate budget than the host's
+    // general request slots. Keep batches serial until its contract permits overlap.
+    const workers = openGroup ? 1 : Math.min(parallel, rows.length);
     await Promise.all(Array.from({length:workers}, worker));
     if (!alive()) throw Error('stale');
     return preview.rows;
