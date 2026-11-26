@@ -145,7 +145,7 @@
     font-size: var(--ds-q-size);
     line-height: var(--ds-q-lh);
   }
-  .ds-exam-font-pending :is(.dst-prompt, .ssp-paper .ssp-prompt, .ssp-paper .ssp-options),
+  .ds-study-font-pending :is(.dst-prompt, .ssp-paper .ssp-prompt, .ssp-paper .ssp-options),
   :is(.dst-prompt, .ssp-prompt) iframe.ds-student-fragment:not([data-ds-typeset]) {
     visibility: hidden;
   }
@@ -155,14 +155,14 @@
   #content .ssp-paper .ssp-prompt,
   #content .ds-timed .dst-sheet .dst-prompt {
     color: #171923;
-    font-weight: 400;
+    font-weight: 500;
   }
   #content .ssp-paper .ssp-options label:has(input[type="radio"]) {
     color: #292d31;
     font-family: var(--ds-q-serif);
-    font-weight: 400;
+    font-weight: 500;
     line-height: 1.55;
   }
   #content .ssp-paper .ssp-options label .ssp-option-no {font: inherit}
-  #content .ds-timed .dst-prompt .dte-inline-choice {font-weight: 400}
+  #content .ds-timed .dst-prompt .dte-inline-choice {font-weight: 500}
 }

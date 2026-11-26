@@ -18,7 +18,8 @@
     "app/assets/editorial/paper-flatlay-object-mask.svg": "4fe922dd54c669681b9a7b25284ba6bbaff0b8ecc01ba440adbb01ff2ff7b44b",
     "app/assets/editorial/paper-flatlay-object-shadow.svg": "2ea51f31e3ffb8a6382044018407a6dcd0f0eba2fbba9cde70ad7ece9cb4288f",
     "app/assets/textures/desk-bookmaker-empty-1127.png": "a1a16650bbedc70e35e57b4432bc3e373c135a29657d498d03f398047b5c6a33",
-    "app/assets/fonts/NotoSerifKR-Regular.woff2": "b25b112c111e192fcb2d434803c80bc8be0888ed1c770eb86ac0b0cabd45ebbe"
+    "app/assets/fonts/NotoSerifKR-Regular.woff2": "b25b112c111e192fcb2d434803c80bc8be0888ed1c770eb86ac0b0cabd45ebbe",
+    "app/assets/fonts/NotoSerifKR-Medium.woff2": "7a3b52035efe7f7280c035390f00d4f337f43e5b6f935a8bbe1f4e13cf976284"
   },
   "fragments": [
     {

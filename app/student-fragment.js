@@ -3,20 +3,23 @@
   const policy = "default-src 'none'; img-src data:; style-src 'unsafe-inline'; font-src data:; form-action 'none'; base-uri 'none'";
   const attr = value => String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   const examFontFamily='DS Exam Noto Serif KR';
-  const examFontUrl=new URL('assets/fonts/NotoSerifKR-Regular.woff2',document.currentScript?.src || new URL('student-fragment.js',document.baseURI).href).href;
-  let examFontPromise;
-  // Reuse the decoded face in both the page and its same-origin question frames.
-  function examFont() {
-    if (examFontPromise) return examFontPromise;
-    document.documentElement.classList.add('ds-exam-font-pending');
+  const fontDirectory = new URL('assets/fonts/', document.currentScript?.src || document.baseURI);
+  const fontLoads = new Map();
+  // Each weight is fetched and decoded only on the screens that use it.
+  function examFont(weight = 400) {
+    if (fontLoads.has(weight)) return fontLoads.get(weight);
+    const medium = weight === 500;
+    const url = new URL(medium ? 'NotoSerifKR-Medium.woff2' : 'NotoSerifKR-Regular.woff2', fontDirectory);
+    const pendingClass = medium ? 'ds-study-font-pending' : 'ds-exam-font-pending';
+    document.documentElement.classList.add(pendingClass);
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 3500);
-    examFontPromise = fetch(examFontUrl, {cache: 'force-cache', signal: controller.signal})
+    const promise = fetch(url, {cache: 'force-cache', signal: controller.signal})
       .then(response => {
         if (!response.ok) throw Error('문항 글꼴 로드 실패');
         return response.arrayBuffer();
       })
-      .then(bytes => new FontFace(examFontFamily, bytes, {weight: '400'}).load())
+      .then(bytes => new FontFace(examFontFamily, bytes, {weight: String(weight)}).load())
       .then(face => {
         document.fonts.add(face);
         return face;
@@ -24,12 +27,13 @@
       .catch(() => null)
       .finally(() => {
         clearTimeout(timeout);
-        document.documentElement.classList.remove('ds-exam-font-pending');
+        document.documentElement.classList.remove(pendingClass);
       });
-    return examFontPromise;
+    fontLoads.set(weight, promise);
+    return promise;
   }
   const fontMount=new MutationObserver(()=>{
-    if (document.querySelector('.ds-timed, .ssp-prompt, .ssil-main')) { examFont();fontMount.disconnect(); }
+    if (document.querySelector('.ds-timed, .ssp-prompt, .ssil-main')) { examFont(500);fontMount.disconnect(); }
   });
   fontMount.observe(document.documentElement,{childList:true,subtree:true});
   const questionTypography = `
@@ -60,6 +64,7 @@
     root.setProperty('--ds-fragment-lh',String(parseFloat(cs.lineHeight)/parseFloat(cs.fontSize) || 1.69));
     doc.body.style.fontSize=cs.fontSize;
     doc.body.style.fontFamily=cs.fontFamily;
+    doc.body.style.fontWeight=cs.fontWeight;
     doc.body.style.lineHeight=cs.lineHeight;
     doc.body.style.letterSpacing=cs.letterSpacing;
   }
@@ -154,7 +159,7 @@
       const resize = () => { syncTypography(frame,doc); const box = doc.body.getBoundingClientRect(); const bottom = parseFloat(doc.defaultView.getComputedStyle(doc.body).marginBottom)||0; const height = Math.max(box.bottom+doc.defaultView.scrollY,box.top+doc.body.scrollHeight)+Math.max(0,bottom); if (height>0) { frame.style.height = Math.ceil(height+2)+'px'; if (frame.title) lastHeight.set(frame.title, frame.style.height); } };
       resize();
       if (frame.closest('.ds-timed, .ssp-prompt, .ssp-solution, .ssp-hint')) {
-        const face = await examFont();
+        const face = await examFont(500);
         if (!frame.isConnected || frame.contentDocument !== doc) return;
         // A loaded FontFace can belong to multiple document font sets.
         if (face) doc.fonts.add(face);
