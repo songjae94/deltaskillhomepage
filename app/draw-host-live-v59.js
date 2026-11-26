@@ -146,15 +146,19 @@
     });
   }
   window.addEventListener('ds-session-change',() => {menuRequest=null;});
-  const warmPublicMenu = () => {
-    if (TRIAL && !service.session()) publicMenu().catch(()=>{});
+  const warmPublicMenu = (url = new URL(location.href)) => {
+    const mode = url.searchParams.get(url.hash === '#teacher' ? 'teacherMode' : 'studentMode');
+    const needsMenu = url.hash === '#student' ? [null,'study','create'].includes(mode) : url.hash === '#teacher' && mode === 'print';
+    // Downloads and the local timed trial do not use this API. Avoid consuming
+    // its shared rate budget merely by opening those screens.
+    if (needsMenu && TRIAL && !service.session()) publicMenu().catch(()=>{});
   };
   function warmOnIntent(event) {
     const link = event.target.closest?.('a[href="#student"],a[href="#teacher"]');
-    if (link) warmPublicMenu();
+    if (link) warmPublicMenu(new URL(link.href, location.href));
   }
   for (const name of ['pointerover','focusin','pointerdown']) document.addEventListener(name,warmOnIntent,{passive:true});
-  if (['#student','#teacher'].includes(location.hash)) Promise.resolve(service.ready).then(warmPublicMenu).catch(()=>{});
+  if (['#student','#teacher'].includes(location.hash)) Promise.resolve(service.ready).then(() => warmPublicMenu()).catch(()=>{});
   const trial = {
     study: async (cell_key, page) => {
       const d = await guest({action: 'trial_study', cell_key, page});

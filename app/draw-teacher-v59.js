@@ -476,8 +476,9 @@
     if (menu.length) return selects();
     if (guestSettings()) {
       const waiting = menuBusy || !menuTried;
-      const message = waiting ? '공개 문항의 과목·대단원·난도를 불러오는 중입니다.' : safe(note.kind === menuIssue && note.text ? note.text : TEXT[menuIssue] || '현재 구성 가능한 공개 문항이 없습니다.');
-      return `<p class="dq59-lead" role="status">${message}${!waiting && menuIssue ? ' ' + (ALERTS[menuIssue] || '') : ''}</p>`;
+      const message = waiting ? '공개 문항의 과목·대단원·난도를 불러오는 중입니다.' : menuIssue === 'trialrate' ? '목록을 잠시 불러올 수 없습니다. 잠시 후 다시 불러와 주세요.' : safe(note.kind === menuIssue && note.text ? note.text : TEXT[menuIssue] || '현재 구성 가능한 공개 문항이 없습니다.');
+      const action = menuIssue === 'trialrate' ? '<button type="button" data-dq-menu>목록 다시 불러오기</button>' : ALERTS[menuIssue] || '';
+      return `<p class="dq59-lead" role="status">${message}${!waiting && menuIssue ? ' ' + action : ''}</p>`;
     }
     const subjects = readySubjects();
     const subject = subjects.length ? `<label>과목<select data-ps-subject>${subjects.map(s => `<option value="${safe(s.subject)}" ${sel.subject === s.subject ? 'selected' : ''}>${safe(s.subject)}</option>`).join('')}</select></label>` : '';
