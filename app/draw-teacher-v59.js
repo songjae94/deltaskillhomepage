@@ -266,6 +266,16 @@
     try { return window.PrintComposerV14.normalizeSettings(studio.printSettings); }
     catch { return { academyName: '', teacherName: '', headerText: '', footerText: '', identityPlacement: 'header', font: 'default', titleAlign: 'left', showStudentName: true, showPageNumber: true }; }
   }
+  const examSerif = '"DS Exam Noto Serif KR","Nanum Myeongjo","AppleMyungjo",Batang,serif';
+  const printSans = '"Malgun Gothic","Apple SD Gothic Neo",Arial,sans-serif';
+  const examSerifFace = '@font-face{font-family:"DS Exam Noto Serif KR";src:url("/app/assets/fonts/NotoSerifKR-Regular.woff2") format("woff2");font-weight:400;font-display:block}';
+  function cardTypeStyle() {
+    const serif = printSettings().font !== 'sans';
+    if (serif) window.DSStudentFragment?.examFont?.();
+    const pending = serif ? '.ds-exam-font-pending #content .dq59-card .dq61-q {visibility:hidden}' : '';
+    const fallbackFace = serif && !window.DSStudentFragment?.examFont ? examSerifFace : '';
+    return `<style>${fallbackFace} #content .dq59-card .dq61-q {font-family:${serif ? examSerif : printSans};font-weight:400;font-size:var(--ds-q-size);line-height:var(--ds-q-lh)}${pending}</style>`;
+  }
   const expandedSheets = new WeakMap();
   function sheets(items = drawn.items) {
     const limit = Number(layout), saved = expandedSheets.get(items), out = [];
@@ -329,6 +339,8 @@
     const css = `:root{--question-type-size:13.5px}*{box-sizing:border-box}html,body{margin:0;padding:0;background:#fff;color:#191919;font-family:${face}}body{font-size:12px}.paper{width:210mm;height:297mm;padding:14mm 13mm;position:relative;break-after:page;overflow:hidden}.head{height:25mm;border-bottom:1px solid #353535;margin-bottom:7mm}.brand{display:flex;justify-content:space-between;font-size:9px;letter-spacing:.03em}.head h1{font-size:23px;letter-spacing:-.03em;margin:12px 0 5px;text-align:${s.titleAlign === 'center' ? 'center' : 'left'}}.student{float:right;font-size:10px}.body{height:225mm}.questions{display:grid;grid-template-columns:${n === 1 ? '1fr' : '1fr 1fr'};grid-template-rows:${n === 4 ? '1fr 1fr' : '1fr'};gap:7mm;height:100%}.question{min-width:0;min-height:0;display:flex;flex-direction:column;overflow:hidden}.qhead{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #cfcfcf;padding-bottom:4px;margin-bottom:9px}.qhead b{font-size:17px}.qhead small{font-size:8px;color:#777}.qbody{flex:1;min-height:0;overflow:hidden}.qbody>div{font-size:var(--question-type-size);line-height:1.75;word-break:keep-all;overflow-wrap:anywhere}.qbody p{margin:0 0 .7em}.qbody img{max-width:100%;height:auto}.qbody math{font-size:1em}.qbody .dq59-bogi{position:relative;margin:1.3em 0 .9em;padding:1.1em .9em .6em;border:1px solid #333}.qbody .dq59-cond,.solbody .dq59-cond{margin:.9em 0;padding:.6em .9em;border:1px solid #333}.dq59-cond-line{display:block}.dq59-cond-line+.dq59-cond-line{margin-top:.35em}.qbody .dq59-bogi-title{position:absolute;top:-.8em;left:50%;transform:translateX(-50%);padding:0 .7em;background:#fff;white-space:nowrap}.qbody .dq59-bogi-title:before{content:'〈 '}.qbody .dq59-bogi-title:after{content:' 〉'}.qbody table{border-collapse:collapse;margin:.5em 0}.qbody td,.qbody th{border:1px solid #555;padding:3px 8px;text-align:center}.qbody ol,.qbody ul{margin:.6em 0;padding-left:1.4em}.qbody .dq59-choices{list-style:none;padding:0;margin:1em 0 0;display:grid;gap:.55em 1em;grid-template-columns:repeat(var(--cols),minmax(0,1fr))}.qbody .dq59-choices[data-fit="5"]{--cols:5}.qbody .dq59-choices[data-fit="3"]{--cols:3}.qbody .dq59-choices[data-fit="2"]{--cols:2}.qbody .dq59-choices[data-fit="1"]{--cols:1}.qbody .dq59-choices li{position:relative;min-width:0;padding-left:1.6em}.qbody .dq59-choices li:not([data-mark]){padding-left:0}.qbody .dq59-choices li[data-mark]:before{content:attr(data-mark);position:absolute;left:0}.head small{font-size:10px}.solwin{height:225mm;overflow:hidden}.solflow{height:225mm;column-count:2;column-gap:7mm;column-fill:auto;font-size:var(--question-type-size);line-height:1.7;word-break:keep-all;overflow-wrap:anywhere}.sol{margin:0 0 5mm}.solhead{display:flex;gap:10px;align-items:baseline;border-bottom:1px solid #ddd;padding-bottom:3px;margin-bottom:6px;break-after:avoid}.solhead b{font-size:14px}.solhead>span{font-size:inherit;font-weight:700}.solbody p{margin:0 0 .6em}.solbody img{max-width:100%;height:auto}.solbody table{border-collapse:collapse;margin:.4em 0}.solbody td,.solbody th{border:1px solid #555;padding:2px 6px;text-align:center}.solnone{color:#777}.solmeasure{position:absolute;left:-9999px;top:0}.foot{position:absolute;bottom:10mm;left:13mm;right:13mm;display:flex;justify-content:space-between;font-size:9px;color:#666}@page{size:A4;margin:0}@media print{.paper:last-child{break-after:auto}}`;
     const renderScripts = sample ? '' : `<script src="${asset('assets/vendor/katex-0.18.4/katex.min.js')}"><\/script><script src="${asset('math-typeset-v66.js?v=66.1')}"><\/script><script src="${asset('math-render-v23.js?v=66.1')}"><\/script><script>${fitScript}<\/script>`;
     const html = `<!doctype html><html lang="ko"><meta charset="utf-8"><title>${heading}</title><link rel="stylesheet" href="${asset('assets/vendor/katex-0.18.4/katex-embed.css?v=24.3')}"><link rel="stylesheet" href="${asset('math-render-v23.css?v=66.1')}"><style>${css}
+      ${s.font !== 'sans' ? examSerifFace : ''}
+      .qbody .dq61-q {font-family:${s.font === 'sans' ? printSans : examSerif};font-weight:400}
       .sample-question {display:block;width:322px;max-width:100%;height:auto}
       .sample-set p {margin:0}
       .paper .head h1,.brand span,.foot span:first-child {overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
@@ -516,6 +528,15 @@
     const divider = Number(layout) > 1 ? `<fieldset><legend>두 단 사이</legend><div>${radio('paper-divider','off',!columnRule,'data-dq-divider','선 없음')}${radio('paper-divider','on',columnRule,'data-dq-divider','선 있음')}</div></fieldset>` : '';
     return `<div class="dq61-page-options"><fieldset class="dq-paper-styles"><legend>내지 디자인</legend><div>${styles}</div></fieldset><div class="dq-paper-layout"><fieldset><legend>한 쪽 문항 수</legend><div>${counts}</div></fieldset>${divider}</div></div>`;
   }
+  function updateSetupPaper(focus) {
+    const controls = document.querySelector('#dq59-form .dq61-page-options');
+    if (phase !== 'setup' || !controls) return false;
+    controls.outerHTML = paperControls();
+    const frame = document.querySelector('#content iframe.dq61-sample-page');
+    if (frame) frame.srcdoc = documentHTML(0,sampleData());
+    document.querySelector(focus)?.focus({preventScroll:true});
+    return true;
+  }
   function chosenPrintUnits() {
     const scope=window.DSPrintScope;
     if (guestSettings() || !scope?.active()) return sel.unit ? [sel.unit] : [];
@@ -529,7 +550,7 @@
     }
     const selectedUnits = chosenPrintUnits();
     const showSample = !selectedUnits.length || (selectedUnits.length===1 && selectedUnits[0]===data.labels.unit);
-    const sheet = `<iframe class="dq61-sample-page" title="${data.labels.subject} ${data.labels.unit} 프린트 자료" tabindex="-1" scrolling="no" srcdoc="${safe(documentHTML(0,data))}"></iframe>`;
+    const sheet = showSample && `<iframe class="dq61-sample-page" title="${data.labels.subject} ${data.labels.unit} 프린트 자료" tabindex="-1" scrolling="no" srcdoc="${safe(documentHTML(0,data))}"></iframe>`;
     const surface = showSample ? window.DSPrintSurfaceV48.scene(sheet) : '';
     const enlarge = showSample ? '<button type="button" class="dq61-sample-link" aria-haspopup="dialog" data-dq-large-sample>지면 예시 보기 ↗</button>' : '';
     const toolbar = '<strong>'+safe(showSample?'지면 예시 · '+data.labels.unit:selectedUnits.join(' · '))+'</strong><span class="dq-paper-actions"><button type="button" data-dq-open-settings>구성 설정 ↓</button>'+enlarge+'</span>';
@@ -546,6 +567,7 @@
   }
   let initialScopeApplied = false;
   function setup() {
+    if (printSettings().font !== 'sans') window.DSStudentFragment?.examFont?.();
     if (!initialScopeApplied && window.DSPrintScope && !drawn) {
       initialScopeApplied = true;
       window.DSPrintScope.restore({mode:'book',subject:'공통수학2',book:'OL-type-CM2',units:['07'],typeMode:'mixed',types:[]});
@@ -582,7 +604,7 @@
     const l = drawn.labels, g = drawn.guest;
     const head = `<div class="tb36-composed dq61-summary"><span>${drawn.reopened ? '보관한 구성' : g ? '로그인 없이 구성 · 문제만' : '문항 구성 완료'}</span><h2>${safe(l.unit)}</h2><p>${safe(l.subject)} · ${safe(l.stage)}단계 · ${safe(l.difficulty)} · <b>${drawn.items.length}문항</b></p><button type="button" data-dq-back>조건 변경</button></div>`;
     const next = drawn.scoped || drawn.printOnReady ? '범위 다시 선택' : (drawn.page + 2) * drawn.count <= 50 ? '다른 문항으로 바꾸기 ↻' : '처음 문항으로 돌아가기 ↺';
-    return `<div class="tb36-workspace dq59-work${g ? ' dq61-guest' : ''}"><aside class="tb36-review-panel dq59-panel">${head}${meter()}<div class="tb36-review-heading"><h3>문항 확인</h3><p>${g ? '문제를 살펴보고 프린트 꼴로 넘어가세요.' : '문항과 정답 · 해설을 확인하고 프린트로 넘어가세요.'}</p></div>${solProgress()}${noteHTML()}<button type="button" class="tb36-primary" data-dq-finish ${pending ? 'disabled' : ''}>이 ${drawn.items.length}문항으로 프린트 <span>→</span></button><button type="button" class="tb36-quiet" ${g ? 'data-dq61-gate-open="more"' : drawn.scoped || drawn.printOnReady ? 'data-dq-back' : 'data-dq-next'} ${pending ? 'disabled' : ''}>${next}${g ? ` <span class="dq61-lockmark" aria-hidden="true">${LOCK_SVG}</span>` : ''}</button></aside><section class="dq59-stage dq61-cardstage" aria-label="구성한 문항"><div class="ds48-preview-toolbar"><strong>문항 미리보기 · ${drawn.items.length}문항</strong><small>${safe(l.unit)} · ${safe(l.stage)}단계 · ${safe(l.difficulty)}</small></div><div class="dq59-cards" data-dq-cards></div>${g && drawn.capped ? lockCard(false) : ''}</section></div>`;
+    return `<div class="tb36-workspace dq59-work${g ? ' dq61-guest' : ''}"><aside class="tb36-review-panel dq59-panel">${head}${meter()}<div class="tb36-review-heading"><h3>문항 확인</h3><p>${g ? '문제를 살펴보고 프린트 꼴로 넘어가세요.' : '문항과 정답 · 해설을 확인하고 프린트로 넘어가세요.'}</p></div>${solProgress()}${noteHTML()}<button type="button" class="tb36-primary" data-dq-finish ${pending ? 'disabled' : ''}>이 ${drawn.items.length}문항으로 프린트 <span>→</span></button><button type="button" class="tb36-quiet" ${g ? 'data-dq61-gate-open="more"' : drawn.scoped || drawn.printOnReady ? 'data-dq-back' : 'data-dq-next'} ${pending ? 'disabled' : ''}>${next}${g ? ` <span class="dq61-lockmark" aria-hidden="true">${LOCK_SVG}</span>` : ''}</button></aside><section class="dq59-stage dq61-cardstage" aria-label="구성한 문항">${cardTypeStyle()}<div class="ds48-preview-toolbar"><strong>문항 미리보기 · ${drawn.items.length}문항</strong><small>${safe(l.unit)} · ${safe(l.stage)}단계 · ${safe(l.difficulty)}</small></div><div class="dq59-cards" data-dq-cards></div>${g && drawn.capped ? lockCard(false) : ''}</section></div>`;
   }
   function lockedPaper() {
     // A picture of an answer page with nothing written on it: grey bars stand for lines.
@@ -891,7 +913,7 @@
     say(error?.code === 'origin_rejected' ? 'origin' : 'unavailable');
   }
   function loadingCards() {
-    return '<section class="dq59-stage dq61-cardstage" aria-label="문항 준비 중" data-dq-live-first><div class="ds48-preview-toolbar"><strong>문항 미리보기</strong><span data-dq-body-progress role="status">선택한 문항을 불러오고 있어요.</span></div><div class="dq59-cards" data-dq-live-cards></div></section>';
+    return '<section class="dq59-stage dq61-cardstage" aria-label="문항 준비 중" data-dq-live-first>'+cardTypeStyle()+'<div class="ds48-preview-toolbar"><strong>문항 미리보기</strong><span data-dq-body-progress role="status">선택한 문항을 불러오고 있어요.</span></div><div class="dq59-cards" data-dq-live-cards></div></section>';
   }
   function paintLoadingCards() {
     const preview = pending?.preview;
@@ -1436,7 +1458,11 @@
     const enlarge = e.target.closest?.('[data-dq-large-sample]');
     if (enlarge) {
       const source = enlarge.closest('.ds48-canvas')?.querySelector('.ds48-paper-position > iframe');
-      if (source) window.DSPrintSurfaceV48.openPaper(source);
+      if (source) {
+        const preview = source.matches('.dq61-sample-page')
+          ? {title:source.title, srcdoc:documentHTML(0,sampleData())} : source;
+        window.DSPrintSurfaceV48.openPaper(preview);
+      }
       return;
     }
     const g = e.target.closest?.('[data-dq61-gate-open],[data-dq61-login],[data-dq61-signup]');
@@ -1476,10 +1502,17 @@
     if (e.target.hasAttribute?.('data-dq-note-placement')) { pageNote.placement=e.target.value; updateSampleText(); }
     if (e.target.hasAttribute?.('data-dq-divider')) {
       columnRule = e.target.value === 'on';
-      rerender('[data-dq-divider]:checked');
+      if (phase === 'setup' && e.target.closest('#dq59-form')) {
+        const frame = document.querySelector('#content .dq61-sample-page');
+        frame?.contentDocument?.querySelector('.questions')?.setAttribute('data-divider',e.target.value);
+      } else rerender('[data-dq-divider]:checked');
       return;
     }
-    if (e.target.hasAttribute?.('data-dq-layout') && sharedPrint() && phase === 'setup') { layout=e.target.value; rerender('[data-dq-layout]:checked'); return; }
+    if (e.target.hasAttribute?.('data-dq-layout') && sharedPrint() && phase === 'setup') {
+      layout = e.target.value;
+      if (!updateSetupPaper('[data-dq-layout]:checked')) rerender('[data-dq-layout]:checked');
+      return;
+    }
     if (e.target.hasAttribute?.('data-dq-layout')) { layout = e.target.value; page = 0; rerender('[data-dq-layout]'); }
     if (e.target.hasAttribute?.('data-dq-count') && !pending) { clearTrial(); window.DSPrintScope?.invalidate(); const value = Number(e.target.value); if (countChoices().includes(value)) count = value; rerender('[data-dq-count]'); }
     if (e.target.hasAttribute?.('data-dq-sol') && drawn && phase === 'finish') {
@@ -1505,7 +1538,11 @@
     const identity = ['footer','both'].includes(settings.identityPlacement) ? [settings.academyName,settings.teacherName].filter(Boolean).join(' · ') : '';
     paper.querySelector('.foot span').textContent = [identity,(pageNote.placement==='footer' && pageNote.text) || settings.footerText || 'DELTASKILL · '+data.labels.unit].filter(Boolean).join(' · ');
   }
-  document.addEventListener('load',e=>{if(e.target.matches?.('.dq61-sample-page'))updateSampleText();},true);
+  document.addEventListener('load',e=>{
+    if (!e.target.matches?.('.dq61-sample-page')) return;
+    e.target.contentDocument?.querySelector('.questions')?.setAttribute('data-divider',columnRule?'on':'off');
+    updateSampleText();
+  },true);
   document.addEventListener('input', e => {
     if (e.target.hasAttribute?.('data-dq-title')) title = e.target.value;
     if (e.target.hasAttribute?.('data-student-print-title')) {draftTitle=e.target.value;updateSampleText();}
@@ -1521,7 +1558,11 @@
   window.addEventListener('ds-session-change', () => { scopeLevels = {subject:'',stage:'',difficulty:''}; clearTrial(); closeOutput(); window.DSPrintScope?.change({hasAttribute:k=>k==='data-ps-mode',dataset:{psMode:'random'}}); stop(); dropSolutions(); drawn = null; owner = ''; phase = 'setup'; note = { kind: '', text: '' }; menu = []; menuGuard?.abort(); menuGuard = null; menuBusy = false; menuTried = false; menuIssue = ''; trialOn = false; limits = null; document.getElementById('dq61-gate')?.close(); if (here()) rerender(); });
   window.addEventListener('hashchange', () => { clearTrial(); closeOutput(); if (pending) { stop(); say(''); } if (!here()) { waitPrint = false; document.getElementById('dq61-gate')?.close(); if (phase === 'finish') phase = 'cards'; } });
   window.addEventListener('ds-print-scope-ready', () => { if (phase === 'setup' && here()) rerender(); });
-  window.addEventListener('ds-document-design-change', () => { if (here() && printSurface()) { page=0; rerender(`[data-document-design="${window.DSDocumentDesign.selected().id}"]`); } });
+  window.addEventListener('ds-document-design-change', () => { if (here() && printSurface()) {
+    page = 0;
+    const focus = `button[data-document-design="${window.DSDocumentDesign.selected().id}"]`;
+    if (!updateSetupPaper(focus)) rerender(focus);
+  } });
   window.addEventListener('pagehide', () => { clearTrial(); stop(); dropSolutions(); });
   window.DSDrawTeacherV59 = { suspendStudent(){clearTrial();closeOutput();stop();waitPrint=false;document.getElementById('dq61-gate')?.close();},renderStudent:()=>B.withPrintSurface?B.withPrintSurface(mine):mine(),mount, snapshot: () => ({ phase, pending: Boolean(pending), note: { ...note }, count: drawn?.items.length ?? 0, layout, guest: Boolean(drawn?.guest), trial: trialOn, seen: seenToday, sol: drawn?.solOp ? { done: drawn.solOp.done, total: drawn.solOp.total, ready: Boolean(drawn.solutions), failed: drawn.solOp.failed } : null }) };
   if (here() && host()) rerender();                 // the page was first drawn before this file loaded

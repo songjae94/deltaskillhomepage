@@ -5,21 +5,31 @@
   const examFontFamily='DS Exam Noto Serif KR';
   const examFontUrl=new URL('assets/fonts/NotoSerifKR-Regular.woff2',document.currentScript?.src || new URL('student-fragment.js',document.baseURI).href).href;
   let examFontPromise;
-  // One same-origin fetch per page. Both documents use identical bytes; no iframe CSP relaxation.
+  // Reuse the decoded face in both the page and its same-origin question frames.
   function examFont() {
-    if (!examFontPromise) examFontPromise=fetch(examFontUrl,{cache:'force-cache'}).then(response=>{
-      if (!response.ok) throw Error('문항 글꼴 로드 실패');
-      return response.arrayBuffer();
-    }).then(async bytes=>{
-      const face=new FontFace(examFontFamily,bytes,{style:'normal',weight:'400',display:'swap'});
-      await face.load();document.fonts.add(face);
-      await document.fonts.load('16px "'+examFontFamily+'"','함수의 값은');
-      return bytes;
-    }).catch(()=>null); // Existing readable text remains available on a font/network failure.
+    if (examFontPromise) return examFontPromise;
+    document.documentElement.classList.add('ds-exam-font-pending');
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 3500);
+    examFontPromise = fetch(examFontUrl, {cache: 'force-cache', signal: controller.signal})
+      .then(response => {
+        if (!response.ok) throw Error('문항 글꼴 로드 실패');
+        return response.arrayBuffer();
+      })
+      .then(bytes => new FontFace(examFontFamily, bytes, {weight: '400'}).load())
+      .then(face => {
+        document.fonts.add(face);
+        return face;
+      })
+      .catch(() => null)
+      .finally(() => {
+        clearTimeout(timeout);
+        document.documentElement.classList.remove('ds-exam-font-pending');
+      });
     return examFontPromise;
   }
   const fontMount=new MutationObserver(()=>{
-    if (document.querySelector('.ds-timed')) { examFont();fontMount.disconnect(); }
+    if (document.querySelector('.ds-timed, .ssp-prompt, .ssil-main')) { examFont();fontMount.disconnect(); }
   });
   fontMount.observe(document.documentElement,{childList:true,subtree:true});
   const questionTypography = `
@@ -143,13 +153,11 @@
       if (!doc?.body) throw Error('문항 지면 없음');
       const resize = () => { syncTypography(frame,doc); const box = doc.body.getBoundingClientRect(); const bottom = parseFloat(doc.defaultView.getComputedStyle(doc.body).marginBottom)||0; const height = Math.max(box.bottom+doc.defaultView.scrollY,box.top+doc.body.scrollHeight)+Math.max(0,bottom); if (height>0) { frame.style.height = Math.ceil(height+2)+'px'; if (frame.title) lastHeight.set(frame.title, frame.style.height); } };
       resize();
-      if (frame.closest('.ds-timed')) {
-        const bytes=await examFont();
-        if (bytes) {
-          const face=new doc.defaultView.FontFace(examFontFamily,bytes.slice(0),{style:'normal',weight:'400',display:'swap'});
-          await face.load();doc.fonts.add(face);
-          await doc.fonts.load('16px "'+examFontFamily+'"','함수의 값은');
-        }
+      if (frame.closest('.ds-timed, .ssp-prompt, .ssp-solution, .ssp-hint')) {
+        const face = await examFont();
+        if (!frame.isConnected || frame.contentDocument !== doc) return;
+        // A loaded FontFace can belong to multiple document font sets.
+        if (face) doc.fonts.add(face);
       }
       await doc.fonts.ready;
       resize();
@@ -164,7 +172,8 @@
     })();
     measured.set(frame,task);
     try { return await task; } catch(error) { measured.delete(frame); throw error; }
+    finally { frame.setAttribute('data-ds-typeset', ''); }
   }
   document.addEventListener('load',event => { if (event.target?.matches?.('.ds-student-fragment')) fit(event.target).catch(() => {}); },true);
-  window.DSStudentFragment = Object.freeze({render,fit,applyTypography,compact,renderRules});
+  window.DSStudentFragment = Object.freeze({render,fit,applyTypography,compact,renderRules,examFont});
 })();

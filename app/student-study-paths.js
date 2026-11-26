@@ -960,7 +960,17 @@ function bind(container,options={}){
  let guestCells=[],guestRange=null,guestQuestion='',guestBusy=false,guestError='',guestLeft=null,guestRequest=0;
  let guestPage=1,guestNext=null,guestStylePromise=null;
  function guestMathStyle(){
-  if(!guestStylePromise)guestStylePromise=fetch('/app/assets/vendor/katex-0.18.4/katex-embed.css?v=24.3').then(response=>{if(!response.ok)throw Error('math_style');return response.text();}).then(css=>{if(!css.includes('KaTeX_Main')||!css.includes('data:'))throw Error('math_style');return css;}).catch(error=>{guestStylePromise=null;throw error;});
+  if(!guestStylePromise){
+   guestStylePromise=fetch('/app/assets/vendor/katex-0.18.4/katex-embed.css?v=24.3')
+    .then(response=>{
+     if(!response.ok)throw Error('math_style');
+     return response.text();
+    }).then(css=>{
+     if(!css.includes('KaTeX_Main')||!css.includes('data:'))throw Error('math_style');
+     const style='<style>'+css+'</style>';
+     return window.DSStudentFragment?.compact?.(style)||style;
+    }).catch(error=>{guestStylePromise=null;throw error;});
+  }
   return guestStylePromise;
  }
  function guestFailure(error){
@@ -986,34 +996,51 @@ function bind(container,options={}){
   const cell=guestRange,serial=++guestRequest,generation=epoch;
   guestBusy=true;guestError='';guestPage=page;view='trial-source';draw(false);
   try{
-   const css=await guestMathStyle();
+   const mathStyle=await guestMathStyle();
    const result=await window.DSDrawHostV59.trial.study(cell.cell_key,page);
    if(closed||serial!==guestRequest||generation!==epoch||signed())return;
    if(result.done){guestNext=null;return;}
-   guestQuestion=fragmentContent('<style>'+css+'</style>'+result.question_html,'공개 체험 문제');
+   guestQuestion=fragmentContent(mathStyle+result.question_html,'공개 체험 문제');
    guestNext=result.next;guestLeft=result.left;
   }catch(error){
    if(closed||serial!==guestRequest||generation!==epoch||signed())return;
    guestError=guestFailure(error);if(error?.code==='trial_limit')guestLeft=0;
   }finally{if(serial===guestRequest&&generation===epoch){guestBusy=false;draw(false);}}
  }
- function guestQuestionHTML(){
+ let printedGuestQuestion=null,printedGuestActions=null;
+ function paintGuestQuestion(body,extra){
+  const skeleton=`<article class="ssp-paper"><h2 tabindex="-1">${esc(guestRange?.unit||'공개 문항')} · 체험</h2>
+   <p data-guest-loading role="status" hidden>문제를 불러오고 있어요.</p>
+   <div class="ssp-prompt" data-guest-paper></div><p data-guest-message hidden></p>
+   <p class="ssp-note" data-guest-remaining></p><div class="ssp-actions" data-guest-actions></div></article>${extra}`;
+  const fresh=paintBody(body,skeleton);
+  if(fresh||printedGuestQuestion!==guestQuestion){
+   body.querySelector('[data-guest-paper]').innerHTML=guestQuestion;
+   printedGuestQuestion=guestQuestion;
+  }
+  body.querySelector('[data-guest-loading]').hidden=!guestBusy;
   const shown=Boolean(guestQuestion);
   const remaining=Number.isInteger(guestLeft)?'오늘 더 볼 수 있는 공개 문항 '+guestLeft+'개':'';
   const end=!guestBusy&&!guestError&&guestNext===null;
-  return `<article class="ssp-paper"><h2 tabindex="-1">${esc(guestRange?.unit||'공개 문항')} · 체험</h2>
-   ${guestBusy?'<p role="status">문제를 불러오고 있어요.</p>':''}${guestQuestion}
-   ${guestError?`<p role="status">${esc(guestError)}</p>`:''}
-   ${end?`<p>${shown?'이 범위의 공개 체험을 마쳤어요.':'현재 이 범위에서 열 수 있는 문항이 없어요.'}</p>`:''}
-   <p class="ssp-note">${remaining}</p><div class="ssp-actions">
+  const message=body.querySelector('[data-guest-message]');
+  const label=guestError||(end?(shown?'이 범위의 공개 체험을 마쳤어요.':'현재 이 범위에서 열 수 있는 문항이 없어요.'):'');
+  if(message.textContent!==label)message.textContent=label;
+  message.hidden=!label;
+  if(guestError)message.setAttribute('role','status');else message.removeAttribute('role');
+  const count=body.querySelector('[data-guest-remaining]');
+  if(count.textContent!==remaining)count.textContent=remaining;
+  const actions=body.querySelector('[data-guest-actions]');
+  const actionsHTML=`
    ${!guestBusy&&guestError&&guestLeft!==0?'<button data-ssp-guest-open-retry>다시 불러오기</button>':''}
    ${!guestBusy&&!guestError&&guestNext!==null&&guestLeft!==0?'<button data-ssp-guest-next>다음 문항</button>':''}
    ${!guestBusy?'<button data-ssp-choose-range>다른 단원 고르기</button>':''}
-   ${shown||guestLeft===0?'<a class="ssp-primary" href="#login">해설 보기 · 로그인</a>':''}</div></article>`;
+   ${shown||guestLeft===0?'<a class="ssp-primary" href="#login">해설 보기 · 로그인</a>':''}`;
+  if(fresh||actionsHTML!==printedGuestActions){actions.innerHTML=actionsHTML;printedGuestActions=actionsHTML;}
  }
 
  async function loadSupply(){
   const generation=epoch;
+  unitMenus.clear();
   supplyByBook=new Map();supplyPhase=signed()?'loading':'guest';
   if(!signed()){if(guestTrial)await loadGuestSupply(generation);return;}
   try{
@@ -1059,7 +1086,16 @@ function bind(container,options={}){
   return result;
  }
  function newPlanDraft(){return {goal:'',need:'',subject:'',unit:''};}
+ // A click or a background save does not change the loaded catalogue. Keep each
+ // subject's computed ranges until its supply or the session changes.
+ const unitMenus=new Map();
  function planUnits(subject,need){
+  if(supplyPhase!=='ready'&&supplyPhase!=='guest')return buildPlanUnits(subject,need);
+  const key=JSON.stringify([subject,need]);
+  if(!unitMenus.has(key))unitMenus.set(key,buildPlanUnits(subject,need));
+  return unitMenus.get(key);
+ }
+ function buildPlanUnits(subject,need){
   if(!subjects.includes(subject)||!Object.hasOwn(studyPlan.courses,need))return [];
   if(guestTrial&&need!=='supplement'){const difficulty={concept:'쉬움',types:'보통',advanced:'어려움'}[need];return guestCells.filter(cell=>cell.subject===subject&&cell.difficulty===difficulty).map(cell=>({id:'trial:'+cell.cell_key,label:cell.unit,group:cell.subject,guestCell:cell}));}
   const availableBooks=workbookChoices().filter(book=>book.subject===subject);
@@ -1502,7 +1538,7 @@ function bind(container,options={}){
   if(label.includes('대칭이동'))return '대칭시키는 기준을 하나씩 적고, 각 점에서 바뀌는 좌표를 표시해 보세요.';
   return '구해야 할 값을 먼저 표시하세요. 주어진 조건 하나를 식이나 그림으로 옮긴 뒤 그 값과 연결해 보세요.';
  }
- function remoteQuestionHTML(){const q=remoteQuestion,id=q.questionId||q.id;const pending=remoteOperations.has(id);let content=q.format==='sandbox-html'?q._safeFragment+'<p class="ssp-note">긴 수식은 좌우로 밀어서 확인할 수 있어요.</p>':`<div class="ssp-prompt">${mathContent(q.prompt)}</div>`;const choices=q.answerType==='choice'?(Array.isArray(q.options)&&q.options.length===5?q.options:Array(5).fill('')):null;return `<article class="ssp-paper"><div class="ssp-paper-top"><span>${esc(sourceName(remoteMetadata))}</span><span>${esc(q.unit||remoteMetadata.unit||'')}</span></div><h2 tabindex="-1">${desk&&state.course==='types'?'대표 유형 문제':'기존 자료 풀기'}</h2>${desk?itemPager(Math.max(0,sourceRows().findIndex(row=>(row.questionId||row.id)===id)),sourceRows().some(row=>(row.questionId||row.id)===id)?sourceRows().length:1):''}${remoteTypeNavigation()}${content}${q.format==='sandbox-html' && choices ? '' : `<fieldset class="ssp-options" aria-label="답안" ${remoteFeedback||remoteBusy||pending?'disabled':''}>${choices?choices.map((text,i)=>`<label><input type="radio" name="ssp-remote-choice" value="${i}" ${remoteChoice===i?'checked':''}><span class="ssp-option-no">${"①②③④⑤"[i]}</span><span>${mathContent(text)}</span></label>`).join(''):`<label>정수 답안 <input type="number" inputmode="numeric" step="1" data-ssp-remote-integer ${Number.isSafeInteger(remoteChoice)?`value="${remoteChoice}"`:''} aria-label="정수 답안"></label>`}</fieldset>`}${!remoteFeedback?`<div class="ssp-actions"><button class="ssp-primary" data-ssp-remote-submit ${remoteBusy?'disabled':''}>${pending?'같은 답안으로 결과 다시 확인':'답 제출'}</button><button data-ssp-remote-hint ${remoteBusy||pending?'disabled':''}>첫 힌트 보기</button><button data-ssp-remote-unknown ${remoteBusy||pending?'disabled':''}>해설 보고 복습에 담기</button></div>${remoteHelp?'<p class="ssp-note" role="status">'+esc(remoteFirstHint())+'</p>':''}`:`<section class="ssp-feedback"><h3 tabindex="-1">${remoteFeedback.record.correct?'맞았어요.':'조건과 풀이를 다시 확인해 봐요.'}</h3>${variantButton(remoteFeedback.record,remoteHistory.records)}<button data-ssp-remote-retry>같은 문제 다시 풀기</button>${remoteFeedback.answer!==undefined?`<p>정답 ${esc(choices?Number(remoteFeedback.answer)+1+'번':remoteFeedback.answer)}</p>`:''}${remoteFeedback._safeSolutionFragment?`<section class="ssp-solution">${remoteFeedback._safeSolutionFragment}<p class="ssp-note">긴 수식은 좌우로 밀어서 확인할 수 있어요.</p></section>`:''}${remoteFeedback.solutionUnavailable?'<p>해설 표시 형식을 확인하지 못했어요. 채점 결과는 계정에 저장했어요.</p>':''}${remoteFeedback.solution?`<div class="ssp-solution">${(Array.isArray(remoteFeedback.solution)?remoteFeedback.solution:[remoteFeedback.solution]).map(line=>`<p>${mathContent(line)}</p>`).join('')}</div>`:''}</section>`}${remoteFeedback?afterRemoteQuestion(id):''}<footer class="ssp-paper-foot"><span>계정에 허용된 기존 자료</span>${options.view==='history'?'<button data-ssp-history>내 공부 기록으로</button>':!desk?'<button data-ssp-home>코스로 돌아가기</button>':''}</footer></article>`;}
+ function remoteQuestionHTML(){const q=remoteQuestion,id=q.questionId||q.id;const pending=remoteOperations.has(id);let content=q.format==='sandbox-html'?'<div class="ssp-prompt">'+q._safeFragment+'</div><p class="ssp-note">긴 수식은 좌우로 밀어서 확인할 수 있어요.</p>':`<div class="ssp-prompt">${mathContent(q.prompt)}</div>`;const choices=q.answerType==='choice'?(Array.isArray(q.options)&&q.options.length===5?q.options:Array(5).fill('')):null;return `<article class="ssp-paper"><div class="ssp-paper-top"><span>${esc(sourceName(remoteMetadata))}</span><span>${esc(q.unit||remoteMetadata.unit||'')}</span></div><h2 tabindex="-1">${desk&&state.course==='types'?'대표 유형 문제':'기존 자료 풀기'}</h2>${desk?itemPager(Math.max(0,sourceRows().findIndex(row=>(row.questionId||row.id)===id)),sourceRows().some(row=>(row.questionId||row.id)===id)?sourceRows().length:1):''}${remoteTypeNavigation()}${content}${q.format==='sandbox-html' && choices ? '' : `<fieldset class="ssp-options" aria-label="답안" ${remoteFeedback||remoteBusy||pending?'disabled':''}>${choices?choices.map((text,i)=>`<label><input type="radio" name="ssp-remote-choice" value="${i}" ${remoteChoice===i?'checked':''}><span class="ssp-option-no">${"①②③④⑤"[i]}</span><span>${mathContent(text)}</span></label>`).join(''):`<label>정수 답안 <input type="number" inputmode="numeric" step="1" data-ssp-remote-integer ${Number.isSafeInteger(remoteChoice)?`value="${remoteChoice}"`:''} aria-label="정수 답안"></label>`}</fieldset>`}${!remoteFeedback?`<div class="ssp-actions"><button class="ssp-primary" data-ssp-remote-submit ${remoteBusy?'disabled':''}>${pending?'같은 답안으로 결과 다시 확인':'답 제출'}</button><button data-ssp-remote-hint ${remoteBusy||pending?'disabled':''}>첫 힌트 보기</button><button data-ssp-remote-unknown ${remoteBusy||pending?'disabled':''}>해설 보고 복습에 담기</button></div>${remoteHelp?'<p class="ssp-note" role="status">'+esc(remoteFirstHint())+'</p>':''}`:`<section class="ssp-feedback"><h3 tabindex="-1">${remoteFeedback.record.correct?'맞았어요.':'조건과 풀이를 다시 확인해 봐요.'}</h3>${variantButton(remoteFeedback.record,remoteHistory.records)}<button data-ssp-remote-retry>같은 문제 다시 풀기</button>${remoteFeedback.answer!==undefined?`<p>정답 ${esc(choices?Number(remoteFeedback.answer)+1+'번':remoteFeedback.answer)}</p>`:''}${remoteFeedback._safeSolutionFragment?`<section class="ssp-solution">${remoteFeedback._safeSolutionFragment}<p class="ssp-note">긴 수식은 좌우로 밀어서 확인할 수 있어요.</p></section>`:''}${remoteFeedback.solutionUnavailable?'<p>해설 표시 형식을 확인하지 못했어요. 채점 결과는 계정에 저장했어요.</p>':''}${remoteFeedback.solution?`<div class="ssp-solution">${(Array.isArray(remoteFeedback.solution)?remoteFeedback.solution:[remoteFeedback.solution]).map(line=>`<p>${mathContent(line)}</p>`).join('')}</div>`:''}</section>`}${remoteFeedback?afterRemoteQuestion(id):''}<footer class="ssp-paper-foot"><span>계정에 허용된 기존 자료</span>${options.view==='history'?'<button data-ssp-history>내 공부 기록으로</button>':!desk?'<button data-ssp-home>코스로 돌아가기</button>':''}</footer></article>`;}
  function sourcePanel(){
   const units=Object.keys(FREE_CONCEPTS);
   const freeConcept=FREE_CONCEPTS[freeUnit];
@@ -1674,11 +1710,13 @@ function bind(container,options={}){
   root.querySelectorAll('.ssp-desk-controls button, .ssp-desk-controls select:not([disabled]), .ssp-desk-controls [data-ssp-busy-lock]').forEach(el=>{if(remoteBusy&&!el.disabled){el.disabled=true;el.dataset.sspBusyLock='';}else if(!remoteBusy&&el.hasAttribute('data-ssp-busy-lock')){el.disabled=false;delete el.dataset.sspBusyLock;}});
   body.hidden=planPhase!=='active'&&view!=='history';
   if(body.hidden){paintBody(body,'');return;}
-  let bodyMarkup=view==='trial-source'?guestQuestionHTML():view==='guest-limit'?'<article class="ssp-paper"><h2>공개 체험 세 문제를 모두 열어봤어요.</h2>'+trialNotice()+'</article>':view==='source-question'&&remoteQuestion?remoteQuestionHTML():view==='question'&&current?question():view==='history'?history():view==='result'?result():deskWaiting();
+  let bodyMarkup=view==='trial-source'?'':view==='guest-limit'?'<article class="ssp-paper"><h2>공개 체험 세 문제를 모두 열어봤어요.</h2>'+trialNotice()+'</article>':view==='source-question'&&remoteQuestion?remoteQuestionHTML():view==='question'&&current?question():view==='history'?history():view==='result'?result():deskWaiting();
   if(guestTrial&&view==='question'&&feedback&&trialOpened.size>=trialLimit)bodyMarkup+=trialNotice();
   if(/못|실패|사라|저장 공간/.test(storageMessage))bodyMarkup+=`<p class="ssil-sync">${esc(storageMessage)}</p>`;
   const material=deskMaterials();if(material)bodyMarkup+=material;
-  paintBody(body,bodyMarkup);openingState(root);
+  if(view==='trial-source')paintGuestQuestion(body,bodyMarkup);
+  else paintBody(body,bodyMarkup);
+  openingState(root);
   const portraitChoices=matchMedia('(max-width:700px), (min-width:701px) and (max-width:1100px) and (orientation:portrait)').matches;
   if(portraitChoices&&planPhase==='active'&&previousPlanPhase!=='active')requestAnimationFrame(()=>{if(!closed&&root.isConnected&&root.dataset.planPhase==='active')body.scrollIntoView({block:'start',behavior:'instant'});});
   if(focus&&(!portraitChoices||planPhase==='active'))(body.querySelector('.ssp-feedback h3')||body.querySelector('h2'))?.focus({preventScroll:true});

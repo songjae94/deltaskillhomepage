@@ -12,7 +12,7 @@
         [...el.children].every(child=>child.localName==='li' && !/^[(（]?[ㄱ-ㅎ가나다라마바사][.)）]/.test(child.textContent.trim())));
       const explicit=lists.filter(el=>el.matches('.ch,.ch1,.ch2,.ch3,.ch5,.dq59-choices,.choices,[data-choices]'));
       // An unlabelled list is safe only when it ends the problem. Earlier lists may be conditions.
-      const trailing=lists.filter(el=>{
+      const trailing=explicit.length===1 ? [] : lists.filter(el=>{
         const tail=doc.createRange();tail.selectNodeContents(root);tail.setStartAfter(el);
         const remainder=tail.cloneContents();remainder.querySelectorAll('style,script').forEach(n=>n.remove());
         return !remainder.textContent.trim() && !remainder.querySelector('img,svg,math,table');
@@ -38,7 +38,7 @@
         if (!root.querySelector('.dte-choice-issue')) {
           const note=doc.createElement('p');note.className='dte-choice-issue';
           note.setAttribute('role','status');
-          note.textContent='이 문항의 선택지를 확인할 수 없습니다. 화살표로 다른 문항을 풀어 주세요.';
+          note.textContent='이 문항의 선택지를 확인할 수 없습니다. 답안의 문항 번호를 눌러 다른 문항으로 이동해 주세요.';
           root.append(note);
         }
         return;
@@ -154,6 +154,49 @@
         <span>내 답 ${escape(displayedAnswer(q,value))} · 정답 ${escape(displayedAnswer(q,expected(set,id)))}</span>
         <div>${questionContent(q,true)}</div></div>`;
     }
+    function questionFrame(set, ids, answers, complete) {
+      const id = ids[page];
+      const q = known(id);
+      const box = !q ? '<p role="status">문항을 아직 불러오지 못했어요. 다른 문항으로 이동하거나 세트 목록에서 다시 열어 주세요.</p>' : complete ? feedback(set,id,answers[id],retry?present(answers[id]) && Number(answers[id])===Number(expected(set,id)):isRight(set,id)) :
+        answerBox(q,id,answers[id],page===ids.length-1);
+      const sheet=paperQuestion(q||{unit:'문항 확인 중',prompt:''},page,ids.length,box);
+      const canChoose=Boolean(q && !complete && q.answerType==='choice');
+      if (canChoose) requestAnimationFrame(() => {
+        const host=document.querySelector(scope+' [data-exam-paper-id]');
+        if (host?.dataset.examPaperId===id) bindPaper(host);
+      });
+      return `<div class="dte-paper-frame" ${canChoose?'data-exam-paper-id="'+escape(id)+'"':''}>${sheet}</div>`;
+    }
+    function navigate(target) {
+      if (target === page) { focusQuestion(); return; }
+      const set = getActive();
+      const ids = retry?.ids || set.questionIds;
+      const answers = retry ? retry.answers : set.responses || {};
+      const complete = retry ? retry.complete : settled(set);
+      const root = document.querySelector(scope);
+      const frame = root?.querySelector('.dte-paper-frame');
+      const previous = root?.querySelector('[data-time-index][aria-current]');
+      const next = root?.querySelector(`[data-time-index="${target}"]`);
+      if (!frame || !previous || !next) { page = target; repaintQuestion(); return; }
+      if (!complete) {
+        // A saved member draft can merge another tab's answers between two clicks.
+        let answeredCount = 0;
+        for (const button of root.querySelectorAll('[data-time-index]')) {
+          const index = Number(button.dataset.timeIndex);
+          const answered = present(answers[ids[index]]);
+          if (answered) answeredCount++;
+          if (button.classList.contains('is-answered') === answered) continue;
+          button.classList.toggle('is-answered', answered);
+          button.setAttribute('aria-label', `${index+1}번 문항 · ${answered?'응답':'미응답'}`);
+        }
+        root.querySelector('[data-time-answered]').textContent = `${answeredCount} / ${ids.length}`;
+      }
+      page = target;
+      previous.removeAttribute('aria-current');
+      next.setAttribute('aria-current', 'step');
+      frame.outerHTML = questionFrame(set, ids, answers, complete);
+      focusQuestion();
+    }
     function render() {
       const set = getActive();
       if (!set) return '';
@@ -165,8 +208,6 @@
         if (!settled(set) && firstUnanswered !== -1) page = firstUnanswered;
       }
       const ids = retry?.ids || set.questionIds;
-      const id = current(set);
-      const q = known(id);
       const answers = retry ? retry.answers : set.responses || {};
       const complete = retry ? retry.complete : settled(set);
       const nowAnswered = ids.filter(k => present(answers[k])).length;
@@ -176,14 +217,6 @@
       const result = complete ? `<div class="dte-summary" role="status"><span>${retry?'오답 재도전 결과':set.timedOut || set.status==='expired'?'시간 종료 · 채점 결과':'채점 결과'}</span><strong>${score} / ${ids.length} 정답</strong></div>` : '';
       const time = !settled(set) ? `<div class="dte-clock"><span>남은 시간</span><time data-time-clock role="timer" aria-label="남은 시간">${clock()}</time></div>` : '';
 
-      const box = !q ? '<p role="status">문항을 아직 불러오지 못했어요. 다른 문항으로 이동하거나 세트 목록에서 다시 열어 주세요.</p>' : complete ? feedback(set,id,answers[id],retry?present(answers[id]) && Number(answers[id])===Number(expected(set,id)):isRight(set,id)) :
-        answerBox(q,id,answers[id],page===ids.length-1);
-      const sheet=paperQuestion(q||{unit:'문항 확인 중',prompt:''},page,ids.length,box);
-      const canChoose=Boolean(q && !complete && q.answerType==='choice');
-      if (canChoose) requestAnimationFrame(() => {
-        const host=document.querySelector(scope+' [data-exam-paper-id]');
-        if (host?.dataset.examPaperId===id) bindPaper(host);
-      });
       const numbers = ids.map((k,i) => {
         const marked = present(answers[k]);
         const correct = retry ? marked && Number(answers[k])===Number(expected(set,k)) : isRight(set,k);
@@ -193,8 +226,7 @@
       const retryButton = complete && wrong.length ? `<button type="button" data-exam-retry>틀린 문제 다시 풀기 · ${wrong.length}문항</button>` : '';
       return `<div class="ta-top-v18"><h1>${escape(title())}</h1></div>
         <div class="ta-layout-v18 dst-layout"><div class="ta-main-v18" data-time-form>
-          ${time}${result}<div class="dte-paper-frame" ${canChoose?'data-exam-paper-id="'+escape(id)+'"':''}>
-          ${sheet}</div>
+          ${time}${result}${questionFrame(set,ids,answers,complete)}
           ${finishFailed && !complete?'<button type="button" data-exam-submit>채점 다시 시도</button>':''}
         </div>
         <aside class="ta-answer-sheet-v18"><div class="ta-answer-heading-v18"><h2>${retry?'오답 재도전':'답안'}</h2><span data-time-answered>${nowAnswered} / ${ids.length}</span></div>
@@ -283,7 +315,7 @@
     }
     function forward() {
       const set=getActive(),ids=retry?.ids || set.questionIds;
-      if (page<ids.length-1) { page++;repaintQuestion(); }
+      if (page<ids.length-1) navigate(page+1);
       else if (!(retry?retry.complete:settled(set))) confirmFinish();
     }
     function confirmInput() {
@@ -320,7 +352,7 @@
       }
       if (button.hasAttribute('data-exam-prev') || button.hasAttribute('data-exam-forward')) {
         const ids=retry?.ids||set.questionIds,target=page+(button.hasAttribute('data-exam-prev')?-1:1);
-        if (target>=0 && target<ids.length) { page=target;repaintQuestion(); }
+        if (target>=0 && target<ids.length) navigate(target);
         else if (target===ids.length) forward();
         return true;
       }
@@ -331,7 +363,7 @@
       if (button.hasAttribute('data-exam-submit')) { void submit(); return true; }
       if (button.hasAttribute('data-time-index')) {
         const i=Number(button.dataset.timeIndex), ids=retry?.ids || set.questionIds;
-        if (Number.isInteger(i) && i>=0 && i<ids.length) { page=i; repaintQuestion(); }
+        if (Number.isInteger(i) && i>=0 && i<ids.length) navigate(i);
         return true;
       }
       if (button.hasAttribute('data-exam-retry') && settled(set)) {

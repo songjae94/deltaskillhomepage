@@ -138,3 +138,15 @@
 @media (max-width:400px) {
   .ssp-desk .ssp-paper .ssp-options {margin-inline:-12px}
 }
+@media screen {
+  #content .ssp-paper :is(.ssp-prompt, .ssp-options) {
+    --ds-q-serif: "DS Exam Noto Serif KR", "Nanum Myeongjo", "AppleMyungjo", Batang, serif;
+    font-family: var(--ds-q-serif);
+    font-size: var(--ds-q-size);
+    line-height: var(--ds-q-lh);
+  }
+  .ds-exam-font-pending :is(.dst-prompt, .ssp-paper .ssp-prompt, .ssp-paper .ssp-options),
+  :is(.dst-prompt, .ssp-prompt) iframe.ds-student-fragment:not([data-ds-typeset]) {
+    visibility: hidden;
+  }
+}

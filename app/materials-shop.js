@@ -113,14 +113,20 @@
     if (!offers.length) return '';
     // H28-60(관문 88): 담은 뒤에도 고른 형식 그대로 — 안 담긴 형식으로 저절로 옮기지 않는다(다른 형식은 손수 골라야 담김).
     const pick = offers.find(o => key(o.p, o.fmt) === chosen.get(card.id)) || offers.find(o => cart.includes(key(o.p, o.fmt))) || offers[0];
-    const pickKey = key(pick.p, pick.fmt), label = escape(title(card.main)), added = cart.includes(pickKey);
+    const pickKey = key(pick.p, pick.fmt), label = escape(title(card.main));
     const rows = offers.map(({p, fmt}) => {
       const id = key(p, fmt);
       return `<button type="button" class="ms-pick" aria-pressed="${id === pickKey}" aria-label="${formatLabel(fmt)} ${cost(p, fmt)}${cart.includes(id) ? ' 담김' : ''}" data-ms-pick="${escape(id)}"><span>${formatLabel(fmt)}</span><b>${cost(p, fmt)}</b>${cart.includes(id) ? '<small>담김</small>' : ''}</button>`;
     }).join('');
+    return `<div class="ms-choice" role="group" aria-label="${label} 파일 형식">${rows}</div><div class="ms-acts">${actionButtons(card, pick)}</div><p class="ms-note">${escape(card.note)}</p>`;
+  }
+  function actionButtons(card, pick) {
+    const pickKey = key(pick.p, pick.fmt);
+    const label = escape(title(card.main));
+    const added = cart.includes(pickKey);
     const action = added ? '담김' : '담기';
     const buyNow = `<button type="button" class="ms-buy-now" aria-label="${label} ${formatLabel(pick.fmt)} ${cost(pick.p, pick.fmt)} 바로 구매" data-ms-buy="${escape(pickKey)}">바로 구매</button>`;
-    return `<div class="ms-choice" role="group" aria-label="${label} 파일 형식">${rows}</div><div class="ms-acts"><button type="button" class="ms-add" aria-label="${label} ${formatLabel(pick.fmt)} ${cost(pick.p, pick.fmt)} ${action}" data-ms-add="${escape(pickKey)}" ${added ? 'disabled' : ''}>${action}</button>${buyNow}</div><p class="ms-note">${escape(card.note)}</p>`;
+    return `<button type="button" class="ms-add" aria-label="${label} ${formatLabel(pick.fmt)} ${cost(pick.p, pick.fmt)} ${action}" data-ms-add="${escape(pickKey)}" ${added ? 'disabled' : ''}>${action}</button>${buyNow}`;
   }
   function coverTile(card) {
     const p = card.main, label = escape(title(p));
@@ -317,9 +323,33 @@
     if(b.hasAttribute('data-ms-cart')){openCart(panel);return;}
     if(b.hasAttribute('data-ms-review')){panel.querySelector('.ms-cart-sheet')?.close();reviewOrder(panel);return;}
     if(b.hasAttribute('data-ms-retry')){status='idle';load();refresh();return;}
-    if(b.dataset.msPick){const tile=b.closest('[data-ms-card]'),card=cardIndex.get(tile?.dataset.msCard);if(!card)return;chosen.set(card.id,b.dataset.msPick);tile.querySelector('.ms-formats').innerHTML=formats(card);[...tile.querySelectorAll('[data-ms-pick]')].find(x=>x.dataset.msPick===b.dataset.msPick)?.focus({preventScroll:true});return;}
+    if (b.dataset.msPick) {
+      const tile = b.closest('[data-ms-card]');
+      const card = cardIndex.get(tile?.dataset.msCard);
+      const pick = card && offersOf(card).find(({p, fmt}) => key(p, fmt) === b.dataset.msPick);
+      if (!pick) return;
+      chosen.set(card.id, b.dataset.msPick);
+      if (b.getAttribute('aria-pressed') === 'true') return;
+      tile.querySelector('[data-ms-pick][aria-pressed="true"]')?.setAttribute('aria-pressed','false');
+      b.setAttribute('aria-pressed','true');
+      tile.querySelector('.ms-acts').innerHTML = actionButtons(card, pick);
+      return;
+    }
     if(b.dataset.msBook){clearScope();selected=b.dataset.msBook;refresh();root().querySelector('summary').focus({preventScroll:true});}
-    if(b.dataset.msAdd&&!cart.includes(b.dataset.msAdd)){const item=offerOf(b.dataset.msAdd);if(!item)return;const addTile=b.closest('[data-ms-card]');if(addTile)chosen.set(addTile.dataset.msCard,b.dataset.msAdd);if(picked().length>=3){addedPopup(panel,item,true);return;}cart.push(b.dataset.msAdd);save();refresh();const fresh=root();if(fresh)addedPopup(fresh,item,false);return;}
+    if (b.dataset.msAdd && !cart.includes(b.dataset.msAdd)) {
+      const item = offerOf(b.dataset.msAdd);
+      const tile = b.closest('[data-ms-card]');
+      const card = cardIndex.get(tile?.dataset.msCard);
+      if (!item || !card) return;
+      chosen.set(card.id,b.dataset.msAdd);
+      if (picked().length >= 3) { addedPopup(panel,item,true); return; }
+      cart.push(b.dataset.msAdd);
+      save();
+      tile.querySelector('.ms-formats').innerHTML = formats(card);
+      updateCartCount(panel);
+      addedPopup(panel,item,false);
+      return;
+    }
     if(b.dataset.msBuy){const item=offerOf(b.dataset.msBuy);if(item)reviewOrder(panel,[item]);return;}
     if(b.dataset.msRemove){
       cart=cart.filter(k=>k!==b.dataset.msRemove);save();
