@@ -3,7 +3,7 @@ const source=fs.readFileSync('app/student-study-paths.js','utf8');
 const code=source.slice(source.indexOf(' function remoteTypeGroups(){'),source.indexOf(' async function querySource(){'));
 const rows=Array.from({length:24},(_,i)=>({id:'q'+i,typeIds:['T'+(1+Math.floor(i/2))]}));
 rows.push({id:'shared',typeIds:['T1','T2']});
-const context=vm.createContext({desk:true,state:{course:'types'},sourceResult:{questions:rows},deskType:'',workbookScope:()=>({unit:{label:'함수'}}),workbookChoices:()=>[{units:[{types:[{id:'T1',label:'첫 유형'},{id:'T2',label:'둘째 유형'}]}]}],esc:x=>String(x),mathContent:x=>String(x)});
+const context=vm.createContext({window:{},desk:true,state:{course:'types'},sourceResult:{questions:rows},deskType:'',workbookScope:()=>({unit:{label:'함수'}}),workbookChoices:()=>[{units:[{types:[{id:'T1',label:'첫 유형'},{id:'T2',label:'둘째 유형'}]}]}],esc:x=>String(x),mathContent:x=>String(x)});
 vm.runInContext(code,context);
 assert.equal(vm.runInContext('remoteTypeGroups().length',context),12);
 assert.deepEqual(Array.from(vm.runInContext('sourceRows().map(q=>q.id)',context)),['q0','q1','shared']);

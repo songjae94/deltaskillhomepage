@@ -82,6 +82,14 @@
           break;
         }
         body.append(...Array.from(row.childNodes));button.append(marker,body);row.append(button);
+        const spoken=body.cloneNode(true);
+        for(const formula of spoken.querySelectorAll('.katex')){
+          const tex=formula.querySelector('annotation[encoding="application/x-tex"]')?.textContent;
+          if(tex)formula.replaceWith(doc.createTextNode(tex));
+        }
+        for(const img of spoken.querySelectorAll('img[alt]'))img.replaceWith(doc.createTextNode(img.alt));
+        const label=spoken.textContent.trim();
+        if(label)button.setAttribute('aria-label',(index+1)+'번 '+label);
         if (choose) button.addEventListener('click',()=>choose(button));
       });
       window.DSChoiceLayout?.mount(list,Array.from(list.querySelectorAll('.dte-inline-choice')));

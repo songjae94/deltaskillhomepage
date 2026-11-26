@@ -56,3 +56,9 @@
 @media (max-width: 390px) {
   .lf19-fields { grid-template-columns: minmax(0, 1fr); }
 }
+
+.ds-preview-dialog {box-sizing:border-box;width:min(98vw,76rem);max-width:98vw;max-height:95dvh;padding:.75rem;background:white;color:#202d3c;border:1px solid #748292}
+.ds-preview-dialog::backdrop {background:rgb(0 0 0 / 65%)}
+.ds-preview-dialog>button {margin-bottom:.5rem;min-height:44px}
+.ds-preview-scroll {max-height:78dvh;overflow:auto}
+.ds-preview-scroll img {display:block;width:max(75rem,100%);max-width:none;height:auto}

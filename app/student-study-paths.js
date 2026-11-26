@@ -960,7 +960,7 @@ function bind(container,options={}){
  let externalRange=false,planSourceUnit=null,planSourceRows=null;
  let supplyPhase='idle',supplyByBook=new Map();
  let guestCells=[],guestRange=null,guestQuestion='',guestBusy=false,guestError='',guestLeft=null,guestRequest=0;
- let guestTicket=null,guestStylePromise=null;
+ let guestPage=1,guestNext=null,guestStylePromise=null;
  function guestMathStyle(){
   if(!guestStylePromise)guestStylePromise=fetch('/app/assets/vendor/katex-0.18.4/katex-embed.css?v=24.3').then(response=>{if(!response.ok)throw Error('math_style');return response.text();}).then(css=>{if(!css.includes('KaTeX_Main')||!css.includes('data:'))throw Error('math_style');return css;}).catch(error=>{guestStylePromise=null;throw error;});
   return guestStylePromise;
@@ -983,30 +983,35 @@ function bind(container,options={}){
   }catch(error){if(closed||generation!==epoch||signed())return;supplyPhase='error';planMessage=guestFailure(error);}
   draw(false);
  }
- async function openGuestQuestion(retry=false){
+ async function openGuestQuestion(page=1){
   if(!guestTrial||signed()||!guestRange||guestBusy)return;
-  const serial=++guestRequest,generation=epoch,cell=guestRange;guestBusy=true;guestError='';view='trial-source';draw(false);
+  const cell=guestRange,serial=++guestRequest,generation=epoch;
+  guestBusy=true;guestError='';guestPage=page;view='trial-source';draw(false);
   try{
-   const api=window.DSDrawHostV59?.trial;if(!api?.draw||!api?.open)throw Error('trial_unavailable');
-   if(!retry||guestTicket?.cell!==cell.cell_key){
-    guestTicket=null;
-    const result=await api.draw(cell.cell_key,1);
-    if(closed||serial!==guestRequest||generation!==epoch||signed())return;
-    if(!Array.isArray(result.items)||result.items.length!==1||typeof result.items[0].item_id!=='string'||typeof result.ticket!=='string')throw Error('trial_draw');
-    guestTicket={cell:cell.cell_key,id:result.items[0].item_id,ticket:result.ticket};guestLeft=result.left;
-   }
-   const item=guestTicket;const opened=await api.open(item.cell,item.id,item.ticket);
-   if(closed||serial!==guestRequest||generation!==epoch||signed())return;
-   if(opened.item_id!==item.id||typeof opened.question_html!=='string'||opened.question_html.length>1048576)throw Error('trial_open');
    const css=await guestMathStyle();
+   const result=await window.DSDrawHostV59.trial.study(cell.cell_key,page);
    if(closed||serial!==guestRequest||generation!==epoch||signed())return;
-   guestQuestion=fragmentContent('<style>'+css+'</style>'+opened.question_html,'공개 체험 문제');
-  }catch(error){if(closed||serial!==guestRequest||generation!==epoch||signed())return;guestError=guestFailure(error);if(error?.code==='trial_limit')guestLeft=0;}
-  finally{if(serial===guestRequest&&generation===epoch){guestBusy=false;draw(false);}}
+   if(result.done){guestNext=null;return;}
+   guestQuestion=fragmentContent('<style>'+css+'</style>'+result.question_html,'공개 체험 문제');
+   guestNext=result.next;guestLeft=result.left;
+  }catch(error){
+   if(closed||serial!==guestRequest||generation!==epoch||signed())return;
+   guestError=guestFailure(error);if(error?.code==='trial_limit')guestLeft=0;
+  }finally{if(serial===guestRequest&&generation===epoch){guestBusy=false;draw(false);}}
  }
  function guestQuestionHTML(){
-  const shown=Boolean(guestQuestion),left=Number.isInteger(guestLeft)?`오늘 더 볼 수 있는 공개 문항 ${guestLeft}개`:'공개 문항 체험';
-  return `<article class="ssp-paper"><h2 tabindex="-1">${esc(guestRange?.unit||'공개 문항')} · 체험</h2>${guestBusy?'<p role="status">문제를 불러오고 있어요.</p>':''}${guestQuestion}${guestError?`<p role="status">${esc(guestError)}</p>`:''}${shown?`<p class="ssp-note">${left} · 해설 확인과 학습 기록은 로그인 후 이용할 수 있어요.</p>`:''}<div class="ssp-actions">${guestError&&guestTicket?`<button data-ssp-guest-open-retry ${guestBusy?'disabled':''}>같은 문제 다시 열기</button>`:''}${guestLeft!==0?`<button data-ssp-guest-next ${guestBusy?'disabled':''}>${shown?'다음 문항':'문제 다시 불러오기'}</button>`:''}${shown||guestLeft===0?'<a class="ssp-primary" href="#login">로그인하고 해설·학습 기록 이용하기</a>':''}</div></article>`;
+  const shown=Boolean(guestQuestion);
+  const remaining=Number.isInteger(guestLeft)?'오늘 더 볼 수 있는 공개 문항 '+guestLeft+'개':'';
+  const end=!guestBusy&&!guestError&&guestNext===null;
+  return `<article class="ssp-paper"><h2 tabindex="-1">${esc(guestRange?.unit||'공개 문항')} · 체험</h2>
+   ${guestBusy?'<p role="status">문제를 불러오고 있어요.</p>':''}${guestQuestion}
+   ${guestError?`<p role="status">${esc(guestError)}</p>`:''}
+   ${end?`<p>${shown?'이 범위의 공개 체험을 마쳤어요.':'현재 이 범위에서 열 수 있는 문항이 없어요.'}</p>`:''}
+   <p class="ssp-note">${remaining}</p><div class="ssp-actions">
+   ${!guestBusy&&guestError&&guestLeft!==0?'<button data-ssp-guest-open-retry>다시 불러오기</button>':''}
+   ${!guestBusy&&!guestError&&guestNext!==null&&guestLeft!==0?'<button data-ssp-guest-next>다음 문항</button>':''}
+   ${!guestBusy?'<button data-ssp-choose-range>다른 단원 고르기</button>':''}
+   ${shown||guestLeft===0?'<a class="ssp-primary" href="#login">해설 보기 · 로그인</a>':''}</div></article>`;
  }
 
  async function loadSupply(){
@@ -1129,7 +1134,7 @@ function bind(container,options={}){
   draw(false);
  }
  function startRange(profile,range){
-  if(guestTrial&&range.guestCell){state.course=planCourse=profile.need;planPhase='active';externalRange=false;planSourceRows=null;planSourceUnit=null;guestRange=range.guestCell;guestQuestion='';guestError='';view='trial-source';void openGuestQuestion();return;}
+  if(guestTrial&&range.guestCell){state.course=planCourse=profile.need;planPhase='active';externalRange=false;planSourceRows=null;planSourceUnit=null;guestRange=range.guestCell;guestPage=1;guestNext=null;guestLeft=null;guestQuestion='';guestError='';view='trial-source';void openGuestQuestion();return;}
   guestRequest++;guestRange=null;guestQuestion='';
   planCourse=state.course=profile.need;planPhase='active';deskType='';widen='subunit';
   if(guestTrial&&range.originalBook){
@@ -1287,7 +1292,7 @@ function bind(container,options={}){
   return `<nav class="ssp-desk-pager" aria-label="문항 이동" data-ssp-count="${total}" data-ssp-index="${index}">
    <button type="button" data-ssp-question-step="-1" aria-label="이전 문항" ${index===0||remoteBusy?'disabled':''}>‹</button>
    <span>${index+1} / ${total}문항</span>
-   <button type="button" data-ssp-question-step="1" aria-label="다음 문항" ${index+1===total||remoteBusy?'disabled':''}>›</button></nav>${total<3?`<p class="ssp-note">이 범위에 연결된 문항은 ${total}개예요. 준비된 문항부터 풀 수 있어요.</p>`:''}`;
+   <button type="button" data-ssp-question-step="1" aria-label="다음 문항" ${index+1===total||remoteBusy?'disabled':''}>›</button></nav>${total<3?`<p class="ssp-note">현재 선택한 유형·범위의 문항은 ${total}개예요.</p>`:''}`;
  }
  function localSet(original){
   const anchor=original.originalQuestionId||original.id;
@@ -1466,14 +1471,30 @@ function bind(container,options={}){
  function remoteList(){if(sourcePhase==='loading')return '<p role="status">회원에게 허용된 기존 자료를 확인하고 있어요.</p>';if(sourcePhase==='error')return `<p role="alert">${esc(sourceError)}</p><button data-ssp-query>다시 확인</button>`;if(sourcePhase!=='ready')return '<p>현재 계정에 허용된 기존 문항 수를 서버에서 확인해 주세요.</p><button data-ssp-query>이 범위의 무료 문제 확인</button>';const rows=sourceRows();return `<p><strong>이 계정에서 무료로 열 수 있는 문항 ${rows.length}개</strong></p><p>${rows.length>=desiredCount?'원하는 '+desiredCount+'문항 이상이 있어요. 정확히 선택한 범위에서 풀 수 있어요.':desiredCount+'문항을 공부하려면 '+Math.max(0,desiredCount-rows.length)+'문항이 부족해요.'}</p>${rows.length?`<ul class="ssp-existing-list">${rows.map(q=>`<li><div><strong>${esc(q.title||q.typeLabel||q.unit||'기존 문항')}</strong><span>${esc(sourceName(q))} · ${esc(q.unit||'')}</span></div><button data-ssp-remote="${esc(q.questionId||q.id)}">이 문제 풀기</button></li>`).join('')}</ul>`:'<p>확인한 이 범위에서 학생 무료로 허용된 문항이 없어요. 범위를 넓힐지는 직접 선택할 수 있어요.</p>'}`;}
  async function openRemote(id,draft,revisit=false){
   if(heldExam(id)){notice='이 기출 원문의 화면 제공 범위를 확인하고 있어요.';draw(false);return;}
-  const metadata=draft||sourceRows().find(q=>(q.questionId||q.id)===id)||remoteHistory.records.find(q=>q.questionId===id);if(!metadata||typeof window.DSStudentServices?.open!=='function'){notice='문항을 여는 연결을 확인하지 못했어요.';draw(false);return;}const generation=++sourceGeneration,sessionAtOpen=epoch;lastOpen={id,draft,revisit};sourcePhase='opening';if(!DSStudentServices.ready?.({questionId:id,purpose:'study_free'})){notice='허용된 문항을 불러오고 있어요.';draw(false);}try{const result=await DSStudentServices.open({questionId:id,purpose:'study_free'});if(closed||generation!==sourceGeneration||sessionAtOpen!==epoch||!signed())return;const q=result.question;if(!q||(q.questionId||q.id)!==id||(metadata.version&&q.version!==metadata.version)||typeof q.version!=='string')throw Error('version_changed');if(!['existing_print','supplement'].includes(q.sourceKind))throw Error('unsupported_source');if(q.answer!==undefined||q.solution!==undefined||q.solutionFrame!==undefined||q.solutionHTML!==undefined)throw Error('active_answer_exposure');if(q.format==='sandbox-html'){q._safeFragment=fragmentContent(q.questionHTML,'기존 자료 문제');}else if(q.format==='text-latex'){mathContent(q.prompt);if(q.options)q.options.forEach(mathContent);}else throw Error('unsupported_format');q.answerType=q.answerType||metadata.answerType;remoteQuestion=q;remoteMetadata=metadata;remoteChoice=draft?.choice??null;remoteUnknown=false;remoteConfidence=draft?.confidence||'sure';remoteFeedback=null;remoteOpenedAt=Date.now();
+  const metadata=draft||sourceRows().find(q=>(q.questionId||q.id)===id)||remoteHistory.records.find(q=>q.questionId===id);if(!metadata||typeof window.DSStudentServices?.open!=='function'){notice='문항을 여는 연결을 확인하지 못했어요.';draw(false);return;}const generation=++sourceGeneration,sessionAtOpen=epoch;lastOpen={id,draft,revisit};sourcePhase='opening';if(!DSStudentServices.ready?.({questionId:id,purpose:'study_free'})){notice='허용된 문항을 불러오고 있어요.';draw(false);}try{const result=await DSStudentServices.open({questionId:id,purpose:'study_free'});if(closed||generation!==sourceGeneration||sessionAtOpen!==epoch||!signed())return;const q=result.question;if(!q||(q.questionId||q.id)!==id||(metadata.version&&q.version!==metadata.version)||typeof q.version!=='string')throw Error('version_changed');if(!['existing_print','supplement'].includes(q.sourceKind))throw Error('unsupported_source');if(q.answer!==undefined||q.solution!==undefined||q.solutionFrame!==undefined||q.solutionHTML!==undefined)throw Error('active_answer_exposure');if(q.format==='sandbox-html'){q._safeFragment=fragmentContent(q.questionHTML,'기존 자료 문제');}else if(q.format==='text-latex'){mathContent(q.prompt);if(q.options)q.options.forEach(mathContent);}else throw Error('unsupported_format');q.answerType=q.answerType||metadata.answerType;remoteQuestion=q;remoteMetadata=metadata;remoteChoice=draft?.choice??null;remoteUnknown=false;remoteHelp=false;remoteConfidence=draft?.confidence||'sure';remoteFeedback=null;remoteOpenedAt=Date.now();
  const saved=revisit&&remoteDrafts.get(id);if(saved?.version===q.version){remoteChoice=saved.choice;remoteConfidence=saved.confidence;remoteFeedback=saved.feedback;remoteOpenedAt=saved.openedAt;}
  view='source-question';notice='';sourcePhase='ready';if(!draft&&!remoteFeedback)save();draw();prefetchAround(id);}catch(error){if(closed||generation!==sourceGeneration||sessionAtOpen!==epoch)return;sourcePhase='error';view='home';notice=openFailure(error);sourceError=notice;draw(false);}}
  function openFailure(error){const code=error?.code||error?.message||'';if(code==='timeout')return '문항 응답이 늦어요. 다시 불러오기를 눌러 주세요.';if(code==='connection_failed'||error?.status===0)return '연결이 끊겨 문항을 받지 못했어요. 연결을 확인하고 다시 불러와 주세요.';if(error?.status===401||code==='unauthorized'||code==='session_changed')return '로그인이 만료되었어요. 다시 로그인한 뒤 열어 주세요.';if(error?.status===429||['rate_limited','too_many'].includes(code))return '요청이 잠시 많아요. 조금 뒤 다시 불러와 주세요.';return '문항의 판이나 열람 형식을 확인하지 못했어요. 다시 불러오거나 범위를 다시 확인해 주세요.';}
  // v66: the questions next to the open one (‹ › and the next type) are fetched ahead, two at most, never twice.
  function prefetchAround(id){if(!desk||typeof DSStudentServices?.prefetch!=='function')return;const rows=sourceRows(),index=rows.findIndex(q=>(q.questionId||q.id)===id),wanted=[rows[index+1],rows[index-1]];const groups=remoteTypeGroups(),g=groups.findIndex(group=>group.id===deskType);if(g>=0&&groups[g+1])wanted.push(groups[g+1].rows[0]);for(const row of wanted){const qid=row&&(row.questionId||row.id);if(qid&&!heldExam(qid))DSStudentServices.prefetch({questionId:qid,purpose:'study_free'});}}
- async function submitRemote(){if(!remoteQuestion||remoteBusy||remoteFeedback)return;if(typeof DSStudentServices?.submit!=='function'){notice='답안을 이 화면에 남겼어요. 서버 채점 연결은 아직 준비 중이에요.';draw(false);return;}const id=remoteQuestion.questionId||remoteQuestion.id;let operation=remoteOperations.get(id);if(!operation){if(remoteChoice===null&&!remoteUnknown){notice='답을 입력하거나 모르겠어요를 선택해 주세요.';draw(false);return;}operation={questionId:id,version:remoteQuestion.version,answer:remoteChoice,requestId:crypto.randomUUID(),course:state.course,confidence:remoteConfidence,help:false,seconds:Math.min(86400,Math.max(0,Math.round((Date.now()-remoteOpenedAt)/1000)))};remoteOperations.set(id,operation);}const generation=epoch;remoteBusy=true;notice='답안을 확인하고 있어요.';draw(false);try{const result=await DSStudentServices.submit(operation);if(closed||generation!==epoch||!signed())return;if(!result?.record||result.record.questionId!==id||result.record.version!==operation.version||typeof result.record.correct!=='boolean')throw Error('invalid_grade');if(result.solutionHTML){try{result._safeSolutionFragment=fragmentContent(result.solutionHTML,'제출 후 해설');}catch{result.solutionUnavailable=true;}}if(result.solution){try{(Array.isArray(result.solution)?result.solution:[result.solution]).forEach(mathContent);}catch{result.solution=null;result.solutionUnavailable=true;}}remoteFeedback=result;remoteOperations.delete(id);state.sourcePending[state.course]={cleared:true,updatedAt:Date.now()};save();notice='계정에 풀이 결과를 저장했어요.';remoteHistory.phase='idle';window.dispatchEvent(new CustomEvent('ds-student-free-record',{detail:{record:result.record}}));}catch(error){if(closed||generation!==epoch)return;if([400,403,404,409,422].includes(error?.status)){remoteOperations.delete(id);notice='답안의 형식이나 문항 이용 상태가 바뀌었어요. 범위와 문항을 다시 확인해 주세요.';return;}notice='제출 결과를 확인하지 못했어요. 같은 답안으로 다시 확인해 주세요. 중복으로 새 풀이를 만들지 않아요.';}finally{if(generation===epoch){remoteBusy=false;draw(false);}}}
- function remoteQuestionHTML(){const q=remoteQuestion,id=q.questionId||q.id;const pending=remoteOperations.has(id);let content=q.format==='sandbox-html'?q._safeFragment+'<p class="ssp-note">긴 수식은 좌우로 밀어서 확인할 수 있어요.</p>':`<div class="ssp-prompt">${mathContent(q.prompt)}</div>`;const choices=q.answerType==='choice'?(Array.isArray(q.options)&&q.options.length===5?q.options:Array(5).fill('')):null;return `<article class="ssp-paper"><div class="ssp-paper-top"><span>${esc(sourceName(remoteMetadata))}</span><span>${esc(q.unit||remoteMetadata.unit||'')}</span></div><h2 tabindex="-1">${desk&&state.course==='types'?'대표 유형 문제':'기존 자료 풀기'}</h2>${desk?itemPager(Math.max(0,sourceRows().findIndex(row=>(row.questionId||row.id)===id)),sourceRows().some(row=>(row.questionId||row.id)===id)?sourceRows().length:1):''}${remoteTypeNavigation()}${content}${q.format==='sandbox-html' && choices ? '' : `<fieldset class="ssp-options" aria-label="답안" ${remoteFeedback||remoteBusy||pending?'disabled':''}>${choices?choices.map((text,i)=>`<label><input type="radio" name="ssp-remote-choice" value="${i}" ${remoteChoice===i?'checked':''}><span class="ssp-option-no">${"①②③④⑤"[i]}</span><span>${mathContent(text)}</span></label>`).join(''):`<label>정수 답안 <input type="number" inputmode="numeric" step="1" data-ssp-remote-integer ${Number.isSafeInteger(remoteChoice)?`value="${remoteChoice}"`:''} aria-label="정수 답안"></label>`}</fieldset>`}${!remoteFeedback?`<div class="ssp-actions"><button class="ssp-primary" data-ssp-remote-submit ${remoteBusy?'disabled':''}>${pending?'같은 답안으로 결과 다시 확인':'답 제출하고 확인'}</button><button data-ssp-remote-unknown ${remoteBusy||pending?'disabled':''}>모르겠어요</button></div>`:`<section class="ssp-feedback"><h3 tabindex="-1">${remoteFeedback.record.correct?'맞았어요.':'조건과 풀이를 다시 확인해 봐요.'}</h3>${variantButton(remoteFeedback.record,remoteHistory.records)}<button data-ssp-remote-retry>같은 문제 다시 풀기</button>${remoteFeedback.answer!==undefined?`<p>정답 ${esc(choices?Number(remoteFeedback.answer)+1+'번':remoteFeedback.answer)}</p>`:''}${remoteFeedback._safeSolutionFragment?`<section class="ssp-solution">${remoteFeedback._safeSolutionFragment}<p class="ssp-note">긴 수식은 좌우로 밀어서 확인할 수 있어요.</p></section>`:''}${remoteFeedback.solutionUnavailable?'<p>해설 표시 형식을 확인하지 못했어요. 채점 결과는 계정에 저장했어요.</p>':''}${remoteFeedback.solution?`<div class="ssp-solution">${(Array.isArray(remoteFeedback.solution)?remoteFeedback.solution:[remoteFeedback.solution]).map(line=>`<p>${mathContent(line)}</p>`).join('')}</div>`:''}</section>`}<footer class="ssp-paper-foot"><span>계정에 허용된 기존 자료</span>${options.view==='history'?'<button data-ssp-history>내 공부 기록으로</button>':!desk?'<button data-ssp-home>코스로 돌아가기</button>':''}</footer></article>`;}
+ async function submitRemote(){if(!remoteQuestion||remoteBusy||remoteFeedback)return;if(typeof DSStudentServices?.submit!=='function'){notice='답안을 이 화면에 남겼어요. 서버 채점 연결은 아직 준비 중이에요.';draw(false);return;}const id=remoteQuestion.questionId||remoteQuestion.id;let operation=remoteOperations.get(id);if(!operation){if(remoteChoice===null&&!remoteUnknown){notice='답을 입력하거나 모르겠어요를 선택해 주세요.';draw(false);return;}operation={questionId:id,version:remoteQuestion.version,answer:remoteChoice,requestId:crypto.randomUUID(),course:state.course,confidence:remoteConfidence,help:remoteHelp,seconds:Math.min(86400,Math.max(0,Math.round((Date.now()-remoteOpenedAt)/1000)))};remoteOperations.set(id,operation);}const generation=epoch;remoteBusy=true;notice='답안을 확인하고 있어요.';draw(false);try{const result=await DSStudentServices.submit(operation);if(closed||generation!==epoch||!signed())return;if(!result?.record||result.record.questionId!==id||result.record.version!==operation.version||typeof result.record.correct!=='boolean')throw Error('invalid_grade');if(result.solutionHTML){try{result._safeSolutionFragment=fragmentContent(result.solutionHTML,'제출 후 해설');}catch{result.solutionUnavailable=true;}}if(result.solution){try{(Array.isArray(result.solution)?result.solution:[result.solution]).forEach(mathContent);}catch{result.solution=null;result.solutionUnavailable=true;}}remoteFeedback=result;remoteOperations.delete(id);state.sourcePending[state.course]={cleared:true,updatedAt:Date.now()};save();notice='계정에 풀이 결과를 저장했어요.';remoteHistory.phase='idle';window.dispatchEvent(new CustomEvent('ds-student-free-record',{detail:{record:result.record}}));}catch(error){if(closed||generation!==epoch)return;if([400,403,404,409,422].includes(error?.status)){remoteOperations.delete(id);notice='답안의 형식이나 문항 이용 상태가 바뀌었어요. 범위와 문항을 다시 확인해 주세요.';return;}notice='제출 결과를 확인하지 못했어요. 같은 답안으로 다시 확인해 주세요. 중복으로 새 풀이를 만들지 않아요.';}finally{if(generation===epoch){remoteBusy=false;draw(false);}}}
+ function afterRemoteQuestion(id){
+  if(!desk||options.view==='history')return '';
+  const rows=sourceRows(),at=rows.findIndex(row=>(row.questionId||row.id)===id);
+  if(at>=0&&at+1<rows.length)return '<button data-ssp-after-solution data-ssp-question-step="1">다음 문항 →</button>';
+  const groups=remoteTypeGroups(),index=groups.findIndex(group=>group.id===deskType);
+  if(index>=0&&groups[index+1])return '<button data-ssp-after-solution data-ssp-remote-type-step="1">다음 유형 · '+esc(groups[index+1].label)+'</button>';
+  return '<button data-ssp-choose-range>이 범위 마치고 다른 공부 고르기</button>';
+ }
+ let remoteHelp=false;
+ function remoteFirstHint(){
+  const label=remoteTypeGroups().find(group=>group.id===deskType)?.label||remoteQuestion?.unit||'';
+  if(label.includes('넓이')&&label.includes('이등분'))return '꼭짓점에서 반대편 변으로 선을 그어 보세요. 나뉜 두 삼각형에서 공통인 높이를 찾아보세요.';
+  if(label.includes('수직이등분선'))return '두 점의 중점을 먼저 표시해 보세요. 구할 직선은 선분과 어떤 각을 이루나요?';
+  if(label.includes('대칭이동'))return '대칭시키는 기준을 하나씩 적고, 각 점에서 바뀌는 좌표를 표시해 보세요.';
+  return '구해야 할 값을 먼저 표시하세요. 주어진 조건 하나를 식이나 그림으로 옮긴 뒤 그 값과 연결해 보세요.';
+ }
+ function remoteQuestionHTML(){const q=remoteQuestion,id=q.questionId||q.id;const pending=remoteOperations.has(id);let content=q.format==='sandbox-html'?q._safeFragment+'<p class="ssp-note">긴 수식은 좌우로 밀어서 확인할 수 있어요.</p>':`<div class="ssp-prompt">${mathContent(q.prompt)}</div>`;const choices=q.answerType==='choice'?(Array.isArray(q.options)&&q.options.length===5?q.options:Array(5).fill('')):null;return `<article class="ssp-paper"><div class="ssp-paper-top"><span>${esc(sourceName(remoteMetadata))}</span><span>${esc(q.unit||remoteMetadata.unit||'')}</span></div><h2 tabindex="-1">${desk&&state.course==='types'?'대표 유형 문제':'기존 자료 풀기'}</h2>${desk?itemPager(Math.max(0,sourceRows().findIndex(row=>(row.questionId||row.id)===id)),sourceRows().some(row=>(row.questionId||row.id)===id)?sourceRows().length:1):''}${remoteTypeNavigation()}${content}${q.format==='sandbox-html' && choices ? '' : `<fieldset class="ssp-options" aria-label="답안" ${remoteFeedback||remoteBusy||pending?'disabled':''}>${choices?choices.map((text,i)=>`<label><input type="radio" name="ssp-remote-choice" value="${i}" ${remoteChoice===i?'checked':''}><span class="ssp-option-no">${"①②③④⑤"[i]}</span><span>${mathContent(text)}</span></label>`).join(''):`<label>정수 답안 <input type="number" inputmode="numeric" step="1" data-ssp-remote-integer ${Number.isSafeInteger(remoteChoice)?`value="${remoteChoice}"`:''} aria-label="정수 답안"></label>`}</fieldset>`}${!remoteFeedback?`<div class="ssp-actions"><button class="ssp-primary" data-ssp-remote-submit ${remoteBusy?'disabled':''}>${pending?'같은 답안으로 결과 다시 확인':'답 제출'}</button><button data-ssp-remote-hint ${remoteBusy||pending?'disabled':''}>첫 힌트 보기</button><button data-ssp-remote-unknown ${remoteBusy||pending?'disabled':''}>해설 보고 복습에 담기</button></div>${remoteHelp?'<p class="ssp-note" role="status">'+esc(remoteFirstHint())+'</p>':''}`:`<section class="ssp-feedback"><h3 tabindex="-1">${remoteFeedback.record.correct?'맞았어요.':'조건과 풀이를 다시 확인해 봐요.'}</h3>${variantButton(remoteFeedback.record,remoteHistory.records)}<button data-ssp-remote-retry>같은 문제 다시 풀기</button>${remoteFeedback.answer!==undefined?`<p>정답 ${esc(choices?Number(remoteFeedback.answer)+1+'번':remoteFeedback.answer)}</p>`:''}${remoteFeedback._safeSolutionFragment?`<section class="ssp-solution">${remoteFeedback._safeSolutionFragment}<p class="ssp-note">긴 수식은 좌우로 밀어서 확인할 수 있어요.</p></section>`:''}${remoteFeedback.solutionUnavailable?'<p>해설 표시 형식을 확인하지 못했어요. 채점 결과는 계정에 저장했어요.</p>':''}${remoteFeedback.solution?`<div class="ssp-solution">${(Array.isArray(remoteFeedback.solution)?remoteFeedback.solution:[remoteFeedback.solution]).map(line=>`<p>${mathContent(line)}</p>`).join('')}</div>`:''}</section>`}${remoteFeedback?afterRemoteQuestion(id):''}<footer class="ssp-paper-foot"><span>계정에 허용된 기존 자료</span>${options.view==='history'?'<button data-ssp-history>내 공부 기록으로</button>':!desk?'<button data-ssp-home>코스로 돌아가기</button>':''}</footer></article>`;}
  function sourcePanel(){
   const units=Object.keys(FREE_CONCEPTS);
   const freeConcept=FREE_CONCEPTS[freeUnit];
@@ -1535,7 +1556,9 @@ function bind(container,options={}){
   if(!r.recordId)return TYPES[r.type]||byId.get(r.questionId)?.unit||'보완연습';
   const book=workbookChoices().find(b=>b.id===r.bookId);
   const unit=book?.units?.find(u=>u.id===r.unitId);
-  return unit?.types?.find(t=>t.id===r.typeId)?.label||unit?.label||r.unit||r.title||'단원 미분류 문항';
+  const type=unit?.types?.find(t=>t.id===r.typeId)||book?.units?.flatMap(u=>u.types||[]).find(t=>t.id===r.typeId);
+  const title=type?.label||r.title||'문항 '+r.questionId.slice(0,8);
+  return [unit?.label||r.unit||r.unitId,title].filter(Boolean).join(' · ');
  }
  function reviewButton(r,label){
   if(heldExam(r.questionId))return '<span>원문 제공 확인 중</span>';
@@ -1549,7 +1572,7 @@ function bind(container,options={}){
   if(phase==='idle'||phase==='loading')status='<p role="status">계정 풀이를 불러오고 있어요.</p>';
   else if(phase==='error'||phase==='unavailable')status='<p>기존 자료 기록을 모두 확인하지 못했어요.</p><button type="button" data-ssp-history-sync>다시 불러오기</button>';
   else if(!records.length)status='<p>아직 기존 자료에서 푼 문제가 없어요.</p>';
-  const list=records.map(r=>`<li><div><strong>${esc(recordTitle(r))}</strong><span>${esc(new Date(r.at).toLocaleDateString('ko-KR'))} · ${r.correct?'정답':'오답'}</span></div>${reviewButton(r,'다시 풀기')}${variantButton(r,records)}</li>`).join('');
+  const list=records.map(r=>`<li><div><strong>${esc(recordTitle(r))}</strong><span>${esc(new Date(r.at).toLocaleDateString('ko-KR'))} · ${r.helpRequested?'해설 보고 복습':r.correct?'정답':'오답'}</span></div>${reviewButton(r,'다시 풀기')}${variantButton(r,records)}</li>`).join('');
   return `<section class="ssp-server-history"><h3>기존 자료 풀이</h3>${status}${list?`<details><summary>불러온 풀이 ${records.length}회</summary><ul>${list}</ul></details>`:''}${hasMore&&phase==='ready'?'<button type="button" data-ssp-history-more>이전 기록 더 보기</button>':''}</section>`;
  }
  function history(){
@@ -1560,8 +1583,9 @@ function bind(container,options={}){
   const groups=new Map();
   for(const row of recent.values()){
    if(!(row.recordId?row.correct===false:weak(row)))continue;
-   const name=recordTitle(row),group=groups.get(name)||{name,count:0,example:row};
-   group.count++;groups.set(name,group);
+   const name=recordTitle(row),key=row.recordId?JSON.stringify([row.bookId,row.unitId,row.typeId||row.questionId]):name;
+   const group=groups.get(key)||{name,count:0,example:row};
+   group.count++;groups.set(key,group);
   }
   const review=[...groups.values()].sort((a,b)=>b.count-a.count);
   const accountReady=remoteHistory.phase==='ready';
@@ -1673,8 +1697,12 @@ function bind(container,options={}){
   e.preventDefault();if(view!=='history')trialReturnView=view;view='history';draw();container.querySelector('.ssp-body')?.scrollIntoView?.({block:'start'});return;
  }
  const b=e.target.closest('button');if(!b||!container.contains(b)||b.disabled)return;notice='';
- if(guestTrial&&b.hasAttribute('data-ssp-guest-next')){void openGuestQuestion();return;}
- if(guestTrial&&b.hasAttribute('data-ssp-guest-open-retry')){void openGuestQuestion(true);return;}
+ if(b.hasAttribute('data-ssp-after-solution'))container.querySelector('.ssp-paper')?.scrollIntoView({block:'start'});
+ if(b.hasAttribute('data-ssp-choose-range')){
+  container.querySelector('[data-plan-reselect]')?.click();return;
+ }
+ if(guestTrial&&b.hasAttribute('data-ssp-guest-next')){if(guestNext!==null)void openGuestQuestion(guestNext);return;}
+ if(guestTrial&&b.hasAttribute('data-ssp-guest-open-retry')){void openGuestQuestion(guestPage);return;}
  if(guestTrial&&b.hasAttribute('data-ssp-trial-return')){view=trialReturnView;draw();return;}
  if(guestTrial&&b.hasAttribute('data-ssp-guest-review')){void reviewPlan();return;}
  if(desk&&handlePlanClick(b))return;
@@ -1744,7 +1772,7 @@ function bind(container,options={}){
   if(row){if(COURSES.some(c=>c.id===row.course))state.course=row.course;openRemote(row.questionId,{questionId:row.questionId,version:row.version},true);}
   return;
  }
- if(b.hasAttribute('data-ssp-source-resume')){const p=state.sourcePending[state.course];if(p&&!p.cleared)openRemote(p.questionId,p);return;}if(b.hasAttribute('data-ssp-history-sync')){loadFreeHistory();return;}if(b.hasAttribute('data-ssp-history-more')){loadFreeHistory(true);return;}if(b.hasAttribute('data-ssp-retry-open')){if(lastOpen)openRemote(lastOpen.id,lastOpen.draft,lastOpen.revisit);return;}if(b.hasAttribute('data-ssp-query')){querySource();return;}if(b.hasAttribute('data-ssp-remote')){openRemote(b.dataset.sspRemote);return;}if(b.hasAttribute('data-ssp-remote-submit')){submitRemote();return;}if(b.hasAttribute('data-ssp-remote-unknown')){remoteChoice=null;remoteUnknown=true;submitRemote();return;}if(b.hasAttribute('data-ssp-series')){selectedSeries=b.dataset.sspSeries;widen='type';invalidateSource();draw();querySource();return;}if(b.hasAttribute('data-ssp-widen')){widen=b.dataset.sspWiden;invalidateSource();draw();querySource();return;}if(b.hasAttribute('data-ssp-course')){state.course=b.dataset.sspCourse;view='home';current=null;invalidateSource();queueMicrotask(querySource);}else if(b.hasAttribute('data-ssp-book')){state.book=b.dataset.sspBook;}else if(b.hasAttribute('data-ssp-resume'))resume(state.course);else if(b.hasAttribute('data-ssp-start'))begin();else if(b.hasAttribute('data-ssp-type'))begin(BANK.filter(q=>q.course==='types'&&q.type===b.dataset.sspType).map(q=>q.id));else if(b.hasAttribute('data-ssp-check'))return check(false);else if(b.hasAttribute('data-ssp-skip'))return check(true);else if(b.hasAttribute('data-ssp-hint')){hint=!hint;help=true;}else if(b.hasAttribute('data-ssp-solution')){solution=!solution;if(solution&&feedback){feedback.solutionSeen=true;save(feedback);}}else if(b.hasAttribute('data-ssp-retry'))resetQuestion(current);else if(b.hasAttribute('data-ssp-next')){if(!feedback)return;if(++cursor<pool.length)resetQuestion(byId.get(pool[cursor]));else {state.pending[state.course]={cleared:true,updatedAt:Date.now()};current=null;view='result';}}else if(b.hasAttribute('data-ssp-review'))review(b.dataset.sspReview);else if(b.hasAttribute('data-ssp-history'))view='history';else if(b.hasAttribute('data-ssp-open'))return openOriginal(b.dataset.sspOpen);else if(b.hasAttribute('data-ssp-home'))view='home';else if(b.hasAttribute('data-ssp-sync')){save();return;}else return;save();draw();}
+ if(b.hasAttribute('data-ssp-source-resume')){const p=state.sourcePending[state.course];if(p&&!p.cleared)openRemote(p.questionId,p);return;}if(b.hasAttribute('data-ssp-history-sync')){loadFreeHistory();return;}if(b.hasAttribute('data-ssp-history-more')){loadFreeHistory(true);return;}if(b.hasAttribute('data-ssp-retry-open')){if(lastOpen)openRemote(lastOpen.id,lastOpen.draft,lastOpen.revisit);return;}if(b.hasAttribute('data-ssp-query')){querySource();return;}if(b.hasAttribute('data-ssp-remote')){openRemote(b.dataset.sspRemote);return;}if(b.hasAttribute('data-ssp-remote-submit')){submitRemote();return;}if(b.hasAttribute('data-ssp-remote-hint')){remoteHelp=true;draw(false);return;}if(b.hasAttribute('data-ssp-remote-unknown')){remoteChoice=null;remoteUnknown=true;submitRemote();return;}if(b.hasAttribute('data-ssp-series')){selectedSeries=b.dataset.sspSeries;widen='type';invalidateSource();draw();querySource();return;}if(b.hasAttribute('data-ssp-widen')){widen=b.dataset.sspWiden;invalidateSource();draw();querySource();return;}if(b.hasAttribute('data-ssp-course')){state.course=b.dataset.sspCourse;view='home';current=null;invalidateSource();queueMicrotask(querySource);}else if(b.hasAttribute('data-ssp-book')){state.book=b.dataset.sspBook;}else if(b.hasAttribute('data-ssp-resume'))resume(state.course);else if(b.hasAttribute('data-ssp-start'))begin();else if(b.hasAttribute('data-ssp-type'))begin(BANK.filter(q=>q.course==='types'&&q.type===b.dataset.sspType).map(q=>q.id));else if(b.hasAttribute('data-ssp-check'))return check(false);else if(b.hasAttribute('data-ssp-skip'))return check(true);else if(b.hasAttribute('data-ssp-hint')){hint=!hint;help=true;}else if(b.hasAttribute('data-ssp-solution')){solution=!solution;if(solution&&feedback){feedback.solutionSeen=true;save(feedback);}}else if(b.hasAttribute('data-ssp-retry'))resetQuestion(current);else if(b.hasAttribute('data-ssp-next')){if(!feedback)return;if(++cursor<pool.length)resetQuestion(byId.get(pool[cursor]));else {state.pending[state.course]={cleared:true,updatedAt:Date.now()};current=null;view='result';}}else if(b.hasAttribute('data-ssp-review'))review(b.dataset.sspReview);else if(b.hasAttribute('data-ssp-history'))view='history';else if(b.hasAttribute('data-ssp-open'))return openOriginal(b.dataset.sspOpen);else if(b.hasAttribute('data-ssp-home'))view='home';else if(b.hasAttribute('data-ssp-sync')){save();return;}else return;save();draw();}
  function change(e){
  if(desk){
   if(e.target.matches('[data-plan-book]')&&planPhase==='survey'&&planDraft.need==='supplement'){

@@ -48,7 +48,7 @@
   const outLink = (href, body, cls = '') => `<a class="${cls}" href="${h(abs(href))}" target="_blank" rel="noopener">${body}<span aria-hidden="true">↗</span><span class="sr-only"> 새 탭</span></a>`;
 
   /* 들어온 주소의 pointPdf(=책 SKU.pdf)를 처음 고른 자료로 — 없으면 목록 첫 책(11-25 30: 다른 책이 골라져 보였다) */
-  const state = { load: 'idle', items: [], hasHwp: false, subject: '', sku: (new URLSearchParams(location.search).get('pointPdf') || '').replace(/\.(pdf|hwpx)$/, ''), fmt: 'pdf', uploadOpen: false, uploadMsg: null };
+  const state = { load: 'idle', items: [], hasHwp: false, subject: '', search: '', sku: (new URLSearchParams(location.search).get('pointPdf') || '').replace(/\.(pdf|hwpx)$/, ''), fmt: 'pdf', uploadOpen: false, uploadMsg: null };
 
   /* ---------- 판매 목록 ---------- */
   function filesOf(u, f) { return ((u && u.files) || []).filter(x => x.fmt === f); }
@@ -102,7 +102,9 @@
   }
 
   const current = () => state.items.find(item => item.sku === state.sku) || null;
-  const visible = () => state.items.filter(item => !state.subject || item.subject === state.subject);
+  const normalizeSearch = value => value.normalize('NFKC').replace(/\s+/g,'').toLowerCase();
+  const visible = () => state.items.filter(item => (!state.subject || item.subject === state.subject) &&
+    normalizeSearch([item.subject,item.unit,item.name,item.edition,item.major].filter(Boolean).join(' ')).includes(normalizeSearch(state.search)));
   const fmtOf = item => item.formats[state.fmt] ? state.fmt : Object.keys(item.formats)[0];
 
   function row(item) {
@@ -113,7 +115,7 @@
     }).join('');
     return `<li><button type="button" class="dl63-row" data-dl63-pick="${h(item.sku)}" aria-pressed="${on}">
       ${item.thumb ? `<img class="dl63-thumb" src="${h(item.thumb)}" alt="" width="804" height="1137" loading="lazy">` : '<span class="dl63-thumb dl63-thumb-none" aria-hidden="true"></span>'}
-      <span class="dl63-row-text"><small>${h(item.grade)} · ${h(item.subject)}</small><strong>${h(item.no)} ${h(item.unit)}</strong><span>${h(item.major.replace(/^[ⅠⅡⅢⅣⅤⅥ]+\s*/, ''))} · ${item.count}문항</span></span>
+      <span class="dl63-row-text"><small>${h(item.grade)} · ${h(item.subject)}</small><strong>${h(item.no)} ${h(item.unit)}</strong><span>${item.edition ? h(item.edition)+' · ' : ''}${h(item.major.replace(/^[ⅠⅡⅢⅣⅤⅥ]+\s*/, ''))} · ${item.count}문항</span></span>
       <span class="dl63-cells">${cells}</span>
     </button></li>`;
   }
@@ -141,7 +143,7 @@
         ${materialSku() === item.sku ? '' : `<a href="#material/${encodeURIComponent(item.sku)}">지면 보기</a>`}
         ${outLink(confirmHref(item, f).replace(ORIGIN, ''), '받을 내용 · 환불 자세히')}
       </div>
-      <p class="dl63-small">결제는 로그인 후 진행됩니다.</p>
+      ${signedIn()?'':'<p class="dl63-small">결제는 로그인 후 진행됩니다.</p>'}
     </div>`;
   }
 
@@ -157,7 +159,7 @@
     const head = `<div class="dl63-list-head" aria-hidden="true"><span>자료</span><span class="dl63-cells"><span class="dl63-cell">PDF</span>${state.hasHwp ? '<span class="dl63-cell">한글</span>' : ''}</span></div>`;
     return `<div class="dl63-chips" role="group" aria-label="과목으로 좁히기">${chips}</div>
       <div class="dl63-grid">
-        <div class="dl63-list-wrap">${head}<ol class="dl63-list" aria-label="판매 자료 ${rows.length}건">${rows.map(row).join('')}</ol></div>
+        <div class="dl63-list-wrap"><p role="status">판매 자료 ${rows.length}건</p>${head}<ol class="dl63-list" aria-label="판매 자료 ${rows.length}건">${rows.map(row).join('')}</ol></div>
         <aside class="dl63-desk" aria-label="고른 자료" aria-live="polite" data-dl63-receipt>${receipt(current())}</aside>
       </div>`;
   }
@@ -168,6 +170,7 @@
         <div><span class="dl63-kicker">판매 자료</span><h2 id="dl63-shop-title">시험 범위 자료 고르기</h2><p>단원 문제집을 고르고, 받을 꼴과 값을 확인한 뒤 구매합니다.</p></div>
         <p class="dl63-book-note">${BOOK_NOTE}</p>
       </header>
+      <label>판매 자료 검색 <input type="search" data-sale-search value="${h(state.search)}" placeholder="과목·단원·자료명"></label>
       <div class="dl63-shop-body" data-dl63-shop>${shopBody()}</div>
     </section>`;
   }
@@ -401,6 +404,12 @@
     submitUpload(event.target);
   });
   main.addEventListener('input', event => {
+    if (event.target.matches('[data-sale-search]')) {
+      state.search=event.target.value;
+      const rows=visible();
+      if(!rows.some(row=>row.sku===state.sku))state.sku=rows[0]?.sku||'';
+      repaintShop();
+    }
     if (event.target.form?.id === 'dl63-upload' && state.uploadMsg) { state.uploadMsg = null; const box = main.querySelector('[data-dl63-up-msg]'); if (box) box.innerHTML = ''; }
   });
 

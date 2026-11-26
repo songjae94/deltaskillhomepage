@@ -60,7 +60,7 @@
   function unitPanel(data) {
     const rows = matchingMaterials(data);
     return `<div class="lf19-fields" role="group" aria-label="자료 범위">
-      <label class="lf32-search">자료 검색<input type="search" data-lf19-search aria-label="자료 검색" aria-controls="lf19-results" placeholder="예: 정적분, 함수" value="${escape(state.term)}"></label>
+      <label class="lf32-search">공개 미리보기 검색<input type="search" data-lf19-search aria-label="공개 미리보기 검색" aria-controls="lf19-results" placeholder="예: 정적분, 함수" value="${escape(state.term)}"></label>
       <label>과목<select data-lf19-field="subject" aria-controls="lf19-results">${subjectOptions(data)}</select></label>
       <label>단원<select data-lf19-field="unit" aria-controls="lf19-results">${unitOptions(data)}</select></label>
     </div>
@@ -115,7 +115,7 @@
       const state = document.createElement('p');
       state.id = 'lf19-full-state';
       state.className = 'lf19-full-state';
-      state.textContent = '로그인 후 내 자료에 있는 파일을 받을 수 있습니다. 공개 미리보기는 이 페이지에서 받을 수 있습니다.';
+      state.textContent = window.DSAuth?.has?.() ? '보유한 파일은 내 자료에서 확인하세요.' : '로그인 후 내 자료에 있는 파일을 받을 수 있습니다. 공개 미리보기는 이 페이지에서 받을 수 있습니다.';
       const duplicate = template.content.querySelector('.detail-owned-link');
       if (duplicate) duplicate.replaceWith(state);
       else full.after(state);

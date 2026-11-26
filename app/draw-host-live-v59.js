@@ -108,6 +108,14 @@
     } finally { done(); }
   }
   const trial = {
+    study: async (cell_key, page) => {
+      const d = await guest({action: 'trial_study', cell_key, page});
+      if (exact(d, ['done']) && d.done === true) return d;
+      if (!exact(d, ['item_id', 'question_html', 'left', 'next']) || !UUID.test(d.item_id) ||
+          typeof d.question_html !== 'string' || !count(d.left, 0, 10000) ||
+          !(d.next === null || count(d.next, page + 1, 20))) throw fail(502, 'unavailable');
+      return d;
+    },
     menu: async signal => {
       const d = await guest({ action: 'trial_menu' }, signal);
       const lim = d.limits;
