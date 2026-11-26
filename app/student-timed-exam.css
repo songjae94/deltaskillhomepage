@@ -164,3 +164,15 @@
   .ds-timed .dte-paper-frame .dst-sheet{padding-inline:36px!important}
   .ds-timed .dte-entry{gap:6px}
 }
+
+/* Leave the full mobile reading viewport to the question while the exam runs. */
+@media screen and (max-width:740px) {
+  body:has(.ds-timed .dte-clock) #header {position:relative;top:auto}
+  #content .ds-timed .dte-clock {position:static;top:auto}
+  #content .ds-timed .dte-paper-frame,
+  #content .ds-timed .dst-sheet {scroll-margin-top:16px}
+}
+
+/* The Korean question face is shared by the host and sandboxed source sheet.
+   UI labels and KaTeX keep their own font families. */
+#content .ds-timed .dst-prompt {--ds-q-serif:"DS Exam Noto Serif KR","Nanum Myeongjo","AppleMyungjo",Batang,serif}

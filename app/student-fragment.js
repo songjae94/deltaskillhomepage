@@ -2,8 +2,28 @@
   'use strict';
   const policy = "default-src 'none'; img-src data:; style-src 'unsafe-inline'; font-src data:; form-action 'none'; base-uri 'none'";
   const attr = value => String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  const examFontFamily='DS Exam Noto Serif KR';
+  const examFontUrl=new URL('assets/fonts/NotoSerifKR-Regular.woff2',document.currentScript?.src || new URL('student-fragment.js',document.baseURI).href).href;
+  let examFontPromise;
+  // One same-origin fetch per page. Both documents use identical bytes; no iframe CSP relaxation.
+  function examFont() {
+    if (!examFontPromise) examFontPromise=fetch(examFontUrl,{cache:'force-cache'}).then(response=>{
+      if (!response.ok) throw Error('문항 글꼴 로드 실패');
+      return response.arrayBuffer();
+    }).then(async bytes=>{
+      const face=new FontFace(examFontFamily,bytes,{style:'normal',weight:'400',display:'swap'});
+      await face.load();document.fonts.add(face);
+      await document.fonts.load('16px "'+examFontFamily+'"','함수의 값은');
+      return bytes;
+    }).catch(()=>null); // Existing readable text remains available on a font/network failure.
+    return examFontPromise;
+  }
+  const fontMount=new MutationObserver(()=>{
+    if (document.querySelector('.ds-timed')) { examFont();fontMount.disconnect(); }
+  });
+  fontMount.observe(document.documentElement,{childList:true,subtree:true});
   const questionTypography = `
-    body article{font-family:var(--ds-q-serif,"Noto Serif KR","Nanum Myeongjo","AppleMyungjo",Batang,serif);line-height:var(--ds-q-lh,1.69);word-break:keep-all;overflow-wrap:break-word}
+    body article{font-size:var(--ds-fragment-size,var(--ds-q-size,16px));font-family:var(--ds-q-serif,"Noto Serif KR","Nanum Myeongjo","AppleMyungjo",Batang,serif);line-height:var(--ds-fragment-lh,var(--ds-q-lh,1.69));word-break:keep-all;overflow-wrap:break-word}
     body :is(.katex,math){font-size:1em}
     article .katex:not(.katex-display>.katex){margin-inline:.06em}
     article :is(.bogi,.cond-box){position:relative;box-sizing:border-box;min-width:0;border:1px solid #736f66;padding:.85em .9em;margin:1.15em 0 .8em;break-inside:avoid}
@@ -19,6 +39,19 @@
     if(!doc?.head||doc===document||doc.getElementById('ds-study-math-size'))return;
     const style=doc.createElement('style');style.id='ds-study-math-size';
     style.textContent=questionTypography;doc.head.append(style);
+  }
+  // Resolve viewport-relative type in the host, not the narrower iframe viewport.
+  function syncTypography(frame,doc) {
+    const source=frame.closest('.dst-prompt,.ssp-prompt,.ssp-hint,.ssp-solution') || frame.parentElement;
+    if (!source || !doc?.body) return;
+    const cs=getComputedStyle(source),root=doc.documentElement.style;
+    root.setProperty('--ds-fragment-size',cs.fontSize);
+    root.setProperty('--ds-q-serif',cs.fontFamily);
+    root.setProperty('--ds-fragment-lh',String(parseFloat(cs.lineHeight)/parseFloat(cs.fontSize) || 1.69));
+    doc.body.style.fontSize=cs.fontSize;
+    doc.body.style.fontFamily=cs.fontFamily;
+    doc.body.style.lineHeight=cs.lineHeight;
+    doc.body.style.letterSpacing=cs.letterSpacing;
   }
   // 1125 렌더고침(F5): 공부하기 문항도 뽑기 · 인쇄와 같은 한 길(MathML → 원본 TeX → KaTeX 0.18.4 · 형 1122 「같은 기준」)로 짓는다.
   // 엔진이 없거나 실패하면 지금처럼 원래 MathML 을 그대로 둔다(수학 내용 바꿈 0).
@@ -108,12 +141,23 @@
       }
       const doc = frame.contentDocument;
       if (!doc?.body) throw Error('문항 지면 없음');
+      const resize = () => { syncTypography(frame,doc); const box = doc.body.getBoundingClientRect(); const bottom = parseFloat(doc.defaultView.getComputedStyle(doc.body).marginBottom)||0; const height = Math.max(box.bottom+doc.defaultView.scrollY,box.top+doc.body.scrollHeight)+Math.max(0,bottom); if (height>0) { frame.style.height = Math.ceil(height+2)+'px'; if (frame.title) lastHeight.set(frame.title, frame.style.height); } };
+      resize();
+      if (frame.closest('.ds-timed')) {
+        const bytes=await examFont();
+        if (bytes) {
+          const face=new doc.defaultView.FontFace(examFontFamily,bytes.slice(0),{style:'normal',weight:'400',display:'swap'});
+          await face.load();doc.fonts.add(face);
+          await doc.fonts.load('16px "'+examFontFamily+'"','함수의 값은');
+        }
+      }
       await doc.fonts.ready;
-      const resize = () => { const box = doc.body.getBoundingClientRect(); const bottom = parseFloat(doc.defaultView.getComputedStyle(doc.body).marginBottom)||0; const height = Math.max(box.bottom+doc.defaultView.scrollY,box.top+doc.body.scrollHeight)+Math.max(0,bottom); if (height>0) { frame.style.height = Math.ceil(height+2)+'px'; if (frame.title) lastHeight.set(frame.title, frame.style.height); } };
       resize();
       if (!observers.has(frame) && typeof ResizeObserver==='function') {
         const observer = new ResizeObserver(resize);
         observer.observe(doc.body);
+        observer.observe(frame.parentElement);
+        frame.contentWindow.addEventListener('resize',resize);
         observers.set(frame,observer);
         frame.contentWindow.addEventListener('pagehide',() => observer.disconnect(),{once:true});
       }
