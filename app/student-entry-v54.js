@@ -109,7 +109,16 @@
   function resumeCourse(){const parent=courseParent();if(!parent)return;activeId=parent.id;viewAttempt=null;D.next(parent);pane=parent.completedAt?'result':'run';selection=null;uncertain=false;hint=false;helpUsed=false;solution=false;openedAt=Date.now();save();repaint();window.scrollTo(0,0);}
 
   function enterPractice(onlyId){if(!canStudy())return;if(member()&&cloud.snapshot().dirty&&state.attempts.length>=60){toast('기록 저장을 마친 뒤 새 공부를 시작할 수 있어요.');return;}if(state.attempts.filter(a=>!a.completedAt).length>=60){toast('진행 중인 공부를 먼저 마쳐주세요.');return;}const unit=active()?.unit||selectedUnit(),pool=bank.filter(q=>q.unit===unit),seen=D.outcomes(state,unit),unseen=pool.filter(q=>!seen.has(q.id));const picked=onlyId?[byId.get(onlyId)].filter(Boolean):(unseen.length?unseen:pool).slice(0,3);if(!picked.length)return;const now=Date.now(),a={id:crypto.randomUUID(),unit,kind:onlyId?'review':'check',refs:picked.map(q=>({id:q.id,version:q.version})),cursor:0,responses:{},startedAt:now,updatedAt:now,completedAt:null};state.attempts.push(a);state.selectedUnit=unit;activeId=a.id;viewAttempt=null;pane='run';selection=null;uncertain=false;hint=false;helpUsed=false;solution=false;openedAt=now;save();repaint('[data-sl-home]');window.scrollTo(0,0);}
-  function render(){return pane==='run'?run():pane==='result'?result():pane==='learn'?learn():entry();}
+  function openingTimedTab(){
+    return !hostRenderer && location.hash==='#student' && new URLSearchParams(location.search).get('studentMode')==='timed';
+  }
+  function render(){
+    if(openingTimedTab())return window.DSStudentTimed?.render()||'<section class="work-surface" aria-busy="true"><p role="status">타임어택을 열고 있어요.</p></section>';
+    return pane==='run'?run():pane==='result'?result():pane==='learn'?learn():entry();
+  }
+  window.addEventListener('load',()=>{
+    if(openingTimedTab()&&window.DSStudentTimed){repaint();window.DSStudentTimed.mount?.();}
+  },{once:true});
   function fitFrames(){
     const generation=++frameGeneration;
     frameObservers.forEach(o=>o.disconnect());frameObservers=[];
