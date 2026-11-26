@@ -66,6 +66,34 @@ function clearTrial(){
  if(csat)return;
  setTicket(null);
  try{for(const g of [1,2])sessionStorage.removeItem(fixedKey(g));}catch{}
+ writeRunning(null);
+}
+// H28-1(지휘 106): 회원 맞춤 세트는 서버에만 있어 새로고침하면 화면이 잃었다. 이 탭에 세트 번호 · 아직 저장 안 된 답만 둔다
+// (토큰은 남기지 않고 토큰 지문으로 주인을 가림 · 로그아웃 · 회원 바뀜이면 지움). 세트 · 시간 · 답의 정본은 그대로 서버.
+const runningKey='ds-school-timed-running-v1',SET_ID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+let ownerMemo={token:null,value:''},autoResumed=false,resuming=false;
+function readRunning(){
+ if(csat)return null;
+ try{const m=JSON.parse(sessionStorage.getItem(runningKey));return m&&SET_ID.test(m.setId||'')&&typeof m.owner==='string'&&m.owner?m:null;}catch{return null;}
+}
+function writeRunning(m){
+ if(csat)return;
+ try{if(m)sessionStorage.setItem(runningKey,JSON.stringify(m));else sessionStorage.removeItem(runningKey);}catch{}
+}
+async function memberOwner(){
+ const token=window.DSAuth?.get()||'';
+ if(ownerMemo.token===token&&ownerMemo.value)return ownerMemo.value;
+ let value='';
+ if(token){
+  const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('school-timed:'+token));
+  value=Array.from(new Uint8Array(digest),n=>n.toString(16).padStart(2,'0')).join('');
+ }else if(window.DSService?.memberPreview&&signed()){value=(await service().getProgress()).ownerKey||'';}
+ if((window.DSAuth?.get()||'')!==token)return '';
+ ownerMemo={token,value};return value;
+}
+function runningForMember(){
+ const m=readRunning();
+ return m&&signed()&&ownerMemo.value&&ownerMemo.token===(window.DSAuth?.get()||'')&&m.owner===ownerMemo.value?m:null;
 }
 window.addEventListener('ds-session-change',()=>{
  if(!csat&&signed()&&submittingTicket&&loginTicket()?.id===submittingTicket){
@@ -250,7 +278,9 @@ function customSetup(){
  const extra=receivedSource?'':'<details class="dst-extra"'+(type||level?' open':'')+'><summary>유형·변형 단계 설정</summary><div class="dst-fields">'+field('type','유형',[['','전체 유형'],...types.map(t=>[t.id,t.label])],type)+field('level','변형 단계',[['','여러 단계 섞기'],...[1,2].map(n=>[n,n+'단계'])],level)+'</div></details>';
  const preset=field('preset','시험 구성',presets.map(n=>[n,n+'문항 · '+(n*2)+'분']),count);
  const start='<button class="dst-start" data-time-action="quote"'+(busy?' disabled':'')+'>시험 시작</button>';
- return '<div class="dst-fields">'+scopeFields+preset+'</div>'+extra+start;
+ const running=receivedSource?null:runningForMember();
+ const resume=running?'<button class="dst-start" data-time-action="resume-running"'+(busy?' disabled':'')+'>'+(running.status==='running'?'이어 풀기 · 진행 중인 시험':'최근 시험 결과 보기')+'</button>':'';
+ return resume+'<div class="dst-fields">'+scopeFields+preset+'</div>'+extra+start;
 }
 function startDialog(){
  if(!dialogMode)return '';
@@ -324,7 +354,7 @@ function setup(){
  <aside class="dst-panel sl54-unit-side dst-config"><h2>시험 조건</h2>${member?customSetup():fixedSetup()}
  ${receivedSource?'<button data-time-action="leave-received">전체 타임어택 보기</button>':''}</aside></div>`;
 }
-function html(){return '<section data-timed-space="'+space+'" class="ds-timed ta-work-v18 sl54-shell work-surface" data-sl-view="entry">'+(active?exam.render():setup()+startDialog())+'<p role="status">'+escape(notice)+'</p></section>';}
+function html(){return '<section data-timed-space="'+space+'" class="ds-timed ta-work-v18 sl54-shell work-surface" data-sl-view="entry">'+(active?exam.render():resuming?'<div class="ta-top-v18"><h1>타임어택</h1></div><p role="status">진행 중인 시험을 불러오고 있어요.</p>':setup()+startDialog())+'<p role="status">'+escape(notice)+'</p></section>';}
 function showExamStart(){
  requestAnimationFrame(()=>{
   const clock=document.querySelector(scope+' .dte-clock');
@@ -373,7 +403,21 @@ async function accept(result){const s=result.set||result;const ids=s.questionIds
   if(epoch!==observedEpoch)return;
   await Promise.all(ids.slice(i,i+4).map((id,j)=>loadQuestion(id,i+j)));
  }
- if(epoch!==observedEpoch)return;if(active?.setId!==s.setId)exam.reset();lastId=s.setId;const now=Date.parse(result.serverNow||s.serverNow);active={...s,offset:Number.isFinite(now)?now-receivedAt:0,kind:'custom',questionIds:ids,responses:{...(s.responses||{})}};}
+ if(epoch!==observedEpoch)return;if(active?.setId!==s.setId)exam.reset();lastId=s.setId;const now=Date.parse(result.serverNow||s.serverNow);active={...s,offset:Number.isFinite(now)?now-receivedAt:0,kind:'custom',questionIds:ids,responses:{...(s.responses||{})}};
+ if(!csat){
+  const owner=await memberOwner().catch(()=>'');if(epoch!==observedEpoch||active?.setId!==s.setId)return;
+  const prior=readRunning(),same=prior?.setId===s.setId&&prior.owner===owner;
+  if(same&&active.status==='running'&&prior.responses&&typeof prior.responses==='object'){
+   for(const [id,value] of Object.entries(prior.responses)){
+    if(!ids.includes(id)||typeof value!=='string'||String(active.responses[id]??'')===value)continue;
+    active.responses[id]=value;(active.pendingAnswers||={})[id]=value;active.dirty=true;
+   }
+   if(active.dirty){const item=active;clearTimeout(draftTimer);draftTimer=setTimeout(()=>flushDraft(item).catch(()=>{}),500);}
+  }
+  if(owner&&active.status==='running')writeRunning({setId:s.setId,owner,status:'running',responses:same?{...(prior.responses||{})}:{}});
+  else if(owner&&same)writeRunning({...prior,status:active.status,responses:{}});
+ }
+}
 let draftTimer=0,draftQueue=Promise.resolve();
 function numericAnswers(values){
  const answers={};for(const [id,value] of Object.entries(values)){const v=String(value??'').trim();if(!v){answers[id]=null;continue;}if(!/^-?\d{1,9}$/.test(v))throw Error('정수로 입력해 주세요.');answers[id]=Number(v);}return answers;
@@ -398,10 +442,11 @@ function flushDraft(item){
 }
 async function action(command){if(busy)return;const sessionEpoch=epoch;notice='';
  if(command==='dismiss'){dialogMode='';quote=null;notice='';paint();document.querySelector(scope+' [data-time-action="quote"]')?.focus();return;}
+ if(command==='resume-running'){const m=runningForMember();if(m){await openSaved(m.setId);if(!active&&readRunning()?.setId===m.setId&&sessionEpoch===epoch&&!notice)notice='최근 세트를 불러오지 못했어요. 마이페이지 내 시험 기록에서 열어 주세요.';if(!active)paint();}return;}
  if(command==='leave-received'){receivedSource=null;book='';remoteStatus='';seq++;await loadCatalog();return;}
  if(command==='back'){if(!csat&&signed()&&active?.kind==='fixed'){
   setTicket(null);try{sessionStorage.removeItem(fixedKey(active.grade));}catch{}
- }if(active?.kind==='custom'){busy=true;try{await flushDraft(active);}catch{busy=false;return;}busy=false;}active=null;exam.reset();dialogMode='';quote=null;paint();return;}
+ }if(active?.kind==='custom'){busy=true;try{await flushDraft(active);}catch{busy=false;return;}busy=false;if(active.status!=='running'&&readRunning()?.setId===active.setId)writeRunning(null);}active=null;exam.reset();dialogMode='';quote=null;paint();return;}
  if(command==='quote'&&!signed()){
   if(csat&&document.querySelector(scope+' [data-csat-mock-size]')?.value==='30'){
    dialogMode='member-mock';paint();return;
@@ -487,6 +532,7 @@ function recordAnswer(id,value){
  item.responses[id]=String(value);
  if(item.kind==='fixed'){saveFixed();return;}
  item.pendingAnswers||={};item.pendingAnswers[id]=item.responses[id];item.dirty=true;
+ const mark=readRunning();if(mark?.setId===item.setId){mark.responses={...(mark.responses||{}),[id]:item.responses[id]};writeRunning(mark);}
  clearTimeout(draftTimer);draftTimer=setTimeout(()=>flushDraft(item).catch(()=>{}),500);
 }
 document.addEventListener('input',e=>{if(active&&!busy&&e.target.closest(scope))exam.input(e.target);});
@@ -496,7 +542,19 @@ const mount=()=>{
  if(csat||!signed()||active)return;
  if(resultTicket()){void restoreSchoolResult().catch(()=>{notice='제출한 답안의 로그인 정보를 다시 확인해 주세요.';});return;}
  if(!remote&&!remoteStatus)loadCatalog();
+ if(readRunning())void resumeRunning().catch(()=>{});
 };
+async function resumeRunning(){
+ // 그림마다 hub 가 mount 를 다시 부른다 — 이미 보인 단추면 다시 그리지 않는다(되풀이 0).
+ const shown=Boolean(runningForMember()),generation=epoch,owner=await memberOwner();
+ if(generation!==epoch||!signed()||active||busy)return;
+ const m=readRunning();if(!m)return;
+ if(!owner||m.owner!==owner){writeRunning(null);if(shown)paint();return;}
+ if(autoResumed||location.hash!=='#student'||!document.querySelector(scope)){if(!shown)paint();return;}
+ autoResumed=true;resuming=true;paint();
+ try{await openSaved(m.setId);}finally{resuming=false;}
+ if(!active)paint();else showExamStart();
+}
 async function openSaved(id){
  if(!signed()||busy)return;
  if(active?.kind==='custom'&&active.dirty){try{await flushDraft(active);}catch{return;}}
