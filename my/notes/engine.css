@@ -1,0 +1,15 @@
+/* One existing recording engine, presented inside the member's paper surface. */
+:root{--bg:#fffefb;--panel:#fffefb;--panel2:#f3f1ed;--line:#dedbd6;--line2:#b2b8bf;--ink:#26242a;--mut:#433f4f;--mut2:#625b74;--brand:#514970;--brand2:#463f63;--brandInk:#433f4f;--brandSoft:#efeeeb;--brandSoft2:#e8e5df;--r:5px}
+html,body{background:#fffefb!important;color:#26242a;font-weight:500;min-width:0}
+body>.ds-head,body>.sitefoot{display:none!important}
+.app{max-width:760px;min-height:100vh;padding:0 20px 110px;background:#fffefb}
+.app:before{display:none}
+.top{background:#fffefb;border-bottom:1px solid #b2b8bf;backdrop-filter:none;margin:0 -20px;padding:14px 20px}
+.top .sub{color:#433f4f;font-size:15px;font-weight:500}
+:is(.card,.q,.pick,.kpi,.bar,.presc,.lock,.scoretop,.empty,.excard){border-radius:5px;box-shadow:none}
+.btn,.btn.pri{border-radius:5px;background:#514970;color:#fff;border-color:#312b48;box-shadow:none;font-weight:500}
+.btn.sec,.btn.ghost{background:#efeeeb;color:#433f4f;border:1px solid #b2b8bf;box-shadow:none}
+.fab{max-width:760px;background:#fffefb;border-top:1px solid #dedbd6;box-shadow:none;padding:12px 20px}
+input,select,textarea{font-weight:500;border-radius:4px}
+:is(a,button,input,select,textarea):focus-visible{outline:2px solid #6253cc;outline-offset:3px}
+@media(max-width:600px){.app{padding-left:12px;padding-right:12px}.top{margin-left:-12px;margin-right:-12px;padding:12px}.fab{padding:10px 12px}.row{flex-wrap:wrap}}

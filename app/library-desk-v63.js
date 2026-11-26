@@ -24,13 +24,13 @@
   // 수능 · 모의평가 — 사이트에 실제로 있는 쪽만 적는다(없는 회차 · 없는 꼴은 줄을 두지 않는다).
   const EXAMS = [
     { mark: '수능', year: '2027', title: '2027학년도 대학수학능력시험', when: '2026년 11월 19일 시행',
-      links: [['/exam/sn27/', '채점 · 오답 기록', true],
+      links: [['/my/notes/?exam=SN27&mode=grade', '채점 · 오답 기록', true],
               ['https://wdown.ebsi.co.kr/W61001/01exam/20261119/go3/live_main_paper_1_math_K63RYJL3.pdf', '문제지 PDF', false, 'EBSi 공개 파일']] },
     { mark: '9월', year: '2027', title: '2027학년도 9월 모의평가', when: '2026년 9월 2일 시행',
       links: [['/exam/m09/', '문제 · 해설 보기', true],
-              ['/report/2027-09/', '난이도 분석 · 총평'], ['/pilot/?exam=MP27_09&mode=grade', '채점하기']] },
+              ['/report/2027-09/', '난이도 분석 · 총평'], ['/my/notes/?exam=MP27_09&mode=grade', '채점하기']] },
     { mark: '6월', year: '2027', title: '2027학년도 6월 모의평가', when: '2026년 6월 4일 시행',
-      links: [['/report/2027-06/', '등급을 가른 문항 분석', true], ['/pilot/?exam=MP27_06&mode=grade', '채점하기']] }
+      links: [['/report/2027-06/', '등급을 가른 문항 분석', true], ['/my/notes/?exam=MP27_06&mode=grade', '채점하기']] }
   ];
 
   const entities = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };

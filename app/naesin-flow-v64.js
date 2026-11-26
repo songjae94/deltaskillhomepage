@@ -389,10 +389,11 @@
     const t = document.createElement('template'); t.innerHTML = html;
     const surface = t.content.querySelector('.tb36-surface');
     if (!surface) return html;
-    surface.classList.add('bf62-surface', 'nf64-surface');
+    surface.classList.add('bf62-surface', 'nf64-surface', 'sd-downloads');
+    surface.dataset.sdView = 'store';
     [...surface.children].forEach(el => { if (!el.matches('.tb36-modes, .tb36-compact-footer, footer, [class*="footer"]')) el.remove(); });
     const modes = surface.querySelector('.tb36-modes');
-    const wrap = document.createElement('template'); wrap.innerHTML = window.DSMaterialsShop ? window.DSMaterialsShop.render() : heading() + flowView();
+    const wrap = document.createElement('template'); wrap.innerHTML = window.DSMaterialsShop ? '<div class="sd-body">' + window.DSMaterialsShop.render({audience:'teacher'}) + '</div>' : heading() + flowView();
     if (modes) modes.after(wrap.content); else surface.prepend(wrap.content);
     if (!window.DSMaterialsShop) {
       loadSold(); readLive();

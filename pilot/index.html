@@ -1,4 +1,11 @@
 <!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<script>
+// Public and legacy entries share the member notes route; this file is the single recording engine.
+if(new URLSearchParams(location.search).get('embedded')!=='1'||window.parent===window){
+ const q=new URLSearchParams(location.search);q.delete('embedded');if(!q.size)q.set('compose','1');
+ location.replace('/my/notes/?'+q.toString()+location.hash);
+}
+</script>
 <meta name="theme-color" content="#F7F8FC">
 <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <title>델타스킬 · AI 오답노트</title>
@@ -150,7 +157,7 @@ input.txt::placeholder{color:#5B6678}
 .btn,.ndone .ib,.ndone .rm,.numgo{border-radius:10px}
 .q,.pick,.kpi,.bar,.presc,.lock,.scoretop,.empty{border-radius:16px}
 .btn:disabled{background:#E6E9F0;color:#5B6678}
-.pick .pa{color:#5B6678}</style><script defer src="/auth.js?v=h32-86"></script></head><body><header class="ds-head"><div class="ds-head-in"><a class="ds-logo" href="/" aria-label="델타스킬 메인"><span class="d">DELTA</span><span class="s">SKILL</span></a><nav class="ds-menu" aria-label="주요 메뉴"><a href="/app/#student">공부</a><a href="/app/#teacher">수업 자료</a><a href="/naesin/">내신 자료</a><a href="/pass/">이용권</a><a href="/orders/">주문 조회</a></nav><nav id="authnav" class="ds-acct" aria-label="계정"><a href="/auth/" data-account-primary>로그인</a><a href="/auth/?mode=signup" data-account-secondary>회원가입</a></nav></div></header><div class="app">
+.pick .pa{color:#5B6678}</style><script defer src="/auth.js?v=h32-86"></script><link rel="stylesheet" href="/my/notes/engine.css?v=1127-1"></head><body><header class="ds-head"><div class="ds-head-in"><a class="ds-logo" href="/" aria-label="델타스킬 메인"><span class="d">DELTA</span><span class="s">SKILL</span></a><nav class="ds-menu" aria-label="주요 메뉴"><a href="/app/#student">공부</a><a href="/app/#teacher">수업 자료</a><a href="/naesin/">내신 자료</a><a href="/pass/">이용권</a><a href="/orders/">주문 조회</a></nav><nav id="authnav" class="ds-acct" aria-label="계정"><a href="/auth/" data-account-primary>로그인</a><a href="/auth/?mode=signup" data-account-secondary>회원가입</a></nav></div></header><div class="app">
 <div class="top"><div class="sub" id="subttl">AI 오답노트</div><div class="prog"><i id="pbar"></i></div></div>
 <div id="screen"></div><div class="fab" id="fab"></div></div>
 <footer class="sitefoot" style="padding-bottom:96px">
@@ -172,9 +179,31 @@ input.txt::placeholder{color:#5B6678}
 <script>
 /* ===== 서버 연결 설정: Supabase 프로젝트 만들면 아래 두 값만 채우면 실제 서버 저장됨 (비우면 데모=브라우저 저장) ===== */
 const CONFIG={ api:"https://cvlrphtupjmaefahodgz.supabase.co/functions/v1/api" };
+let notesAuthNavigating=false, profileRecoveryFailure='';
+function memberNotesReturn(){
+ let q=new URLSearchParams(location.search),hash=location.hash;
+ try{if(parent!==window&&parent.location.origin===location.origin&&parent.location.pathname==='/my/notes/'){q=new URLSearchParams(parent.location.search);hash=parent.location.hash;}}catch(_){}
+ q.delete('embedded');if(!q.size)q.set('compose','1');
+ return '/my/notes/?'+q.toString()+hash;
+}
+function memberNotesAuth(phone=''){
+ if(notesAuthNavigating)return;notesAuthNavigating=true;
+ const next=memberNotesReturn();
+ const q=new URLSearchParams({next});if(phone)q.set('phone',phone);
+ const url='/auth/?'+q.toString();
+ try{if(parent!==window)parent.document.body.dataset.logoutNext=url;}catch(_){}
+ TK.clear();window.parent.location.replace(url);
+}
+function profileRecoveryFailed(){
+ if(profileRecoveryFailure==='unavailable'){
+  el('screen').innerHTML='<div class="pad"><p role="alert">회원 정보를 불러오지 못했습니다.</p><button class="btn ghost" id="profileRetry">다시 불러오기</button></div>';el('fab').innerHTML='';
+  el('profileRetry').onclick=()=>window.parent.location.reload();
+ }else memberNotesAuth(S.phone);
+}
+
 const DOC_VER = { privacy: "2026-11-14", terms: "2026-11-19" };   /* auth/index.html 과 같은 값 · 1107 B2: pilot 가입도 동의 기록에 방침 판을 싣는다(이 화면엔 약관 동의가 없어 terms 는 싣지 않는다) */
 const TK={get:()=>localStorage.getItem("ds_tk")||"",set:t=>localStorage.setItem("ds_tk",t),has:()=>!!localStorage.getItem("ds_tk"),clear:()=>{localStorage.removeItem("ds_tk");localStorage.removeItem("ds_tk_ph");}};
-async function api(path,opt){opt=opt||{};const method=opt.method||"GET";const auth=opt.auth!==false;const h={"Content-Type":"application/json"};if(auth){const t=TK.get();if(!t)throw new Error("no_token");h["Authorization"]="Bearer "+t;}
+async function api(path,opt){opt=opt||{};const method=opt.method||"GET";const auth=opt.auth!==false;const h={"Content-Type":"application/json"};if(auth){const t=TK.get();if(!t){memberNotesAuth();throw new Error("no_token");}h["Authorization"]="Bearer "+t;}
  /* 서버가 응답하지 않을 때 '저장 중...'에서 멈추지 않도록 타임아웃 */
  const ac=(typeof AbortController!=="undefined")?new AbortController():null;
  const tid=ac?setTimeout(()=>{try{ac.abort();}catch(_){}} ,20000):null;
@@ -182,7 +211,7 @@ async function api(path,opt){opt=opt||{};const method=opt.method||"GET";const au
  try{ r=await fetch(CONFIG.api+path,{method,headers:h,body:opt.body?JSON.stringify(opt.body):undefined,signal:ac?ac.signal:undefined}); }
  catch(e){ if(tid)clearTimeout(tid); throw new Error((e&&e.name==="AbortError")?"timeout":"network"); }
  if(tid)clearTimeout(tid);
- let j=null;try{j=await r.json();}catch(_){}if(r.status===401&&auth){/* H32(관문 86): 잃은 토큰일 때만 지움 */const t0=h["Authorization"].slice(7);const gone=window.DSAuth&&DSAuth.lost?await DSAuth.lost(t0):true;if(gone){if(TK.get()===t0)TK.clear();}else throw new Error("too_many");}if(!r.ok||!j||j.ok===false)throw new Error(((j&&j.error)||("HTTP "+r.status))+((j&&(j.detail||j.message))?" — "+(j.detail||j.message):""));return j;}
+ let j=null;try{j=await r.json();}catch(_){}if(r.status===401&&auth){/* H32(관문 86): 잃은 토큰일 때만 지움 */const t0=h["Authorization"].slice(7);const gone=window.DSAuth&&DSAuth.lost?await DSAuth.lost(t0):true;if(gone){if(TK.get()===t0){TK.clear();memberNotesAuth();}}else throw new Error("too_many");}if(!r.ok||!j||j.ok===false)throw new Error(((j&&j.error)||("HTTP "+r.status))+((j&&(j.detail||j.message))?" — "+(j.detail||j.message):""));return j;}
 /* 시험 목록은 EXAMS 배열에서 관리 — 새 시험 추가 시 객체 하나 추가 */
 const EXAMS=[{code:"EX2028_V1",title:"델타스킬 모의 1회 (2028예시 변형)",desc:"공통 22문항 + 선택 8문항 · 100점 · 구형식",data:{"gong": [{"no": 1, "jum": 2, "fmt": "c", "area": "대수", "unit": "지수함수와 로그함수", "topic": "유리지수 계산", "ans": "③", "tc": ["EXP.CAL"]}, {"no": 2, "jum": 2, "fmt": "c", "area": "미적분Ⅰ", "unit": "함수의 극한과 연속", "topic": "연속의 정의(lim=f)", "ans": "⑤", "tc": ["LIM.CON"]}, {"no": 3, "jum": 3, "fmt": "c", "area": "대수", "unit": "수열", "topic": "등비 일반항", "ans": "⑤", "tc": ["SEQ.GEO"]}, {"no": 4, "jum": 3, "fmt": "c", "area": "미적분Ⅰ", "unit": "다항함수의 미분법", "topic": "곱의 미분법", "ans": "①", "tc": ["DIF.DEF"]}, {"no": 5, "jum": 3, "fmt": "c", "area": "대수", "unit": "다항함수의 적분법", "topic": "부채꼴 넓이", "ans": "④", "tc": ["INT.AREA"]}, {"no": 6, "jum": 3, "fmt": "c", "area": "미적분Ⅰ", "unit": "다항함수의 적분법", "topic": "항등식→f 결정→적분", "ans": "②", "tc": ["INT.CAL"]}, {"no": 7, "jum": 3, "fmt": "c", "area": "대수", "unit": "다항함수의 미분법", "topic": "지수함수 최솟값", "ans": "⑤", "tc": ["DIF.MAX"]}, {"no": 8, "jum": 3, "fmt": "c", "area": "미적분Ⅰ", "unit": "다항함수의 미분법", "topic": "외부점 접선", "ans": "①", "tc": ["DIF.TAN"]}, {"no": 9, "jum": 4, "fmt": "c", "area": "대수", "unit": "수열", "topic": "귀납정의 경우분류", "ans": "③", "pat": "CASE", "tc": ["SEQ.REC"]}, {"no": 10, "jum": 4, "fmt": "c", "area": "미적분Ⅰ", "unit": "다항함수의 적분법", "topic": "속도·가속도 미분", "ans": "③", "tc": ["INT.MOVE"]}, {"no": 11, "jum": 4, "fmt": "c", "area": "대수", "unit": "삼각함수", "topic": "사인함수 그래프·교점", "ans": "④", "tc": ["TRI.GR"]}, {"no": 12, "jum": 4, "fmt": "c", "area": "미적분Ⅰ", "unit": "다항함수의 적분법", "topic": "교점→정적분 넓이", "ans": "①", "tc": ["INT.AREA"]}, {"no": 13, "jum": 4, "fmt": "c", "area": "미적분Ⅰ", "unit": "함수의 극한과 연속", "topic": "극한 존재조건 함수결정", "ans": "②", "pat": "LIMIT", "tc": ["LIM.CON", "DIF.EXT"]}, {"no": 14, "jum": 4, "fmt": "c", "area": "대수", "unit": "삼각함수", "topic": "사인·코사인법칙 결합", "ans": "⑤", "tc": ["TRI.LAW"]}, {"no": 15, "jum": 4, "fmt": "c", "area": "미적분Ⅰ", "unit": "다항함수의 적분법", "topic": "정적분 정의함수", "ans": "①", "pat": "EXTREME", "tc": ["INT.FUNC", "DIF.EXT"]}, {"no": 16, "jum": 3, "fmt": "s", "area": "대수", "unit": "지수함수와 로그함수", "topic": "로그 정의조건", "ans": 14, "tc": ["EXP.CAL"]}, {"no": 17, "jum": 3, "fmt": "s", "area": "미적분Ⅰ", "unit": "다항함수의 적분법", "topic": "부정적분+초기조건", "ans": 53, "tc": ["INT.CAL"]}, {"no": 18, "jum": 3, "fmt": "s", "area": "대수", "unit": "수열", "topic": "Σ 분리·(-1)^k", "ans": 8, "tc": ["SEQ.SUM"]}, {"no": 19, "jum": 3, "fmt": "s", "area": "미적분Ⅰ", "unit": "다항함수의 미분법", "topic": "극값 조건 계수결정", "ans": 59, "tc": ["DIF.EXT"]}, {"no": 20, "jum": 4, "fmt": "s", "area": "대수", "unit": "수열", "topic": "수열 융합(빈칸)", "ans": 7, "tc": ["SEQ.FILL"]}, {"no": 21, "jum": 4, "fmt": "s", "area": "미적분Ⅰ", "unit": "함수의 극한과 연속", "topic": "연속조건 함수결정", "ans": 9, "tc": ["LIM.CON", "DIF.EXT"]}, {"no": 22, "jum": 4, "fmt": "s", "area": "대수", "unit": "지수함수와 로그함수", "topic": "지수로그 그래프 y=x", "ans": 90, "pat": "CASE", "tc": ["EXP.GR"]}], "mi": [{"no": 23, "jum": 2, "fmt": "c", "area": "미적분(선택)", "unit": "적분법", "topic": "적분법·정적분 계산", "ans": "④", "tc": ["MINT.CAL"]}, {"no": 24, "jum": 3, "fmt": "c", "area": "미적분(선택)", "unit": "수열의 극한", "topic": "수열의 극한", "ans": "③", "tc": ["MLIM.SEQ"]}, {"no": 25, "jum": 3, "fmt": "c", "area": "미적분(선택)", "unit": "미분법", "topic": "미분법·매개변수", "ans": "②", "tc": ["MDIF.IMP"]}, {"no": 26, "jum": 3, "fmt": "c", "area": "미적분(선택)", "unit": "수열의 극한", "topic": "등비급수·도형", "ans": "⑤", "tc": ["MLIM.SER"]}, {"no": 27, "jum": 3, "fmt": "c", "area": "미적분(선택)", "unit": "적분법", "topic": "적분법·넓이", "ans": "①", "tc": ["MINT.AREA"]}, {"no": 28, "jum": 4, "fmt": "c", "area": "미적분(선택)", "unit": "미분법", "topic": "미분법·삼각함수 극한", "ans": "③", "tc": ["MDIF.CAL"]}, {"no": 29, "jum": 4, "fmt": "s", "area": "미적분(선택)", "unit": "적분법", "topic": "역함수 치환적분", "ans": 12, "tc": ["MINT.CAL"]}, {"no": 30, "jum": 4, "fmt": "s", "area": "미적분(선택)", "unit": "미분법", "topic": "미분가능성·극한", "ans": 5, "pat": "EXTREME", "tc": ["MDIF.SMOOTH"]}], "hw": [{"no": 23, "jum": 2, "fmt": "c", "area": "확률과통계", "unit": "경우의 수", "topic": "중복순열", "ans": "③", "tc": ["CNT.REP"]}, {"no": 24, "jum": 3, "fmt": "c", "area": "확률과통계", "unit": "통계", "topic": "표본비율 표준편차", "ans": "④", "tc": ["STA.SMP"]}, {"no": 25, "jum": 3, "fmt": "c", "area": "확률과통계", "unit": "확률", "topic": "확률 덧셈정리", "ans": "②", "tc": ["PRB.BAS"]}, {"no": 26, "jum": 3, "fmt": "c", "area": "확률과통계", "unit": "확률", "topic": "배반+곱셈정리", "ans": "②", "tc": ["PRB.BAS"]}, {"no": 27, "jum": 3, "fmt": "c", "area": "확률과통계", "unit": "통계", "topic": "정규분포 대칭·표준화", "ans": "②", "tc": ["STA.NRM"]}, {"no": 28, "jum": 4, "fmt": "c", "area": "확률과통계", "unit": "경우의 수", "topic": "중복조합 경우분류", "ans": "⑤", "pat": "REPEAT", "tc": ["CNT.REP"]}, {"no": 29, "jum": 4, "fmt": "s", "area": "확률과통계", "unit": "통계", "topic": "이산확률변수 분산 최대", "ans": 25, "tc": ["STA.DIS"]}, {"no": 30, "jum": 4, "fmt": "s", "area": "확률과통계", "unit": "확률", "topic": "조건부확률", "ans": 43, "tc": ["PRB.CND"]}]}},
 {code:"HP26_03",title:"3월 학력평가",desc:"2026 전국연합(고3) · 공통 22 + 선택 8",data:{"gong": [{"no": 1, "jum": 2, "fmt": "c", "area": "수학Ⅰ", "unit": "지수함수와 로그함수", "topic": "지수법칙 계산", "ans": "③", "tc": ["EXP.CAL"]}, {"no": 2, "jum": 2, "fmt": "c", "area": "수학Ⅱ", "unit": "다항함수의 미분법", "topic": "미분계수 계산", "ans": "⑤", "tc": ["DIF.DEF"]}, {"no": 3, "jum": 3, "fmt": "c", "area": "수학Ⅰ", "unit": "수열", "topic": "등차수열 항", "ans": "①", "tc": ["SEQ.AR"]}, {"no": 4, "jum": 3, "fmt": "c", "area": "수학Ⅱ", "unit": "함수의 극한과 연속", "topic": "연속조건 상수 결정", "ans": "②", "tc": ["LIM.CON"]}, {"no": 5, "jum": 3, "fmt": "c", "area": "수학Ⅱ", "unit": "다항함수의 미분법", "topic": "곱의 미분법", "ans": "⑤", "tc": ["DIF.DEF"]}, {"no": 6, "jum": 3, "fmt": "c", "area": "수학Ⅰ", "unit": "지수함수와 로그함수", "topic": "로그의 성질 계산", "ans": "④", "tc": ["EXP.CAL"]}, {"no": 7, "jum": 3, "fmt": "c", "area": "수학Ⅱ", "unit": "다항함수의 적분법", "topic": "정적분 넓이", "ans": "④", "tc": ["INT.AREA"]}, {"no": 8, "jum": 3, "fmt": "c", "area": "수학Ⅰ", "unit": "삼각함수", "topic": "삼각함수의 성질", "ans": "①", "tc": ["TRI.DEF"]}, {"no": 9, "jum": 4, "fmt": "c", "area": "수학Ⅱ", "unit": "다항함수의 미분법", "topic": "극값·최댓값", "ans": "③", "tc": ["DIF.EXT"]}, {"no": 10, "jum": 4, "fmt": "c", "area": "수학Ⅰ", "unit": "지수함수와 로그함수", "topic": "로그 그래프·도형", "ans": "②", "tc": ["EXP.GR"]}, {"no": 11, "jum": 4, "fmt": "c", "area": "수학Ⅱ", "unit": "다항함수의 적분법", "topic": "위치와 움직인 거리", "ans": "⑤", "tc": ["INT.MOVE"]}, {"no": 12, "jum": 4, "fmt": "c", "area": "수학Ⅰ", "unit": "수열", "topic": "등비수열의 합", "ans": "①", "tc": ["SEQ.GEO"]}, {"no": 13, "jum": 4, "fmt": "c", "area": "수학Ⅱ", "unit": "다항함수의 미분법", "topic": "접선·도형 넓이", "ans": "⑤", "tc": ["DIF.TAN"]}, {"no": 14, "jum": 4, "fmt": "c", "area": "수학Ⅰ", "unit": "삼각함수", "topic": "삼각 그래프 추론", "ans": "②", "tc": ["TRI.GR"]}, {"no": 15, "jum": 4, "fmt": "c", "area": "수학Ⅱ", "unit": "다항함수의 미분법", "topic": "도함수 추론", "ans": "③", "tc": ["DIF.EXT"]}, {"no": 16, "jum": 3, "fmt": "s", "area": "수학Ⅰ", "unit": "수열", "topic": "수열의 귀납적 정의 항", "ans": "30", "tc": ["SEQ.REC"]}, {"no": 17, "jum": 3, "fmt": "s", "area": "수학Ⅱ", "unit": "다항함수의 적분법", "topic": "부정적분 함숫값", "ans": "15", "tc": ["INT.CAL"]}, {"no": 18, "jum": 3, "fmt": "s", "area": "수학Ⅰ", "unit": "삼각함수", "topic": "코사인법칙", "ans": "124", "tc": ["TRI.LAW"]}, {"no": 19, "jum": 3, "fmt": "s", "area": "수학Ⅱ", "unit": "다항함수의 미분법", "topic": "극대극소 상수", "ans": "14", "tc": ["DIF.EXT"]}, {"no": 20, "jum": 4, "fmt": "s", "area": "수학Ⅰ", "unit": "수열", "topic": "수열의 합 추론", "ans": "67", "tc": ["SEQ.SUM"]}, {"no": 21, "jum": 4, "fmt": "s", "area": "수학Ⅱ", "unit": "다항함수의 적분법", "topic": "정적분 함수 추론", "ans": "48", "tc": ["INT.FUNC", "DIF.EXT"]}, {"no": 22, "jum": 4, "fmt": "s", "area": "수학Ⅰ", "unit": "지수함수와 로그함수", "topic": "지수 그래프 거리", "ans": "80", "tc": ["EXP.GR"]}], "mi": [{"no": 23, "jum": 2, "fmt": "c", "area": "미적분(선택)", "unit": "함수의 극한과 연속", "topic": "수열의 극한값 계산", "ans": "③", "tc": ["LIM.CON"]}, {"no": 24, "jum": 3, "fmt": "c", "area": "미적분(선택)", "unit": "수열의 극한", "topic": "수열의 극한 성질", "ans": "④", "tc": ["MLIM.SEQ"]}, {"no": 25, "jum": 3, "fmt": "c", "area": "미적분(선택)", "unit": "미분법", "topic": "합·일반항 관계 극한", "ans": "①", "tc": ["MDIF.CAL"]}, {"no": 26, "jum": 3, "fmt": "c", "area": "미적분(선택)", "unit": "수열의 극한", "topic": "등비 극한 조건", "ans": "②", "tc": ["MLIM.SEQ"]}, {"no": 27, "jum": 3, "fmt": "c", "area": "미적분(선택)", "unit": "수열의 극한", "topic": "수열의 극한의 대소 관계", "ans": "⑤", "tc": ["MLIM.SEQ"]}, {"no": 28, "jum": 4, "fmt": "c", "area": "미적분(선택)", "unit": "수열의 극한", "topic": "극한정의 함수 추론", "ans": "③", "tc": ["MLIM.SEQ"]}, {"no": 29, "jum": 4, "fmt": "s", "area": "미적분(선택)", "unit": "수열의 극한", "topic": "도형·수열 극한", "ans": "11", "tc": ["MLIM.GEO"]}, {"no": 30, "jum": 4, "fmt": "s", "area": "미적분(선택)", "unit": "수열", "topic": "등비 극한 활용", "ans": "57", "tc": ["SEQ.GEO"]}], "hw": [{"no": 23, "jum": 2, "fmt": "c", "area": "확률과통계", "unit": "경우의 수", "topic": "중복조합의 수 계산", "ans": "②", "tc": ["CNT.PC"]}, {"no": 24, "jum": 3, "fmt": "c", "area": "확률과통계", "unit": "경우의 수", "topic": "중복순열", "ans": "④", "tc": ["CNT.REP"]}, {"no": 25, "jum": 3, "fmt": "c", "area": "확률과통계", "unit": "경우의 수", "topic": "같은것 순열", "ans": "①", "tc": ["CNT.CIR"]}, {"no": 26, "jum": 3, "fmt": "c", "area": "확률과통계", "unit": "경우의 수", "topic": "중복조합", "ans": "③", "tc": ["CNT.REP"]}, {"no": 27, "jum": 3, "fmt": "c", "area": "확률과통계", "unit": "경우의 수", "topic": "중복순열", "ans": "⑤", "tc": ["CNT.REP"]}, {"no": 28, "jum": 4, "fmt": "c", "area": "확률과통계", "unit": "경우의 수", "topic": "같은것 순열·함수", "ans": "③", "tc": ["CNT.CIR"]}, {"no": 29, "jum": 4, "fmt": "s", "area": "확률과통계", "unit": "경우의 수", "topic": "원순열", "ans": "864", "tc": ["CNT.CIR"]}, {"no": 30, "jum": 4, "fmt": "s", "area": "확률과통계", "unit": "경우의 수", "topic": "중복조합 활용", "ans": "100", "pat": "REPEAT", "tc": ["CNT.REP"]}]}},
@@ -246,6 +275,17 @@ function setProg(){const m=S.screen==="note"?markedItems().length:0;
  el("pbar").style.width=(["login","signup","profile","exam","custom"].includes(S.screen)?0:["result","cdone"].includes(S.screen)?100:
   S.screen==="quiz"?answeredCount()/30*100:
   S.screen==="note"?(m?20+noteDone()/m*70:15):8)+"%";}
+let focusedRequestedQuestion=false;
+function focusRequestedQuestion(){
+ if(focusedRequestedQuestion||!['quiz','note'].includes(S.screen))return;
+ const p=new URLSearchParams(location.search),no=Number(p.get('question')||p.get('q')||p.get('no'));
+ if(!Number.isInteger(no)||no<1||no>30)return;
+ requestAnimationFrame(()=>{
+  const label=[...document.querySelectorAll('.qno')].find(n=>Number(n.textContent)===no);
+  const target=label?.closest('.q,.pick')||document.querySelector('[data-n="'+no+'"]');
+  if(target){target.scrollIntoView({block:'center'});focusedRequestedQuestion=true;}
+ });
+}
 function render(){setProg();const lightScr=S.screen==='quiz'||S.screen==='note';
  document.body.classList.toggle('qlight',lightScr);
  /* 루트에도 같이 알려준다 — 브라우저 다크 모드가 밝은 화면을 강제로 어둡게 칠해 색이 뭉개지는 것을 막는다 */
@@ -253,7 +293,7 @@ function render(){setProg();const lightScr=S.screen==='quiz'||S.screen==='note';
  const tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#F7F8FC');const custS=["custom","cdone"].includes(S.screen);el("subttl").textContent=(["login","signup","profile","exam"].includes(S.screen)?"AI 오답노트":custS?"모의고사 직접입력 · AI 오답노트":EXAM.title+" · AI 오답노트")+(S.profile&&curSubject()&&!["login","signup","profile","exam","custom","cdone"].includes(S.screen)?` · ${curSubject()}`:"");({login:login,signup:signup,profile:profileScreen,exam:examSelect,intro:intro,quiz:quiz,note:noteScreen,result:result,custom:customForm,cdone:customResult}[S.screen])();
  /* 하단 고정 버튼이 없는 화면은 아래 여백을 줄인다 */
  const app=document.querySelector(".app");if(app)app.classList.toggle("nofab",!el("fab").innerHTML.trim());
- syncHist();}
+ syncHist();focusRequestedQuestion();}
 
 /* ---------- 내 정보 (로컬 + 서버) ----------
    로컬 프로필(ds_students)이 없으면 가입 화면이 뜬다. 그런데 /my/ 로그인은 이걸
@@ -269,12 +309,12 @@ function saveProfile(p){
 }
 async function fetchProfile(){
  if(!CONFIG.api||!TK.has())return null;
- try{const j=await api("/profile");return (j&&hasProf(j.profile))?j.profile:null;}catch(_){return null;}
+ try{const j=await api("/profile");if(j&&hasProf(j.profile)){profileRecoveryFailure="";return j.profile;}profileRecoveryFailure="missing";return null;}catch(_){profileRecoveryFailure="unavailable";return null;}
 }
 async function recoverProfile(){
  if(hasProf(S.profile))return true;
- if(!TK.has())return false;
- const tph=localStorage.getItem("ds_tk_ph");if(tph&&tph!==S.phone)return false;
+ if(!TK.has()){profileRecoveryFailure="missing";return false;}
+ const tph=localStorage.getItem("ds_tk_ph");if(tph&&tph!==S.phone){profileRecoveryFailure="missing";return false;}
  const p=await fetchProfile();if(!p)return false;
  saveProfile({name:p.name||"",academy:p.academy||"",school:(typeof p.school==="string"?p.school:""),grade:p.grade||"",subject:p.subject||""});
  return true;
@@ -345,7 +385,7 @@ function login(){el("screen").innerHTML=`<div class="pad"><div style="margin-bot
      const okp=await recoverProfile();
      if(okp){S.catSel=null;S.screen="exam";}
      else{ /* 로그인 · 가입은 /auth/ 에서 — 로그아웃한 기존 회원도 여기로 오므로 로그인 화면을 먼저 보인다(가입 단추는 그 화면에 있다 · 1105). 돌아오면 토큰으로 프로필을 복구한다 */
-       location.href="/auth/?next="+encodeURIComponent("/pilot/")+"&phone="+S.phone; return; }
+       profileRecoveryFailed();return; }
    }
    render();window.scrollTo(0,0);};}
 
@@ -389,11 +429,11 @@ function signup(){const p=S.profile||{name:"",academy:"",school:"",grade:""};S._
 /* ---------- 시험 선택 ---------- */
 function examSelect(){
  if(S.catSel==null){
-  el("screen").innerHTML=`<div class="pad"><div style="margin-bottom:8px"><a href="/" style="color:#5B6678;font-size:13px;text-decoration:none">← 델타스킬 홈</a> · <span class="rchip" onclick="location.href='/my/'" style="cursor:pointer">내 오답노트</span> · <span class="rchip" data-prof="1" style="cursor:pointer">⚙︎ 내 정보</span> · <span class="rchip" data-relogin="1" style="cursor:pointer">다른 번호로 로그인</span></div><div class="h">어떤 시험인가요?</div>
+  el("screen").innerHTML=`<div class="pad"><div style="margin-bottom:8px"><a href="/" style="color:#5B6678;font-size:13px;text-decoration:none">← 델타스킬 홈</a> · <span class="rchip" onclick="window.parent.location.href='/my/notes/'" style="cursor:pointer">내 오답노트</span> · <span class="rchip" data-prof="1" style="cursor:pointer">⚙︎ 내 정보</span> · <span class="rchip" data-relogin="1" style="cursor:pointer">다른 번호로 로그인</span></div><div class="h">어떤 시험인가요?</div>
  <div class="desc">응시한 모의고사의 분류를 먼저 선택하세요. 이전에 본 시험도 입력할 수 있어요.</div>`+
   CATS.map((c,i)=>{const n=c.exams.filter(e=>e.ex!=null).length;const sub=c.custom?"내가 본 다른 모의고사를 직접 기록해요":`${c.desc} · 입력 가능 ${n}개${n<c.exams.length?` / 준비 중 ${c.exams.length-n}개`:''}`;return `<button class="q" style="width:100%;text-align:left;cursor:pointer" data-cat="${i}"><div class="qh" style="margin-bottom:2px"><span style="font-weight:800;font-size:15.5px">${c.name}</span><span style="margin-left:auto;color:var(--mut2)">${c.custom?'✏️':'→'}</span></div><div style="font-size:12px;color:var(--mut)">${sub}</div></button>`;}).join("")+`</div>`;
   const pf=document.querySelector("[data-prof]");if(pf)pf.onclick=()=>{S._pp=null;S.screen="profile";render();window.scrollTo(0,0);};
-  const rl=document.querySelector("[data-relogin]");if(rl)rl.onclick=()=>{["ds_phone","ds_students","ds_subs","ds_subid","ds_pw_old","ds_pin_short"].forEach(k=>localStorage.removeItem(k));TK.clear();S.phone="";S.profile=null;S._pin="";S._pin2="";S.screen="login";render();window.scrollTo(0,0);};
+  const rl=document.querySelector("[data-relogin]");if(rl)rl.onclick=()=>{localStorage.removeItem("ds_phone");localStorage.removeItem("ds_pw_old");localStorage.removeItem("ds_pin_short");memberNotesAuth();};
   document.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>{const i=+b.dataset.cat;if(CATS[i].custom){S._cName="";S._cDate=(new Date()).toISOString().slice(0,10);S._cSub=curSubject()==="미적분"?"미적분":curSubject()==="확통"?"확률과통계":curSubject()==="기하"?"기하":"";S._cScore="";S._cWrong={};S.photo={};S.savedSubId=null;S.savedExam=null;S.saveMode=null;S._forceNew=false;S._updWarn=null;S._editMode=false;S._subjOv=null;S.mode=null;S.mark={};S.open=null;S.screen="custom";render();window.scrollTo(0,0);return;}S.catSel=i;render();window.scrollTo(0,0);});
   el("fab").innerHTML="";return;
  }
@@ -669,7 +709,7 @@ function saveStatusUI(){const apiOn=!!CONFIG.api,saved=S.saveMode==="server",fai
  return{html:`<div class="saved demo">저장 완료(데모=브라우저)</div>`,saved:false};}
 function saveFab(saved,onSave,onEdit){
  if(saved&&S._editMode){/* 수정 모드 저장 완료 — 완료 버튼만. 마이페이지에서 온 경우 마이페이지로 복귀 */
-  if(S._fromMy){el("fab").innerHTML=`<button class="btn ghost" id="home">완료 · 내 오답노트로</button>`;const hbm=el("home");if(hbm)hbm.onclick=()=>{location.href="/my/";};}
+  if(S._fromMy){el("fab").innerHTML=`<button class="btn ghost" id="home">완료 · 내 오답노트로</button>`;const hbm=el("home");if(hbm)hbm.onclick=()=>{window.parent.location.href="/my/notes/";};}
   else{el("fab").innerHTML=`<button class="btn ghost" id="home">완료 · 처음으로</button>`;const hb0=el("home");if(hb0)hb0.onclick=resetApp;}
   return;}
  if(saved){el("fab").innerHTML=`<div style="display:flex;gap:8px"><button class="btn ghost" id="home" style="flex:2">완료 · 처음으로</button><button class="btn ghost" id="editBtn" style="flex:1">수정하기</button></div>`;const hb=el("home");if(hb)hb.onclick=resetApp;const eb2=el("editBtn");if(eb2)eb2.onclick=onEdit;return;}
@@ -903,8 +943,9 @@ render();
    (예전에는 여기서 전화번호 화면에 멈췄고, 사용자가 가입을 다시 해 계정이 하나 더 생겼다) */
 (async function(){try{
  if(/[?&](edit|profile|exam)=/.test(location.search))return;   /* 아래 딥링크 처리기가 맡는다 */
- if(S.screen!=="login"||!S.phone||!TK.has())return;
- if(await recoverProfile()){S.catSel=null;S.screen="exam";render();}
+ if(S.screen!=="login")return;
+ if(!S.phone||!TK.has()){memberNotesAuth();return;}
+ if(await recoverProfile()){S.catSel=null;S.screen="exam";render();}else profileRecoveryFailed();
 }catch(_){}})();
 /* 접근성 — onclick만 달린 span(rchip 등)을 키보드로도 조작 가능하게 (Tab 포커스 + Enter/Space) */
 (function(){
@@ -917,22 +958,22 @@ render();
 /* 마이페이지 '내 정보'에서 넘어온 경우: /pilot/?profile=1 */
 (async function(){try{
  if(!/[?&]profile=1/.test(location.search))return;
- try{history.replaceState({},"","/pilot/");}catch(_){}
+ try{history.replaceState(history.state,"",location.href);}catch(_){}
  S.phone=localStorage.getItem("ds_phone")||S.phone;
  if(!hasProf(S.profile))await recoverProfile();
- if(!S.phone){alert("먼저 로그인해 주세요.");render();return;}
+ if(!S.phone||!hasProf(S.profile)){profileRecoveryFailed();return;}
  S._pp=null;S.screen="profile";render();window.scrollTo(0,0);
 }catch(e){try{render();}catch(_){}}})();
 /* 마이페이지에서 '수정하기'로 넘어온 경우: /pilot/?edit=<submission_id> */
 (async function(){try{
  const m=location.search.match(/[?&]edit=([^&]+)/);if(!m)return;
  const sid=decodeURIComponent(m[1]);
- try{history.replaceState({},"","/pilot/");}catch(_){}
- if(!TK.has()){alert("수정하려면 먼저 로그인해 주세요.");return;}
+ try{history.replaceState(history.state,"",location.href);}catch(_){}
+ if(!TK.has()){memberNotesAuth();return;}
  if(!hasProf(S.profile)){
    /* /my/ 에서 넘어오면 이 기기에 프로필이 없을 수 있다. 서버에서 받아 되살린다. */
    S.phone=localStorage.getItem("ds_phone")||S.phone;
-   if(!await recoverProfile()){alert("수정하려면 먼저 로그인해 주세요.");return;}
+   if(!await recoverProfile()){profileRecoveryFailed();return;}
  }
  S._fromMy=true;   /* 마이페이지에서 넘어온 수정 — 완료 시 마이페이지로 복귀 */
  el("screen").innerHTML='<div class="center">저장된 회차를 불러오는 중…</div>';el("fab").innerHTML="";
@@ -946,7 +987,7 @@ render();
  const m=location.search.match(/[?&]exam=([^&]+)/);if(!m)return;
  const code=normExam(decodeURIComponent(m[1]));
  const mode=(location.search.match(/[?&]mode=(grade|note)/)||[])[1]||null;
- try{history.replaceState({},"","/pilot/");}catch(_){}
+ try{history.replaceState(history.state,"",location.href);}catch(_){}
  const idx=EXAMS.findIndex(e=>e.code===code);if(idx<0){render();if(code)setTimeout(()=>alert("옛 회차 코드 입력은 지원하지 않습니다. 목록에서 회차를 골라 주세요."),0);return;}
  if(!hasProf(S.profile)){
    S.phone=localStorage.getItem("ds_phone")||S.phone;
@@ -954,12 +995,21 @@ render();
    if(st&&hasProf(st.profile)){S.profile=st.profile;S.studentId=st.id;}
    else if(TK.has()){await recoverProfile();}
  }
- if(!hasProf(S.profile)){render();return;}   /* 미로그인 — 평소 부팅 흐름으로 */
+ if(!hasProf(S.profile)){profileRecoveryFailed();return;}
  EXAM=EXAMS[idx];await injectSteps();S.attempt=await calcAttempt(EXAM.code);
  S.savedSubId=null;S.savedExam=null;S.saveMode=null;S._forceNew=false;S._updWarn=null;S._editMode=false;S._subjOv=null;S.mode=null;S.mark={};S.open=null;S.ans={};S.reason={};S.conf={};S.memo={};S.step={};S.dq={};S.photo={};
  if(mode==="grade"&&curSubject()){S.mode="grade";S.screen="quiz";}
  else if(mode==="note"&&curSubject()){S.mode="note";S.screen="note";}   /* 과목을 모르면 인트로에서 고른다 */
  else{S.screen="intro";}
+ const requestedSubject=new URLSearchParams(location.search).get('subject');
+ if(['미적분','확통','기하'].includes(requestedSubject)){S._subjOv=requestedSubject;if(mode){S.mode=mode;S.screen=mode==='note'?'note':'quiz';}}
  render();window.scrollTo(0,0);
+
 }catch(e){try{render();}catch(_){}}})();
+</script><script>
+document.addEventListener('click',event=>{
+ const a=event.target.closest('a[href]'); if(!a)return;
+ const u=new URL(a.href,location.href);
+ if(u.origin===location.origin && !u.pathname.startsWith('/pilot/')) a.target='_parent';
+});
 </script></body></html>

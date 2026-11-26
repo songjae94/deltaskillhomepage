@@ -849,7 +849,7 @@ function deskShell(){
 function deskSelect(attr,label,items,value){
  return `<label>${esc(label)}<select ${attr}>${items.map(item=>`<option value="${esc(item.id)}" ${item.id===value?'selected':''} ${item.disabled?'disabled':''}>${esc(item.label)}</option>`).join('')}</select></label>`;
 }
-function workbookChoices(){
+function metadataWorkbookChoices(){
  return [...new Map([...(window.DSPrintScopeData?.books||[]).map(b=>({...b,series:'쎈'})),...(window.DSWorkbookScope?.books||[])].map(b=>[b.id,b])).values()];
 }
 // Section names follow the publisher's 2022-revision common mathematics 2 and calculus I contents.
@@ -1036,7 +1036,25 @@ function bind(container,options={}){
  let planHTML=null, quickGuest=false;
  const subjects=[...new Set(studyChapters.map(([subject])=>subject))];
  let externalRange=false,planSourceUnit=null,planSourceRows=null;
- let supplyPhase='idle',supplyByBook=new Map();
+ let supplyPhase='idle',supplyByBook=new Map(),supplyBooks=[];
+ function workbookChoices(){return [...new Map([...metadataWorkbookChoices(),...supplyBooks].map(book=>[book.id,book])).values()];}
+ function catalogBooks(result){
+  const known=new Map(metadataWorkbookChoices().map(book=>[book.id,book])),books=new Map();
+  const names=new Map((result.books||[]).map(book=>[book.bookId,book.name]));
+  for(const row of result.questions){
+   if(row.sourceKind!=='existing_print'||heldExam(row.questionId||row.id)||!row.version||!subjects.includes(row.subject)||typeof row.bookId!=='string'||!row.bookId)continue;
+   const ids=Array.isArray(row.unitIds)?row.unitIds:[row.unitId];
+   if(!ids.some(id=>typeof id==='string'&&id))continue;
+   const original=known.get(row.bookId);if(original&&original.subject!==row.subject)continue;
+   if(!books.has(row.bookId))books.set(row.bookId,original?{...original,units:[...original.units]}:{id:row.bookId,label:names.get(row.bookId)||row.bookId,subject:row.subject,series:'',catalogOnly:true,units:[]});
+   const book=books.get(row.bookId);if(book.subject!==row.subject)continue;
+   for(const id of ids){
+    if(typeof id!=='string'||!id||book.units.some(unit=>unit.id===id))continue;
+    book.units.push({id,label:typeof row.unit==='string'&&row.unit?row.unit:id,types:[]});
+   }
+  }
+  return [...books.values()];
+ }
  let guestCells=[],guestRange=null,guestQuestion='',guestBusy=false,guestError='',guestLeft=null,guestRequest=0;
  let guestPage=1,guestNext=null,guestStylePromise=null;
  function guestMathStyle(){
@@ -1121,11 +1139,12 @@ function bind(container,options={}){
  async function loadSupply(){
   const generation=epoch;
   unitMenus.clear();
-  supplyByBook=new Map();supplyPhase=signed()?'loading':'guest';
+  supplyByBook=new Map();supplyBooks=[];supplyPhase=signed()?'loading':'guest';
   if(!signed()){if(guestTrial)await loadGuestSupply(generation);return;}
   try{
    const result=await window.DSStudentServices.catalog({purpose:'study_free',sourceKind:'existing_print'});
    if(closed||generation!==epoch)return;
+   supplyBooks=catalogBooks(result);
    const books=new Map(workbookChoices().map(book=>[book.id,book]));
    for(const row of result.questions){
     const id=row.questionId||row.id;
@@ -1189,9 +1208,20 @@ function bind(container,options={}){
   const originals=BANK.filter(q=>q.subject===subject&&q.course===need&&!q.originalQuestionId&&(!guestTrial||isTrialQuestion(q)));
   const edition={concept:'OL-base-',types:'OL-type-',advanced:'OL-advanced-'}[need];
   const sources=availableBooks.filter(book=>need==='advanced'||book.id.startsWith(edition));
-  if(need==='types')sources.push(...availableBooks.filter(book=>book.id.startsWith('SSG-')));
+  if(need==='types')sources.push(...availableBooks.filter(book=>(book.id.startsWith('SSG-')||book.catalogOnly)&&!sources.includes(book)));
   const leafNames={'유리식과 유리함수':'유리함수','무리식과 무리함수':'무리함수'};
   const units=[];
+  // Elective chapter headings have no subsection mapping yet. Use the exact
+  // publisher units admitted by the study catalogue instead of dropping their
+  // available questions through an empty chapter-to-section intersection.
+  if(electiveSubject(subject)){
+   for(const book of sources)for(const unit of book.units){
+    const unitIds=[unit.id];
+    const rows=availableRows(book,unitIds).filter(row=>(need!=='types'||Boolean(row.typeId||row.typeIds?.length))&&(need!=='advanced'||book.id.startsWith('OL-advanced-')||['어려움','고난도','상','최상'].includes(row.difficulty)));
+    if(rows.length)units.push({id:book.id+'/'+unit.id,label:unit.label,group:book.label,book:book.id,bookUnit:unit.id,unitIds,rows});
+   }
+   return units;
+  }
   function add(scope,leaf=''){
    const id=leaf||scope.key+' 전체';
    const entry={id,label:id,group:scope.chapter,scope:scope.key,leaf};

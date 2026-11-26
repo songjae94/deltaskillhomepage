@@ -54,7 +54,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#F7F8FC}
 <link rel="stylesheet" href="/assets/site-unify.css?v=36"><style id="ds-light-37">.top a.home{min-height:44px;display:inline-flex;align-items:center}
 .note a{display:inline-block;padding:13px 0;margin:-13px 0}
 .head{background:#EEF3FF;border-color:#DFE3ED;border-radius:16px}</style><script defer src="/auth.js?v=h32-86"></script><link rel="icon" href="/favicon-32.png" sizes="32x32" />
-</head>
+<script>const noteRoute=new URLSearchParams(location.search);noteRoute.set("exam","SN27");if(!["note","grade"].includes(noteRoute.get("mode")))noteRoute.set("mode","grade");location.replace("/my/notes/?"+noteRoute.toString()+location.hash);</script></head>
 <body><header class="ds-head"><div class="ds-head-in"><a class="ds-logo" href="/" aria-label="델타스킬 메인"><span class="d">DELTA</span><span class="s">SKILL</span></a><nav class="ds-menu" aria-label="주요 메뉴"><a href="/app/#student">공부</a><a href="/app/#teacher">수업 자료</a><a href="/naesin/">내신 자료</a><a href="/pass/">이용권</a><a href="/orders/">주문 조회</a></nav><nav id="authnav" class="ds-acct" aria-label="계정"><a href="/auth/" data-account-primary>로그인</a><a href="/auth/?mode=signup" data-account-secondary>회원가입</a></nav></div></header>
 <div class="wrap">
   <div class="top">
@@ -69,13 +69,13 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#F7F8FC}
   </div>
 
   <div class="grid">
-    <a class="card" href="/pilot/?exam=SN27&mode=grade">
+    <a class="card" href="/my/notes/?exam=SN27&mode=grade">
       <span class="ic">🖊️</span>
       <h2>채점하기</h2>
       <p>30문항 답을 입력하면 자동 채점되고, 틀린 문항의 원인 진단까지 이어집니다. 약 5분.</p>
       <span class="go">채점 시작 →</span>
     </a>
-    <a class="card" href="/pilot/?exam=SN27&mode=note">
+    <a class="card" href="/my/notes/?exam=SN27&mode=note">
       <span class="ic">✔️</span>
       <h2>오답만 기록하기</h2>
       <p>채점은 이미 끝냈다면 — 틀린 번호만 탭하세요. 점수는 자동 계산됩니다.</p>

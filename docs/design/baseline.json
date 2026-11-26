@@ -26,7 +26,7 @@
       "file": "app/materials-shop.js",
       "start": "  function coverTile(card) {",
       "end": "  function items(",
-      "sha256": "42ca65ddf03b91d945622591f8875bbb4c4acd0e45b66bc73fd1dd1632742084"
+      "sha256": "c2916ec7aa0a2c622c2b69d31c618a3765888fff330be3e6effeb230450555e0"
     },
     {
       "file": "app/draw-teacher-v59.js",

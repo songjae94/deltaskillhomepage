@@ -1,0 +1,14 @@
+/* Member notes uses the same winter desk and quiet paper as the current library. */
+html[data-purchase="b"] body.my-notes{background:#3b302b url('/app/assets/textures/desk-smoked-oak-D-1126.png') center top/cover fixed;font-weight:500}
+html[data-purchase="b"] .my-notes :is(.wrap,.my-guest){background:#fffefb url('/app/assets/textures/dl63-paper-fiber.webp') 0 0/256px;border:1px solid #dedbd6;border-radius:5px;box-shadow:1px 2px #f9f8f1,2px 3px #ccc9be,0 8px 22px #211b2250;padding:28px;margin:28px auto;max-width:1100px;width:calc(100% - 48px)}
+html[data-purchase="b"] .my-notes [hidden]{display:none!important}
+.notes-navigation{display:flex;flex-wrap:wrap;gap:12px 24px;margin-bottom:18px}
+.notes-navigation a{display:inline-flex;align-items:center;min-height:44px;color:#433f4f;text-underline-offset:4px}
+.notes-editor>p{color:#625b74;margin:8px 0 20px;line-height:1.7}
+#note-engine{display:block;width:100%;height:78vh;min-height:560px;border:1px solid #dedbd6;background:#fffefb;border-radius:4px;color-scheme:light}
+@media(max-width:700px){html[data-purchase="b"] .my-notes :is(.wrap,.my-guest){width:calc(100% - 24px);padding:18px 12px;margin:16px auto}.notes-editor h1{font-size:26px}#note-engine{min-height:520px;height:76svh}.notes-navigation{gap:8px 20px}}
+@media print{html[data-purchase="b"] body.my-notes{background:white}.notes-navigation{display:none}#note-engine{height:auto}}
+html[data-purchase="b"] body.my-notes #app.wrap{max-width:1100px;width:calc(100% - 48px);padding:28px}
+@media(max-width:700px){html[data-purchase="b"] body.my-notes #app.wrap{width:calc(100% - 24px);padding:18px 12px}}
+.note-detail{padding:12px 0;border-top:1px solid #dedbd6;overflow-wrap:anywhere}.note-detail p{margin:4px 0;white-space:pre-wrap}
+.my-notes .det{overflow-x:auto}.my-notes .det table{min-width:500px}
