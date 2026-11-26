@@ -1133,7 +1133,12 @@ document.addEventListener('click',async e=>{
  if(b.dataset.subject){library.subject=b.dataset.subject;document.querySelectorAll('[data-subject]').forEach(el=>el.setAttribute('aria-pressed',el===b));$('#library-results').innerHTML=libraryResults();return}
  if(b.hasAttribute('data-reset-library')){library={subject:'전체',term:''};$('#content').innerHTML=libraryPage();return}
  if(b.hasAttribute('data-pdf-next')||b.hasAttribute('data-pdf-prev')){const d=catalog.find(v=>v.sku===detailSku);detailPage=Math.max(0,Math.min(d.previewPages.length-1,detailPage+(b.hasAttribute('data-pdf-next')?1:-1)));$('#content').innerHTML=materialPage();return}
- if(b.dataset.useMaterial){studio.sku=b.dataset.useMaterial;studio.source='materials';put('studio-v2',studio);location.hash='#teacher';return}
+ if(b.dataset.useMaterial){
+  const material=catalog.find(row=>row.sku===b.dataset.useMaterial);if(!material)return;
+  studio.sku=material.sku;studio.source='materials';put('studio-v2',studio);
+  const url=new URL(location.href);url.searchParams.set('teacherMode','materials');url.searchParams.set('materialSku',material.sku);url.hash='teacher';
+  location.assign(url.href);return;
+ }
  if(b.dataset.accountSection){const section=document.getElementById(b.getAttribute('aria-controls'));section?.focus({preventScroll:true});section?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});return}
  if(b.dataset.accountAction==='logout'){
   if(logoutPending)return;

@@ -18,7 +18,7 @@ const space=csat?'csat':'school';
 const guestLoginUrl=csat?'/auth/?next='+encodeURIComponent('/app/?csatMode=mock#csat'):'#login';
 const scope='.ds-timed[data-timed-space="'+space+'"]';
 const label=q=>gradeNames[q.grade]+' · '+q.unit;
-function accountChanged(){currentSubject=subjects[0];grade=1;book='';unit='';type='';level='';count=10;minutes=20;exam.reset();dialogMode='';receivedSource=null;epoch++;seq++;remote=null;remoteStatus='';resources.clear();catalogById.clear();active=null;quote=null;notice='';busy=false;selection=[];}
+function accountChanged(){currentSubject=subjects[0];grade=1;book='';unit='';type='';level='';count=10;minutes=20;exam.reset();dialogMode='';receivedSource=null;epoch++;seq++;remote=null;remoteStatus='';resources.clear();catalogById.clear();subjectInventory.clear();active=null;quote=null;notice='';busy=false;selection=[];}
 let previousMember=signed(),claiming=false;
 const resultKey='ds-school-timed-submit-v1';
 let resultCache;
@@ -80,7 +80,7 @@ window.addEventListener('storage',event=>{
   if(active?.kind==='fixed'){accountChanged();paint();}
  }
 });
-function options(values,chosen){return values.map(([value,title])=>'<option value="'+escape(value)+'"'+(String(chosen)===String(value)?' selected':'')+'>'+escape(title)+'</option>').join('');}
+function options(values,chosen){return values.map(([value,title,disabled])=>'<option value="'+escape(value)+'"'+(disabled?' disabled':'')+(String(chosen)===String(value)?' selected':'')+'>'+escape(title)+'</option>').join('');}
 const fixedKey=g=>csat?'ds-fixed-csat-mini-v1':'ds-fixed-final-v1-'+g;
 function fixedQuestions(g){
  if(!csat)return bank.filter(q=>q.grade===g);
@@ -160,7 +160,28 @@ const exam=window.DSTimedExam.create({
  scope,getActive:()=>active,known,clock,remaining,title,paperQuestion,questionContent,displayedAnswer,
  recordAnswer,finish:()=>action('finish'),paint,escape,math,guestLoginUrl,signed
 });
-const catalogById=new Map(), resources=new Map();
+const catalogById=new Map(), resources=new Map(), subjectInventory=new Map();
+function inventoryOption(id,label,available){
+ if(!Number.isInteger(available))return [id,label];
+ return [id,label+' · '+available+'문항',available<presets[0]];
+}
+function rememberInventory(subject,rows){
+ const counts=new Map();
+ for(const q of rows){
+  const books=new Set(['',q.bookId,...(q.bookIds||[])]);
+  const units=new Set(['',q.unitId,q.subunitId,...(q.unitIds||[])]);
+  for(const b of books)for(const u of units){
+   if(b==null||u==null)continue;
+   const key=JSON.stringify([b,u]);
+   counts.set(key,(counts.get(key)||0)+1);
+  }
+ }
+ subjectInventory.set(subject,{counts,at:Date.now()});
+}
+function inInventory(bookId,unitId,subject=currentSubject){
+ const entry=subjectInventory.get(subject);
+ if(entry&&Date.now()-entry.at<300000)return entry.counts.get(JSON.stringify([bookId,unitId]))||0;
+}
 let receivedSource=null;
 let remote=null,remoteStatus='',seq=0,type='',scopeMode='specific';
 function subjectBooks(){return (window.DSWorkbookScope?.books||[]).filter(b=>b.subject===currentSubject);}
@@ -212,6 +233,7 @@ async function loadCatalog(){
  try{if(!signed()||!service()?.catalog)throw Error();const requested=criteria();const r=await service().catalog(requested);if(own!==seq||!signed())return;
  let rows=cleanRemote(r).filter(q=>q.sourceKind===requested.sourceKind&&q.subject===requested.subject&&(!requested.bookId||(q.bookId===requested.bookId||q.bookIds?.includes(requested.bookId)))&&(!requested.unitIds.length||requested.unitIds.includes(q.unitId)||requested.unitIds.includes(q.subunitId)||q.unitIds?.some(v=>requested.unitIds.includes(v)))&&(!requested.typeIds.length||requested.typeIds.includes(q.typeId)||q.typeIds?.some(v=>requested.typeIds.includes(v))));
  const source=receivedSource;
+ if(!source&&!requested.bookId&&!requested.unitIds.length&&!requested.typeIds.length)rememberInventory(requested.subject,rows);
  if(source){
   const pins=await Promise.all(rows.map(q=>questionPin(q.id,q.version)));
   if(own!==seq||!signed()||source!==receivedSource)return;
@@ -243,13 +265,18 @@ function fixedSetup(){
 function customSetup(){
  const books=subjectBooks(),types=typeOptions();
  const scopeFields=receivedSource?'':[
-  field('subject','과목',subjects.map(x=>[x,x]),currentSubject),
-  field('book','연계 교재',[['','교재 없이 구성'],...books.map(b=>[b.id,b.label])],book),
-  field('unit','단원',[['','전체 단원'],...unitOptions().map(u=>[u.id,u.label])],unit)
+  field('subject','과목',subjects.map(x=>inventoryOption(x,x,inInventory('','',x))),currentSubject),
+  field('book','연계 교재',[['','교재 없이 구성'],...books.map(b=>inventoryOption(b.id,b.label,inInventory(b.id,'')))],book),
+  field('unit','단원',[['','전체 단원'],...unitOptions().map(u=>inventoryOption(u.id,u.label,inInventory(book,u.id)))],unit)
  ].join('');
  const extra=receivedSource?'':'<details class="dst-extra"'+(type||level?' open':'')+'><summary>유형·변형 단계 설정</summary><div class="dst-fields">'+field('type','유형',[['','전체 유형'],...types.map(t=>[t.id,t.label])],type)+field('level','변형 단계',[['','여러 단계 섞기'],...[1,2].map(n=>[n,n+'단계'])],level)+'</div></details>';
  const preset=field('preset','시험 구성',presets.map(n=>[n,n+'문항 · '+(n*2)+'분']),count);
- const start='<button class="dst-start" data-time-action="quote"'+(busy?' disabled':'')+'>시험 시작</button>';
+ const available=remote?candidates().length:null;
+ const enough=available!==null && available>=count;
+ const message=available===null?(remoteStatus||'문항 수를 확인하고 있어요.'):
+  '선택 범위 '+available+'문항'+(enough?'':available<presets[0]?' · 시험에 '+presets[0]+'문항 이상 필요해요. 다른 과목이나 범위를 골라 주세요.':' · 문항 수를 줄이거나 범위를 넓혀 주세요.');
+ const retry=!remote&&remoteStatus&&remoteStatus!=='확인 중'?'<button type="button" data-time-action="catalog">문항 수 다시 확인</button>':'';
+ const start='<p role="status" data-time-availability>'+escape(message)+'</p>'+retry+'<button class="dst-start" data-time-action="quote"'+(busy||!enough?' disabled':'')+'>시험 시작</button>';
  return '<div class="dst-fields">'+scopeFields+preset+'</div>'+extra+start;
 }
 function startDialog(){
@@ -317,10 +344,13 @@ async function restoreSchoolResult(){
 function setup(){
  if(csat)return window.DSCSATStudent?.mockSetup()||'';
  if(signed()&&resultTicket())return '<p role="status">제출한 답안을 채점하고 있어요.</p>';
- const member=signed(),preview=gradeBank()[0],total=gradeBank().length;
- const sample=paperQuestion(preview,0,total);
+ const member=signed(),total=gradeBank().length;
+ const scopeName=[currentSubject,selectedBook()?.label,unitOptions().find(u=>u.id===unit)?.label].filter(Boolean).join(' · ');
+ const sample=member
+  ? '<article class="quick-paper ta-question-v18 dst-sheet"><h2>'+escape(scopeName)+'</h2><p>시험을 시작하면 선택한 범위의 첫 문항이 열립니다.</p></article>'
+  : paperQuestion(gradeBank()[0],0,total);
  return `<div class="ta-top-v18"><h1>타임어택</h1><span>${receivedSource?escape(receivedSource.title):'기말고사 연습'}</span></div>
- <div class="ta-layout-v18 dst-layout"><div class="ta-main-v18"><div class="dst-sample-label">${gradeNames[grade]} · 첫 문항</div>${sample}</div>
+ <div class="ta-layout-v18 dst-layout"><div class="ta-main-v18"><div class="dst-sample-label">${member?'선택한 시험 범위':gradeNames[grade]+' · 첫 문항'}</div>${sample}</div>
  <aside class="dst-panel sl54-unit-side dst-config"><h2>시험 조건</h2>${member?customSetup():fixedSetup()}
  ${receivedSource?'<button data-time-action="leave-received">전체 타임어택 보기</button>':''}</aside></div>`;
 }
@@ -470,7 +500,7 @@ async function action(command){if(busy)return;const sessionEpoch=epoch;notice=''
      else throw error;
    }
  }
- }catch(e){if(sessionEpoch===epoch&&command==='start')dialogMode='error';if(sessionEpoch===epoch&&command==='start'&&['quote_changed','price_changed'].includes(e.code||e.message)){quote=null;notice='조건이 달라졌어요. 시작 전에 포인트를 다시 확인해 주세요.';}else if(sessionEpoch===epoch)notice=command==='resume'?'최근 세트를 불러오지 못했어요. 계정의 시작 기록을 확인해 주세요.':e.code==='no_points'||e.code==='insufficient_points'?'포인트가 부족해요. 문항 수를 줄인 뒤 다시 확인해 주세요.':e.code==='bad_answer'||e.message==='정수로 입력해 주세요.'?'답은 정수로 입력해 주세요.':'계정에서 요청을 확인하지 못했어요. 같은 조건으로 다시 확인해 주세요.';}finally{if(sessionEpoch===epoch){busy=false;paint();if(active&&['start','resume'].includes(command))showExamStart();}}}
+ }catch(e){if(sessionEpoch===epoch&&command==='start')dialogMode='error';if(sessionEpoch===epoch&&command==='start'&&['quote_changed','price_changed'].includes(e.code||e.message)){quote=null;notice='조건이 달라졌어요. 시작 전에 포인트를 다시 확인해 주세요.';}else if(sessionEpoch===epoch)notice=command==='resume'?'최근 세트를 불러오지 못했어요. 계정의 시작 기록을 확인해 주세요.':e.code==='no_points'||e.code==='insufficient_points'?'포인트가 부족해요. 문항 수를 줄인 뒤 다시 확인해 주세요.':e.code==='bad_answer'||e.message==='정수로 입력해 주세요.'?'답은 정수로 입력해 주세요.':['source_unavailable','source_changed','not_ready','not_permitted'].includes(e.code||e.message)?'선택한 시험 문항의 원본을 확인하지 못했어요. 같은 범위에서 문항을 다시 골라 주세요.':(e.code||e.message)==='timeout'?'시험 문항 확인이 지연되고 있어요. 같은 조건으로 다시 시도해 주세요.':'계정에서 요청을 확인하지 못했어요. 같은 조건으로 다시 확인해 주세요.';}finally{if(sessionEpoch===epoch){busy=false;paint();if(active&&['start','resume'].includes(command))showExamStart();}}}
 document.addEventListener('click',e=>{if(!csat&&e.target.closest(scope+' [data-time-login]'))window.DSLoginReturn='#student';const b=e.target.closest(scope+' button');if(!b||busy)return;if(active&&exam.click(b))return;if(b.dataset.timeAction)action(b.dataset.timeAction);});
 document.addEventListener('change',e=>{const key=e.target.dataset.timeField;if(!key||busy||!e.target.closest(scope))return;const v=e.target.value;
  if(!signed()){

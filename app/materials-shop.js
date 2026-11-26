@@ -133,7 +133,7 @@
     return `<article class="ms-volume" data-ms-card="${escape(card.id)}" data-sku="${escape(p.sku)}" aria-label="${label}"><div class="ms-stage">${cover}</div><div class="ms-book-info"><small>${meta}</small><h3>${escape(p.unit||title(p))}</h3>${audience==='student'?'':`<span>${escape(displayBook(p.source))}</span>`}</div><div class="ms-formats">${formats(card)}</div></article>`;
   }
   function items() {
-    const list = scope ? products.filter(p => scope.bookId
+    const list = scope ? products.filter(p => scope.sku ? p.sku===scope.sku : scope.bookId
       ? p.sourceId===scope.bookId && (!scope.unitId || p.no===scope.unitId)
       : p.subject===scope.subject && p.unit===scope.unit)
       : selected ? products.filter(p => p.source === selected) : products;
@@ -279,7 +279,8 @@
   window.DSMaterialsShop = {
     render(options={}) {
       audience=options.audience==='student'?'student':'teacher';
-      scope=audience==='student'?options.scope||null:null;
+      const sku=new URLSearchParams(location.search).get('materialSku');
+      scope=audience==='student'?options.scope||null:sku?{sku,label:'선택한 수업 자료'}:null;
       load();
       return '<section class="ms-shop dl63-page dl63" data-ms-audience="'+audience+'">' + body() + '</section>';
     }
@@ -287,8 +288,8 @@
   function clearScope(){
     scope=null;
     const url=new URL(location.href);
-    if(!['studyBook','studyUnit','studyLocal'].some(k=>url.searchParams.has(k)))return;
-    for(const k of ['studyBook','studyUnit','studyLocal'])url.searchParams.delete(k);
+    if(!['studyBook','studyUnit','studyLocal','materialSku'].some(k=>url.searchParams.has(k)))return;
+    for(const k of ['studyBook','studyUnit','studyLocal','materialSku'])url.searchParams.delete(k);
     history.replaceState(history.state,'',url);
   }
   document.addEventListener('input',e=>{if(e.target.matches('[data-ms-search]')) root().querySelector('[data-ms-options]').innerHTML=options(e.target.value);});

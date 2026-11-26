@@ -217,6 +217,12 @@
         const scope = { subject: criteria.subject, stage: criteria.stage, difficulty: criteria.difficulty, textbook: criteria.book_id || undefined, subunits: criteria.subunit_ids || [], types: criteria.type_ids || [], typeMode: criteria.type_mode, sourceMode: criteria.mode === 'book' ? 'textbook' : 'random' };
         const d = await call({ action:criteria.access_mode==='received'?'received_scope_menu':'scope_menu',scope,count:criteria.count },signal);
         if (!d || d.version !== 1 || d.count_basis !== 'catalog' || typeof d.extraction_ready !== 'boolean' || !count(d.available_count,0,100000) || d.requested !== criteria.count || !count(d.shortage,0,20) || d.shortage !== Math.max(0,criteria.count-d.available_count)) throw fail(502,'unavailable');
+        if (d.reprint !== undefined) {
+          const r=d.reprint;
+          if (!r||!Array.isArray(r.items)||r.items.length>criteria.count||new Set(r.items.map(x=>x?.item_id)).size!==r.items.length||
+              !r.items.every(x=>x&&UUID.test(x.item_id)&&UUID.test(x.set_key))||!Array.isArray(r.unrepresented_subunits)||
+              !r.unrepresented_subunits.every(u=>criteria.subunit_ids?.includes(u))) throw fail(502,'unavailable');
+        }
         return d;
       },
       draw: async (criteria, signal) => {

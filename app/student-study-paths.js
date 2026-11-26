@@ -945,7 +945,7 @@ function bind(container,options={}){
   return true;
  }
  const trialBooks=BOOKS.map(book=>({id:'original:'+book.id,label:'델타스킬 · '+book.title,subject:'공통수학2',original:book.id}));
- const bookMenu=()=>guestTrial?[...trialBooks,...workbookChoices()]:offeredBooks();
+ const bookMenu=()=>guestTrial?trialBooks:offeredBooks();
  function trialNotice(){
   const wrong=[...latest(state).values()].reverse().find(weak);
   return '<div class="ssp-actions"><a class="ssp-primary" href="#login">로그인하고 계속 공부하기</a>'
@@ -1110,6 +1110,15 @@ function bind(container,options={}){
    if(scope.key!==scope.chapter)for(const leaf of scope.sections[0][1])add(scope,leaf);
   }
   return units.filter(unit=>!unit.disabled);
+ }
+ const subjectMenuCache=new Map();
+ function planSubjects(need){
+  if(!['ready','guest'].includes(supplyPhase))return [];
+  const cached=subjectMenuCache.get(need);
+  if(cached?.supply===supplyByBook&&cached.cells===guestCells)return cached.subjects;
+  const available=subjects.filter(subject=>planUnits(subject,need).length>0);
+  subjectMenuCache.set(need,{supply:supplyByBook,cells:guestCells,subjects:available});
+  return available;
  }
  function openFirstQuestion(){
   const first=openingQuestion();
@@ -1655,7 +1664,7 @@ function bind(container,options={}){
   const previousPlanPhase=root.dataset.planPhase;
   const planPane=root.querySelector('[data-study-plan]');
   const units=planPhase==='survey'?planUnits(planDraft.subject,planDraft.need).filter(row=>planDraft.need!=='supplement'||row.book===planDraft.book):planUnits(planProfile?.subject,planProfile?.need);
-  const markup=planPhase==='loading'?'<p role="status">학습 계획을 불러오고 있어요.</p>':planPhase==='load-error'?'<button type="button" data-plan-reload>다시 불러오기</button>':studyPlan.render({profile:planProfile,draft:planDraft,step:planStep,phase:planPhase,course:planCourse,subjects,books:planDraft.need==='supplement'?bookMenu():[],supplyPhase,units});
+  const markup=planPhase==='loading'?'<p role="status">학습 계획을 불러오고 있어요.</p>':planPhase==='load-error'?'<button type="button" data-plan-reload>다시 불러오기</button>':studyPlan.render({profile:planProfile,draft:planDraft,step:planStep,phase:planPhase,course:planCourse,subjects:planPhase==='survey'&&planStep===2&&planDraft.need!=='supplement'?planSubjects(planDraft.need):subjects,books:planDraft.need==='supplement'?bookMenu():[],supplyPhase,units});
   if(markup!==planHTML){planPane.innerHTML=markup;planHTML=markup;}
   planPane.querySelectorAll('button').forEach(el=>{if(planBusy&&!el.disabled){el.disabled=true;el.dataset.planBusy='';}else if(!planBusy&&el.hasAttribute('data-plan-busy')){el.disabled=false;delete el.dataset.planBusy;}});
   root.dataset.planPhase=planPhase;root.dataset.sspView=view; /* H29-11(관문 91): 기록 보기는 계획 단계와 상관없이 보임(세로 화면 CSS) */

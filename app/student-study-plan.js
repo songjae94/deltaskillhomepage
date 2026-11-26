@@ -89,8 +89,9 @@
       choices = draft.need==='supplement' && !books.length ? '' : draft.need==='supplement' ? chooseBook(draft, books, units) : chooseRange(draft, subjects, units);
       if(supplyPhase==='error')choices+='<p role="status">무료 문항 목록을 확인하지 못했어요.</p><button type="button" data-plan-supply-retry>다시 확인</button>';
       else if(supplyPhase==='loading')choices+='<p role="status">무료로 풀 수 있는 교재와 단원을 확인하고 있어요.</p>';
-      else if(supplyPhase==='guest'&&draft.need==='supplement'&&draft.book&&!units.length)choices+='<p>이 교재에는 공개 체험 문항이 없어요. <a href="#login">로그인하고 학습 범위 확인</a></p>';
+      else if(supplyPhase==='guest'&&draft.need==='supplement')choices+='<p>공개 연습 교재를 골라 주세요. <a href="#login">로그인하고 다른 교재 확인</a></p>';
       else if(draft.need==='supplement'&&!books.length)choices+='<p>지금 선택할 수 있는 교재가 없어요.</p>';
+      else if(draft.need!=='supplement'&&!subjects.length)choices+='<p>이 학습에서 선택할 수 있는 과목이 아직 없어요. 이전 질문에서 다른 공부를 골라 주세요.</p>';
       else if(draft.subject&&(!units.length||units.every(u=>u.disabled)))choices+='<p>이 과목의 선택한 학습 문항을 준비하고 있어요. 다른 과목을 골라 주세요.</p>';
     }
     return `<section class="ssp-plan" aria-label="내 공부 선택">
