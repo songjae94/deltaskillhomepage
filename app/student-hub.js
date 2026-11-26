@@ -14,6 +14,7 @@ function currentMode(){
  return tabs.some(([key])=>key===mode)?mode:'study';
 }
 let tab=currentMode(),initialSessionReady=false;
+if(location.hash==='#student'&&tab==='study'&&(!window.DSStudentStudyPaths||!window.DSStudentStudyPlan))return;
 let csatPractice=null,csatArrived=false;
 let sessionEpoch=0,controller=null,bound=null,accountData=null,loading=null;
 const signed=()=>Boolean(window.DSService?.session());
@@ -31,7 +32,7 @@ function wrapper(legacy){
  body=legacy;
  }return '<div class="dsh">'+nav+body+'</div>';
 }
-const render=()=>wrapper(entry.render());
+const render=()=>wrapper(tab==='study'&&signed()?entry.render():'');
 student=render;
 entry.setHostRenderer(legacy=>{
  if(tab!=='study'&&area.querySelector('.dsh-tabs'))return null;
@@ -81,6 +82,13 @@ function mount(){
      section.innerHTML='<h2>내 타임어택</h2><button data-time-history-load>이전 세트와 포인트 내역 보기</button><div aria-live="polite"></div>';root.append(section);
    }
  }
+ // Restore the guest desk if an older route renderer finished after the hub.
+ // The data-hub-paths container is also the binding guard for repeated renders.
+ if(!el&&location.hash==='#student'&&tab==='study'&&!signed()&&
+    area.querySelector('[data-hub-study-pending],.fv57-shell')){
+  area.innerHTML=render();
+  el=area.querySelector('[data-hub-paths]');
+ }
  if(!el||bound===el)return;
  if(!signed()){
   if(!initialSessionReady)return;
@@ -94,6 +102,7 @@ function mount(){
 document.addEventListener('click',e=>{
  if(e.target.closest('[data-hub-study-link]')){
   tab='study';const url=new URL(location.href);url.searchParams.set('studentMode',tab);history.replaceState(history.state,'',url);
+  if(location.hash==='#student'&&!area.querySelector('[data-hub-paths]'))update();
  }
  if(e.target.closest('[data-csat-first-question]')){
   if(!signed()){location.hash='#login';return;}

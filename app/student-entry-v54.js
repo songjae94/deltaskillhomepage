@@ -109,15 +109,45 @@
   function resumeCourse(){const parent=courseParent();if(!parent)return;activeId=parent.id;viewAttempt=null;D.next(parent);pane=parent.completedAt?'result':'run';selection=null;uncertain=false;hint=false;helpUsed=false;solution=false;openedAt=Date.now();save();repaint();window.scrollTo(0,0);}
 
   function enterPractice(onlyId){if(!canStudy())return;if(member()&&cloud.snapshot().dirty&&state.attempts.length>=60){toast('기록 저장을 마친 뒤 새 공부를 시작할 수 있어요.');return;}if(state.attempts.filter(a=>!a.completedAt).length>=60){toast('진행 중인 공부를 먼저 마쳐주세요.');return;}const unit=active()?.unit||selectedUnit(),pool=bank.filter(q=>q.unit===unit),seen=D.outcomes(state,unit),unseen=pool.filter(q=>!seen.has(q.id));const picked=onlyId?[byId.get(onlyId)].filter(Boolean):(unseen.length?unseen:pool).slice(0,3);if(!picked.length)return;const now=Date.now(),a={id:crypto.randomUUID(),unit,kind:onlyId?'review':'check',refs:picked.map(q=>({id:q.id,version:q.version})),cursor:0,responses:{},startedAt:now,updatedAt:now,completedAt:null};state.attempts.push(a);state.selectedUnit=unit;activeId=a.id;viewAttempt=null;pane='run';selection=null;uncertain=false;hint=false;helpUsed=false;solution=false;openedAt=now;save();repaint('[data-sl-home]');window.scrollTo(0,0);}
-  function openingTimedTab(){
-    return !hostRenderer && location.hash==='#student' && new URLSearchParams(location.search).get('studentMode')==='timed';
+  // The hub owns the guest study desk. Its dependencies can arrive after this
+  // legacy module; do not mount the old first-challenge UI in the meantime.
+  function pendingHubMode(){
+    if(hostRenderer||location.hash!=='#student')return null;
+    return new URLSearchParams(location.search).get('studentMode')||'study';
   }
   function render(){
-    if(openingTimedTab())return window.DSStudentTimed?.render()||'<section class="work-surface" aria-busy="true"><p role="status">타임어택을 열고 있어요.</p></section>';
+    const pending=pendingHubMode();
+    if(pending==='study'&&!member())return '<section class="work-surface" data-hub-study-pending aria-busy="true"><p role="status">공부 문항을 열고 있어요.</p></section>';
+    if(pending==='downloads'||pending==='create')return '<section class="work-surface" aria-busy="true"><p role="status">자료 화면을 열고 있어요.</p></section>';
+    if(pending==='timed')return window.DSStudentTimed?.render()||'<section class="work-surface" aria-busy="true"><p role="status">타임어택을 열고 있어요.</p></section>';
     return pane==='run'?run():pane==='result'?result():pane==='learn'?learn():entry();
   }
+  let hubRetryStarted=false,hubRetryFailed=false;
+  function showStudyReload(){
+    const pending=document.querySelector('[data-hub-study-pending]');
+    if(!pending||pending.querySelector('button'))return;
+    pending.removeAttribute('aria-busy');
+    pending.querySelector('[role="status"]').textContent='공부 화면을 불러오지 못했어요.';
+    const reload=document.createElement('button');
+    reload.type='button';reload.textContent='다시 불러오기';
+    reload.addEventListener('click',()=>location.reload());
+    pending.append(reload);
+  }
+  function recoverStudyHub(){
+    if(document.readyState!=='complete'||pendingHubMode()!=='study'||member())return;
+    if(hubRetryFailed||!window.DSStudentStudyPaths||!window.DSStudentStudyPlan){showStudyReload();return;}
+    if(hubRetryStarted)return;
+    const original=[...document.scripts].find(script=>script.src&&new URL(script.src).pathname==='/app/student-hub.js');
+    if(!original){showStudyReload();return;}
+    hubRetryStarted=true;
+    const retry=document.createElement('script');
+    retry.src=original.src;
+    retry.addEventListener('error',()=>{hubRetryFailed=true;showStudyReload();},{once:true});
+    document.head.append(retry);
+  }
   window.addEventListener('load',()=>{
-    if(openingTimedTab()&&window.DSStudentTimed){repaint();window.DSStudentTimed.mount?.();}
+    if(pendingHubMode()==='timed'&&window.DSStudentTimed){repaint();window.DSStudentTimed.mount?.();}
+    recoverStudyHub();
   },{once:true});
   function fitFrames(){
     const generation=++frameGeneration;
@@ -167,6 +197,7 @@
   window.addEventListener('beforeunload',e=>{if(member()&&cloud.snapshot().dirty){e.preventDefault();e.returnValue='';}});
   document.addEventListener('visibilitychange',()=>{if(!document.hidden&&member())cloud.load(true);});
   window.addEventListener('hashchange',()=>{if(location.hash==='#student')loginIntent='student';else if(['#teacher','#studio','#classroom','#print-design'].includes(location.hash))loginIntent='teacher';else if(['','#home'].includes(location.hash))loginIntent='';if(location.hash==='#student'){if(!pendingOpen){pane='entry';memberBrowse=false;}pendingOpen=false;state=read();repaint();if(member())cloud.load(true);}});
+  window.addEventListener('hashchange',recoverStudyHub);
   const outlet=document.getElementById('content');if(outlet)new MutationObserver(()=>{if(outlet.querySelector('.sl54-shell'))fitFrames();scopeStudentAccount();}).observe(outlet,{childList:true});
   let pendingOpen=false;
   function openAttempt(id,learning=false){const a=state.attempts.find(a=>a.id===id)||archive.get(id);if(!a)return;activeId=a.id;viewAttempt=a;pane=learning?'learn':a.completedAt?'result':'run';learnId=a.refs.find(r=>{const x=a.responses[r.id];return x&&(!x.correct||x.confidence!=='sure'||x.help)})?.id||a.refs[0]?.id;state.selectedUnit=a.unit;selection=null;uncertain=false;hint=false;helpUsed=false;solution=false;openedAt=Date.now();pendingOpen=true;if(location.hash==='#student'){pendingOpen=false;repaint();}else location.hash='#student';window.scrollTo(0,0);}
