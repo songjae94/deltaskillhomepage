@@ -1,109 +1,675 @@
-/* November 26 surface refinement. Screen only: document geometry and math stay intact. */
+/* D study materials, 1126. One neutral material system, screen only.
+   Realistic smoked-oak photograph-like texture; clean paper reading faces.
+   Original entrance photography, teacher flatlay and canonical print remain owned by their source styles. */
 @media screen {
-  :root { --ds-ui-ink:#20283b; --ds-ui-muted:#5b6478; --ds-ui-rule:#dfe3ec; --ds-ui-accent:#5547cf; }
-  html[data-design] body.working-body {background:#f7f8fb!important;color:var(--ds-ui-ink);}
-  html[data-design] body #header {border-bottom-color:var(--ds-ui-rule);box-shadow:none;}
-  html[data-design] body.working-body[data-page] #content :is(.tb36-modes,.dsh-tabs) {
-    background:#fff!important;border:1px solid var(--ds-ui-rule)!important;border-radius:12px!important;
-    box-shadow:none!important;padding:5px!important;gap:5px!important;
+ :root {
+  --ds-ui-ink:#373735;--ds-ui-muted:#5d5b56;--ds-ui-rule:#a09d93;
+  --ds-ui-accent:#454444;--ds-ui-light:#fdfdfa;
+  --ds-desk-image:url('/app/assets/textures/desk-smoked-oak-D-1126.png');
+  --ds-metal:linear-gradient(125deg,#ffffff16,transparent 60%),repeating-linear-gradient(0deg,#ffffff05 0 1px,#00000003 1px 2px),linear-gradient(130deg,#e4e1da,#c8c5bd);
+  --ds-key:linear-gradient(120deg,#ffffff20,transparent 58%),repeating-linear-gradient(0deg,#ffffff05 0 1px,#00000004 1px 2px),linear-gradient(#6c6b6a,#454444);
+  --ds-pale-key:linear-gradient(125deg,#ffffff70,transparent 54%),linear-gradient(#fff,#fdfdfa);
+  --ds-paper-shadow:0 1px 0 #efede7,1px 2px 0 #fff,1px 3px 0 #d7d1c6,2px 4px 0 #f9f8f4,2px 5px 0 #c9c1b4,3px 6px 3px #493b282d,6px 11px 13px #493b282b,13px 21px 30px #493b2814;
+  --ds-metal-shadow:inset 0 1px #ffffff70,inset 0 -1px #00000020,1px 3px 0 #a09d93,5px 9px 13px #3025172b;
+  --ds-key-shadow:inset 0 1px #ffffff66,inset 0 -1px #0004,0 2px 0 #454444,2px 4px 5px #0003;
+ }
+ html[data-design] body.working-body {background:#e8e7e3!important;color:var(--ds-ui-ink)}
+ html[data-design] body.working-body #header {background:#e8e7e3!important;border-bottom-color:#a09d93!important;box-shadow:0 1px #ffffff80!important}
+ html[data-design] body.working-body #header .brand {
+  background:linear-gradient(180deg,#939291,#424141 34%,#777675 47%,#333232 52%,#555454)!important;
+  background-clip:text!important;-webkit-background-clip:text!important;-webkit-text-fill-color:transparent!important;
+  -webkit-text-stroke:.35px #5f5e5d;filter:drop-shadow(0 1px 0 #fff) drop-shadow(0 2px 1px #43434355);
+ }
+ html[data-design] body.working-body #header .brand .delta {color:inherit!important;-webkit-text-fill-color:inherit!important;background:none}
+ html[data-design] body.working-body[data-page] #content :is(.ssil-main,.dst-layout,.fv57-desk,.dq61-desk,.dl63-desk) {
+  background-color:#99816b!important;background-image:var(--ds-desk-image)!important;
+  background-size:cover!important;background-position:center!important;background-repeat:no-repeat!important;background-blend-mode:normal!important;
+  border:1px solid #a09d93!important;border-top-color:#c8bdad!important;border-radius:5px!important;
+  box-shadow:inset 0 1px #fff5,0 5px 16px #4e443816!important;padding:clamp(18px,2.6vw,38px)!important;gap:clamp(20px,2.8vw,40px)!important;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.ssil-live-paper,.fv57-paper,.quick-paper,.dst-sheet,.dl63-receipt) {
+  background:#fff!important;border:1px solid #e7e5e0!important;border-top-color:#fff!important;border-left-color:#fafaf8!important;
+  border-radius:0!important;outline:none!important;box-shadow:var(--ds-paper-shadow)!important;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.ssp-desk-controls,.ssil-review,.dst-config,.sl54-unit-side,.creator-config,.tb36-conditions,.tb36-review-panel,.tb36-finish-panel,.csat-settings,.ta-answer-sheet-v18,.bf62-panel) {
+  background:var(--ds-metal)!important;color:var(--ds-ui-ink)!important;
+  border:1px solid #a09d93!important;border-top-color:#e4e1da!important;border-left-color:#e4e1da!important;border-radius:5px!important;
+  box-shadow:var(--ds-metal-shadow)!important;text-shadow:none!important;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.ssp-desk-controls,.ssil-review,.dst-config,.sl54-unit-side,.creator-config,.tb36-conditions,.tb36-review-panel,.tb36-finish-panel,.csat-settings,.ta-answer-sheet-v18,.bf62-panel) :is(h2,h3,h4,label,legend,p,small,strong,span,summary,b,a,.creator-field):not(:where(button *, .bc65-cover *, .bf62-paper *, .ds48-paper-position *)) {
+  color:var(--ds-ui-ink)!important;text-shadow:none!important;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.ssp-desk-controls,.ssil-review,.dst-config,.sl54-unit-side,.creator-config,.tb36-conditions,.tb36-review-panel,.tb36-finish-panel,.csat-settings,.ta-answer-sheet-v18,.bf62-panel) :is(p,small,.creator-small,.creator-actions>p):not(:where(button *, .bc65-cover *, .bf62-paper *, .ds48-paper-position *)) {
+  color:var(--ds-ui-muted)!important;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.ssp-desk-controls,.ssil-review,.dst-config,.sl54-unit-side,.creator-config,.tb36-conditions,.tb36-review-panel,.tb36-finish-panel,.csat-settings,.ta-answer-sheet-v18,.bf62-panel) :is(input:not([type=checkbox]):not([type=radio]),select,textarea) {
+  background:#fdfdfa!important;color:#373735!important;border:1px solid #9c9991!important;
+  border-top-color:#87847e!important;border-radius:4px!important;box-shadow:inset 0 1px 2px #3d393015!important;min-height:44px;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.ssp-desk-controls,.ssil-review,.dst-config,.sl54-unit-side,.creator-config,.tb36-conditions,.tb36-review-panel,.tb36-finish-panel,.csat-settings,.ta-answer-sheet-v18,.bf62-panel) :is(input,select,textarea):disabled {
+  background:#d7d4cc!important;color:#66635d!important;opacity:1!important;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.ssp-desk-controls,.ssil-review,.dst-config,.sl54-unit-side,.creator-config,.tb36-conditions,.tb36-review-panel,.tb36-finish-panel,.csat-settings,.ta-answer-sheet-v18,.bf62-panel) button:not(:disabled):not(:is(.dst-start,.ssp-plan-primary,.tb36-primary,.creator-print,.sl54-primary,[data-exam-next],[data-exam-forward],[data-exam-submit],[data-exam-retry],[data-exam-finish-early],[data-exam-confirm-submit],.account-primary)),
+ html[data-design] body.working-body[data-page] #content .sr-actions button {
+  background:var(--ds-pale-key)!important;color:#373735!important;border:1px solid #b9b6ae!important;
+  border-top-color:#fff!important;border-left-color:#fafaf8!important;border-bottom-color:#a19e96!important;border-radius:4px!important;
+  box-shadow:inset 0 1px #fff,inset 0 -1px #dedbd4,0 2px 0 #aaa79f,0 3px 3px #37332b20!important;text-shadow:none!important;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.ssp-desk-controls,.ssil-review,.dst-config,.sl54-unit-side,.creator-config,.tb36-conditions,.tb36-review-panel,.tb36-finish-panel,.csat-settings,.ta-answer-sheet-v18,.bf62-panel) button:disabled {
+  background:#d7d4cc!important;color:#66635d!important;border-color:#b9b6ae!important;box-shadow:none!important;opacity:1!important;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.dst-start,.ssp-plan-primary,.tb36-primary,.creator-print,.sl54-primary,[data-exam-next],[data-exam-forward],[data-exam-submit],[data-exam-retry],[data-exam-finish-early],[data-exam-confirm-submit],.account-primary),
+ html[data-design] body.working-body[data-page] #content .sr-actions button:first-child {
+  background:var(--ds-key)!important;color:#fff!important;border:1px solid #454444!important;border-top-color:#9d9c9a!important;
+  border-left-color:#8f8e8c!important;border-radius:4px!important;box-shadow:var(--ds-key-shadow)!important;text-shadow:none!important;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.dst-start,.ssp-plan-primary,.tb36-primary,.creator-print,.sl54-primary,[data-exam-next],[data-exam-forward],[data-exam-submit],[data-exam-retry],[data-exam-finish-early],[data-exam-confirm-submit],.account-primary) :is(span,strong,small,b) {
+  color:inherit!important;text-shadow:none!important;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.dst-start,.ssp-plan-primary,.tb36-primary,.creator-print,.sl54-primary,[data-exam-next],[data-exam-forward],[data-exam-submit],[data-exam-retry],[data-exam-finish-early],[data-exam-confirm-submit],.account-primary):not(:disabled):active {
+  transform:translateY(2px)!important;box-shadow:inset 0 1px 2px #30303070,0 1px 0 #454444!important;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.ssp-desk-controls,.ssil-review,.dst-config,.sl54-unit-side,.creator-config,.tb36-conditions,.tb36-review-panel,.tb36-finish-panel,.csat-settings,.ta-answer-sheet-v18,.bf62-panel) button:not(:disabled):hover {
+  filter:brightness(1.035)!important;
+ }
+ html[data-design] body.working-body[data-page] #content :is(button,a,select,input,textarea,summary):focus-visible {
+  outline:3px solid #6c6b6a!important;outline-offset:3px!important;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.bf62-root) {
+  --bf-ink:#373735;--bf-sub:#5d5b56;--bf-accent:#454444;--bf-on-dark:#373735;--bf-on-dark-sub:#5d5b56;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.creator-config,.tb36-conditions,.tb36-review-panel,.tb36-finish-panel,.bf62-panel) :is(.creator-material-meta,.tb36-composed,.tb36-save,.tb36-cover-note,.tb36-replacements,.bf62-part,.bf62-subject,.bf62-book,.bf62-total,.bf62-make) {
+  background:#f5f3ed55!important;border-color:#a09d9370!important;box-shadow:inset 0 1px #fff7!important;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.bf62-choice>span,.bf62-chip span,.bf62-covers label>span) {
+  border-color:#a09d93!important;color:#373735!important;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.bf62-choice input:checked+span,.bf62-chip input:checked+span,.bf62-covers input:checked+span,.bf62-levels input:checked+span,.bf62-segment input:checked+span) {
+  background:#fff!important;color:#373735!important;border-color:#6c6b6a!important;box-shadow:inset 0 0 0 2px #6c6b6a!important;
+ }
+ html[data-design] body.working-body[data-page] #content .bf62-choice input:checked+span:before {
+  border-color:#454444!important;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.bf62-levels,.bf62-segment) {
+  background:#aaa79f!important;box-shadow:inset 0 1px 2px #39352d29!important;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.ds48-preview-toolbar,.creator-canvas-toolbar,.bf62-toolbar,.bf62-tabs) {
+  background:var(--ds-metal)!important;color:#373735!important;border-color:#a09d93!important;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.ds48-preview-toolbar,.creator-canvas-toolbar,.bf62-toolbar) :is(strong,small,button) {
+  color:#373735!important;
+ }
+ html[data-design] body.working-body[data-page] #content .bf62-tabs button[aria-selected=true] {
+  background:var(--ds-key)!important;color:#fff!important;border-color:#454444!important;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.sd-downloads,.sd-files,.dl63-page) {
+  --dl-ink:#373735;--dl-sub:#5d5b56;--dl-accent:#454444;--dl-navy:#454444;--dl-brass:#454444;--dl-brass-deep:#373735;--dl-rule-1:#a09d93;--dl-rule-2:#c8c5bd;
+ }
+ html[data-design] body.working-body[data-page] #content .sd-downloads[data-sd-view=print] {
+  background:transparent!important;border:0!important;box-shadow:none!important;
+ }
+ html[data-design] body.working-body[data-page] #content .sr-format {
+  background:#dedbd4!important;color:#454444!important;
+ }
+ html[data-design] body.working-body[data-page] #content .sd-print {
+  background:transparent!important;
+ }
+ html[data-design] body.working-body[data-page] #content .ds48-paper-position {
+  background:#fff!important;outline:none!important;box-shadow:none!important;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.ssil-today,.ssil-review,.fv57-paper,.sl54-unit-side,.dst-layout,.quick-paper)::before {
+  display:none!important;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.ssil-today,.ssil-review,.fv57-paper,.sl54-unit-side,.dst-layout,.quick-paper)::after {
+  display:none!important;
+ }
+ html[data-design] body.working-body[data-page] #content .ds-timed :is(.dte-clock,.dte-summary) {
+  background:linear-gradient(120deg,#6c6b6a,#454444)!important;color:#fff!important;
+  border:1px solid #6c6b6a!important;border-top-color:#a3a2a0!important;border-left-color:#8c8b89!important;
+  box-shadow:inset 0 1px #ffffff54,inset 0 -1px #252525,1px 2px 0 #646361,3px 5px 7px #453d332b!important;
+ }
+ html[data-design] body.working-body[data-page] #content .ds-timed .ta-numbers-v18 {
+  padding:5px!important;border:1px solid #a09d93!important;border-radius:4px!important;
+  background:#a09d93!important;box-shadow:inset 0 1px 3px #45403929,0 1px #ffffffb3!important;
+ }
+ html[data-design] body.working-body[data-page] #content .ds-timed .ta-numbers-v18 button:not(.dte-right):not(.dte-wrong) {
+  background:var(--ds-pale-key)!important;color:#373735!important;border:1px solid #e2e0d9!important;
+  border-top-color:#fff!important;border-radius:4px!important;box-shadow:inset 0 1px #fff,0 2px 0 #a09d93,0 3px 3px #0002!important;
+ }
+ html[data-design] body.working-body[data-page] #content .ds-timed .ta-numbers-v18 button[aria-current=step]:not(.dte-right):not(.dte-wrong) {
+  outline:1px solid #6c6b6a!important;outline-offset:1px;
+ }
+ html[data-design] body.working-body[data-page] #content .ds-timed .ta-numbers-v18 button.is-answered:not(.dte-right):not(.dte-wrong) {
+  background:var(--ds-key)!important;color:#fff!important;border-color:#454444!important;box-shadow:var(--ds-key-shadow)!important;
+ }
+ html[data-design] body.working-body[data-page] #content .ds-timed .ta-numbers-v18 button:not(:disabled):active {
+  transform:translateY(1px)!important;box-shadow:inset 0 1px 2px #37332b24,0 1px 0 #a09d93!important;
+ }
+ html[data-design] body.working-body[data-page] #content .ds-timed .dte-inline-choice {
+  background:#fdfdfa!important;border-color:#e2e0d9!important;box-shadow:none!important;
+ }
+ html[data-design] body.working-body[data-page] #content .ds-timed .dte-inline-choice[aria-pressed=true] {
+  border-color:#6c6b6a!important;box-shadow:inset 0 0 0 1px #6c6b6a!important;
+ }
+ html[data-design] body.working-body[data-page] #content .dst-config .dst-fields {
+  gap:16px!important;margin:18px 0!important;
+ }
+ html[data-design] body.working-body[data-page] #content .dst-config .dst-fields label {
+  margin:0!important;gap:7px!important;
+ }
+ html[data-design] body.working-body[data-page] #content .dst-config p {
+  margin:14px 0!important;line-height:1.65!important;
+ }
+ html[data-design] body.working-body[data-page] #content .dst-sheet:not(:has(.quick-question)) {
+  min-height:510px!important;padding:38px!important;display:flex;flex-direction:column;justify-content:flex-start!important;
+ }
+ html[data-design] body.working-body[data-page] #content .dst-sheet:not(:has(.quick-question)) h2 {
+  line-height:1.6!important;padding-bottom:22px;border-bottom:3px double #b1ada6;margin:0 0 24px!important;max-width:none;
+ }
+ html[data-design] body.working-body[data-page] #content .dst-layout:has(.quick-question) .dst-sheet {
+  min-height:580px;
+ }
+}
+@media screen {
+  html[data-design] body.working-body #header .brand {position:relative;isolation:isolate}
+  html[data-design] body.working-body #header .brand::after {
+    content:'DELTASKILL';position:absolute;inset:0;pointer-events:none;
+    font:inherit;letter-spacing:inherit;white-space:nowrap;
+    background:linear-gradient(110deg,transparent 40%,#f9f9f944 46%,#ffffff 50%,#ebebeb80 53%,transparent 59%) 180% 0 / 250% 100%;
+    background-clip:text!important;-webkit-background-clip:text!important;-webkit-text-fill-color:transparent;-webkit-text-stroke:0;
+    animation:ds-logo-light 2.6s .35s ease-in-out both;
   }
-  html[data-design] body.working-body[data-page] #content :is(.tb36-modes,.dsh-tabs)>button {
-    background:transparent!important;border:1px solid transparent!important;border-radius:8px!important;
-    box-shadow:none!important;min-height:58px!important;color:#535e74!important;transform:none!important;
-    transition:background .15s,color .15s;
+  @keyframes ds-logo-light {from{background-position:180% 0;opacity:0}15%{opacity:1}85%{opacity:1}to{background-position:-100% 0;opacity:0}}
+  @media(prefers-reduced-motion:reduce) {
+    html[data-design] body.working-body #header .brand::after {animation:none;display:none}
   }
-  html[data-design] body.working-body[data-page] #content :is(.tb36-modes,.dsh-tabs)>button :is(strong,small,.tb36-mode-icon) {color:inherit!important;text-shadow:none!important;}
-  html[data-design] body.working-body[data-page] #content :is(.tb36-modes,.dsh-tabs)>button:hover {background:#f3f2fc!important;filter:none!important;}
-  html[data-design] body.working-body[data-page] #content :is(.tb36-modes,.dsh-tabs)>button[aria-pressed=true] {background:#eeecff!important;color:#4636b4!important;border-color:#e3defe!important;}
-  html[data-design] body.working-body[data-page] #content :is(.tb36-modes,.dsh-tabs)>button .tb36-mode-icon svg {color:inherit!important;stroke:currentColor!important;}
-  /* One quiet workspace surrounds clean white paper and controls. */
-  html[data-design] body.working-body[data-page] #content :is(.ssil-main,.dst-layout,.fv57-desk,.dq61-desk,.dl63-desk,.ds48-paper-scene,.creator-paper-stage) {
-    background:#eef1f6!important;background-image:none!important;border-color:var(--ds-ui-rule)!important;
-    box-shadow:none!important;border-radius:12px;
-  }
-  html[data-design] body.working-body[data-page] #content :is(.ssil-main,.dst-layout) {border:1px solid var(--ds-ui-rule)!important;border-radius:14px;}
-  html[data-design] body.working-body[data-page] #content :is(.ssil-live-paper,.fv57-paper,.quick-paper,.dl63-receipt) {
-    background:#fff!important;background-image:none!important;border:1px solid #e1e5ed!important;
-    box-shadow:0 3px 14px #20283b06!important;border-radius:4px!important;
-  }
-  html[data-design] body.working-body[data-page] #content :is(.ssil-today,.ssil-review,.fv57-paper,.sl54-unit-side,.dst-layout,.quick-paper)::before,
-  html[data-design] body.working-body[data-page] #content :is(.ssil-today,.ssil-review,.fv57-paper,.sl54-unit-side,.dst-layout,.quick-paper)::after {display:none!important;}
-  html[data-design] body.working-body[data-page] #content :is(.ssp-desk-controls,.ssil-review,.dst-config,.sl54-unit-side,.creator-config,.tb36-conditions,.tb36-review-panel,.tb36-finish-panel,.csat-settings) {
-    background:#fff!important;background-image:none!important;color:var(--ds-ui-ink)!important;
-    border:1px solid var(--ds-ui-rule)!important;border-radius:12px!important;box-shadow:none!important;
-    text-shadow:none!important;
-  }
-  html[data-design] body.working-body[data-page] #content :is(.ssp-desk-controls,.ssil-review,.dst-config,.sl54-unit-side,.creator-config,.tb36-conditions,.tb36-review-panel,.tb36-finish-panel,.csat-settings) :is(h2,h3,h4,label,legend,p,small,strong,span,summary,.creator-field) {
-    color:var(--ds-ui-ink)!important;text-shadow:none!important;
-  }
-  html[data-design] body.working-body[data-page] #content :is(.ssp-desk-controls,.ssil-review,.dst-config,.sl54-unit-side,.creator-config,.tb36-conditions,.tb36-review-panel,.tb36-finish-panel,.csat-settings) :is(p,small,.creator-small,.creator-actions>p) {color:var(--ds-ui-muted)!important;}
-  html[data-design] body.working-body[data-page] #content :is(.ssp-desk-controls,.ssil-review,.dst-config,.sl54-unit-side,.creator-config,.tb36-conditions,.tb36-review-panel,.tb36-finish-panel,.csat-settings) :is(input:not([type=checkbox]):not([type=radio]),select) {
-    color:var(--ds-ui-ink)!important;background:#fff!important;border:1px solid #cbd2df!important;
-    border-radius:7px!important;box-shadow:none!important;min-height:44px;
-  }
-  html[data-design] body.working-body[data-page] #content :is(.ssp-desk-controls,.ssil-review,.dst-config,.sl54-unit-side,.creator-config,.tb36-conditions,.tb36-review-panel,.tb36-finish-panel,.csat-settings) :is(input,select):disabled {background:#f0f2f6!important;color:#6d7586!important;opacity:1!important;}
-  html[data-design] body.working-body[data-page] #content :is(.ssp-desk-controls,.ssil-review,.dst-config,.sl54-unit-side,.creator-config,.tb36-conditions,.tb36-review-panel,.tb36-finish-panel,.csat-settings) button {
-    color:#39445b!important;background:#fff!important;background-image:none!important;border:1px solid #cdd4e1!important;
-    box-shadow:none!important;text-shadow:none!important;border-radius:7px!important;transform:none!important;
-  }
-  html[data-design] body.working-body[data-page] #content :is(.ssp-desk-controls,.ssil-review,.dst-config,.sl54-unit-side,.creator-config,.tb36-conditions,.tb36-review-panel,.tb36-finish-panel,.csat-settings) button:not(:disabled):hover {border-color:#8d82e3!important;background:#f6f4ff!important;}
-  html[data-design] body.working-body[data-page] #content :is(.ssp-desk-controls,.ssil-review,.dst-config,.sl54-unit-side,.creator-config,.tb36-conditions,.tb36-review-panel,.tb36-finish-panel,.csat-settings) :is(.dst-start,.ssp-plan-primary,.tb36-primary,.creator-print,.sl54-primary,button[aria-pressed=true]) {
-    background:var(--ds-ui-accent)!important;color:#fff!important;border-color:var(--ds-ui-accent)!important;box-shadow:none!important;
-  }
-  html[data-design] body.working-body[data-page] #content :is(.dst-start,.ssp-plan-primary,.tb36-primary,.creator-print,.sl54-primary,button[aria-pressed=true]) :is(span,strong,small) {color:inherit!important;}
-  html[data-design] body.working-body[data-page] #content :is(.ssp-desk-controls,.ssil-review,.dst-config,.sl54-unit-side,.creator-config,.tb36-conditions,.tb36-review-panel,.tb36-finish-panel,.csat-settings) button:disabled {background:#edf0f5!important;color:#737d91!important;border-color:#dce1ea!important;opacity:1!important;}
-  html[data-design] body.working-body[data-page] #content :is(.ssp-desk-controls,.ssil-review,.dst-config,.sl54-unit-side) :is(a,.sl54-quiet,.ssp-plan-link) {color:#4b41ad!important;}
-  html[data-design] body.working-body[data-page] #content :is(.ssp-desk-controls,.ssil-review,.dst-config,.sl54-unit-side,.creator-config,.tb36-conditions,.tb36-review-panel,.tb36-finish-panel) ::selection {background:#ddd8ff;color:#24203e;}
-  html[data-design] body.working-body[data-page] #content :is(.bf62-subject,.bf62-choice>span,.creator-material-meta,.tb36-cover-note,.tb36-save) {background:#f7f8fb!important;border-color:#dfe3ec!important;color:var(--ds-ui-ink)!important;box-shadow:none!important;}
-  html[data-design] body.working-body[data-page] #content .bf62-panel :is(.bf62-chip>span,.bf62-all) {color:#48516a!important;border-color:#ccd4e1!important;background:#fff!important;box-shadow:none!important;}
-  html[data-design] body.working-body[data-page] #content .bf62-panel :is(.bf62-chip,.bf62-all):has(input:checked),
-  html[data-design] body.working-body[data-page] #content .bf62-panel .bf62-chip:has(input:checked)>span {background:#eeecff!important;border-color:#aca0ee!important;color:#4736b3!important;}
-  html[data-design] body.working-body[data-page] #content :is(.bf62-summary,.ds48-canvas,.creator-canvas,.tb36-order-preview) {background:#fff!important;border-color:var(--ds-ui-rule)!important;box-shadow:none!important;border-radius:12px!important;}
-  html[data-design] body.working-body[data-page] #content :is(.creator-canvas-toolbar,.ds48-preview-toolbar,.creator-canvas-footer) {background:#fff!important;border-color:var(--ds-ui-rule)!important;color:var(--ds-ui-ink)!important;}
-  /* Remove the photo desk only; keep the existing A4 preview position and scale. */
-  html[data-design] body.working-body[data-page] #content .ds48-paper-position {box-shadow:0 2px 12px #20283b12!important;}
-  html[data-design] body.working-body[data-page] #content .ds48-paper-scene {border-radius:0;}
-  html[data-design] body.working-body[data-page] #content .dst-layout:not(:has(.quick-question)) {background:transparent!important;border:0!important;padding:0!important;}
-  html[data-design] body.working-body[data-page] #content .dst-config .dst-fields {gap:16px!important;margin:12px 0!important;}
-  html[data-design] body.working-body[data-page] #content .dst-config .dst-fields label {margin:0!important;gap:6px!important;}
-  html[data-design] body.working-body[data-page] #content .dst-config p {margin:12px 0!important;line-height:1.65!important;}
-  html[data-design] body.working-body[data-page] #content :is(.tb36-modes,.dsh-tabs)>button::before,
-  html[data-design] body.working-body[data-page] #content :is(.tb36-modes,.dsh-tabs)>button::after {display:none!important;}
-  html[data-design] body.working-body[data-page] #content .sd-print {background:#fff!important;border-color:var(--ds-ui-rule)!important;box-shadow:none!important;}
-  html[data-design] body.working-body[data-page] #content .sd-print .tb36-conditions :is(label,legend,summary,h2,h3,strong,span) {color:var(--ds-ui-ink)!important;text-shadow:none!important;}
-  html[data-design] body.working-body[data-page] #content .sd-print .tb36-conditions .tb36-primary,
-  html[data-design] body.working-body[data-page] #content .sd-print .tb36-conditions .tb36-primary span {color:#fff!important;}
-  /* Only the pre-start summary shrinks. Live question sheets retain their dimensions. */
-  html[data-design] body.working-body[data-page] #content .dst-sheet:not(:has(.quick-question)) {min-height:0!important;padding:28px!important;}
-  html[data-design] body.working-body[data-page] #content .dst-sheet:not(:has(.quick-question)) h2 {font-size:clamp(22px,2.2vw,28px)!important;line-height:1.45!important;letter-spacing:-.035em!important;margin:0 0 12px!important;color:var(--ds-ui-ink)!important;}
-  html[data-design] body.working-body[data-page] #content .dst-sheet:not(:has(.quick-question))>p {color:var(--ds-ui-muted)!important;font-size:15px!important;line-height:1.7!important;}
-  html[data-design] body.working-body[data-page] #content .dst-sample-label {color:#5b6478!important;font-weight:650;margin-bottom:12px;}
-  html[data-design] body.working-body[data-page] #content .ds-timed .dst-config :is(h2,.dst-fields) {border-color:var(--ds-ui-rule)!important;}
-  html[data-design] body.working-body[data-page] #content :is(.ds-timed,.bf62-root) :is(.section-heading,.ta-heading-v18) {border-color:var(--ds-ui-rule)!important;}
-  html[data-design] body.working-body[data-page] #content :is(.sl54-answer-options button,.fv57-choices button) {background:#fff!important;border:1px solid #cbd3e0!important;border-radius:8px!important;color:#38415a!important;box-shadow:none!important;transform:none!important;}
-  html[data-design] body.working-body[data-page] #content :is(.sl54-answer-options button,.fv57-choices button)[aria-pressed=true] {background:#eeecff!important;border-color:#8e7ee0!important;color:#4938ba!important;}
-  html[data-design] body.working-body[data-page] #content :is(button,a,select,input):focus-visible {outline:3px solid #8172e4!important;outline-offset:3px!important;}
-  /* Library surfaces use the same system without altering purchasing behavior. */
-  html[data-design] body.working-body[data-page] #content .dl63 {--dl-paper:#fff;--dl-ink:#20283b;--dl-sub:#5b6478;--dl-rule-2:#dfe3ec;--dl-navy:#5547cf;--dl-sh-1:none;--dl-sh-2:none;}
-  html[data-design] body.working-body[data-page] #content :is(.dl63,.dl63-list-wrap,.dl63-receipt,.dl63-form,.dl63-exam) {background-image:none!important;}
-  html[data-design] body.working-body[data-page] #content .dl63-row[aria-pressed=true] {background:#eeecff!important;color:#4736b3!important;box-shadow:none!important;}
-  html[data-design] body.working-body[data-page] #content :is(.dl63-buy,.dl63-brass,.dl63-exam-lead) {background:#5547cf!important;color:#fff!important;box-shadow:none!important;}
-  html[data-design] body.working-body[data-page] #content .dl63-upload {background:#252c46!important;background-image:none!important;box-shadow:none!important;}
-  html[data-design] body.working-body[data-page] #content .dl63-upload::before {display:none!important;}
-  /* Preserve the photo entrance. Simplify only its fabric / metal role buttons. */
-  html[data-design] body.home-body .role-dock>a:not(.ip23-request-entry) {background:#ffffffed!important;background-image:none!important;border:1px solid #ffffffab!important;border-radius:9px!important;color:#232a3d!important;box-shadow:0 2px 12px #12182a12!important;text-shadow:none!important;transform:none!important;}
-  html[data-design] body.home-body .role-dock>a:not(.ip23-request-entry):nth-child(2) {background:#5547cf!important;border-color:#6b5ddd!important;color:#fff!important;}
-  html[data-design] body.home-body .role-dock>a:not(.ip23-request-entry)::before,
-  html[data-design] body.home-body .role-dock>a:not(.ip23-request-entry)::after {display:none!important;}
-  html[data-design] body.home-body .role-dock>a:not(.ip23-request-entry) .hd40-keycap {background:transparent!important;background-image:none!important;color:inherit!important;filter:none!important;transform:none!important;box-shadow:none!important;}
-  html[data-design] body.home-body .role-dock>a:not(.ip23-request-entry) .hd40-keycap>span {color:inherit!important;text-shadow:none!important;}
-  html[data-ds-main] .about-go a {box-shadow:none;border:1px solid #dfe3ec;border-radius:8px;}
-  html[data-ds-main] .about-go a.main {background:#5547cf;border-color:#5547cf;}
-  @media(max-width:700px) {
-    html[data-design] body.working-body[data-page] #content :is(.tb36-modes,.dsh-tabs)>button {min-height:58px!important;padding:10px 7px!important;}
-    html[data-design] body.working-body[data-page] #content .dst-sheet:not(:has(.quick-question)) {padding:22px!important;}
-    html[data-design] body.working-body[data-page] #content :is(.ssil-main,.dst-layout) {border-radius:10px;}
-    html[data-design] body.working-body[data-page] #content :is(.tb36-conditions,.dst-config,.ssp-desk-controls) {max-width:100%;min-width:0;}
-  }
-  @media(prefers-reduced-motion:reduce) {html[data-design] body.working-body[data-page] #content :is(.tb36-modes,.dsh-tabs)>button {transition:none;}}
+}
+
+@media screen {
+ html[data-design] body.working-body[data-page] #content :is(.tb36-modes,.dsh-tabs) {
+  padding:7px!important;gap:7px!important;background:var(--ds-metal)!important;
+  border:1px solid #a09d93!important;border-top-color:#fdfdfa!important;border-left-color:#eeece6!important;border-radius:7px!important;
+  box-shadow:inset 0 0 0 1px #ffffff50,inset 0 -1px #b8b5ad,0 2px 0 #9d9a92,0 5px 8px #31313119!important;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.tb36-modes,.dsh-tabs)>button {
+  min-width:0!important;min-height:58px!important;
+  background:var(--ds-pale-key)!important;border:1px solid #b9b6ae!important;border-top-color:#fff!important;border-left-color:#fdfdfa!important;border-radius:4px!important;
+  box-shadow:inset 0 1px #ffffffb3,inset 0 -1px #dedbd4,0 2px 0 #aaa79f,0 3px 3px #3c3c3c20!important;
+  color:#373735!important;text-shadow:none!important;transform:translateY(-1px)!important;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.tb36-modes,.dsh-tabs)>button[aria-pressed=true] {
+  background:var(--ds-key)!important;color:#fff!important;
+  border-color:#555454!important;border-top-color:#383737!important;border-left-color:#484747!important;border-bottom-color:#787776!important;
+  box-shadow:inset 0 2px 3px #20202042,inset 0 -1px #ffffff1f,0 1px #ffffff65!important;transform:translateY(1px)!important;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.tb36-modes,.dsh-tabs)>button :is(strong,small,.tb36-mode-icon) {
+  color:inherit!important;text-shadow:none!important;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.tb36-modes,.dsh-tabs)>button::before {
+  display:none!important;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.tb36-modes,.dsh-tabs)>button::after {
+  display:none!important;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.tb36-modes,.dsh-tabs)>button:not(:disabled):hover {
+  filter:brightness(1.035)!important;border-right-color:#908d88!important;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.tb36-modes,.dsh-tabs)>button:not([aria-pressed=true]):not(:disabled):active {
+  transform:translateY(1px)!important;box-shadow:inset 0 1px 2px #55555525,0 1px #ffffff70!important;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.tb36-modes,.dsh-tabs)>button:focus-visible {
+  outline:2px solid #575654!important;outline-offset:2px!important;position:relative;z-index:1;
+ }
+ html[data-design] body.working-body[data-page] #content .account-login {
+  --account-ink:#373735;--account-muted:#5d5b56;--account-accent:#454444;--account-accent-dark:#373636;
+  border:1px solid #a09d93!important;border-top-color:#fff!important;border-radius:5px!important;box-shadow:var(--ds-metal-shadow)!important;
+ }
+ html[data-design] body.working-body[data-page] #content .account-login-panel {
+  background:linear-gradient(125deg,#fff,#fff 67%,#f5f4ef)!important;color:#373735!important;box-shadow:inset 1px 0 #ffffffcc!important;
+ }
+ html[data-design] body.working-body[data-page] #content .account-login-panel :is(h1,label,.account-subtitle) {
+  color:#373735!important;
+ }
+ html[data-design] body.working-body[data-page] #content .account-login-panel input {
+  background:#fff!important;color:#373735!important;border:1px solid #a09d93!important;border-radius:3px!important;box-shadow:inset 0 1px 2px #37332b15!important;
+ }
+ html[data-design] body.working-body[data-page] #content .account-password-toggle {
+  background:#e4e1da!important;color:#454444!important;border-left-color:#c8c5bd!important;
+ }
+ html[data-design] body.working-body[data-page] #content .account-login-links {
+  border-color:#c8c5bd!important;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.account-login-links,.login-return) a {
+  color:#454444!important;
+ }
+ @media(max-width:740px) {
+ html[data-design] body.working-body[data-page] #content :is(.ssil-main,.dst-layout,.fv57-desk,.dq61-desk,.dl63-desk) {
+  padding:14px!important;gap:20px!important;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.ssil-live-paper,.fv57-paper,.quick-paper,.dst-sheet,.dl63-receipt) {
+  box-shadow:0 1px 0 #efede7,1px 2px 0 #fff,1px 3px 0 #d7d1c6,2px 4px 0 #f9f8f4,2px 5px 0 #c9c1b4,3px 7px 8px #493b2824!important;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.ssp-desk-controls,.ssil-review,.dst-config,.sl54-unit-side,.creator-config,.tb36-conditions,.tb36-review-panel,.tb36-finish-panel,.csat-settings,.ta-answer-sheet-v18,.bf62-panel) {
+  max-width:100%;min-width:0;box-shadow:inset 0 1px #ffffff70,inset 0 -1px #00000020,1px 2px 0 #a09d93,3px 5px 7px #30251726!important;
+ }
+ html[data-design] body.working-body[data-page] #content .dst-sheet:not(:has(.quick-question)) {
+  min-height:320px!important;padding:24px!important;
+ }
+ html[data-design] body.working-body[data-page] #content .dst-layout:has(.quick-question) .dst-sheet {
+  min-height:0;
+ }
+ }
+ @media(max-width:700px) {
+ html[data-design] body.working-body[data-page] #content :is(.tb36-modes,.dsh-tabs) {
+  padding:6px!important;gap:5px!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.tb36-modes,.dsh-tabs)>button {
+  min-height:60px!important;padding:9px 3px!important;
+ }
+ }
+ @media(max-width:380px) {
+ html[data-design] body.working-body[data-page] #content .dst-config .dst-fields {
+  grid-template-columns:minmax(0,1fr)!important;
+ }
+ }
+}
+
+/* First challenge and library use the same D instruments; reading faces stay white. */
+@media screen {
+ html[data-design] body.working-body[data-page] #content :is(.fv57-label,.fv57-shell h1 em,.fv57-lead,.fv57-invitation,.fv57-invitation small,.fv57-browse,.fv57-route,.fv57-route b,.fv57-route i,.fv57-source,.fv57-choices legend,.fv57-actions .sl54-quiet) {
+  color:#55534e!important;
+ }
+ html[data-design] body.working-body[data-page] #content .fv57-shell h1 {
+  color:#373735!important;
+ }
+ html[data-design] body.working-body[data-page] #content .fv57-desk-edge {
+  margin:0!important;background:var(--ds-key)!important;color:#fff!important;border:1px solid #454444!important;border-top-color:#a09d93!important;border-radius:4px;box-shadow:var(--ds-key-shadow)!important;
+ }
+ html[data-design] body.working-body[data-page] #content .fv57-desk-edge :is(span,i) {
+  color:#fff!important;
+ }
+ html[data-design] body.working-body[data-page] #content .fv57-key {
+  background:var(--ds-key)!important;color:#fff!important;border-color:#454444!important;
+ }
+ html[data-design] body.working-body[data-page] #content .fv57-subjects {
+  background:var(--ds-metal)!important;border-color:#a09d93!important;box-shadow:inset 0 1px #fff7!important;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.fv57-choices button,.fv57-subjects button) {
+  background:var(--ds-pale-key)!important;color:#373735!important;border:1px solid #b9b6ae!important;border-bottom:2px solid #a09d93!important;box-shadow:inset 0 1px #fff,0 2px 2px #37332b20!important;min-height:44px;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.fv57-choices button,.fv57-subjects button)[aria-pressed=true] {
+  background:var(--ds-key)!important;color:#fff!important;border-color:#454444!important;box-shadow:inset 0 1px #ffffff40,0 1px #454444!important;
+ }
+ html[data-design] body.working-body[data-page] #content .fv57-dot {
+  background:#77746e!important;box-shadow:0 0 0 4px #d8d5cd!important;
+ }
+ html[data-design] body.working-body[data-page] #content .fv57-desk-footer {
+  padding:10px 13px!important;background:linear-gradient(125deg,#f8f6f0,#e9e6de)!important;border:1px solid #c8c5bd!important;border-top-color:#fff!important;border-radius:3px;box-shadow:1px 2px 3px #352d2226;
+ }
+ html[data-design] body.working-body[data-page] #content .fv57-desk-footer :is(p,strong) {
+  color:#45433e!important;
+ }
+ html[data-design] body.working-body[data-page] #content .dl63-page {
+  background:#e8e7e3!important;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.dl63-row[aria-pressed=true],.dl63-fmt[aria-pressed=true],.dl63-chip[aria-pressed=true],.dl63-jump[data-dl63-jump]) {
+  background:var(--ds-key)!important;color:#fff!important;border-color:#454444!important;box-shadow:var(--ds-key-shadow)!important;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.dl63-buy,.dl63-brass,.dl63-exam-lead,.ppdf-primary) {
+  background:var(--ds-key)!important;color:#fff!important;border-color:#454444!important;box-shadow:var(--ds-key-shadow)!important;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.dl63-upload,.ppdf-wallet) {
+  background:var(--ds-metal)!important;color:#373735!important;border:1px solid #a09d93!important;border-top-color:#e4e1da!important;box-shadow:var(--ds-metal-shadow)!important;
+ }
+ html[data-design] body.working-body[data-page] #content .dl63-upload :is(h2,p,b,span,small,li,.dl63-kicker):not(:where(.dl63-brass *,button *)) {
+  color:#373735!important;
+ }
+ html[data-design] body.working-body[data-page] #content .dl63-upload::before {
+  border-color:#a09d9366!important;
+ }
+ html[data-design] body.working-body[data-page] #content .dl63-rules {
+  border-color:#a09d9366!important;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.dl63-seal,.dl63-jump[data-dl63-jump] b) {
+  background:var(--ds-metal)!important;color:#373735!important;box-shadow:inset 0 0 0 1px #ffffff80,0 2px 5px #37332b26!important;
+ }
+ html[data-design] body.working-body[data-page] #content .ppdf :is(h2,h3,p,small,.ppdf-heading span,.ppdf-help) {
+  color:#55534e!important;
+ }
+ html[data-design] body.working-body[data-page] #content .ppdf a:not(.ppdf-primary) {
+  color:#454444!important;
+ }
+}
+
+@media screen { html[data-design] body.working-body #content .ds-timed .dst-sample-label { display:table; padding:5px 9px; color:#373735; background:#f2f0e9; border:1px solid #b1ada2; box-shadow:0 1px 2px #0002; } }
+
+/* Bookshop: real cover artwork on oak ledges; readable labels below the shelf. */
+@media screen {
+ html[data-design] body.working-body #content .ms-shop {--ms-ink:#373735;--ms-head:#373735;--ms-second:#4a4843;--ms-soft:#58564f;--ms-rule:#a09d93;--ms-key-top:#6c6b6a;--ms-key-bottom:#454444}
+ html[data-design] body.working-body #content .ms-shelf-group {padding:20px 24px 28px;border:1px solid #7d654b;border-radius:4px;background:linear-gradient(#00000008,#00000020),var(--ds-desk-image) center/cover;box-shadow:inset 3px 3px 5px #fff5,inset -4px -4px 7px #35271666,0 4px 0 #786047,0 12px 20px #33261922}
+ html[data-design] body.working-body #content .ms-shelf-group>header {border:0;padding:0;margin:0 0 24px}
+ html[data-design] body.working-body #content .ms-shelf-group>header h3 {display:inline-block;padding:8px 16px;background:var(--ds-metal);color:#373735;border:1px solid #aaa59a;border-radius:2px;box-shadow:0 2px 3px #0004;font-size:18px}
+ html[data-design] body.working-body #content .ms-bookshelf {gap:30px 24px;overflow:hidden;padding:8px 5px 5px}
+ html[data-design] body.working-body #content .ms-volume {grid-template-rows:auto auto 1fr;position:relative}
+ html[data-design] body.working-body #content .ms-shop .ms-stage {position:relative;padding:12px 14px 22px;isolation:isolate}
+ html[data-design] body.working-body #content .ms-shop .ms-stage::after {content:"";position:absolute;z-index:-1;left:-18px;right:-18px;bottom:3px;height:18px;border-top:2px solid #d3b790;border-bottom:3px solid #65492e;background:linear-gradient(#ffffff30,#00000030),var(--ds-desk-image) center 64%/900px auto;box-shadow:0 8px 8px #31221480,inset 0 2px 1px #fff4}
+ html[data-design] body.working-body #content .ms-shop .ms-book-cover {width:calc(100% - 8px);max-width:200px;margin:auto;border-radius:1px 3px 3px 1px;overflow:visible;border:1px solid #0003;transform:perspective(1000px) rotateY(-7deg);box-shadow:1px 1px 0 #c9c6bc,3px 2px 0 #fffdf5,5px 3px 0 #bbb7ab,7px 4px 0 #f2eee4,8px 5px 1px #6a604e,12px 11px 11px #24170d77}
+ html[data-design] body.working-body #content .ms-shop .ms-book-cover::before {content:"";display:block;position:absolute;inset:0;pointer-events:none;z-index:1;background:linear-gradient(90deg,#0005,transparent 3%,#fff5 5%,transparent 7%,transparent 95%,#0002);border-radius:inherit}
+ html[data-design] body.working-body #content .ms-shop .ms-book-cover img {border-radius:inherit}
+ html[data-design] body.working-body #content .ms-shop a.ms-book-cover:hover {transform:perspective(1000px) rotateY(-3deg) translateY(-3px)}
+ html[data-design] body.working-body #content .ms-book-info {margin-top:10px;padding:13px 14px 8px;background:#f9f8f3;border:1px solid #c6c0b5;border-bottom:0;border-radius:2px 2px 0 0;box-shadow:2px 3px 5px #38291833}
+ html[data-design] body.working-body #content .ms-book-info small {color:#5d5b56}
+ html[data-design] body.working-body #content .ms-formats {padding:0 14px 14px;background:#f9f8f3;border:1px solid #c6c0b5;border-top:0;border-radius:0 0 2px 2px;box-shadow:2px 3px 5px #38291833}
+ html[data-design] body.working-body #content .ms-shop .ms-pick {border-radius:3px;background:#fff;border-color:#c6c1b7;color:#373735}
+ html[data-design] body.working-body #content .ms-shop .ms-pick[aria-pressed=true] {border-color:#69665f;box-shadow:inset 0 0 0 1px #69665f}
+ html[data-design] body.working-body #content .ms-shop :is(.ms-add,.ms-buy-now,.ms-cart-button) {background:var(--ds-key);color:white;border-color:#55534f;border-radius:3px;box-shadow:var(--ds-key-shadow)}
+ html[data-design] body.working-body #content .ms-shop .ms-note {color:#58564f}
+ html[data-design] body.working-body #content .ms-shop :is(button,a,summary):focus-visible {outline:3px solid #655234;outline-offset:4px}
+ /* Spacious print desk; all appearance settings live in the left form. */
+ html[data-design] body.working-body #content :is(.dq61-sample-window,.dq59-canvas .creator-paper-stage) .ds48-paper-scene {width:100%!important;max-width:none!important;padding:clamp(28px,5vw,70px) clamp(24px,5vw,68px)!important;background:var(--ds-desk-image) center/cover!important;border:1px solid #8c7459;border-radius:3px;box-shadow:inset 0 2px 2px #fff5,0 4px 0 #81694e,0 12px 20px #38261926}
+ html[data-design] body.working-body #content :is(.dq61-sample-window,.dq59-canvas .creator-paper-stage) .ds48-paper-position {width:min(100%,794px)!important;background:white!important;box-shadow:var(--ds-paper-shadow)!important;transform:none!important}
+ html[data-design] body.working-body #content :is(.dq61-sample-desk,.dq59-canvas) {overflow:visible!important;background:transparent!important;border:0!important;box-shadow:none!important}
+ html[data-design] body.working-body #content .dq61-sample-window {padding:0!important;overflow:visible!important}
+ html[data-design] body.working-body #content .dq59-canvas .creator-paper-stage {padding:0!important;max-height:none!important;height:auto!important;overflow:visible!important;background:transparent!important}
+ html[data-design] body.working-body #content :is(.tb36-conditions,.tb36-finish-panel) .dq61-page-options {display:flex;flex-direction:column;padding:18px 0;margin:14px 0;border-top:1px solid #aaa59a;border-bottom:1px solid #aaa59a;gap:18px;background:transparent}
+ html[data-design] body.working-body #content .dq61-page-options .dq-paper-layout {display:flex;flex-direction:column;align-items:stretch;gap:18px}
+ html[data-design] body.working-body #content .dq61-page-options fieldset>div {display:flex;flex-wrap:wrap;gap:6px}
+ html[data-design] body.working-body #content .dq61-page-options legend {color:#373735;font-weight:700;margin-bottom:8px}
+ @media(min-width:1001px) {html[data-design] body.working-body #content :is(.dq59-setup,.dq59-work:has(.dq59-canvas)) {grid-template-columns:minmax(260px,29%) minmax(0,1fr)!important;gap:24px}}
+ @media(max-width:760px) {
+ html[data-design] body.working-body #content .ms-shelf-group {padding:16px 12px 22px}
+ html[data-design] body.working-body #content .ms-bookshelf {gap:26px 14px}
+ html[data-design] body.working-body #content .ms-shop .ms-stage {padding:8px 6px 20px}
+ html[data-design] body.working-body #content .ms-book-info {padding:10px 8px 6px}
+ html[data-design] body.working-body #content .ms-formats {padding:0 8px 12px}
+ html[data-design] body.working-body #content .ms-acts {display:flex;flex-direction:column}
+ html[data-design] body.working-body #content .ms-shop :is(.ms-add,.ms-buy-now) {width:100%;font-size:13px;padding:9px 4px}
+ html[data-design] body.working-body #content .ms-shop .ms-pick {flex-wrap:wrap;padding:7px 6px;font-size:12px}
+ }
+}
+
+@media screen {
+ html[data-design] body.working-body[data-page] #content :is(.dq61-sample-desk,.dq59-canvas) {padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important}
+ html[data-design] body.working-body[data-page] #content :is(.sd-heading,.sd-print .tb36-heading) {border:0!important;box-shadow:none!important;background-image:none!important}
+ html[data-design] body.working-body[data-page] #content :is(.sd-heading,.sd-print .tb36-heading)::before,
+ html[data-design] body.working-body[data-page] #content :is(.sd-heading,.sd-print .tb36-heading)::after {display:none!important}
+ html[data-design] body.working-body #content .ms-editorial-cover {height:100%;display:flex;flex-direction:column;position:relative;padding:10% 9% 10% 13%;color:#302e2a;background:linear-gradient(90deg,#6b655a 0 3%,#d0c7b6 3% 4%,transparent 4%),url('/app/assets/textures/dl63-paper-fiber.webp') center/260px,linear-gradient(#f5f2e9,#e7e2d6);text-align:left;overflow:hidden}
+ html[data-design] body.working-body #content .ms-cover-publisher {font-size:clamp(9px,1vw,12px);font-weight:800;letter-spacing:.02em;color:#514c43;padding-bottom:12%;border-bottom:1px solid #b7ad9b}
+ html[data-design] body.working-body #content .ms-cover-series {font-size:clamp(9px,.85vw,11px);line-height:1.5;margin-top:12%;color:#5b554b;word-break:keep-all}
+ html[data-design] body.working-body #content .ms-cover-title {font-family:Pretendard,sans-serif;font-size:clamp(17px,1.7vw,25px);font-weight:800;line-height:1.3;letter-spacing:-.045em;margin-top:9%;word-break:keep-all;overflow-wrap:anywhere;color:#302e2a}
+ html[data-design] body.working-body #content .ms-cover-subject {font-size:11px;font-weight:600;margin-top:8%;color:#5b554b}
+ html[data-design] body.working-body #content .ms-cover-edition {margin-top:auto;align-self:flex-start;border:1px solid #9c917d;padding:4px 9px;color:#484237;font-size:12px;font-weight:700;background:#f8f5ed;box-shadow:inset 0 1px #fff}
+ html[data-design] body.working-body #content .ms-cover-foot {margin-top:10%;font-size:9px;color:#625b4e}
+ html[data-design] body.working-body #content .ms-look {bottom:9px;right:6px;font-size:10px;background:#fffefa;color:#373735}
+ @media(max-width:760px){html[data-design] body.working-body #content .ms-cover-title {font-size:17px}html[data-design] body.working-body #content .ms-cover-subject {font-size:9px}html[data-design] body.working-body #content .ms-cover-edition {font-size:10px;padding:2px 6px}html[data-design] body.working-body #content .ms-cover-foot {font-size:8px}}
+}
+
+/* Physical sheet: sharp print face, thin cut edge, directional desk shadow. */
+@media screen {
+ html[data-design] body.working-body[data-page] #content :is(.dq61-sample-window,.dq59-canvas .creator-paper-stage) .ds48-paper-position {
+  overflow:visible!important;border-radius:1px 2px 1px 1px!important;
+  border:1px solid #e6e1d6!important;
+  box-shadow:0 1px 0 #bcb4a3,1px 2px 0 #fffef8,2px 3px 0 #b9b09d,3px 4px 0 #f5f1e7,4px 5px 2px #49352155,8px 11px 12px #38251340,20px 26px 30px #38251330!important;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.dq61-sample-window,.dq59-canvas .creator-paper-stage) .ds48-paper-position::after {
+  content:"";display:block!important;position:absolute;inset:0;pointer-events:none;z-index:2;
+  background:linear-gradient(115deg,#ffffff12,transparent 30%,transparent 85%,#b7a98d0a);border-radius:inherit;
+ }
+ html[data-design] body.working-body[data-page] #content :is(.dq61-sample-window,.dq59-canvas .creator-paper-stage) .ds48-paper-scene {
+  background-image:linear-gradient(125deg,#fff2,transparent 48%,#24170c10),var(--ds-desk-image)!important;
+ }
+}
+
+
+@media screen { .dq-paper-mark[data-style="상단 띠"] {border:1px solid #aaa!important;border-top:5px solid #263e5c!important} }
+
+@media screen {html[data-design] body.working-body[data-page] #content :is(.dq59-saved,.ds48-preview-toolbar,.dq61-page-options legend,.tb36-conditions label,.student-print-settings label) {color:#373735!important} html[data-design] body.working-body[data-page] #content .dq59-saved {font-size:14px!important;line-height:1.65!important} .dq-paper-mark[data-style="타이틀형"]{border-top:5px solid #263e5c!important}}
+
+@media screen {html[data-design] body.working-body[data-page] #content .ds48-paper-position {min-width:0!important}}
+
+/* Winter finish: quiet material on reading surfaces, precise controls and visible selected states. */
+@media screen {
+ html[data-season="winter"] {
+  --ds-metal:linear-gradient(120deg,#ffffff2b,transparent 62%),repeating-linear-gradient(0deg,#ffffff03 0 1px,transparent 1px 3px),linear-gradient(135deg,#e4e1da,#cfccc4);
+  --ds-metal-shadow:inset 0 1px #ffffffb0,inset 0 -1px #736f6522,0 2px 0 #a7a398,3px 7px 12px #30251720;
+ }
+ html[data-design][data-season="winter"] body.working-body[data-page] #content :is(.tb36-conditions,.tb36-finish-panel,.dst-config,.ta-answer-sheet-v18) {border-top-color:#f5f3ed!important;border-left-color:#eeeae1!important;border-right-color:#aaa69a!important;border-bottom-color:#999589!important}
+ html[data-design][data-season="winter"] body.working-body[data-page] #content :is(.tb36-conditions,.tb36-finish-panel) :is(label,legend) {font-size:13px!important;font-weight:600!important;line-height:1.6!important;letter-spacing:0!important}
+ html[data-design][data-season="winter"] body.working-body[data-page] #content :is(.tb36-conditions,.tb36-finish-panel) :is(select,input:not([type=radio]):not([type=checkbox]),textarea) {font-size:14px!important;font-weight:500!important;line-height:1.5!important;letter-spacing:0!important;padding:11px 12px!important;background:#fffefa!important;border-color:#aaa69c!important;border-top-color:#928e84!important;box-shadow:inset 0 1px 2px #413a2e0d!important}
+ html[data-design][data-season="winter"] body.working-body[data-page] #content :is(.tb36-conditions,.tb36-finish-panel) :is(button,summary) {font-size:14px!important;line-height:1.5!important;letter-spacing:-.015em!important}
+ html[data-design][data-season="winter"] body.working-body[data-page] #content .dq61-page-options :is(button,label span) {min-height:42px;display:inline-flex;align-items:center;padding:8px 10px;font-size:13px!important;line-height:1.4!important}
+ html[data-design][data-season="winter"] body.working-body[data-page] #content .dq61-page-options button[aria-pressed=true],
+ html[data-design][data-season="winter"] body.working-body[data-page] #content .dq61-page-options input:checked+span {background:#d9d6ce!important;color:#292824!important;border:1px solid #706d64!important;box-shadow:inset 0 1px 3px #3e392326,0 1px 0 #ffffffb0!important;font-weight:700!important}
+ html[data-design][data-season="winter"] body.working-body[data-page] #content :is(.ds48-preview-toolbar,.creator-canvas-toolbar) {padding:16px 20px!important;border-bottom:1px solid #aaa69b!important;box-shadow:inset 0 1px #ffffffa0}
+ html[data-design][data-season="winter"] body.working-body[data-page] #content :is(.ds48-preview-toolbar,.creator-canvas-toolbar) :is(strong,button) {font-size:14px!important;line-height:1.5!important}
+ html[data-design][data-season="winter"] body.working-body[data-page] #content .dq59-saved {padding:15px 20px!important;color:#514e47!important;background:#faf9f5!important;border-bottom:1px solid #c6c1b6!important}
+ html[data-design][data-season="winter"] body.working-body[data-page] #content .dq61-page-options {border-color:#b4afa3!important}
+ html[data-design][data-season="winter"] body.working-body[data-page] #content .dq-paper-mark {flex:none;vertical-align:middle}
+ @media(max-width:760px){
+ html[data-design][data-season="winter"] body.working-body[data-page] #content .ds48-preview-toolbar {flex-wrap:wrap;gap:10px!important;padding:14px 16px!important}
+ html[data-design][data-season="winter"] body.working-body[data-page] #content .ds48-preview-toolbar>strong {flex:1 1 100%}
+ html[data-design][data-season="winter"] body.working-body[data-page] #content .ds48-preview-toolbar .dq-paper-actions {width:100%;display:flex;justify-content:space-between;gap:8px}
+ html[data-design][data-season="winter"] body.working-body[data-page] #content .ds48-preview-toolbar button {white-space:nowrap}
+ html[data-design][data-season="winter"] body.working-body[data-page] #content .dq59-saved {padding:14px 16px!important;font-size:13px!important}
+ }
+}
+
+/* Winter printed stack. Under-sheets are decorative blank paper, not extra document pages. */
+@media screen {
+ html[data-design][data-season="winter"] body.working-body[data-page] #content :is(.dq61-sample-window,.dq59-canvas .creator-paper-stage) .ds48-paper-scene {padding:clamp(35px,6vw,82px) clamp(32px,6vw,80px)!important;overflow:visible!important}
+ html[data-design][data-season="winter"] body.working-body[data-page] #content :is(.dq61-sample-window,.dq59-canvas .creator-paper-stage) .ds48-paper-position {
+  position:relative!important;isolation:isolate;transform:rotate(-.65deg)!important;transform-origin:50% 48%;
+  border:1px solid #e1ddd4!important;box-shadow:1px 2px 2px #42311b33,6px 10px 16px #30201130!important;
+ }
+ html[data-design][data-season="winter"] body.working-body[data-page] #content :is(.dq61-sample-window,.dq59-canvas .creator-paper-stage) .ds48-paper-position::before,
+ html[data-design][data-season="winter"] body.working-body[data-page] #content :is(.dq61-sample-window,.dq59-canvas .creator-paper-stage) .ds48-paper-position::after {
+  content:"";display:block!important;position:absolute;pointer-events:none;width:100%;height:100%;border:1px solid #d7d1c4;border-radius:1px;
+ }
+ html[data-design][data-season="winter"] body.working-body[data-page] #content :is(.dq61-sample-window,.dq59-canvas .creator-paper-stage) .ds48-paper-position::before {
+  inset:7px auto auto 7px;z-index:-2;transform:rotate(1.65deg);background:linear-gradient(120deg,#fffefb,#eeebe2);box-shadow:1px 2px 0 #b8af9d,7px 12px 18px #36230e4a;
+ }
+ html[data-design][data-season="winter"] body.working-body[data-page] #content :is(.dq61-sample-window,.dq59-canvas .creator-paper-stage) .ds48-paper-position::after {
+  inset:3px auto auto -4px;z-index:-1;transform:rotate(-.65deg);background:#faf9f4;box-shadow:1px 2px 0 #c9c2b2,3px 5px 6px #30210c33;
+ }
+ @media(max-width:760px){html[data-design][data-season="winter"] body.working-body[data-page] #content :is(.dq61-sample-window,.dq59-canvas .creator-paper-stage) .ds48-paper-scene {padding:30px 28px!important}}
+}
+
+/* Compact shelf tickets: price selection above two distinct purchase keys. */
+@media screen {
+ html[data-design] body.working-body #content .ms-shop .ms-volume {grid-template-rows:auto auto 1fr;align-content:start}
+ html[data-design] body.working-body #content .ms-shop :is(.ms-book-info,.ms-formats) {box-sizing:border-box;width:min(192px,calc(100% - 42px));justify-self:center}
+ html[data-design] body.working-body #content .ms-shop .ms-book-info {margin-top:8px;padding:9px 10px 7px;background:linear-gradient(115deg,#d4cfc3,#c3bdae);border-color:#a39a89;box-shadow:inset 0 1px #f5f1e4,2px 2px 4px #38291840}
+ html[data-design] body.working-body #content .ms-shop .ms-book-info small {font-size:12px}
+ html[data-design] body.working-body #content .ms-shop .ms-book-info h3 {font-size:15px;min-height:0;line-height:1.4}
+ html[data-design] body.working-body #content .ms-shop .ms-formats {justify-content:flex-start;gap:9px;padding:0 10px 10px;align-self:start;background:repeating-linear-gradient(0deg,#ffffff08 0 1px,#00000003 1px 2px),linear-gradient(115deg,#d4cfc3,#c3bdae);border-color:#a39a89;box-shadow:inset 0 -1px #eee8d9,2px 3px 4px #38291840}
+ html[data-design] body.working-body #content .ms-shop .ms-choice {grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+ html[data-design] body.working-body #content .ms-shop .ms-pick {flex-direction:column;justify-content:center;gap:3px;min-height:48px;padding:6px 2px;font-size:12px;line-height:1.25;border-color:#ada493;background:#d9d3c6;box-shadow:none}
+ html[data-design] body.working-body #content .ms-shop .ms-pick b {margin:0;font-size:13px;color:#343430}
+ html[data-design] body.working-body #content .ms-shop .ms-pick[aria-pressed=true] {border-color:#8e897f;background:#bdb5a5;box-shadow:inset 0 1px 2px #38342c16}
+ html[data-design] body.working-body #content .ms-shop .ms-acts {display:grid;grid-template-columns:.8fr 1.2fr;gap:6px;padding-top:8px;border-top:1px solid #a89f8d}
+ html[data-design] body.working-body #content .ms-shop :is(.ms-add,.ms-buy-now) {width:100%;min-width:0;min-height:40px;padding:6px 2px;font-size:12px;line-height:1.3;white-space:nowrap}
+ html[data-design] body.working-body #content .ms-shop .ms-add {background:linear-gradient(#e0dcd2,#bdb7aa);color:#403e39;border-color:#aaa59a;box-shadow:inset 0 1px #fff,0 2px 1px #746d6040}
+ html[data-design] body.working-body #content .ms-shop .ms-add:disabled {opacity:.65;box-shadow:inset 0 1px 2px #0002}
+ html[data-design] body.working-body #content .ms-shop .ms-note {min-height:0;font-size:11px;line-height:1.45}
+ html[data-design] body.working-body #content .ms-shop .ms-note:empty {display:none}
+ @media(max-width:760px) {
+  html[data-design] body.working-body #content .ms-shop :is(.ms-book-info,.ms-formats) {width:calc(100% - 24px);max-width:192px}
+  html[data-design] body.working-body #content .ms-shop .ms-book-info {padding:6px 5px 4px}
+  html[data-design] body.working-body #content .ms-shop .ms-book-info h3 {display:none}
+  html[data-design] body.working-body #content .ms-shop .ms-formats {padding:0 5px 5px;gap:4px}
+  html[data-design] body.working-body #content .ms-shop .ms-pick b {font-size:12px}
+  html[data-design] body.working-body #content .ms-shop .ms-acts {gap:4px}
+ }
+}
+
+/* User reference: retain the book maker's original photographed paper and pencil. */
+@media screen {
+ html[data-design][data-season="winter"] body.working-body[data-page] #content :is(.dq61-sample-window,.dq59-canvas .creator-paper-stage) .ds48-paper-scene {
+  display:block!important;position:relative!important;width:100%!important;max-width:none!important;height:auto!important;min-height:0!important;aspect-ratio:4/5!important;padding:0!important;margin:0!important;
+  background:#c6b49c url('/app/assets/editorial/paper-flatlay-v15.webp') center/100% auto no-repeat!important;background-blend-mode:multiply!important;
+  border:0!important;border-radius:0!important;box-shadow:none!important;overflow:hidden!important;
+ }
+ html[data-design][data-season="winter"] body.working-body[data-page] #content :is(.dq61-sample-window,.dq59-canvas .creator-paper-stage) .ds48-paper-position {
+  position:absolute!important;inset:7.109375% auto auto 11.1328125%!important;width:76.85546875%!important;max-width:none!important;height:auto!important;aspect-ratio:210/297!important;margin:0!important;padding:0!important;
+  transform:none!important;border:0!important;border-radius:0!important;box-shadow:none!important;overflow:hidden!important;background:#fff!important;
+ }
+ html[data-design][data-season="winter"] body.working-body[data-page] #content :is(.dq61-sample-window,.dq59-canvas .creator-paper-stage) .ds48-paper-position::before,
+ html[data-design][data-season="winter"] body.working-body[data-page] #content :is(.dq61-sample-window,.dq59-canvas .creator-paper-stage) .ds48-paper-position::after {content:none!important;display:none!important}
+ @media(min-width:1001px) {
+  html[data-design][data-season="winter"] body.working-body[data-page] #content :is(.dq59-setup,.dq59-work:has(.dq59-canvas)) {grid-template-columns:320px minmax(0,1fr)!important;gap:20px!important}
+ }
+}
+
+@media screen and (min-width:1001px) {
+ html[data-design][data-season="winter"] body.working-body[data-page="teacher"] #content>.dq61-surface,
+ html[data-design][data-season="winter"] body.working-body[data-page="student"] #content .sd-downloads:has(.sd-print) {padding-inline:0!important}
+ html[data-design][data-season="winter"] body.working-body[data-page] #content .dq61-sample-window {border-inline:1px solid transparent;box-sizing:border-box}
+}
+
+/* Same winter desk as the shelf; original photograph objects retain their pixel geometry. */
+@media screen {
+ html[data-design][data-season="winter"] body.working-body[data-page] #content :is(.dq61-sample-window,.dq59-canvas .creator-paper-stage) .ds48-paper-scene {
+  background:linear-gradient(#00000008,#00000020),var(--ds-desk-image) center/cover!important;background-blend-mode:normal!important;
+ }
+ html[data-design][data-season="winter"] body.working-body[data-page] #content :is(.dq61-sample-window,.dq59-canvas .creator-paper-stage) .ds48-paper-scene::before {
+  content:""!important;display:block!important;position:absolute!important;inset:0!important;width:100%!important;height:100%!important;z-index:0!important;pointer-events:none;transform:none!important;
+  background:url('/app/assets/editorial/paper-flatlay-v15.webp') center/100% auto no-repeat!important;
+  mask:url('/app/assets/editorial/paper-flatlay-object-mask.svg') center/100% auto no-repeat;
+  -webkit-mask:url('/app/assets/editorial/paper-flatlay-object-mask.svg') center/100% auto no-repeat;
+ }
+ html[data-design][data-season="winter"] body.working-body[data-page] #content :is(.dq61-sample-window,.dq59-canvas .creator-paper-stage) .ds48-paper-position {z-index:1!important}
+}
+
+@media screen {
+ html[data-design][data-season="winter"] body.working-body[data-page] #content :is(.dq61-sample-window,.dq59-canvas .creator-paper-stage) .ds48-paper-scene::before {z-index:1!important}
+ html[data-design][data-season="winter"] body.working-body[data-page] #content :is(.dq61-sample-window,.dq59-canvas .creator-paper-stage) .ds48-paper-scene::after {
+  content:""!important;display:block!important;position:absolute!important;inset:0!important;width:100%!important;height:100%!important;z-index:0!important;pointer-events:none;transform:none!important;
+  background:url('/app/assets/editorial/paper-flatlay-object-shadow.svg') center/100% auto no-repeat!important;
+ }
+ html[data-design][data-season="winter"] body.working-body[data-page] #content :is(.dq61-sample-window,.dq59-canvas .creator-paper-stage) .ds48-paper-position {z-index:2!important}
+}
+
+/* User-selected exception: only the two print desks use summer B ash. */
+@media screen {
+ html[data-design] body.working-body[data-page] #content#content :is(.dq61-sample-window,.dq59-canvas .creator-paper-stage) .ds48-paper-scene {
+  background-color:#d5ccba!important;
+  background-image:url('/app/assets/textures/seasonal-wood-atlas.png')!important;
+  background-position:100% 0%!important;background-size:200% 200%!important;background-repeat:no-repeat!important;background-blend-mode:normal!important;
+ }
+}
+
+/* Final user reference: both print desks match the book maker's untouched photograph. */
+@media screen {
+ html[data-design] body.working-body[data-page] #content#content :is(.dq61-sample-window,.dq59-canvas .creator-paper-stage) .ds48-paper-scene {
+  background:#eee5d9 url('/app/assets/editorial/paper-flatlay-v15.webp') center/100% auto no-repeat!important;background-blend-mode:normal!important;
+ }
+ html[data-design] body.working-body[data-page] #content#content :is(.dq61-sample-window,.dq59-canvas .creator-paper-stage) .ds48-paper-scene::before,
+ html[data-design] body.working-body[data-page] #content#content :is(.dq61-sample-window,.dq59-canvas .creator-paper-stage) .ds48-paper-scene::after {content:none!important;display:none!important}
+}
+
+/* Reading-first hierarchy: quiet controls, one strong action, intact physical desks. */
+@media screen {
+ html[data-design] body.working-body[data-page]:not([data-page="home"]) #content {
+  --ds-metal-shadow:inset 0 1px #ffffff80,0 2px 5px #30251712;
+  --ds-key:linear-gradient(#595956,#42423f);
+  --ds-key-shadow:inset 0 1px #ffffff30,0 1px 2px #0003;
+ }
+ html[data-design] body.working-body[data-page] #content#content :is(.ssp-desk-controls,.ssil-review,.dst-config,.sl54-unit-side,.creator-config,.tb36-conditions,.tb36-review-panel,.tb36-finish-panel,.csat-settings,.ta-answer-sheet-v18,.bf62-panel) {
+  background:linear-gradient(125deg,#e9e7e1,#dedbd3)!important;border:1px solid #c5c1b7!important;box-shadow:inset 0 1px #fff8,0 2px 5px #30251712!important;
+ }
+ html[data-design] body.working-body[data-page] #content#content :is(.ssp-desk-controls,.ssil-review,.dst-config,.sl54-unit-side,.creator-config,.tb36-conditions,.tb36-review-panel,.tb36-finish-panel,.csat-settings,.ta-answer-sheet-v18,.bf62-panel) button:not(:disabled):not(:is(.dst-start,.ssp-plan-primary,.tb36-primary,.creator-print,.sl54-primary,[data-exam-next],[data-exam-forward],[data-exam-submit],[data-exam-retry],[data-exam-finish-early],[data-exam-confirm-submit],.account-primary)) {
+  background:#f4f3ef!important;border:1px solid #c8c4ba!important;box-shadow:inset 0 1px #fff9!important;color:#42413c!important;
+ }
+ html[data-design] body.working-body[data-page] #content#content :is(.tb36-modes,.dsh-tabs) {background:#e4e2dc!important;border:1px solid #c7c3b9!important;box-shadow:inset 0 1px #fff9,0 1px 3px #30251712!important;padding:5px!important;gap:5px!important}
+ html[data-design] body.working-body[data-page] #content#content :is(.tb36-modes,.dsh-tabs)>button {background:transparent!important;border:1px solid transparent!important;box-shadow:none!important;color:#57564f!important;transform:none!important}
+ html[data-design] body.working-body[data-page] #content#content :is(.tb36-modes,.dsh-tabs)>button[aria-pressed=true] {background:linear-gradient(#fbfaf7,#eeeae2)!important;border-color:#b4aea1!important;box-shadow:inset 0 1px #fff,0 1px 2px #51483820!important;color:#292a27!important}
+ html[data-design] body.working-body[data-page] #content#content :is(.tb36-modes,.dsh-tabs)>button::before,
+ html[data-design] body.working-body[data-page] #content#content :is(.tb36-modes,.dsh-tabs)>button::after {display:none!important}
+ html[data-design] body.working-body[data-page] #content#content :is(.dq-paper-styles button[aria-pressed=true],.bf62-tabs [aria-selected=true]) {background:#d6d2c8!important;color:#302f2b!important;border:1px solid #969083!important;box-shadow:inset 0 1px 2px #00000012!important}
+ html[data-design] body.working-body[data-page] #content#content :is(.tb36-quiet,.dq61-sample-link,.account-text-button,.account-password-toggle) {background:transparent!important;border-color:transparent!important;box-shadow:none!important;color:#514e46!important;text-decoration:underline;text-underline-offset:4px}
+ html[data-design] body.working-body[data-page] #content#content .ds-timed :is(.dte-clock,.dte-summary) {box-shadow:none!important;border-color:#c9c4ba!important;background:#efede6!important}
+ html[data-design] body.working-body[data-page] #content#content .ms-shop :is(.ms-book-info,.ms-formats) {box-shadow:inset 0 1px #ffffff30,0 1px 3px #38291822!important}
+ html[data-design] body.working-body[data-page] #content#content .ms-shop .ms-add {background:linear-gradient(#ded9cc,#c7c0b2)!important;box-shadow:inset 0 1px #ffffff80,0 1px 1px #38291820!important}
+ html[data-design] body.working-body[data-page] #content#content .ms-shop .ms-buy-now {background:var(--ds-key)!important;box-shadow:var(--ds-key-shadow)!important}
+ html[data-design] body.working-body[data-page] #content#content .ms-shop .ms-cart-button {background:#f0eee7!important;color:#403e38!important;border-color:#bbb5a8!important;box-shadow:none!important}
+ html[data-design] body.working-body:is([data-page="account"],[data-page="login"],[data-page="account-settings"]) #content#content :is(.account-login-panel,.account-section,.account-settings,.ap19-content) {background:#fafaf7!important;border:1px solid #d1cec6!important;box-shadow:0 2px 7px #37332b0d!important}
+}
+
+@media screen {
+ html[data-design] body.working-body[data-page] #content#content :is(.tb36-modes,.dsh-tabs)>button[aria-pressed=true] :is(svg,.tb36-mode-icon) {color:#3b3c37!important;stroke:currentColor!important;filter:none!important}
+}
+
+/* Study desks: full photographic-style ash grain, never a tiled laminate pattern. */
+@media screen {
+ html[data-design] body.working-body[data-page="student"] #content#content :is(.ssil-main,.dst-layout) {
+  background-color:#d7bea0!important;
+  background-image:url('/app/assets/textures/desk-bookmaker-empty-1127.png')!important;
+  background-position:center!important;background-size:cover!important;background-repeat:no-repeat!important;background-blend-mode:normal!important;
+  border:1px solid #b89e7e!important;border-top-color:#e8d5b8!important;border-radius:4px!important;
+  box-shadow:inset 0 1px 1px #fff8,0 3px 0 #b19a7f,0 7px 12px #4c39251c!important;
+ }
+}
+
+/* Study stays dark; timed practice keeps its pale photographic desk. */
+@media screen {
+ html[data-design] body.working-body[data-page="student"] #content#content .ssil-main {
+  background-image:url('/app/assets/textures/desk-smoked-oak-D-1126.png')!important;background-color:#99816b!important;
+  border-color:#a08a70!important;border-top-color:#cab89e!important;box-shadow:inset 0 1px #fff5,0 3px 0 #78634b,0 7px 12px #34241625!important;
+ }
+ /* Separate the shelf's lit top, solid front edge and shadow on the back panel. */
+ html[data-design] body.working-body #content#content .ms-shop .ms-stage {padding-bottom:36px}
+ html[data-design] body.working-body #content#content .ms-shop .ms-stage::before {
+  content:"";display:block;position:absolute;left:-18px;right:-18px;bottom:21px;height:15px;z-index:-1;pointer-events:none;
+  background:linear-gradient(#47342322,#ffffff26),var(--ds-desk-image) center 53%/900px auto;
+  border-top:1px solid #e4cfac;border-bottom:1px solid #f0d9b366;box-shadow:inset 0 2px 4px #30200f36;
+ }
+ html[data-design] body.working-body #content#content .ms-shop .ms-stage::after {
+  bottom:3px;height:18px;left:-18px;right:-18px;border-top:1px solid #b99a70;border-bottom:3px solid #675037;
+  background:linear-gradient(#ffffff12,#2f1e114a),var(--ds-desk-image) center 72%/900px auto;
+  box-shadow:inset 0 1px #e5c9a45c,inset 0 -1px #29190f66,0 3px 3px #2e1c0e66,0 10px 11px #30201140;
+ }
+ html[data-design] body.working-body #content#content .ms-shop .ms-book-info {
+  position:relative;margin-top:9px;padding-top:13px;border-top-color:#e6dfcf;
+  box-shadow:inset 0 1px #ffffff50,0 1px 2px #30251740!important;
+ }
+ html[data-design] body.working-body #content#content .ms-shop .ms-book-info::before,
+ html[data-design] body.working-body #content#content .ms-shop .ms-book-info::after {
+  content:"";position:absolute;top:5px;width:4px;height:4px;border-radius:50%;pointer-events:none;
+  background:linear-gradient(135deg,#ede8db 35%,#756f62 45%,#756f62 55%,#c6beac 65%);border:1px solid #918878;box-shadow:0 1px 1px #30251730;
+ }
+ html[data-design] body.working-body #content#content .ms-shop .ms-book-info::before {left:5px}
+ html[data-design] body.working-body #content#content .ms-shop .ms-book-info::after {right:5px}
+ html[data-design] body.working-body #content#content .ms-shop .ms-formats {box-shadow:inset 0 -1px #b1a796,0 2px 2px #30251730!important}
+ html[data-design] body.working-body #content#content .ms-shop .ms-book-cover {transform-origin:50% 95%;transition:transform 180ms ease-out,box-shadow 180ms ease-out;will-change:auto}
+ @media(hover:hover) and (pointer:fine) {
+  html[data-design] body.working-body #content#content .ms-shop .ms-book-cover:hover {transform:perspective(1000px) translateY(-5px) rotateY(-3deg) rotateZ(-.6deg);box-shadow:1px 1px #c9c6bc,3px 2px #fffdf5,5px 3px #bbb7ab,7px 4px #f2eee4,8px 5px 1px #6a604e,14px 17px 14px #24170d55}
+ }
+ html[data-design] body.working-body #content#content .ms-shop a.ms-book-cover:focus-visible {transform:perspective(1000px) translateY(-4px) rotateY(-3deg)}
+ @media(prefers-reduced-motion:reduce) {
+  html[data-design] body.working-body #content#content .ms-shop .ms-book-cover {transition:none!important}
+  html[data-design] body.working-body #content#content .ms-shop .ms-book-cover:is(:hover,:focus-visible) {transform:perspective(1000px) rotateY(-7deg)!important}
+ }
+}
+
+@media screen {
+ html[data-design] body.working-body #content#content .ms-shop .ms-bookshelf {container-type:inline-size}
+ html[data-design] body.working-body #content#content .ms-shop .ms-volume:nth-child(4n+1) {--shelf-grain-x:0%}
+ html[data-design] body.working-body #content#content .ms-shop .ms-volume:nth-child(4n+2) {--shelf-grain-x:33.333333%}
+ html[data-design] body.working-body #content#content .ms-shop .ms-volume:nth-child(4n+3) {--shelf-grain-x:66.666667%}
+ html[data-design] body.working-body #content#content .ms-shop .ms-volume:nth-child(4n) {--shelf-grain-x:100%}
+ html[data-design] body.working-body #content#content .ms-shop .ms-stage::before,
+ html[data-design] body.working-body #content#content .ms-shop .ms-stage::after {background-size:auto,calc(100cqw + 36px) auto;background-position:0 0,var(--shelf-grain-x) 60%}
+ @media(max-width:760px) {
+  html[data-design] body.working-body #content#content .ms-shop .ms-volume:nth-child(2n+1) {--shelf-grain-x:0%}
+  html[data-design] body.working-body #content#content .ms-shop .ms-volume:nth-child(2n) {--shelf-grain-x:100%}
+ }
+}
+
+@media screen and (min-width:761px) and (max-width:1000px) {
+ html[data-design] body.working-body #content#content .ms-shop .ms-volume:nth-child(3n+1) {--shelf-grain-x:0%}
+ html[data-design] body.working-body #content#content .ms-shop .ms-volume:nth-child(3n+2) {--shelf-grain-x:50%}
+ html[data-design] body.working-body #content#content .ms-shop .ms-volume:nth-child(3n) {--shelf-grain-x:100%}
+}
+@media screen and (max-width:340px) {
+ html[data-design] body.working-body #content#content .ms-shop .ms-volume:nth-child(n) {--shelf-grain-x:0%}
 }

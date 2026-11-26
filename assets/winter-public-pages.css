@@ -1,0 +1,81 @@
+/* Winter public pages: the D oak desk, white reading paper and greige keys.
+   Screen only; content, checkout state and print styles stay with each page. */
+@media screen {
+ html:root {
+  --wp-ink:#302f2c;--wp-muted:#59564f;--wp-line:#b4aea1;
+  --wp-oak:url('/app/assets/textures/desk-smoked-oak-D-1126.png');
+  --wp-panel:linear-gradient(130deg,#e4e1da,#c8c5bd);
+  --wp-key:linear-gradient(125deg,#ffffff16,transparent 60%),linear-gradient(#6c6b6a,#454444);
+  --pb-paper:#e8e7e3;--pb-card:#fff;--pb-white:#fff;
+  --pb-ink:#302f2c;--pb-head:#302f2c;--pb-ink2:#45423c;--pb-muted:#59564f;
+  --pb-line:#c8c3b8;--pb-line2:#aca598;--pb-rule:#a09d93;
+  --pb-panel:#e4e1da;--pb-panel-line:#b4aea1;--pb-accent:#454444;--pb-accent-ui:#454444;
+  --pb-nav:#45423c;--pb-btn:#585653;--pb-btn-h:#454444;--pb-btn-edge:#373633;
+  --pb-soft:#ebe8e1;--pb-soft2:#dedad0;
+ }
+ html body:is(.payment-flow,.ds-doc) {
+  --bg:#e8e7e3;--ink:#302f2c;--ink2:#45423c;--sub:#59564f;--mut:#59564f;--mut2:#615d55;
+  --brand:#454444;--line:#c8c3b8;--line2:#aca598;--sky0:#eeece6;--sky1:#e4e1da;--sky2:#e8e7e3;--card:#fff;
+  color:var(--wp-ink)!important;background-color:#d2c2aa!important;
+  background-image:linear-gradient(120deg,#ffffff18,#3526150c),var(--wp-oak)!important;
+  background-size:cover!important;background-position:center top!important;background-attachment:fixed!important;
+ }
+ html body:is(.payment-flow,.ds-doc) .ds-head {
+  background:var(--wp-panel)!important;border-bottom:1px solid #a09d93!important;
+  box-shadow:inset 0 1px #ffffff80,0 2px 5px #30251726!important;
+ }
+ html body:is(.payment-flow,.ds-doc) .ds-logo {color:#454444!important;text-shadow:0 1px #fff9}
+ html body:is(.payment-flow,.ds-doc) .ds-logo :is(.d,.s) {color:inherit!important}
+ html body:is(.payment-flow,.ds-doc) :is(.ds-menu a,.ds-acct a) {color:#373633!important}
+ html body:is(.payment-flow,.ds-doc) .ds-acct a[data-account-secondary] {
+  background:var(--wp-key)!important;color:#fff!important;border:1px solid #454444;
+  box-shadow:inset 0 1px #ffffff66,0 2px #454444!important;
+ }
+ html body.payment-flow :is(h1,h2,h3,.pname,.price,dt,dd,label,.pm-t) {color:#302f2c!important}
+ html body.payment-flow :is(.crumb,.fn,.hint,.pi,.fix,.sum1,.pb-help,.files small) {color:#514d45!important}
+ html body.payment-flow :is(.card,#prod,.cartbox,.pb-help) {
+  background:#fff!important;border-color:#c8c3b8!important;border-radius:4px!important;
+  box-shadow:0 1px #fff,1px 3px #c1b9aa,3px 7px 12px #493b2824!important;
+ }
+ html body.payment-flow .pb-help {padding:12px 16px}
+ html body.payment-flow :is(input:not([type=checkbox]):not([type=radio]),select,textarea) {
+  background:#fff!important;color:#302f2c!important;border-color:#a39c8e!important;
+  border-radius:4px!important;box-shadow:inset 0 1px 2px #352d2212!important;
+ }
+ html body.payment-flow input::placeholder {color:#6b655b!important}
+ html body.payment-flow :is(.btn.ghost,.chk.pm,.chk.all,.pb-flow,.band) {
+  background:var(--wp-panel)!important;color:#373633!important;border-color:#aaa395!important;
+ }
+ html body.payment-flow .chk.pm:has(input:checked) {box-shadow:inset 0 0 0 2px #59564f,0 2px #c1b9aa!important}
+ html body.payment-flow .pb-flow li[aria-current=step] {color:#302f2c!important}
+ html body.payment-flow .pb-flow li[aria-current=step] b {background:#585653!important;color:#fff!important}
+ html body.payment-flow .btn.pri {
+  background:var(--wp-key)!important;color:#fff!important;border:1px solid #454444!important;border-top-color:#9c9890!important;
+  border-radius:4px!important;box-shadow:inset 0 1px #ffffff66,0 2px #454444,2px 4px 5px #0002!important;
+  text-shadow:0 1px #30302f;
+ }
+ html body.payment-flow .btn.pri:disabled {background:#d9d6cf!important;color:#625d53!important;text-shadow:none;box-shadow:none!important;border-color:#bab3a7!important}
+ html body.payment-flow :is(.card.pb-fail,#msg.err,.msg.err) {border-color:#c69b90!important}
+ html body.ds-doc .wrap {
+  box-sizing:border-box;background:#fff!important;color:#302f2c!important;
+  padding:clamp(25px,4vw,48px)!important;margin-top:32px;margin-bottom:44px;
+  border:1px solid #c8c3b8;border-top-color:#fff;border-radius:3px;
+  box-shadow:0 1px #fff,1px 3px #c1b9aa,3px 7px 12px #493b2824;
+ }
+ html body.ds-doc .wrap :is(h1,h2,h3,p,li,th,td,dt,dd,.no) {color:#302f2c!important}
+ html body.ds-doc .wrap :is(.eff,.muted,.small) {color:#59564f!important}
+ html body.ds-doc .wrap a {color:#454444!important;text-decoration:underline;text-underline-offset:3px}
+ html body.ds-doc .wrap :is(.callout,.pb-sum,th) {background:#eeece6!important;color:#302f2c!important;border-color:#c8c3b8!important}
+ html body.ds-doc .wrap td {background:#fff!important;border-color:#c8c3b8!important}
+ html body:is(.payment-flow,.ds-doc) footer.sitefoot,
+ html body:is(.payment-flow,.ds-doc) footer.sitefoot .biz {
+  background:#d5d2ca!important;color:#45423c!important;border-top-color:#aaa395!important;
+ }
+ html body:is(.payment-flow,.ds-doc) footer.sitefoot :is(p,a,b,.copy) {color:#45423c!important}
+ html body:is(.payment-flow,.ds-doc) footer.sitefoot .policy a:hover {background:#e4e1da!important}
+ html body:is(.payment-flow,.ds-doc) :focus-visible {outline:3px solid #454444!important;outline-offset:3px}
+ @media(max-width:600px) {
+  html body.ds-doc .wrap {padding:25px 20px!important;margin-top:22px;margin-bottom:30px}
+  html body:is(.payment-flow,.ds-doc) {background-attachment:scroll!important}
+ }
+}

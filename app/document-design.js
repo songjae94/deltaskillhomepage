@@ -6,17 +6,18 @@
   const designs = [
     {id:'DS-FOCUS-V2',name:'FOCUS',label:'집중형',desc:'큰 문항 번호 · 무지 풀이 공간',short:'집중해서 풀기'},
     {id:'DS-MARGIN-V2',name:'MARGIN',label:'기록형',desc:'첫 생각 · 막힘 · 다음 시도 기록면',short:'풀이를 돌아보기'},
-    {id:'DS-SEQUENCE-V2',name:'SEQUENCE',label:'판단형',desc:'한 문항씩 세 판단 · 다시 풀기 기록면',short:'판단을 차례로 기록하기'}
+    {id:'DS-SEQUENCE-V2',name:'SEQUENCE',label:'판단형',desc:'한 문항씩 세 판단 · 다시 풀기 기록면',short:'판단을 차례로 기록하기'},
+    {id:'DS-BAND-V1',name:'타이틀형',label:'타이틀형',desc:'상단의 긴 짙은 남색 띠 · 흰 제목',short:'상단 띠로 제목 구분'}
   ];
   let chosen='DS-FOCUS-V2';
-  try { const id=localStorage.getItem('ds-document-design-v1');if(designs.some(x=>x.id===id))chosen=id; } catch {}
+  // A newly opened page starts with FOCUS; explicit saved compositions restore their own design.
   const selected=()=>designs.find(x=>x.id===chosen);
   const sampleName = id => id==='DS-MARGIN-V2'?'modern-margin':id==='DS-SEQUENCE-V2'?'modern-sequence':'modern-focus';
   function picker() {
-    return `<section class="dd-design-picker" aria-label="내지 디자인"><div class="dd-heading"><h3>내지 디자인</h3><span>문항 배치와 따로 선택</span></div><div class="dd-options">${designs.map(d=>`<button type="button" data-document-design="${d.id}" aria-pressed="${chosen===d.id}" aria-label="${d.name} 선택"><span class="dd-thumb"><img src="public-data/interior-samples/${sampleName(d.id)}.webp" alt="${d.name} 문항 정보 없는 이번 웹출력 시안" loading="lazy" width="1191" height="1685"></span><small class="dd-origin-label">웹출력 시안</small><strong>${d.name}</strong><small>${d.desc}</small><i aria-hidden="true">${chosen===d.id?'선택됨':'선택'}</i></button>`).join('')}</div><div class="dd-selected"><b>${selected().name}</b><span>${selected().desc}</span><button type="button" data-document-design-sample>실물 원형과 웹출력 비교 ↗</button></div><p class="dd-note">${chosen==='DS-FOCUS-V2'?'문제와 원 해설을 그대로 구성합니다.':'문제와 원 해설을 유지하고 문항별 기록면을 함께 구성합니다.'}</p></section>`;
+    return `<section class="dd-design-picker" aria-label="내지 디자인"><div class="dd-heading"><h3>내지 디자인</h3><span>문항 배치와 따로 선택</span></div><div class="dd-options">${designs.map(d=>`<button type="button" data-document-design="${d.id}" aria-pressed="${chosen===d.id}" aria-label="${d.name} 선택"><span class="dd-thumb"><img src="public-data/interior-samples/${d.id==='DS-BAND-V1'?'modern-band.svg':sampleName(d.id)+'.webp'}" alt="${d.name} 문항 정보 없는 이번 웹출력 시안" loading="lazy" width="1191" height="1685"></span><small class="dd-origin-label">웹출력 시안</small><strong>${d.name}</strong><small>${d.desc}</small><i aria-hidden="true">${chosen===d.id?'선택됨':'선택'}</i></button>`).join('')}</div><div class="dd-selected"><b>${selected().name}</b><span>${selected().desc}</span><button type="button" data-document-design-sample>실물 원형과 웹출력 비교 ↗</button></div><p class="dd-note">${['DS-FOCUS-V2','DS-BAND-V1'].includes(chosen)?'문제와 원 해설을 그대로 구성합니다.':'문제와 원 해설을 유지하고 문항별 기록면을 함께 구성합니다.'}</p></section>`;
   }
   function records(questions) {
-    if(chosen==='DS-FOCUS-V2')return [];
+    if(['DS-FOCUS-V2','DS-BAND-V1'].includes(chosen))return [];
     return questions.map((q,i)=>({type:'design-record',designRecord:true,offset:i,questions:[q],items:[q]}));
   }
   function recordSheet(page,{title='',unit='',index=0,total=1}={}) {
@@ -26,6 +27,10 @@
   }
   const printCSS=`body[data-document-design]{--dd-ink:#292d36;color:#292d36}body[data-document-design] .paper{padding:16mm 17mm}body[data-document-design] .head{height:24mm;border:0;border-bottom:.25mm solid #c4c6dd;margin-bottom:8mm}body[data-document-design] .brand{font-size:8px;letter-spacing:.05em;color:#858997;border:0;padding:0}body[data-document-design] .brand strong{font-size:8px;font-weight:500;letter-spacing:.06em;color:#555969}body[data-document-design] .brand em{color:inherit;font-style:normal}body[data-document-design] .head h1{font-size:24px!important;font-weight:600;letter-spacing:-.04em;line-height:1.25;margin:5mm 0 2mm;color:#292d36}body[data-document-design] .head small{font-size:9px;color:#9296a0}body[data-document-design] .student{font-size:8px;color:#8b8f9b;right:17mm}body[data-document-design] .body{height:220mm}body[data-document-design] .qhead{border:0;margin-bottom:4mm;padding:0;align-items:baseline}body[data-document-design] .qhead b{font-size:20px!important;font-weight:550;letter-spacing:-.03em;color:#4f5065}body[data-document-design] .qhead small{font-size:8px;color:#9396a1}body[data-document-design] .question{border:0}body[data-document-design] .questions{column-gap:11mm;row-gap:8mm}body[data-document-design] .questions:before{border-left:.2mm solid #e2e3ec!important}body[data-document-design] .ds48-writing{background:none;border-top:.2mm solid #e9eaf0;color:#b0b2bd;font-size:8px}body[data-document-design] .ds48-writing small{display:none}body[data-document-design] .foot{left:17mm;right:17mm;bottom:11mm;border:0;font-size:8px;color:#989ca6;letter-spacing:.01em}body[data-document-design] .solhead{border-color:#e5e6ee}body[data-document-design] .solhead b{font-size:12px;font-weight:600;color:#686a85}body[data-document-design] .dd-record-body{display:grid;height:218mm;gap:10mm}body[data-document-design] .dd-record-body[data-dd-record="margin"]{grid-template-rows:repeat(3,minmax(0,1fr))}body[data-document-design] .dd-record-body[data-dd-record="sequence"]{grid-template-rows:repeat(4,minmax(0,1fr))}body[data-document-design] .dd-record-block{min-height:0;border-top:.2mm solid #dadce8;padding-top:4mm;display:flex;flex-direction:column}body[data-document-design] .dd-record-block>div:first-child{display:flex;gap:4mm;align-items:baseline}body[data-document-design] .dd-record-block b{font:11px Arial;color:#898bb0;letter-spacing:.06em}body[data-document-design] .dd-record-block h2{font-size:14px;letter-spacing:-.025em;margin:0;font-weight:550;color:#3b3f4d}body[data-document-design] .dd-record-block p{font-size:9px;color:#9599a4;margin:2mm 0 5mm;line-height:1.6}body[data-document-design] .dd-writing-lines{flex:1;background:repeating-linear-gradient(to bottom,transparent 0,transparent 8.8mm,#e9eaf0 8.8mm,#e9eaf0 9mm)}body[data-document-design] .dd-record-body[data-dd-record="margin"] .dd-record-block{display:grid;grid-template-columns:33mm minmax(0,1fr);grid-template-rows:auto 1fr;column-gap:8mm;border-top:0}body[data-document-design] .dd-record-body[data-dd-record="margin"] .dd-record-block>div:first-child{grid-row:1 / 3;display:flex;flex-direction:column;align-items:flex-start;gap:3mm;border-top:.4mm solid #b5b7d2;padding-top:3mm}body[data-document-design] .dd-record-body[data-dd-record="margin"] .dd-record-block p{margin:3mm 0 5mm}body[data-document-design] .dd-record-body[data-dd-record="sequence"] .dd-record-block:last-child{border-top:.45mm solid #bbbcd6;padding-top:4mm}body[data-document-design] .dd-record-body[data-dd-record="sequence"] .dd-record-block:last-child h2{font-size:13px}`;
   const paperLines = `
+    body[data-document-design] .brand,body[data-document-design] .brand strong,body[data-document-design] .student,body[data-document-design] .foot {color:#55534f;font-size:10px}
+    body[data-document-design] .qhead small {color:#55534f;font-size:10px}
+    body[data-document-design] .qbody {color:#22221f}
+
     body[data-document-design] .questions{position:relative}
     body[data-document-design] .questions[data-columns="2"][data-divider="on"]::after{
       content:"";position:absolute;top:0;bottom:0;left:50%;border-left:.22mm solid #aeb2ae;pointer-events:none
@@ -39,6 +44,9 @@
     body[data-document-design="DS-MARGIN-V2"] .foot{border-top:.2mm solid #a7adb5;padding-top:2mm}
     body[data-document-design="DS-SEQUENCE-V2"] .head{border-top:.45mm solid #526660;border-bottom:.2mm solid #95a39e;padding-top:2mm}
     body[data-document-design="DS-SEQUENCE-V2"] .foot{border-top:.65mm double #788983;padding-top:2mm}
+    body[data-document-design="DS-BAND-V1"] .head {border:0;padding-bottom:3mm}
+    body[data-document-design="DS-BAND-V1"] .head h1 {display:block;background:#263e5c;color:#fff;margin:3mm 0 2mm;padding:5mm;font-size:24px;line-height:1.4;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+    body[data-document-design="DS-BAND-V1"] .foot {border-top:.2mm solid #aaa69e;padding-top:2mm}
   `;
   function decorateDocument(html) {
     return html.replace(/<body(?=[\s>])/,'<style data-document-design-style>'+printCSS+paperLines+'</style><body data-document-design="'+chosen+'"');
@@ -49,6 +57,12 @@
     window.dispatchEvent(new Event('ds-document-design-change'));return true;
   }
   function openSample() {
+    if(chosen==='DS-BAND-V1') {
+      const dlg=document.createElement('dialog');dlg.className='dd-sample-dialog';
+      dlg.innerHTML='<form method="dialog"><button>닫기</button></form><h2>상단 띠</h2><p>상단의 긴 어두운 띠 안에 제목을 배치합니다.</p><img style="max-width:100%" src="public-data/interior-samples/modern-band.svg" alt="상단 띠 양식 견본">';
+      document.body.append(dlg);dlg.addEventListener('close',()=>dlg.remove());dlg.showModal();return;
+    }
+
     const dialog=document.createElement('dialog');dialog.className='dd-sample-dialog';
     dialog.innerHTML=`<form method="dialog"><button aria-label="견본 닫기">닫기 ×</button></form><h2>${selected().name}</h2><p>${selected().desc}</p><div class="dd-sample-image">견본을 불러오는 중입니다.</div><p class="dd-sample-status">문항 정보를 지운 실물 원형 견본입니다. 이번 웹출력은 같은 학습 구조를 현대적으로 편집한 시안입니다.</p>`;
     document.body.append(dialog);dialog.addEventListener('close',()=>dialog.remove());dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close();});dialog.showModal();

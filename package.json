@@ -1,5 +1,8 @@
 {
   "devDependencies": {
     "playwright-core": "^1.62.1"
+  },
+  "scripts": {
+    "check:design": "node scripts/check-design.cjs"
   }
 }

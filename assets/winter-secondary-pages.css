@@ -1,0 +1,63 @@
+/* Winter D finishing for secondary public pages. No print or summer rules.
+   Keep original photography, bookshelf, question faces and layouts in their source sheets. */
+@media screen {
+ html[data-design]:not([data-season="summer"]) body.working-body:is([data-page="help"],[data-page="account"],[data-page="account-settings"],[data-page="account-password"]) #content {
+  --account-ink:#373735;--account-muted:#5d5b56;--account-accent:#454444;--account-line:#c8c5bd;
+ }
+ html[data-design]:not([data-season="summer"]) body[data-page="help"] #content :is(.help-heading,.help-quick,.help-sidebar,.help-faq,.help-policies) {
+  color:#373735!important;border-color:#c8c5bd!important;
+ }
+ html[data-design]:not([data-season="summer"]) body[data-page="help"] #content :is(h1,h2,h3,summary,.help-quick strong) {color:#373735!important}
+ html[data-design]:not([data-season="summer"]) body[data-page="help"] #content :is(.page-kicker,.help-heading p,.help-quick small,.help-quick span,.help-sidebar p,.help-faq details>div,.help-policies p) {color:#5d5b56!important}
+ html[data-design]:not([data-season="summer"]) body[data-page="help"] #content .v12-help-mark {color:#8c877c!important}
+ html[data-design]:not([data-season="summer"]) body[data-page="help"] #content :is(.help-faq details,.help-quick>a) {border-color:#c8c5bd!important}
+ html[data-design]:not([data-season="summer"]) body[data-page="help"] #content :is(.help-faq a,.help-policies a) {color:#454444!important;text-decoration:underline;text-underline-offset:3px}
+ html[data-design]:not([data-season="summer"]) body[data-page="help"] #content .help-policies {
+  background:#fff!important;border:1px solid #d5d1c8!important;border-radius:2px!important;box-shadow:1px 2px #fdfcf8,2px 3px #c8c5bd!important;
+ }
+ html[data-design]:not([data-season="summer"]) body.working-body[data-page="account"] #content :is(.ap19-role,.ap19-welcome,.ap19-sub-nav,.ap19-sub-nav a,.ap19-sub-nav small,.account-muted,.account-empty p,.account-section-heading>span,.sa55-title>span,.sa55-status:not(.is-error),.sa55-continue>small,.sa55-continue p,.sa55-note,.sa55-empty) {
+  color:#5d5b56!important;
+ }
+ html[data-design]:not([data-season="summer"]) body.working-body[data-page="account"] #content :is(.ap19-role,.ap19-welcome,.ap19-sub-nav a,.ap19-sub-nav small) {font-size:12px!important}
+ html[data-design]:not([data-season="summer"]) body.working-body[data-page="account"] #content :is(h1,h2,h3,.sa55-continue strong) {color:#373735!important}
+ html[data-design]:not([data-season="summer"]) body.working-body[data-page="account"] #content :is(.account-empty,.ap19-main-nav [aria-current]) {
+  background:#dedbd3!important;color:#373735!important;border-color:#a09d93!important;box-shadow:inset 0 1px #ffffff80!important;
+ }
+ html[data-design]:not([data-season="summer"]) body.working-body[data-page="account"] #content :is(.account-text-button,.account-settings-links a,.ap19-main-nav button,.ap19-main-nav a) {color:#454444!important}
+ html[data-design]:not([data-season="summer"]) body.working-body:is([data-page="account-settings"],[data-page="account-password"]) #content :is(.account-settings,.password-surface) {
+  background:#fff!important;border:1px solid #c8c5bd!important;border-top-color:#a09d93!important;border-radius:3px!important;box-shadow:var(--ds-paper-shadow)!important;color:#373735!important;
+ }
+ html[data-design]:not([data-season="summer"]) body.working-body:is([data-page="account-settings"],[data-page="account-password"]) #content :is(h1,h2,label,.account-muted,.account-back,.account-settings-links a) {color:#454444!important}
+ html[data-design]:not([data-season="summer"]) body.working-body[data-page="account"] #content .sa55-paper {
+  --sa55-ink:#373735;--sa55-rule:#c8c5bd;border-color:#a09d93!important;color:#373735!important;
+ }
+ html[data-design]:not([data-season="summer"]) body.working-body[data-page="account"] #content :is(.sa55-primary,.pd17-empty .primary,.pd17-card-actions .primary) {
+  background:var(--ds-key)!important;color:#fff!important;border-color:#454444!important;box-shadow:var(--ds-key-shadow)!important;
+ }
+ html[data-design]:not([data-season="summer"]) body.working-body[data-page="library"] #content .dl63-shop>label {
+  display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:14px 0;color:#454444;font-size:14px;
+ }
+ html[data-design]:not([data-season="summer"]) body.working-body[data-page="library"] #content input[data-sale-search] {
+  width:min(100%,320px);max-width:100%;min-height:44px;padding:9px 12px;background:#fdfdfa;color:#373735;border:1px solid #a09d93;border-radius:4px;font:inherit;box-shadow:inset 0 1px 2px #37332b14;
+ }
+ html[data-design]:not([data-season="summer"]) body.working-body[data-page="library"] #content .ppdf {
+  border-color:#c8c5bd!important;border-radius:2px!important;background:#fff!important;box-shadow:1px 2px #fdfcf8,2px 3px #c8c5bd!important;
+ }
+ /* Two existing login links have different destinations. Preserve both; make the simple #login a quiet link. */
+ html[data-design]:not([data-season="summer"]) body.working-body[data-page="library"] #content a.dl63-point[href="#login"] {
+  display:inline-flex;align-items:center;justify-self:start;min-height:44px;width:auto;padding:4px 0;border:0!important;border-radius:0!important;background:none!important;color:#454444!important;box-shadow:none!important;text-decoration:underline;text-underline-offset:4px;
+ }
+ html[data-design]:not([data-season="summer"]) body.working-body[data-page="library"] #content .library-maker-link {
+  color:#454444!important;border-color:#c8c5bd!important;
+ }
+ html[data-design]:not([data-season="summer"]) body.working-body[data-page="library"] #content .library-maker-link>span:last-child {
+  display:inline-flex;align-items:center;min-height:44px;background:var(--ds-pale-key)!important;color:#454444!important;border:1px solid #c8c5bd;border-radius:4px;box-shadow:0 2px #a09d93;
+ }
+ html[data-design]:not([data-season="summer"]) body.working-body[data-page="csat"] #content .csat-desk>.ssp-paper:has(time[datetime="2026-12-26"]) {
+  background:#fff!important;border:1px solid #d5d1c8!important;border-radius:0!important;box-shadow:1px 2px #fdfcf8,2px 3px #c8c5bd!important;
+ }
+ html[data-design]:not([data-season="summer"]) body.working-body[data-page="csat"] #content time[datetime="2026-12-26"] {color:#454444!important}
+ html[data-design]:not([data-season="summer"]) body.working-body:is([data-page="help"],[data-page="account"],[data-page="account-settings"],[data-page="account-password"],[data-page="library"],[data-page="csat"]) #content :is(a,button,input,select,summary):focus-visible {
+  outline:3px solid #6c6b6a!important;outline-offset:3px!important;
+ }
+}

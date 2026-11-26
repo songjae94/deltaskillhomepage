@@ -1,0 +1,49 @@
+{
+  "date": "2026-11-27",
+  "status": "local-review-baseline",
+  "files": {
+    "assets/site-refinement-1126.css": "23104c9d992da67fe6d9dd1af7ec6a94b916c2e957b084f3da3e727bddf96861",
+    "auth/brand.css": "95bca1cb53e08e40e3481599d61bbc55b5b09c405fcb004ab7e6e3f4c19c0f7c",
+    "app/document-design.js": "08e5ddd9576f5ec313ec60b4557038783cbdbdd44a1580341fb77875f0132235",
+    "app/assets/textures/desk-smoked-oak-D-1126.png": "f38edf3b72ffbedba5b8014ba80f50c93a76373d5a4285d455d4eeeea09bf586",
+    "app/print-surface-v48.css": "dd3f9eba829dc8ed240dd9f6fcdde963420af9e313cf48b0776ddc8ea3bc9742",
+    "assets/design-season.js": "5f8f4e570e4c061b77fab78a22441ced6c42f00bc4fd5b3d4a01b2340a0ead29",
+    "assets/design-season.css": "c7e4d7fc90c4fa3438f14e0f1d7fe2a40b04e11ee41e1eec893c694e53ded991",
+    "app/assets/textures/seasonal-wood-atlas.png": "18172ef5db0e3b10eb00bf2f35a92098a62cdc2224ecadcd00c2960ed335eef9",
+    "app/assets/editorial/winter-pencil-cutout.png": "2f1b58267e4449a18529884b74908474935f1f78e45cd3282be2e9a7ee9810ed",
+    "assets/winter-secondary-pages.css": "b08bdcd57779970d2df07776acc3005f430fa3c260d0729cf39eda86aa2a3765",
+    "assets/winter-public-pages.css": "7ebccdc886961be5af9d3de31eb1048b4e09917ce9a5a99d52074f529e088ed6",
+    "app/print-surface-v48.js": "ed42d952ba0d12484da428d4c399dd3b24b0e4d9a28ab7d8972eb2ecf8abb0f5",
+    "app/assets/editorial/paper-flatlay-v15.webp": "9c2e5ac5b09a92582c8c8d0f914070772ca12f7a5d6389994f3e5bf64380553d",
+    "app/assets/editorial/paper-flatlay-object-mask.svg": "4fe922dd54c669681b9a7b25284ba6bbaff0b8ecc01ba440adbb01ff2ff7b44b",
+    "app/assets/editorial/paper-flatlay-object-shadow.svg": "2ea51f31e3ffb8a6382044018407a6dcd0f0eba2fbba9cde70ad7ece9cb4288f",
+    "app/assets/textures/desk-bookmaker-empty-1127.png": "a1a16650bbedc70e35e57b4432bc3e373c135a29657d498d03f398047b5c6a33"
+  },
+  "fragments": [
+    {
+      "file": "app/materials-shop.js",
+      "start": "  function coverTile(card) {",
+      "end": "  function items(",
+      "sha256": "42ca65ddf03b91d945622591f8875bbb4c4acd0e45b66bc73fd1dd1632742084"
+    },
+    {
+      "file": "app/draw-teacher-v59.js",
+      "start": "  let phase = 'setup'",
+      "end": "  let trialOn =",
+      "sha256": "fec92fe7783a82217cccc777ad9d365f75c1034ce34ba2f6b6945613c1df1b86"
+    }
+  ],
+  "seasons": {
+    "winter": "D 스모크드 오크·그레이지",
+    "summer": "B 물푸레·새틴 실버",
+    "default": "winter",
+    "automatic_date_switch": null,
+    "page_exceptions": {
+      "teacher_print": "book maker original paper-flatlay-v15.webp",
+      "student_create": "book maker original paper-flatlay-v15.webp",
+      "student_study": "D 스모크드 오크 진한 목재",
+      "student_timed": "desk-bookmaker-empty-1127.png 현재 밝은 목재"
+    }
+  },
+  "desk_accessories": "교재 만들기 원본 paper-flatlay-v15.webp의 필기구·종이 비율 재사용 — 사용자 2026-11-27 재지정"
+}

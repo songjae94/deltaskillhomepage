@@ -125,7 +125,7 @@
   function coverTile(card) {
     const p = card.main, label = escape(title(p));
     cardIndex.set(card.id, card);
-    const art = `<img src="${coverURL(p.sku)}" width="720" height="1018" loading="lazy" decoding="async" alt="${label} 표지">`;
+    const art = `<div class="ms-editorial-cover" role="img" aria-label="${label} 표지"><span class="ms-cover-publisher">DELTASKILL</span><span class="ms-cover-series">${escape(displayBook(p.source))}</span><strong class="ms-cover-title">${escape(p.unit||title(p))}</strong><span class="ms-cover-subject">${escape(p.subject||'수학')}</span><span class="ms-cover-edition">${escape(editionOf(p))}</span><span class="ms-cover-foot">델타스킬 수학</span></div>`;
     const cover = p.sample
       ? `<a class="ms-book-cover" href="${escape(p.sample)}" target="_blank" rel="noopener" aria-label="${label} 지면 미리보기, 새 창">${art}<span class="ms-look">미리보기 ↗</span></a>`
       : `<div class="ms-book-cover">${art}</div>`;

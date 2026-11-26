@@ -1,0 +1,11 @@
+{
+  "request": "글자·라인·면 정밀화, 비스듬한 종이 겹침, 기존 필기구 재현",
+  "pencil": {
+    "tool": "imagegen",
+    "reference": "app/assets/editorial/paper-flatlay-v15.png",
+    "asset": "app/assets/editorial/winter-pencil-cutout.png",
+    "prompt_summary": "기존 검은 샤프를 위에서 본 투명 배경 소재로 재현. 금속 촉·클립·요철 그립, 다른 물체와 바탕 제외."
+  },
+  "paper_stack": "앞면 실제 iframe + 장식용 빈 종이 2장, 문항 추가 아님",
+  "scope": "winter screen only, print content unchanged"
+}

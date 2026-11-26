@@ -100,10 +100,10 @@
       .dte-source-choices[data-choice-columns="3"]{grid-template-columns:repeat(3,minmax(max-content,1fr))!important}
       .dte-source-choices>li{display:flex!important;min-width:0!important;width:auto!important;margin:0!important;padding:0!important;list-style:none!important}
       .dte-source-choices>li::before,.dte-source-choices>li::marker{content:none!important}
-      .dte-inline-choice{box-sizing:border-box;width:100%;min-width:0;min-height:44px;display:flex;align-items:center;gap:.35em;padding:.4em .45em;border:1px solid #c4c1b6;border-radius:4px;background:#fbf9f2;color:#292d31;cursor:pointer;text-align:start;font:inherit;line-height:1.55}
-      .dte-inline-choice:hover{border-color:#949284;background:#f5f2e9}
-      .dte-inline-choice[aria-pressed=true]{border-color:#78668a;background:#eee9f1}
-      .dte-inline-choice:focus-visible{outline:2px solid #766686;outline-offset:-2px}
+      .dte-inline-choice{box-sizing:border-box;width:100%;min-width:0;min-height:44px;display:flex;align-items:center;gap:.35em;padding:.2em .3em;border:1px solid #e5e4e0;border-radius:2px;background:#fff;color:#292d31;cursor:pointer;text-align:start;font:inherit;line-height:1.55}
+      .dte-inline-choice:hover{border-color:#b8b9b7;background:#f7f8f7}
+      .dte-inline-choice[aria-pressed=true]{border-color:#707a83;background:#edf0f2;box-shadow:inset 0 0 0 1px #707a83}
+      .dte-inline-choice:focus-visible{outline:2px solid #5f6d7a;outline-offset:-2px}
       .dte-choice-no{box-sizing:border-box;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:0;font:inherit;line-height:inherit}
       .dte-choice-content{min-width:0;max-width:100%;display:block;white-space:normal;overflow-wrap:anywhere;overflow:visible}
       .dte-source-choices:is([data-choice-columns="3"],[data-choice-columns="5"]) .dte-choice-content{white-space:nowrap;overflow-wrap:normal}
@@ -144,9 +144,9 @@
       focusQuestion();
     }
     function answerBox(q, id, value, last) {
-      if (q.answerType === 'choice') return '';
+      if (q.answerType === 'choice') return `<div class="dte-entry"><button type="button" data-exam-forward>${last?'제출하고 채점':'다음 문항'}</button></div>`;
       return `<div class="dte-entry"><label>정답 <input type="text" maxlength="12" autocomplete="off" data-exam-input="${escape(id)}" aria-label="${page+1}번 답" value="${escape(value ?? '')}"></label>
-        <button type="button" data-exam-next>${last?'채점하기':'다음 문항 →'}</button></div>`;
+        <button type="button" data-exam-next>${last?'제출하고 채점':'다음 문항'}</button></div>`;
     }
     function feedback(set, id, value, correct) {
       const q = known(id);
@@ -184,7 +184,6 @@
         const host=document.querySelector(scope+' [data-exam-paper-id]');
         if (host?.dataset.examPaperId===id) bindPaper(host);
       });
-      const edge=(step,label,glyph,disabled)=>`<button type="button" class="dte-edge" data-exam-${step} aria-label="${label}" title="${label}" ${disabled?'disabled':''}><span aria-hidden="true">${glyph}</span></button>`;
       const numbers = ids.map((k,i) => {
         const marked = present(answers[k]);
         const correct = retry ? marked && Number(answers[k])===Number(expected(set,k)) : isRight(set,k);
@@ -195,7 +194,7 @@
       return `<div class="ta-top-v18"><h1>${escape(title())}</h1></div>
         <div class="ta-layout-v18 dst-layout"><div class="ta-main-v18" data-time-form>
           ${time}${result}<div class="dte-paper-frame" ${canChoose?'data-exam-paper-id="'+escape(id)+'"':''}>
-          ${edge('prev','이전 문항','‹',page===0)}${sheet}${edge('forward',page===ids.length-1 && !complete?'제출하고 채점':'다음 문항','›',page===ids.length-1 && complete)}</div>
+          ${sheet}</div>
           ${finishFailed && !complete?'<button type="button" data-exam-submit>채점 다시 시도</button>':''}
         </div>
         <aside class="ta-answer-sheet-v18"><div class="ta-answer-heading-v18"><h2>${retry?'오답 재도전':'답안'}</h2><span data-time-answered>${nowAnswered} / ${ids.length}</span></div>

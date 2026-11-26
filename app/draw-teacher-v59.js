@@ -74,9 +74,9 @@
   const host = () => window.DSDrawHostV59 ?? memberHost;
 
   // ── state ──
-  let phase = 'setup', menu = [], sel = {}, drawn = null, note = { kind: '', text: '' }, pending = null;
-  let columnRule = false;
-  let layout = '2', title = '', page = 0, embedded = 0, printing = false, owner = '', count = 5, withSol = true, waitPrint = false;
+  let phase = 'setup', menu = [], sel = {subject:'공통수학2'}, drawn = null, note = { kind: '', text: '' }, pending = null;
+  let columnRule = true;
+  let layout = '4', title = '', page = 0, embedded = 0, printing = false, owner = '', count = 5, withSol = true, waitPrint = false;
   let trialOn = false, limits = null, seenToday = 0, opened = '';
   let approvedTrial = null, trialWake = 0;
   const frames = new Set();
@@ -483,7 +483,12 @@
   }
   function sampleData() {
     const subject = sel.subject || window.DSPrintScopeData?.subjects?.[0]?.subject;
-    const sample = {'미적분Ⅰ':['부정적분과 정적분','integral'], '공통수학2':['함수','function']}[subject];
+    if(subject==='공통수학2' && window.DSPrintScope?.request().book_id==='OL-type-CM2' && window.DSPrintScope?.request().subunit_ids.includes('07')) {
+      const bank=window.DSStudentDeskPracticeBank||[], seen=new Set();
+      const examples=bank.filter(q=>q.subject===subject && q.unit==='유리함수와 무리함수' && q.level>=2).filter(q=>{const key=q.type+':'+q.book;if(seen.has(key))return false;seen.add(key);return true;}).slice(0,4);
+      if(examples.length===4)return {labels:{subject,unit:'유리함수와 무리함수'},items:examples.map(q=>({body:{innerHTML:'<div class="dq61-q">'+q.prompt+(q.options?.length?'<ol class="dq59-choices" data-fit="2">'+q.options.map((o,i)=>'<li data-mark="'+['①','②','③','④','⑤'][i]+'">'+o+'</li>').join('')+'</ol>':'')+'</div>'}}))};
+    }
+    const sample = {'미적분Ⅰ' :['부정적분과 정적분','integral'], '공통수학2':['함수','function']}[subject];
     if (!sample) return null;
     const [unit,prefix] = sample;
     const labels = {subject,unit};
@@ -528,8 +533,7 @@
     const surface = showSample ? window.DSPrintSurfaceV48.scene(sheet) : '';
     const enlarge = showSample ? '<button type="button" class="dq61-sample-link" aria-haspopup="dialog" data-dq-large-sample>지면 예시 보기 ↗</button>' : '';
     const toolbar = '<strong>'+safe(showSample?'지면 예시 · '+data.labels.unit:selectedUnits.join(' · '))+'</strong><span class="dq-paper-actions"><button type="button" data-dq-open-settings>구성 설정 ↓</button>'+enlarge+'</span>';
-    const appearance = paperControls();
-    return `<aside class="dq59-stage dq59-idle tb36-order-preview ds48-canvas dq61-desk dq61-sample-desk" aria-busy="${Boolean(pending)}"><div class="ds48-preview-toolbar">${toolbar}</div><p class="dq59-saved">현재 설정 · ${safe(sel.subject||data.labels.subject)} ${safe(selectedUnits.join(' · ')||'전체 범위')} · 문항을 구성하면 이 자리에 표시됩니다.</p><div class="dq61-sample-window">${surface}</div>${appearance}${list.length && !pending ? `<div class="dq59-saved"><h3>이 기기에 임시 보관한 구성</h3><ul>${list.map((x, i) => `<li><button type="button" data-dq-reopen="${i}"><strong>${safe(x.title)}</strong><small>${safe(label(x.labels))} · ${x.ids.length}문항 · ${safe(x.day)}</small></button><button type="button" data-dq-forget="${i}" aria-label="${safe(x.title)} 지우기">×</button></li>`).join('')}</ul></div>` : ''}</aside>`;
+    return `<aside class="dq59-stage dq59-idle tb36-order-preview ds48-canvas dq61-desk dq61-sample-desk" aria-busy="${Boolean(pending)}"><div class="ds48-preview-toolbar">${toolbar}</div><p class="dq59-saved">현재 설정 · ${safe(sel.subject||data.labels.subject)} ${safe(selectedUnits.join(' · ')||'전체 범위')} · ${data.labels.unit==='유리함수와 무리함수'?'현재 지면은 델타스킬 자체 문항 예시입니다.':'문항을 구성하면 이 자리에 표시됩니다.'}</p><div class="dq61-sample-window">${surface}</div>${list.length && !pending ? `<div class="dq59-saved"><h3>이 기기에 임시 보관한 구성</h3><ul>${list.map((x, i) => `<li><button type="button" data-dq-reopen="${i}"><strong>${safe(x.title)}</strong><small>${safe(label(x.labels))} · ${x.ids.length}문항 · ${safe(x.day)}</small></button><button type="button" data-dq-forget="${i}" aria-label="${safe(x.title)} 지우기">×</button></li>`).join('')}</ul></div>` : ''}</aside>`;
   }
   // The faint card in the next place once today's free questions are used: no question in it.
   function lockCard(alone) {
@@ -540,7 +544,13 @@
   function studentOutputSettings() {
     return `<div class="student-print-settings"><label>프린트 제목<input data-student-print-title maxlength="60" value="${safe(draftTitle)}" placeholder="단원명으로 자동 지정"></label><label>문구 위치<select data-dq-note-placement><option value="header" ${pageNote.placement==='header'?'selected':''}>머리말</option><option value="footer" ${pageNote.placement==='footer'?'selected':''}>꼬리말</option></select></label><label>문구<input data-dq-note maxlength="60" value="${safe(pageNote.text)}" placeholder="프린트에 넣을 문구"></label><label><input type="checkbox" data-student-print-sol ${withSol?'checked':''}> 정답·해설 포함</label></div>`;
   }
+  let initialScopeApplied = false;
   function setup() {
+    if (!initialScopeApplied && window.DSPrintScope && !drawn) {
+      initialScopeApplied = true;
+      window.DSPrintScope.restore({mode:'book',subject:'공통수학2',book:'OL-type-CM2',units:['07'],typeMode:'mixed',types:[]});
+    }
+
     const scope = window.DSPrintScope;
     if (!guestSettings() && scope?.awaitingSupply(sel.subject)) sel.subject = readySubjects()[0]?.subject;
     const scopeHtml = guestSettings() ? '' : scope?.render({subject:sel.subject || window.DSPrintScopeData?.books?.[0]?.subject,
@@ -561,7 +571,7 @@
     const trial = guest() && row && !awaitingSupply ? `<button type="button" class="tb36-quiet" data-dq-guest-preview ${pending || (retry && Date.now() < approvedTrial.retryAt) ? 'disabled' : ''}>${trialLabel}</button>` : '';
     const waiting = retry && Date.now() < approvedTrial.retryAt;
     const button = `<button type="submit" class="tb36-primary" ${canQuote && !pending && !waiting ? '' : 'disabled'}>${pending?'문항 준비 중':retry?'남은 문항 이어 열기':guestSettings()?'문항 만들기':'출력 / PDF 저장'} <span>→</span></button>`;
-    return `<div class="tb36-setup dq59-setup${guest() ? ' dq61-guest' : ''}"><form id="dq59-form" class="tb36-conditions"><div class="tb36-section-title"><b>01</b><h2>프린트 구성</h2></div>${basic ? meter() : ''}${fields}${scopeHtml}${awaitingSupply ? '' : quantityField+studentOutputSettings()}${guestSettings()?'':trial}${button}${noteHTML()}</form>${idle()}</div>`;
+    return `<div class="tb36-setup dq59-setup${guest() ? ' dq61-guest' : ''}"><form id="dq59-form" class="tb36-conditions"><div class="tb36-section-title"><b>01</b><h2>프린트 구성</h2></div>${basic ? meter() : ''}${fields}${scopeHtml}${awaitingSupply ? '' : quantityField+studentOutputSettings()}${paperControls()}${guestSettings()?'':trial}${button}${noteHTML()}</form>${idle()}</div>`;
   }
   function solProgress() {
     const op = drawn?.solOp;
@@ -593,7 +603,7 @@
     const paper = onLocked ? window.DSPrintSurfaceV48.scene(lockedPaper()) : window.DSPrintSurfaceV48.scene(`<iframe class="dq59-paper" title="${page + 1}쪽 인쇄 지면" scrolling="no" style="width:793.7008px;height:1122.5197px" srcdoc="${safe(documentHTML(pageArg()))}"></iframe>`);
     const nav = Array.from({ length: pages }, (_, i) => { const locked = g && i === pages - 1; return `<button type="button" data-dq-page="${i}" aria-pressed="${page === i}"${locked ? ' class="is-locked"' : ''}>${i + 1} ${i < all.length ? (all[i].designRecord ? '기록면' : '문제') : '정답·해설'}${locked ? ` <span class="dq61-lockmark" aria-hidden="true">${LOCK_SVG}</span>` : ''}</button>`; }).join('');
     const pending2 = !g && withSol && !drawn.solutions && drawn.solOp && !drawn.solOp.failed ? `<button type="button" disabled class="is-waiting">정답·해설 <small data-dq61-done>${drawn.solOp.done} / ${drawn.solOp.total}</small></button>` : '';
-    return `<div class="tb36-workspace dq59-work${g ? ' dq61-guest' : ''}"><aside class="tb36-finish-panel dq59-panel"><div class="tb36-section-title"><b>04</b><h2>보관·출력</h2></div><label>제목<input data-dq-title maxlength="60" value="${safe(title)}"></label><a class="tb36-design-link" href="#print-design">학원명·머리말·표지 디자인 <span>↗</span></a>${solBox}${save}${print}<button type="button" class="tb36-quiet" data-dq-review>문항 다시 확인</button>${noteHTML()}</aside><div class="creator-canvas td34-canvas tb36-canvas ds48-canvas dq59-canvas"><div class="creator-canvas-toolbar"><div><strong>인쇄 미리보기</strong><span>${drawn.items.length}문항 · ${pages}쪽</span></div>${onLocked ? '' : '<button type="button" class="dq61-sample-link" aria-haspopup="dialog" data-dq-large-sample>원본 크기 ↗</button>'}</div><div class="creator-paper-stage">${paper}</div>${paperControls()}<nav class="tb36-pages" aria-label="미리보기 쪽">${nav}${pending2}</nav><div class="creator-canvas-footer"><span>A4 · 210 × 297 mm</span><span>${g ? '문제 면 · 정답·해설은 로그인 뒤' : solOn() ? '문제 · 정답·해설' : '문제 면'}</span></div></div></div>`;
+    return `<div class="tb36-workspace dq59-work${g ? ' dq61-guest' : ''}"><aside class="tb36-finish-panel dq59-panel"><div class="tb36-section-title"><b>04</b><h2>보관·출력</h2></div><label>제목<input data-dq-title maxlength="60" value="${safe(title)}"></label><a class="tb36-design-link" href="#print-design">학원명·머리말·표지 디자인 <span>↗</span></a>${paperControls()}${solBox}${save}${print}<button type="button" class="tb36-quiet" data-dq-review>문항 다시 확인</button>${noteHTML()}</aside><div class="creator-canvas td34-canvas tb36-canvas ds48-canvas dq59-canvas"><div class="creator-canvas-toolbar"><div><strong>인쇄 미리보기</strong><span>${drawn.items.length}문항 · ${pages}쪽</span></div>${onLocked ? '' : '<button type="button" class="dq61-sample-link" aria-haspopup="dialog" data-dq-large-sample>원본 크기 ↗</button>'}</div><div class="creator-paper-stage">${paper}</div><nav class="tb36-pages" aria-label="미리보기 쪽">${nav}${pending2}</nav><div class="creator-canvas-footer"><span>A4 · 210 × 297 mm</span><span>${g ? '문제 면 · 정답·해설은 로그인 뒤' : solOn() ? '문제 · 정답·해설' : '문제 면'}</span></div></div></div>`;
   }
   // Keep the original print workbench: a short conditions form next to the paper.
   function compactPrintForm(form) {
@@ -639,6 +649,7 @@
     if (!menuTried) queueMicrotask(loadMenu);          // first time this screen is drawn (or after a sign-in change)
     const restored = host()?.signedIn() && window.DSPrintLoginReturn?.take(location.hash);
     if (restored) {
+      initialScopeApplied = true;
       window.DSPrintScope?.restore(restored.scope);
       sel = Object.fromEntries(FIELDS.filter(([k]) => typeof restored.sel?.[k] === 'string')
         .map(([k]) => [k, restored.sel[k]]));
