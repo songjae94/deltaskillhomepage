@@ -1,6 +1,46 @@
 /* Student entrance + short learning loop. Approved question/solution renderers remain unchanged. */
 (()=>{'use strict';
-  const D=window.DSStudyDomainV54;if(!D||!window.DSBasicExamV34)return;
+  // Parser-loaded dependencies can fail independently. Retry only missing source
+  // scripts once, before installing any learning/session listeners.
+  if(window.DSStudyEntryV54||window.DSStudyEntryBootV54)return;
+  const bootState=window.DSStudyEntryBootV54={started:false,failed:false,retried:[]};
+  const required=[
+    [()=>Boolean(window.DSStudyDomainV54),/\/student-learning-domain-v54\.js$/],
+    [()=>Boolean(window.DSBasicExamV34),/\/basic-exam-v\d+\.js$/],
+    [()=>typeof window.DSStudySyncV55?.create==='function',/\/student-cloud-v55\.js$/]
+  ];
+  const ready=()=>required.every(([exists])=>exists());
+  function failure(){
+    if(bootState.started||location.hash!=='#student')return;
+    const outlet=document.getElementById('content');if(!outlet)return;
+    const panel=document.createElement('section');panel.className='work-surface';panel.dataset.studyBootFailure='';
+    const message=document.createElement('p');message.setAttribute('role','status');message.textContent='공부 화면을 불러오지 못했어요. 연결을 확인하고 다시 불러와 주세요.';
+    const retry=document.createElement('button');retry.type='button';retry.textContent='다시 불러오기';retry.dataset.studyBootReload='';retry.addEventListener('click',()=>location.reload(),{once:true});
+    panel.append(message,retry);outlet.replaceChildren(panel);
+  }
+  function retrySource(pattern){
+    const original=[...document.scripts].find(script=>script.src&&pattern.test(new URL(script.src).pathname));
+    if(!original)return Promise.resolve(false);
+    if(bootState.retried.includes(original.src))return Promise.resolve(false);
+    bootState.retried.push(original.src);
+    return new Promise(resolve=>{
+      const script=document.createElement('script');script.src=original.src;
+      if(original.nonce)script.nonce=original.nonce;
+      let settled=false;const finish=ok=>{if(settled)return;settled=true;clearTimeout(timer);resolve(ok);};
+      const timer=setTimeout(()=>finish(false),8000);
+      script.addEventListener('load',()=>finish(true),{once:true});script.addEventListener('error',()=>finish(false),{once:true});document.head.append(script);
+    });
+  }
+  async function recover(){
+    if(bootState.started)return;
+    await Promise.all(required.filter(([exists])=>!exists()).map(([,pattern])=>retrySource(pattern)));
+    if(ready()){boot();return;}
+    bootState.failed=true;failure();
+  }
+  function boot(){
+    if(bootState.started||!ready())return;
+    bootState.started=true;
+  const D=window.DSStudyDomainV54;
   const safe=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const canonical=window.DSBasicExamV34.questions.map(q=>({...q,sourceKind:'canonical'}));
   const legacy=Array.from(new Map((typeof studyUnits==='undefined'?[]:studyUnits.flatMap(u=>u.questions)).map(q=>[q.id,{...q,unit:'정적분',version:'public-integral-v1',sourceKind:'legacy',short:q.short||q.title}])).values());
@@ -118,8 +158,8 @@
   function render(){
     const pending=pendingHubMode();
     if(pending==='study'&&!member())return '<section class="work-surface" data-hub-study-pending aria-busy="true"><p role="status">공부 문항을 열고 있어요.</p></section>';
-    if(pending==='downloads'||pending==='create')return '<section class="work-surface" aria-busy="true"><p role="status">자료 화면을 열고 있어요.</p></section>';
-    if(pending==='timed')return window.DSStudentTimed?.render()||'<section class="work-surface" aria-busy="true"><p role="status">타임어택을 열고 있어요.</p></section>';
+    if(pending==='downloads'||pending==='create')return '<section class="work-surface" data-hub-study-pending aria-busy="true"><p role="status">자료 화면을 열고 있어요.</p></section>';
+    if(pending==='timed')return '<section class="work-surface" data-hub-study-pending aria-busy="true"><p role="status">타임어택을 열고 있어요.</p></section>';
     return pane==='run'?run():pane==='result'?result():pane==='learn'?learn():entry();
   }
   let hubRetryStarted=false,hubRetryFailed=false;
@@ -127,15 +167,17 @@
     const pending=document.querySelector('[data-hub-study-pending]');
     if(!pending||pending.querySelector('button'))return;
     pending.removeAttribute('aria-busy');
-    pending.querySelector('[role="status"]').textContent='공부 화면을 불러오지 못했어요.';
+    pending.querySelector('[role="status"]').textContent=(pendingHubMode()==='timed'?'타임어택':pendingHubMode()==='study'?'공부':'자료')+' 화면을 불러오지 못했어요.';
     const reload=document.createElement('button');
     reload.type='button';reload.textContent='다시 불러오기';
     reload.addEventListener('click',()=>location.reload());
     pending.append(reload);
   }
   function recoverStudyHub(){
-    if(document.readyState!=='complete'||pendingHubMode()!=='study'||member())return;
-    if(hubRetryFailed||!window.DSStudentStudyPaths||!window.DSStudentStudyPlan){showStudyReload();return;}
+    const mode=pendingHubMode();
+    if(document.readyState==='loading'||!['study','create','downloads','timed'].includes(mode))return;
+    const available=mode==='study'?window.DSStudentStudyPaths&&window.DSStudentStudyPlan:mode==='timed'?window.DSStudentTimed:window.DSStudentDownloads;
+    if(hubRetryFailed||!available){showStudyReload();return;}
     if(hubRetryStarted)return;
     const original=[...document.scripts].find(script=>script.src&&new URL(script.src).pathname==='/app/student-hub.js');
     if(!original){showStudyReload();return;}
@@ -204,4 +246,12 @@
   window.DSStudyEntryV54={fitFrames,renderGuestDesk:(subject,selection)=>{if(!window.DSFirstVisitV57)return '';const questions=DSFirstVisitV57.pick(bank,subject);return questions.length?DSFirstVisitV57.render({subject,selection,questions,problem:questionHTML(questions[0]),loginRequired:true}):'';},render:()=>{state=read();return render();},refresh:focus=>repaint(focus),setHostRenderer:fn=>{hostRenderer=typeof fn==='function'?fn:null;},loginIntent:()=>loginIntent,continueToday,snapshot:()=>({state:JSON.parse(JSON.stringify(state)),cloud:member()?cloud.snapshot():{phase:'guest',error:''},units:units.map(unit=>({unit,count:bank.filter(q=>q.unit===unit).length})),bank:bank.map(q=>({id:q.id,unit:q.unit,short:q.short,answer:q.answer,version:q.version}))}),importGuestRecords,openAttempt,openReview:id=>openAttempt(id,true),openPractice:id=>{const q=byId.get(id);if(!q||!member()||!canStudy()||location.hash!=="#student")return false;activeId="";viewAttempt=null;state.selectedUnit=q.unit;memberBrowse=true;enterPractice(q.id);return true;},openUnit:unit=>{if(!units.includes(unit))return;memberBrowse=true;state.selectedUnit=unit;pane='entry';pendingOpen=true;save();if(location.hash==='#student'){pendingOpen=false;repaint();}else location.hash='#student';},history:async before=>{const generation=accountEpoch;if(!member())return {attempts:[],hasMore:false};const r=await cloud.history(before);if(generation!==accountEpoch||!member())throw Error('session_changed');for(const a of r.attempts||[])archive.set(a.id,a);return r;},units:()=>units.map(unit=>({unit,count:bank.filter(q=>q.unit===unit).length})),storage:()=>member()?'account':reviewMode?'review-session':'this-device'};
   Promise.resolve(window.DSService?.ready).then(()=>{authReady=true;if(member())cloud.load();else repaint();});
   state=read();if(location.hash==='#student'){repaint();}
+  if(document.readyState!=='loading')recoverStudyHub();
+  }
+  if(ready())boot();
+  else{
+    window.addEventListener('hashchange',()=>{if(bootState.failed)failure();});
+    if(document.readyState!=='loading')void recover();
+    else document.addEventListener('DOMContentLoaded',()=>{void recover();},{once:true});
+  }
 })();
