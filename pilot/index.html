@@ -299,7 +299,7 @@ function profileScreen(){
  <div class="field"><label>이름</label><input class="txt" id="pnm" placeholder="이름" value="${esc(p.name)}"></div>
  <div class="field"><label>학교명</label><input class="txt" id="psc" placeholder="다니는 학교 이름" autocomplete="off" maxlength="60" value="${esc(p.school)}"></div>
  <div class="field"><label>다니는 학원 (선택, 직접 입력)</label><input class="txt" id="pac" placeholder="학원명을 직접 입력하세요" value="${esc(p.academy)}"></div>
- <div class="field"><label>구분</label><div class="seg"><button data-pg="재수생" class="${p.grade==='재수생'?'on':''}">재수생(N수)</button><button data-pg="고3" class="${p.grade==='고3'?'on':''}">고3</button></div></div>
+ <div class="field"><label>구분</label><div class="seg"><button data-pg="재수생" class="${p.grade==='재수생'?'on':''}">재수생(N수)</button><button data-pg="고1" class="${p.grade==='고1'?'on':''}">고1</button><button data-pg="고2" class="${p.grade==='고2'?'on':''}">고2</button><button data-pg="고3" class="${p.grade==='고3'?'on':''}">고3</button></div></div>
  <div id="perr" style="font-size:12.5px;color:var(--no);min-height:18px"></div></div>`;
  el("pnm").oninput=e=>{p.name=e.target.value;el("psave").disabled=!pok();};
  if(el("psc"))el("psc").oninput=e=>{p.school=e.target.value;};
@@ -355,7 +355,7 @@ function signup(){const p=S.profile||{name:"",academy:"",school:"",grade:""};S._
  <div class="field"><label>이름</label><input class="txt" id="nm" placeholder="이름" value="${esc(p.name)}"></div>
  <div class="field"><label>학교명</label><input class="txt" id="sc" placeholder="다니는 학교 이름" autocomplete="off" maxlength="60" value="${esc(p.school||"")}"></div>
  <div class="field"><label>다니는 학원 (선택, 직접 입력)</label><input class="txt" id="ac" placeholder="학원명을 직접 입력하세요" value="${esc(p.academy)}"></div>
- <div class="field"><label>구분</label><div class="seg"><button data-g="재수생" class="${p.grade==='재수생'?'on':''}">재수생(N수)</button><button data-g="고3" class="${p.grade==='고3'?'on':''}">고3</button></div></div>
+ <div class="field"><label>구분</label><div class="seg"><button data-g="재수생" class="${p.grade==='재수생'?'on':''}">재수생(N수)</button><button data-g="고1" class="${p.grade==='고1'?'on':''}">고1</button><button data-g="고2" class="${p.grade==='고2'?'on':''}">고2</button><button data-g="고3" class="${p.grade==='고3'?'on':''}">고3</button></div></div>
  <div class="field"><label>비밀번호</label><input class="txt" id="pin" type="password" maxlength="64" autocomplete="new-password" placeholder="영문 + 숫자 8자 이상" value="${S._pin||''}"><div style="font-size:11.5px;color:var(--mut2);margin-top:6px;line-height:1.5">기기를 바꾸거나 앱을 지웠을 때, 그리고 <b>내 결과 페이지 로그인</b>에 쓰는 비밀번호예요.</div></div>
  <div class="field"><label>비밀번호 확인</label><input class="txt" id="pin2" type="password" maxlength="64" autocomplete="new-password" placeholder="다시 입력" value="${S._pin2||''}"><div id="pwmsg" style="font-size:11.5px;color:var(--no);margin-top:6px"></div></div>
  <div class="field"><label>개인정보 수집·이용 동의 (만 14세 이상 본인 동의)</label>
