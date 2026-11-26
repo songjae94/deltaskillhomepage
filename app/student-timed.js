@@ -455,6 +455,7 @@ async function action(command){if(busy)return;const sessionEpoch=epoch;notice=''
  if(!signed()){dialogMode='';quote=null;if(!csat&&window.DSGuestFirstUse?.prompt){paint();window.DSGuestFirstUse.prompt('timed',{need:true});return;}if(csat){dialogMode='member-login';paint();return;}notice='로그인하고 이어서 이용해 주세요.';paint();return;}if(!service()){notice='로그인과 계정 연결을 확인해 주세요.';paint();return;}
  busy=true;try{
  if(command==='quote'){
+  if(!csat){notice='선택한 시험 문항과 포인트를 확인하고 있어요.';paint();}
   if(csat){
    const rows=await window.DSCSATStudent.mockSelection();
    if(sessionEpoch!==epoch)return;
@@ -468,11 +469,11 @@ async function action(command){if(busy)return;const sessionEpoch=epoch;notice=''
   }
   if(!remote)await loadCatalog();
   if(sessionEpoch!==epoch)return;
-  if(!remote||candidates().length<count){dialogMode=remote?'short':'error';return;}
+  if(!remote||candidates().length<count){notice=remote?'':remoteStatus;dialogMode=remote?'short':'error';return;}
   selection=candidates().map(q=>q.id);for(let i=selection.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[selection[i],selection[j]]=[selection[j],selection[i]];}selection=[...selection.filter(id=>catalogById.get(id)?.sourceKind==='existing_print'),...selection.filter(id=>catalogById.get(id)?.sourceKind!=='existing_print')].slice(0,count);if(selection.length!==count)throw Error('조건에 맞는 문항이 없어요.');const r=await service().quote({questionIds:selection,durationSeconds:minutes*60});if(sessionEpoch!==epoch)return;if(!Number.isSafeInteger(r.chargePoints)||r.chargePoints<0)throw Error('문항별 포인트를 확인할 수 없어요.');if(!Array.isArray(r.questions)||r.questions.length!==selection.length||r.questions.some((q,i)=>q.id!==selection[i]||q.version!==catalogById.get(q.id)?.version)){
-   remote=null;quote=null;remoteStatus='문항 목록이 바뀌었어요. 선택한 교재와 단원을 다시 확인해 주세요.';return;
+   remote=null;quote=null;notice='';remoteStatus='문항 목록이 바뀌었어요. 선택한 교재와 단원을 다시 확인해 주세요.';return;
   }
-  quote=r;dialogMode='quote';req=nextRequest();}
+  quote=r;notice='';dialogMode='quote';req=nextRequest();}
  if(command==='start'&&quote){
   const button=document.querySelector(scope+' [data-time-action=start]');
   if(button){button.disabled=true;button.textContent='시험 여는 중…';}

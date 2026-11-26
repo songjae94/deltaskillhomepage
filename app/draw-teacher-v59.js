@@ -291,8 +291,24 @@
   const lockedSol = () => Boolean(drawn?.guest);
   const totalPages = () => sheets().length + (solOn() ? drawn.solPages || 1 : 0) + (lockedSol() ? 1 : 0);
   const pageArg = () => { const q = sheets().length; return page < q ? page : 's' + (page - q); };
+  function expandCrowded(body,target) {
+    if (!target || Number(layout)<=1) return false;
+    const boxes=body.querySelectorAll('.questions:not([data-roomy="1"]) .question[data-needs-space]');
+    if (!boxes.length) return false;
+    const saved=expandedSheets.get(target.items);
+    const indexes=saved?.layout===layout?saved.indexes:new Set();
+    const before=indexes.size;
+    for(const box of boxes) indexes.add(Number(box.dataset.sourceIndex));
+    expandedSheets.set(target.items,{layout,indexes});
+    return indexes.size!==before;
+  }
+  document.addEventListener('dq-paper-fit',event=>{
+    const frame=event.target;
+    if(frame!==document.querySelector('#content iframe.dq59-paper') || !drawn || phase!=='finish') return;
+    if(expandCrowded(frame.contentDocument.body,drawn)) rerender();
+  });
   // Runs inside the print document: site math renderer first, then fit each cell.
-  const fitScript = `(async()=>{try{const R=window.WebMathRendererV23;if(R){R.typeset(document.body);await R.prepareFonts();}await Promise.all(Array.from(document.images,i=>i.decode().catch(()=>{})));await document.fonts.ready;await new Promise(r=>{let done=false;const go=()=>{if(!done){done=true;r();}};requestAnimationFrame(()=>requestAnimationFrame(go));setTimeout(go,300);});for(const l of document.querySelectorAll('.dq59-choices[data-auto],.dq59-choices[data-fit="3"],.dq59-choices[data-fit="2"]')){if(!l.offsetWidth)continue;const o=['5','3','2','1'];let i=Math.max(0,o.indexOf(l.dataset.auto||l.dataset.fit));for(;i<o.length;i++){l.dataset.fit=o[i];if(Array.from(l.children).every(li=>{const w=li.style.whiteSpace;li.style.whiteSpace='nowrap';const ok=li.scrollWidth<=li.clientWidth+1;li.style.whiteSpace=w;return ok;}))break;}}for(const k of document.querySelectorAll('.qbody .katex,.solflow .katex')){if(k.parentElement.closest('.katex'))continue;const el=k.closest('.어절')||k;el.style.zoom='';const blk=(k.closest('.katex-display')||el).parentElement.closest('p,li,td,div');const room=blk?blk.clientWidth:0,w=el.getBoundingClientRect().width;if(room&&w>room+1)el.style.zoom=Math.max(.6,Math.floor(room/w*100)/100);}const wide=el=>el.scrollWidth>el.clientWidth+1;for(const box of document.querySelectorAll('.qbody')){const inner=box.firstElementChild;const edge=box.getBoundingClientRect();if(inner.getBoundingClientRect().height>box.clientHeight+1||Array.from(inner.querySelectorAll('*')).some(el=>{if(el.closest('.katex')&&!el.classList.contains('katex-html'))return false;const r=el.getBoundingClientRect();return r.width>0&&(r.right>edge.right+1.5||r.bottom>edge.bottom+1.5||r.left<edge.left-1.5||r.top<edge.top-1.5);})){document.body.dataset.overflow='true';box.closest('.question').dataset.needsSpace='true';}}const flow=document.querySelector('.solflow');if(flow){for(const a of flow.querySelectorAll('.ans[data-tex]')){try{a.innerHTML=window.katex.renderToString(a.dataset.tex,{throwOnError:true,displayMode:false,trust:false,strict:'ignore'});}catch{}}const gap=parseFloat(getComputedStyle(flow).columnGap)||0,fb=flow.getBoundingClientRect(),colW=(fb.width-gap)/2,pitch=colW+gap;const clipped=(f=flow)=>{const fb=f.getBoundingClientRect();return Array.from(f.querySelectorAll('p,li,td,th,div')).filter(el=>!el.querySelector('p,li,td,th,div,table')).some(wide)||Array.from(f.querySelectorAll('*')).some(el=>{const inK=el.closest('.katex');if(inK&&(el.closest('.katex-mathml')||el.ownerSVGElement||el.localName==='svg'||/(^|\\s)(strut|pstrut|vlist-s)(\\s|$)/.test(String(el.className.baseVal??el.className))))return false;const blk=el.closest('p,li,td,th,div,article')||f;return Array.from(el.getClientRects()).some(r=>{if(!(r.width>0))return false;const cy=(r.top+r.bottom)/2,cx=(r.left+r.right)/2;let fr=null,best=Infinity;for(const q of blk.getClientRects()){if(cy<q.top-1||cy>q.bottom+1)continue;const gapx=cx<q.left?q.left-cx:cx>q.right?cx-q.right:0;if(gapx<best){best=gapx;fr=q;}}if(!fr)fr=r;const L=fb.left+Math.floor((fr.left-fb.left+1.5)/pitch)*pitch,side=r.width>colW+1.5||r.left<L-1.5||r.right>L+colW+1.5;return inK?side:(side||r.bottom>fb.bottom+1.5||r.top<fb.top-1.5);});});};window.dqSolClipped=clipped;if(clipped())document.body.dataset.overflow='true';const cols=Math.max(1,Math.round((flow.scrollWidth+gap)/pitch)),n=Math.ceil(cols/2);document.body.dataset.solPages=n;const src=flow.closest('.paper'),only=document.body.dataset.solOnly;const list=only===undefined||only===''?Array.from({length:n},(_,i)=>i):[Math.min(n-1,Number(only))];for(const j of list){const pg=src.cloneNode(true);pg.classList.remove('solmeasure');pg.querySelector('.solflow').style.transform='translateX(-'+(j*2*pitch)+'px)';const no=pg.querySelector('.pgno');if(no&&no.dataset.base!=='')no.textContent=(Number(no.dataset.base)+j+1)+' / '+(Number(no.dataset.base)+n);document.body.insertBefore(pg,src);}src.remove();document.querySelectorAll('.pgq').forEach(e=>{e.textContent=e.dataset.i+' / '+(Number(e.dataset.q)+n);});}}catch{document.body.dataset.renderError='fit';}document.body.dataset.ready='true';})();`;
+  const fitScript = `(async()=>{try{const R=window.WebMathRendererV23;if(R){R.typeset(document.body);await R.prepareFonts();}await Promise.all(Array.from(document.images,i=>i.decode().catch(()=>{})));await document.fonts.ready;await new Promise(r=>{let done=false;const go=()=>{if(!done){done=true;r();}};requestAnimationFrame(()=>requestAnimationFrame(go));setTimeout(go,300);});for(const l of document.querySelectorAll('.dq59-choices[data-auto],.dq59-choices[data-fit="3"],.dq59-choices[data-fit="2"]')){if(!l.offsetWidth)continue;const o=['5','3','2','1'];let i=Math.max(0,o.indexOf(l.dataset.auto||l.dataset.fit));for(;i<o.length;i++){l.dataset.fit=o[i];if(Array.from(l.children).every(li=>{const w=li.style.whiteSpace;li.style.whiteSpace='nowrap';const ok=li.scrollWidth<=li.clientWidth+1;li.style.whiteSpace=w;return ok;}))break;}}for(const k of document.querySelectorAll('.qbody .katex,.solflow .katex')){if(k.parentElement.closest('.katex'))continue;const el=k.closest('.어절')||k;el.style.zoom='';const blk=(k.closest('.katex-display')||el).parentElement.closest('p,li,td,div');const room=blk?blk.clientWidth:0,w=el.getBoundingClientRect().width;if(room&&w>room+1)el.style.zoom=Math.max(.6,Math.floor(room/w*100)/100);}const wide=el=>el.scrollWidth>el.clientWidth+1;for(const box of document.querySelectorAll('.qbody')){const inner=box.firstElementChild;const edge=box.getBoundingClientRect();if([...inner.querySelectorAll('.katex-display')].some(wide)||inner.getBoundingClientRect().height>box.clientHeight+1||Array.from(inner.querySelectorAll('*')).some(el=>{if(el.closest('.katex')&&!el.classList.contains('katex-html'))return false;const r=el.getBoundingClientRect();return r.width>0&&(r.right>edge.right+1.5||r.bottom>edge.bottom+1.5||r.left<edge.left-1.5||r.top<edge.top-1.5);})){document.body.dataset.overflow='true';box.closest('.question').dataset.needsSpace='true';}}const flow=document.querySelector('.solflow');if(flow){for(const a of flow.querySelectorAll('.ans[data-tex]')){try{a.innerHTML=window.katex.renderToString(a.dataset.tex,{throwOnError:true,displayMode:false,trust:false,strict:'ignore'});}catch{}}const gap=parseFloat(getComputedStyle(flow).columnGap)||0,fb=flow.getBoundingClientRect(),colW=(fb.width-gap)/2,pitch=colW+gap;const clipped=(f=flow)=>{const fb=f.getBoundingClientRect();return Array.from(f.querySelectorAll('p,li,td,th,div')).filter(el=>!el.querySelector('p,li,td,th,div,table')).some(wide)||Array.from(f.querySelectorAll('*')).some(el=>{const inK=el.closest('.katex');if(inK&&(el.closest('.katex-mathml')||el.ownerSVGElement||el.localName==='svg'||/(^|\\s)(strut|pstrut|vlist-s)(\\s|$)/.test(String(el.className.baseVal??el.className))))return false;const blk=el.closest('p,li,td,th,div,article')||f;return Array.from(el.getClientRects()).some(r=>{if(!(r.width>0))return false;const cy=(r.top+r.bottom)/2,cx=(r.left+r.right)/2;let fr=null,best=Infinity;for(const q of blk.getClientRects()){if(cy<q.top-1||cy>q.bottom+1)continue;const gapx=cx<q.left?q.left-cx:cx>q.right?cx-q.right:0;if(gapx<best){best=gapx;fr=q;}}if(!fr)fr=r;const L=fb.left+Math.floor((fr.left-fb.left+1.5)/pitch)*pitch,side=r.width>colW+1.5||r.left<L-1.5||r.right>L+colW+1.5;return inK?side:(side||r.bottom>fb.bottom+1.5||r.top<fb.top-1.5);});});};window.dqSolClipped=clipped;if(clipped())document.body.dataset.overflow='true';const cols=Math.max(1,Math.round((flow.scrollWidth+gap)/pitch)),n=Math.ceil(cols/2);document.body.dataset.solPages=n;const src=flow.closest('.paper'),only=document.body.dataset.solOnly;const list=only===undefined||only===''?Array.from({length:n},(_,i)=>i):[Math.min(n-1,Number(only))];for(const j of list){const pg=src.cloneNode(true);pg.classList.remove('solmeasure');pg.querySelector('.solflow').style.transform='translateX(-'+(j*2*pitch)+'px)';const no=pg.querySelector('.pgno');if(no&&no.dataset.base!=='')no.textContent=(Number(no.dataset.base)+j+1)+' / '+(Number(no.dataset.base)+n);document.body.insertBefore(pg,src);}src.remove();document.querySelectorAll('.pgq').forEach(e=>{e.textContent=e.dataset.i+' / '+(Number(e.dataset.q)+n);});}}catch{document.body.dataset.renderError='fit';}document.body.dataset.ready='true';if(window.frameElement?.matches('iframe.dq59-paper')&&document.body.dataset.overflow)window.frameElement.dispatchEvent(new Event('dq-paper-fit',{bubbles:true}));})();`;
   const asset = path => safe(new URL(path, location.href).href);
   function documentHTML(only, sample) {
     const source = sample || drawn;
@@ -356,14 +372,7 @@
     try {
       await loadPaper();
       const body = f.contentDocument.body;
-      const crowded = [...body.querySelectorAll('.questions:not([data-roomy="1"]) .question[data-needs-space]')];
-      if(crowded.length && Number(layout)>1){
-        const saved = expandedSheets.get(target.items);
-        const expanded = saved?.layout === layout ? saved.indexes : new Set();
-        for(const box of crowded)expanded.add(Number(box.dataset.sourceIndex));
-        expandedSheets.set(target.items,{layout,indexes:expanded});
-        await loadPaper();
-      }
+      if (expandCrowded(body,target)) await loadPaper();
       if (target !== drawn || origin !== location.hash || !sharedPrint() || !(host()?.signedIn() || target.guest)) return;
       if (f.contentDocument.body.dataset.overflow) { toast('한 쪽의 너비나 높이를 넘는 수식이 있어 인쇄 전에 배치를 확인해야 합니다.'); return; }
       f.contentWindow.focus(); f.contentWindow.print();
@@ -405,7 +414,7 @@
   function meter() {
     if (!guest()) return '';
     const total = daily(), used = Math.min(total, seenToday);
-    return `<div class="dq61-meter" role="group" aria-label="로그인 없이 볼 수 있는 문항"><p><span>로그인 없이 ${total}문항 중</span><b>${used}문항</b></p><i aria-hidden="true"><em style="width:${Math.round(used / total * 100)}%"></em></i></div>`;
+    return `<div class="dq61-meter" role="group" aria-label="로그인 없이 볼 수 있는 문항"><p><span>오늘 공개 체험 ${total}문항 중</span><b>${used}문항 사용</b></p><i aria-hidden="true"><em style="width:${Math.round(used / total * 100)}%"></em></i><small>같은 네트워크의 공개 체험 사용량이 합산될 수 있어요.</small></div>`;
   }
   // Legacy set labels can combine several stages. A scoped request accepts one
   // exact value per filter. Keep user choices separate from the legacy set cursor.
@@ -529,7 +538,8 @@
     const trialLabel = retry ? '남은 문항 이어 열기' : previewCount
       ? safe(row.unit)+' 기본 '+previewCount+'문항 체험' : '로그인하고 더 구성';
     const trial = guest() && row && !awaitingSupply ? `<button type="button" class="tb36-quiet" data-dq-guest-preview ${pending || (retry && Date.now() < approvedTrial.retryAt) ? 'disabled' : ''}>${trialLabel}</button>` : '';
-    const button = `<button type="submit" class="tb36-primary" ${canQuote && !pending ? '' : 'disabled'}>${pending?'문항 준비 중':guestSettings()?'문항 만들기':'출력 / PDF 저장'} <span>→</span></button>`;
+    const waiting = retry && Date.now() < approvedTrial.retryAt;
+    const button = `<button type="submit" class="tb36-primary" ${canQuote && !pending && !waiting ? '' : 'disabled'}>${pending?'문항 준비 중':retry?'남은 문항 이어 열기':guestSettings()?'문항 만들기':'출력 / PDF 저장'} <span>→</span></button>`;
     return `<div class="tb36-setup dq59-setup${guest() ? ' dq61-guest' : ''}"><form id="dq59-form" class="tb36-conditions"><div class="tb36-section-title"><b>01</b><h2>프린트 구성</h2></div>${basic ? meter() : ''}${fields}${scopeHtml}${awaitingSupply ? '' : countField()+studentOutputSettings()}${guestSettings()?'':trial}${button}${noteHTML()}</form>${idle()}</div>`;
   }
   function solProgress() {
@@ -803,7 +813,11 @@
     const alive = () => pending === op && location.hash === origin && sharedPrint();
     if (!job.quiet) say('loading');
     rerender();
-    op.timer = setTimeout(() => { if (pending === op) { stop(); if (job.guest && approvedTrial) trialInterrupted(); else say('unavailable'); rerender(); } }, 25000);
+    op.markProgress = () => {
+      clearTimeout(op.timer);
+      op.timer=setTimeout(()=>{if(pending===op){stop();if(op.guest&&approvedTrial)trialInterrupted();else say('unavailable');rerender();}},25000);
+    };
+    op.markProgress();
     try {
       await h.ready;
       if (!alive()) return;
@@ -875,6 +889,7 @@
           if (stopped || !alive()) return;
           preview.rows[index] = item;
           preview.done++;
+          op.markProgress();
           if (!op.preview && preview.rows[0]) {
             op.preview = preview;
             rerender();
