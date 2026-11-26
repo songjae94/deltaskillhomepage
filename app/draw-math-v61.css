@@ -164,4 +164,5 @@
     line-height: 1.55;
   }
   #content .ssp-paper .ssp-options label .ssp-option-no {font: inherit}
+  #content .ds-timed .dst-prompt .dte-inline-choice {font-weight: 400}
 }
