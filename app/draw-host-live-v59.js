@@ -107,6 +107,51 @@
       throw Object.assign(fail(r.status || 502, TRIAL_CODES.has(name) ? name : 'unavailable'), { lost: false, data });
     } finally { done(); }
   }
+  async function fetchTrialMenu(signal) {
+    const d = await guest({ action: 'trial_menu' }, signal);
+    const lim = d.limits;
+    if (!exact(d, ['cells', 'limits']) || !Array.isArray(d.cells) || d.cells.length > 500 || !exact(lim, ['daily_items', 'max_items']) ||
+        !count(lim.daily_items, 1, 1000) || !count(lim.max_items, 1, 50) ||
+        !d.cells.every(r => exact(r, ['subject', 'unit', 'stage', 'difficulty', 'cell_key', 'size']) && label(r.subject) && label(r.unit) && label(r.stage) && label(r.difficulty) && typeof r.cell_key === 'string' && CELL.test(r.cell_key) && count(r.size, 1, 50)) ||
+        new Set(d.cells.map(r => r.cell_key)).size !== d.cells.length) throw fail(502, 'unavailable');
+    return { cells: d.cells.map(r => ({ subject: r.subject, unit: r.unit, stage: r.stage, difficulty: r.difficulty, cell_key: r.cell_key, size: r.size, ready: true })),
+      limits: { daily_items: lim.daily_items, max_items: lim.max_items } };
+  }
+  // Only publicly listed conditions are shared. Drawing and opening still go to the server.
+  let menuRequest = null;
+  function publicMenu(signal) {
+    if (signal?.aborted) return Promise.reject(fail(0,'aborted'));
+    if (!menuRequest || Date.now() >= menuRequest.until) {
+      const entry = {until: Infinity};
+      menuRequest = entry;
+      const timeout = new AbortController();
+      const timer = setTimeout(() => timeout.abort(), 12000);
+      entry.value = fetchTrialMenu(timeout.signal).then(value => {
+        entry.until = Date.now() + 30000;
+        return value;
+      }).catch(error => {
+        if (menuRequest === entry) menuRequest = null;
+        throw error;
+      }).finally(() => clearTimeout(timer));
+    }
+    const result = menuRequest.value.then(value => structuredClone(value));
+    if (!signal) return result;
+    return new Promise((resolve,reject) => {
+      const abort = () => reject(fail(0,'aborted'));
+      signal.addEventListener('abort',abort,{once:true});
+      result.then(resolve,reject).finally(() => signal.removeEventListener('abort',abort));
+    });
+  }
+  window.addEventListener('ds-session-change',() => {menuRequest=null;});
+  const warmPublicMenu = () => {
+    if (TRIAL && !service.session()) publicMenu().catch(()=>{});
+  };
+  function warmOnIntent(event) {
+    const link = event.target.closest?.('a[href="#student"],a[href="#teacher"]');
+    if (link) warmPublicMenu();
+  }
+  for (const name of ['pointerover','focusin','pointerdown']) document.addEventListener(name,warmOnIntent,{passive:true});
+  if (['#student','#teacher'].includes(location.hash)) Promise.resolve(service.ready).then(warmPublicMenu).catch(()=>{});
   const trial = {
     study: async (cell_key, page) => {
       const d = await guest({action: 'trial_study', cell_key, page});
@@ -116,16 +161,7 @@
           !(d.next === null || count(d.next, page + 1, 20))) throw fail(502, 'unavailable');
       return d;
     },
-    menu: async signal => {
-      const d = await guest({ action: 'trial_menu' }, signal);
-      const lim = d.limits;
-      if (!exact(d, ['cells', 'limits']) || !Array.isArray(d.cells) || d.cells.length > 500 || !exact(lim, ['daily_items', 'max_items']) ||
-          !count(lim.daily_items, 1, 1000) || !count(lim.max_items, 1, 50) ||
-          !d.cells.every(r => exact(r, ['subject', 'unit', 'stage', 'difficulty', 'cell_key', 'size']) && label(r.subject) && label(r.unit) && label(r.stage) && label(r.difficulty) && typeof r.cell_key === 'string' && CELL.test(r.cell_key) && count(r.size, 1, 50)) ||
-          new Set(d.cells.map(r => r.cell_key)).size !== d.cells.length) throw fail(502, 'unavailable');
-      return { cells: d.cells.map(r => ({ subject: r.subject, unit: r.unit, stage: r.stage, difficulty: r.difficulty, cell_key: r.cell_key, size: r.size, ready: true })),
-        limits: { daily_items: lim.daily_items, max_items: lim.max_items } };
-    },
+    menu: publicMenu,
     // left = questions this address may still take today without signing in.
     draw: async (cell_key, want, signal) => {
       const d = await guest({ action: 'trial_draw', cell_key, count: want }, signal);

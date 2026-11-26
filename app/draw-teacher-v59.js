@@ -334,7 +334,7 @@
     return window.DSDocumentDesign?.decorateDocument(html)||html;
   }
   async function printNow() {
-    if (printing || !drawn) return;
+    if (printing || pending || !drawn) return;
     printing = true;
     const target = drawn, origin = location.hash;
     const f = document.createElement('iframe');
@@ -620,7 +620,7 @@
     settle();
     root.classList.add('dq61-surface');
     if (phase === 'setup') oldSteps.remove(); else oldSteps.outerHTML = steps();
-    oldSetup.outerHTML = phase === 'setup' || !drawn ? setup() : phase === 'cards' ? cards() : finish();
+    oldSetup.outerHTML = pending?.preview ? loadingCards() : phase === 'setup' || !drawn ? setup() : phase === 'cards' ? cards() : finish();
     compactPrintForm(root.querySelector('#dq59-form'));
     if (Array.isArray(restored?.openSections)) {
       root.querySelectorAll('details[data-print-option]').forEach(box=>{
@@ -683,6 +683,7 @@
   }
   function mount() {
     window.DSPrintSurfaceV48?.fit(document);
+    paintLoadingCards();
     const box = document.querySelector('#content [data-dq-cards]');
     if (!box || box.childElementCount || !drawn) return;
     const tag = `${drawn.labels.unit} · ${drawn.labels.stage}단계 · ${drawn.labels.difficulty}`;
@@ -833,12 +834,61 @@
     if ([403, 404].includes(error?.status)) { trialOn = false; menu = []; drawn = null; say('unauthorized'); return; }
     say(error?.code === 'origin_rejected' ? 'origin' : 'unavailable');
   }
-  async function openAll(h, key, ids, pg, signal, alive) {
-    return Promise.all(ids.map(async id => {
+  function loadingCards() {
+    return '<section class="dq59-stage dq61-cardstage" aria-label="문항 준비 중" data-dq-live-first><div class="ds48-preview-toolbar"><strong>문항 미리보기</strong><span data-dq-body-progress role="status"></span></div><div class="dq59-cards" data-dq-live-cards></div></section>';
+  }
+  function paintLoadingCards() {
+    const preview = pending?.preview;
+    const panel = document.querySelector('#content [data-dq-live-first]');
+    if (!preview || !panel) return;
+    const cards = panel.querySelector('[data-dq-live-cards]');
+    panel.querySelector('[data-dq-body-progress]').textContent = preview.done + ' / ' + preview.rows.length + '문항 준비됨';
+    for (let i = cards.childElementCount; preview.rows[i]; i++) {
+      const card = document.createElement('article');
+      card.className = 'dq59-card';
+      card.setAttribute('aria-label', '문항 ' + (i + 1));
+      const head = document.createElement('header');
+      const number = document.createElement('b');
+      number.textContent = String(i + 1).padStart(2, '0');
+      head.append(number);card.append(head, preview.rows[i].body.cloneNode(true));cards.append(card);
+      window.WebMathRendererV23?.typeset(card);
+    }
+  }
+  async function openInOrder(rows, open, alive) {
+    const op = pending;
+    const preview = {rows: new Array(rows.length), done: 0};
+    let next = 0, stopped = false;
+    async function worker() {
+      while (!stopped && next < rows.length && alive()) {
+        const index = next++;
+        try {
+          const item = await open(rows[index]);
+          if (stopped || !alive()) return;
+          preview.rows[index] = item;
+          preview.done++;
+          if (!op.preview && preview.rows[0]) {
+            op.preview = preview;
+            rerender();
+            document.querySelector('#content [data-dq-live-first]')?.scrollIntoView({block:'nearest'});
+          } else if (op.preview) paintLoadingCards();
+        } catch (error) {
+          if (!stopped) {
+            stopped = true;
+            op.controller.abort();
+          }
+          throw error;
+        }
+      }
+    }
+    await Promise.all(Array.from({length: Math.min(3, rows.length)}, worker));
+    if (!alive()) throw Error('stale');
+    return preview.rows;
+  }
+  function openAll(h, key, ids, pg, signal, alive) {
+    return openInOrder(ids, async id => {
       const payload = await h.open(key, id, pg, signal);
-      if (!alive()) throw Error('stale');
-      return { id, body: questionBody(id, payload) };
-    }));
+      return {id, body: questionBody(id, payload)};
+    }, alive);
   }
   function clearTrial() {
     clearTimeout(trialWake);
@@ -894,23 +944,26 @@
         approvedTrial = set;
         wakeTrial(set);
       }
-      for (const {item_id:id} of set.items) {
-        if (set.bodies.has(id)) continue;
-        if (!alive() || approvedTrial !== set || !trialMatches(set)) return null;
-        try {
-          const payload = await h.trial.open(set.key, id, set.ticket, signal);
-          if (!alive() || approvedTrial !== set) return null;
-          set.bodies.set(id, questionBody(id, payload));
-        } catch (error) {
-          if (!alive() || approvedTrial !== set) return null;
-          if (error?.code === 'rate_limited' || error?.status >= 500 || error?.status === 0) {
-            if (error.status === 429) set.retryAt = Date.now() + (error.data?.retry_after || 60) * 1000;
-            trialInterrupted(); wakeTrial(set); return null;
+      const same = () => alive() && approvedTrial === set && trialMatches(set);
+      let items;
+      try {
+        items = await openInOrder(set.items, async ({item_id:id}) => {
+          if (!same()) throw Error('stale');
+          if (!set.bodies.has(id)) {
+            const payload = await h.trial.open(set.key, id, set.ticket, signal);
+            if (!same()) throw Error('stale');
+            set.bodies.set(id, questionBody(id, payload));
           }
-          clearTrial(); throw Object.assign(error, {trialOpen:true});
+          return {id,body:set.bodies.get(id)};
+        }, same);
+      } catch (error) {
+        if (!alive() || approvedTrial !== set) return null;
+        if (error?.code === 'rate_limited' || error?.status >= 500 || error?.status === 0) {
+          if (error.status === 429) set.retryAt = Date.now() + (error.data?.retry_after || 60) * 1000;
+          trialInterrupted(); wakeTrial(set); return null;
         }
+        clearTrial(); throw Object.assign(error, {trialOpen:true});
       }
-      const items = set.items.map(({item_id:id}) => ({id,body:set.bodies.get(id)}));
       const labels = Object.fromEntries(FIELDS.map(([k]) => [k, row[k]]));
       clearTrial();
       return { guest:true, key:set.key, labels, status:set.status, page:0, count:want, items, capped:items.length < want || leftToday() === 0 };
@@ -1083,22 +1136,11 @@
       if (!alive()) return null;
       if (Array.isArray(d?.items) && !d.items.length) { say('empty'); return null; }
       if (!Array.isArray(d?.items) || !d.items.length || d.items.length > criteria.count || new Set(d.items.map(x => x.item_id)).size !== d.items.length || !d.items.every(x => UUID.test(x.item_id) && UUID.test(x.set_key))) throw Error('scope');
-      const items = new Array(d.items.length);
-      // Keep simultaneous opens below the existing member gate limit of four: three workers, each takes the
-      // next question as soon as its own call returns (no waiting for the slowest of a batch of three).
-      let nextOpen = 0, broken = false;   // one failure stops the other two from taking more
-      const opener = async () => {
-        while (nextOpen < d.items.length && !broken) {
-          if (!alive()) throw Error('stale');
-          const at = nextOpen++, x = d.items[at], pg = x.paging || {};
-          try {
-            const payload = await h.open(x.set_key, x.item_id, pg, signal);
-            if (!alive()) throw Error('stale');
-            items[at] = { id: x.item_id, set: x.set_key, paging: pg, body: questionBody(x.item_id, payload) };
-          } catch (error) { broken = true; throw error; }
-        }
-      };
-      await Promise.all([opener(), opener(), opener()]);
+      const items = await openInOrder(d.items, async x => {
+        const pg = x.paging || {};
+        const payload = await h.open(x.set_key, x.item_id, pg, signal);
+        return {id: x.item_id, set: x.set_key, paging: pg, body: questionBody(x.item_id, payload)};
+      }, alive);
       scopePendingJob=null;try{sessionStorage.removeItem('ds-print-pending-job');}catch{}
       const chosen = scope.unitLabels(criteria.subunit_ids);
       const missing = scope.unitLabels(d.unrepresented_subunits || []);
@@ -1132,11 +1174,11 @@
       if (!alive()) return null;
       if (claimed && x.want !== 'more') {
         // Each question opens with the set it belongs to (contract r2).
-        const items = await Promise.all(claimed.items.map(async it => {
+        const items = await openInOrder(claimed.items, async it => {
           const payload = await h.open(it.set_key, it.item_id, {}, signal);
           if (!alive()) throw Error('stale');
           return { id: it.item_id, set: it.set_key, body: questionBody(it.item_id, payload) };
-        }));
+        }, alive);
         return { key: claimed.items[0].set_key, claimed: true, labels: x.labels, status: claimed.status, page: 0, count: x.count, items,
           said: { kind: 'ok', text: `방금 구성한 ${items.length}문항을 이어서 열었습니다.` }, openSol: x.want === 'solution', phase: want };
       }
