@@ -176,3 +176,19 @@
 /* The Korean question face is shared by the host and sandboxed source sheet.
    UI labels and KaTeX keep their own font families. */
 #content .ds-timed .dst-prompt {--ds-q-serif:"DS Exam Noto Serif KR","Nanum Myeongjo","AppleMyungjo",Batang,serif}
+
+@media screen {
+  /* A bronze rule marks the running exam above the wood and the timer plate. */
+  #content .ds-timed:has([data-time-clock]) > .ta-top-v18 {
+    border-bottom: 2px solid #805b38;
+  }
+  html[data-design] body.working-body[data-page] #content#content .ds-timed [data-time-form] > .dte-clock {
+    border-top: 2px solid #805b38 !important;
+    color: #383126 !important;
+  }
+  #content .ds-timed .dte-clock time[data-time-clock] {
+    color: #181710;
+    font-weight: 750;
+    font-variant-numeric: tabular-nums;
+  }
+}

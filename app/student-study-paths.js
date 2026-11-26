@@ -930,6 +930,86 @@ function bind(container,options={}){
  const trialLimit=3;
  let trialReturnView='question';
  const isTrialQuestion=q=>q?.sourceKind==='original'&&q.rights==='deltaskill-original';
+ // The preview uses only originals already published in this bundle. Catalogue and
+ // server-trial questions stay on their existing permission and allowance paths.
+ const samples=BANK.filter(q=>isTrialQuestion(q)&&q.course==='types'&&!q.originalQuestionId&&
+  q.subject==='공통수학2'&&q.unit==='유리함수와 무리함수');
+ const sampleParams=new URLSearchParams(location.search);
+ const returnIndex=samples.findIndex(q=>q.id===sampleParams.get('sampleReview'));
+ const submitted=sampleParams.get('sampleAnswer');
+ const reviewChoice=returnIndex>=0&&/^[0-4]$/.test(submitted)&&Number(submitted)<samples[returnIndex].options.length?Number(submitted):null;
+ let sampleIndex=Math.max(0,returnIndex),sampleChoice=null,sampleChecked=false,sampleHint=false,reviewOpen=returnIndex>=0;
+ function sampleVisible(){
+  if(!desk||!samples.length||view==='history')return false;
+  if(!guestTrial)return reviewOpen&&signed()&&['survey','return'].includes(planPhase);
+  return !signed()&&(planPhase==='return'||(planPhase==='survey'&&quickGuest));
+ }
+ function sampleLogin(q){
+  const next='/app/?studentMode=study&sampleReview='+encodeURIComponent(q.id)+
+   (sampleChecked?'&sampleAnswer='+sampleChoice:'')+'#student';
+  return '/auth/?next='+encodeURIComponent(next);
+ }
+ function samplePaper(){
+  const q=samples[sampleIndex],member=!guestTrial&&signed();
+  const status=sampleChoice===q.answer?'정답이에요.':'정답은 '+('①②③④⑤'[q.answer])+'번이에요.';
+  const record=member&&latest(state).get(q.id);
+  const inReview=record&&record.version===q.version&&record.help&&record.solutionSeen&&
+   (reviewChoice===null||record.choice===reviewChoice);
+  const actions=member?`<section class="ssp-solution"><h3>해설</h3><ol>${q.solution.map(line=>'<li>'+line+'</li>').join('')}</ol></section>
+   <div class="ssp-actions">${inReview?'<span role="status">복습에 담긴 문항이에요.</span>':`<button type="button" class="ssp-primary" data-sample-action="review" ${activeOwner?'':'disabled'}>복습에 담기</button>`}
+   <button type="button" data-sample-action="range">공부로 돌아가기</button></div>`:
+   `<div class="ssp-actions ssp-sample-actions">
+    <button type="button" class="ssp-primary" data-sample-action="check" ${sampleChoice===null||sampleChecked?'disabled':''}>답 제출</button>
+    <button type="button" data-sample-action="hint" aria-expanded="${sampleHint}">${sampleHint?'첫 힌트 접기':'첫 힌트 보기'}</button>
+    <a href="${esc(sampleLogin(q))}">해설 보고 복습에 담기</a></div>
+    ${sampleHint?`<aside class="ssp-hint"><h3>첫 힌트</h3><p>${q.hint}</p></aside>`:''}
+    ${sampleChecked?`<div class="ssp-feedback" role="status"><h3 tabindex="-1">${status}</h3></div>`:''}
+    <nav class="ssp-actions ssp-sample-nav" aria-label="예시 문항 이동">
+    ${sampleChecked?'<button type="button" data-sample-action="retry">다시 풀기</button>':''}
+    ${sampleIndex>0?'<button type="button" data-sample-action="previous">이전 문항</button>':''}
+    <button type="button" data-sample-action="next">다음 문항</button></nav>`;
+  return `<article class="ssp-paper ssp-guest-sample"><div class="ssp-paper-top"><span>핵심 유형 풀기 · 델타스킬 자체제작</span><span>${sampleIndex+1} / ${samples.length}</span></div>
+   <h2 tabindex="-1" class="ssp-problem-heading">${esc(q.subject)} · ${esc(subunit(q))}</h2>
+   <div class="ssp-prompt">${q.prompt}</div>${originalChoices(q,'ssp-sample-answer',member?reviewChoice:sampleChoice,sampleChecked||member)}
+   ${actions}</article>`;
+ }
+ function handleSample(button){
+  if(!sampleVisible())return;
+  const action=button.dataset.sampleAction;
+  if(action==='review'&&!guestTrial&&signed()&&activeOwner&&activeOwner===owner()){
+   const q=samples[sampleIndex];
+   // Confirm on the signed-in screen, then use the same help record as a member exercise.
+   reviewOpen=false;planPhase='active';state.course=planCourse=q.course;
+   const previous=latest(state).get(q.id);
+   localPage([q.id],0,false);
+   help=true;solution=true;
+   if(previous?.version===q.version&&(reviewChoice===null||previous.choice===reviewChoice)){
+    choice=previous.choice;confidence=previous.confidence;feedback=previous;
+    previous.help=true;previous.solutionSeen=true;
+    save(previous);draw();return;
+   }
+   choice=reviewChoice;
+   check(choice===null,true);return;
+  }
+  if(action==='range'){
+   reviewOpen=false;draw(false);container.querySelector('[data-study-plan] :is(select,button)')?.focus();return;
+  }
+  if(!guestTrial||signed())return;
+  if(action==='hint'){
+   sampleHint=!sampleHint;draw(false);
+   container.querySelector('[data-sample-action="hint"]')?.focus({preventScroll:true});
+   return;
+  }
+  if(action==='check'&&sampleChoice!==null)sampleChecked=true;
+  if(action==='retry'||action==='next'||action==='previous'){
+   if(action==='next')sampleIndex=(sampleIndex+1)%samples.length;
+   if(action==='previous')sampleIndex=(sampleIndex+samples.length-1)%samples.length;
+   sampleChoice=null;sampleChecked=false;sampleHint=false;
+  }
+  draw(false);
+  const paper=container.querySelector('.ssp-guest-sample');
+  (paper?.querySelector('.ssp-feedback h3')||paper?.querySelector('h2'))?.focus({preventScroll:true});
+ }
  let trialOpened=new Set();
  if(guestTrial){
   try{trialOpened=new Set(JSON.parse(sessionStorage.getItem(trialKey+':opened')||'[]').filter(id=>isTrialQuestion(byId.get(id))));}catch{}
@@ -1578,7 +1658,10 @@ function bind(container,options={}){
    <button type="button" ${action}="1" ${index===sequence.length-1?'disabled':''}>다음 ${label} →</button></nav>
    ${isConcept?`<h3>${esc(title)}</h3><p>${CONCEPTS[current.type].body}</p>`:''}</section>`;
  }
- function question(){const q=current;if(!q)return home();const concept=CONCEPTS[q.type];const repeated=state.records.some(r=>r.questionId===q.id);return `<article class="ssp-paper"><div class="ssp-paper-top"><span>${esc(TYPES[q.type])} · ${q.level}단계</span><span>${desk?'':(cursor+1)+' / '+pool.length}</span></div><h2 tabindex="-1" class="ssp-problem-heading">${esc(q.subject)} · ${esc(desk?subunit(q):q.unit)}</h2>${desk?itemPager(cursor,pool.length):''}${repeated?'<p class="ssp-note">전에 풀어 본 문제예요. 이번 결과는 복습 기록으로 남겨요.</p>':''}<div class="ssp-prompt">${q.prompt}</div><fieldset class="ssp-options" aria-label="답안" ${feedback?'disabled':''}>${q.options.map((o,i)=>`<label><input type="radio" name="ssp-answer" value="${i}" ${choice===i?'checked':''}><span class="ssp-option-no">${"①②③④⑤"[i]}</span><span>${o}</span></label>`).join('')}</fieldset>${!feedback?`<div class="ssp-actions"><button class="ssp-primary" data-ssp-check ${choice===null?'disabled':''}>답 확인</button><button data-ssp-skip>모르겠어요</button><button data-ssp-hint aria-expanded="${hint}">힌트 ${hint?'접기':'보기'}</button></div>`:''}${hint?`<aside class="ssp-hint"><h3>첫 생각</h3><p>${q.hint}</p><p>${concept.body}</p></aside>`:''}${feedback?`<section class="ssp-feedback"><h3 tabindex="-1">${feedback.choice===null?'함께 다시 확인해 봐요.':feedback.correct?'맞았어요. 풀이의 조건도 확인해 보세요.':'답을 다시 살펴볼까요?'}</h3><p>정답은 ${q.answer+1}번이에요. ${feedback.help?'힌트를 확인한 풀이로 기록했어요.':''}</p><div class="ssp-actions"><button data-ssp-solution aria-expanded="${solution}">${solution?'풀이 접기':'해설 보기'}</button><button data-ssp-retry>답을 가리고 다시 풀기</button>${variantButton(feedback,state.records)}${desk?'':`<button class="ssp-primary" data-ssp-next>${cursor+1<pool.length?'다음 문제':'공부 결과 보기'}</button>`}</div>${solution?`<section class="ssp-solution"><h3>조건 → 계산 → 확인</h3><ol>${q.solution.map(s=>`<li>${s}</li>`).join('')}</ol></section>`:''}</section>`:''}${lessonNavigation()}<footer class="ssp-paper-foot">${options.view==='history'?'<button data-ssp-history>내 공부 기록으로</button>':!desk?'<button data-ssp-home>코스로 돌아가기</button>':''}</footer></article>`;}
+ function originalChoices(q,name,selected,locked){
+  return `<fieldset class="ssp-options" aria-label="답안" ${locked?'disabled':''}>${q.options.map((o,i)=>`<label><input type="radio" name="${name}" ${name==='ssp-sample-answer'?'autocomplete="off"':''} value="${i}" ${selected===i?'checked':''}><span class="ssp-option-no">${"①②③④⑤"[i]}</span><span>${o}</span></label>`).join('')}</fieldset>`;
+ }
+ function question(){const q=current;if(!q)return home();const concept=CONCEPTS[q.type];const repeated=state.records.some(r=>r.questionId===q.id);return `<article class="ssp-paper"><div class="ssp-paper-top"><span>${esc(TYPES[q.type])} · ${q.level}단계</span><span>${desk?'':(cursor+1)+' / '+pool.length}</span></div><h2 tabindex="-1" class="ssp-problem-heading">${esc(q.subject)} · ${esc(desk?subunit(q):q.unit)}</h2>${desk?itemPager(cursor,pool.length):''}${repeated?'<p class="ssp-note">전에 풀어 본 문제예요. 이번 결과는 복습 기록으로 남겨요.</p>':''}<div class="ssp-prompt">${q.prompt}</div>${originalChoices(q,'ssp-answer',choice,Boolean(feedback))}${!feedback?`<div class="ssp-actions"><button class="ssp-primary" data-ssp-check ${choice===null?'disabled':''}>답 확인</button><button data-ssp-skip>모르겠어요</button><button data-ssp-hint aria-expanded="${hint}">힌트 ${hint?'접기':'보기'}</button></div>`:''}${hint?`<aside class="ssp-hint"><h3>첫 생각</h3><p>${q.hint}</p><p>${concept.body}</p></aside>`:''}${feedback?`<section class="ssp-feedback"><h3 tabindex="-1">${feedback.choice===null?'함께 다시 확인해 봐요.':feedback.correct?'맞았어요. 풀이의 조건도 확인해 보세요.':'답을 다시 살펴볼까요?'}</h3><p>정답은 ${q.answer+1}번이에요. ${feedback.help?'힌트를 확인한 풀이로 기록했어요.':''}</p><div class="ssp-actions"><button data-ssp-solution aria-expanded="${solution}">${solution?'풀이 접기':'해설 보기'}</button><button data-ssp-retry>답을 가리고 다시 풀기</button>${variantButton(feedback,state.records)}${desk?'':`<button class="ssp-primary" data-ssp-next>${cursor+1<pool.length?'다음 문제':'공부 결과 보기'}</button>`}</div>${solution?`<section class="ssp-solution"><h3>조건 → 계산 → 확인</h3><ol>${q.solution.map(s=>`<li>${s}</li>`).join('')}</ol></section>`:''}</section>`:''}${lessonNavigation()}<footer class="ssp-paper-foot">${options.view==='history'?'<button data-ssp-history>내 공부 기록으로</button>':!desk?'<button data-ssp-home>코스로 돌아가기</button>':''}</footer></article>`;}
  async function loadFreeHistory(more=false){
   if(!signed()||remoteHistory.phase==='loading')return;
   if(!activeOwner||typeof window.DSStudentServices?.history!=='function'){remoteHistory.phase='unavailable';draw(false);return;}
@@ -1708,6 +1791,14 @@ function bind(container,options={}){
   root.querySelector('.ssp-desk-filters').hidden=!filters;
   if(filters!==deskFilterHTML){root.querySelector('.ssp-desk-filters').innerHTML=filters;deskFilterHTML=filters;}
   root.querySelectorAll('.ssp-desk-controls button, .ssp-desk-controls select:not([disabled]), .ssp-desk-controls [data-ssp-busy-lock]').forEach(el=>{if(remoteBusy&&!el.disabled){el.disabled=true;el.dataset.sspBusyLock='';}else if(!remoteBusy&&el.hasAttribute('data-ssp-busy-lock')){el.disabled=false;delete el.dataset.sspBusyLock;}});
+  const showSample=sampleVisible();
+  root.toggleAttribute('data-guest-sample',showSample);
+  if(guestTrial){
+   const heading=root.querySelector('.ssil-heading h1');
+   const title=showSample?'한 문제 풀어보기':'등급을올리는공부부터';
+   if(heading&&heading.textContent!==title)heading.textContent=title;
+  }
+  if(showSample){body.hidden=false;paintBody(body,samplePaper());return;}
   body.hidden=planPhase!=='active'&&view!=='history';
   if(body.hidden){paintBody(body,'');return;}
   let bodyMarkup=view==='trial-source'?'':view==='guest-limit'?'<article class="ssp-paper"><h2>공개 체험 세 문제를 모두 열어봤어요.</h2>'+trialNotice()+'</article>':view==='source-question'&&remoteQuestion?remoteQuestionHTML():view==='question'&&current?question():view==='history'?history():view==='result'?result():deskWaiting();
@@ -1740,12 +1831,13 @@ function bind(container,options={}){
   if(desk){const list=localSet(q);localPage(list,list.indexOf(id),false);}else begin([id]);
   save();draw();
  }
- function check(skip){if(!current||feedback||!skip&&choice===null)return;const r={id:window.crypto?.randomUUID?.()||'ssp-'+Date.now()+'-'+state.records.length,questionId:current.id,version:current.version,course:current.course,type:current.type,level:current.level,at:Date.now(),choice:skip?null:choice,correct:!skip&&choice===current.answer,confidence:skip?'unsure':confidence,help,solutionSeen:false,repeated:state.records.some(r=>r.questionId===current.id),reason:'',seconds:Math.max(0,(Date.now()-openedAt)/1000)};state.records.push(r);feedback=r;save(r);draw();}
+ function check(skip,sawSolution=false){if(!current||feedback||!skip&&choice===null)return;const r={id:window.crypto?.randomUUID?.()||'ssp-'+Date.now()+'-'+state.records.length,questionId:current.id,version:current.version,course:current.course,type:current.type,level:current.level,at:Date.now(),choice:skip?null:choice,correct:!skip&&choice===current.answer,confidence:skip?'unsure':confidence,help,solutionSeen:sawSolution,repeated:state.records.some(r=>r.questionId===current.id),reason:'',seconds:Math.max(0,(Date.now()-openedAt)/1000)};state.records.push(r);feedback=r;save(r);draw();}
  function click(e){
  if(guestTrial&&e.target.closest('[data-ssil-account="study"]')){
   e.preventDefault();if(view!=='history')trialReturnView=view;view='history';draw();container.querySelector('.ssp-body')?.scrollIntoView?.({block:'start'});return;
  }
  const b=e.target.closest('button');if(!b||!container.contains(b)||b.disabled)return;notice='';
+ if(b.hasAttribute('data-sample-action')){handleSample(b);return;}
  if(b.hasAttribute('data-ssp-after-solution'))container.querySelector('.ssp-paper')?.scrollIntoView({block:'start'});
  if(b.hasAttribute('data-ssp-choose-range')){
   container.querySelector('[data-plan-reselect]')?.click();return;
@@ -1823,6 +1915,12 @@ function bind(container,options={}){
  }
  if(b.hasAttribute('data-ssp-source-resume')){const p=state.sourcePending[state.course];if(p&&!p.cleared)openRemote(p.questionId,p);return;}if(b.hasAttribute('data-ssp-history-sync')){loadFreeHistory();return;}if(b.hasAttribute('data-ssp-history-more')){loadFreeHistory(true);return;}if(b.hasAttribute('data-ssp-retry-open')){if(lastOpen)openRemote(lastOpen.id,lastOpen.draft,lastOpen.revisit);return;}if(b.hasAttribute('data-ssp-query')){querySource();return;}if(b.hasAttribute('data-ssp-remote')){openRemote(b.dataset.sspRemote);return;}if(b.hasAttribute('data-ssp-remote-submit')){submitRemote();return;}if(b.hasAttribute('data-ssp-remote-hint')){remoteHelp=true;draw(false);return;}if(b.hasAttribute('data-ssp-remote-unknown')){remoteChoice=null;remoteUnknown=true;submitRemote();return;}if(b.hasAttribute('data-ssp-series')){selectedSeries=b.dataset.sspSeries;widen='type';invalidateSource();draw();querySource();return;}if(b.hasAttribute('data-ssp-widen')){widen=b.dataset.sspWiden;invalidateSource();draw();querySource();return;}if(b.hasAttribute('data-ssp-course')){state.course=b.dataset.sspCourse;view='home';current=null;invalidateSource();queueMicrotask(querySource);}else if(b.hasAttribute('data-ssp-book')){state.book=b.dataset.sspBook;}else if(b.hasAttribute('data-ssp-resume'))resume(state.course);else if(b.hasAttribute('data-ssp-start'))begin();else if(b.hasAttribute('data-ssp-type'))begin(BANK.filter(q=>q.course==='types'&&q.type===b.dataset.sspType).map(q=>q.id));else if(b.hasAttribute('data-ssp-check'))return check(false);else if(b.hasAttribute('data-ssp-skip'))return check(true);else if(b.hasAttribute('data-ssp-hint')){hint=!hint;help=true;}else if(b.hasAttribute('data-ssp-solution')){solution=!solution;if(solution&&feedback){feedback.solutionSeen=true;save(feedback);}}else if(b.hasAttribute('data-ssp-retry'))resetQuestion(current);else if(b.hasAttribute('data-ssp-next')){if(!feedback)return;if(++cursor<pool.length)resetQuestion(byId.get(pool[cursor]));else {state.pending[state.course]={cleared:true,updatedAt:Date.now()};current=null;view='result';}}else if(b.hasAttribute('data-ssp-review'))review(b.dataset.sspReview);else if(b.hasAttribute('data-ssp-history'))view='history';else if(b.hasAttribute('data-ssp-open'))return openOriginal(b.dataset.sspOpen);else if(b.hasAttribute('data-ssp-home'))view='home';else if(b.hasAttribute('data-ssp-sync')){save();return;}else return;save();draw();}
  function change(e){
+ if(e.target.name==='ssp-sample-answer'&&guestTrial&&sampleVisible()&&!sampleChecked){
+  sampleChoice=Number(e.target.value);
+  const submit=container.querySelector('[data-sample-action="check"]');
+  if(submit)submit.disabled=false;
+  return;
+ }
  if(desk){
   if(e.target.matches('[data-plan-book]')&&planPhase==='survey'&&planDraft.need==='supplement'){
    const book=(guestTrial?bookMenu():workbookChoices()).find(b=>b.id===e.target.value);

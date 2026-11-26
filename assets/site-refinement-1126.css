@@ -673,3 +673,54 @@
 @media screen and (max-width:340px) {
  html[data-design] body.working-body #content#content .ms-shop .ms-volume:nth-child(n) {--shelf-grain-x:0%}
 }
+
+/* The visitor can solve the example on the same paper used in a signed-in session. */
+@media screen {
+  #content .ssp-desk[data-guest-sample] .ssp-body {
+    display: block;
+    min-width: 0;
+    align-self: start;
+  }
+  #content .ssp-desk[data-guest-sample] .ssp-guest-sample .ssp-paper-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  #content .ssp-desk[data-guest-sample] .ssp-guest-sample .ssp-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+  }
+  #content .ssp-desk[data-guest-sample] .ssp-guest-sample .ssp-actions a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    min-height: 40px;
+    padding: 7px 12px;
+    border: 1px solid #b9b4a9;
+    border-radius: 4px;
+    background: linear-gradient(#f7f6f2, #ebe8e0);
+    color: #38372f;
+    font-size: 14px;
+    font-weight: 650;
+    line-height: 1.35;
+    text-decoration: none;
+  }
+}
+@media screen and (min-width: 801px) {
+  #content .ssp-desk[data-guest-sample] .ssil-main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(245px, 29%);
+    align-items: start;
+  }
+  #content .ssp-desk[data-guest-sample] .ssp-desk-controls {order: 0}
+}
+@media screen and (max-width: 800px) {
+  #content .ssp-desk[data-guest-sample] .ssil-main {display: flex; flex-direction: column}
+  #content .ssp-desk[data-guest-sample] .ssp-body {order: 0}
+  #content .ssp-desk[data-guest-sample] .ssp-desk-controls {order: 1}
+}
