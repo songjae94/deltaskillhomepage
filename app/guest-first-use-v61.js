@@ -93,6 +93,8 @@
       if (!f.click) continue;
       const el = e.target.closest?.(f.click);
       if (!el || el.disabled || el.closest('#gf61')) continue;
+      // School timed owns its two successful-start trials; CSAT keeps this existing first-use guard.
+      if (f.key === 'timed' && el.closest('.ds-timed[data-timed-space="school"]')) return;
       guard(e, f, el, () => { const t = el.isConnected ? el : document.querySelector(f.click); bypass = true; try { t?.click(); } finally { bypass = false; } });
       return;
     }

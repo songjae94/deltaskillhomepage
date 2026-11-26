@@ -1,0 +1,109 @@
+/* November 26 surface refinement. Screen only: document geometry and math stay intact. */
+@media screen {
+  :root { --ds-ui-ink:#20283b; --ds-ui-muted:#5b6478; --ds-ui-rule:#dfe3ec; --ds-ui-accent:#5547cf; }
+  html[data-design] body.working-body {background:#f7f8fb!important;color:var(--ds-ui-ink);}
+  html[data-design] body #header {border-bottom-color:var(--ds-ui-rule);box-shadow:none;}
+  html[data-design] body.working-body[data-page] #content :is(.tb36-modes,.dsh-tabs) {
+    background:#fff!important;border:1px solid var(--ds-ui-rule)!important;border-radius:12px!important;
+    box-shadow:none!important;padding:5px!important;gap:5px!important;
+  }
+  html[data-design] body.working-body[data-page] #content :is(.tb36-modes,.dsh-tabs)>button {
+    background:transparent!important;border:1px solid transparent!important;border-radius:8px!important;
+    box-shadow:none!important;min-height:58px!important;color:#535e74!important;transform:none!important;
+    transition:background .15s,color .15s;
+  }
+  html[data-design] body.working-body[data-page] #content :is(.tb36-modes,.dsh-tabs)>button :is(strong,small,.tb36-mode-icon) {color:inherit!important;text-shadow:none!important;}
+  html[data-design] body.working-body[data-page] #content :is(.tb36-modes,.dsh-tabs)>button:hover {background:#f3f2fc!important;filter:none!important;}
+  html[data-design] body.working-body[data-page] #content :is(.tb36-modes,.dsh-tabs)>button[aria-pressed=true] {background:#eeecff!important;color:#4636b4!important;border-color:#e3defe!important;}
+  html[data-design] body.working-body[data-page] #content :is(.tb36-modes,.dsh-tabs)>button .tb36-mode-icon svg {color:inherit!important;stroke:currentColor!important;}
+  /* One quiet workspace surrounds clean white paper and controls. */
+  html[data-design] body.working-body[data-page] #content :is(.ssil-main,.dst-layout,.fv57-desk,.dq61-desk,.dl63-desk,.ds48-paper-scene,.creator-paper-stage) {
+    background:#eef1f6!important;background-image:none!important;border-color:var(--ds-ui-rule)!important;
+    box-shadow:none!important;border-radius:12px;
+  }
+  html[data-design] body.working-body[data-page] #content :is(.ssil-main,.dst-layout) {border:1px solid var(--ds-ui-rule)!important;border-radius:14px;}
+  html[data-design] body.working-body[data-page] #content :is(.ssil-live-paper,.fv57-paper,.quick-paper,.dl63-receipt) {
+    background:#fff!important;background-image:none!important;border:1px solid #e1e5ed!important;
+    box-shadow:0 3px 14px #20283b06!important;border-radius:4px!important;
+  }
+  html[data-design] body.working-body[data-page] #content :is(.ssil-today,.ssil-review,.fv57-paper,.sl54-unit-side,.dst-layout,.quick-paper)::before,
+  html[data-design] body.working-body[data-page] #content :is(.ssil-today,.ssil-review,.fv57-paper,.sl54-unit-side,.dst-layout,.quick-paper)::after {display:none!important;}
+  html[data-design] body.working-body[data-page] #content :is(.ssp-desk-controls,.ssil-review,.dst-config,.sl54-unit-side,.creator-config,.tb36-conditions,.tb36-review-panel,.tb36-finish-panel,.csat-settings) {
+    background:#fff!important;background-image:none!important;color:var(--ds-ui-ink)!important;
+    border:1px solid var(--ds-ui-rule)!important;border-radius:12px!important;box-shadow:none!important;
+    text-shadow:none!important;
+  }
+  html[data-design] body.working-body[data-page] #content :is(.ssp-desk-controls,.ssil-review,.dst-config,.sl54-unit-side,.creator-config,.tb36-conditions,.tb36-review-panel,.tb36-finish-panel,.csat-settings) :is(h2,h3,h4,label,legend,p,small,strong,span,summary,.creator-field) {
+    color:var(--ds-ui-ink)!important;text-shadow:none!important;
+  }
+  html[data-design] body.working-body[data-page] #content :is(.ssp-desk-controls,.ssil-review,.dst-config,.sl54-unit-side,.creator-config,.tb36-conditions,.tb36-review-panel,.tb36-finish-panel,.csat-settings) :is(p,small,.creator-small,.creator-actions>p) {color:var(--ds-ui-muted)!important;}
+  html[data-design] body.working-body[data-page] #content :is(.ssp-desk-controls,.ssil-review,.dst-config,.sl54-unit-side,.creator-config,.tb36-conditions,.tb36-review-panel,.tb36-finish-panel,.csat-settings) :is(input:not([type=checkbox]):not([type=radio]),select) {
+    color:var(--ds-ui-ink)!important;background:#fff!important;border:1px solid #cbd2df!important;
+    border-radius:7px!important;box-shadow:none!important;min-height:44px;
+  }
+  html[data-design] body.working-body[data-page] #content :is(.ssp-desk-controls,.ssil-review,.dst-config,.sl54-unit-side,.creator-config,.tb36-conditions,.tb36-review-panel,.tb36-finish-panel,.csat-settings) :is(input,select):disabled {background:#f0f2f6!important;color:#6d7586!important;opacity:1!important;}
+  html[data-design] body.working-body[data-page] #content :is(.ssp-desk-controls,.ssil-review,.dst-config,.sl54-unit-side,.creator-config,.tb36-conditions,.tb36-review-panel,.tb36-finish-panel,.csat-settings) button {
+    color:#39445b!important;background:#fff!important;background-image:none!important;border:1px solid #cdd4e1!important;
+    box-shadow:none!important;text-shadow:none!important;border-radius:7px!important;transform:none!important;
+  }
+  html[data-design] body.working-body[data-page] #content :is(.ssp-desk-controls,.ssil-review,.dst-config,.sl54-unit-side,.creator-config,.tb36-conditions,.tb36-review-panel,.tb36-finish-panel,.csat-settings) button:not(:disabled):hover {border-color:#8d82e3!important;background:#f6f4ff!important;}
+  html[data-design] body.working-body[data-page] #content :is(.ssp-desk-controls,.ssil-review,.dst-config,.sl54-unit-side,.creator-config,.tb36-conditions,.tb36-review-panel,.tb36-finish-panel,.csat-settings) :is(.dst-start,.ssp-plan-primary,.tb36-primary,.creator-print,.sl54-primary,button[aria-pressed=true]) {
+    background:var(--ds-ui-accent)!important;color:#fff!important;border-color:var(--ds-ui-accent)!important;box-shadow:none!important;
+  }
+  html[data-design] body.working-body[data-page] #content :is(.dst-start,.ssp-plan-primary,.tb36-primary,.creator-print,.sl54-primary,button[aria-pressed=true]) :is(span,strong,small) {color:inherit!important;}
+  html[data-design] body.working-body[data-page] #content :is(.ssp-desk-controls,.ssil-review,.dst-config,.sl54-unit-side,.creator-config,.tb36-conditions,.tb36-review-panel,.tb36-finish-panel,.csat-settings) button:disabled {background:#edf0f5!important;color:#737d91!important;border-color:#dce1ea!important;opacity:1!important;}
+  html[data-design] body.working-body[data-page] #content :is(.ssp-desk-controls,.ssil-review,.dst-config,.sl54-unit-side) :is(a,.sl54-quiet,.ssp-plan-link) {color:#4b41ad!important;}
+  html[data-design] body.working-body[data-page] #content :is(.ssp-desk-controls,.ssil-review,.dst-config,.sl54-unit-side,.creator-config,.tb36-conditions,.tb36-review-panel,.tb36-finish-panel) ::selection {background:#ddd8ff;color:#24203e;}
+  html[data-design] body.working-body[data-page] #content :is(.bf62-subject,.bf62-choice>span,.creator-material-meta,.tb36-cover-note,.tb36-save) {background:#f7f8fb!important;border-color:#dfe3ec!important;color:var(--ds-ui-ink)!important;box-shadow:none!important;}
+  html[data-design] body.working-body[data-page] #content .bf62-panel :is(.bf62-chip>span,.bf62-all) {color:#48516a!important;border-color:#ccd4e1!important;background:#fff!important;box-shadow:none!important;}
+  html[data-design] body.working-body[data-page] #content .bf62-panel :is(.bf62-chip,.bf62-all):has(input:checked),
+  html[data-design] body.working-body[data-page] #content .bf62-panel .bf62-chip:has(input:checked)>span {background:#eeecff!important;border-color:#aca0ee!important;color:#4736b3!important;}
+  html[data-design] body.working-body[data-page] #content :is(.bf62-summary,.ds48-canvas,.creator-canvas,.tb36-order-preview) {background:#fff!important;border-color:var(--ds-ui-rule)!important;box-shadow:none!important;border-radius:12px!important;}
+  html[data-design] body.working-body[data-page] #content :is(.creator-canvas-toolbar,.ds48-preview-toolbar,.creator-canvas-footer) {background:#fff!important;border-color:var(--ds-ui-rule)!important;color:var(--ds-ui-ink)!important;}
+  /* Remove the photo desk only; keep the existing A4 preview position and scale. */
+  html[data-design] body.working-body[data-page] #content .ds48-paper-position {box-shadow:0 2px 12px #20283b12!important;}
+  html[data-design] body.working-body[data-page] #content .ds48-paper-scene {border-radius:0;}
+  html[data-design] body.working-body[data-page] #content .dst-layout:not(:has(.quick-question)) {background:transparent!important;border:0!important;padding:0!important;}
+  html[data-design] body.working-body[data-page] #content .dst-config .dst-fields {gap:16px!important;margin:12px 0!important;}
+  html[data-design] body.working-body[data-page] #content .dst-config .dst-fields label {margin:0!important;gap:6px!important;}
+  html[data-design] body.working-body[data-page] #content .dst-config p {margin:12px 0!important;line-height:1.65!important;}
+  html[data-design] body.working-body[data-page] #content :is(.tb36-modes,.dsh-tabs)>button::before,
+  html[data-design] body.working-body[data-page] #content :is(.tb36-modes,.dsh-tabs)>button::after {display:none!important;}
+  html[data-design] body.working-body[data-page] #content .sd-print {background:#fff!important;border-color:var(--ds-ui-rule)!important;box-shadow:none!important;}
+  html[data-design] body.working-body[data-page] #content .sd-print .tb36-conditions :is(label,legend,summary,h2,h3,strong,span) {color:var(--ds-ui-ink)!important;text-shadow:none!important;}
+  html[data-design] body.working-body[data-page] #content .sd-print .tb36-conditions .tb36-primary,
+  html[data-design] body.working-body[data-page] #content .sd-print .tb36-conditions .tb36-primary span {color:#fff!important;}
+  /* Only the pre-start summary shrinks. Live question sheets retain their dimensions. */
+  html[data-design] body.working-body[data-page] #content .dst-sheet:not(:has(.quick-question)) {min-height:0!important;padding:28px!important;}
+  html[data-design] body.working-body[data-page] #content .dst-sheet:not(:has(.quick-question)) h2 {font-size:clamp(22px,2.2vw,28px)!important;line-height:1.45!important;letter-spacing:-.035em!important;margin:0 0 12px!important;color:var(--ds-ui-ink)!important;}
+  html[data-design] body.working-body[data-page] #content .dst-sheet:not(:has(.quick-question))>p {color:var(--ds-ui-muted)!important;font-size:15px!important;line-height:1.7!important;}
+  html[data-design] body.working-body[data-page] #content .dst-sample-label {color:#5b6478!important;font-weight:650;margin-bottom:12px;}
+  html[data-design] body.working-body[data-page] #content .ds-timed .dst-config :is(h2,.dst-fields) {border-color:var(--ds-ui-rule)!important;}
+  html[data-design] body.working-body[data-page] #content :is(.ds-timed,.bf62-root) :is(.section-heading,.ta-heading-v18) {border-color:var(--ds-ui-rule)!important;}
+  html[data-design] body.working-body[data-page] #content :is(.sl54-answer-options button,.fv57-choices button) {background:#fff!important;border:1px solid #cbd3e0!important;border-radius:8px!important;color:#38415a!important;box-shadow:none!important;transform:none!important;}
+  html[data-design] body.working-body[data-page] #content :is(.sl54-answer-options button,.fv57-choices button)[aria-pressed=true] {background:#eeecff!important;border-color:#8e7ee0!important;color:#4938ba!important;}
+  html[data-design] body.working-body[data-page] #content :is(button,a,select,input):focus-visible {outline:3px solid #8172e4!important;outline-offset:3px!important;}
+  /* Library surfaces use the same system without altering purchasing behavior. */
+  html[data-design] body.working-body[data-page] #content .dl63 {--dl-paper:#fff;--dl-ink:#20283b;--dl-sub:#5b6478;--dl-rule-2:#dfe3ec;--dl-navy:#5547cf;--dl-sh-1:none;--dl-sh-2:none;}
+  html[data-design] body.working-body[data-page] #content :is(.dl63,.dl63-list-wrap,.dl63-receipt,.dl63-form,.dl63-exam) {background-image:none!important;}
+  html[data-design] body.working-body[data-page] #content .dl63-row[aria-pressed=true] {background:#eeecff!important;color:#4736b3!important;box-shadow:none!important;}
+  html[data-design] body.working-body[data-page] #content :is(.dl63-buy,.dl63-brass,.dl63-exam-lead) {background:#5547cf!important;color:#fff!important;box-shadow:none!important;}
+  html[data-design] body.working-body[data-page] #content .dl63-upload {background:#252c46!important;background-image:none!important;box-shadow:none!important;}
+  html[data-design] body.working-body[data-page] #content .dl63-upload::before {display:none!important;}
+  /* Preserve the photo entrance. Simplify only its fabric / metal role buttons. */
+  html[data-design] body.home-body .role-dock>a:not(.ip23-request-entry) {background:#ffffffed!important;background-image:none!important;border:1px solid #ffffffab!important;border-radius:9px!important;color:#232a3d!important;box-shadow:0 2px 12px #12182a12!important;text-shadow:none!important;transform:none!important;}
+  html[data-design] body.home-body .role-dock>a:not(.ip23-request-entry):nth-child(2) {background:#5547cf!important;border-color:#6b5ddd!important;color:#fff!important;}
+  html[data-design] body.home-body .role-dock>a:not(.ip23-request-entry)::before,
+  html[data-design] body.home-body .role-dock>a:not(.ip23-request-entry)::after {display:none!important;}
+  html[data-design] body.home-body .role-dock>a:not(.ip23-request-entry) .hd40-keycap {background:transparent!important;background-image:none!important;color:inherit!important;filter:none!important;transform:none!important;box-shadow:none!important;}
+  html[data-design] body.home-body .role-dock>a:not(.ip23-request-entry) .hd40-keycap>span {color:inherit!important;text-shadow:none!important;}
+  html[data-ds-main] .about-go a {box-shadow:none;border:1px solid #dfe3ec;border-radius:8px;}
+  html[data-ds-main] .about-go a.main {background:#5547cf;border-color:#5547cf;}
+  @media(max-width:700px) {
+    html[data-design] body.working-body[data-page] #content :is(.tb36-modes,.dsh-tabs)>button {min-height:58px!important;padding:10px 7px!important;}
+    html[data-design] body.working-body[data-page] #content .dst-sheet:not(:has(.quick-question)) {padding:22px!important;}
+    html[data-design] body.working-body[data-page] #content :is(.ssil-main,.dst-layout) {border-radius:10px;}
+    html[data-design] body.working-body[data-page] #content :is(.tb36-conditions,.dst-config,.ssp-desk-controls) {max-width:100%;min-width:0;}
+  }
+  @media(prefers-reduced-motion:reduce) {html[data-design] body.working-body[data-page] #content :is(.tb36-modes,.dsh-tabs)>button {transition:none;}}
+}
