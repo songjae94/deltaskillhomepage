@@ -724,3 +724,30 @@
   #content .ssp-desk[data-guest-sample] .ssp-body {order: 0}
   #content .ssp-desk[data-guest-sample] .ssp-desk-controls {order: 1}
 }
+
+/* 2026-11-27 사용자 요청: PC 제작 메뉴의 글자와 경계선 선명도. */
+@media screen and (min-width: 801px) {
+ html[data-design] body.working-body[data-page] #content#content .tb36-modes {
+  border-color:#827e73!important;
+  box-shadow:none!important;
+ }
+ html[data-design] body.working-body[data-page] #content#content .tb36-modes>button {
+  color:#292a27!important;
+  text-shadow:none!important;
+  filter:none!important;
+ }
+ html[data-design] body.working-body[data-page] #content#content .tb36-modes>button strong {
+  font-size:17px!important;font-weight:700!important;line-height:24px!important;
+  letter-spacing:-.02em!important;color:#242522!important;
+ }
+ html[data-design] body.working-body[data-page] #content#content .tb36-modes>button small {
+  font-size:13px!important;font-weight:500!important;line-height:20px!important;
+  letter-spacing:0!important;color:#42433e!important;
+ }
+ html[data-design] body.working-body[data-page] #content#content .tb36-modes>button[aria-pressed=true] {
+  border-color:#6e6b61!important;box-shadow:none!important;
+ }
+ html[data-design] body.working-body[data-page] #content#content .tb36-modes .tb36-mode-icon svg {
+  stroke-width:1.8;color:#373832!important;filter:none!important;
+ }
+}
