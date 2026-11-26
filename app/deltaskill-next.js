@@ -20,12 +20,27 @@ const nativeOrigin=window.DSService.isLiveOrigin;
 let logoutPending=false;
 function toast(message){$('#toast').textContent=message;$('#toast').classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>$('#toast').classList.remove('show'),4000)}
 function brand(){return '<span class="brand">DELTA<span class="delta">SKILL</span></span>'}
+function guestEntryMenu(){
+ return `<details class="guest-entry-menu"><summary>로그인 없이 체험</summary><nav aria-label="비회원 체험">
+ <a href="/app/?studentMode=study#student">공부하기</a>
+ <a href="/app/?studentMode=timed#student">타임어택</a>
+ <a href="/app/?studentMode=create#student">자료 만들기</a>
+ <a href="/app/?teacherMode=print#teacher">프린트 만들기</a></nav></details>`;
+}
+document.addEventListener('keydown',event=>{
+ const menu=document.querySelector('.guest-entry-menu[open]');
+ if(menu&&event.key==='Escape'){menu.open=false;menu.querySelector('summary').focus();}
+});
+document.addEventListener('click',event=>{
+ const menu=document.querySelector('.guest-entry-menu[open]');
+ if(menu&&!menu.contains(event.target))menu.open=false;
+});
 function header(page){
  const home=page==='home',isTeacher=role==='teacher',accountPage=['login','account','account-settings'].includes(page);
  document.body.classList.toggle('home-body',home);document.body.classList.toggle('working-body',!home);document.body.classList.toggle('creator-body',['teacher','studio'].includes(page));
  const nav=isTeacher?[['teacher','자료 만들기'],['classroom','반 관리'],['library','자료실']]:[['student','공부'],['account','내 기록'],['csat','수능·모의고사']];
- $('#header').innerHTML=`<div class="header"><a href="#home" aria-label="델타스킬 대문">${brand()}</a>${home?'':`<nav aria-label="주 메뉴">${nav.map(([r,t])=>`<a href="#${r}"${r===page?' aria-current="page"':''}>${t}</a>`).join('')}</nav>`}<div class="meta">${home||page==='login'?'':`<div class="role-switch" aria-label="이용자 전환"><a href="${accountPage?'#account':'#student'}"${accountPage?' data-account-role="student"':''}${!isTeacher?' aria-current="page"':''}>학생</a><a href="${accountPage?'#account':'#teacher'}"${accountPage?' data-account-role="teacher"':''}${isTeacher?' aria-current="page"':''}>선생님</a></div>`}<a class="login" href="#${DSService.session()?'account':'login'}">${DSService.session()?'마이페이지':'로그인'}</a>${!home&&!accountPage&&!DSService.session()?'<a class="account-dot" href="#account" aria-label="마이페이지"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20v-2a7 7 0 0 1 14 0v2"/></svg></a>':''}</div></div>`;
- $('#dock').innerHTML=home?'<nav class="role-dock" aria-label="이용자 선택"><a href="#student" data-entry="student">고등 내신 풀기</a><a href="#teacher" data-entry="teacher">수업 자료 만들기</a></nav>':'';
+ $('#header').innerHTML=`<div class="header"><a href="#home" aria-label="델타스킬 대문">${brand()}</a>${home?'':`<nav aria-label="주 메뉴">${nav.map(([r,t])=>`<a href="#${r}"${r===page?' aria-current="page"':''}>${t}</a>`).join('')}</nav>`}<div class="meta">${home&&!DSService.session()?guestEntryMenu():''}${home||page==='login'?'':`<div class="role-switch" aria-label="이용자 전환"><a href="${accountPage?'#account':'#student'}"${accountPage?' data-account-role="student"':''}${!isTeacher?' aria-current="page"':''}>학생</a><a href="${accountPage?'#account':'#teacher'}"${accountPage?' data-account-role="teacher"':''}${isTeacher?' aria-current="page"':''}>선생님</a></div>`}<a class="login" href="#${DSService.session()?'account':'login'}">${DSService.session()?'마이페이지':'로그인'}</a>${!home&&!accountPage&&!DSService.session()?'<a class="account-dot" href="#account" aria-label="마이페이지"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20v-2a7 7 0 0 1 14 0v2"/></svg></a>':''}</div></div>`;
+ $('#dock').innerHTML=home?'<nav class="role-dock" aria-label="이용자 선택"><a href="#student" data-entry="student">학생</a><a href="#teacher" data-entry="teacher">선생님</a></nav>':'';
 }
 function compactFooter(){return `<footer class="work-footer"><span>개편 미리보기</span><div>${link('account','마이페이지')}${link('home','대문')}<button data-feedback="화면 의견">의견</button></div></footer>`}
 function choices(q,name,chosen='',disabled=false){return `<fieldset class="quick-field"><legend class="sr-only">답 선택</legend><div class="quick-answers">${q.options.map((o,i)=>`<label><input type="radio" name="${name}" value="${i}"${String(i)===chosen?' checked':''}${disabled?' disabled':''}><span><small>${['①','②','③','④','⑤'][i]}</small>${math(o)}</span></label>`).join('')}</div></fieldset>`}
@@ -299,8 +314,8 @@ function header(page){
  const titles={home:'수학, 여기 다 있다',student:'공부',teacher:'자료 만들기','print-design':'프린트 디자인',studio:'자료 만들기',library:'내신 자료',material:'자료 미리보기',csat:'수능·모의고사',account:'마이페이지',login:'로그인',help:'이용 안내',benefits:'PDF 체험 안내',classroom:'반 관리',record:'학습 상세',practice:'문제 풀기','diagnostic-result':'진단 결과','not-found':'페이지 안내',improve:'의견',progress:'학습 기록',diagnostic:'단원 진단','diagnostic-run':'단원 진단','account-settings':'계정 관리','account-password':'비밀번호 변경'};document.title=(titles[page]||'DELTASKILL')+' · DELTASKILL';
  const nav=isTeacher?[['teacher','자료 만들기'],['library','내신 자료'],['csat','수능·모의고사']]:[['student','공부'],['library','내신 자료'],['csat','수능·모의고사']];
  const current=['practice','timed','diagnostic','diagnostic-run','diagnostic-result'].includes(page)?'student':page==='material'?'library':page==='print-design'?'teacher':page;
- $('#header').innerHTML=`<div class="header"><a href="#home" aria-label="델타스킬 대문">${brand()}</a>${home?'':`<nav aria-label="주 메뉴">${nav.map(([r,t])=>`<a href="#${r}"${r===current?' aria-current="page"':''}>${t}</a>`).join('')}</nav>`}<div class="meta">${home||page==='login'?'':`<div class="role-switch" aria-label="이용자 전환"><a href="${accountPage?'#account':'#student'}"${accountPage?' data-account-role="student"':''}${!isTeacher?' aria-current="page"':''}>학생</a><a href="${accountPage?'#account':'#teacher'}"${accountPage?' data-account-role="teacher"':''}${isTeacher?' aria-current="page"':''}>선생님</a></div>`}<a class="login" href="#${DSService.session()?'account':'login'}">${DSService.session()?'마이페이지':'로그인'}</a></div></div>`;
- $('#dock').innerHTML=home?'<nav class="role-dock" aria-label="이용자 선택"><a href="#student" data-entry="student">고등 내신 풀기</a><a href="#teacher" data-entry="teacher">수업 자료 만들기</a></nav>':'';
+ $('#header').innerHTML=`<div class="header"><a href="#home" aria-label="델타스킬 대문">${brand()}</a>${home?'':`<nav aria-label="주 메뉴">${nav.map(([r,t])=>`<a href="#${r}"${r===current?' aria-current="page"':''}>${t}</a>`).join('')}</nav>`}<div class="meta">${home&&!DSService.session()?guestEntryMenu():''}${home||page==='login'?'':`<div class="role-switch" aria-label="이용자 전환"><a href="${accountPage?'#account':'#student'}"${accountPage?' data-account-role="student"':''}${!isTeacher?' aria-current="page"':''}>학생</a><a href="${accountPage?'#account':'#teacher'}"${accountPage?' data-account-role="teacher"':''}${isTeacher?' aria-current="page"':''}>선생님</a></div>`}<a class="login" href="#${DSService.session()?'account':'login'}">${DSService.session()?'마이페이지':'로그인'}</a></div></div>`;
+ $('#dock').innerHTML=home?'<nav class="role-dock" aria-label="이용자 선택"><a href="#student" data-entry="student">학생</a><a href="#teacher" data-entry="teacher">선생님</a></nav>':'';
 }
 function compactFooter(){return `<footer class="work-footer"><span>DELTASKILL</span><div>${link('home','대문')}${link('account','마이페이지')}${link('help','이용 안내')}<a href="/naesin/">내신 자료 구매</a><a href="/pass/">이용권</a><a href="/orders/">주문 조회</a><button data-feedback="화면 의견">의견</button></div></footer>`}
 function timerFeature(){return `<article class="time-feature"><div class="feature-heading"><h2>타임어택</h2><span>정적분 · 6문항</span></div><div class="feature-clock">06<span>:</span>00</div><div class="feature-track"><i></i></div><div class="time-feature-bottom"><p>아는 문제, 시간 안에.</p><button data-start="timed">시작하기</button></div></article>`}
@@ -1092,7 +1107,7 @@ function route(){
 }
 document.addEventListener('click',async e=>{
  const ar=e.target.closest('a[data-account-role]');if(ar){e.preventDefault();role=ar.dataset.accountRole==='teacher'?'teacher':'student';put('role',role);refreshAccount();return}
- const entry=e.target.closest('[data-entry]');if(entry){studentTab=cinemaIndex===2?'timed':'study';quickSelected='';quickHelp=false}
+ const entry=e.target.closest('[data-entry]');if(entry){studentTab='study';quickSelected='';quickHelp=false}
  const b=e.target.closest('button');if(!b)return;
  if(b.dataset.studyTab){studentTab=b.dataset.studyTab;$('#content').innerHTML=student();return}
  if(b.hasAttribute('data-quick-hint')){quickHelp=!quickHelp;const el=$('.quick-hint');if(el)el.hidden=!quickHelp;return}
@@ -1185,7 +1200,7 @@ window.addEventListener('ds-session-change',()=>{if(!DSService.session()){clearM
 window.addEventListener('hashchange',route);route();
 // Preserve the approved logo introduction on the first homepage visit.
 // Direct study links never wait for the introduction.
-try{if((!location.hash||location.hash==='#home')&&!sessionStorage.getItem('ds-next-intro')){sessionStorage.setItem('ds-next-intro','1');intro()}}catch{}
+
 
 document.addEventListener('click',event=>{
  if(event.target.closest('[data-preview-jump]')){

@@ -832,13 +832,11 @@ function weak(r){return r&&(!r.correct||r.confidence!=='sure'||r.help||r.reason)
 function summary(state){const rows=[...latest(state).values()];return {answered:rows.length,correct:rows.filter(r=>r.correct).length,review:rows.filter(weak).length,attempts:state.records.length};}
 function tier(state,target=state.grade){const seen=latest(state);let level=Number(target)<=2?2:1;while(level<3&&BANK.filter(q=>q.course==='advanced'&&q.level===level).every(q=>{const r=seen.get(q.id);return r?.correct&&r.confidence==='sure'&&!r.help;}))level++;return level;}
 function cards(){return COURSES.map((c,i)=>`<button class="ssp-course" data-ssp-course="${c.id}"><span>0${i+1}</span><strong>${c.name}</strong><small>${c.intro}</small></button>`).join('');}
-function openingQuestion(){return BANK.find(q=>q.course==='types'&&!q.originalQuestionId);}
 function deskShell(){
- const first=openingQuestion();
  return `<section class="ssp ssp-desk sl54-shell student-signed-in" data-plan-phase="loading" aria-label="내신 공부하기">
   <header class="ssil-heading"><h1>등급을올리는공부부터</h1><a href="#account" data-ssil-account="study">학습 기록 보기 ↗</a></header>
   <div class="ssil-main">
-   <div class="ssil-today ssil-live-paper ssp-body"><article class="ssp-paper"><h2 class="ssp-problem-heading">${esc(first.subject)} · ${esc(subunit(first))}</h2><div class="ssp-prompt">${first.prompt}</div></article></div>
+   <div class="ssil-today ssil-live-paper ssp-body" hidden></div>
    <aside class="ssil-review ssp-desk-controls" aria-label="학습 설정">
     <div data-study-plan aria-label="나의 학습 계획"></div>
     <p class="ssp-plan-status" aria-live="polite" hidden></p>
@@ -955,7 +953,7 @@ function bind(container,options={}){
  let deskUnit='',deskType='',deskFilterHTML=null;
  const studyPlan=window.DSStudentStudyPlan;
  let planPhase='loading',planProfile=null,planStep=0,planDraft={},planCourse='',planBusy=false,planMessage='';
- let planHTML=null;
+ let planHTML=null, quickGuest=false;
  const subjects=[...new Set(studyChapters.map(([subject])=>subject))];
  let externalRange=false,planSourceUnit=null,planSourceRows=null;
  let supplyPhase='idle',supplyByBook=new Map();
@@ -1120,16 +1118,13 @@ function bind(container,options={}){
   subjectMenuCache.set(need,{supply:supplyByBook,cells:guestCells,subjects:available});
   return available;
  }
- function openFirstQuestion(){
-  const first=openingQuestion();
-  state.course=first.course;deskScope=first.unit;
-  localPage(localSet(first),0,false);
- }
  async function loadPlan(){
   const generation=epoch;
   planPhase='loading';planStep=0;planDraft=newPlanDraft();planProfile=null;planBusy=false;planMessage='';
   if(guestTrial){
    try{planProfile=JSON.parse(sessionStorage.getItem(trialKey+':plan'));}catch{}
+   quickGuest=!planProfile || !planProfile.goal;
+   if(quickGuest){planStep=2;planDraft.need='types';}
    planPhase=planProfile?'return':'survey';draw(false);return;
   }
   try{
@@ -1195,7 +1190,7 @@ function bind(container,options={}){
   planPhase='survey';planStep=2;draw(false);
  }
  async function finishPlan(unit){
-  if(planBusy||planStep!==2||!planDraft.goal||!planDraft.need)return;
+  if(planBusy||planStep!==2||(!planDraft.goal&&!quickGuest)||!planDraft.need)return;
   const range=planUnits(planDraft.subject,planDraft.need).find(row=>row.id===unit);
   if(!range||range.disabled||(planDraft.need==='supplement'&&range.book!==planDraft.book))return;
   planDraft.unit=unit;
@@ -1261,11 +1256,15 @@ function bind(container,options={}){
    if(b.hasAttribute('data-plan-reselect')){
     planDraft={...newPlanDraft(),goal:planProfile?.goal||'',need:planProfile?.need||''};
     guestRequest++;guestBusy=false;guestRange=null;guestQuestion='';
-    planPhase='survey';planStep=planDraft.goal?1:0;planMessage='';draw(false);
+    planPhase='survey';planStep=quickGuest?2:planDraft.goal?1:0;planMessage='';draw(false);
    }
    return true;
   }
   if(planPhase!=='survey')return true;
+  if(b.hasAttribute('data-plan-start')){void finishPlan(planDraft.unit);return true;}
+  if(guestTrial&&quickGuest){
+   if(b.hasAttribute('data-plan-custom')){quickGuest=false;planDraft=newPlanDraft();planStep=0;draw(false);container.querySelector('.ssp-plan-title')?.focus();return true;}
+  }
   if(b.hasAttribute('data-plan-answer')&&planStep<2){
    if(planStep===0&&!studyPlan.isGoal(value)||planStep===1&&!Object.hasOwn(studyPlan.courses,value))return true;
    planDraft[planStep===0?'goal':'need']=value;planStep++;
@@ -1664,7 +1663,7 @@ function bind(container,options={}){
   const previousPlanPhase=root.dataset.planPhase;
   const planPane=root.querySelector('[data-study-plan]');
   const units=planPhase==='survey'?planUnits(planDraft.subject,planDraft.need).filter(row=>planDraft.need!=='supplement'||row.book===planDraft.book):planUnits(planProfile?.subject,planProfile?.need);
-  const markup=planPhase==='loading'?'<p role="status">학습 계획을 불러오고 있어요.</p>':planPhase==='load-error'?'<button type="button" data-plan-reload>다시 불러오기</button>':studyPlan.render({profile:planProfile,draft:planDraft,step:planStep,phase:planPhase,course:planCourse,subjects:planPhase==='survey'&&planStep===2&&planDraft.need!=='supplement'?planSubjects(planDraft.need):subjects,books:planDraft.need==='supplement'?bookMenu():[],supplyPhase,units});
+  const markup=planPhase==='loading'?'<p role="status">학습 계획을 불러오고 있어요.</p>':planPhase==='load-error'?'<button type="button" data-plan-reload>다시 불러오기</button>':studyPlan.render({quickGuest,profile:planProfile,draft:planDraft,step:planStep,phase:planPhase,course:planCourse,subjects:planPhase==='survey'&&planStep===2&&planDraft.need!=='supplement'?planSubjects(planDraft.need):subjects,books:planDraft.need==='supplement'?bookMenu():[],supplyPhase,units});
   if(markup!==planHTML){planPane.innerHTML=markup;planHTML=markup;}
   planPane.querySelectorAll('button').forEach(el=>{if(planBusy&&!el.disabled){el.disabled=true;el.dataset.planBusy='';}else if(!planBusy&&el.hasAttribute('data-plan-busy')){el.disabled=false;delete el.dataset.planBusy;}});
   root.dataset.planPhase=planPhase;root.dataset.sspView=view; /* H29-11(관문 91): 기록 보기는 계획 단계와 상관없이 보임(세로 화면 CSS) */
@@ -1673,6 +1672,8 @@ function bind(container,options={}){
   root.querySelector('.ssp-desk-filters').hidden=!filters;
   if(filters!==deskFilterHTML){root.querySelector('.ssp-desk-filters').innerHTML=filters;deskFilterHTML=filters;}
   root.querySelectorAll('.ssp-desk-controls button, .ssp-desk-controls select:not([disabled]), .ssp-desk-controls [data-ssp-busy-lock]').forEach(el=>{if(remoteBusy&&!el.disabled){el.disabled=true;el.dataset.sspBusyLock='';}else if(!remoteBusy&&el.hasAttribute('data-ssp-busy-lock')){el.disabled=false;delete el.dataset.sspBusyLock;}});
+  body.hidden=planPhase!=='active'&&view!=='history';
+  if(body.hidden){paintBody(body,'');return;}
   let bodyMarkup=view==='trial-source'?guestQuestionHTML():view==='guest-limit'?'<article class="ssp-paper"><h2>공개 체험 세 문제를 모두 열어봤어요.</h2>'+trialNotice()+'</article>':view==='source-question'&&remoteQuestion?remoteQuestionHTML():view==='question'&&current?question():view==='history'?history():view==='result'?result():deskWaiting();
   if(guestTrial&&view==='question'&&feedback&&trialOpened.size>=trialLimit)bodyMarkup+=trialNotice();
   if(/못|실패|사라|저장 공간/.test(storageMessage))bodyMarkup+=`<p class="ssil-sync">${esc(storageMessage)}</p>`;
@@ -1795,7 +1796,10 @@ function bind(container,options={}){
    planDraft.subject=e.target.value;planDraft.unit='';draw(false);
    container.querySelector('[data-plan-unit]')?.focus({preventScroll:true});return;
   }
-  if(e.target.matches('[data-plan-unit]')&&planPhase==='survey'){void finishPlan(e.target.value);return;}
+  if(e.target.matches('[data-plan-unit]')&&planPhase==='survey'){
+   planDraft.unit=e.target.value;draw(false);container.querySelector('[data-plan-unit]')?.focus({preventScroll:true});
+   return;
+  }
 
 
   if(e.target.matches('[data-ssp-desk-scope],[data-ssp-desk-unit],[data-ssp-desk-type],[data-ssp-grade]')){
@@ -1822,8 +1826,8 @@ function bind(container,options={}){
   }
  }
  if(e.target.matches('[data-ssp-target]')){desiredCount=Number(e.target.value);draw(false);return;}if(e.target.name==='ssp-remote-choice'){remoteChoice=Number(e.target.value);remoteUnknown=false;save();return;}if(e.target.matches('[data-ssp-remote-integer]')){const value=e.target.value.trim();remoteUnknown=false;remoteChoice=/^-?\d+$/.test(value)&&Number.isSafeInteger(Number(value))&&Math.abs(Number(value))<=1000000000?Number(value):null;save();return;}if(e.target.matches('[data-ssp-free-unit]')){if(Object.hasOwn(FREE_CONCEPTS,e.target.value))freeUnit=e.target.value;draw();return;}if(e.target.matches('[data-ssp-scope-book]')){selectedScopeBook=e.target.value;widen='type';invalidateSource();draw();querySource();return;}if(e.target.matches('[data-ssp-scope-unit]')){selectedScopeUnit=e.target.value;widen='type';invalidateSource();draw();querySource();return;}if(e.target.matches('[data-ssp-scope-type]')){selectedScopeType=e.target.value;widen='type';invalidateSource();draw();querySource();return;}if(e.target.name==='ssp-answer'){choice=Number(e.target.value);const button=container.querySelector('[data-ssp-check]');if(button)button.disabled=false;save();}else if(e.target.name==='ssp-confidence'){confidence=e.target.value;save();}else if(e.target.matches('[data-ssp-grade]')){state.grade=Number(e.target.value);save();draw();}else if(e.target.matches('[data-ssp-reason]')&&feedback){feedback.reason=e.target.value;save(feedback);}}
- function sessionChange(){clearTimeout(remoteTimer);remoteTimer=0;remoteDirty=false;lastOpen=null;guestRequest++;guestBusy=false;guestRange=null;guestQuestion='';localDrafts.clear();remoteDrafts.clear();epoch++;invalidateSource();remoteQuestion=null;remoteFeedback=null;remoteOperations.clear();remoteHistory={phase:'idle',records:[],hasMore:false,nextBefore:null};activeOwner=owner();current=null;pool=[];feedback=null;view='home';read();if(desk){openFirstQuestion();void loadSupply();void loadPlan();}notice='로그인 상태가 바뀌어 현재 계정의 기록을 다시 확인했어요.';draw();}
- read();if(desk){openFirstQuestion();void loadSupply();void loadPlan();}container.addEventListener('click',click);container.addEventListener('change',change);window.addEventListener('ds-session-change',sessionChange);const leave=()=>{if(document.visibilityState==='hidden')flushRemote(true);},pageLeave=()=>flushRemote(true);document.addEventListener('visibilitychange',leave);window.addEventListener('pagehide',pageLeave);if(options.resume&&typeof options.onReady!=='function')resume();draw(false);
+ function sessionChange(){clearTimeout(remoteTimer);remoteTimer=0;remoteDirty=false;lastOpen=null;guestRequest++;guestBusy=false;guestRange=null;guestQuestion='';localDrafts.clear();remoteDrafts.clear();epoch++;invalidateSource();remoteQuestion=null;remoteFeedback=null;remoteOperations.clear();remoteHistory={phase:'idle',records:[],hasMore:false,nextBefore:null};activeOwner=owner();current=null;pool=[];feedback=null;view='home';read();if(desk){void loadSupply();void loadPlan();}notice='로그인 상태가 바뀌어 현재 계정의 기록을 다시 확인했어요.';draw();}
+ read();if(desk){void loadSupply();void loadPlan();}container.addEventListener('click',click);container.addEventListener('change',change);window.addEventListener('ds-session-change',sessionChange);const leave=()=>{if(document.visibilityState==='hidden')flushRemote(true);},pageLeave=()=>flushRemote(true);document.addEventListener('visibilitychange',leave);window.addEventListener('pagehide',pageLeave);if(options.resume&&typeof options.onReady!=='function')resume();draw(false);
  if(signed()&&activeOwner&&typeof options.loadProgress==='function'){const generation=epoch;Promise.resolve().then(()=>options.loadProgress({namespace:'student-paths-v1',ownerKey:activeOwner})).then(raw=>{if(closed||generation!==epoch)return;const remote=clean(raw);let cached=false;try{cached=Boolean(key()&&localStorage.getItem(key()));}catch{}const local=cached?state:remote;state=mergeProgress(remote,local);const comparable=x=>JSON.stringify({...x,records:[...x.records].sort((a,b)=>a.id.localeCompare(b.id))});if(comparable(state)!==comparable(remote)&&(!desk||cached))save();else{try{if(key())localStorage.setItem(key(),JSON.stringify(state));}catch{}emit();}draw(false);notifyReady();}).catch(()=>{if(closed||generation!==epoch)return;storageMessage='계정 기록을 불러오지 못했어요. 현재 기기의 기록을 보여드려요.';draw(false);notifyReady();});}else notifyReady();
  const controller={snapshot:()=>JSON.parse(JSON.stringify({...state,summary:summary(state),tier:tier(state),storage:storageMessage})),showHistory:()=>{view='history';draw();},resume:()=>{const ok=resume();if(ok)draw();return ok;},destroy:()=>{flushRemote();document.removeEventListener('visibilitychange',leave);window.removeEventListener('pagehide',pageLeave);closed=true;epoch++;if(typeof releaseChoiceLayout==='function')releaseChoiceLayout();container.removeEventListener('click',click);container.removeEventListener('change',change);window.removeEventListener('ds-session-change',sessionChange);controllers.delete(container);if(lastController===controller)lastController=null;}};controllers.set(container,controller);lastController=controller;return controller.destroy;
 }
