@@ -1861,6 +1861,7 @@ function bind(container,options={}){
   root.querySelectorAll('.ssp-desk-controls button, .ssp-desk-controls select:not([disabled]), .ssp-desk-controls [data-ssp-busy-lock]').forEach(el=>{if(remoteBusy&&!el.disabled){el.disabled=true;el.dataset.sspBusyLock='';}else if(!remoteBusy&&el.hasAttribute('data-ssp-busy-lock')){el.disabled=false;delete el.dataset.sspBusyLock;}});
   const showSample=sampleVisible();
   root.toggleAttribute('data-guest-sample',showSample);
+  if(showSample)body.style.display='block';else body.style.removeProperty('display');
   if(guestTrial){
    const heading=root.querySelector('.ssil-heading h1');
    const title=showSample?'한 문제 풀어보기':'등급을올리는공부부터';
