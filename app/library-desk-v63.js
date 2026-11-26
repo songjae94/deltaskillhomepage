@@ -41,7 +41,9 @@
   const pointQuote = (item, fmt = 'pdf') => window.DSPointPdf?.product(item.sku + '.' + fmt);
   const publicPoints = (item, fmt = 'pdf') => Number.isSafeInteger(item.formats?.[fmt]?.price) ? item.formats[fmt].price : null;
   const signedIn = () => Boolean(window.DSAuth?.get?.());
-  const shownPrice = (item,fmt) => pointQuote(item,fmt) ? pointQuote(item,fmt).points.toLocaleString('ko-KR') + ' P' : publicPoints(item,fmt) !== null ? publicPoints(item,fmt).toLocaleString('ko-KR') + ' P' : signedIn() ? '포인트 가격 확인 중' : '로그인하면 포인트 값이 보여요';
+  // H28-19 · H28-35(11-26 104): 목록을 읽었는데 없는 SKU 는 P 값을 지어내지 않음 — 한글은 카드 값, PDF 는 목록에 없다고.
+  const unlisted = (item, fmt) => window.DSPointPdf?.listed?.(item.sku + '.' + fmt) === false;
+  const shownPrice = (item,fmt) => pointQuote(item,fmt) ? pointQuote(item,fmt).points.toLocaleString('ko-KR') + ' P' : unlisted(item,fmt) ? (fmt === 'hwpx' && publicPoints(item,fmt) !== null ? '카드 ' + won(publicPoints(item,fmt)) : '포인트 목록에 없음') : publicPoints(item,fmt) !== null ? publicPoints(item,fmt).toLocaleString('ko-KR') + ' P' : signedIn() ? '포인트 가격 확인 중' : '로그인하면 포인트 값이 보여요';
   const abs = path => /^https:\/\//.test(path) ? path : ORIGIN + path;
   const outLink = (href, body, cls = '') => `<a class="${cls}" href="${h(abs(href))}" target="_blank" rel="noopener">${body}<span aria-hidden="true">↗</span><span class="sr-only"> 새 탭</span></a>`;
 
@@ -131,7 +133,7 @@
       <div class="dl63-fmts" role="group" aria-label="받을 꼴">${fmts}</div>
       <div class="dl63-get"><p><strong>받는 것</strong><span>${FORMATS[f]} ${v.files.length}파일</span></p>${lay ? `<ul>${lay}</ul>` : ''}</div>
       <p class="dl63-total"><span>값</span><b>${shownPrice(item,f)}</b></p>
-      ${POINT_PDF ? (quote ? '<p class="dl63-small">구성 '+v.files.length+'파일 · 묶음 가격 1회 차감</p>' : window.DSAuth && !window.DSAuth.has() ? `<a class="dl63-buy" href="${h(window.DSAuth.loginUrl('/app/?pointPdf=' + encodeURIComponent(pointId) + '#library'))}">로그인하고 포인트로 받기</a>` : '<p class="dl63-small">포인트 가격과 파일을 확인하는 중입니다.</p>') : `<a class="dl63-buy" data-dl63-buy href="${h(checkoutHref(item, f))}" target="_blank" rel="noopener">구매하기<span aria-hidden="true">↗</span><span class="sr-only"> 새 탭</span></a>`}
+      ${POINT_PDF ? (quote ? '<p class="dl63-small">구성 '+v.files.length+'파일 · 묶음 가격 1회 차감</p>' : window.DSAuth && !window.DSAuth.has() ? `<a class="dl63-buy" href="${h(window.DSAuth.loginUrl('/app/?pointPdf=' + encodeURIComponent(pointId) + '#library'))}">로그인하고 포인트로 받기</a>` : unlisted(item, f) ? `<p class="dl63-small">이 ${FORMATS[f]} 자료는 포인트 목록에 없습니다.${f === 'hwpx' ? ' 아래 카드 결제로 받을 수 있습니다.' : ''}</p>` : window.DSPointPdf?.phase?.() === 'error' ? '<p class="dl63-small">포인트 목록을 확인하지 못했습니다. 「목록·잔액 다시 확인」을 눌러 주세요.</p>' : '<p class="dl63-small">포인트 가격과 파일을 확인하는 중입니다.</p>') : `<a class="dl63-buy" data-dl63-buy href="${h(checkoutHref(item, f))}" target="_blank" rel="noopener">구매하기<span aria-hidden="true">↗</span><span class="sr-only"> 새 탭</span></a>`}
       ${point}
       ${f === 'hwpx' && quote?.owned !== true ? `<a class="dl63-small dl63-card-pay" data-dl63-buy href="${h(checkoutHref(item, f))}" target="_blank" rel="noopener">한글 카드로 결제 · ${won(v.price)}<span aria-hidden="true">↗</span><span class="sr-only"> 새 탭</span></a>` : ''}
       <div class="dl63-sub">
