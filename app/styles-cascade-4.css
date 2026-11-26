@@ -181,7 +181,7 @@
 @media(max-width:760px){.ssp{padding:22px 14px 45px}.ssp-heading{display:block}.ssp-heading>a{display:inline-block;margin-top:5px}.ssp-courses{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.ssp .ssp-course{padding:13px}.ssp-course strong{font-size:15px}.ssp-course small{font-size:12px}.ssp-body{grid-template-columns:minmax(0,1fr)}.ssp-panel,.ssp-progress{padding:22px 18px}.ssp-paper{padding:25px 19px}.ssp-prompt{font-size:18px;line-height:2.8}.ssp-paper-top{font-size:12px}.ssp-paper-foot{align-items:flex-start;flex-direction:column}.ssp-history li{align-items:flex-start}.ssp-actions>button{flex:1 1 auto;text-align:center}.ssp-feedback select{width:100%}.ssp-solution ol{font-size:16px;padding-left:20px}.ssp math{font-size:1.08em}.ssp-options math{font-size:19px}}
 @media print{.ssp{background:white;padding:0;color:#111}.ssp-heading,.ssp-courses,.ssp-live,.ssp-actions,.ssp-paper-foot button,.ssp-confidence,.ssp-feedback>label,.ssp-progress{display:none!important}.ssp-body{display:block}.ssp-paper,.ssp-panel{border:0;border-radius:0;max-width:none;padding:12mm}.ssp-prompt{font-size:12pt;line-height:2.8}.ssp-options label{border:0;padding:5mm 0}.ssp-options input{display:none}.ssp-solution{break-before:page}.ssp-solution ol{font-size:11pt;line-height:2.8}.ssp-hint{background:white}.ssp-paper-top{color:black}}
 .ssp-sources{grid-column:1/-1}.ssp-extra{grid-column:1/-1;min-width:0}.ssp-extra>summary{padding:18px 22px;background:#fff;border:1px solid var(--ssp-line);border-radius:8px;cursor:pointer;font-weight:650;min-height:48px}.ssp-extra[open]>summary{margin-bottom:16px}.ssp-extra>.ssp-note{padding:8px 20px}.ssp-extra>.ssp-panel{margin-bottom:16px}.ssp-extra>.ssp-progress{max-width:none}.ssp-existing-label,.ssp-workbook>label{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:18px 0}.ssp-existing-label select,.ssp-workbook select{max-width:100%;flex:1;min-width:0}.ssp-existing-list{list-style:none;padding:0}.ssp-existing-list li{display:flex;align-items:center;justify-content:space-between;gap:16px;border-top:1px solid var(--ssp-line);padding:16px 0}.ssp-existing-list li>div{min-width:0;display:flex;flex-direction:column}.ssp-existing-list span{font-size:13px;color:var(--ssp-muted)}.ssp-existing-list button{flex:none}.ssp-series{display:flex;gap:10px}.ssp-series [aria-pressed=true]{background:#eaf1f3;border-color:var(--ssp-accent)}.ssp-scope-check{margin-top:20px;border-top:1px solid var(--ssp-line);padding-top:18px}.ssp-scope-check button{margin:6px 8px 6px 0}@media(max-width:500px){.ssp-existing-list li{align-items:flex-start}.ssp-existing-list button{padding:8px 10px;font-size:13px}.ssp-existing-list strong{font-size:14px}.ssp-existing-list span{font-size:12px}.ssp-workbook label{display:block}.ssp-workbook select{display:block;width:100%;margin-top:7px}}
-.ssp-server-frame{display:block;width:100%;min-height:800px;border:0;background:#fff;margin:20px 0}.ssp-formula{padding:10px 0;line-height:2.8}.ssp [data-ssp-remote-integer]{min-height:46px;padding:8px 12px;border:1px solid var(--ssp-line);border-radius:5px;font:inherit;max-width:180px}.ssp .katex-display{overflow-x:auto;overflow-y:hidden;padding:8px 0}.ssp .katex{font-size:1.08em}
+.ssp-server-frame{display:block;width:100%;min-height:800px;border:0;background:#fff;margin:20px 0}.ssp-formula{padding:10px 0;line-height:2.8}.ssp .katex-display{overflow-x:auto;overflow-y:hidden;padding:8px 0}.ssp .katex{font-size:1.08em}
 
 /* Same original student v55 desk, paper stack and graphite drawer; question metrics and print remain unchanged. */
 @media screen{
@@ -421,6 +421,21 @@
   #content .ssp-desk .ssil-main:has(.ssp-feedback) {display:flex;flex-direction:column}
   #content .ssp-desk .ssil-main:has(.ssp-feedback) .ssp-desk-controls {order:-1}
 }
+
+.ssp .ssp-integer-answer {
+  margin:16px 0; padding:0; min-inline-size:0; border:0;
+}
+.ssp-integer-answer label {
+  display:flex; flex-wrap:wrap; align-items:center; gap:8px 14px;
+  color:#353027; font-size:16px; font-weight:600;
+}
+.ssp .ssp-integer-answer input {
+  box-sizing:border-box; width:168px; max-width:100%; min-height:46px;
+  padding:8px 12px; border:1px solid #847969; border-radius:4px;
+  background:#fffefb; color:#201d19; font:inherit; font-size:18px;
+  font-variant-numeric:tabular-nums; line-height:1.4;
+}
+.ssp .ssp-integer-answer input:focus-visible {outline:2px solid #705438; outline-offset:2px}
 
 
 /* Source: app/student-study-plan.css */
