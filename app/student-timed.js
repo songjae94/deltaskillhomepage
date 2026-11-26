@@ -425,6 +425,13 @@ function fetchItem(publicQ,meta){
  return {...meta,grade:gradeNames.indexOf(meta.subject)>0?gradeNames.indexOf(meta.subject):grade,id:publicQ.id,unit:publicQ.unit,answer:publicQ.answer,prompt:'',solution:'',questionFrame:publicQ.questionFrame,solutionFrame:publicQ.solutionFrame,answerType:'choice'};
 }
 async function accept(result){const s=result.set||result;const ids=s.questionIds||s.questions?.map(q=>q.id);if(!Array.isArray(ids)||!ids.length||!s.setId||!Number.isFinite(new Date(s.startedAt).getTime())||!(s.durationSeconds>0))throw Error('세트 정보를 확인할 수 없어요.');const observedEpoch=epoch,receivedAt=Date.now();
+ // New servers prepare every problem before starting the server clock. Install only a complete matching
+ // bundle; older servers omit it and keep using the existing authorised open path below.
+ let prepared=s.preparedQuestions??result.preparedQuestions;
+ if(prepared!==undefined){
+  if(!Array.isArray(prepared)||prepared.length!==ids.length||prepared.some((q,i)=>!q||typeof q!=='object'||Array.isArray(q)||q.id!==ids[i]||q.version!==s.versions?.[i]||['answer','solution','solutionFrame','solutionHTML','gradedResponses','correctAnswer','answerIndex','answerKey','explanation'].some(k=>k in q)||!(q.format==='sandbox-html'?typeof q.questionHTML==='string'&&q.questionHTML.trim():q.format==='frame'?verifiedFrame(q,false):typeof q.prompt==='string'&&q.prompt.trim())))prepared=undefined;
+  prepared?.forEach(q=>{const meta=catalogById.get(q.id)||s.questions?.find(item=>item.id===q.id)||{};resources.set(q.id,{...meta,...q,unit:q.unit||meta.unit||''});});
+ }
  async function loadQuestion(id,i){
   if(epoch!==observedEpoch||byId.has(id))return;
   const version=s.versions?.[i],cached=resources.get(id);
@@ -450,7 +457,7 @@ async function accept(result){const s=result.set||result;const ids=s.questionIds
   if(epoch!==observedEpoch)return;
   await Promise.all(ids.slice(i,i+4).map((id,j)=>loadQuestion(id,i+j)));
  }
- if(epoch!==observedEpoch)return;if(active?.setId!==s.setId)exam.reset();lastId=s.setId;const now=Date.parse(result.serverNow||s.serverNow);active={...s,offset:Number.isFinite(now)?now-receivedAt:0,kind:'custom',questionIds:ids,responses:{...(s.responses||{})}};}
+ if(epoch!==observedEpoch)return;if(active?.setId!==s.setId)exam.reset();lastId=s.setId;const now=Date.parse(result.serverNow||s.serverNow);active={...s,preparedQuestions:undefined,offset:Number.isFinite(now)?now-receivedAt:0,kind:'custom',questionIds:ids,responses:{...(s.responses||{})}};}
 let draftTimer=0,draftQueue=Promise.resolve();
 function numericAnswers(values){
  const answers={};for(const [id,value] of Object.entries(values)){const v=String(value??'').trim();if(!v){answers[id]=null;continue;}if(!/^-?\d{1,9}$/.test(v))throw Error('정수로 입력해 주세요.');answers[id]=Number(v);}return answers;

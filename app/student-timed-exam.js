@@ -176,10 +176,10 @@
       const result = complete ? `<div class="dte-summary" role="status"><span>${retry?'오답 재도전 결과':set.timedOut || set.status==='expired'?'시간 종료 · 채점 결과':'채점 결과'}</span><strong>${score} / ${ids.length} 정답</strong></div>` : '';
       const time = !settled(set) ? `<div class="dte-clock"><span>남은 시간</span><time data-time-clock role="timer" aria-label="남은 시간">${clock()}</time></div>` : '';
 
-      const box = complete ? feedback(set,id,answers[id],retry?present(answers[id]) && Number(answers[id])===Number(expected(set,id)):isRight(set,id)) :
+      const box = !q ? '<p role="status">문항을 아직 불러오지 못했어요. 다른 문항으로 이동하거나 세트 목록에서 다시 열어 주세요.</p>' : complete ? feedback(set,id,answers[id],retry?present(answers[id]) && Number(answers[id])===Number(expected(set,id)):isRight(set,id)) :
         answerBox(q,id,answers[id],page===ids.length-1);
-      const sheet=paperQuestion(q,page,ids.length,box);
-      const canChoose=!complete && q.answerType==='choice';
+      const sheet=paperQuestion(q||{unit:'문항 확인 중',prompt:''},page,ids.length,box);
+      const canChoose=Boolean(q && !complete && q.answerType==='choice');
       if (canChoose) requestAnimationFrame(() => {
         const host=document.querySelector(scope+' [data-exam-paper-id]');
         if (host?.dataset.examPaperId===id) bindPaper(host);
@@ -218,7 +218,7 @@
       if (!root || root.querySelector('.dte-inline-choice')) return;
       const set=getActive(),id=host.dataset.examPaperId;
       if (!set || id!==current(set)) return;
-      const q=known(id),options=Array.isArray(q.options)?q.options:[];
+      const q=known(id);if(!q)return;const options=Array.isArray(q.options)?q.options:[];
       const choose=frame ? button=>{
         if(host.isConnected && getActive() && current(getActive())===id)selectChoice(button);
       } : null;
@@ -266,7 +266,7 @@
     }
     function selectChoice(button) {
       const set=getActive(), id=button.dataset.examId;
-      if (!set || finishing || current(set)!==id || (retry?retry.complete:settled(set))) return;
+      if (!set || !known(id) || finishing || current(set)!==id || (retry?retry.complete:settled(set))) return;
       if (!retry && remaining()===0) { void submit();return; }
       const value=button.dataset.examChoice;
       if (retry) retry.answers[id]=value;
@@ -290,7 +290,7 @@
     function confirmInput() {
       const set=getActive();
       const input=document.querySelector(scope+' [data-exam-input]');
-      if (!set || !input || input.dataset.examInput!==current(set)) return;
+      if (!set || !known(current(set)) || !input || input.dataset.examInput!==current(set)) return;
       const value=input.value.trim();
       if (!/^-?\d{1,9}$/.test(value)) {
         input.setCustomValidity('답을 정수로 입력해 주세요.');
@@ -304,7 +304,7 @@
     function input(el) {
       if (!el.matches?.('[data-exam-input]')) return false;
       const set=getActive(), id=el.dataset.examInput;
-      if (!set || id!==current(set) || finishing || (retry?retry.complete:settled(set))) return true;
+      if (!set || !known(id) || id!==current(set) || finishing || (retry?retry.complete:settled(set))) return true;
       el.setCustomValidity('');
       const value=el.value.trim();
       if (!retry && remaining()>0) {
