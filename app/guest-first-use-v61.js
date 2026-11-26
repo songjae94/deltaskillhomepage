@@ -17,9 +17,6 @@
   // key · name on the card · what counts as one use · server = the server counts this one for guests
   const FEATURES = [
     { key: 'study', name: '공부하기 문제 풀기', click: '[data-ssp-check],[data-ssp-skip]', same: sig },
-    { key: 'study-trial', name: '공개 문항 체험', click: '[data-ssp-guest-next]', server: true },
-    { key: 'draw', name: '프린트 만들기', submit: '#dq59-form', server: true },
-    { key: 'draw-print', name: '프린트 문제지 인쇄 / PDF', click: '[data-dq-print]' },
     { key: 'timed', name: '타임어택', click: '[data-time-action="quote"]' },
     { key: 'preview', name: '교재 미리보기', click: 'a[href*="public-data/NS-"][href*=".pdf"],a[href^="#material/"]' },
     { key: 'cart', name: '장바구니 담기', click: '[data-ms-add]' },

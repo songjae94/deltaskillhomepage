@@ -83,7 +83,7 @@
     if (count(d.retry_after, 0, 86400)) out.retry_after = d.retry_after;
     return out;
   };
-  let guestRetryAt = 0;
+  let guestRetryAt = 0, openBatchSize = 1;
   async function guest(body, signal) {
     await slot();
     try {
@@ -92,10 +92,13 @@
       if (remaining > 0) throw Object.assign(fail(429,'rate_limited'), {data:{retry_after:remaining}});
       let r, d = null;
       try {
-        r = await fetch(EDGE + GATE, { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'omit', cache: 'no-store', body: JSON.stringify(body), signal });
+        r = await fetch(EDGE + GATE, { method: 'POST', headers: { 'Content-Type': 'application/json', ...(body.action==='trial_draw'?{Accept:'application/vnd.deltaskill.trial-proof+json'}:{}) }, credentials: 'omit', cache: 'no-store', body: JSON.stringify(body), signal });
         d = await r.json().catch(() => null);
       } catch { throw fail(signal?.aborted ? 0 : 502, signal?.aborted ? 'aborted' : 'unavailable'); }
-      if (r.ok && d && typeof d === 'object' && !Array.isArray(d) && d.ok !== false) return d;
+      if (r.ok && d && typeof d === 'object' && !Array.isArray(d) && d.ok !== false) {
+        if (body.action === 'trial_menu') openBatchSize = r.headers.get('X-Draw-Open-Batch') === '3' ? 3 : 1;
+        return d;
+      }
       const name = d && typeof d.error === 'string' ? d.error : '';
       const data = refusal(d) || {};
       if (r.status === 429) {
@@ -162,20 +165,38 @@
       return d;
     },
     menu: publicMenu,
+    get openBatchSize() { return openBatchSize; },
+    openMany: async (cell_key, item_ids, ticket, signal) => {
+      const d = await guest({action:'trial_open_many', cell_key, item_ids, ticket}, signal);
+      if (!exact(d, ['items']) || !Array.isArray(d.items) || d.items.length !== item_ids.length ||
+          !d.items.every((row,i) => exact(row,['item_id','question_html']) && row.item_id === item_ids[i] && typeof row.question_html === 'string')) throw fail(502,'unavailable');
+      return d.items;
+    },
     // left = questions this address may still take today without signing in.
     draw: async (cell_key, want, signal) => {
       const d = await guest({ action: 'trial_draw', cell_key, count: want }, signal);
       const items = Array.isArray(d.items) ? d.items : null;
-      if (!exact(d, ['status', 'items', 'ticket', 'left', 'resets_at']) || !items || items.length === 0 || items.length > want ||
+      const proof = typeof d.output_proof==='string' && /^[a-f0-9]{64}$/.test(d.output_proof);
+      if (!exact(d, ['status', 'items', 'ticket', 'left', 'resets_at',...(proof?['output_proof']:[])]) || !items || items.length === 0 || items.length > want ||
           !items.every(x => exact(x, ['item_id']) && typeof x.item_id === 'string' && UUID.test(x.item_id)) ||
           new Set(items.map(x => x.item_id)).size !== items.length || d.status !== (items.length === want ? 'ok' : 'insufficient') ||
           typeof d.ticket !== 'string' || !/^[A-Za-z0-9._~-]{8,400}$/.test(d.ticket) || !count(d.left, 0, 1000) || !when(d.resets_at)) throw fail(502, 'unavailable');
-      return { status: d.status, items: items.map(x => ({ item_id: x.item_id })), ticket: d.ticket, left: d.left, resets_at: d.resets_at };
+      return { status: d.status, items: items.map(x => ({ item_id: x.item_id })), ticket: d.ticket, output_proof:proof?d.output_proof:null, left: d.left, resets_at: d.resets_at };
     },
     open: async (cell_key, item_id, ticket, signal) => {
       const d = await guest({ action: 'trial_open', cell_key, item_id, ticket }, signal);
       if (!exact(d, ['item_id', 'question_html']) || d.item_id !== item_id || typeof d.question_html !== 'string') throw fail(502, 'unavailable');
       return { item_id: d.item_id, question_html: d.question_html };
+    },
+    checkout: async (draft, maxPoints, signal, quoteToken) => {
+      const commit = maxPoints !== undefined;
+      const d = await call({action:commit?'trial_claim':'trial_claim_quote',cell_key:draft.key,
+        ticket:draft.ticket,output_proof:draft.output_proof,expected_ids:draft.ids,...(commit?{expected_max_points:maxPoints}:{}),...(commit&&quoteToken?{quote_token:quoteToken}:{})}, signal);
+      if (!exact(d,['status','items','points',...(Object.hasOwn(d,'quote_token')?['quote_token']:[])]) || (Object.hasOwn(d,'quote_token') && (typeof d.quote_token!=='string'||!d.quote_token.length||d.quote_token.length>4096)) || (!commit && d.points>0 && !d.quote_token) || !['ready','unavailable','changed'].includes(d.status) ||
+          !Number.isSafeInteger(d.points) || d.points<0 || (commit && d.points>maxPoints) || !Array.isArray(d.items) ||
+          (d.status==='ready' ? d.items.length!==draft.ids.length : d.items.length!==0 || d.points!==0) ||
+          !d.items.every((row,i)=>exact(row,['item_id','set_key','pg']) && row.item_id===draft.ids[i] && UUID.test(row.set_key) && exact(row.pg,['page','count']) && count(row.pg.page,0,9999) && count(row.pg.count,1,20))) throw fail(502,'unavailable');
+      return d;
     },
     // Signed in: take the questions the guest saw into the member's record (the point board's sets only).
     // Each question comes back with the set it belongs to; open and solution use that set.
@@ -251,6 +272,13 @@
     open: async (set_key, item_id, pg, signal) => {
       const d = await call({ action: 'open', set_key, item_id, ...pg }, signal);
       if (!exact(d, ['item_id', 'question_html']) || d.item_id !== item_id || typeof d.question_html !== 'string') throw fail(502, 'unavailable');
+      return d;
+    },
+    openPrint: async (set_key,item_id,pg,signal) => {
+      const d=await call({action:'open_print',set_key,item_id,...pg},signal);
+      if (!exact(d,['item_id','question_html','answer','solution_html']) || d.item_id!==item_id ||
+          typeof d.question_html!=='string' || typeof d.solution_html!=='string' ||
+          !(d.answer===null || typeof d.answer==='string' && d.answer.length<=4000)) throw fail(502,'unavailable');
       return d;
     },
     // Asked only when the answer pages of a print are switched on.
