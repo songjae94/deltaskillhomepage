@@ -1,7 +1,8 @@
 .home-body .guest-entry-menu { position: relative; }
 .home-body .guest-entry-menu summary {
   display: flex; align-items: center; gap: .4em; min-height: 44px; padding: 0 10px;
-  cursor: pointer; list-style: none; color: inherit; font-size: 14px; font-weight: 650;
+  cursor: pointer; list-style: none; color: #17263d; font-size: 14px; font-weight: 650;
+  background: #fffffff2; border: 1px solid #cad3dd; border-radius: 24px;
 }
 .home-body .guest-entry-menu summary::-webkit-details-marker { display: none; }
 .home-body .guest-entry-menu summary::after { content: ""; width: 6px; height: 6px; border: solid currentColor; border-width: 0 1.5px 1.5px 0; transform: translateY(-2px) rotate(45deg); }
@@ -24,3 +25,7 @@
 .ssp-desk .ssp-body[hidden] { display: none !important; }
 .ssp-desk .ssil-main:has(.ssp-body[hidden]) { display: grid; grid-template-columns: minmax(0, 38rem); justify-content: center; }
 .ssp-desk .ssil-main:has(.ssp-body[hidden]) .ssp-desk-controls { grid-column: 1; width: 100%; }
+@media (max-width: 350px) {
+ .home-body .header:has(.guest-entry-menu) { padding-inline: 10px; }
+ .home-body .header:has(.guest-entry-menu) .brand { font-size: 20px; }
+}
