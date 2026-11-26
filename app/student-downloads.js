@@ -34,7 +34,7 @@ function storeScope(){
  return null;
 }
 function render(view=pane){pane=view;rendering=true;try{
- const files='<section class="sd-files dl63-receipt" aria-labelledby="sd-files-title"><h2 id="sd-files-title" tabindex="-1">받은 자료</h2><section class="ppdf ppdf-account" data-ppdf-receipts data-student-receipts><p role="status">PDF 보관함을 불러오고 있어요.</p></section><div data-student-acquisitions></div></section>';
+ const files='<section class="sd-files dl63-receipt" aria-labelledby="sd-files-title"><h2 id="sd-files-title" tabindex="-1">받은 자료</h2><section class="ppdf ppdf-account" data-ppdf-receipts data-student-receipts><p role="status">PDF 보관함을 불러오고 있어요.</p></section><div data-student-acquisitions></div><div class="sd-scope-shelf" data-scope-shelf></div></section>';
  const content=pane==='print'
   ? '<header class="sd-heading dl63-head"><div><h1>프린트 만들기</h1></div></header>'+printHTML()
   : (window.DSMaterialsShop?.render({audience:'student',scope:storeScope()})||'<p role="status">교재 자료를 불러오고 있어요.</p>')+files;
