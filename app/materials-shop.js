@@ -67,9 +67,13 @@
   const publicPoints = Object.freeze({'NS-CM2-06':4000,'NS-CM2-07':5000,'NS-CM2B-06':2200,'NS-MI1B-05':3100});
   // 11-25 61: 한글(HWPX)도 포인트로 받는다 — 값은 서버 포인트 목록(quote) 먼저 · 없으면 판매 값(원 = P).
   const quote = (p, fmt = 'pdf') => window.DSPointPdf?.product(key(p,fmt));
-  const price = (p, fmt) => fmt === 'pdf' ? (quote(p)?.points ?? publicPoints[p.sku] ?? p.formats.pdf?.price ?? null) : (quote(p,'hwpx')?.points ?? p.formats.hwpx?.price);
+  // H28-19 · H28-35(11-26 104): 회원 포인트 목록을 읽었는데 그 SKU 가 없으면 P 값 · 포인트 단추를 지어내지 않는다 — 한글은 카드 길만 남김.
+  // 목록을 아직 못 읽은 손님 · 읽는 중에는 앞 잣대(판매 값 = P) 그대로(57 1125).
+  const unlisted = (p, fmt) => window.DSPointPdf?.listed?.(key(p,fmt)) === false;
+  const price = (p, fmt) => unlisted(p,fmt) ? null : fmt === 'pdf' ? (quote(p)?.points ?? publicPoints[p.sku] ?? p.formats.pdf?.price ?? null) : (quote(p,'hwpx')?.points ?? p.formats.hwpx?.price ?? null);
+  const pointable = (p, fmt) => Number.isSafeInteger(price(p,fmt)) && price(p,fmt) > 0;
   const cashReady = p => Number.isSafeInteger(p.formats.hwpx?.price) && p.formats.hwpx.price > 0 && p.formats.hwpx.files.length > 0;
-  const enabled = (p, fmt) => !p.restored && (fmt === 'pdf' ? Number.isSafeInteger(price(p,fmt)) && price(p,fmt)>0 : cashReady(p));
+  const enabled = (p, fmt) => !p.restored && (fmt === 'pdf' ? pointable(p,fmt) : cashReady(p));
   const coverURL = sku => 'public-data/covers/' + encodeURIComponent(sku) + '.webp?v=cover-r2-1125';
   // One colour per shelf, taken from that series' new covers (tone = cover colour · deep = text-safe on white).
   const shelfTones = Object.freeze({
@@ -78,7 +82,7 @@
     'DS-PRACTICE-PNC':['#9bd0f1','#1770a8'], 'SSEN-GEO':['#7868f0','#5a4bd0']
   });
   const toneStyle = id => { const t = shelfTones[id]; return t ? ` style="--ms-tone:${t[0]};--ms-deep:${t[1]}"` : ''; };
-  const cost = (p,fmt) => Number.isSafeInteger(price(p,fmt)) ? money(price(p,fmt)) + ' P' : '';
+  const cost = (p,fmt) => pointable(p,fmt) ? money(price(p,fmt)) + ' P' : fmt === 'hwpx' && cashReady(p) ? '카드 ' + money(p.formats.hwpx.price) + '원' : '';
   const picked = () => products.flatMap(p => ['pdf','hwpx'].filter(fmt => cart.includes(key(p,fmt)) && enabled(p,fmt)).map(fmt => ({p,fmt})));
   function options(query='') {
     const list = grouped().filter(name => [name,displayBook(name)].some(label => normalize(label).includes(normalize(query))));
@@ -159,9 +163,12 @@
 
   const formatLabel = fmt => fmt === 'pdf' ? 'PDF' : '한글';
   function totals(entries) {
-    let sum = 0;
-    for (const {p, fmt} of entries) sum += price(p, fmt);
-    return `<div class="ms-total">${sum ? `<div>합계 <b>${money(sum)} P</b></div>` : ''}</div>`;
+    let sum = 0, won = 0;
+    for (const {p, fmt} of entries) {
+      if (pointable(p, fmt)) sum += price(p, fmt);
+      else if (fmt === 'hwpx' && cashReady(p)) won += p.formats.hwpx.price;
+    }
+    return `<div class="ms-total">${sum ? `<div>합계 <b>${money(sum)} P</b></div>` : ''}${won ? `<div>카드 결제 <b>${money(won)}원</b></div>` : ''}</div>`;
   }
   function cartContents() {
     const entries = picked();
@@ -187,7 +194,7 @@
     dialog.className = 'ms-order dl63-receipt';
     dialog.setAttribute('aria-labelledby','ms-order-title');
     const lines = entries.map(({p,fmt}) => {
-      const action = `<a data-ms-point-purchase ${audience==='student'?'data-ms-point-receive="'+escape(key(p,fmt))+'"':''} href="/app/?pointPdf=${encodeURIComponent(key(p,fmt))}#library">${quote(p,fmt)?.owned ? '보유 자료 다시 받기' : '포인트 구매 확인'}</a>`;
+      const action = !pointable(p,fmt) ? '<small>카드 결제로 받기</small>' : `<a data-ms-point-purchase ${audience==='student'?'data-ms-point-receive="'+escape(key(p,fmt))+'"':''} href="/app/?pointPdf=${encodeURIComponent(key(p,fmt))}#library">${quote(p,fmt)?.owned ? '보유 자료 다시 받기' : '포인트 구매 확인'}</a>`;
       return `<li><small>${escape(displayBook(p.source))}</small><strong>${escape(title(p))}</strong><div><span>${formatLabel(fmt)} · ${cost(p,fmt)}</span>${action}</div></li>`;
     }).join('');
     /* 11-25 61: PDF · 한글 모두 포인트로 받는다(2026-12-31 까지 무료 기간). 큰 단추 = 포인트 받기.
@@ -197,15 +204,18 @@
     const cash = entries.filter(({p,fmt}) => fmt === 'hwpx' && cashReady(p) && !ownedNow(p, fmt));
     const ownedCash = entries.filter(({p,fmt}) => fmt === 'hwpx' && cashReady(p) && ownedNow(p, fmt)).length;
     let pay = '';
-    if (entries.length) {
-      const first = entries[0], id = key(first.p, first.fmt);
-      pay = `<a class="ms-review-open ms-pay" data-ms-pay ${audience==='student'?'data-ms-point-receive="'+escape(id)+'"':''} href="/app/?pointPdf=${encodeURIComponent(id)}#library">${entries.length > 1 ? '첫 자료 ' : formatLabel(first.fmt)+' '}${ownedNow(first.p,first.fmt) ? '보유 자료 다시 받기 · 차감 없음' : '포인트로 받기 · ' + cost(first.p,first.fmt)}</a>${entries.length > 1 ? '<p class="ms-order-note">나머지는 위 목록의 「포인트 구매 확인」을 눌러 받습니다.</p>' : ''}`;
+    // H28-19: 포인트 단추는 포인트 목록에 있는 자료만. 없으면 카드 결제가 큰 단추.
+    const points = entries.filter(({p,fmt}) => pointable(p,fmt));
+    if (points.length) {
+      const first = points[0], id = key(first.p, first.fmt);
+      pay = `<a class="ms-review-open ms-pay" data-ms-pay ${audience==='student'?'data-ms-point-receive="'+escape(id)+'"':''} href="/app/?pointPdf=${encodeURIComponent(id)}#library">${points.length > 1 ? '첫 자료 ' : formatLabel(first.fmt)+' '}${ownedNow(first.p,first.fmt) ? '보유 자료 다시 받기 · 차감 없음' : '포인트로 받기 · ' + cost(first.p,first.fmt)}</a>${points.length > 1 ? '<p class="ms-order-note">나머지는 위 목록의 「포인트 구매 확인」을 눌러 받습니다.</p>' : ''}`;
     }
+    if (points.length < entries.length) pay += '<p class="ms-order-note">포인트 목록에 없는 한글은 카드 결제로 받습니다.</p>';
     if (cash.length && cash.length <= 3) {
       const q = new URLSearchParams();
       for (const {p} of cash) q.append(cash.length === 1 ? 'sku' : 'skus', key(p,'hwpx'));
       const won = cash.reduce((s, {p}) => s + p.formats.hwpx.price, 0);
-      pay += `<a class="ms-review-back ms-card-pay" href="/checkout/?${q}">한글 ${cash.length}권 카드로 결제 · ${money(won)}원</a>`;
+      pay += `<a class="${points.length ? 'ms-review-back' : 'ms-review-open'} ms-card-pay" href="/checkout/?${q}">한글 ${cash.length}권 카드로 결제 · ${money(won)}원</a>`;
     }
     if (ownedCash) pay += '<p class="ms-order-note">이미 받은 한글은 카드 결제에서 뺐습니다. 다시 받기는 차감 없이 됩니다.</p>';
     dialog.innerHTML = `<header><h2 id="ms-order-title">주문 내용 확인</h2><form method="dialog"><button type="submit" aria-label="주문 내용 닫기">닫기</button></form></header><ul>${lines}</ul>${totals(entries)}<p class="ms-order-note">PDF와 한글(HWPX) 모두 묶음마다 한 번만 포인트를 차감합니다. 구매 화면에서 잔액과 보유 권리를 확인하며, 이미 보유한 자료는 추가 차감하지 않습니다.</p>${pay}<form method="dialog"><button type="submit" value="${only ? '' : 'basket'}" class="ms-review-back">${only ? '계속 고르기' : '장바구니로 돌아가기'}</button></form>`;
