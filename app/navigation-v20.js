@@ -35,7 +35,8 @@
     const nav = document.querySelector('#header nav[aria-label="주 메뉴"]');
     if (!nav) return;
     const teacher = role === 'teacher';
-    const items = teacher ? [['teacher','자료 만들기'],['library','자료실']] : [['student','내신 공부'],['csat','수능 공부'],['library','자료실']];
+    const csatLabel=Date.now()<Date.parse('2026-12-26T00:00:00+09:00')?'수능 공부 · 12/26 예정':'수능 공부';
+    const items = teacher ? [['teacher','자료 만들기'],['library','자료실']] : [['student','내신 공부'],['csat',csatLabel],['library','자료실']];
     const current = learningPages.includes(page) ? (studyContext === 'csat' ? 'csat' : 'student') : page === 'upload' ? (teacher ? 'teacher' : 'library') : page === 'material' ? 'library' : ['studio','print-design'].includes(page) ? 'teacher' : page;
     nav.innerHTML = items.map(([key,label])=>`<a href="#${key}"${key===current?' aria-current="page"':''}${key==='student'?' data-study-context="school"':''}>${label}</a>`).join('');
     if (page === 'student') document.title = (studyContext === 'csat' ? '수능 공부' : '내신 공부') + ' · DELTASKILL';

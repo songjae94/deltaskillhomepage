@@ -160,7 +160,7 @@
     return `<div class="dl63-chips" role="group" aria-label="과목으로 좁히기">${chips}</div>
       <div class="dl63-grid">
         <div class="dl63-list-wrap"><p role="status">판매 자료 ${rows.length}건</p>${head}<ol class="dl63-list" aria-label="판매 자료 ${rows.length}건">${rows.map(row).join('')}</ol></div>
-        <aside class="dl63-desk" aria-label="고른 자료" aria-live="polite" data-dl63-receipt>${receipt(current())}</aside>
+        <aside class="dl63-desk" aria-label="고른 자료" aria-live="polite" data-dl63-receipt>${rows.length?receipt(current()):'<p>검색어를 줄이거나 과목을 바꿔 보세요.</p>'}</aside>
       </div>`;
   }
 

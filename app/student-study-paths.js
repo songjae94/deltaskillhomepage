@@ -979,7 +979,7 @@ function bind(container,options={}){
    if(closed||generation!==epoch||signed())return;
    if(!Array.isArray(data.cells))throw Error('trial_menu');
    guestCells=data.cells.filter(cell=>typeof cell.cell_key==='string'&&typeof cell.subject==='string'&&typeof cell.unit==='string'&&cell.size>0);
-   supplyPhase='guest';planMessage='로그인 없이 공개된 대단원 문항을 바로 풀어볼 수 있어요. 로그인하면 푼 기록이 남아요.';
+   supplyPhase='guest';planMessage='공개 체험은 대단원 단위예요. 로그인하면 계정에 제공되는 세부 단원을 고르고 풀이를 저장할 수 있어요.';
   }catch(error){if(closed||generation!==epoch||signed())return;supplyPhase='error';planMessage=guestFailure(error);}
   draw(false);
  }
@@ -1449,7 +1449,7 @@ function bind(container,options={}){
   const groups=remoteTypeGroups();if(!groups.length)return '';
   const index=groups.findIndex(group=>group.id===deskType),group=groups[index],label=state.course==='supplement'?'교재 문항':'유형';
   if(!group)return '';
-  return `<section class="ssp-concept-lesson" aria-label="${state.course==='supplement'?'교재 문항별 연습':'대표 유형'}"><h3>${mathContent(group.label)}</h3><nav aria-label="${label} 이동"><button type="button" data-ssp-remote-type-step="-1" ${index===0?'disabled':''}>← 이전 ${label}</button><span>${index+1} / ${groups.length}</span><button type="button" data-ssp-remote-type-step="1" ${index===groups.length-1?'disabled':''}>다음 ${label} →</button></nav></section>`;
+  return `<section class="ssp-concept-lesson" aria-label="${state.course==='supplement'?'교재 문항별 연습':'대표 유형'}"><h3>${mathContent(group.label)}</h3><nav aria-label="${label} 이동"><button type="button" data-ssp-remote-type-step="-1" ${index===0?'disabled':''}>← 이전 ${label}</button><span>${label} ${index+1} / ${groups.length}</span><button type="button" data-ssp-remote-type-step="1" ${index===groups.length-1?'disabled':''}>다음 ${label} →</button></nav></section>`;
  }
  async function querySource(){
   if(!signed()){sourcePhase='error';sourceError='로그인 후 학생 무료 범위를 확인할 수 있어요.';draw(false);return;}
@@ -1477,7 +1477,7 @@ function bind(container,options={}){
  function openFailure(error){const code=error?.code||error?.message||'';if(code==='timeout')return '문항 응답이 늦어요. 다시 불러오기를 눌러 주세요.';if(code==='connection_failed'||error?.status===0)return '연결이 끊겨 문항을 받지 못했어요. 연결을 확인하고 다시 불러와 주세요.';if(error?.status===401||code==='unauthorized'||code==='session_changed')return '로그인이 만료되었어요. 다시 로그인한 뒤 열어 주세요.';if(error?.status===429||['rate_limited','too_many'].includes(code))return '요청이 잠시 많아요. 조금 뒤 다시 불러와 주세요.';return '문항의 판이나 열람 형식을 확인하지 못했어요. 다시 불러오거나 범위를 다시 확인해 주세요.';}
  // v66: the questions next to the open one (‹ › and the next type) are fetched ahead, two at most, never twice.
  function prefetchAround(id){if(!desk||typeof DSStudentServices?.prefetch!=='function')return;const rows=sourceRows(),index=rows.findIndex(q=>(q.questionId||q.id)===id),wanted=[rows[index+1],rows[index-1]];const groups=remoteTypeGroups(),g=groups.findIndex(group=>group.id===deskType);if(g>=0&&groups[g+1])wanted.push(groups[g+1].rows[0]);for(const row of wanted){const qid=row&&(row.questionId||row.id);if(qid&&!heldExam(qid))DSStudentServices.prefetch({questionId:qid,purpose:'study_free'});}}
- async function submitRemote(){if(!remoteQuestion||remoteBusy||remoteFeedback)return;if(typeof DSStudentServices?.submit!=='function'){notice='답안을 이 화면에 남겼어요. 서버 채점 연결은 아직 준비 중이에요.';draw(false);return;}const id=remoteQuestion.questionId||remoteQuestion.id;let operation=remoteOperations.get(id);if(!operation){if(remoteChoice===null&&!remoteUnknown){notice='답을 입력하거나 모르겠어요를 선택해 주세요.';draw(false);return;}operation={questionId:id,version:remoteQuestion.version,answer:remoteChoice,requestId:crypto.randomUUID(),course:state.course,confidence:remoteConfidence,help:remoteHelp,seconds:Math.min(86400,Math.max(0,Math.round((Date.now()-remoteOpenedAt)/1000)))};remoteOperations.set(id,operation);}const generation=epoch;remoteBusy=true;notice='답안을 확인하고 있어요.';draw(false);try{const result=await DSStudentServices.submit(operation);if(closed||generation!==epoch||!signed())return;if(!result?.record||result.record.questionId!==id||result.record.version!==operation.version||typeof result.record.correct!=='boolean')throw Error('invalid_grade');if(result.solutionHTML){try{result._safeSolutionFragment=fragmentContent(result.solutionHTML,'제출 후 해설');}catch{result.solutionUnavailable=true;}}if(result.solution){try{(Array.isArray(result.solution)?result.solution:[result.solution]).forEach(mathContent);}catch{result.solution=null;result.solutionUnavailable=true;}}remoteFeedback=result;remoteOperations.delete(id);state.sourcePending[state.course]={cleared:true,updatedAt:Date.now()};save();notice='계정에 풀이 결과를 저장했어요.';remoteHistory.phase='idle';window.dispatchEvent(new CustomEvent('ds-student-free-record',{detail:{record:result.record}}));}catch(error){if(closed||generation!==epoch)return;if([400,403,404,409,422].includes(error?.status)){remoteOperations.delete(id);notice='답안의 형식이나 문항 이용 상태가 바뀌었어요. 범위와 문항을 다시 확인해 주세요.';return;}notice='제출 결과를 확인하지 못했어요. 같은 답안으로 다시 확인해 주세요. 중복으로 새 풀이를 만들지 않아요.';}finally{if(generation===epoch){remoteBusy=false;draw(false);}}}
+ async function submitRemote(){if(!remoteQuestion||remoteBusy||remoteFeedback)return;if(typeof DSStudentServices?.submit!=='function'){notice='답안을 이 화면에 남겼어요. 서버 채점 연결은 아직 준비 중이에요.';draw(false);return;}const id=remoteQuestion.questionId||remoteQuestion.id;let operation=remoteOperations.get(id);if(!operation){if(remoteChoice===null&&!remoteUnknown){notice='답을 입력하거나 ‘해설 보고 복습에 담기’를 선택해 주세요.';draw(false);return;}operation={questionId:id,version:remoteQuestion.version,answer:remoteChoice,requestId:crypto.randomUUID(),course:state.course,confidence:remoteConfidence,help:remoteHelp,seconds:Math.min(86400,Math.max(0,Math.round((Date.now()-remoteOpenedAt)/1000)))};remoteOperations.set(id,operation);}const generation=epoch;remoteBusy=true;notice='답안을 확인하고 있어요.';draw(false);try{const result=await DSStudentServices.submit(operation);if(closed||generation!==epoch||!signed())return;if(!result?.record||result.record.questionId!==id||result.record.version!==operation.version||typeof result.record.correct!=='boolean')throw Error('invalid_grade');if(result.solutionHTML){try{result._safeSolutionFragment=fragmentContent(result.solutionHTML,'제출 후 해설');}catch{result.solutionUnavailable=true;}}if(result.solution){try{(Array.isArray(result.solution)?result.solution:[result.solution]).forEach(mathContent);}catch{result.solution=null;result.solutionUnavailable=true;}}remoteFeedback=result;remoteOperations.delete(id);state.sourcePending[state.course]={cleared:true,updatedAt:Date.now()};save();notice='계정에 풀이 결과를 저장했어요.';remoteHistory.phase='idle';window.dispatchEvent(new CustomEvent('ds-student-free-record',{detail:{record:result.record}}));}catch(error){if(closed||generation!==epoch)return;if([400,403,404,409,422].includes(error?.status)){remoteOperations.delete(id);notice='답안의 형식이나 문항 이용 상태가 바뀌었어요. 범위와 문항을 다시 확인해 주세요.';return;}notice='제출 결과를 확인하지 못했어요. 같은 답안으로 다시 확인해 주세요. 중복으로 새 풀이를 만들지 않아요.';}finally{if(generation===epoch){remoteBusy=false;draw(false);}}}
  function afterRemoteQuestion(id){
   if(!desk||options.view==='history')return '';
   const rows=sourceRows(),at=rows.findIndex(row=>(row.questionId||row.id)===id);
@@ -1489,7 +1489,7 @@ function bind(container,options={}){
  let remoteHelp=false;
  function remoteFirstHint(){
   const label=remoteTypeGroups().find(group=>group.id===deskType)?.label||remoteQuestion?.unit||'';
-  if(label.includes('넓이')&&label.includes('이등분'))return '꼭짓점에서 반대편 변으로 선을 그어 보세요. 나뉜 두 삼각형에서 공통인 높이를 찾아보세요.';
+  if(label.includes('공통높이')||(label.includes('넓이')&&label.includes('이등분')))return '꼭짓점에서 반대편 변으로 선을 그어 보세요. 나뉜 두 삼각형에서 공통인 높이를 찾아보세요.';
   if(label.includes('수직이등분선'))return '두 점의 중점을 먼저 표시해 보세요. 구할 직선은 선분과 어떤 각을 이루나요?';
   if(label.includes('대칭이동'))return '대칭시키는 기준을 하나씩 적고, 각 점에서 바뀌는 좌표를 표시해 보세요.';
   return '구해야 할 값을 먼저 표시하세요. 주어진 조건 하나를 식이나 그림으로 옮긴 뒤 그 값과 연결해 보세요.';
@@ -1554,9 +1554,10 @@ function bind(container,options={}){
  }
  function recordTitle(r){
   if(!r.recordId)return TYPES[r.type]||byId.get(r.questionId)?.unit||'보완연습';
-  const book=workbookChoices().find(b=>b.id===r.bookId);
+  const books=workbookChoices();
+  const book=books.find(b=>b.id===r.bookId);
   const unit=book?.units?.find(u=>u.id===r.unitId);
-  const type=unit?.types?.find(t=>t.id===r.typeId)||book?.units?.flatMap(u=>u.types||[]).find(t=>t.id===r.typeId);
+  const type=r.typeId&&(unit?.types?.find(t=>t.id===r.typeId)||book?.units?.flatMap(u=>u.types||[]).find(t=>t.id===r.typeId)||books.flatMap(b=>b.units).flatMap(u=>u.types||[]).find(t=>t.id===r.typeId));
   const title=type?.label||r.title||'문항 '+r.questionId.slice(0,8);
   return [unit?.label||r.unit||r.unitId,title].filter(Boolean).join(' · ');
  }
@@ -1595,7 +1596,7 @@ function bind(container,options={}){
    <p class="ssp-note">이 탭에서 푼 체험 문제의 기록이에요.</p>${localList?'<ul>'+localList+'</ul>':'<p>첫 문제를 풀면 이곳에 기록이 남아요.</p>'}
    <button type="button" data-ssp-trial-return>공부로 돌아가기</button></section>`;
   return `<section class="ssp-panel ssp-history"><h2 tabindex="-1">내 공부 기록</h2>${counts}
-   <p class="ssp-note">내신 화면 학습에서 불러온 기존 자료와 최근 보완연습 최대 250회의 기록이에요.${remoteHistory.hasMore?' 이전 기록을 더 보면 집계도 갱신돼요.':''}</p>
+   <p class="ssp-note">계정에서 불러온 기존 자료 풀이 ${remoteHistory.records.length}회와 보완연습 ${state.records.length}회(최근 최대 250회)를 합산했어요.${remoteHistory.hasMore?' 이전 기록을 더 보면 집계도 갱신돼요.':''}</p>
    ${review.length?`<h3>먼저 복습할 단원·유형</h3><p>같은 문제는 마지막 풀이로 판단해요. 보완연습은 헷갈리거나 힌트를 본 문제도 담아요.</p><ul>${review.slice(0,3).map(g=>`<li><div><strong>${esc(g.name)}</strong><span>다시 볼 문제 ${g.count}개</span></div>${reviewButton(g.example,'복습하기')}</li>`).join('')}</ul>`:accountReady?`<p>${rows.length?'확인한 기록에는 다시 볼 문제가 없어요. 다음 문제로 넘어가 보세요.':'첫 문제를 풀면 이곳에 기록이 쌓여요.'}</p><a href="#student" data-hub-study-link>내신 공부하기 →</a>`:''}
    ${serverHistoryHTML()}<h3>보완연습 풀이</h3><p class="ssp-note">${esc(storageMessage)}</p>${localList?`<details><summary>문제별 최근 결과 ${localRows.length}개</summary><ul>${localList}</ul></details>`:'<p>확인된 보완연습 풀이가 없어요.</p>'}</section>`;
  }
