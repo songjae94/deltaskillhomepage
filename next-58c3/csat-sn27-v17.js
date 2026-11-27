@@ -8,7 +8,7 @@
       <header class="sn27-heading"><h1>수능·모의고사</h1><a href="#library">내신 자료실 <span aria-hidden="true">→</span></a></header>
       <section class="sn27-hero" aria-labelledby="sn27-title">
         <div class="sn27-lead"><p class="sn27-kicker">2027학년도 대학수학능력시험</p><h2 id="sn27-title">한 문제,<br>여러 풀이.</h2><p class="sn27-intro">답을 찾은 뒤에도,<br>다른 생각으로 한 번 더.</p><div class="sn27-actions">${external('/exam/sn27/', '수능 해설 보기', 'sn27-primary')}${external('/pilot/?exam=SN27', '이번 수능 풀어보기', 'sn27-text-link')}</div><p class="sn27-external-note">기존 델타스킬 화면이 새 탭에서 열립니다.</p></div>
-        <figure class="sn27-photo"><img src="assets/editorial/csat-material-v13.png" width="1536" height="1024" alt="짙은 천 표지의 델타스킬 교재와 연필을 놓은 자료 연출 사진" fetchpriority="high"><figcaption><span>DELTASKILL · 수능 수학</span><strong>2027</strong><span>풀이를 읽는 시간</span></figcaption></figure>
+        <figure class="sn27-photo"><img src="assets/editorial/csat-material-v13-delivery.webp" width="1536" height="1024" alt="짙은 천 표지의 델타스킬 교재와 연필을 놓은 자료 연출 사진" fetchpriority="high"><figcaption><span>DELTASKILL · 수능 수학</span><strong>2027</strong><span>풀이를 읽는 시간</span></figcaption></figure>
       </section>
       <section class="sn27-reading" aria-labelledby="sn27-reading-title">
         <div class="sn27-section-intro"><span class="sn27-kicker">해설의 구성</span><h2 id="sn27-reading-title">풀이보다 먼저,<br>무엇을 볼까요?</h2><p>처음 볼 것부터 이어 풀 문항까지.<br>해설이 담고 있는 내용을 살펴보세요.</p><span class="sn27-caption">구성 살펴보기</span></div>

@@ -9,7 +9,7 @@
     aspect-ratio:4 / 5;
     overflow:hidden;
     isolation:isolate;
-    background:#eee5d9 url('assets/editorial/paper-flatlay-v15.png') center / 100% auto no-repeat;
+    background:#eee5d9 url('assets/editorial/paper-flatlay-v15-delivery.webp') center / 100% auto no-repeat;
   }
   html[data-interior="v12"] body:is([data-page="teacher"],[data-page="print-design"]) .creator-paper-stage {
     padding:0;

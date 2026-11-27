@@ -3,7 +3,7 @@
 .tb36-order-preview.ds48-canvas{display:block!important;padding:0!important;border-left:1px solid #bbc0cc;align-self:stretch}
 .ds48-preview-toolbar{min-height:58px;padding:16px 21px;display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fafbfc;border-bottom:1px solid #d1d5dc;color:#243247}
 .ds48-preview-toolbar strong{font-size:12px;font-weight:750}.ds48-preview-toolbar small{font-size:10px;color:#6d7888}.ds48-preview-toolbar button{border:0;background:none;color:#56667e;font-size:11px;cursor:pointer;padding:7px}
-.ds48-paper-scene{position:relative;width:100%;aspect-ratio:4/5;overflow:hidden;background:#eee5d9 url('assets/editorial/paper-flatlay-v15.png') center/100% auto no-repeat;isolation:isolate}
+.ds48-paper-scene{position:relative;width:100%;aspect-ratio:4/5;overflow:hidden;background:#eee5d9 url('assets/editorial/paper-flatlay-v15-delivery.webp') center/100% auto no-repeat;isolation:isolate}
 .ds48-paper-position{position:absolute;left:11.1328125%;top:7.109375%;width:76.85546875%;aspect-ratio:210/297;background:#fff;overflow:hidden}
 .ds48-original-paper{display:block;width:100%;height:auto;border:0;max-width:none}
 .tb53-preview-empty{padding:48px 24px;min-height:260px;display:grid;place-items:center;text-align:center;color:#576478;font-size:14px;line-height:1.7}

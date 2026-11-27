@@ -1,1 +1,1 @@
-window.DSHeroSmileV27=Object.freeze({"src": "video/hero-smile-9dee67ef96be.mp4", "poster": "model01-opening-v3.png", "playbackRate": 1, "holdMs": 150, "duration": 6.041666666666667, "version": "welcome-v38"});
+window.DSHeroSmileV27=Object.freeze({"src": "video/hero-smile-delivery-1127.mp4", "poster": "model01-opening-v3-delivery.webp", "playbackRate": 1, "holdMs": 150, "duration": 6.041666666666667, "version": "welcome-v38"});

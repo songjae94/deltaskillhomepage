@@ -56,7 +56,7 @@
     }
     if (heading) {
       const photo = document.createElement('figure'); photo.className = 'ap19-masthead-photo';
-      photo.innerHTML = '<img src="assets/editorial/paper-flatlay-v15.png" width="1024" height="1536" alt="공개 지면과 필기 도구를 놓은 프린트 연출"><img class="ap19-public-page" src="public-data/NS-MI1B-05-1.png" width="804" height="1137" alt="" aria-hidden="true"><figcaption>DELTASKILL · 공개 지면</figcaption>';
+      photo.innerHTML = '<img src="assets/editorial/paper-flatlay-v15-delivery.webp" width="1024" height="1536" alt="공개 지면과 필기 도구를 놓은 프린트 연출"><img class="ap19-public-page" src="public-data/NS-MI1B-05-1.png" width="804" height="1137" alt="" aria-hidden="true"><figcaption>DELTASKILL · 공개 지면</figcaption>';
       heading.append(photo);
       heading.querySelector('.account-class-link')?.remove();
     }

@@ -3,7 +3,7 @@
 @media screen {
  html:root {
   --wp-ink:#302f2c;--wp-muted:#59564f;--wp-line:#b4aea1;
-  --wp-oak:url('/app/assets/textures/desk-smoked-oak-D-1126.png');
+  --wp-oak:url('/app/assets/textures/desk-smoked-oak-D-1126-delivery.webp');
   --wp-panel:linear-gradient(130deg,#e4e1da,#c8c5bd);
   --wp-key:linear-gradient(125deg,#ffffff16,transparent 60%),linear-gradient(#6c6b6a,#454444);
   --pb-paper:#e8e7e3;--pb-card:#fff;--pb-white:#fff;

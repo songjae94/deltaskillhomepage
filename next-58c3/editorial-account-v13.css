@@ -3,7 +3,7 @@
 html[data-interior="v12"] body[data-page="login"]{background:#f0f2f6}
 html[data-interior="v12"] body[data-page="login"] .account-v7.account-login{width:min(94%,1180px);max-width:1180px;margin:46px auto 0;background:#fff;border:0;border-radius:4px;box-shadow:0 16px 55px #202d4010;overflow:hidden}
 html[data-interior="v12"] body[data-page="login"] .account-v7 .account-login-panel{position:relative;isolation:isolate;display:block;min-height:650px;padding:68px 57px 62px 61%;background:#fff;gap:0}
-html[data-interior="v12"] body[data-page="login"] .account-v7 .account-login-panel::before{content:"";position:absolute;inset:0 auto 0 0;width:54%;height:auto;background-image:url('model01-opening-v3.png');background-size:cover;background-position:75% center;background-repeat:no-repeat;border:0;border-radius:0;pointer-events:none;z-index:0}
+html[data-interior="v12"] body[data-page="login"] .account-v7 .account-login-panel::before{content:"";position:absolute;inset:0 auto 0 0;width:54%;height:auto;background-image:url('model01-opening-v3-delivery.webp');background-size:cover;background-position:75% center;background-repeat:no-repeat;border:0;border-radius:0;pointer-events:none;z-index:0}
 html[data-interior="v12"] body[data-page="login"] .account-v7 .account-login-panel::after{content:none;display:none}
 html[data-interior="v12"] body[data-page="login"] .account-v7 .account-wordmark{display:none}
 html[data-interior="v12"] body[data-page="login"] .account-v7 .account-login-panel>h1,

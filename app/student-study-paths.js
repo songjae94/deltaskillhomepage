@@ -918,6 +918,19 @@ function render(options={}){
  if(options.view==='history')return '<section class="ssp ssp-account-history" aria-label="내 공부 기록"><div class="ssp-live" aria-live="polite" role="status"></div><div class="ssp-body"></div></section>';
  return options.view==='desk'?deskShell():shell(options);
 }
+// Each sandboxed question needs the self-contained font data, also when the main page
+// uses the lighter screen stylesheet. Only this public, versioned asset is shared.
+let guestStylePromise=null;
+async function readGuestMathStyle(){
+ const css=await window.DSStudentFragment.mathEmbed();
+ if(!css.includes('KaTeX_Main')||!css.includes('data:'))throw Error('math_style');
+ const style='<style>'+css+'</style>';
+ return window.DSStudentFragment.compact(style);
+}
+function guestMathStyle(){
+ if(!guestStylePromise)guestStylePromise=readGuestMathStyle().catch(error=>{guestStylePromise=null;throw error;});
+ return guestStylePromise;
+}
 function bind(container,options={}){
  if(!container||typeof container.querySelector!=='function')throw Error('study_container_required');controllers.get(container)?.destroy();
  if(!container.querySelector('.ssp'))container.innerHTML=render(options);
@@ -1056,28 +1069,14 @@ function bind(container,options={}){
   return [...books.values()];
  }
  let guestCells=[],guestRange=null,guestQuestion='',guestBusy=false,guestError='',guestLeft=null,guestRequest=0;
- let guestPage=1,guestNext=null,guestStylePromise=null;
- function guestMathStyle(){
-  if(!guestStylePromise){
-   guestStylePromise=fetch('/app/assets/vendor/katex-0.18.4/katex-embed.css?v=24.3')
-    .then(response=>{
-     if(!response.ok)throw Error('math_style');
-     return response.text();
-    }).then(css=>{
-     if(!css.includes('KaTeX_Main')||!css.includes('data:'))throw Error('math_style');
-     const style='<style>'+css+'</style>';
-     return window.DSStudentFragment?.compact?.(style)||style;
-    }).catch(error=>{guestStylePromise=null;throw error;});
-  }
-  return guestStylePromise;
- }
+ let guestPage=1,guestNext=null,unshownGuest=null;
  function guestFailure(error){
   if(error?.code==='trial_limit')return '오늘 로그인 없이 풀 수 있는 문항을 모두 풀었어요. 로그인하면 이어서 공부할 수 있어요.';
   if(error?.status===429||error?.code==='rate_limited')return '요청이 잠시 많아요. 잠시 후 다시 확인해 주세요.';
   return '공개 체험 문항을 불러오지 못했어요. 잠시 후 다시 확인해 주세요.';
  }
  async function loadGuestSupply(generation){
-  supplyPhase='loading';guestCells=[];void guestMathStyle().catch(()=>{});
+  supplyPhase='loading';guestCells=[];
   try{
    const host=window.DSDrawHostV59;await host?.ready;
    if(typeof host?.trial?.menu!=='function')throw Error('trial_unavailable');
@@ -1092,13 +1091,25 @@ function bind(container,options={}){
  async function openGuestQuestion(page=1){
   if(!guestTrial||signed()||!guestRange||guestBusy)return;
   const cell=guestRange,serial=++guestRequest,generation=epoch;
-  guestBusy=true;guestError='';guestPage=page;view='trial-source';draw(false);
+  const currentRequest=()=>!closed&&serial===guestRequest&&generation===epoch&&!signed();
+  const retry=unshownGuest?.cell===cell&&unshownGuest.page===page&&unshownGuest.serial===serial-1 ? unshownGuest : null;
+  unshownGuest=null;
+  guestBusy=true;guestError='';guestPage=page;view='trial-source';
   try{
-   const mathStyle=await guestMathStyle();
-   const result=await window.DSDrawHostV59.trial.study(cell.cell_key,page);
-   if(closed||serial!==guestRequest||generation!==epoch||signed())return;
+   // Start the single user-requested open without waiting for the font asset.
+   const bodyTask=retry ? Promise.resolve(retry.result) : window.DSDrawHostV59.trial.study(cell.cell_key,page);
+   const styleTask=guestMathStyle().then(style=>({style}),error=>({error}));
+   draw(false);
+   const result=await bodyTask;
+   if(!currentRequest())return;
    if(result.done){guestNext=null;return;}
-   guestQuestion=fragmentContent(mathStyle+result.question_html,'공개 체험 문제');
+   const prepared=await styleTask;
+   if(!currentRequest())return;
+   // If rendering fails, a retry of this very page reuses the admitted response.
+   unshownGuest={cell,page,serial,result};
+   if(prepared.error)throw prepared.error;
+   guestQuestion=fragmentContent(prepared.style+result.question_html,'공개 체험 문제');
+   unshownGuest=null;
    guestNext=result.next;guestLeft=result.left;
   }catch(error){
    if(closed||serial!==guestRequest||generation!==epoch||signed())return;
@@ -1284,6 +1295,7 @@ function bind(container,options={}){
   draw(false);
  }
  function startRange(profile,range){
+  unshownGuest=null;
   if(guestTrial&&range.guestCell){state.course=planCourse=profile.need;planPhase='active';externalRange=false;planSourceRows=null;planSourceUnit=null;guestRange=range.guestCell;guestPage=1;guestNext=null;guestLeft=null;guestQuestion='';guestError='';view='trial-source';void openGuestQuestion();return;}
   guestRequest++;guestRange=null;guestQuestion='';
   planCourse=state.course=profile.need;planPhase='active';deskType='';widen='subunit';
@@ -1998,7 +2010,9 @@ function bind(container,options={}){
   }
   if(e.target.matches('[data-plan-subject]')&&planPhase==='survey'){
    if(!guestTrial)window.DSStudyPlanStore.waitingRange?.(activeOwner,null);
-   planDraft.subject=e.target.value;planDraft.unit='';draw(false);
+   planDraft.subject=e.target.value;planDraft.unit='';
+   if(guestTrial&&planDraft.subject&&planDraft.need!=='supplement')void guestMathStyle().catch(()=>{});
+   draw(false);
    container.querySelector('[data-plan-unit]')?.focus({preventScroll:true});return;
   }
   if(e.target.matches('[data-plan-unit]')&&planPhase==='survey'){
@@ -2031,7 +2045,7 @@ function bind(container,options={}){
   }
  }
  if(e.target.matches('[data-ssp-target]')){desiredCount=Number(e.target.value);draw(false);return;}if(e.target.name==='ssp-remote-choice'){remoteChoice=Number(e.target.value);remoteUnknown=false;save();return;}if(e.target.matches('[data-ssp-remote-integer]')){remoteUnknown=false;remoteChoice=readIntegerAnswer(e.target);save();return;}if(e.target.matches('[data-ssp-free-unit]')){if(Object.hasOwn(FREE_CONCEPTS,e.target.value))freeUnit=e.target.value;draw();return;}if(e.target.matches('[data-ssp-scope-book]')){selectedScopeBook=e.target.value;widen='type';invalidateSource();draw();querySource();return;}if(e.target.matches('[data-ssp-scope-unit]')){selectedScopeUnit=e.target.value;widen='type';invalidateSource();draw();querySource();return;}if(e.target.matches('[data-ssp-scope-type]')){selectedScopeType=e.target.value;widen='type';invalidateSource();draw();querySource();return;}if(e.target.name==='ssp-answer'){choice=Number(e.target.value);const button=container.querySelector('[data-ssp-check]');if(button)button.disabled=false;save();}else if(e.target.name==='ssp-confidence'){confidence=e.target.value;save();}else if(e.target.matches('[data-ssp-grade]')){state.grade=Number(e.target.value);save();draw();}else if(e.target.matches('[data-ssp-reason]')&&feedback){feedback.reason=e.target.value;save(feedback);}}
- function sessionChange(){clearTimeout(remoteTimer);remoteTimer=0;remoteDirty=false;lastOpen=null;guestRequest++;guestBusy=false;guestRange=null;guestQuestion='';localDrafts.clear();remoteDrafts.clear();epoch++;invalidateSource();remoteQuestion=null;remoteFeedback=null;remoteOperations.clear();remoteHistory={phase:'idle',records:[],hasMore:false,nextBefore:null};activeOwner=owner();current=null;pool=[];feedback=null;view='home';read();if(desk){void loadSupply();void loadPlan();}notice='로그인 상태가 바뀌어 현재 계정의 기록을 다시 확인했어요.';draw();}
+ function sessionChange(){unshownGuest=null;clearTimeout(remoteTimer);remoteTimer=0;remoteDirty=false;lastOpen=null;guestRequest++;guestBusy=false;guestRange=null;guestQuestion='';localDrafts.clear();remoteDrafts.clear();epoch++;invalidateSource();remoteQuestion=null;remoteFeedback=null;remoteOperations.clear();remoteHistory={phase:'idle',records:[],hasMore:false,nextBefore:null};activeOwner=owner();current=null;pool=[];feedback=null;view='home';read();if(desk){void loadSupply();void loadPlan();}notice='로그인 상태가 바뀌어 현재 계정의 기록을 다시 확인했어요.';draw();}
  read();if(desk){void loadSupply();void loadPlan();}container.addEventListener('click',click);container.addEventListener('change',change);container.addEventListener('keydown',integerKeydown);window.addEventListener('ds-session-change',sessionChange);const leave=()=>{if(document.visibilityState==='hidden')flushRemote(true);},pageLeave=()=>flushRemote(true);document.addEventListener('visibilitychange',leave);window.addEventListener('pagehide',pageLeave);if(options.resume&&typeof options.onReady!=='function')resume();draw(false);
  if(signed()&&activeOwner&&typeof options.loadProgress==='function'){const generation=epoch;Promise.resolve().then(()=>options.loadProgress({namespace:'student-paths-v1',ownerKey:activeOwner})).then(raw=>{if(closed||generation!==epoch)return;const remote=clean(raw);let cached=false;try{cached=Boolean(key()&&localStorage.getItem(key()));}catch{}const local=cached?state:remote;state=mergeProgress(remote,local);const comparable=x=>JSON.stringify({...x,records:[...x.records].sort((a,b)=>a.id.localeCompare(b.id))});if(comparable(state)!==comparable(remote)&&(!desk||cached))save();else{try{if(key())localStorage.setItem(key(),JSON.stringify(state));}catch{}emit();}draw(false);notifyReady();}).catch(()=>{if(closed||generation!==epoch)return;storageMessage='계정 기록을 불러오지 못했어요. 현재 기기의 기록을 보여드려요.';draw(false);notifyReady();});}else notifyReady();
  const controller={snapshot:()=>JSON.parse(JSON.stringify({...state,summary:summary(state),tier:tier(state),storage:storageMessage})),showHistory:()=>{view='history';draw();},resume:()=>{const ok=resume();if(ok)draw();return ok;},destroy:()=>{flushRemote();document.removeEventListener('visibilitychange',leave);window.removeEventListener('pagehide',pageLeave);closed=true;epoch++;if(typeof releaseChoiceLayout==='function')releaseChoiceLayout();container.removeEventListener('click',click);container.removeEventListener('change',change);container.removeEventListener('keydown',integerKeydown);window.removeEventListener('ds-session-change',sessionChange);controllers.delete(container);if(lastController===controller)lastController=null;}};controllers.set(container,controller);lastController=controller;return controller.destroy;

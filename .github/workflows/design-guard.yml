@@ -13,3 +13,4 @@ jobs:
         with:
           node-version: '22'
       - run: npm run check:design
+      - run: python3 scripts/build-app-runtime.py && git diff --exit-code -- app/index.html app/runtime-before-core.js app/runtime-after-core.js

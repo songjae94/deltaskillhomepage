@@ -5,7 +5,7 @@
  :root {
   --ds-ui-ink:#373735;--ds-ui-muted:#5d5b56;--ds-ui-rule:#a09d93;
   --ds-ui-accent:#454444;--ds-ui-light:#fdfdfa;
-  --ds-desk-image:url('/app/assets/textures/desk-smoked-oak-D-1126.png');
+  --ds-desk-image:url('/app/assets/textures/desk-smoked-oak-D-1126-delivery.webp');
   --ds-metal:linear-gradient(125deg,#ffffff16,transparent 60%),repeating-linear-gradient(0deg,#ffffff05 0 1px,#00000003 1px 2px),linear-gradient(130deg,#e4e1da,#c8c5bd);
   --ds-key:linear-gradient(120deg,#ffffff20,transparent 58%),repeating-linear-gradient(0deg,#ffffff05 0 1px,#00000004 1px 2px),linear-gradient(#6c6b6a,#454444);
   --ds-pale-key:linear-gradient(125deg,#ffffff70,transparent 54%),linear-gradient(#fff,#fdfdfa);
@@ -552,7 +552,7 @@
 @media screen {
  html[data-design] body.working-body[data-page] #content#content :is(.dq61-sample-window,.dq59-canvas .creator-paper-stage) .ds48-paper-scene {
   background-color:#d5ccba!important;
-  background-image:url('/app/assets/textures/seasonal-wood-atlas.png')!important;
+  background-image:url('/app/assets/textures/seasonal-wood-atlas-delivery.webp')!important;
   background-position:100% 0%!important;background-size:200% 200%!important;background-repeat:no-repeat!important;background-blend-mode:normal!important;
  }
 }
@@ -602,7 +602,7 @@
 @media screen {
  html[data-design] body.working-body[data-page="student"] #content#content :is(.ssil-main,.dst-layout) {
   background-color:#d7bea0!important;
-  background-image:url('/app/assets/textures/desk-bookmaker-empty-1127.png')!important;
+  background-image:url('/app/assets/textures/desk-bookmaker-empty-1127-delivery.webp')!important;
   background-position:center!important;background-size:cover!important;background-repeat:no-repeat!important;background-blend-mode:normal!important;
   border:1px solid #b89e7e!important;border-top-color:#e8d5b8!important;border-radius:4px!important;
   box-shadow:inset 0 1px 1px #fff8,0 3px 0 #b19a7f,0 7px 12px #4c39251c!important;
@@ -612,7 +612,7 @@
 /* Study stays dark; timed practice keeps its pale photographic desk. */
 @media screen {
  html[data-design] body.working-body[data-page="student"] #content#content .ssil-main {
-  background-image:url('/app/assets/textures/desk-smoked-oak-D-1126.png')!important;background-color:#99816b!important;
+  background-image:url('/app/assets/textures/desk-smoked-oak-D-1126-delivery.webp')!important;background-color:#99816b!important;
   border-color:#a08a70!important;border-top-color:#cab89e!important;box-shadow:inset 0 1px #fff5,0 3px 0 #78634b,0 7px 12px #34241625!important;
  }
  /* Separate the shelf's lit top, solid front edge and shadow on the back panel. */

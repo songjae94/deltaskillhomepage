@@ -58,7 +58,7 @@
     return `<section class="work-surface resource-surface ac25-library" data-collection="academy">
       <header class="ac25-heading">
         <div><a class="ac25-breadcrumb" href="#library" data-library-view="school">자료실</a><h1>수업자료</h1><p>선생님이 나에게 배부한 자료</p></div>
-        <img src="assets/editorial/paper-flatlay-v15.png" alt="" width="1536" height="1024" decoding="async">
+        <img src="assets/editorial/paper-flatlay-v15-delivery.webp" alt="" width="1536" height="1024" decoding="async">
       </header>
       <nav class="nv20-collections" aria-label="자료실 분류">
         <a href="#library" data-library-view="school">내신 자료</a>

@@ -548,6 +548,7 @@
     return scope.unitLabels(scope.request().subunit_ids);
   }
   function idle() {
+    if (savedTrialPreview()) return loadingCards();
     const list = guest() ? [] : savedList();
     const data = sampleData();
     if (!data) {
@@ -922,8 +923,14 @@
   function loadingCards() {
     return '<section class="dq59-stage dq61-cardstage" aria-label="문항 준비 중" data-dq-live-first>'+cardTypeStyle()+'<div class="ds48-preview-toolbar"><strong>문항 미리보기</strong><span data-dq-body-progress role="status">선택한 문항을 불러오고 있어요.</span></div><div class="dq59-cards" data-dq-live-cards></div></section>';
   }
+  function savedTrialPreview() {
+    const set = approvedTrial;
+    if (!set?.bodies.size || set.expiresAt <= Date.now() || !trialMatches(set)) return null;
+    return {done:set.bodies.size, rows:set.items.map(({item_id:id}) =>
+      set.bodies.has(id) ? {id, body:set.bodies.get(id)} : null)};
+  }
   function paintLoadingCards() {
-    const preview = pending?.preview;
+    const preview = pending?.preview || savedTrialPreview();
     const panel = document.querySelector('#content [data-dq-live-first]');
     if (!preview || !panel) return;
     const cards = panel.querySelector('[data-dq-live-cards]');
@@ -946,7 +953,7 @@
     async function worker() {
       while (!stopped && next < rows.length && alive()) {
         const index = next;
-        const groupSize = openGroup && index > 0 ? Math.min(3, rows.length-index) : 1;
+        const groupSize = openGroup ? Math.min(3, rows.length-index) : 1;
         next += groupSize;
         try {
           const items = groupSize === 1 ? [await open(rows[index],index)] : await openGroup(rows.slice(index,next));

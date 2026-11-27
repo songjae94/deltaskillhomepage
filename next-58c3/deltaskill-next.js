@@ -398,7 +398,7 @@ teacher=function(){return teacherBeforeV12().replace('<h1>자료 만들기</h1>'
 
     const photo = document.createElement('img');
     photo.className = 'library-v13-exhibit-photo';
-    photo.src = 'assets/editorial/fresh-materials-v13.png';
+    photo.src = 'assets/editorial/fresh-materials-v13-delivery.webp';
     photo.width = 1536;
     photo.height = 1024;
     photo.alt = '';
@@ -409,11 +409,11 @@ teacher=function(){return teacherBeforeV12().replace('<h1>자료 만들기</h1>'
 })();
 
 // Photographic presentation. Existing question, timer and navigation actions are retained.
-timerFeature=function(){return `<article class="time-feature editorial-time"><button type="button" class="editorial-tablet" data-start="timed" aria-label="6분 타임어택 시작"><img src="assets/editorial/cool-study-v13.png" alt="햇빛이 드는 책상 위의 패드" width="1536" height="1024"><div class="editorial-tablet-screen" aria-hidden="true"><small>TIME ATTACK</small><strong>06:00</strong><i></i></div></button><div class="feature-heading"><h2>타임어택</h2><span>6분 · 6문항</span></div><div class="time-feature-bottom"><p>아는 문제, 시간 안에.</p><button data-start="timed">시작하기</button></div></article>`;};
+timerFeature=function(){return `<article class="time-feature editorial-time"><button type="button" class="editorial-tablet" data-start="timed" aria-label="6분 타임어택 시작"><img src="assets/editorial/cool-study-v13-delivery.webp" alt="햇빛이 드는 책상 위의 패드" width="1536" height="1024"><div class="editorial-tablet-screen" aria-hidden="true"><small>TIME ATTACK</small><strong>06:00</strong><i></i></div></button><div class="feature-heading"><h2>타임어택</h2><span>6분 · 6문항</span></div><div class="time-feature-bottom"><p>아는 문제, 시간 안에.</p><button data-start="timed">시작하기</button></div></article>`;};
 const studentBeforeEditorial13=student;
-student=function(){return studentBeforeEditorial13().replace('<a href="#library" class="material-feature">','<a href="#library" class="material-feature editorial-material"><img src="assets/editorial/fresh-materials-v13.png" alt="펼쳐진 델타스킬 함수 교재" width="1536" height="1024">');};
+student=function(){return studentBeforeEditorial13().replace('<a href="#library" class="material-feature">','<a href="#library" class="material-feature editorial-material"><img src="assets/editorial/fresh-materials-v13-delivery.webp" alt="펼쳐진 델타스킬 함수 교재" width="1536" height="1024">');};
 const csatBeforeEditorial13=csatPage;
-csatPage=function(){return csatBeforeEditorial13().replace('<h3>공통 21번<br>풀이 분석</h3>','<h3>공통 21번 풀이 분석</h3>').replace('<div class="cv7-feature">','<div class="cv7-feature editorial-csat"><a class="editorial-csat-image" href="https://www.deltaskill.co.kr/analysis/index.html?step=1" target="_blank" rel="noopener" aria-label="공통 21번 풀이 분석 열기, 새 탭"><img class="editorial-csat-photo" src="assets/editorial/csat-material-v13.png" alt="21번 풀이 분석을 위한 교재 표지 연출" width="1536" height="1024"></a>');};
+csatPage=function(){return csatBeforeEditorial13().replace('<h3>공통 21번<br>풀이 분석</h3>','<h3>공통 21번 풀이 분석</h3>').replace('<div class="cv7-feature">','<div class="cv7-feature editorial-csat"><a class="editorial-csat-image" href="https://www.deltaskill.co.kr/analysis/index.html?step=1" target="_blank" rel="noopener" aria-label="공통 21번 풀이 분석 열기, 새 탭"><img class="editorial-csat-photo" src="assets/editorial/csat-material-v13-delivery.webp" alt="21번 풀이 분석을 위한 교재 표지 연출" width="1536" height="1024"></a>');};
 
 // Short navigation and action copy, without changing service availability or data.
 const libraryBeforeCopy13=libraryPage;

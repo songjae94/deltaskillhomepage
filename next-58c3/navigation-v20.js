@@ -42,7 +42,7 @@
       const archive = document.createElement('div'); archive.className = 'nv20-exam-materials';
       archive.innerHTML = window.DSCSATLearningV20?.archiveMarkup?.() || '<a class="primary" href="#csat">기출·해설 보기 →</a>';
       finder.replaceWith(archive);
-      const photo = root.querySelector('.library-v13-exhibit-photo'); if(photo) photo.src='assets/editorial/csat-material-v13.png';
+      const photo = root.querySelector('.library-v13-exhibit-photo'); if(photo) photo.src='assets/editorial/csat-material-v13-delivery.webp';
       const exhibit = root.querySelector('.library-v12-exhibit');
       if(exhibit){exhibit.href='#csat';exhibit.setAttribute('aria-label','수능 공부로 이동');}
       const caption=root.querySelector('.library-v12-exhibit-link'); if(caption) caption.textContent='수능 공부 →';

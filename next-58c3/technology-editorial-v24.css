@@ -58,7 +58,7 @@ html[data-design="b"][data-interior="v12"] .techv24 .techv20-hero { background: 
   overflow: visible;
   border: 0;
   border-radius: 0;
-  background: linear-gradient(#faf8f48c, #f8f5f0a0), url("assets/editorial/paper-flatlay-v15.png") center top / 215% auto #f2eee9;
+  background: linear-gradient(#faf8f48c, #f8f5f0a0), url("assets/editorial/paper-flatlay-v15-delivery.webp") center top / 215% auto #f2eee9;
 }
 
 .techv24 .techv20-spread > section { align-self: stretch; padding: clamp(10px, 2vw, 23px); border: 1px solid #e5e0d8; background: #fff; box-shadow: 0 2px 6px #41352c16, 1px 3px 0 #efebe4; }

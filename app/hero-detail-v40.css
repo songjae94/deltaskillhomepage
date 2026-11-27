@@ -36,10 +36,10 @@ html[data-design="b"] body.home-body .role-dock::before{display:none;}
 html[data-design="b"] body.home-body .role-dock>a:not(.ip23-request-entry){display:block;position:relative;height:51px;min-height:51px;max-height:51px;border:0;border-radius:9px;background:transparent;box-shadow:none;backdrop-filter:none;padding:0;font-size:15px;text-shadow:none;transition:none;}
 html[data-design="b"] body.home-body .role-dock>a:not(.ip23-request-entry)::before{display:none;}
 html[data-design="b"] body.home-body .role-dock>a:not(.ip23-request-entry):is(:hover,:active){transform:none;filter:none;box-shadow:none;}
-.hd40-keycap{position:absolute;inset:1px 0 4px;display:flex;align-items:center;justify-content:center;overflow:hidden;border:0;border-radius:7px;color:#253044;background:transparent url("assets/hero-v40/button-materials.png") 3.237% 52.5%/217.635% 296.721% no-repeat;filter:drop-shadow(0 2px 2px #101c3338);transform:translateY(0);transition:transform .09s,filter .12s;font-size:15px;font-weight:650;letter-spacing:-.025em;}
+.hd40-keycap{position:absolute;inset:1px 0 4px;display:flex;align-items:center;justify-content:center;overflow:hidden;border:0;border-radius:7px;color:#253044;background:transparent url("assets/hero-v40/button-materials-delivery.webp") 3.237% 52.5%/217.635% 296.721% no-repeat;filter:drop-shadow(0 2px 2px #101c3338);transform:translateY(0);transition:transform .09s,filter .12s;font-size:15px;font-weight:650;letter-spacing:-.025em;}
 .hd40-keycap::before{display:none;}
 .hd40-keycap>span{position:relative;text-shadow:0 .6px 0 #fff;}
-html[data-design="b"] body.home-body .role-dock>a[href="#teacher"] .hd40-keycap{color:#f5f6fb;background:transparent url("assets/hero-v40/button-materials.png") 96.849% 52.5%/217.635% 296.721% no-repeat;box-shadow:none;border:0;}
+html[data-design="b"] body.home-body .role-dock>a[href="#teacher"] .hd40-keycap{color:#f5f6fb;background:transparent url("assets/hero-v40/button-materials-delivery.webp") 96.849% 52.5%/217.635% 296.721% no-repeat;box-shadow:none;border:0;}
 html[data-design="b"] body.home-body .role-dock>a[href="#teacher"] .hd40-keycap>span{text-shadow:0 1px 1px #101a2a;}
 html[data-design="b"] body.home-body .role-dock>a:not(.ip23-request-entry):hover .hd40-keycap{filter:brightness(1.035) drop-shadow(0 2px 2px #101c3338);}
 html[data-design="b"] body.home-body .role-dock>a:not(.ip23-request-entry):active .hd40-keycap{transform:translateY(2px);filter:brightness(.98) drop-shadow(0 .5px .5px #101c3338);box-shadow:none;}
