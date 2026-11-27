@@ -197,17 +197,60 @@ function displayedAnswer(q,value){
 function renderPaper(ids,solution=false){
  return ids.map((id,i)=>{const q=known(id);return '<article class="dst-question"><b>'+String(i+1).padStart(2,'0')+'</b><div><small>'+escape(q.unit)+'</small>'+(solution?'<p><strong>정답 '+escape(q.answer==null?'채점 결과 확인 중':displayedAnswer(q,q.answer))+'</strong></p><div class="solbody">'+questionContent(q,true)+'</div>':'<div>'+questionContent(q)+'</div>')+'</div></article>';}).join('');
 }
+let solutionLayoutRequest;
+function loadSolutionLayout(){
+ if(window.DSSolutionPrint?.prepare)return Promise.resolve(window.DSSolutionPrint.prepare);
+ if(!solutionLayoutRequest){
+  solutionLayoutRequest=new Promise((resolve,reject)=>{
+   const script=document.createElement('script');
+   const fail=()=>{clearTimeout(timeout);script.remove();reject(Error('solution_layout_unavailable'));};
+   const timeout=setTimeout(fail,15000);
+   script.onload=()=>{
+    if(!window.DSSolutionPrint?.prepare){fail();return;}
+    clearTimeout(timeout);
+    resolve(window.DSSolutionPrint.prepare);
+   };
+   script.onerror=fail;
+   script.src=new URL('solution-print-layout.js?v=797cea5c9678',document.baseURI).href;
+   document.head.append(script);
+  }).catch(error=>{solutionLayoutRequest=null;throw error;});
+ }
+ return solutionLayoutRequest;
+}
+async function gradedPrintRows(set,ids){
+ const responses=ids.map(id=>({id,answer:set.responses[id]==null||set.responses[id]===''?null:Number(set.responses[id])}));
+ const response=await guestWorkbook().grade({ticket:set.publicTicket,responses,includeSolutions:true});
+ const rows=response.results;
+ if(active!==set||!signed()||!Array.isArray(rows)||rows.length!==ids.length)throw Error('set_changed');
+ return rows.map((row,i)=>{
+  const q=known(ids[i]);
+  if(!q||row.id!==q.id||row.version!==q.version||row.answer!==set.gradedResponses?.[q.id]?.answer||typeof row.solutionHTML!=='string'||!row.solutionHTML.trim())throw Error('solution_unavailable');
+  return {...q,answer:row.answer,solutionHTML:row.solutionHTML};
+ });
+}
 async function printPaper(ids,title,includeSolutions=true){
  const w=window.open('','_blank');if(!w){notice='인쇄 창을 허용해 주세요.';paint();return;}
  const doc=w.document;doc.open();doc.write('<!doctype html><html lang="ko"><head><meta charset="utf-8"></head><body><p role="status">문제지와 해설을 조판하고 있어요.</p></body></html>');doc.close();doc.title=title;
  try{
   if(active?.kind==='custom'){const item=active;await item.loadAllQuestions?.();if(includeSolutions){if(!['finished','expired'].includes(item.status))throw Error('not_graded');for(let i=0;i<ids.length;i+=2)await Promise.all(ids.slice(i,i+2).map(id=>reviewFor(item,id,false)));}if(active?.setId!==item.setId)throw Error('set_changed');}
-  const styles=await Promise.all(['assets/vendor/katex-0.18.4/katex-embed.css','student-hub.css'].map(async name=>{const r=await fetch(new URL(name,document.baseURI));if(!r.ok)throw Error();return r.text();}));
+  let gradedRows;
+  if(includeSolutions&&active?.guestWorkbook){
+   if(!['finished','expired'].includes(active.status)||!signed())throw Error('not_graded');
+   gradedRows=await gradedPrintRows(active,ids);
+  }
+  const stylesRequest=Promise.all(['assets/vendor/katex-0.18.4/katex-embed.css','student-hub.css'].map(async name=>{const r=await fetch(new URL(name,document.baseURI));if(!r.ok)throw Error();return r.text();}));
+  // The print popup can defer external font requests until after pagination.
+  // Install an already loaded face so line and column measurements use the print font.
+  const fontRequest=includeSolutions?fetch(new URL('assets/fonts/NotoSerifKR-Medium.woff2',document.baseURI)).then(async response=>{
+   if(!response.ok)throw Error('print_font_unavailable');
+   const face=new w.FontFace('DS Timed Print Serif',await response.arrayBuffer(),{weight:'500'});
+   doc.fonts.add(await face.load());
+  }):null;
+  const [styles]=await Promise.all([stylesRequest,fontRequest]);
   if(w.closed)return;
   const style=doc.createElement('style');style.textContent=styles.join('\n');doc.head.append(style);
   const base=doc.createElement('base');base.href=document.baseURI;doc.head.prepend(base);
   const printStyle=doc.createElement('style');printStyle.textContent=`
-   @font-face{font-family:'DS Timed Print Serif';src:url('${new URL('assets/fonts/NotoSerifKR-Medium.woff2',document.baseURI).href}') format('woff2');font-weight:500;font-style:normal;font-display:block}
    @page{size:A4;margin:15mm}html,body{margin:0;padding:0;background:white;color:black}
    .dst-paper .dst-solution-sheet{width:180mm;height:267mm;padding:0;break-after:page;overflow:visible}
    .dst-solution-sheet>header{box-sizing:border-box;height:26mm;padding:2mm 0 3mm;border-bottom:.35mm solid #333;margin:0 0 4mm}
@@ -235,12 +278,11 @@ async function printPaper(ids,title,includeSolutions=true){
   doc.body.replaceChildren(main);
   await Promise.all([...main.querySelectorAll('iframe')].map(f=>f.matches('.ds-student-fragment')?window.DSStudentFragment.fit(f):sizeFrame(f)));
   if(includeSolutions){
-   if(!window.DSSolutionPrint?.prepare){await new Promise((ok,fail)=>{const script=doc.createElement('script');script.src=new URL('solution-print-layout.js?v=797cea5c9678',document.baseURI).href;script.onload=ok;script.onerror=()=>fail(Error('solution_layout_unavailable'));doc.head.append(script);});}
-   const prepare=window.DSSolutionPrint?.prepare||w.DSSolutionPrint?.prepare;if(!prepare)throw Error('solution_layout_unavailable');
+   const prepare=await loadSolutionLayout();
    const measure=doc.createElement('div');measure.className='dst-print-measure';doc.body.append(measure);
    const entries=[];
    for(let index=0;index<ids.length;index++){
-    const q=known(ids[index]),entry=doc.createElement('article');entry.className='dst-solution-item';entry.dataset.questionNumber=String(index+1);
+    const q=gradedRows?.[index]||known(ids[index]),entry=doc.createElement('article');entry.className='dst-solution-item';entry.dataset.questionNumber=String(index+1);
     entry.innerHTML='<h2>'+String(index+1).padStart(2,'0')+' <small>정답 '+escape(q.answer==null?'채점 결과 확인 중':displayedAnswer(q,q.answer))+'</small></h2><div class="solbody">'+questionContent(q,true)+'</div>';
     measure.append(entry);
     for(const frame of [...entry.querySelectorAll('iframe')]){
@@ -288,7 +330,12 @@ async function printPaper(ids,title,includeSolutions=true){
    const lastFlow=pages.at(-1).querySelector('.dst-solution-flow');lastFlow.style.columnFill='balance';prepare(lastFlow);
    pages.forEach((sheet,i)=>sheet.querySelector('footer').textContent='정답과 해설　'+(i+1)+' / '+pages.length);
   }
-  await doc.fonts.ready;await new Promise(ok=>w.requestAnimationFrame(()=>w.requestAnimationFrame(ok)));if(!w.closed)w.print();
+  await doc.fonts.ready;
+  await new Promise(resolve=>{
+   const timer=setTimeout(resolve,250);
+   w.requestAnimationFrame(()=>w.requestAnimationFrame(()=>{clearTimeout(timer);resolve();}));
+  });
+  if(!w.closed)w.print();
  }catch{if(!w.closed)doc.body.textContent='문제지 조판을 불러오지 못했습니다. 창을 닫고 다시 인쇄해 주세요.';}
 }
 function title(){
