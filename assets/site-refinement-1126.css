@@ -16,9 +16,8 @@
  html[data-design] body.working-body {background:#e8e7e3!important;color:var(--ds-ui-ink)}
  html[data-design] body.working-body #header {background:#e8e7e3!important;border-bottom-color:#a09d93!important;box-shadow:0 1px #ffffff80!important}
  html[data-design] body.working-body #header .brand {
-  background:linear-gradient(180deg,#939291,#424141 34%,#777675 47%,#333232 52%,#555454)!important;
-  background-clip:text!important;-webkit-background-clip:text!important;-webkit-text-fill-color:transparent!important;
-  -webkit-text-stroke:.35px #5f5e5d;filter:drop-shadow(0 1px 0 #fff) drop-shadow(0 2px 1px #43434355);
+  background:none!important;color:#253248!important;-webkit-text-fill-color:#253248!important;
+  -webkit-text-stroke:0!important;filter:none!important;text-shadow:none!important;box-shadow:none!important;
  }
  html[data-design] body.working-body #header .brand .delta {color:inherit!important;-webkit-text-fill-color:inherit!important;background:none}
  html[data-design] body.working-body[data-page] #content :is(.ssil-main,.dst-layout,.fv57-desk,.dq61-desk,.dl63-desk) {
@@ -173,7 +172,7 @@
 @media screen {
   html[data-design] body.working-body #header .brand {position:relative;isolation:isolate}
   html[data-design] body.working-body #header .brand::after {
-    content:'DELTASKILL';position:absolute;inset:0;pointer-events:none;
+    content:none!important;position:absolute;inset:0;pointer-events:none;
     font:inherit;letter-spacing:inherit;white-space:nowrap;
     background:linear-gradient(110deg,transparent 40%,#f9f9f944 46%,#ffffff 50%,#ebebeb80 53%,transparent 59%) 180% 0 / 250% 100%;
     background-clip:text!important;-webkit-background-clip:text!important;-webkit-text-fill-color:transparent;-webkit-text-stroke:0;
@@ -750,4 +749,34 @@
  html[data-design] body.working-body[data-page] #content#content .tb36-modes .tb36-mode-icon svg {
   stroke-width:1.8;color:#373832!important;filter:none!important;
  }
+}
+
+/* Student navigation: matte surface, raised keys and pressed selection. */
+@media screen {
+html[data-design="b"] body[data-page="student"] #content#content .dsh .dsh-tabs{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;padding:6px!important;gap:6px!important;border:1px solid #a1b2cc!important;border-radius:10px!important;background:#dde5ef!important;box-shadow:none!important}
+html[data-design="b"] body[data-page="student"] #content#content .dsh .dsh-tabs>button{min-height:68px!important;min-width:0!important;display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;gap:12px!important;padding:12px!important;border:1px solid transparent!important;border-radius:6px!important;background:transparent!important;color:#354258!important;box-shadow:none!important;text-shadow:none!important;filter:none!important;transform:none!important}
+html[data-design="b"] body[data-page="student"] #content#content .dsh .dsh-tabs>button strong{font-size:15px!important;font-weight:650!important;color:inherit!important}
+html[data-design="b"] body[data-page="student"] #content#content .dsh .dsh-tabs>button .tb36-mode-icon{display:flex!important;align-items:center!important;justify-content:center!important;width:32px!important;height:32px!important;border-radius:7px!important;color:inherit!important;background:none!important}
+html[data-design="b"] body[data-page="student"] #content#content .dsh .dsh-tabs>button .tb36-mode-icon svg{width:20px!important;height:20px!important;color:inherit!important}
+html[data-design="b"] body[data-page="student"] #content#content .dsh .dsh-tabs>button:hover{background:#e4eaf4!important}
+html[data-design="b"] body[data-page="student"] #content#content .dsh .dsh-tabs>button[aria-pressed="true"]{background:#354258!important;border-color:#354258!important;color:#fff!important;box-shadow:0 2px 3px #19223516!important}
+html[data-design="b"] body[data-page="student"] #content#content .dsh .dsh-tabs>button[aria-pressed="true"] .tb36-mode-icon{background:#4b5d79!important;color:#f0f3fa!important}
+html[data-design="b"] body[data-page="student"] #content#content .dsh .dsh-tabs>button .tb36-mode-icon svg,html[data-design="b"] body[data-page="student"] #content#content .dsh .dsh-tabs>button .tb36-mode-icon svg *{stroke:currentColor!important}
+html[data-design="b"] body[data-page="student"] #content#content .dsh .dsh-tabs>button[aria-pressed="true"] .tb36-mode-icon svg{color:#f0f3fa!important}
+html[data-design="b"] body[data-page="student"] #content#content .dsh .dsh-tabs{position:relative!important;isolation:isolate!important;background:linear-gradient(180deg,#ffffff14,#ffffff00 70%),#dde5ef!important;border-color:#b9c6d5!important;box-shadow:inset 0 1px #ffffffd1,inset 0 -1px #7b90a51f,0 2px 2px #35425814!important}
+html[data-design="b"] body[data-page="student"] #content#content .dsh .dsh-tabs::before{content:""!important;position:absolute!important;inset:0!important;border-radius:inherit!important;background:url("../app/assets/textures/teacher-key-surface-v50.svg") center/240px auto!important;opacity:.018!important;mix-blend-mode:luminosity!important;pointer-events:none!important;z-index:-1!important}
+html[data-design] body[data-page="student"] #content#content .dsh .dsh-tabs>button{position:relative!important;isolation:isolate!important;overflow:hidden!important;background:linear-gradient(180deg,#ffffff45,#ffffff12)!important;border:1px solid #ffffff65!important;border-bottom-color:#aab9ca!important;box-shadow:inset 0 1px #ffffff9c,0 2px 2px #35425814!important}
+html[data-design] body[data-page="student"] #content#content .dsh .dsh-tabs>button::after{content:""!important;display:block!important;position:absolute!important;inset:0!important;border-radius:inherit!important;background:url("../app/assets/textures/teacher-key-surface-v50.svg") center/240px auto!important;opacity:.018!important;mix-blend-mode:luminosity!important;pointer-events:none!important;z-index:0!important}
+html[data-design] body[data-page="student"] #content#content .dsh .dsh-tabs>button>*{position:relative!important;z-index:1!important}
+html[data-design] body[data-page="student"] #content#content .dsh .dsh-tabs>button[aria-pressed="true"]{background:linear-gradient(180deg,#0000000a,#ffffff05),#354258!important;border-color:#2d3c53!important;box-shadow:inset 0 2px 3px #1521394d,inset 0 -1px #ffffff1f,0 1px #ffffff75!important}
+html[data-design] body[data-page="student"] #content#content .dsh .dsh-tabs>button[aria-pressed="true"]::after{opacity:.02!important}
+html[data-design] body[data-page="student"] #content#content .dsh .dsh-tabs>button:focus-visible{outline:3px solid #315d91!important;outline-offset:3px!important}
+@media (forced-colors:active){html[data-design] body[data-page="student"] #content#content .dsh .dsh-tabs>button[aria-pressed="true"]{border:2px solid Highlight!important}html[data-design] body[data-page="student"] #content#content .dsh .dsh-tabs::before,html[data-design] body[data-page="student"] #content#content .dsh .dsh-tabs>button::after{display:none!important}}
+}
+@media screen and (max-width:680px){
+html[data-design="b"] body[data-page="student"] #content#content .dsh .dsh-tabs{gap:2px!important;padding:4px!important;border-radius:8px!important}
+html[data-design="b"] body[data-page="student"] #content#content .dsh .dsh-tabs>button{min-height:66px!important;flex-direction:column!important;gap:4px!important;padding:9px 1px!important;border-radius:5px!important}
+html[data-design="b"] body[data-page="student"] #content#content .dsh .dsh-tabs>button strong{font-size:11px!important}
+html[data-design="b"] body[data-page="student"] #content#content .dsh .dsh-tabs>button .tb36-mode-icon{width:27px!important;height:27px!important;border-radius:5px!important}
+html[data-design="b"] body[data-page="student"] #content#content .dsh .dsh-tabs>button .tb36-mode-icon svg{width:19px!important;height:19px!important}
 }
