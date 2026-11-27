@@ -3,7 +3,7 @@
 function createRunner(csat){
 const bank=window.DSFinalPracticeBank;
 const byId=new Map(bank.map(q=>[q.id,q]));
-const gradeNames=['','공통수학2','미적분Ⅰ'];
+const gradeNames=['','공통수학2','미적분Ⅰ','기하','확률과 통계'];
 const escape=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 // v66: shared preprocessor · R5 marks · counted failures (math-typeset-v66.js), same as every other surface.
 const math=s=>window.DSMathTypeset?window.DSMathTypeset.dollars(s,escape):String(s).split('$').map((part,i)=>i%2?katex.renderToString(part,{throwOnError:false,trust:false,output:'htmlAndMathml'}):escape(part)).join('');
@@ -35,37 +35,36 @@ if(!csat)for(const q of window.DSStudentStudyPaths?.publicTimedOriginals?.()||[]
   solutionHTML:'<article>'+q.solution.map(v=>'<p>'+v+'</p>').join('')+'</article>'};
  publicBank.push(row);byId.set(q.id,row);
 }
+const guestWorkbook=()=>!csat&&window.DSGuestWorkbook;
+function guestCriteria(){const c=criteria();return {purpose:'timed',subject:c.subject,...(c.bookId?{bookId:c.bookId}:{}),unitIds:c.unitIds,typeIds:c.typeIds};}
 function publicCandidates(g,b='',u=''){
  return publicBank.filter((q,i,rows)=>q.grade===g&&(!b||q.book===b)&&(!u||q.examUnit===u)&&rows.findIndex(row=>row.id===q.id)===i);
 }
 function guestSelection(){
- const rows=publicCandidates(grade,'',unit);
- if(!presets.includes(count)||rows.length<count)return [];
+ const rows=publicCandidates(grade,book,unit);
+ if(!guestSizes(rows.length).includes(count))return [];
  const seen=new Set(existingSchoolTrial()?.questionIds||[]);
  const shuffle=items=>{for(let i=items.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[items[i],items[j]]=[items[j],items[i]];}return items;};
  // Run only at a new start; the stored order is reused on refresh and resume.
  return [...shuffle(rows.filter(q=>!seen.has(q.id))),...shuffle(rows.filter(q=>seen.has(q.id)))].slice(0,count);
 }
-const guestUsageKey='ds-school-timed-trial-starts-v2';
-function guestUsage(){
- let ids=[];
- try{const value=JSON.parse(localStorage.getItem(guestUsageKey));if(Array.isArray(value?.starts))ids=value.starts.filter(id=>typeof id==='string');}catch{}
- // Older in-tab trials count once and remain resumable, including old 5/12/custom-size sets.
- for(const g of [1,2]){const prior=remembered(g);if(prior&&!prior.trialVersion)ids.push('legacy:'+g+':'+prior.startedAt);}
- return [...new Set(ids)];
-}
+function guestSizes(n){return [...new Set([...[5,10,20,25].filter(k=>k<=n),Math.min(n,25)])].filter(Boolean).sort((a,b)=>a-b);}
+function normalizeGuestCount(){const sizes=guestSizes(publicCandidates(grade,book,unit).length);if(!sizes.includes(count))count=sizes.filter(n=>n<=10).at(-1)||sizes[0]||0;minutes=count*2;}
 const subjects=['공통수학2','미적분Ⅰ','기하','확률과 통계'];
 const presets=[10,20,25];
 let currentSubject=subjects[0],dialogMode='';
+let warmupChoice=null;
 let grade=1,level='',unit='',book='',count=10,minutes=20,active=null,quote=null,selection=[],busy=false,notice='',epoch=0;
 const space=csat?'csat':'school';
 const guestLoginUrl=csat?'/auth/?next='+encodeURIComponent('/app/?csatMode=mock#csat'):'#login';
 const scope='.ds-timed[data-timed-space="'+space+'"]';
 const label=q=>gradeNames[q.grade]+' · '+q.unit;
-function accountChanged(){currentSubject=subjects[0];grade=1;book='';unit='';type='';level='';count=10;minutes=20;exam.reset();dialogMode='';receivedSource=null;epoch++;seq++;remote=null;remoteStatus='';resources.clear();catalogById.clear();subjectInventory.clear();active=null;quote=null;notice='';busy=false;selection=[];}
+function accountChanged(){warmupChoice=null;currentSubject=subjects[0];grade=1;book='';unit='';type='';level='';count=10;minutes=20;exam.reset();dialogMode='';receivedSource=null;epoch++;seq++;remote=null;remoteStatus='';resources.clear();catalogById.clear();subjectInventory.clear();active=null;quote=null;notice='';busy=false;selection=[];}
 let previousMember=signed(),claiming=false;
-const resultKey='ds-school-timed-submit-v1';
-let resultCache;
+const resultKey=csat?'ds-csat-timed-submit-v1':'ds-school-timed-submit-v1';
+const trialHash=csat?'#csat':'#student';
+const trialReturn=id=>'/app/?'+(csat?'csatMode=mock':'studentMode=timed')+'&trialResult='+encodeURIComponent(id)+trialHash;
+let resultCache,gradeError=false;
 const fixedStorage=()=>csat?localStorage:sessionStorage;
 function logoutMarker(){
  try{return localStorage.getItem('ds_logout_epoch')||'';}catch{return '';}
@@ -76,50 +75,49 @@ function resultTicket(){
 }
 let submittingTicket=null;
 function loginTicket(){
- if(csat||location.hash!=='#login')return null;
+ if(location.hash!=='#login')return null;
  const ticket=resultTicket();
  return ticket?.id&&new URLSearchParams(location.search).get('trialLogin')===ticket.id?ticket:null;
 }
-if(loginTicket()&&!signed())window.DSLoginReturn='#student';
+if(loginTicket()&&!signed())window.DSLoginReturn=trialHash;
 function replaceTrialQuery(key,value){
  const url=new URL(location.href);url.searchParams.delete('trialLogin');url.searchParams.delete('trialResult');
  if(key)url.searchParams.set(key,value);
  history.replaceState(history.state,'',url);
 }
 document.addEventListener('submit',event=>{
- if(!csat&&event.target.id==='login-form')submittingTicket=loginTicket()?.id||null;
+ if(event.target.id==='login-form')submittingTicket=loginTicket()?.id||null;
 },true);
 document.addEventListener('click',event=>{
  const ticket=loginTicket(),link=event.target.closest?.('a[href]');
  if(!ticket||!link)return;
  const url=new URL(link.href);
  if(url.origin!==location.origin||url.pathname!=='/auth/')return;
- url.searchParams.set('next','/app/?studentMode=timed&trialResult='+ticket.id+'#student');
+ url.searchParams.set('next',trialReturn(ticket.id));
  link.href=url.href;
 },true);
 window.addEventListener('hashchange',()=>{
- if(csat||location.hash==='#login')return;
+ if(location.hash==='#login')return;
  submittingTicket=null;
- if(new URLSearchParams(location.search).has('trialLogin'))replaceTrialQuery();
+ if(new URLSearchParams(location.search).get('trialLogin')===resultTicket()?.id)replaceTrialQuery();
 });
 function setTicket(ticket){
- resultCache=ticket;
+ gradeError=false;resultCache=ticket;
  try{if(ticket)sessionStorage.setItem(resultKey,JSON.stringify(ticket));else sessionStorage.removeItem(resultKey);}catch{}
 }
 function clearTrial(){
- if(csat)return;
  setTicket(null);
- try{for(const g of [1,2])sessionStorage.removeItem(fixedKey(g));}catch{}
+ try{for(const g of [1,2,3,4])fixedStorage().removeItem(fixedKey(g));}catch{}
 }
 window.addEventListener('ds-session-change',()=>{
- if(!csat&&signed()&&submittingTicket&&loginTicket()?.id===submittingTicket){
+ if(signed()&&submittingTicket&&loginTicket()?.id===submittingTicket){
   replaceTrialQuery('trialResult',submittingTicket);submittingTicket=null;
  }
  if(previousMember&&!signed())clearTrial();
  previousMember=signed();accountChanged();
 });
 window.addEventListener('storage',event=>{
- if(!csat&&(event.key==='ds_tk'||event.key==='ds_logout_epoch'||event.key===null)){
+ if(event.key==='ds_tk'||event.key==='ds_logout_epoch'||event.key===null){
   clearTrial();
   if(active?.kind==='fixed'){accountChanged();paint();}
  }
@@ -133,20 +131,28 @@ function fixedQuestions(g){
 function remembered(g){
  try{
   const prior=JSON.parse(fixedStorage().getItem(fixedKey(g))),ids=fixedQuestions(g).map(q=>q.id);
-  if(!csat&&((prior?.logoutMarker||'')!==logoutMarker()||prior?.owner&&!signed()))return null;
+  if((prior?.logoutMarker||'')!==logoutMarker()||prior?.owner&&!signed())return null;
   if(prior?.kind!=='fixed'||prior.grade!==g||!Number.isFinite(prior.startedAt)||!Array.isArray(prior.questionIds))return null;
+  if(!csat&&prior.guestWorkbook){
+   const qs=prior.publicQuestions;
+   if(typeof prior.publicTicket!=='string'||!Array.isArray(qs)||qs.length<1||qs.length>25||qs.length!==prior.questionIds.length||new Set(prior.questionIds).size!==qs.length||qs.some((q,i)=>q.id!==prior.questionIds[i]||typeof q.questionHTML!=='string'||!q.questionHTML.trim()||!['choice','integer'].includes(q.answerType)))return null;
+   for(const q of qs)resources.set(q.id,{...q,format:'sandbox-html',...(prior.gradedResponses?.[q.id]?{answer:prior.gradedResponses[q.id].answer,solutionHTML:prior.gradedResponses[q.id].solutionHTML||''}:{})});
+   return prior;
+  }
   if(!csat&&prior.selection){
    const {book,unit,count}=prior.selection;
    if(typeof book!=='string'||typeof unit!=='string'||!Number.isInteger(count)||count<1||count>25)return null;
    const allowed=new Set(publicBank.filter(q=>q.grade===g&&(!book||q.book===book)&&(!unit||q.examUnit===unit||q.legacyExamUnit===unit)).map(q=>q.id));
    return prior.questionIds.length===count&&new Set(prior.questionIds).size===count&&prior.questionIds.every(id=>allowed.has(id))?prior:null;
   }
-  return (prior.questionIds.length===ids.length||!csat&&prior.questionIds.length===8)&&prior.questionIds.every((id,i)=>id===ids[i])?prior:null;
+  const valid=(prior.questionIds.length===ids.length||!csat&&prior.questionIds.length===8)&&prior.questionIds.every((id,i)=>id===ids[i]);
+  if(valid&&csat)for(const q of fixedQuestions(g))resources.set(q.id,{...fetchItem(q,q),version:q.version});
+  return valid?prior:null;
  }catch{return null;}
 }
 function existingSchoolTrial(){
  if(csat)return null;
- return [remembered(1),remembered(2)].filter(Boolean).sort((a,b)=>b.startedAt-a.startedAt)[0]||null;
+ return [1,2,3,4].map(remembered).filter(Boolean).sort((a,b)=>b.startedAt-a.startedAt)[0]||null;
 }
 function saveFixed(){if(active?.kind==='fixed')try{fixedStorage().setItem(fixedKey(active.grade),JSON.stringify(active));}catch{}}
 function remaining(){return Math.max(0,Math.ceil((new Date(active.startedAt).getTime()+active.durationSeconds*1000-(Date.now()+(active.offset||0)))/1000));}
@@ -203,7 +209,7 @@ async function printPaper(ids,title,includeSolutions=true){
 function title(){
  if(csat)return (active?.questionIds.length||count)===30?'수능 실전 모의고사':'수능 미니 모의고사';
  if(receivedSource)return receivedSource.title+' 타임어택';
- if(active?.kind==='fixed'&&active.selection)return [gradeNames[active.grade],publicBooks.get(active.selection.book),active.selection.unit].filter(Boolean).join(' · ')+' 타임어택';
+ if(active?.kind==='fixed'&&active.selection)return [gradeNames[active.grade],publicBooks.get(active.selection.book)||window.DSWorkbookScope?.books.find(b=>b.id===active.selection.book)?.label,active.selection.unit].filter(Boolean).join(' · ')+' 타임어택';
  return active?.kind==='custom'?(known(active.questionIds[0])?.subject||currentSubject)+' 맞춤 타임어택':'고'+grade+' '+gradeNames[grade]+' 기말 연습';
 }
 function paperQuestion(q,index,total,answerBox=''){
@@ -284,19 +290,20 @@ function cleanRemote(r){
  return (r.questions||[]).filter(q=>typeof q.id==='string'&&!byId.has(q.id)&&typeof q.version==='string'&&q.id.length<220).map(q=>({...q,level:q.stage??q.level??(Number.isInteger(q.difficulty)?q.difficulty:null)}));
 }
 async function loadCatalog(){
- const own=++seq;quote=null;remote=null;remoteStatus='확인 중';paint();
- try{if(!signed()||!service()?.catalog)throw Error();const requested=criteria();const r=await service().catalog(requested);if(own!==seq||!signed())return;
- let rows=cleanRemote(r).filter(q=>q.sourceKind===requested.sourceKind&&q.subject===requested.subject&&(!requested.bookId||(q.bookId===requested.bookId||q.bookIds?.includes(requested.bookId)))&&(!requested.unitIds.length||requested.unitIds.includes(q.unitId)||requested.unitIds.includes(q.subunitId)||q.unitIds?.some(v=>requested.unitIds.includes(v)))&&(!requested.typeIds.length||requested.typeIds.includes(q.typeId)||q.typeIds?.some(v=>requested.typeIds.includes(v))));
+ const own=++seq,member=signed();quote=null;remote=null;remoteStatus='확인 중';paint();
+ const waiting=setTimeout(()=>{if(own===seq&&!remote){remoteStatus='문항 목록을 불러오고 있어요. 잠시만 기다려 주세요.';paint();}},1000);
+ try{
+ const requested=member?criteria():guestCriteria();
+ if(!member&&!guestWorkbook()?.catalog)throw Error('unavailable');
+ const r=await (member?service().catalog(requested):guestWorkbook().catalog(requested));if(own!==seq||signed()!==member)return;
+ let rows=member?cleanRemote(r).filter(q=>q.sourceKind===requested.sourceKind&&q.subject===requested.subject&&(!requested.bookId||(q.bookId===requested.bookId||q.bookIds?.includes(requested.bookId)))&&(!requested.unitIds.length||requested.unitIds.includes(q.unitId)||requested.unitIds.includes(q.subunitId)||q.unitIds?.some(v=>requested.unitIds.includes(v)))&&(!requested.typeIds.length||requested.typeIds.includes(q.typeId)||q.typeIds?.some(v=>requested.typeIds.includes(v)))):
+ (r.questions||[]).map(q=>({...q,level:q.stage??q.level??q.difficulty}));
  const source=receivedSource;
  if(!source&&!requested.bookId&&!requested.unitIds.length&&!requested.typeIds.length)rememberInventory(requested.subject,rows);
- if(source){
-  const pins=await Promise.all(rows.map(q=>questionPin(q.id,q.version)));
-  if(own!==seq||!signed()||source!==receivedSource)return;
-  rows=rows.filter((q,i)=>source.pins.has(pins[i]));
- }
- remote={rows,catalogVersion:r.catalogVersion};for(const q of rows)catalogById.set(q.id,q);remoteStatus='';}
- catch{if(own===seq)remoteStatus='문항 자료를 불러오지 못했어요. 다시 확인해 주세요.';}
- if(own===seq)paint();
+ if(source){const pins=await Promise.all(rows.map(q=>questionPin(q.id,q.version)));if(own!==seq||!signed()||source!==receivedSource)return;rows=rows.filter((q,i)=>source.pins.has(pins[i]));}
+ remote={rows,catalogVersion:r.catalogVersion};for(const q of rows)catalogById.set(q.id,q);remoteStatus='';
+ }catch(e){if(own===seq)remoteStatus=(e.code==='rate_limited'?'문항 목록 요청이 많아요. 잠시 뒤 다시 확인해 주세요.':'문항 자료를 불러오지 못했어요. 다시 확인해 주세요.');}
+ finally{clearTimeout(waiting);if(own===seq)paint();}
 }
 function candidates(){return (remote?.rows||[]).filter(q=>!level||String(q.level)===level);}
 function field(key,name,values,value){
@@ -307,20 +314,21 @@ function fixedStartLabel(){
  return !set?'시험 시작':set.status==='running'?'이어 풀기':csat?'채점 결과 보기':'로그인하고 채점하기';
 }
 function fixedSetup(){
- const prior=existingSchoolTrial(),uses=guestUsage().length,left=Math.max(0,2-uses);
- const details=prior?[gradeNames[prior.grade],prior.selection?.unit,prior.questionIds.length+'문항 · '+prior.durationSeconds/60+'분'].filter(Boolean).join(' · '):'';
+ const prior=existingSchoolTrial();
+ const details=prior?[gradeNames[prior.grade],publicBooks.get(prior.selection?.book),prior.selection?.unit,prior.questionIds.length+'문항 · '+prior.durationSeconds/60+'분'].filter(Boolean).join(' · '):'';
  const resume=prior?'<p>'+escape(details)+'</p><button class="dst-start" data-time-action="resume-public">'+(prior.status==='running'?'시험 이어 풀기':'로그인하고 이전 시험 채점하기')+'</button>':'';
- if(prior?.status==='running')return resume+'<p>진행 중인 시험을 이어 풀어도 체험 횟수는 줄지 않아요. 새 시험 체험 '+left+'회 남음.</p>';
- const available=publicCandidates(grade,'',unit).length,units=[...new Set(publicCandidates(grade).map(q=>q.examUnit))];
- const sizes=presets.map(n=>[n,n+'문항 · '+n*2+'분'+(available<n?' (문항 부족)':''),available<n]);
+ if(prior?.status==='running')return resume+'<p>선택한 문항과 답, 남은 시간이 이어집니다. 채점할 때 로그인해 주세요.</p>';
+ if(guestWorkbook())return resume+customSetup()+'<p>문제는 로그인 없이 풀고, 제출 후 로그인하면 채점 결과를 확인할 수 있어요.</p>';
+ normalizeGuestCount();
+ const all=publicCandidates(grade),byBook=publicCandidates(grade,book),available=publicCandidates(grade,book,unit).length;
+ const units=[...new Set(byBook.map(q=>q.examUnit))],bookIds=[...new Set(all.map(q=>q.book).filter(Boolean))];
  const fields=[
-  field('subject','과목',gradeNames.slice(1).map((name,i)=>[name,name+' · '+publicCandidates(i+1).length+'문항']),gradeNames[grade]),
-  '<label>연계 교재<select data-time-field="book" disabled><option>로그인 후 선택 가능</option></select></label>',
-  field('unit','단원',[['','전체 단원 · '+publicCandidates(grade).length+'문항'],...units.map(name=>[name,name+' · '+publicCandidates(grade,'',name).length+'문항',publicCandidates(grade,'',name).length<10])],unit),
-  field('preset','시험 구성',sizes,count)
+  field('subject','과목',subjects.map(name=>[name,name+' · '+publicCandidates(gradeNames.indexOf(name)).length+'문항']),currentSubject),
+  field('book','연계 교재',[['','교재 없이 구성'],...bookIds.map(id=>[id,publicBooks.get(id)+' · '+all.filter(q=>q.book===id).length+'문항']),...subjectBooks().filter(b=>!bookIds.includes(b.id)).map(b=>[b.id,b.label+' · 공개 문항 준비 중',true])],book),
+  field('unit','단원',[['','전체 단원 · '+byBook.length+'문항'],...units.map(name=>[name,name+' · '+publicCandidates(grade,book,name).length+'문항'])],unit),
+  field('preset','시험 구성',guestSizes(available).map(n=>[n,n+'문항 · '+n*2+'분']),count)
  ].join('');
- const shortage=available<count?' · '+count+'문항 시험에 '+(count-available)+'문항이 부족해요. '+(available<10?'전체 단원이나 다른 과목을 선택해 주세요.':'문항 수를 줄이거나 전체 단원을 선택해 주세요.'):'';
- return resume+'<div class="dst-fields">'+fields+'</div><p>연계 교재는 로그인 후 선택할 수 있어요. 10문항 미만인 단원과 문항 수가 부족한 시험 구성은 선택할 수 없어요.</p><p data-time-availability>선택 범위 '+available+'문항'+escape(shortage)+'</p><p>새 시험 체험 '+left+'회 남음 / 총 2회 · 과목을 바꿔도 함께 계산해요. 채점과 정답·해설은 로그인 후 확인해요.</p>'+(prior&&left?'<p>새 시험을 시작하면 이전 미채점 답안이 교체됩니다. 이전 답안을 보려면 먼저 로그인해 주세요.</p>':'')+'<button class="dst-start" data-time-action="quote"'+(left&&available<count?' disabled':'')+'>'+(left?'시험 시작':'로그인하고 새 시험 시작')+'</button>';
+ return resume+'<div class="dst-fields">'+fields+'</div><p data-time-availability>선택 범위 '+available+'문항'+(available?'':' · 이 범위의 공개 문항을 준비하고 있어요. 다른 과목이나 범위를 골라 주세요.')+'</p><p>문제는 로그인 없이 풀고, 제출 후 로그인하면 채점 결과와 정답·해설을 확인할 수 있어요.</p>'+(prior?'<p>새 시험을 시작하면 이전 미채점 답안이 교체됩니다. 이전 답안을 보려면 먼저 로그인해 주세요.</p>':'')+'<button class="dst-start" data-time-action="quote"'+(!count?' disabled':'')+'>시험 시작</button>';
 }
 function customSetup(){
  const books=subjectBooks(),types=typeOptions();
@@ -342,11 +350,8 @@ function customSetup(){
 function startDialog(){
  if(!dialogMode)return '';
  let body='',button='';
- if(dialogMode==='guest-limit'){
-  return '<dialog class="dst-start-dialog" aria-labelledby="dst-confirm-title"><h2 id="dst-confirm-title">2회 체험을 모두 사용했어요</h2><p>새 시험은 로그인 후 시작할 수 있어요. 이전 시험의 답안도 로그인하고 채점해 보세요.</p><div><button autofocus data-time-action="dismiss">돌아가기</button><a data-time-login href="'+guestLoginUrl+'">로그인</a></div></dialog>';
- }
  if(dialogMode==='guest-replace'){
-  return '<dialog class="dst-start-dialog" aria-labelledby="dst-confirm-title"><h2 id="dst-confirm-title">이전 답안을 교체할까요?</h2><p>'+escape(gradeNames[grade]+' · '+(unit||'전체 단원'))+' · '+count+'문항 · '+count*2+'분</p><p>새 시험을 시작하면 이전 미채점 답안은 사라집니다. 이전 시험을 채점하려면 돌아가서 로그인해 주세요.</p><div><button autofocus data-time-action="dismiss">돌아가기</button><button data-time-action="start-public">이전 답안 교체하고 새 시험 시작</button></div></dialog>';
+  return '<dialog class="dst-start-dialog" aria-labelledby="dst-confirm-title"><h2 id="dst-confirm-title">이전 답안을 교체할까요?</h2><p>'+escape([currentSubject,selectedBook()?.label||publicBooks.get(book),unitOptions().find(u=>u.id===unit)?.label||unit||'전체 단원'].filter(Boolean).join(' · '))+' · '+count+'문항 · '+count*2+'분</p><p>새 시험을 시작하면 이전 미채점 답안은 사라집니다. 이전 시험을 채점하려면 돌아가서 로그인해 주세요.</p><div><button autofocus data-time-action="dismiss">돌아가기</button><button data-time-action="start-public">이전 답안 교체하고 새 시험 시작</button></div></dialog>';
  }
  if(dialogMode==='member-login'){
   return '<dialog class="dst-start-dialog" aria-labelledby="dst-confirm-title"><h2 id="dst-confirm-title">로그인이 필요해요</h2><p>이 시험은 로그인 후 이용할 수 있어요.</p><div><button autofocus data-time-action="dismiss">돌아가기</button><a data-time-login href="'+guestLoginUrl+'">로그인</a></div></dialog>';
@@ -372,12 +377,12 @@ function startDialog(){
 function schoolLogin(){
  const ticket=resultTicket();if(!ticket?.id)return;
  if(window.DSService?.isLiveOrigin){
-  const next='/app/?studentMode=timed&trialResult='+encodeURIComponent(ticket.id)+'#student';
+  const next=trialReturn(ticket.id);
   location.assign('/auth/?next='+encodeURIComponent(next));return;
  }
  replaceTrialQuery('trialLogin',ticket.id);
- window.DSLoginReturn='#student';
- const url=new URL(location.href);url.searchParams.set('studentMode','timed');
+ window.DSLoginReturn=trialHash;
+ const url=new URL(location.href);url.searchParams.set(csat?'csatMode':'studentMode',csat?'mock':'timed');
  history.replaceState(history.state,'',url);location.hash='#login';
 }
 function submitSchoolTrial(set){
@@ -385,10 +390,10 @@ function submitSchoolTrial(set){
  set.submittedAt=Date.now();set.remainingAtSubmit=left;set.timedOut=left===0;set.status='submitted';
  saveFixed();setTicket({grade:set.grade,startedAt:set.startedAt,id:nextRequest()});
  active=null;exam.reset();
- if(location.hash==='#student'&&document.querySelector(scope))schoolLogin();
+ if(location.hash===trialHash&&document.querySelector(scope))schoolLogin();
 }
 async function restoreSchoolResult(){
- if(csat||!signed()||claiming||active)return;
+ if(!signed()||claiming||active)return;
  const ticket=resultTicket();if(!ticket)return;
  const set=remembered(ticket.grade);
  const claim=new URLSearchParams(location.search).get('trialResult');
@@ -400,29 +405,55 @@ async function restoreSchoolResult(){
   // Scope the tab's local result to this login without copying credentials into storage.
   let owner;
   if(token){
-   const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('school-trial:'+token));
+   const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(space+'-trial:'+token));
    owner=Array.from(new Uint8Array(digest),n=>n.toString(16).padStart(2,'0')).join('');
   }else if(window.DSService?.memberPreview){owner=(await service().getProgress()).ownerKey;}
   if(!owner||epoch!==generation||!signed()||window.DSAuth?.get()!==token||ticket!==resultTicket())return;
   if((ticket.owner&&ticket.owner!==owner)||(set.owner&&set.owner!==owner)){clearTrial();paint();return;}
-  if(location.hash!=='#student'||!document.querySelector(scope))return;
-  grade=set.grade;currentSubject=gradeNames[grade];
+  if(location.hash!==trialHash||!document.querySelector(scope))return;
+  if(set.guestWorkbook&&!set.gradedResponses){
+   if(!guestWorkbook()?.grade)throw Error('grade_unavailable');
+   const graded=await guestWorkbook().grade({ticket:set.publicTicket,responses:set.questionIds.map(id=>({id,answer:set.responses[id]==null||set.responses[id]===''?null:Number(set.responses[id])}))});
+   if(epoch!==generation||!signed()||ticket!==resultTicket())return;
+   if(!Array.isArray(graded.results)||graded.results.length!==set.questionIds.length||new Set(graded.results.map(r=>r.id)).size!==set.questionIds.length||graded.results.some(r=>!set.questionIds.includes(r.id)||typeof r.correct!=='boolean'||!Number.isFinite(r.answer)))throw Error('invalid_grade');
+   set.gradedResponses=Object.fromEntries(graded.results.map(r=>[r.id,{correct:r.correct,answer:r.answer,solutionHTML:r.solutionHTML||''}]));
+   set.correct=graded.results.filter(r=>r.correct).length;
+   for(const r of graded.results)resources.set(r.id,{...known(r.id),answer:r.answer,solutionHTML:r.solutionHTML||''});
+  }
+  grade=set.grade;currentSubject=set.selection?.subject||gradeNames[grade];
   active=set;active.owner=owner;active.status=set.timedOut?'expired':'finished';
   setTicket({...ticket,owner});saveFixed();if(claim)replaceTrialQuery();exam.reset();paint();showExamStart();
  }finally{claiming=false;}
 }
+function warmupResult(q){
+ return warmupChoice===q.answer?'정답이에요.':'정답은 '+('①②③④⑤'[q.answer])+'번이에요.';
+}
+function warmupPaper(q){
+ const checked=warmupChoice!==null;
+ const options=q.options.map((value,index)=>`<label><input type="radio" name="timed-warmup-answer" value="${index}" ${warmupChoice===index?'checked':''}><span class="ssp-option-no">${'①②③④⑤'[index]}</span><span>${value}</span></label>`).join('');
+ return `<article class="quick-paper ta-question-v18 dst-sheet dst-warmup">
+ <div class="paper-heading"><span>${escape(q.subject)} · ${escape(q.unit)}</span></div>
+ <div class="dst-prompt question-stem">${q.prompt}</div>
+ <fieldset class="ssp-options dst-warmup-options" aria-label="몸풀기 답 선택">${options}</fieldset>
+ <div data-warmup-result ${checked?'class="dst-feedback"':'hidden'}><p role="status">${checked?warmupResult(q):''}</p>
+ <button type="button" data-warmup-setup>시험 조건 보기</button></div></article>`;
+}
 function setup(){
- if(csat)return window.DSCSATStudent?.mockSetup()||'';
- if(signed()&&resultTicket())return '<p role="status">제출한 답안을 채점하고 있어요.</p>';
+ if(signed()&&resultTicket())return gradeError?'<p role="status">답안은 보관되어 있습니다. 채점을 다시 확인해 주세요.</p><button type="button" data-time-action="retry-grade">채점 다시 확인</button>':'<p role="status">제출한 답안을 채점하고 있어요.</p>';
+ if(csat){
+  const prior=remembered(grade);
+  if(prior&&prior.status!=='running'&&!signed())return '<p>제출한 수능 모의고사 답안이 보관되어 있어요.</p><button class="dst-start" data-time-action="resume-public">로그인하고 채점 결과 확인</button>';
+  const setup=window.DSCSATStudent?.mockSetup()||'';
+  return prior?.status==='running'&&!signed()?setup.replace('data-time-action="quote"','data-time-action="resume-public"'):setup;
+ }
  const member=signed();
- const scopeName=member?[currentSubject,selectedBook()?.label,unitOptions().find(u=>u.id===unit)?.label].filter(Boolean).join(' · '):[gradeNames[grade],unit||'전체 단원',count+'문항 · '+count*2+'분'].join(' · ');
- const sample='<article class="quick-paper ta-question-v18 dst-sheet"><h2>'+escape(scopeName)+'</h2><p>시험을 시작하면 선택한 범위의 첫 문항이 열립니다.</p></article>';
+ const warmup=window.DSStudentStudyPaths?.timedWarmup?.();
  return `<div class="ta-top-v18"><h1>타임어택</h1><span>${receivedSource?escape(receivedSource.title):'기말고사 연습'}</span></div>
- <div class="ta-layout-v18 dst-layout"><div class="ta-main-v18"><div class="dst-sample-label">선택한 시험 범위</div>${sample}</div>
+ <div class="ta-layout-v18 dst-layout"><div class="ta-main-v18">${warmup?'<div class="dst-sample-label">몸풀기 한 문제</div>'+warmupPaper(warmup):''}</div>
  <aside class="dst-panel sl54-unit-side dst-config"><h2>시험 조건</h2>${member?customSetup():fixedSetup()}
  ${receivedSource?'<button data-time-action="leave-received">전체 타임어택 보기</button>':''}</aside></div>`;
 }
-function html(){return '<section data-timed-space="'+space+'" class="ds-timed ta-work-v18 sl54-shell work-surface" data-sl-view="entry">'+(active?exam.render():setup()+startDialog())+'<p role="status">'+escape(notice)+'</p></section>';}
+function html(){if(csat&&signed()&&resultTicket())requestAnimationFrame(mount);return '<section data-timed-space="'+space+'" class="ds-timed ta-work-v18 sl54-shell work-surface" data-sl-view="entry">'+(active?exam.render():setup()+startDialog())+'<p role="status">'+escape(notice)+'</p></section>';}
 function showExamStart(){
  requestAnimationFrame(()=>{
   const clock=document.querySelector(scope+' .dte-clock');
@@ -502,14 +533,15 @@ function flushDraft(item){
  });return draftQueue;
 }
 async function action(command){if(busy)return;const sessionEpoch=epoch;notice='';
+ if(command==='retry-grade'){gradeError=false;paint();void loadSubmittedResult();return;}
  if(command==='dismiss'){dialogMode='';quote=null;notice='';paint();document.querySelector(scope+' [data-time-action="quote"]')?.focus();return;}
  if(command==='leave-received'){receivedSource=null;book='';remoteStatus='';seq++;await loadCatalog();return;}
  if(command==='back'){if(!csat&&signed()&&active?.kind==='fixed'){
   setTicket(null);try{sessionStorage.removeItem(fixedKey(active.grade));}catch{}
  }if(active?.kind==='custom'){busy=true;try{await flushDraft(active);}catch{busy=false;return;}busy=false;}active=null;exam.reset();dialogMode='';quote=null;paint();return;}
  if(command==='resume-public'){
-  if(csat||signed())return;
-  const prior=existingSchoolTrial();if(!prior)return;
+  if(signed())return;
+  const prior=csat?remembered(grade):existingSchoolTrial();if(!prior)return;
   grade=prior.grade;currentSubject=gradeNames[grade];
   if(prior.status!=='running'){if(resultTicket()?.startedAt!==prior.startedAt)setTicket({grade,startedAt:prior.startedAt,id:nextRequest()});schoolLogin();return;}
   active=prior;exam.reset();paint();showExamStart();return;
@@ -518,12 +550,28 @@ async function action(command){if(busy)return;const sessionEpoch=epoch;notice=''
  if(confirmedReplacement)command='quote';
  if(command==='quote'&&!signed()){
   if(csat&&document.querySelector(scope+' [data-csat-mock-size]')?.value==='30'){
-   dialogMode='member-mock';paint();return;
+   notice='공개 미니 모의고사는 15문항입니다. 30문항 실전의 공개 문항은 준비하고 있어요. 15문항 구성을 선택해 주세요.';paint();return;
   }
   const previous=csat?remembered(grade):existingSchoolTrial();
   if(!csat&&previous?.status==='running'){active=previous;grade=previous.grade;exam.reset();paint();showExamStart();return;}
-  const used=csat?[]:guestUsage();
-  if(!csat&&used.length>=2){dialogMode='guest-limit';paint();return;}
+  if(!csat&&guestWorkbook()){
+   if(previous&&!confirmedReplacement){dialogMode='guest-replace';paint();return;}
+   if(!remote||candidates().length<count){notice='선택 범위의 문항이 부족해요. 범위를 다시 확인해 주세요.';paint();return;}
+   busy=true;paint();const slow=setTimeout(()=>{if(epoch===sessionEpoch&&busy){notice='시험 문항을 불러오고 있어요. 잠시만 기다려 주세요.';paint();}},1000);
+   try{
+    const ids=candidates().map(q=>q.id);for(let i=ids.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[ids[i],ids[j]]=[ids[j],ids[i]];}
+    const result=await guestWorkbook().draw({...guestCriteria(),count,questionIds:ids.slice(0,count)});
+    if(epoch!==sessionEpoch)return;
+    const qs=result.questions;
+    if(typeof result.ticket!=='string'||!Array.isArray(qs)||qs.length!==count||new Set(qs.map(q=>q.id)).size!==count||qs.some(q=>!ids.includes(q.id)||!catalogById.has(q.id)||catalogById.get(q.id).version!==q.version||['answer','solution','solutionHTML','solutionFrame','gradedResponses','correctAnswer','answerIndex','answerKey','explanation','correct'].some(k=>k in q)||typeof q.questionHTML!=='string'||!q.questionHTML.trim()||!['choice','integer'].includes(q.answerType)))throw Error('invalid_questions');
+    const publicQuestions=qs.map(q=>({...q,format:'sandbox-html'}));
+    const set={kind:'fixed',grade,guestWorkbook:true,publicTicket:result.ticket,publicQuestions,questionIds:qs.map(q=>q.id),startedAt:Date.now(),durationSeconds:minutes*60,status:'running',responses:{},trialVersion:3,trialId:nextRequest(),selection:{subject:currentSubject,book,unit,count},logoutMarker:logoutMarker()};
+    sessionStorage.setItem(fixedKey(grade),JSON.stringify(set));for(const g of [1,2,3,4])if(g!==grade)sessionStorage.removeItem(fixedKey(g));
+    for(const q of publicQuestions)resources.set(q.id,q);setTicket(null);replaceTrialQuery();active=set;exam.reset();dialogMode='';notice='';
+   }catch(e){if(epoch===sessionEpoch)notice=['rate_limited','trial_exhausted'].includes(e.code)?'공개 문항 이용 한도에 도달했어요. 안내된 시간 뒤에 다시 시도해 주세요.':'시험 문항을 불러오지 못했어요. 같은 조건으로 다시 시도해 주세요.';}
+   finally{clearTimeout(slow);if(epoch===sessionEpoch){busy=false;paint();if(active)showExamStart();}}
+   return;
+  }
   const rows=csat?fixedQuestions(grade):guestSelection();
   if(!csat&&rows.length!==count){notice='선택 범위의 문항이 부족해요. 문항 수나 단원을 다시 선택해 주세요.';paint();return;}
   if(!csat&&previous&&!confirmedReplacement){dialogMode='guest-replace';paint();return;}
@@ -532,13 +580,13 @@ async function action(command){if(busy)return;const sessionEpoch=epoch;notice=''
    for(const q of rows)resources.set(q.id,{...fetchItem(q,q),version:q.version});
   }
   if(csat&&previous){grade=previous.grade;currentSubject=gradeNames[grade];}
-  const newSet=previous&&csat?previous:{kind:'fixed',grade,questionIds:rows.map(q=>q.id),startedAt:Date.now(),durationSeconds:csat?3000:count*120,status:'running',responses:{},...(!csat?{trialVersion:2,trialId:nextRequest(),selection:{book:'',unit,count},logoutMarker:logoutMarker()}:{})};
+  const newSet=previous&&csat?previous:{kind:'fixed',grade,questionIds:rows.map(q=>q.id),startedAt:Date.now(),durationSeconds:csat?3000:count*120,status:'running',responses:{},logoutMarker:logoutMarker(),...(!csat?{trialVersion:2,trialId:nextRequest(),selection:{book,unit,count},logoutMarker:logoutMarker()}:{})};
   if(!csat){
-   // Commit the resumable set before counting a successful start. Storage failure consumes no use.
+   // Save the complete local set before showing it; starting does not require authentication.
    let previousRaw;
-   try{previousRaw=sessionStorage.getItem(fixedKey(grade));sessionStorage.setItem(fixedKey(grade),JSON.stringify(newSet));localStorage.setItem(guestUsageKey,JSON.stringify({starts:[...used,newSet.trialId]}));}
+   try{previousRaw=sessionStorage.getItem(fixedKey(grade));sessionStorage.setItem(fixedKey(grade),JSON.stringify(newSet));}
    catch{try{if(previousRaw===undefined){}else if(previousRaw===null)sessionStorage.removeItem(fixedKey(grade));else sessionStorage.setItem(fixedKey(grade),previousRaw);}catch{}notice='체험 기록을 저장할 수 없어요. 브라우저 저장 공간을 확인한 뒤 다시 시작해 주세요.';paint();return;}
-   for(const g of [1,2])if(g!==grade)try{sessionStorage.removeItem(fixedKey(g));}catch{}
+   for(const g of [1,2,3,4])if(g!==grade)try{sessionStorage.removeItem(fixedKey(g));}catch{}
    setTicket(null);replaceTrialQuery();
   }
   exam.reset();active=newSet;dialogMode='';
@@ -546,7 +594,7 @@ async function action(command){if(busy)return;const sessionEpoch=epoch;notice=''
  }
  if(command==='catalog'){await loadCatalog();return;}
  if(command==='print'){printPaper(active.questionIds,title(),['finished','expired'].includes(active.status));return;}
- if(command==='finish'&&active?.kind==='fixed'){if(!csat&&!signed()){submitSchoolTrial(active);return;}active.timedOut=remaining()===0;active.status=active.timedOut?'expired':'finished';saveFixed();paint();return;}
+ if(command==='finish'&&active?.kind==='fixed'){if(!signed()){submitSchoolTrial(active);return;}active.timedOut=remaining()===0;active.status=active.timedOut?'expired':'finished';saveFixed();paint();return;}
  if(!signed()){dialogMode='';quote=null;if(!csat&&window.DSGuestFirstUse?.prompt){paint();window.DSGuestFirstUse.prompt('timed',{need:true});return;}if(csat){dialogMode='member-login';paint();return;}notice='로그인하고 이어서 이용해 주세요.';paint();return;}if(!service()){notice='로그인과 계정 연결을 확인해 주세요.';paint();return;}
  busy=true;try{
  if(command==='quote'){
@@ -598,14 +646,33 @@ async function action(command){if(busy)return;const sessionEpoch=epoch;notice=''
  }
  }catch(e){if(sessionEpoch===epoch&&command==='start')dialogMode='error';if(sessionEpoch===epoch&&command==='start'&&['quote_changed','price_changed'].includes(e.code||e.message)){quote=null;notice='조건이 달라졌어요. 시작 전에 포인트를 다시 확인해 주세요.';}else if(sessionEpoch===epoch)notice=command==='resume'?'최근 세트를 불러오지 못했어요. 계정의 시작 기록을 확인해 주세요.':e.code==='no_points'||e.code==='insufficient_points'?'포인트가 부족해요. 문항 수를 줄인 뒤 다시 확인해 주세요.':e.code==='bad_answer'||e.message==='정수로 입력해 주세요.'?'답은 정수로 입력해 주세요.':['source_unavailable','source_changed','not_ready','not_permitted'].includes(e.code||e.message)?'선택한 시험 문항의 원본을 확인하지 못했어요. 같은 범위에서 문항을 다시 골라 주세요.':(e.code||e.message)==='timeout'?'시험 문항 확인이 지연되고 있어요. 같은 조건으로 다시 시도해 주세요.':'계정에서 요청을 확인하지 못했어요. 같은 조건으로 다시 확인해 주세요.';}finally{if(sessionEpoch===epoch){busy=false;paint();if(active&&['start','resume'].includes(command))showExamStart();}}}
 document.addEventListener('click',e=>{if(!csat&&e.target.closest(scope+' [data-time-login]'))window.DSLoginReturn='#student';const b=e.target.closest(scope+' button');if(!b||busy)return;if(active&&exam.click(b))return;if(b.dataset.timeAction)action(b.dataset.timeAction);});
+document.addEventListener('change',e=>{
+ if(!e.target.matches('input[name="timed-warmup-answer"]')||!e.target.closest(scope)||active)return;
+ const paper=e.target.closest('.dst-warmup'),q=window.DSStudentStudyPaths?.timedWarmup?.();
+ const choice=Number(e.target.value);
+ if(!paper||!q||!Number.isInteger(choice)||choice<0||choice>=q.options.length)return;
+ warmupChoice=choice;
+ if(paper.classList.contains('ds-qfs-active'))window.DSQuestionFullscreen?.close();
+ const result=paper.querySelector('[data-warmup-result]');
+ result.classList.add('dst-feedback');result.hidden=false;
+ result.querySelector('[role="status"]').textContent=warmupResult(q);
+ e.target.focus({preventScroll:true});
+});
+document.addEventListener('click',e=>{
+ if(!e.target.closest(scope+' [data-warmup-setup]'))return;
+ const panel=document.querySelector(scope+' .dst-config');
+ panel?.scrollIntoView({block:'center'});
+ panel?.querySelector('select:not(:disabled),button:not(:disabled)')?.focus({preventScroll:true});
+});
 document.addEventListener('change',e=>{const key=e.target.dataset.timeField;if(!key||busy||!e.target.closest(scope))return;const v=e.target.value;
- if(!signed()){
+ if(!signed()&&!guestWorkbook()){
   if(csat||existingSchoolTrial()?.status==='running')return;
-  if(key==='subject'&&gradeNames.slice(1).includes(v)){grade=gradeNames.indexOf(v);currentSubject=v;book='';unit='';count=10;}
-  else if(key==='unit'&&(!v||publicCandidates(grade,'',v).length>=10))unit=v;
-  else if(key==='preset'&&presets.includes(Number(v))&&publicCandidates(grade,'',unit).length>=Number(v)){count=Number(v);minutes=count*2;}
+  if(key==='subject'&&subjects.includes(v)){grade=gradeNames.indexOf(v);currentSubject=v;book='';unit='';count=10;}
+  else if(key==='book'&&(!v||publicCandidates(grade,v).length)){book=v;unit='';}
+  else if(key==='unit'&&(!v||publicCandidates(grade,book,v).length))unit=v;
+  else if(key==='preset'&&guestSizes(publicCandidates(grade,book,unit).length).includes(Number(v)))count=Number(v);
   else return;
-  notice='';paint();document.querySelector(scope+' [data-time-field="'+key+'"]')?.focus({preventScroll:true});
+  normalizeGuestCount();notice='';paint();document.querySelector(scope+' [data-time-field="'+key+'"]')?.focus({preventScroll:true});
   return;
  }
  if(key==='subject'){if(!subjects.includes(v))return;currentSubject=v;if(gradeNames.includes(v))grade=gradeNames.indexOf(v);book='';unit='';type='';level='';scopeMode='specific';}
@@ -623,10 +690,14 @@ function recordAnswer(id,value){
 document.addEventListener('input',e=>{if(active&&!busy&&e.target.closest(scope))exam.input(e.target);});
 setInterval(()=>{if(!busy)exam.tick();},250);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!busy)exam.tick();});
+async function loadSubmittedResult(){
+ try{await restoreSchoolResult();}catch{gradeError=true;notice='제출한 답안을 채점하지 못했어요. 답안은 보관되어 있습니다. 다시 확인해 주세요.';paint();}
+}
 const mount=()=>{
- if(csat||!signed()||active)return;
- if(resultTicket()){void restoreSchoolResult().catch(()=>{notice='제출한 답안의 로그인 정보를 다시 확인해 주세요.';});return;}
- if(!remote&&!remoteStatus)loadCatalog();
+ if(active)return;
+ if(!signed()){if(guestWorkbook()&&!remote&&!remoteStatus)loadCatalog();return;}
+ if(resultTicket()){if(!gradeError)void loadSubmittedResult();return;}
+ if(!csat&&!remote&&!remoteStatus)loadCatalog();
 };
 async function openSaved(id){
  if(!signed()||busy)return;

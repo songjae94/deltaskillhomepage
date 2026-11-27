@@ -36,6 +36,12 @@
   ];
   const normalizeCover=id=>window.DSBookCoverV65?.normalize(id)||(['sunprint','mobileart','press','graphite','ocean'].includes(id)?id:'mobileart');
   const STEPS = ['범위', '바탕 · 구성', '문항 수 · 난이도', '꼴 · 만들기'];
+  const QUESTIONS = [
+    {id:'scope',step:1,label:'과목 · 단원'}, {id:'base',step:2,label:'바탕 교재'},
+    {id:'structure',step:2,label:'책의 구성'}, {id:'counts',step:3,label:'문항 수 · 난이도'},
+    {id:'layout',step:4,label:'지면과 배치'}, {id:'identity',step:4,label:'제목 · 학원 이름'},
+    {id:'cover',step:4,label:'표지'}, {id:'save',step:4,label:'구성 확인 · 보관'}
+  ];
   const KEY = 'ds-bookform-v62', SAVED = 'ds-bookform-saved-v62';
   const store = {
     get(k, f) { try { const v = JSON.parse(localStorage.getItem(k)); return v ?? f; } catch { return f; } },
@@ -47,6 +53,8 @@
   state.cover=normalizeCover(state.cover);
   state.message = '';
   state.documentDesign = window.DSDocumentDesign?.selected().id || state.documentDesign;
+  const currentQuestion = () => QUESTIONS.find(q=>q.id===state.question && q.step===state.step) || QUESTIONS.find(q=>q.step===state.step) || QUESTIONS[0];
+  const scopeSubject = () => SUBJECTS.find(s=>s.id===state.scopeSubject) || SUBJECTS.find(subjectSome);
   const persist = () => {state.cover=normalizeCover(state.cover);if(typeof studio==='object')studio={...studio,bookCover:coverModel()};return store.put(KEY,{...state,message:''});};
 
   const unitKey = (s, i) => s.id + ':' + i;
@@ -105,12 +113,13 @@
     const p = plan(), n = chosen().length ? total() : 0;
     return `<section class="bf62-summary" aria-label="고른 구성 요약" aria-live="polite"><div class="bf62-sum-scope"><span>범위</span><strong>${chosen().length ? safe(scopeText()) : '아직 고른 단원이 없습니다'}</strong></div><dl><div class="bf62-sum-wide"><dt>바탕</dt><dd>${safe(baseName())}${state.base !== 'exam' && state.book ? ' · ' + safe(state.book) : ''}</dd></div><div class="bf62-sum-wide"><dt>구성</dt><dd>${safe(structure().name)}</dd></div><div><dt>문항</dt><dd><b>${n}</b>문항</dd></div><div><dt>어림 쪽 수</dt><dd><b>${p.pages}</b>쪽</dd></div></dl></section>`;
   }
-  function stepTitle(n, text) { return `<div class="tb36-section-title"><b>${String(n).padStart(2, '0')}</b><h2>${text}</h2></div>`; }
+  function stepTitle(n, text) { return `<div class="tb36-section-title"><b>${String(n).padStart(2, '0')}</b><h2 id="bf62-question-title" tabindex="-1">${text}</h2></div>`; }
   function scopeForm() {
-    return `${stepTitle(1, '어느 범위로 묶을까요?')}<p class="bf62-lead">과목 전체나 단원을 여러 개 고를 수 있습니다. 과목을 섞어도 됩니다.</p><div class="bf62-subjects">${SUBJECTS.map(s => {
+    const active=scopeSubject();
+    return `${stepTitle(1, '어느 과목의 단원을 담을까요?')}<p class="bf62-lead">과목을 고른 뒤 단원을 담아 주세요. 다른 과목으로 옮겨도 이미 담은 단원은 남습니다.</p><div class="bf62-subject-picker" role="group" aria-label="단원을 고를 과목">${SUBJECTS.map(s=>`<button type="button" data-bf62-subject="${s.id}" aria-pressed="${s.id===active?.id}" aria-controls="bf62-scope-units">${safe(s.name)}${subjectSome(s)?`<small>선택 ${s.units.filter((_,i)=>state.units.includes(unitKey(s,i))).length}</small>`:''}</button>`).join('')}</div><div id="bf62-scope-units" class="bf62-subjects" aria-live="polite">${(active?[active]:[]).map(s => {
       const all = subjectAll(s), some = subjectSome(s);
       return `<fieldset class="bf62-subject${some ? ' is-on' : ''}"><legend>${safe(s.name)}</legend><label class="bf62-all"><input type="checkbox" data-bf62-all="${s.id}" ${all ? 'checked' : ''} aria-label="${safe(s.name)} 전체">전체</label><div class="bf62-units">${s.units.map((u, i) => `<label class="bf62-chip"><input type="checkbox" data-bf62-unit="${unitKey(s, i)}" ${state.units.includes(unitKey(s, i)) ? 'checked' : ''}><span>${safe(u)}</span></label>`).join('')}</div></fieldset>`;
-    }).join('')}</div><p class="bf62-source">단원 이름은 2022 개정 교육과정 고시문의 과목별 영역 이름입니다.</p>`;
+    }).join('')||'<p class="bf62-lead">위에서 과목을 고르면 해당 과목의 단원이 열립니다.</p>'}</div><p class="bf62-source">단원 이름은 2022 개정 교육과정 고시문의 과목별 영역 이름입니다.</p>`;
   }
   function bookPicker() {
     if (state.base === 'exam') return '';
@@ -120,8 +129,9 @@
       : `<p class="bf62-empty">이 화면에 올라온 책 목록이 없습니다. 반에서 쓰는 책 이름을 글자로 적어 주세요.</p><input type="text" maxlength="40" data-bf62-field="book" value="${safe(state.book)}" placeholder="예: 학교 부교재 이름" aria-label="${label}">`;
     return `<div class="bf62-book"><span class="bf62-label">${label}${state.base === 'market' ? '' : ' <small>(고르지 않아도 됩니다)</small>'}</span>${list}<p class="bf62-notice" role="note">${NOTICE}</p></div>`;
   }
-  function baseForm() {
-    return `${stepTitle(2, '무엇을 바탕으로 만들까요?')}<div class="bf62-choices" role="radiogroup" aria-label="바탕">${BASES.map(b => `<label class="bf62-choice"><input type="radio" name="bf62-base" value="${b.id}" data-bf62-base ${state.base === b.id ? 'checked' : ''}><span><strong>${b.name}</strong><small>${b.note}</small></span></label>`).join('')}</div>${bookPicker()}<div class="bf62-subhead"><h3>책의 구성</h3><p>고르면 오른쪽 차례가 바로 바뀝니다.</p></div><div class="bf62-choices bf62-structures" role="radiogroup" aria-label="책의 구성">${STRUCTURES.map(s => `<label class="bf62-choice"><input type="radio" name="bf62-structure" value="${s.id}" data-bf62-structure ${state.structure === s.id ? 'checked' : ''}><span><strong>${s.name}</strong><small>${s.use}</small></span></label>`).join('')}</div>`;
+  function baseForm(question) {
+    if(question==='structure')return `${stepTitle(2,'책을 어떻게 구성할까요?')}<p class="bf62-lead">고르면 오른쪽 차례가 바로 바뀝니다.</p><div class="bf62-choices bf62-structures" role="radiogroup" aria-label="책의 구성">${STRUCTURES.map(s => `<label class="bf62-choice"><input type="radio" name="bf62-structure" value="${s.id}" data-bf62-structure ${state.structure === s.id ? 'checked' : ''}><span><strong>${s.name}</strong><small>${s.use}</small></span></label>`).join('')}</div>`;
+    return `${stepTitle(2, '무엇을 바탕으로 만들까요?')}<div class="bf62-choices" role="radiogroup" aria-label="바탕">${BASES.map(b => `<label class="bf62-choice"><input type="radio" name="bf62-base" value="${b.id}" data-bf62-base ${state.base === b.id ? 'checked' : ''}><span><strong>${b.name}</strong><small>${b.note}</small></span></label>`).join('')}</div>${bookPicker()}`;
   }
   function countForm() {
     const parts = partsNow(), p = plan();
@@ -138,18 +148,23 @@
     }
     return `${head}<p>지금 고른 범위 · 바탕 · 구성 · 문항 수 · 난이도 · 꼴을 한 묶음으로 보관합니다. 보관함은 이 브라우저에 저장되어 다른 기기에서는 보이지 않습니다.</p><button type="button" class="tb36-primary" data-bf62-save>이 구성 보관 <span>→</span></button><p class="tb36-message bf62-made" role="status">${safe(state.message)}</p>${saved.length ? `<div class="bf62-saved"><strong>이 브라우저에 보관한 구성</strong><ul>${saved.slice().reverse().map((x, i) => `<li><span>${safe(x.title)}<small>${safe(x.when)} · ${x.total}문항</small></span><button type="button" data-bf62-open="${saved.length - 1 - i}">다시 열기</button></li>`).join('')}</ul></div>` : ''}</div>`;
   }
-  function styleForm() {
-    return `${stepTitle(4, '책의 꼴을 정합니다')}${window.DSDocumentDesign?.picker()||''}<div class="bf62-field"><span class="bf62-label">한 쪽 문항 수</span><div class="bf62-segment" role="radiogroup" aria-label="한 쪽 문항 수">${[1, 2, 4].map(n => `<label><input type="radio" name="bf62-layout" value="${n}" data-bf62-layout ${Number(state.layout) === n ? 'checked' : ''}><span>${n}문항</span></label>`).join('')}</div></div><label class="bf62-field"><span class="bf62-label">책 제목</span><input type="text" maxlength="60" data-bf62-field="title" value="${safe(state.title)}" placeholder="${safe(defaultTitle())}"></label><label class="bf62-field"><span class="bf62-label">학원 이름 <small>머리말과 표지에 들어갑니다</small></span><input type="text" maxlength="30" data-bf62-field="academy" value="${safe(state.academy)}" placeholder="예: ○○수학학원"></label><div class="bf62-field"><span class="bf62-label">표지</span>${window.DSBookCoverV65?.picker(coverModel(),coverQuery,coverGroup)||'<p>표지 선택기를 불러오고 있습니다.</p>'}</div>${makeArea()}`;
+  function styleForm(question) {
+    if(question==='save')return stepTitle(4,'고른 구성을 확인하고 보관합니다')+makeArea();
+    if(question==='cover')return `${stepTitle(4,'어떤 표지로 묶을까요?')}<div class="bf62-field"><span class="bf62-label">표지</span>${window.DSBookCoverV65?.picker(coverModel(),coverQuery,coverGroup)||'<p>표지 선택기를 불러오고 있습니다.</p>'}</div>`;
+    if(question==='identity')return `${stepTitle(4,'책에 어떤 이름을 넣을까요?')}<label class="bf62-field"><span class="bf62-label">책 제목</span><input type="text" maxlength="60" data-bf62-field="title" value="${safe(state.title)}" placeholder="${safe(defaultTitle())}"></label><label class="bf62-field"><span class="bf62-label">학원 이름 <small>머리말과 표지에 들어갑니다</small></span><input type="text" maxlength="30" data-bf62-field="academy" value="${safe(state.academy)}" placeholder="예: ○○수학학원"></label>`;
+    return `${stepTitle(4,'지면과 문항 배치를 고릅니다')}${window.DSDocumentDesign?.picker()||''}<div class="bf62-field"><span class="bf62-label">한 쪽 문항 수</span><div class="bf62-segment" role="radiogroup" aria-label="한 쪽 문항 수">${[1,2,4].map(n=>`<label><input type="radio" name="bf62-layout" value="${n}" data-bf62-layout ${Number(state.layout)===n?'checked':''}><span>${n}문항</span></label>`).join('')}</div></div>`;
   }
   function nav() {
-    const back = state.step > 1 ? `<button type="button" class="bf62-back" data-bf62-step="${state.step - 1}">← ${STEPS[state.step - 2]}</button>` : '';
-    const next = state.step < 4 ? `<button type="button" class="tb36-primary" data-bf62-next>다음 · ${STEPS[state.step]} <span>→</span></button>` : '';
-    const signedSave = state.step === 4 && Boolean(window.DSService?.session?.());
+    const i=QUESTIONS.indexOf(currentQuestion());
+    const back=i>0?`<button type="button" class="bf62-back" data-bf62-question="${QUESTIONS[i-1].id}">← 이전 · ${QUESTIONS[i-1].label}</button>`:'';
+    const next=i<QUESTIONS.length-1?`<button type="button" class="tb36-primary" data-bf62-next>다음 · ${QUESTIONS[i+1].label} <span>→</span></button>`:'';
+    const signedSave = currentQuestion().id==='save';
     return `<div class="bf62-nav">${next}${back}${signedSave ? '' : `<p class="tb36-message" role="status">${safe(state.message)}</p>`}</div>`;
   }
   function form() {
-    const body = state.step === 1 ? scopeForm() : state.step === 2 ? baseForm() : state.step === 3 ? countForm() : styleForm();
-    return `<form id="bf62-form" class="tb36-conditions bf62-panel" novalidate>${body}${nav()}</form>`;
+    const q=currentQuestion(),i=QUESTIONS.indexOf(q);
+    const body=state.step===1?scopeForm():state.step===2?baseForm(q.id):state.step===3?countForm():styleForm(q.id);
+    return `<form id="bf62-form" class="tb36-conditions bf62-panel" novalidate><p class="bf62-question-progress" aria-label="현재 질문 ${i+1}, 전체 ${QUESTIONS.length}">질문 ${i+1} / ${QUESTIONS.length} · ${q.label}</p><section class="bf62-question-group" data-bf62-question-panel="${q.id}" aria-labelledby="bf62-question-title">${body}</section>${nav()}</form>`;
   }
 
   /* ---------- preview ---------- */
@@ -254,16 +269,26 @@
     const totalBox = root.querySelector('.bf62-total');
     if (totalBox) { const t = document.createElement('template'); t.innerHTML = countForm(); const nt = t.content.querySelector('.bf62-total'); if (nt) totalBox.replaceWith(nt); }
   }
-  function goStep(n) {
-    n = Math.max(1, Math.min(4, Number(n) || 1));
-    if (n > 1 && !chosen().length) { state.message = '단원을 하나 이상 골라 주세요. 과목의 「전체」를 눌러도 됩니다.'; rerender('[data-bf62-all]'); return false; }
-    if (n > 2 && state.base === 'market' && !state.book.trim()) { state.step = 2; state.message = '시중 교재 이름을 적어 주세요. 그 책의 흐름에 맞춰 차례를 짭니다.'; rerender('[data-bf62-field="book"]'); return false; }
-    if (n > 3 && total() < 1) { state.step = 3; state.message = '문항 수를 1문항 이상 넣어 주세요.'; rerender('[data-bf62-count]'); return false; }
-    state.step = n; state.view = ''; state.message = '';
-    rerender('#bf62-form h2');
-    document.querySelector('.bf62-root')?.scrollIntoView({ block: 'start', behavior: 'instant' });
+  function goQuestion(id) {
+    const q=QUESTIONS.find(x=>x.id===id);if(!q)return false;
+    if(q.step>1&&!chosen().length){state.step=1;state.question='scope';state.message='단원을 하나 이상 골라 주세요. 과목의 「전체」를 눌러도 됩니다.';rerender('[data-bf62-subject]');return false;}
+    if(QUESTIONS.indexOf(q)>1&&state.base==='market'&&!state.book.trim()){state.step=2;state.question='base';state.message='시중 교재 이름을 적어 주세요. 그 책의 흐름에 맞춰 차례를 짭니다.';rerender('[data-bf62-field="book"]');return false;}
+    if(q.step>3&&total()<1){state.step=3;state.question='counts';state.message='문항 수를 1문항 이상 넣어 주세요.';rerender('[data-bf62-count]');return false;}
+    state.step=q.step;state.question=q.id;state.view='';state.message='';
+    rerender('#bf62-question-title');
+    const panel=document.getElementById('bf62-form');
+    if(panel){
+      const pinnedHeight=el=>el&&['sticky','fixed'].includes(getComputedStyle(el).position)&&el.getClientRects().length?el.getBoundingClientRect().height:0;
+      const offset=pinnedHeight(document.getElementById('header'))+pinnedHeight(document.querySelector('.bf62-summary'))+24;
+      scrollTo({top:Math.max(0,panel.getBoundingClientRect().top+scrollY-offset),behavior:'instant'});
+    }
     return true;
   }
+  function goStep(n) {
+    n=Math.max(1,Math.min(4,Number(n)||1));
+    return goQuestion(QUESTIONS.find(q=>q.step===n).id);
+  }
+  function nextQuestion(){const i=QUESTIONS.indexOf(currentQuestion());if(i<QUESTIONS.length-1)return goQuestion(QUESTIONS[i+1].id);return false;}
   function setStructure(id) {
     const s = STRUCTURES.find(x => x.id === id); if (!s) return;
     state.structure = id; state.parts = s.parts.map(p => ({ count: p[1], level: p[2] }));
@@ -286,15 +311,17 @@
   }
   document.addEventListener('click', e => {
     if (!routeHere() || !isBook()) return;
-    const b = e.target.closest('[data-bf62-step],[data-bf62-next],[data-bf62-view],[data-bf62-login],[data-bf62-save],[data-bf62-open],[data-bf62-print-cover]');
+    const b = e.target.closest('[data-bf62-step],[data-bf62-next],[data-bf62-question],[data-bf62-subject],[data-bf62-view],[data-bf62-login],[data-bf62-save],[data-bf62-open],[data-bf62-print-cover]');
     if (!b || b.disabled) return;
-    if (b.hasAttribute('data-bf62-next')) { goStep(state.step + 1); return; }
+    if(b.dataset.bf62Subject){state.scopeSubject=b.dataset.bf62Subject;state.message='';rerender(`[data-bf62-subject="${state.scopeSubject}"]`);return;}
+    if(b.dataset.bf62Question){goQuestion(b.dataset.bf62Question);return;}
+    if (b.hasAttribute('data-bf62-next')) { nextQuestion(); return; }
     if (b.dataset.bf62Step) { goStep(b.dataset.bf62Step); return; }
     if (b.dataset.bf62View) { state.view = b.dataset.bf62View; persist(); const el = document.querySelector('.bf62-preview'); if (el) el.outerHTML = preview(); document.querySelector(`[data-bf62-view="${state.view}"]`)?.focus({ preventScroll: true }); return; }
     if (b.hasAttribute('data-bf62-login')) { persist(); window.DSLoginReturn = '#teacher'; location.hash = '#login'; return; }
     if (b.hasAttribute('data-bf62-print-cover')) { printCover(); return; }
     if (b.hasAttribute('data-bf62-save')) { saveConfig(); return; }
-    if (b.dataset.bf62Open) { const x = store.get(SAVED, [])[Number(b.dataset.bf62Open)]; if (x?.config) { state = Object.assign(fresh(), x.config, { message: '보관한 구성을 다시 열었습니다.' }); state.cover=normalizeCover(state.cover);if(state.documentDesign)window.DSDocumentDesign?.select(state.documentDesign); rerender(); } }
+    if (b.dataset.bf62Open) { const x = store.get(SAVED, [])[Number(b.dataset.bf62Open)]; if (x?.config) { state = Object.assign(fresh(), x.config, { question:'save',message: '보관한 구성을 다시 열었습니다.' }); state.cover=normalizeCover(state.cover);if(state.documentDesign)window.DSDocumentDesign?.select(state.documentDesign); rerender('#bf62-question-title'); } }
   });
   document.addEventListener('change', e => {
     if (!routeHere() || !isBook()) return;
@@ -317,7 +344,7 @@
     if (t.dataset.bf62Field && t.tagName === 'INPUT') { state[t.dataset.bf62Field] = t.value; if (t.dataset.bf62Field !== 'book') state.view = 'cover'; softUpdate(); return; }
     if (t.dataset.bf62Count) { const i = Number(t.dataset.bf62Count); state.parts[i] = { ...state.parts[i], count: clampCount(t.value) }; softUpdate(); }
   });
-  document.addEventListener('submit', e => { if (e.target.id === 'bf62-form') { e.preventDefault(); if (state.step < 4) goStep(state.step + 1); } });
+  document.addEventListener('submit', e => { if (e.target.id === 'bf62-form') { e.preventDefault(); nextQuestion(); } });
 
   window.addEventListener('ds-document-design-change',()=>{state.documentDesign=window.DSDocumentDesign.selected().id;if(routeHere()&&isBook()){state.view=state.documentDesign==='DS-FOCUS-V2'?'page':'record';rerender();}});
   // Local screenshots only: fill a sample composition and open a step.

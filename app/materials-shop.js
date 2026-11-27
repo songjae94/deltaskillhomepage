@@ -16,8 +16,7 @@
   } catch {}
   let scope=null;
   let products = [], selected = '', status = 'idle', audience = 'teacher';
-  // Cards on screen, and the file format each card currently has chosen.
-  const cardIndex = new Map(), chosen = new Map();
+  const cardIndex = new Map();
   function save() {
     try { localStorage.setItem(storageKey, JSON.stringify(cart)); } catch {}
   }
@@ -71,8 +70,9 @@
   const unlisted = (p, fmt) => window.DSPointPdf?.listed?.(key(p,fmt)) === false;
   const price = (p, fmt) => unlisted(p,fmt) ? null : fmt === 'pdf' ? (quote(p)?.points ?? publicPoints[p.sku] ?? p.formats.pdf?.price ?? null) : (quote(p,'hwpx')?.points ?? p.formats.hwpx?.price ?? null);
   const pointable = (p, fmt) => Number.isSafeInteger(price(p,fmt)) && price(p,fmt) > 0;
-  const cashReady = p => Number.isSafeInteger(p.formats.hwpx?.price) && p.formats.hwpx.price > 0 && p.formats.hwpx.files.length > 0;
-  const enabled = (p, fmt) => !p.restored && (fmt === 'pdf' ? pointable(p,fmt) : cashReady(p));
+  const hasFiles = (p, fmt) => Array.isArray(p.formats[fmt]?.files) && p.formats[fmt].files.some(file => file.fmt === fmt && typeof file.id === 'string' && file.id.endsWith('.' + fmt));
+  const cashReady = p => hasFiles(p,'hwpx') && Number.isSafeInteger(p.formats.hwpx.price) && p.formats.hwpx.price > 0;
+  const enabled = (p, fmt) => !p.restored && hasFiles(p,fmt) && (fmt === 'pdf' ? pointable(p,fmt) : cashReady(p));
   const coverURL = sku => 'public-data/covers/' + encodeURIComponent(sku) + '.webp?v=cover-r2-1125';
   // One colour per shelf, taken from that series' new covers (tone = cover colour · deep = text-safe on white).
   const shelfTones = Object.freeze({
@@ -85,39 +85,26 @@
   const picked = () => products.flatMap(p => ['pdf','hwpx'].filter(fmt => cart.includes(key(p,fmt)) && enabled(p,fmt)).map(fmt => ({p,fmt})));
   function options(query='') {
     const list = grouped().filter(name => [name,displayBook(name)].some(label => normalize(label).includes(normalize(query))));
-    return list.map(name => `<button type="button" data-ms-book="${escape(name)}">${escape(displayBook(name))}<small>${cardsOf(products.filter(p=>p.source===name)).length}권</small></button>`).join('') || '<p role="status">검색 결과가 없습니다.</p>';
+    return list.map(name => `<button type="button" data-ms-book="${escape(name)}">${escape(displayBook(name))}<small>상품 ${cardsOf(products.filter(p=>p.source===name)).length}개</small></button>`).join('') || '<p role="status">검색 결과가 없습니다.</p>';
   }
   function picker() {
     return `<details class="ms-picker"><summary><span>${escape(pickerLabel())}</span><i aria-hidden="true"></i></summary><div class="ms-popup dl63-list-wrap"><input type="search" aria-label="교재 검색" placeholder="교재명으로 검색" data-ms-search><div data-ms-options>${options()}</div></div></details>`;
   }
   const editionOf = p => p.edition || (p.name.includes('기초편') ? '기초편' : '1권');
-  const baseEdition = p => editionOf(p).replace(/\s*·\s*한글\s*별도판/, '').trim();
-  // One book, one card: a 한글 file catalogued apart joins the PDF card of the same book, unit, edition and item count.
-  // Each format keeps its own SKU, price and cart key; only what is for sale is shown.
+  // The catalogue verifies saleable files, not equivalence between editions or
+  // formats. Keep each SKU.format separate until matching content is evidenced.
+  // The card ID is also format-specific; existing purchase/ownership keys stay intact.
   function cardsOf(list) {
-    const pool = list.filter(p => !p.restored), twins = new Map(), joined = new Set();
-    for (const p of pool) {
-      if (!p.formats.pdf || p.formats.hwpx) continue;
-      const twin = pool.find(q => q !== p && !joined.has(q) && !q.formats.pdf && q.formats.hwpx && q.sourceId === p.sourceId && q.no === p.no && q.count === p.count && baseEdition(q) === baseEdition(p));
-      if (twin) { twins.set(p, twin); joined.add(twin); }
-    }
-    return pool.filter(p => !joined.has(p)).map(p => {
-      const twin = twins.get(p);
-      return {id: p.sku, main: p, parts: twin ? [{p, fmts: ['pdf']}, {p: twin, fmts: ['hwpx']}] : [{p, fmts: ['pdf', 'hwpx']}], note: twin ? '한글은 PDF와 다른 판입니다' : p.editionNote || ''};
-    }).filter(card => offersOf(card).length);
+    return list.flatMap(p => ['pdf','hwpx'].filter(fmt => enabled(p,fmt)).map(fmt =>
+      ({id:key(p,fmt), main:p, fmt})
+    ));
   }
-  const offersOf = card => card.parts.flatMap(({p, fmts}) => fmts.filter(fmt => enabled(p, fmt)).map(fmt => ({p, fmt})));
   function formats(card) {
-    const offers = offersOf(card);
-    if (!offers.length) return '';
-    // H28-60(관문 88): 담은 뒤에도 고른 형식 그대로 — 안 담긴 형식으로 저절로 옮기지 않는다(다른 형식은 손수 골라야 담김).
-    const pick = offers.find(o => key(o.p, o.fmt) === chosen.get(card.id)) || offers.find(o => cart.includes(key(o.p, o.fmt))) || offers[0];
-    const pickKey = key(pick.p, pick.fmt), label = escape(title(card.main));
-    const rows = offers.map(({p, fmt}) => {
-      const id = key(p, fmt);
-      return `<button type="button" class="ms-pick" aria-pressed="${id === pickKey}" aria-label="${formatLabel(fmt)} ${cost(p, fmt)}${cart.includes(id) ? ' 담김' : ''}" data-ms-pick="${escape(id)}"><span>${formatLabel(fmt)}</span><b>${cost(p, fmt)}</b>${cart.includes(id) ? '<small>담김</small>' : ''}</button>`;
-    }).join('');
-    return `<div class="ms-choice" role="group" aria-label="${label} 파일 형식">${rows}</div><div class="ms-acts">${actionButtons(card, pick)}</div><p class="ms-note">${escape(card.note)}</p>`;
+    const p=card.main, fmt=card.fmt;
+    if (!enabled(p,fmt)) return '';
+    const id=key(p,fmt);
+    const row=`<div class="ms-pick" aria-label="${formatLabel(fmt)} ${cost(p,fmt)}${cart.includes(id) ? ' 담김' : ''}"><span>${formatLabel(fmt)}</span><b>${cost(p,fmt)}</b>${cart.includes(id) ? '<small>담김</small>' : ''}</div>`;
+    return `<div class="ms-choice" aria-label="판매 형식과 가격">${row}</div><div class="ms-acts">${actionButtons(card,{p,fmt})}</div>`;
   }
   function actionButtons(card, pick) {
     const pickKey = key(pick.p, pick.fmt);
@@ -128,14 +115,14 @@
     return `<button type="button" class="ms-add" aria-label="${label} ${formatLabel(pick.fmt)} ${cost(pick.p, pick.fmt)} ${action}" data-ms-add="${escape(pickKey)}" ${added ? 'disabled' : ''}>${action}</button>${buyNow}`;
   }
   function coverTile(card) {
-    const p = card.main, label = escape(title(p));
+    const p = card.main, label = escape(title(p) + ' · ' + formatLabel(card.fmt));
     cardIndex.set(card.id, card);
-    const art = `<div class="ms-editorial-cover" role="img" aria-label="${label} 표지"><span class="ms-cover-publisher">DELTASKILL</span><span class="ms-cover-series">${escape(displayBook(p.source))}</span><strong class="ms-cover-title">${escape(p.unit||title(p))}</strong><span class="ms-cover-subject">${escape(p.subject||'수학')}</span><span class="ms-cover-edition">${escape(editionOf(p))}</span><span class="ms-cover-foot">델타스킬 수학</span></div>`;
-    const cover = p.sample
+    const art = `<div class="ms-editorial-cover" role="img" aria-label="${label} 표지"><span class="ms-cover-publisher">DELTASKILL</span><span class="ms-cover-series">${escape(displayBook(p.source))}</span><strong class="ms-cover-title">${escape(p.unit||title(p))}</strong><span class="ms-cover-subject">${escape(p.subject||'수학')}</span><span class="ms-cover-edition">${escape(editionOf(p))} · ${formatLabel(card.fmt)}</span><span class="ms-cover-foot">델타스킬 수학</span></div>`;
+    const cover = card.fmt === 'pdf' && p.sample
       ? `<a class="ms-book-cover" href="${escape(p.sample)}" target="_blank" rel="noopener" aria-label="${label} 지면 미리보기, 새 창">${art}<span class="ms-look">미리보기 ↗</span></a>`
       : `<div class="ms-book-cover">${art}</div>`;
-    const meta = escape(editionOf(p)) + (p.count ? ` · ${p.count}문항` : '');
-    return `<article class="ms-volume" data-ms-card="${escape(card.id)}" data-sku="${escape(p.sku)}" aria-label="${label}"><div class="ms-stage">${cover}</div><div class="ms-book-info"><small>${meta}</small><h3>${escape(p.unit||title(p))}</h3></div><div class="ms-formats">${formats(card)}</div></article>`;
+    const meta = escape(editionOf(p)) + ' · ' + formatLabel(card.fmt) + (p.count ? ` · ${p.count}문항` : '');
+    return `<article class="ms-volume" data-ms-card="${escape(card.id)}" data-sku="${escape(p.sku)}" data-ms-format="${card.fmt}" aria-label="${label}"><div class="ms-stage">${cover}</div><div class="ms-book-info"><small>${meta}</small><h3>${escape(p.unit||title(p))}</h3></div><div class="ms-formats">${formats(card)}</div></article>`;
   }
   function items() {
     const list = scope ? products.filter(p => scope.sku ? p.sku===scope.sku : scope.bookId
@@ -221,7 +208,7 @@
       const q = new URLSearchParams();
       for (const {p} of cash) q.append(cash.length === 1 ? 'sku' : 'skus', key(p,'hwpx'));
       const won = cash.reduce((s, {p}) => s + p.formats.hwpx.price, 0);
-      pay += `<a class="${points.length ? 'ms-review-back' : 'ms-review-open'} ms-card-pay" href="/checkout/?${q}">한글 ${cash.length}권 카드로 결제 · ${money(won)}원</a>`;
+      pay += `<a class="${points.length ? 'ms-review-back' : 'ms-review-open'} ms-card-pay" href="/checkout/?${q}">한글 상품 ${cash.length}개 카드로 결제 · ${money(won)}원</a>`;
     }
     if (ownedCash) pay += '<p class="ms-order-note">이미 받은 한글은 카드 결제에서 뺐습니다. 다시 받기는 차감 없이 됩니다.</p>';
     dialog.innerHTML = `<header><h2 id="ms-order-title">주문 내용 확인</h2><form method="dialog"><button type="submit" aria-label="주문 내용 닫기">닫기</button></form></header><ul>${lines}</ul>${totals(entries)}<p class="ms-order-note">PDF와 한글(HWPX) 모두 묶음마다 한 번만 포인트를 차감합니다. 구매 화면에서 잔액과 보유 권리를 확인하며, 이미 보유한 자료는 추가 차감하지 않습니다.</p>${pay}<form method="dialog"><button type="submit" value="${only ? '' : 'basket'}" class="ms-review-back">${only ? '계속 고르기' : '장바구니로 돌아가기'}</button></form>`;
@@ -235,10 +222,10 @@
     const dialog = document.createElement('dialog');
     dialog.className = 'ms-order ms-added dl63-receipt';
     dialog.setAttribute('aria-labelledby','ms-added-title');
-    const head = full ? '장바구니는 3권까지 담을 수 있습니다' : '장바구니에 담았습니다';
+    const head = full ? '장바구니에는 상품을 3개까지 담을 수 있습니다' : '장바구니에 담았습니다';
     const what = item ? `<p class="ms-added-item"><strong>${escape(title(item.p))}</strong><small>${formatLabel(item.fmt)} · ${cost(item.p,item.fmt)}</small></p>` : '';
     const tail = full ? '<p class="ms-order-note">장바구니에서 하나를 빼거나, 지금 담긴 것을 먼저 결제해 주세요.</p>' : '';
-    dialog.innerHTML = `<header><h2 id="ms-added-title">${head}</h2></header>${what}${tail}<p class="ms-added-count">장바구니 ${picked().length} / 3권</p><form method="dialog" class="ms-added-acts"><button type="submit" value="cart" class="ms-review-open">장바구니 가기</button><button type="submit" value="" class="ms-review-back">계속 고르기</button></form>`;
+    dialog.innerHTML = `<header><h2 id="ms-added-title">${head}</h2></header>${what}${tail}<p class="ms-added-count">장바구니 상품 ${picked().length}개 / 최대 3개</p><form method="dialog" class="ms-added-acts"><button type="submit" value="cart" class="ms-review-open">장바구니 가기</button><button type="submit" value="" class="ms-review-back">계속 고르기</button></form>`;
     dialog.addEventListener('close', () => { dialog.remove(); if (dialog.returnValue === 'cart') openCart(panel); else panel.querySelector('[data-ms-cart]')?.focus({preventScroll:true}); }, {once:true});
     panel.append(dialog);
     dialog.showModal();
@@ -317,25 +304,12 @@
     if(b.hasAttribute('data-ms-cart')){openCart(panel);return;}
     if(b.hasAttribute('data-ms-review')){panel.querySelector('.ms-cart-sheet')?.close();reviewOrder(panel);return;}
     if(b.hasAttribute('data-ms-retry')){status='idle';load();refresh();return;}
-    if (b.dataset.msPick) {
-      const tile = b.closest('[data-ms-card]');
-      const card = cardIndex.get(tile?.dataset.msCard);
-      const pick = card && offersOf(card).find(({p, fmt}) => key(p, fmt) === b.dataset.msPick);
-      if (!pick) return;
-      chosen.set(card.id, b.dataset.msPick);
-      if (b.getAttribute('aria-pressed') === 'true') return;
-      tile.querySelector('[data-ms-pick][aria-pressed="true"]')?.setAttribute('aria-pressed','false');
-      b.setAttribute('aria-pressed','true');
-      tile.querySelector('.ms-acts').innerHTML = actionButtons(card, pick);
-      return;
-    }
     if(b.dataset.msBook){clearScope();selected=b.dataset.msBook;refresh();root().querySelector('summary').focus({preventScroll:true});}
     if (b.dataset.msAdd && !cart.includes(b.dataset.msAdd)) {
       const item = offerOf(b.dataset.msAdd);
       const tile = b.closest('[data-ms-card]');
       const card = cardIndex.get(tile?.dataset.msCard);
       if (!item || !card) return;
-      chosen.set(card.id,b.dataset.msAdd);
       if (picked().length >= 3) { addedPopup(panel,item,true); return; }
       cart.push(b.dataset.msAdd);
       save();
@@ -351,7 +325,7 @@
       if (sheet) {
         for (const tile of panel.querySelectorAll('[data-ms-card]')) {
           const card = cardIndex.get(tile.dataset.msCard);
-          if (card?.parts.some(({p}) => ['pdf','hwpx'].some(fmt => key(p,fmt) === b.dataset.msRemove))) tile.querySelector('.ms-formats').innerHTML = formats(card);
+          if (card?.id === b.dataset.msRemove) tile.querySelector('.ms-formats').innerHTML = formats(card);
         }
         sheet.innerHTML = cartContents();
         sheet.querySelector('button')?.focus();

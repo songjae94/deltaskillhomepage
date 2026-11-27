@@ -834,7 +834,7 @@ function tier(state,target=state.grade){const seen=latest(state);let level=Numbe
 function cards(){return COURSES.map((c,i)=>`<button class="ssp-course" data-ssp-course="${c.id}"><span>0${i+1}</span><strong>${c.name}</strong><small>${c.intro}</small></button>`).join('');}
 function deskShell(){
  return `<section class="ssp ssp-desk sl54-shell student-signed-in" data-plan-phase="loading" aria-label="내신 공부하기">
-  <header class="ssil-heading"><h1>등급을올리는공부부터</h1><a href="#account" data-ssil-account="study">학습 기록 보기 ↗</a></header>
+  <header class="ssil-heading"><h1>등급을올리는공부부터</h1><a href="#account" data-account-target="study">학습 기록 보기 <span aria-hidden="true">↗</span></a></header>
   <div class="ssil-main">
    <div class="ssil-today ssil-live-paper ssp-body" hidden></div>
    <aside class="ssil-review ssp-desk-controls" aria-label="학습 설정">
@@ -942,26 +942,23 @@ function bind(container,options={}){
  const guestTrial=desk&&options.guestTrial===true;
  const trialKey='ds-student-guest-study-v1';
  const temporaryKey=guestTrial?trialKey:'ds-student-paths-preview-v1';
- const trialLimit=3;
  let trialReturnView='question';
  const isTrialQuestion=q=>q?.sourceKind==='original'&&q.rights==='deltaskill-original';
  // The preview uses only originals already published in this bundle. Catalogue and
  // server-trial questions stay on their existing permission and allowance paths.
- const samples=BANK.filter(q=>isTrialQuestion(q)&&q.course==='types'&&!q.originalQuestionId&&
-  q.subject==='공통수학2'&&q.unit==='유리함수와 무리함수');
  const sampleParams=new URLSearchParams(location.search);
+ const returned=byId.get(sampleParams.get('sampleReview'));
+ const samples=!guestTrial&&isTrialQuestion(returned)&&!publicSamples.includes(returned)?[returned]:publicSamples;
  const returnIndex=samples.findIndex(q=>q.id===sampleParams.get('sampleReview'));
  const submitted=sampleParams.get('sampleAnswer');
  const reviewChoice=returnIndex>=0&&/^[0-4]$/.test(submitted)&&Number(submitted)<samples[returnIndex].options.length?Number(submitted):null;
- let sampleIndex=Math.max(0,returnIndex),sampleChoice=null,sampleChecked=false,sampleHint=false,reviewOpen=returnIndex>=0;
+ let sampleIndex=Math.max(0,returnIndex),sampleChoice=null,sampleChecked=false,sampleHint=false,sampleSolution=false,reviewOpen=returnIndex>=0;
  function sampleVisible(){
-  if(!desk||!samples.length||view==='history')return false;
-  if(!guestTrial)return reviewOpen&&signed()&&['survey','return'].includes(planPhase);
-  return !signed()&&(planPhase==='return'||(planPhase==='survey'&&quickGuest));
+  return desk&&reviewOpen&&samples.length&&view!=='history'&&['survey','return','load-error'].includes(planPhase);
  }
- function sampleLogin(q){
+ function sampleLogin(q,answer){
   const next='/app/?studentMode=study&sampleReview='+encodeURIComponent(q.id)+
-   (sampleChecked?'&sampleAnswer='+sampleChoice:'')+'#student';
+   (Number.isInteger(answer)?'&sampleAnswer='+answer:'')+'#student';
   return '/auth/?next='+encodeURIComponent(next);
  }
  function samplePaper(){
@@ -976,14 +973,16 @@ function bind(container,options={}){
    `<div class="ssp-actions ssp-sample-actions">
     <button type="button" class="ssp-primary" data-sample-action="check" ${sampleChoice===null||sampleChecked?'disabled':''}>답 제출</button>
     <button type="button" data-sample-action="hint" aria-expanded="${sampleHint}">${sampleHint?'첫 힌트 접기':'첫 힌트 보기'}</button>
-    <a href="${esc(sampleLogin(q))}">해설 보고 복습에 담기</a></div>
+    <button type="button" data-sample-action="solution" aria-expanded="${sampleSolution}">해설 ${sampleSolution?'접기':'보기'}</button></div>
     ${sampleHint?`<aside class="ssp-hint"><h3>첫 힌트</h3><p>${q.hint}</p></aside>`:''}
     ${sampleChecked?`<div class="ssp-feedback" role="status"><h3 tabindex="-1">${status}</h3></div>`:''}
+    ${sampleSolution?`<section class="ssp-solution"><h3>해설</h3><ol>${q.solution.map(line=>'<li>'+line+'</li>').join('')}</ol></section>`:''}
+    ${sampleChecked||sampleSolution?`<div class="ssp-actions"><a href="${esc(sampleLogin(q,sampleChoice))}">로그인하고 이 문항을 복습에 저장</a></div>`:''}
     <nav class="ssp-actions ssp-sample-nav" aria-label="예시 문항 이동">
     ${sampleChecked?'<button type="button" data-sample-action="retry">다시 풀기</button>':''}
     ${sampleIndex>0?'<button type="button" data-sample-action="previous">이전 문항</button>':''}
-    <button type="button" data-sample-action="next">다음 문항</button></nav>`;
-  return `<article class="ssp-paper ssp-guest-sample"><div class="ssp-paper-top"><span>핵심 유형 풀기 · 델타스킬 자체제작</span><span>${sampleIndex+1} / ${samples.length}</span></div>
+    <button type="button" data-sample-action="next">다음 문항</button><button type="button" data-sample-action="range">공부로 돌아가기</button></nav>`;
+  return `<article class="ssp-paper ssp-guest-sample"><div class="ssp-paper-top"><span>${esc(studyPlan.courses[q.course])} · 델타스킬 자체제작</span><span>${sampleIndex+1} / ${samples.length}</span></div>
    <h2 tabindex="-1" class="ssp-problem-heading">${esc(q.subject)} · ${esc(subunit(q))}</h2>
    <div class="ssp-prompt">${q.prompt}</div>${originalChoices(q,'ssp-sample-answer',member?reviewChoice:sampleChoice,sampleChecked||member)}
    ${actions}</article>`;
@@ -996,6 +995,7 @@ function bind(container,options={}){
    // Confirm on the signed-in screen, then use the same help record as a member exercise.
    reviewOpen=false;planPhase='active';state.course=planCourse=q.course;
    const previous=latest(state).get(q.id);
+   state.book=q.book||state.book;deskScope=q.unit;deskUnit=subunit(q);deskType=q.type;
    localPage([q.id],0,false);
    help=true;solution=true;
    if(previous?.version===q.version&&(reviewChoice===null||previous.choice===reviewChoice)){
@@ -1015,41 +1015,26 @@ function bind(container,options={}){
    container.querySelector('[data-sample-action="hint"]')?.focus({preventScroll:true});
    return;
   }
+  if(action==='solution'){sampleSolution=!sampleSolution;draw(false);container.querySelector('[data-sample-action="solution"]')?.focus({preventScroll:true});return;}
   if(action==='check'&&sampleChoice!==null)sampleChecked=true;
   if(action==='retry'||action==='next'||action==='previous'){
    if(action==='next')sampleIndex=(sampleIndex+1)%samples.length;
    if(action==='previous')sampleIndex=(sampleIndex+samples.length-1)%samples.length;
-   sampleChoice=null;sampleChecked=false;sampleHint=false;
+   sampleChoice=null;sampleChecked=false;sampleHint=false;sampleSolution=false;
   }
   draw(false);
   const paper=container.querySelector('.ssp-guest-sample');
   (paper?.querySelector('.ssp-feedback h3')||paper?.querySelector('h2'))?.focus({preventScroll:true});
  }
- let trialOpened=new Set();
- if(guestTrial){
-  try{trialOpened=new Set(JSON.parse(sessionStorage.getItem(trialKey+':opened')||'[]').filter(id=>isTrialQuestion(byId.get(id))));}catch{}
- }
- function openTrialQuestion(q){
-  if(!isTrialQuestion(q))return false;
-  if(trialOpened.has(q.id))return true;
-  if(trialOpened.size>=trialLimit)return false;
-  trialOpened.add(q.id);
-  try{sessionStorage.setItem(trialKey+':opened',JSON.stringify([...trialOpened]));}catch{}
-  return true;
- }
  const trialBooks=BOOKS.map(book=>({id:'original:'+book.id,label:'델타스킬 · '+book.title,subject:'공통수학2',original:book.id}));
- const bookMenu=()=>guestTrial?trialBooks:offeredBooks();
- function trialNotice(){
-  const wrong=[...latest(state).values()].reverse().find(weak);
-  return '<div class="ssp-actions"><a class="ssp-primary" href="#login">로그인하고 계속 공부하기</a>'
-   +(wrong?'<button type="button" data-ssp-guest-review>틀린 문제 다시 풀기</button>':'')
-   +(view==='guest-limit'?[...trialOpened].map((id,index)=>'<button type="button" data-ssp-open="'+esc(id)+'">체험 '+(index+1)+'번 다시 보기</button>').join(''):'')+'</div>';
- }
+ let guestWorkbook;
+ const workbookGuest=()=>guestTrial&&guestWorkbook&&window.DSGuestWorkbook;
+ const bookMenu=()=>guestTrial?[...(workbookGuest()?guestWorkbook.availableBooks():[]),...trialBooks]:offeredBooks();
  let deskUnit='',deskType='',deskFilterHTML=null;
  const studyPlan=window.DSStudentStudyPlan;
  let planPhase='loading',planProfile=null,planStep=0,planDraft={},planCourse='',planBusy=false,planMessage='';
- let planHTML=null, quickGuest=false;
- const subjects=[...new Set(studyChapters.map(([subject])=>subject))];
+ let planHTML=null;
+ const subjects=[...new Set([...studyChapters.map(([subject])=>subject),...metadataWorkbookChoices().map(book=>book.subject)])];
  let externalRange=false,planSourceUnit=null,planSourceRows=null;
  let supplyPhase='idle',supplyByBook=new Map(),supplyBooks=[];
  function workbookChoices(){return [...new Map([...metadataWorkbookChoices(),...supplyBooks].map(book=>[book.id,book])).values()];}
@@ -1078,7 +1063,9 @@ function bind(container,options={}){
   return '공개 체험 문항을 불러오지 못했어요. 잠시 후 다시 확인해 주세요.';
  }
  async function loadGuestSupply(generation){
-  supplyPhase='loading';guestCells=[];
+  guestCells=[];
+  if(workbookGuest()){supplyPhase='guest';draw(false);return;}
+  supplyPhase='loading';
   try{
    const host=window.DSDrawHostV59;await host?.ready;
    if(typeof host?.trial?.menu!=='function')throw Error('trial_unavailable');
@@ -1086,7 +1073,7 @@ function bind(container,options={}){
    if(closed||generation!==epoch||signed())return;
    if(!Array.isArray(data.cells))throw Error('trial_menu');
    guestCells=data.cells.filter(cell=>typeof cell.cell_key==='string'&&typeof cell.subject==='string'&&typeof cell.unit==='string'&&cell.size>0);
-   supplyPhase='guest';planMessage='공개 체험은 대단원 단위예요. 로그인하면 계정에 제공되는 세부 단원을 고르고 풀이를 저장할 수 있어요.';
+   supplyPhase='guest';unitMenus.clear();
   }catch(error){if(closed||generation!==epoch||signed())return;supplyPhase='error';planMessage=guestFailure(error);}
   draw(false);
  }
@@ -1145,7 +1132,7 @@ function bind(container,options={}){
    ${!guestBusy&&guestError&&guestLeft!==0?'<button data-ssp-guest-open-retry>다시 불러오기</button>':''}
    ${!guestBusy&&!guestError&&guestNext!==null&&guestLeft!==0?'<button data-ssp-guest-next>다음 문항</button>':''}
    ${!guestBusy?'<button data-ssp-choose-range>다른 단원 고르기</button>':''}
-   ${shown||guestLeft===0?'<a class="ssp-primary" href="#login">해설 보기 · 로그인</a>':''}`;
+   ${shown?'<p class="ssp-note">이 출처에서 공개한 자료는 문제 본문이에요.</p>':''}`;
   if(fresh||actionsHTML!==printedGuestActions){actions.innerHTML=actionsHTML;printedGuestActions=actionsHTML;}
  }
 
@@ -1209,12 +1196,24 @@ function bind(container,options={}){
  }
  function buildPlanUnits(subject,need){
   if(!subjects.includes(subject)||!Object.hasOwn(studyPlan.courses,need))return [];
-  if(guestTrial&&need!=='supplement'){const difficulty={concept:'쉬움',types:'보통',advanced:'어려움'}[need];return guestCells.filter(cell=>cell.subject===subject&&cell.difficulty===difficulty).map(cell=>({id:'trial:'+cell.cell_key,label:cell.unit,group:cell.subject,guestCell:cell}));}
+  if(guestTrial&&need!=='supplement'){
+   const difficulty={concept:'쉬움',types:'보통',advanced:'어려움'}[need];
+   const sourceUnits=guestCells.filter(cell=>cell.subject===subject&&cell.difficulty===difficulty)
+    .map(cell=>({id:'trial:'+cell.cell_key,label:cell.unit,group:'공개 출처 문항',guestCell:cell}));
+   const lessons=BANK.filter(q=>isTrialQuestion(q)&&!q.originalQuestionId&&q.subject===subject&&q.course===need);
+   const units=new Map();
+   for(const q of lessons){
+    const leaf=subunit(q)||q.unit,id='original:'+q.unit+'/'+leaf;
+    if(!units.has(id))units.set(id,{id,label:leaf,group:'델타스킬 자체제작 · 채점과 해설',scope:q.unit,leaf});
+   }
+   return [...(workbookGuest()?guestWorkbook.ranges(subject,need):[]),...units.values(),...sourceUnits];
+  }
   const availableBooks=workbookChoices().filter(book=>book.subject===subject);
-  if(guestTrial&&need==='supplement')return trialBooks.filter(book=>book.subject===subject).flatMap(book=>{
+  if(guestTrial&&need==='supplement')return [...(workbookGuest()?guestWorkbook.ranges(subject,need):[]),...trialBooks.filter(book=>book.subject===subject).flatMap(book=>{
    const rows=BANK.filter(q=>isTrialQuestion(q)&&q.book===book.original&&!q.originalQuestionId);
-   return [...new Set(rows.map(subunit))].map(leaf=>({id:book.id+'/'+leaf,label:leaf,book:book.id,originalBook:book.original}));
-  });
+   return [...new Set(rows.map(subunit))].map(leaf=>({id:book.id+'/'+leaf,label:leaf,book:book.id,originalBook:book.original,
+    size:BANK.filter(q=>isTrialQuestion(q)&&q.book===book.original&&subunit(q)===leaf).length}));
+  })];
   if(need==='supplement')return availableBooks.flatMap(book=>availableRanges(book).map(unit=>({
    id:book.id+'/'+unit.id,group:book.label,label:unit.label,book:book.id,bookUnit:unit.id
   })));
@@ -1270,7 +1269,8 @@ function bind(container,options={}){
  }
  const subjectMenuCache=new Map();
  function planSubjects(need){
-  if(!['ready','guest'].includes(supplyPhase))return [];
+  if(workbookGuest())return subjects;
+  if(!guestTrial&&!['ready','guest'].includes(supplyPhase))return [];
   const cached=subjectMenuCache.get(need);
   if(cached?.supply===supplyByBook&&cached.cells===guestCells)return cached.subjects;
   const available=subjects.filter(subject=>planUnits(subject,need).length>0);
@@ -1282,8 +1282,8 @@ function bind(container,options={}){
   planPhase='loading';planStep=0;planDraft=newPlanDraft();planProfile=null;planBusy=false;planMessage='';
   if(guestTrial){
    try{planProfile=JSON.parse(sessionStorage.getItem(trialKey+':plan'));}catch{}
-   quickGuest=!planProfile || !planProfile.goal;
-   if(quickGuest){planStep=2;planDraft.need='types';}
+   if(workbookGuest()&&planProfile?.subject)void guestWorkbook.catalog(planProfile.subject);
+   if(!studyPlan.isGoal(planProfile?.goal))planProfile=null;
    planPhase=planProfile?'return':'survey';draw(false);return;
   }
   try{
@@ -1297,7 +1297,12 @@ function bind(container,options={}){
   draw(false);
  }
  function startRange(profile,range){
-  unshownGuest=null;
+  unshownGuest=null;guestWorkbook?.cancel();
+  if(workbookGuest()&&range.query){
+   planPhase='active';state.course=planCourse=profile.need;externalRange=false;current=null;feedback=null;
+   guestRequest++;guestRange=null;guestQuestion='';planSourceRows=null;planSourceUnit=null;view='public-workbook';
+   guestWorkbook.start(range,profile.need,profile.workbookType);return;
+  }
   if(guestTrial&&range.guestCell){state.course=planCourse=profile.need;planPhase='active';externalRange=false;planSourceRows=null;planSourceUnit=null;guestRange=range.guestCell;guestPage=1;guestNext=null;guestLeft=null;guestQuestion='';guestError='';view='trial-source';void openGuestQuestion();return;}
   guestRequest++;guestRange=null;guestQuestion='';
   planCourse=state.course=profile.need;planPhase='active';deskType='';widen='subunit';
@@ -1322,7 +1327,7 @@ function bind(container,options={}){
   planPhase='active';
   if(supplyPhase==='loading'){planMessage='무료 학습 범위를 확인하고 있어요.';planPhase='return';draw(false);return;}
   const range=planUnits(planProfile.subject,planProfile.need).find(u=>u.id===planProfile.unit);
-  if(guestTrial&&range?.guestCell){startRange(planProfile,range);return;}
+  if(guestTrial&&(range?.guestCell||range?.query)){startRange(planProfile,range);return;}
   externalRange=Boolean(range?.book&&!range.originalBook);planSourceRows=range?.rows||null;
   planSourceUnit=range?.unitIds?{id:range.id,label:range.label,unitIds:range.unitIds,types:[]}:null;
   if(externalRange){selectedScopeBook=range.book;selectedScopeUnit=range.bookUnit;selectedScopeType='';widen='subunit';}
@@ -1350,8 +1355,9 @@ function bind(container,options={}){
   planPhase='survey';planStep=2;draw(false);
  }
  async function finishPlan(unit){
-  if(planBusy||planStep!==2||(!planDraft.goal&&!quickGuest)||!planDraft.need)return;
+  if(planBusy||planStep!==2||!studyPlan.isGoal(planDraft.goal)||!planDraft.need)return;
   const range=planUnits(planDraft.subject,planDraft.need).find(row=>row.id===unit);
+  if(range?.query&&planDraft.workbookType&&!guestWorkbook.typeCount(range,planDraft.workbookType)?.size)return;
   if(!range||range.disabled||(planDraft.need==='supplement'&&range.book!==planDraft.book))return;
   planDraft.unit=unit;
   const {goal,need,subject}=planDraft;
@@ -1359,7 +1365,7 @@ function bind(container,options={}){
    window.DSStudyPlanStore.waitingRange?.(activeOwner,{goal,need,subject,unit,updatedAt:Date.now()});
    draw(false);return;
   }
-  const profile={goal,need,subject,unit,updatedAt:Date.now()},generation=epoch;
+  const profile={goal,need,subject,unit,...(range.query&&planDraft.workbookType?{workbookType:planDraft.workbookType}:{}),updatedAt:Date.now()},generation=epoch;
   planProfile=profile;planMessage='';
   if(guestTrial){
    try{sessionStorage.setItem(trialKey+':plan',JSON.stringify(profile));}catch{}
@@ -1415,16 +1421,13 @@ function bind(container,options={}){
   if(planPhase==='active'){
    if(b.hasAttribute('data-plan-reselect')){
     planDraft={...newPlanDraft(),goal:planProfile?.goal||'',need:planProfile?.need||''};
-    guestRequest++;guestBusy=false;guestRange=null;guestQuestion='';
-    planPhase='survey';planStep=quickGuest?2:planDraft.goal?1:0;planMessage='';draw(false);
+    guestRequest++;guestBusy=false;guestRange=null;guestQuestion='';guestWorkbook?.cancel();
+    planPhase='survey';planStep=planDraft.goal?1:0;planMessage='';draw(false);
    }
    return true;
   }
   if(planPhase!=='survey')return true;
   if(b.hasAttribute('data-plan-start')){void finishPlan(planDraft.unit);return true;}
-  if(guestTrial&&quickGuest){
-   if(b.hasAttribute('data-plan-custom')){quickGuest=false;planDraft=newPlanDraft();planStep=0;draw(false);container.querySelector('.ssp-plan-title')?.focus();return true;}
-  }
   if(b.hasAttribute('data-plan-answer')&&planStep<2){
    if(planStep===0&&!studyPlan.isGoal(value)||planStep===1&&!Object.hasOwn(studyPlan.courses,value))return true;
    planDraft[planStep===0?'goal':'need']=value;planStep++;
@@ -1505,7 +1508,7 @@ function bind(container,options={}){
   return result.slice(0,10);
  }
  function deskFilters(){
-  if(guestTrial&&view==='trial-source')return '';
+  if(guestTrial&&['trial-source','public-workbook'].includes(view))return '';
   if(externalRange&&state.course!=='supplement')return '';
   if(externalRange||state.course==='supplement'){
    const books=offeredBooks();
@@ -1578,11 +1581,7 @@ function bind(container,options={}){
  function sendRemote(record,keepalive=false){clearTimeout(remoteTimer);remoteTimer=0;remoteDirty=false;{const generation=epoch,ownerAtSave=activeOwner,payload=JSON.parse(JSON.stringify(typeof options.onProgress==='function'?state:record));saveQueue=saveQueue.catch(()=>{}).then(async()=>{if(!signed()||ownerAtSave!==owner())return;try{const handler=typeof options.onProgress==='function'?options.onProgress:options.onRecord;const result=await handler(payload,{ownerKey:ownerAtSave,namespace:'student-paths-v1',keepalive});if(closed||generation!==epoch)return;if(result?.state)state=mergeProgress(result.state,state);storageMessage=result?.saved===true?(result.localOnly?.records||result.localOnly?.pending?'계정에 연결된 학습 기록을 저장했어요. 이전 연습 기록은 이 기기에 유지돼요.':'계정에 학습 기록을 저장했어요.'):'계정 저장을 확인하지 못했어요. 기기 기록은 유지돼요.';}catch{if(closed||generation!==epoch)return;storageMessage='계정 저장에 실패했어요. 기기 기록은 유지돼요.';}draw(false);emit();});}}
  function qlist(){if(state.course==='supplement')return BANK.filter(q=>q.book===state.book);if(state.course==='advanced')return BANK.filter(q=>q.course==='advanced'&&q.level===tier(state,planProfile?.goal));return BANK.filter(q=>q.course===state.course);}
  function resetQuestion(q){
-  if(guestTrial){
-   if(!openTrialQuestion(q)){
-    current=null;feedback=null;view='guest-limit';return;
-   }
-  }
+  if(guestTrial&&!isTrialQuestion(q)){current=null;feedback=null;view='home';return;}
   current=q;choice=null;confidence='sure';help=false;hint=false;feedback=null;solution=false;openedAt=Date.now();view='question';}
  function resume(course){const originalLatest=Object.entries(state.pending).filter(([id,p])=>(!course||course===id)&&!p.cleared).sort((a,b)=>b[1].updatedAt-a[1].updatedAt)[0],sourceLatest=Object.entries(state.sourcePending).filter(([id,p])=>(!course||course===id)&&!p.cleared&&!heldExam(p.questionId)).sort((a,b)=>b[1].updatedAt-a[1].updatedAt)[0];if(sourceLatest&&(!course||course===sourceLatest[0])&&(!originalLatest||sourceLatest[1].updatedAt>=originalLatest[1].updatedAt)){state.course=sourceLatest[0];openRemote(sourceLatest[1].questionId,sourceLatest[1]);return true;}const courseId=course||Object.entries(state.pending).filter(([,p])=>!p.cleared).sort((a,b)=>b[1].updatedAt-a[1].updatedAt)[0]?.[0];const p=state.pending[courseId];if(!p||p.cleared)return false;state.course=courseId;state.book=p.book;pool=[...p.pool];cursor=p.cursor;current=byId.get(pool[cursor]);choice=p.choice;confidence=p.confidence;help=p.help;hint=p.hint;solution=p.solution;feedback=state.records.find(r=>r.id===p.feedbackId)||null;openedAt=Date.now();view='question';return true;}
  function begin(ids){pool=(ids||qlist().map(q=>q.id)).filter(id=>byId.has(id));cursor=0;if(!pool.length){notice='지금 선택한 범위에는 문제가 없어요.';return;}resetQuestion(byId.get(pool[0]));}
@@ -1652,6 +1651,9 @@ function bind(container,options={}){
   return /^-?\d+$/.test(text)&&Number.isSafeInteger(value)&&Math.abs(value)<=1000000000?value:null;
  }
  function integerKeydown(event){
+  if(event.key==='Enter'&&!event.isComposing&&event.target.matches('[data-workbook-integer]')){
+   event.preventDefault();event.target.closest('.ssp-paper')?.querySelector('[data-workbook-action="check"]')?.click();return;
+  }
   if(event.key!=='Enter'||event.isComposing||!event.target.matches('[data-ssp-remote-integer]'))return;
   event.preventDefault();
   submitRemote();
@@ -1864,7 +1866,28 @@ function bind(container,options={}){
   const previousPlanPhase=root.dataset.planPhase;
   const planPane=root.querySelector('[data-study-plan]');
   const units=planPhase==='survey'?planUnits(planDraft.subject,planDraft.need).filter(row=>planDraft.need!=='supplement'||row.book===planDraft.book):planUnits(planProfile?.subject,planProfile?.need);
-  const markup=planPhase==='loading'?'<p role="status">학습 계획을 불러오고 있어요.</p>':planPhase==='load-error'?'<button type="button" data-plan-reload>다시 불러오기</button>':studyPlan.render({quickGuest,profile:planProfile,draft:planDraft,step:planStep,phase:planPhase,course:planCourse,subjects:planPhase==='survey'&&planStep===2&&planDraft.need!=='supplement'?planSubjects(planDraft.need):subjects,books:planDraft.need==='supplement'?bookMenu():[],supplyPhase,units});
+  let markup=planPhase==='loading'?'<p role="status">학습 계획을 불러오고 있어요.</p>':planPhase==='load-error'?'<button type="button" data-plan-reload>다시 불러오기</button>':studyPlan.render({profile:planProfile,draft:planDraft,step:planStep,phase:planPhase,course:planCourse,subjects:planPhase==='survey'&&planStep===2&&planDraft.need!=='supplement'?planSubjects(planDraft.need):subjects,books:planDraft.need==='supplement'?bookMenu():[],supplyPhase,units});
+  if(workbookGuest()&&planPhase==='survey'&&planStep===2&&planDraft.subject){
+   const status=guestWorkbook.phase(planDraft.subject), selected=units.find(row=>row.id===planDraft.unit);
+   if(status?.busy)markup+='<p role="status">선택한 과목의 교재와 문항을 확인하고 있어요.</p>';
+   else if(status?.error)markup+='<p role="alert">교재 목록을 불러오지 못했어요.</p><button type="button" data-workbook-catalog-retry>다시 불러오기</button>';
+   else if(status&&!units.length)markup+='<p role="status">선택한 범위에 공개된 문항이 없어요.</p>';
+   if(selected?.originalBook)markup+='<p role="status">선택한 범위에서 풀 수 있는 문항 '+selected.size+'개 · 이번 연습 '+Math.min(10,selected.size)+'문항</p>';
+   if(selected?.query){
+    const count=guestWorkbook.typeCount(selected,planDraft.workbookType);
+    if(count?.busy||count?.error||count?.size===0)markup=markup.replace('data-plan-start>','data-plan-start disabled>');
+    if(count?.busy)markup+='<p role="status">이 유형의 문항 수를 확인하고 있어요.</p>';
+    else if(count?.error)markup+='<p role="alert">유형의 문항 수를 확인하지 못했어요.</p><button data-workbook-count-retry>다시 확인</button>';
+    else markup+='<p role="status">선택한 범위에서 풀 수 있는 문항 '+(count?.size??selected.size)+'개</p>';
+   }
+   if(selected?.types?.length){
+    const choices=selected.types.map((type,index)=>/\$|\\[a-zA-Z]/.test(type.label)?{...type,label:'유형 '+(index+1)}:type);
+    const currentType=selected.types.find(type=>type.id===planDraft.workbookType);
+    const selector=deskSelect('data-workbook-type','유형',[{id:'',label:'전체 유형'},...choices],planDraft.workbookType||'')+
+     (currentType&&choices.find(type=>type.id===currentType.id)?.label!==currentType.label?'<p>'+mathContent(currentType.label)+'</p>':'');
+    markup=markup.replace('<button type="button" class="ssp-plan-primary" data-plan-start',selector+'<button type="button" class="ssp-plan-primary" data-plan-start');
+   }
+  }
   if(markup!==planHTML){planPane.innerHTML=markup;planHTML=markup;}
   planPane.querySelectorAll('button').forEach(el=>{if(planBusy&&!el.disabled){el.disabled=true;el.dataset.planBusy='';}else if(!planBusy&&el.hasAttribute('data-plan-busy')){el.disabled=false;delete el.dataset.planBusy;}});
   root.dataset.planPhase=planPhase;root.dataset.sspView=view; /* H29-11(관문 91): 기록 보기는 계획 단계와 상관없이 보임(세로 화면 CSS) */
@@ -1873,19 +1896,23 @@ function bind(container,options={}){
   root.querySelector('.ssp-desk-filters').hidden=!filters;
   if(filters!==deskFilterHTML){root.querySelector('.ssp-desk-filters').innerHTML=filters;deskFilterHTML=filters;}
   root.querySelectorAll('.ssp-desk-controls button, .ssp-desk-controls select:not([disabled]), .ssp-desk-controls [data-ssp-busy-lock]').forEach(el=>{if(remoteBusy&&!el.disabled){el.disabled=true;el.dataset.sspBusyLock='';}else if(!remoteBusy&&el.hasAttribute('data-ssp-busy-lock')){el.disabled=false;delete el.dataset.sspBusyLock;}});
+  if(guestWorkbook?.reviewing()){
+   root.toggleAttribute('data-guest-sample',true);body.hidden=false;body.style.display='block';
+   paintBody(body,guestWorkbook.reviewHTML());return;
+  }
   const showSample=sampleVisible();
   root.toggleAttribute('data-guest-sample',showSample);
   if(showSample)body.style.display='block';else body.style.removeProperty('display');
-  if(guestTrial){
-   const heading=root.querySelector('.ssil-heading h1');
-   const title=showSample?'한 문제 풀어보기':'등급을올리는공부부터';
-   if(heading&&heading.textContent!==title)heading.textContent=title;
-  }
   if(showSample){body.hidden=false;paintBody(body,samplePaper());return;}
   body.hidden=planPhase!=='active'&&view!=='history';
   if(body.hidden){paintBody(body,'');return;}
-  let bodyMarkup=view==='trial-source'?'':view==='guest-limit'?'<article class="ssp-paper"><h2>공개 체험 세 문제를 모두 열어봤어요.</h2>'+trialNotice()+'</article>':view==='source-question'&&remoteQuestion?remoteQuestionHTML():view==='question'&&current?question():view==='history'?history():view==='result'?result():deskWaiting();
-  if(guestTrial&&view==='question'&&feedback&&trialOpened.size>=trialLimit)bodyMarkup+=trialNotice();
+  if(view==='public-workbook'&&guestWorkbook){
+   paintBody(body,guestWorkbook.shell);guestWorkbook.paint(body);
+   if(previousPlanPhase!=='active'&&matchMedia('(max-width:700px)').matches)requestAnimationFrame(()=>{if(!closed&&view==='public-workbook')body.scrollIntoView({block:'start'});});
+   return;
+  }
+  let bodyMarkup=view==='trial-source'?'':view==='source-question'&&remoteQuestion?remoteQuestionHTML():view==='question'&&current?question():view==='history'?history():view==='result'?result():deskWaiting();
+  if(guestTrial&&view==='question'&&feedback&&current)bodyMarkup+=`<div class="ssp-actions"><a href="${esc(sampleLogin(current,feedback.choice))}">로그인하고 이 문항을 복습에 저장</a></div>`;
   if(/못|실패|사라|저장 공간/.test(storageMessage))bodyMarkup+=`<p class="ssil-sync">${esc(storageMessage)}</p>`;
   const material=deskMaterials();if(material)bodyMarkup+=material;
   if(view==='trial-source')paintGuestQuestion(body,bodyMarkup);
@@ -1942,10 +1969,16 @@ function bind(container,options={}){
  }
  function check(skip,sawSolution=false){if(!current||feedback||!skip&&choice===null)return;const r={id:window.crypto?.randomUUID?.()||'ssp-'+Date.now()+'-'+state.records.length,questionId:current.id,version:current.version,course:current.course,type:current.type,level:current.level,at:Date.now(),choice:skip?null:choice,correct:!skip&&choice===current.answer,confidence:skip?'unsure':confidence,help,solutionSeen:sawSolution,repeated:state.records.some(r=>r.questionId===current.id),reason:'',seconds:Math.max(0,(Date.now()-openedAt)/1000)};state.records.push(r);feedback=r;save(r);draw();}
  function click(e){
- if(guestTrial&&e.target.closest('[data-ssil-account="study"]')){
+ if(guestTrial&&e.target.closest('[data-account-target="study"]')){
   e.preventDefault();if(view!=='history')trialReturnView=view;view='history';draw();container.querySelector('.ssp-body')?.scrollIntoView?.({block:'start'});return;
  }
  const b=e.target.closest('button');if(!b||!container.contains(b)||b.disabled)return;notice='';
+ if(guestWorkbook?.click(b))return;
+ if(b.hasAttribute('data-workbook-count-retry')){
+  const range=planUnits(planDraft.subject,planDraft.need).find(unit=>unit.id===planDraft.unit);
+  guestWorkbook.typeCount(range,planDraft.workbookType,true);draw(false);return;
+ }
+ if(b.hasAttribute('data-workbook-catalog-retry')){void guestWorkbook?.catalog(planDraft.subject,true);draw(false);return;}
  if(b.hasAttribute('data-ssp-variant-reload')){loadVariantSlots();return;}
  if(b.hasAttribute('data-sample-action')){handleSample(b);return;}
  if(b.hasAttribute('data-ssp-after-solution'))container.querySelector('.ssp-paper')?.scrollIntoView({block:'start'});
@@ -2025,6 +2058,8 @@ function bind(container,options={}){
  }
  if(b.hasAttribute('data-ssp-source-resume')){const p=state.sourcePending[state.course];if(p&&!p.cleared)openRemote(p.questionId,p);return;}if(b.hasAttribute('data-ssp-history-sync')){loadFreeHistory();return;}if(b.hasAttribute('data-ssp-history-more')){loadFreeHistory(true);return;}if(b.hasAttribute('data-ssp-retry-open')){if(lastOpen)openRemote(lastOpen.id,lastOpen.draft,lastOpen.revisit);return;}if(b.hasAttribute('data-ssp-query')){querySource();return;}if(b.hasAttribute('data-ssp-remote')){openRemote(b.dataset.sspRemote);return;}if(b.hasAttribute('data-ssp-remote-submit')){submitRemote();return;}if(b.hasAttribute('data-ssp-remote-hint')){remoteHelp=true;draw(false);return;}if(b.hasAttribute('data-ssp-remote-unknown')){remoteChoice=null;remoteUnknown=true;submitRemote();return;}if(b.hasAttribute('data-ssp-series')){selectedSeries=b.dataset.sspSeries;widen='type';invalidateSource();draw();querySource();return;}if(b.hasAttribute('data-ssp-widen')){widen=b.dataset.sspWiden;invalidateSource();draw();querySource();return;}if(b.hasAttribute('data-ssp-course')){state.course=b.dataset.sspCourse;view='home';current=null;invalidateSource();queueMicrotask(querySource);}else if(b.hasAttribute('data-ssp-book')){state.book=b.dataset.sspBook;}else if(b.hasAttribute('data-ssp-resume'))resume(state.course);else if(b.hasAttribute('data-ssp-start'))begin();else if(b.hasAttribute('data-ssp-type'))begin(BANK.filter(q=>q.course==='types'&&q.type===b.dataset.sspType).map(q=>q.id));else if(b.hasAttribute('data-ssp-check'))return check(false);else if(b.hasAttribute('data-ssp-skip'))return check(true);else if(b.hasAttribute('data-ssp-hint')){hint=!hint;help=true;}else if(b.hasAttribute('data-ssp-solution')){solution=!solution;if(solution&&feedback){feedback.solutionSeen=true;save(feedback);}}else if(b.hasAttribute('data-ssp-retry'))resetQuestion(current);else if(b.hasAttribute('data-ssp-next')){if(!feedback)return;if(++cursor<pool.length)resetQuestion(byId.get(pool[cursor]));else {state.pending[state.course]={cleared:true,updatedAt:Date.now()};current=null;view='result';}}else if(b.hasAttribute('data-ssp-review'))review(b.dataset.sspReview);else if(b.hasAttribute('data-ssp-history'))view='history';else if(b.hasAttribute('data-ssp-open'))return openOriginal(b.dataset.sspOpen);else if(b.hasAttribute('data-ssp-home'))view='home';else if(b.hasAttribute('data-ssp-sync')){save();return;}else return;save();draw();}
  function change(e){
+ if(guestWorkbook?.change(e.target))return;
+ if(workbookGuest()&&e.target.matches('[data-workbook-type]')){planDraft.workbookType=e.target.value;draw(false);container.querySelector('[data-workbook-type]')?.focus({preventScroll:true});return;}
  if(e.target.name==='ssp-sample-answer'&&guestTrial&&sampleVisible()&&!sampleChecked){
   sampleChoice=Number(e.target.value);
   const submit=container.querySelector('[data-sample-action="check"]');
@@ -2034,18 +2069,20 @@ function bind(container,options={}){
  if(desk){
   if(e.target.matches('[data-plan-book]')&&planPhase==='survey'&&planDraft.need==='supplement'){
    const book=(guestTrial?bookMenu():workbookChoices()).find(b=>b.id===e.target.value);
-   planDraft.book=book?.id||'';planDraft.subject=book?.subject||'';planDraft.unit='';
+   planDraft.book=book?.id||'';planDraft.subject=book?.subject||'';planDraft.unit='';planDraft.workbookType='';
+   if(workbookGuest()&&book&&!book.original){void guestWorkbook.catalog(book.subject);void guestMathStyle().catch(()=>{});}
    draw(false);container.querySelector('[data-plan-unit]')?.focus({preventScroll:true});return;
   }
   if(e.target.matches('[data-plan-subject]')&&planPhase==='survey'){
    if(!guestTrial)window.DSStudyPlanStore.waitingRange?.(activeOwner,null);
-   planDraft.subject=e.target.value;planDraft.unit='';
-   if(guestTrial&&planDraft.subject&&planDraft.need!=='supplement')void guestMathStyle().catch(()=>{});
+   planDraft.subject=e.target.value;planDraft.unit='';planDraft.workbookType='';
+   if(workbookGuest())void guestWorkbook.catalog(planDraft.subject);
+   if(guestTrial&&planDraft.subject&&(workbookGuest()||guestCells.some(cell=>cell.subject===planDraft.subject)))void guestMathStyle().catch(()=>{});
    draw(false);
    container.querySelector('[data-plan-unit]')?.focus({preventScroll:true});return;
   }
   if(e.target.matches('[data-plan-unit]')&&planPhase==='survey'){
-   planDraft.unit=e.target.value;draw(false);container.querySelector('[data-plan-unit]')?.focus({preventScroll:true});
+   planDraft.unit=e.target.value;planDraft.workbookType='';draw(false);container.querySelector('[data-plan-unit]')?.focus({preventScroll:true});
    return;
   }
 
@@ -2074,14 +2111,24 @@ function bind(container,options={}){
   }
  }
  if(e.target.matches('[data-ssp-target]')){desiredCount=Number(e.target.value);draw(false);return;}if(e.target.name==='ssp-remote-choice'){remoteChoice=Number(e.target.value);remoteUnknown=false;save();return;}if(e.target.matches('[data-ssp-remote-integer]')){remoteUnknown=false;remoteChoice=readIntegerAnswer(e.target);save();return;}if(e.target.matches('[data-ssp-free-unit]')){if(Object.hasOwn(FREE_CONCEPTS,e.target.value))freeUnit=e.target.value;draw();return;}if(e.target.matches('[data-ssp-scope-book]')){selectedScopeBook=e.target.value;widen='type';invalidateSource();draw();querySource();return;}if(e.target.matches('[data-ssp-scope-unit]')){selectedScopeUnit=e.target.value;widen='type';invalidateSource();draw();querySource();return;}if(e.target.matches('[data-ssp-scope-type]')){selectedScopeType=e.target.value;widen='type';invalidateSource();draw();querySource();return;}if(e.target.name==='ssp-answer'){choice=Number(e.target.value);const button=container.querySelector('[data-ssp-check]');if(button)button.disabled=false;save();}else if(e.target.name==='ssp-confidence'){confidence=e.target.value;save();}else if(e.target.matches('[data-ssp-grade]')){state.grade=Number(e.target.value);save();draw();}else if(e.target.matches('[data-ssp-reason]')&&feedback){feedback.reason=e.target.value;save(feedback);}}
- function sessionChange(){variantSlots.clear();variantLoadFailed=false;unshownGuest=null;clearTimeout(remoteTimer);remoteTimer=0;remoteDirty=false;lastOpen=null;guestRequest++;guestBusy=false;guestRange=null;guestQuestion='';localDrafts.clear();remoteDrafts.clear();epoch++;invalidateSource();remoteQuestion=null;remoteFeedback=null;remoteOperations.clear();remoteHistory={phase:'idle',records:[],hasMore:false,nextBefore:null};activeOwner=owner();current=null;pool=[];feedback=null;view='home';read();if(desk){void loadSupply();void loadPlan();}notice='로그인 상태가 바뀌어 현재 계정의 기록을 다시 확인했어요.';draw();}
+ function sessionChange(){guestWorkbook?.cancel();variantSlots.clear();variantLoadFailed=false;unshownGuest=null;clearTimeout(remoteTimer);remoteTimer=0;remoteDirty=false;lastOpen=null;guestRequest++;guestBusy=false;guestRange=null;guestQuestion='';localDrafts.clear();remoteDrafts.clear();epoch++;invalidateSource();remoteQuestion=null;remoteFeedback=null;remoteOperations.clear();remoteHistory={phase:'idle',records:[],hasMore:false,nextBefore:null};activeOwner=owner();current=null;pool=[];feedback=null;view='home';read();if(desk){void loadSupply();void loadPlan();}notice='로그인 상태가 바뀌어 현재 계정의 기록을 다시 확인했어요.';draw();}
+ if(desk)guestWorkbook=window.DSGuestWorkbookStudy?.create({books:metadataWorkbookChoices,
+  renderFrame:fragmentContent,mathStyle:guestMathStyle,redraw:()=>draw(false),signed,owner,live:()=>!closed,
+  catalogChanged:()=>{unitMenus.clear();subjectMenuCache.clear();draw(false);}});
  read();if(desk){void loadSupply();void loadPlan();}container.addEventListener('click',click);container.addEventListener('change',change);container.addEventListener('keydown',integerKeydown);window.addEventListener('ds-session-change',sessionChange);const leave=()=>{if(document.visibilityState==='hidden')flushRemote(true);},pageLeave=()=>flushRemote(true);document.addEventListener('visibilitychange',leave);window.addEventListener('pagehide',pageLeave);if(options.resume&&typeof options.onReady!=='function')resume();draw(false);
  if(signed()&&activeOwner&&typeof options.loadProgress==='function'){const generation=epoch;Promise.resolve().then(()=>options.loadProgress({namespace:'student-paths-v1',ownerKey:activeOwner})).then(raw=>{if(closed||generation!==epoch)return;const remote=clean(raw);let cached=false;try{cached=Boolean(key()&&localStorage.getItem(key()));}catch{}const local=cached?state:remote;state=mergeProgress(remote,local);const comparable=x=>JSON.stringify({...x,records:[...x.records].sort((a,b)=>a.id.localeCompare(b.id))});if(comparable(state)!==comparable(remote)&&(!desk||cached))save();else{try{if(key())localStorage.setItem(key(),JSON.stringify(state));}catch{}emit();}draw(false);notifyReady();}).catch(()=>{if(closed||generation!==epoch)return;storageMessage='계정 기록을 불러오지 못했어요. 현재 기기의 기록을 보여드려요.';draw(false);notifyReady();});}else notifyReady();
  const controller={snapshot:()=>JSON.parse(JSON.stringify({...state,summary:summary(state),tier:tier(state),storage:storageMessage})),showHistory:()=>{view='history';draw();},resume:()=>{const ok=resume();if(ok)draw();return ok;},destroy:()=>{flushRemote();document.removeEventListener('visibilitychange',leave);window.removeEventListener('pagehide',pageLeave);closed=true;epoch++;if(typeof releaseChoiceLayout==='function')releaseChoiceLayout();container.removeEventListener('click',click);container.removeEventListener('change',change);container.removeEventListener('keydown',integerKeydown);window.removeEventListener('ds-session-change',sessionChange);controllers.delete(container);if(lastController===controller)lastController=null;}};controllers.set(container,controller);lastController=controller;return controller.destroy;
+}
+// These first-visit examples are already public and separate from timed exam sets.
+const publicSamples=BANK.filter(q=>q.sourceKind==='original'&&q.rights==='deltaskill-original'&&
+ q.course==='types'&&!q.originalQuestionId&&q.subject==='공통수학2'&&q.unit==='유리함수와 무리함수');
+function timedWarmup(){
+ const q=publicSamples.find(row=>row.id==='dssp1-t2')||publicSamples[0];
+ return q&&{subject:q.subject,unit:q.subunit,prompt:q.prompt,options:[...q.options],answer:q.answer};
 }
 function publicTimedOriginals(){
  return BANK.filter(q=>q.sourceKind==='original'&&q.rights==='deltaskill-original'&&q.course==='supplement'&&
   BOOKS.some(b=>b.id===q.book&&b.ids.includes(q.originalQuestionId||q.id))).map(q=>({...q,options:[...q.options],solution:[...q.solution]}));
 }
-window.DSStudentStudyPaths={publicTimedOriginals,render,bind,snapshot:()=>lastController?.snapshot()||null,showHistory:()=>lastController?.showHistory(),resume:()=>lastController?.resume()||false,courses:COURSES.map(c=>({...c})),catalog:()=>BANK.map(({id,version,course,type,level,subject,unit,book,sourceKind})=>({id,version,course,type,level,subject,unit,book,sourceKind})),books:BOOKS.map(b=>({...b,ids:[...b.ids]})),validateState:clean,mergeProgress};
+window.DSStudentStudyPaths={publicTimedOriginals,timedWarmup,render,bind,snapshot:()=>lastController?.snapshot()||null,showHistory:()=>lastController?.showHistory(),resume:()=>lastController?.resume()||false,courses:COURSES.map(c=>({...c})),catalog:()=>BANK.map(({id,version,course,type,level,subject,unit,book,sourceKind})=>({id,version,course,type,level,subject,unit,book,sourceKind})),books:BOOKS.map(b=>({...b,ids:[...b.ids]})),validateState:clean,mergeProgress};
 })();

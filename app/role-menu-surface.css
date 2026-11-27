@@ -1,0 +1,195 @@
+/* Shared role navigation, 1127: the approved student matte-key surface.
+   Intentional specificity matches the existing screen-only design overrides.
+   Layout outside the navigation and all print styles stay with their source. */
+@media screen {
+html[data-design] body.working-body[data-page]:is([data-page="student"],[data-page="teacher"],[data-page="studio"]) #content#content nav.tb36-modes.tb36-modes {
+  position:relative!important;
+  isolation:isolate!important;
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  padding:6px!important;
+  gap:6px!important;
+  border:1px solid #b9c6d5!important;
+  border-radius:10px!important;
+  background:linear-gradient(180deg,#ffffff14,#ffffff00 70%),#dde5ef!important;
+  box-shadow:inset 0 1px #ffffffd1,inset 0 -1px #7b90a51f,0 2px 2px #35425814!important;
+}
+html[data-design] body.working-body[data-page]:is([data-page="student"],[data-page="teacher"],[data-page="studio"]) #content#content nav.tb36-modes.tb36-modes::before {
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  border-radius:inherit!important;
+  background:url("assets/textures/teacher-key-surface-v50.svg") center/240px auto!important;
+  opacity:.018!important;
+  mix-blend-mode:luminosity!important;
+  pointer-events:none!important;
+  z-index:-1!important;
+}
+html[data-design] body.working-body[data-page]:is([data-page="student"],[data-page="teacher"],[data-page="studio"]) #content#content nav.tb36-modes.tb36-modes>button {
+  position:relative!important;
+  isolation:isolate!important;
+  overflow:hidden!important;
+  box-sizing:border-box!important;
+  min-width:0!important;
+  min-height:68px!important;
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:12px!important;
+  padding:12px!important;
+  border:1px solid #ffffff65!important;
+  border-bottom-color:#aab9ca!important;
+  border-radius:6px!important;
+  background:linear-gradient(180deg,#ffffff45,#ffffff12)!important;
+  color:#354258!important;
+  box-shadow:inset 0 1px #ffffff9c,0 2px 2px #35425814!important;
+  text-shadow:none!important;
+  filter:none!important;
+  transform:none!important;
+  transition:background-color .15s,border-color .15s,color .15s!important;
+}
+html[data-design] body.working-body[data-page]:is([data-page="student"],[data-page="teacher"],[data-page="studio"]) #content#content nav.tb36-modes.tb36-modes>button::after {
+  content:""!important;
+  display:block!important;
+  position:absolute!important;
+  inset:0!important;
+  border-radius:inherit!important;
+  background:url("assets/textures/teacher-key-surface-v50.svg") center/240px auto!important;
+  opacity:.018!important;
+  mix-blend-mode:luminosity!important;
+  pointer-events:none!important;
+  z-index:0!important;
+}
+html[data-design] body.working-body[data-page]:is([data-page="student"],[data-page="teacher"],[data-page="studio"]) #content#content nav.tb36-modes.tb36-modes>button>* {
+  position:relative!important;
+  z-index:1!important;
+}
+html[data-design] body.working-body[data-page]:is([data-page="student"],[data-page="teacher"],[data-page="studio"]) #content#content nav.tb36-modes.tb36-modes>button:hover {
+  background:#e4eaf4!important;
+}
+html[data-design] body.working-body[data-page]:is([data-page="student"],[data-page="teacher"],[data-page="studio"]) #content#content nav.tb36-modes.tb36-modes>button strong {
+  font-size:15px!important;
+  font-weight:650!important;
+  line-height:22px!important;
+  letter-spacing:-.02em!important;
+  color:inherit!important;
+  text-shadow:none!important;
+}
+html[data-design] body.working-body[data-page]:is([data-page="student"],[data-page="teacher"],[data-page="studio"]) #content#content nav.tb36-modes.tb36-modes>button small {
+  display:block!important;
+  font-size:12px!important;
+  font-weight:500!important;
+  line-height:17px!important;
+  letter-spacing:0!important;
+  color:#40516a!important;
+  text-shadow:none!important;
+}
+html[data-design] body.working-body[data-page]:is([data-page="student"],[data-page="teacher"],[data-page="studio"]) #content#content nav.tb36-modes.tb36-modes>button>i {
+  display:none!important;
+}
+html[data-design] body.working-body[data-page]:is([data-page="student"],[data-page="teacher"],[data-page="studio"]) #content#content nav.tb36-modes.tb36-modes>button .tb36-mode-icon {
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  flex:0 0 32px!important;
+  width:32px!important;
+  height:32px!important;
+  border-radius:7px!important;
+  background:none!important;
+  color:inherit!important;
+  filter:none!important;
+  text-shadow:none!important;
+}
+html[data-design] body.working-body[data-page]:is([data-page="student"],[data-page="teacher"],[data-page="studio"]) #content#content nav.tb36-modes.tb36-modes>button .tb36-mode-icon svg {
+  width:20px!important;
+  height:20px!important;
+  color:inherit!important;
+  stroke:currentColor!important;
+  stroke-width:1.8!important;
+  filter:none!important;
+}
+html[data-design] body.working-body[data-page]:is([data-page="student"],[data-page="teacher"],[data-page="studio"]) #content#content nav.tb36-modes.tb36-modes>button .tb36-mode-icon svg * {
+  stroke:currentColor!important;
+}
+html[data-design] body.working-body[data-page]:is([data-page="student"],[data-page="teacher"],[data-page="studio"]) #content#content nav.tb36-modes.tb36-modes>button[aria-pressed="true"] {
+  background:linear-gradient(180deg,#0000000a,#ffffff05),#354258!important;
+  border-color:#2d3c53!important;
+  color:#fff!important;
+  box-shadow:inset 0 2px 3px #1521394d,inset 0 -1px #ffffff1f,0 1px #ffffff75!important;
+}
+html[data-design] body.working-body[data-page]:is([data-page="student"],[data-page="teacher"],[data-page="studio"]) #content#content nav.tb36-modes.tb36-modes>button[aria-pressed="true"]::after {
+  opacity:.02!important;
+}
+html[data-design] body.working-body[data-page]:is([data-page="student"],[data-page="teacher"],[data-page="studio"]) #content#content nav.tb36-modes.tb36-modes>button[aria-pressed="true"] strong {
+  color:#fff!important;
+}
+html[data-design] body.working-body[data-page]:is([data-page="student"],[data-page="teacher"],[data-page="studio"]) #content#content nav.tb36-modes.tb36-modes>button:not([aria-pressed="true"]) :is(strong,.tb36-mode-icon) {
+  color:#354258!important;
+}
+html[data-design] body.working-body[data-page]:is([data-page="student"],[data-page="teacher"],[data-page="studio"]) #content#content nav.tb36-modes.tb36-modes>button[aria-pressed="true"] small {
+  color:#e4eaf4!important;
+}
+html[data-design] body.working-body[data-page]:is([data-page="student"],[data-page="teacher"],[data-page="studio"]) #content#content nav.tb36-modes.tb36-modes>button[aria-pressed="true"] .tb36-mode-icon {
+  background:#4b5d79!important;
+  color:#f0f3fa!important;
+}
+html[data-design] body.working-body[data-page]:is([data-page="student"],[data-page="teacher"],[data-page="studio"]) #content#content nav.tb36-modes.tb36-modes>button[aria-pressed="true"] .tb36-mode-icon svg {
+  color:#f0f3fa!important;
+  stroke:currentColor!important;
+}
+html[data-design] body.working-body[data-page]:is([data-page="student"],[data-page="teacher"],[data-page="studio"]) #content#content nav.tb36-modes.tb36-modes>button:focus-visible {
+  outline:3px solid #315d91!important;
+  outline-offset:3px!important;
+}
+
+/* A submitted score uses the same ink panel as the selected navigation key. */
+html[data-design] body.working-body[data-page="student"] #content#content .dsh .ds-timed .dte-summary {
+ background:#354258!important;color:#fff!important;border:1px solid #2d3c53!important;
+ box-shadow:inset 0 1px #ffffff1f,0 2px 3px #19223516!important;
+}
+html[data-design] body.working-body[data-page="student"] #content#content .dsh .ds-timed .dte-summary :is(strong,span) {color:#fff!important;text-shadow:none!important}
+}
+@media screen and (max-width:680px) {
+html[data-design] body.working-body[data-page]:is([data-page="student"],[data-page="teacher"],[data-page="studio"]) #content#content nav.tb36-modes.tb36-modes {
+  gap:2px!important;
+  padding:4px!important;
+  border-radius:8px!important;
+}
+html[data-design] body.working-body[data-page]:is([data-page="student"],[data-page="teacher"],[data-page="studio"]) #content#content nav.tb36-modes.tb36-modes>button {
+  min-height:66px!important;
+  flex-direction:column!important;
+  gap:4px!important;
+  padding:9px 1px!important;
+  border-radius:5px!important;
+}
+html[data-design] body.working-body[data-page]:is([data-page="student"],[data-page="teacher"],[data-page="studio"]) #content#content nav.tb36-modes.tb36-modes>button strong {
+  font-size:11px!important;
+  line-height:15.4px!important;
+  word-break:keep-all!important;
+}
+html[data-design] body.working-body[data-page]:is([data-page="student"],[data-page="teacher"],[data-page="studio"]) #content#content nav.tb36-modes.tb36-modes>button small {
+  display:none!important;
+}
+html[data-design] body.working-body[data-page]:is([data-page="student"],[data-page="teacher"],[data-page="studio"]) #content#content nav.tb36-modes.tb36-modes>button .tb36-mode-icon {
+  flex:0 0 27px!important;
+  width:27px!important;
+  height:27px!important;
+  border-radius:5px!important;
+}
+html[data-design] body.working-body[data-page]:is([data-page="student"],[data-page="teacher"],[data-page="studio"]) #content#content nav.tb36-modes.tb36-modes>button .tb36-mode-icon svg {
+  width:19px!important;
+  height:19px!important;
+}
+}
+@media screen and (forced-colors:active) {
+html[data-design] body.working-body[data-page]:is([data-page="student"],[data-page="teacher"],[data-page="studio"]) #content#content nav.tb36-modes.tb36-modes>button[aria-pressed="true"] {
+  border:2px solid Highlight!important;
+}
+html[data-design] body.working-body[data-page]:is([data-page="student"],[data-page="teacher"],[data-page="studio"]) #content#content nav.tb36-modes.tb36-modes::before {
+  display:none!important;
+}
+html[data-design] body.working-body[data-page]:is([data-page="student"],[data-page="teacher"],[data-page="studio"]) #content#content nav.tb36-modes.tb36-modes>button::after {
+  display:none!important;
+}
+}

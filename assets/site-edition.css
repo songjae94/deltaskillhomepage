@@ -1,0 +1,93 @@
+/* Palette shared by the public site and the learning desks. The entrance,
+   document previews and printed materials keep their own art direction. */
+@media screen {
+  html.site-edition {
+    --edition-ink: #192235;
+    --edition-active: #354258;
+    --edition-bar: #e9edf6;
+    --edition-selection: #c2cfe2;
+    --edition-rule: #c6ccda;
+    --ds-bg: white;
+    --ds-ink: var(--edition-ink);
+    --ds-line: var(--edition-rule);
+  }
+  html.site-edition:not([data-ds-main]) body:has(> header.ds-head),
+  html.site-edition:not([data-ds-main]) body:is(.payment-flow,.ds-doc,.auth-body,.pb-store),
+  html.site-edition[data-design] body.working-body {
+    background: white !important;
+  }
+  html.site-edition body:not(.home-body) :is(header.ds-head, #header),
+  html.site-edition body:is(.payment-flow,.ds-doc,.auth-body) header.ds-head {
+    background: var(--edition-bar) !important;
+    border-bottom: 1px solid var(--edition-rule) !important;
+    box-shadow: none !important;
+    color: var(--edition-ink);
+  }
+  html.site-edition body:not(.home-body) #header nav[aria-label="주 메뉴"] a,
+  html.site-edition body header.ds-head :is(.ds-menu,.ds-acct) a {
+    color: var(--edition-ink);
+    text-shadow: none;
+  }
+  html.site-edition body header.ds-head nav a[aria-current="page"] {
+    color: var(--edition-ink) !important;
+    box-shadow: inset 0 -2px var(--edition-active);
+  }
+  html.site-edition body:is(.payment-flow,.ds-doc) {
+    --wp-panel: #e8edf5; --wp-key: #354258;
+    --pb-accent: #354258; --pb-btn: #354258; --pb-soft: #e9edf6;
+    --pb-line: #c6ccda; --wp-line: #c6ccda;
+  }
+  html.site-edition body.payment-flow :is(.card,#prod,.cartbox,.pb-help):not(.pb-fail),
+  html.site-edition body.ds-doc .wrap {
+    border-color: var(--edition-rule) !important;
+    box-shadow: 0 2px 7px #1922350c !important;
+  }
+  html.site-edition body.ds-doc .wrap :is(.callout,.pb-sum,th),
+  html.site-edition body.payment-flow .pb-flow {
+    background: var(--edition-bar) !important;
+    color: var(--edition-ink) !important;
+  }
+  html.site-edition body.payment-flow .btn.pri:not(:disabled),
+  html.site-edition body:not(.home-body) header.ds-head a[data-account-secondary] {
+    background: var(--edition-active) !important;
+    color: white !important;
+    text-shadow:none; box-shadow:none !important;
+  }
+  html.site-edition body:is(.payment-flow,.ds-doc) footer.sitefoot,
+  html.site-edition body:is(.payment-flow,.ds-doc) footer.sitefoot .biz {
+    background:#f5f6fa !important;
+    border-color:var(--edition-rule) !important;
+  }
+  html.site-edition .working-body #content {
+    --account-accent: #354258;
+    --account-line: #c6ccda;
+  }
+  html.site-edition body.working-body :is(.help-faq details,.help-quick>a,.account-panel) {
+    border-color: var(--edition-rule);
+  }
+  html.site-edition body:not(.home-body) :is(.ds-menu,.ds-acct,.pb-flow,.help-quick) :focus-visible {
+    outline:2px solid #354258; outline-offset:3px;
+  }
+}
+
+@media screen {
+  html.site-edition[data-design] body.working-body #header,
+  html.site-edition[data-design] body.working-body #header .header {
+    background: var(--edition-bar) !important;
+    border-bottom-color: var(--edition-rule) !important;
+  }
+  html.site-edition[data-design] body.working-body[data-page="library"] #content > .resource-surface {
+    background: white !important;
+  }
+  html.site-edition[data-design] body.working-body[data-page="library"] #content :is(.dl63-shop>label,.library-heading) {
+    color: var(--edition-ink);
+  }
+  html.site-edition[data-design] body.working-body[data-page="account"] #content .ap19-main-nav [aria-current] {
+    color: white !important;
+    background: var(--edition-active) !important;
+  }
+  html.site-edition[data-design] body.working-body[data-page="csat"] #content .dsh-tabs {
+    background:var(--edition-selection) !important;
+    border-color:var(--edition-rule) !important;
+  }
+}

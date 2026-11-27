@@ -1,10 +1,11 @@
-/* Public scope names describe choices. Only the member gate proves extraction availability. */
+/* Public scope names describe choices; the matching public/member API verifies availability. */
 (() => {
   'use strict';
   const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const state = { mode:'random', book:'', units:[], typeMode:'mixed', types:[], subject:'',accessMode:'point' };
   let availability = null, checking = false, checkKey = '', guard = null;
   let deferAccess = false;
+  let publicContext = false;
   const data = () => window.DSPrintScopeData || {books:[]};
   const name = x => x.label || x.name || x.title || x.id;
   const id = x => String(x.id || x.key || '');
@@ -61,6 +62,7 @@
   let levels = {}, offered = [], previousMenu = null, previousSubject = '';
   function setSupply(menu, subject, stage, difficulty) {
     levels = {stage,difficulty};
+    if (publicContext) { offered=inventory?.filter(r=>bookSubjects.get(r.book)===subject)||[]; return; }
     if (previousMenu === menu && previousSubject === subject) return;
     previousMenu = menu; previousSubject = subject;
     const rights = new Set(menu.map(r => JSON.stringify([r.subject,r.unit,r.stage,r.difficulty])));
@@ -69,6 +71,7 @@
   const currentLevel = (r,except) => ['stage','difficulty'].every(k => k === except || !levels[k] || r[k] === levels[k]);
   const levelRows = () => offered.filter(r => currentLevel(r));
   const books = () => {
+    if (publicContext) return catalogBooks();
     const available = new Set(levelRows().map(r => r.book));
     return catalogBooks().filter(b => !inventory || available.has(id(b)));
   };
@@ -83,12 +86,14 @@
   };
   const levelOptions = k => inventory ? [...new Set(chosenScope(k).map(r => r[k]).filter(Boolean))] : null;
   const capacity = () => {
+    if (publicContext) return Number.isInteger(availability?.available_count) ? availability.available_count : null;
     if (!inventory || !active()) return null;
     // Rows may share an item across types or access modes. Only the server can quote an exact total.
     return Math.min(20,chosenScope().reduce((n,r) => n+r.count,0));
   };
   const units = () => {
     const all = baseUnits();
+    if (publicContext) return all;
     if (!inventory) return all;
     const keys = new Set(levelRows().filter(scopedBook).map(r => r.unit));
     return all.filter(u => (u.ids || [id(u)]).some(k => keys.has(k)));
@@ -96,20 +101,35 @@
   const types = () => {
     const group = units().filter(u => !state.units.length || state.units.includes(id(u)));
     const all = [...new Map(group.flatMap(u => u.types || []).map(t => [id(t),t])).values()];
+    if (publicContext) return all;
     if (!inventory) return all;
     const keys = new Set(chosenScope(null,false).map(r => r.type));
     return all.filter(t => keys.has(id(t)));
   };
   const active = () => state.mode !== 'basic';
   const request = () => ({access_mode:state.accessMode,mode:state.mode, book_id:state.mode === 'book' ? state.book : null, subunit_ids:state.mode === 'random' ? rawUnits(state.units) : [...state.units], type_mode:state.typeMode, type_ids:state.typeMode === 'specific' ? [...state.types] : []});
+  const publicCriteria = context => {
+    const scope = request();
+    return {purpose:'print',subject:context.subject, ...(scope.book_id?{bookId:scope.book_id}:{}),
+      unitIds:scope.subunit_ids, typeIds:scope.type_ids,
+      ...(context.stage?{stage:context.stage}:{}),...(context.difficulty?{difficulty:context.difficulty}:{})};
+  };
   function invalidate() { availability = null; checkKey = ''; guard?.abort(); guard = null; checking = false; }
   async function check(host, context) {
     if (!active() || (state.mode === 'book' && !book()) || (state.typeMode === 'specific' && !state.types.length)) return;
     const criteria = {...request(),...context}, key = JSON.stringify(criteria);
-    if (key === checkKey || !host?.scope?.menu || !host.signedIn()) return;
+    const publicAPI = publicContext ? window.DSGuestWorkbook : null;
+    if (key === checkKey || (!publicAPI && (!host?.scope?.menu || !host.signedIn()))) return;
     guard?.abort(); guard = new AbortController(); const own = guard, timer = setTimeout(() => own.abort(),12000); checkKey = key; checking = true; availability = null;
     const abort = new Promise((_, reject) => own.signal.addEventListener('abort', () => reject(Error('scope_timeout')), {once:true}));
-    try { const d = await Promise.race([host.scope.menu(criteria,own.signal), abort]); if (guard === own) availability = d; }
+    try {
+      const task = publicAPI ? publicAPI.catalog(publicCriteria(context)).then(d => {
+        if (!Array.isArray(d?.questions) || d.questions.some(q=>typeof q.id!=='string'||typeof q.version!=='string'||q.subject!==context.subject)) throw Error('catalog');
+        return {extraction_ready:true,available_count:d.questions.length,requested:context.count,public:true,questions:d.questions};
+      }) : host.scope.menu(criteria,own.signal);
+      const d = await Promise.race([task, abort]);
+      if (guard === own) availability=d;
+    }
     catch { if (guard === own) availability = {extraction_ready:false,available_count:0,failed:true}; }
     finally { clearTimeout(timer); if (guard === own) { checking = false; window.dispatchEvent(new Event('ds-print-scope-ready')); } }
   }
@@ -117,13 +137,17 @@
     if (!active()) return {ready:true,count:null,reason:''};
     if (state.mode === 'book' && !book()) return {ready:false,count:0,reason:'연계할 교재를 골라 주세요.'};
     if (state.typeMode === 'specific' && !state.types.length) return {ready:false,count:0,reason:'구성할 유형을 골라 주세요.'};
-    if (awaitingSupply(state.subject)) return {ready:false,count:0,reason:'이 과목의 프린트 문항을 준비하고 있습니다.'};
+    if (!publicContext && awaitingSupply(state.subject)) return {ready:false,count:0,reason:'이 과목의 프린트 문항을 준비하고 있습니다.'};
     const count = Number.isInteger(availability?.available_count) ? availability.available_count : 0;
+    if (publicContext) return {ready:Boolean(availability?.public && count>=availability.requested),count,
+      verified:Boolean(availability?.public),reason:checking?'구성 가능한 문항을 확인하고 있습니다.':availability?.failed?'선택한 범위의 공개 문항을 확인하지 못했습니다.':!count?'이 교재·단원에서 공개 허용된 실제 문항이 없습니다. 다른 범위를 직접 선택해 주세요.':count<availability.requested?`선택 범위에는 ${count}문항이 있습니다. 문항 수나 범위를 바꿔 주세요.`:''};
     const ready = availability?.extraction_ready === true && host?.scope?.version === 1 && count > 0;
     return {ready,count,verified:Boolean(availability && !availability.failed),reason:ready ? '' : checking ? '구성 가능한 문항을 확인하고 있습니다.' : !host?.signedIn() ? '로그인하면 선택한 범위의 문항을 확인할 수 있습니다.' : availability?.failed ? '선택한 범위의 문항 수를 확인하지 못했습니다.' : count > 0 ? '범위를 더 좁혀 구성해 주세요.' : '이 범위에서 지금 구성할 수 있는 문항이 없습니다. 다른 범위를 선택해 주세요.'};
   }
-  function render({subject,stage,difficulty,count,host,pending,guest,menu=[],deferAccess:defer=Boolean(window.DSStudentDownloads?.isPrintActive()),hasLegacySets=false}) {
+  function render({subject,stage,difficulty,count,host,pending,guest,publicAccess=false,menu=[],deferAccess:defer=Boolean(window.DSStudentDownloads?.isPrintActive()),hasLegacySets=false}) {
     deferAccess = defer;
+    publicContext = Boolean(publicAccess);
+    if (publicContext && state.mode==='basic') {state.mode='random';invalidate();}
     if (state.subject !== subject) {
       state.subject = subject;
       state.book = '';
@@ -134,10 +158,10 @@
       invalidate();
     }
     setSupply(menu,subject,stage,difficulty);
-    if (awaitingSupply(subject)) return '';
-    if (!deferAccess) check(host,{subject,stage,difficulty,count});
+    if (!publicContext && awaitingSupply(subject)) return '';
+    if (!deferAccess || publicContext) check(host,{subject,stage,difficulty,count});
     const disabled = pending ? ' disabled' : '';
-    const basic = guest || hasLegacySets || state.mode === 'basic'
+    const basic = !publicContext && (guest || hasLegacySets || state.mode === 'basic')
       ? `<option value="basic"${state.mode === 'basic' ? ' selected' : ''}>${guest ? '기본 맛보기 세트' : '기본 단원 세트'}</option>` : '';
     const choices = books().map(b =>
       `<option value="${esc(id(b))}"${state.mode === 'book' && id(b) === state.book ? ' selected' : ''}>${esc(name(b))}</option>`
@@ -147,7 +171,7 @@
       html+=`<fieldset><legend>세부단원 <small>여러 개 선택 가능</small></legend><label class="ps-all"><input type="checkbox" data-ps-all${!state.units.length?' checked':''}${disabled}>전체 범위</label><div class="ps-picks">${units().map(u=>`<label><input type="checkbox" data-ps-unit="${esc(id(u))}"${state.units.includes(id(u))?' checked':''}${disabled}><span>${esc(name(u))}</span></label>`).join('')}</div></fieldset>`;
       html+=`<fieldset><legend>유형 구성</legend><div class="ps-mode">${(types().length ? ['mixed','specific'] : ['mixed']).map(m=>`<button type="button" data-ps-types="${m}" aria-pressed="${state.typeMode===m}"${disabled}>${m==='mixed'?'유형 섞기':'특정 유형'}</button>`).join('')}</div>${state.typeMode==='specific'?`<div class="ps-picks">${types().map(t=>`<label><input type="checkbox" data-ps-type="${esc(id(t))}"${state.types.includes(id(t))?' checked':''}${disabled}><span>${esc(name(t))}</span></label>`).join('')}</div>`:''}</fieldset>`;
     }
-    if (!deferAccess && availability?.failed && active()) {
+    if ((!deferAccess || publicContext) && availability?.failed && active()) {
       html += '<p role="status">문항 수를 확인하지 못했습니다. <button type="button" data-ps-retry>다시 확인</button></p>';
     }
     return html+'</section>';
@@ -196,5 +220,5 @@
   }
   // 묶은 단원은 그 안의 원래 id 가 다 들어 있을 때만 이름을 낸다(고른 단원 · 빠진 단원 둘 다 같은 셈).
   const unitLabels = ids => units().filter(u => Array.isArray(u.ids) ? u.ids.every(x => ids.includes(x)) : ids.includes(id(u))).map(name);
-  window.DSPrintScope={levelOptions,capacity,awaitingSupply,unitLabels,render,change,status,request,check,active,invalidate,restore,snapshot:()=>structuredClone(state)};
+  window.DSPrintScope={levelOptions,capacity,awaitingSupply,unitLabels,render,change,status,request,publicCriteria,check,active,invalidate,restore,snapshot:()=>structuredClone(state)};
 })();

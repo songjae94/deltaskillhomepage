@@ -1,8 +1,5 @@
-// v61 (11/25 61 · 형 「비로그인 회원이 최소 각 기능을 한번씩은 이용후에 2회차 부터 로그인을 하도록 유도」)
-// A guest (no session) may use each feature once without signing in. From the second use the sign-in card
-// opens instead. Features the server already counts for guests (the trial draw) keep the server's count:
-// the card only asks, and 「로그인 없이 계속」 goes on to the server, which still refuses at its own limit.
-// Payment, purchase and point paths are not touched here: they stay members only where they already are.
+// Study and timed sessions ask for sign-in only at an explicit save or final grade.
+// Other services retain their individual first-use prompts.
 (() => {
   'use strict';
   if (window.DSGuestFirstUse) return;
@@ -11,13 +8,10 @@
   const read = () => { try { const v = JSON.parse(localStorage.getItem(KEY) || '{}'); return v && typeof v === 'object' && !Array.isArray(v) ? v : {}; } catch { return {}; } };
   const write = v => { try { localStorage.setItem(KEY, JSON.stringify(v)); } catch {} };
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  // short text key for one study question (the same question checked again is still the first use)
-  const sig = el => { const p = el?.closest?.('.ssp-paper')?.querySelector('.ssp-prompt'); const t = (p?.textContent || '').replace(/\s+/g, ''); let h = 0; for (let i = 0; i < t.length; i++) h = (h * 31 + t.charCodeAt(i)) | 0; return t ? String(h) : ''; };
-
   // key · name on the card · what counts as one use · server = the server counts this one for guests
   const FEATURES = [
-    { key: 'study', name: '공부하기 문제 풀기', click: '[data-ssp-check],[data-ssp-skip]', same: sig },
-    { key: 'timed', name: '타임어택', click: '[data-time-action="quote"]' },
+    { key: 'study', name: '공부하기 문제 풀기' },
+    { key: 'timed', name: '타임어택' },
     { key: 'preview', name: '교재 미리보기', click: 'a[href*="public-data/NS-"][href*=".pdf"],a[href^="#material/"]' },
     { key: 'cart', name: '장바구니 담기', click: '[data-ms-add]' },
     { key: 'book', name: '교재 만들기 구성 보관', click: '[data-bf62-save]' },
@@ -93,8 +87,6 @@
       if (!f.click) continue;
       const el = e.target.closest?.(f.click);
       if (!el || el.disabled || el.closest('#gf61')) continue;
-      // School timed owns its two successful-start trials; CSAT keeps this existing first-use guard.
-      if (f.key === 'timed' && el.closest('.ds-timed[data-timed-space="school"]')) return;
       guard(e, f, el, () => { const t = el.isConnected ? el : document.querySelector(f.click); bypass = true; try { t?.click(); } finally { bypass = false; } });
       return;
     }

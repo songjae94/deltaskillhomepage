@@ -1,4 +1,4 @@
-/* Keep only the print setup in this tab while the guest signs in. */
+/* Keep the exact print setup and public preview in this tab during sign-in. */
 (() => {
   'use strict';
   const key = 'ds-print-login-draft-v1';
@@ -39,7 +39,7 @@
   window.addEventListener('hashchange', event => {
     if (new URL(event.oldURL).hash !== '#login' || location.hash === '#login') return;
     const draft = read();
-    if (draft && (location.hash !== draft.route || !window.DSService?.session())) {
+    if (draft && location.hash !== draft.route) {
       if (window.DSLoginReturn === draft.route) window.DSLoginReturn = '';
       clear();
     }

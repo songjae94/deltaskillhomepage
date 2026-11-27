@@ -161,11 +161,26 @@
         answerBox(q,id,answers[id],page===ids.length-1);
       const sheet=paperQuestion(q||{unit:'문항 확인 중',prompt:''},page,ids.length,box);
       const canChoose=Boolean(q && !complete && q.answerType==='choice');
-      if (canChoose) requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
         const host=document.querySelector(scope+' [data-exam-paper-id]');
-        if (host?.dataset.examPaperId===id) bindPaper(host);
+        if (host?.dataset.examPaperId!==id) return;
+        if (canChoose) bindPaper(host);
+        const started=performance.now(),status=host.querySelector('[data-exam-loading]');
+        host.querySelector('.dst-prompt')?.append(status);
+        function check(){
+          if(!host.isConnected)return;
+          const frame=host.querySelector('.dst-prompt iframe'),doc=frame?.contentDocument;
+          const body=frame?doc?.body:host.querySelector('.dst-prompt');
+          const ready=body?.textContent.trim()&&(!frame||doc.URL!=='about:blank')&&
+            getComputedStyle(body).visibility!=='hidden'&&(!frame||doc.fonts.status==='loaded');
+          if(ready){status.hidden=true;return;}
+          const elapsed=performance.now()-started;
+          if(elapsed>=1000){status.hidden=false;status.textContent=elapsed<9000?'문항을 불러오고 있어요. 잠시만 기다려 주세요.':'문항 표시가 지연되고 있어요. 답안은 보관되어 있습니다. 다른 문항으로 이동한 뒤 다시 확인해 주세요.';}
+          if(elapsed<9000)setTimeout(check,100);
+        }
+        check();
       });
-      return `<div class="dte-paper-frame" ${canChoose?'data-exam-paper-id="'+escape(id)+'"':''}>${sheet}</div>`;
+      return `<div class="dte-paper-frame" data-exam-paper-id="${escape(id)}">${sheet}<p role="status" data-exam-loading hidden></p></div>`;
     }
     function navigate(target) {
       if (target === page) { focusQuestion(); return; }
@@ -249,7 +264,7 @@
       if (!root || root.querySelector('.dte-inline-choice')) return;
       const set=getActive(),id=host.dataset.examPaperId;
       if (!set || id!==current(set)) return;
-      const q=known(id);if(!q)return;const options=Array.isArray(q.options)?q.options:[];
+      const q=known(id);if(!q||q.answerType!=='choice')return;const options=Array.isArray(q.options)?q.options:[];
       const choose=frame ? button=>{
         if(host.isConnected && getActive() && current(getActive())===id)selectChoice(button);
       } : null;

@@ -1,0 +1,164 @@
+/* Approved 1127 teacher interface: white workspace, indigo navigation.
+   Screen-only controls; document typography, desk photography and access stay owned
+   by the existing print, catalogue and account modules. */
+@media screen {
+ html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) {
+  background:#fff!important;color:#202134;
+  --teacher-review-accent:#5146bd;--teacher-review-rule:#dcdde7;
+ }
+ html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) #content#content .tb36-surface {
+  color:#202134;background:transparent!important;
+ }
+ html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) #content#content .tb36-modes {
+  background:#c2cfe2!important;border:1px solid #a3b3cc!important;
+  border-radius:8px!important;padding:5px!important;gap:5px!important;
+  box-shadow:none!important;margin-bottom:28px;
+ }
+ html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) #content#content .tb36-modes>button {
+  background:transparent!important;color:#26354d!important;border:1px solid transparent!important;
+  box-shadow:none!important;border-radius:5px!important;min-height:68px!important;
+  text-shadow:none!important;filter:none!important;transform:none!important;
+ }
+ html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) #content#content .tb36-modes>button[aria-pressed="true"] {
+  background:#354258!important;border-color:#354258!important;color:#fff!important;
+  box-shadow:none!important;
+ }
+ html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) #content#content .tb36-modes strong {
+  font-size:16px!important;font-weight:750!important;line-height:1.4;letter-spacing:-.035em;
+  color:inherit!important;text-shadow:none!important;
+ }
+ html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) #content#content .tb36-modes small {
+  color:#40516a!important;font-weight:500!important;font-size:12px!important;line-height:1.4;
+ }
+ html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) #content#content nav.tb36-modes>button[data-tb36-mode]:not([aria-pressed="true"]) :is(strong,.tb36-mode-icon) {color:#26354d!important}
+ html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) #content#content nav.tb36-modes>button[data-tb36-mode][aria-pressed="true"] :is(strong,.tb36-mode-icon) {color:#fff!important}
+ html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) #content#content nav.tb36-modes>button[data-tb36-mode][aria-pressed="true"] small {color:#e4eaf4!important}
+ html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) #content#content nav.tb36-modes>button[data-tb36-mode][aria-pressed="true"] .tb36-mode-icon svg {color:#fff!important;stroke:#fff!important;filter:none!important}
+ html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) #content#content .tb36-mode-icon {
+  color:inherit!important;filter:none!important;text-shadow:none!important;
+ }
+ html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) #content#content .tb36-mode-icon svg {stroke-width:1.8}
+ html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) #content#content :is(.tb36-heading,.tb36-material-lead,.tb44-preview-label,.dq61-toolbar) {
+  color:#313145;
+ }
+ html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) #content#content .tb36-heading h1 {
+  color:#202134!important;font-size:clamp(28px,3vw,38px)!important;line-height:1.3;
+ }
+ html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) #content#content :is(.tb36-conditions,.tb36-review-panel,.tb36-finish-panel,.bf62-panel,.creator-config) {
+  background:#fafafe!important;border:1px solid #dcdde7!important;border-radius:8px!important;
+  box-shadow:none!important;color:#292a3e!important;text-shadow:none!important;
+ }
+ html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) #content#content :is(.bf62-summary,.tb36-steps) {
+  background:#fff!important;border-color:#dedee8!important;box-shadow:none!important;color:#49495b;
+ }
+ html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) #content#content :is(.tb36-conditions,.tb36-review-panel,.tb36-finish-panel,.bf62-panel,.creator-config) :is(legend,label,.bf62-label,.bf62-lead,.bf62-source,.bf62-small,.tb36-section-title h2,.creator-material-meta) {
+  color:#414256!important;text-shadow:none!important;
+ }
+ html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) #content#content :is(.tb36-conditions,.tb36-finish-panel,.bf62-panel,.creator-config) :is(input:not([type="checkbox"]):not([type="radio"]),select,textarea) {
+  background:#fff!important;color:#242538!important;border:1px solid #b8bacb!important;
+  border-radius:5px!important;box-shadow:none!important;min-height:44px;
+ }
+ html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) #content#content :is(.bf62-subject,.bf62-part,.tb36-replacements,.tb36-save,.tb36-cover-note) {
+  background:#fff!important;border-color:#d5d6e2!important;color:#414256!important;box-shadow:none!important;
+ }
+ html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) #content#content :is(.bf62-all,.bf62-chip span,.bf62-choice>span,.bf62-segment span) {
+  background:#fff!important;color:#414256!important;border-color:#c8cad9!important;box-shadow:none!important;
+ }
+ html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) #content#content :is(.bf62-all:has(input:checked),.bf62-chip input:checked+span,.bf62-choice input:checked+span,.bf62-segment input:checked+span) {
+  background:#efedfc!important;color:#40358e!important;border-color:#8a80ce!important;box-shadow:inset 0 0 0 1px #8a80ce!important;
+ }
+ html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) #content#content :is(.tb36-primary,.creator-print,.bf62-make:not(:disabled)) {
+  background:#343347!important;border:1px solid #343347!important;color:#fff!important;
+  box-shadow:none!important;border-radius:5px!important;text-shadow:none!important;
+ }
+ html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) #content#content :is(.tb36-steps .is-current b,.tb36-steps .is-done b,.bf62-steps .is-current b,.bf62-steps .is-done b) {
+  background:#5146bd!important;border-color:#5146bd!important;color:#fff!important;box-shadow:none!important;
+ }
+ html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) #content#content .commission-intro {
+  background:#f6f6fb!important;border:1px solid #dedee8!important;border-radius:8px;
+ }
+ html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) #content#content .commission-intro h1 {color:#25243b}
+ html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) #content#content .commission-offers article {border-top-color:#8378c5}
+ html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) #content#content #commission-online :is(.cr-entry,fieldset) {
+  background:#fafafe;border-color:#dedee8;border-radius:6px;
+ }
+ html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) #content#content :is(.commission-offers button,.tb36-heading>a,.tb36-material-lead a) {color:#5146a5}
+ html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) #content#content :is(.tb36-surface,.commission-page) :is(button,a,input,select,textarea):focus-visible {
+  outline:3px solid #776bd0!important;outline-offset:3px;
+ }
+}
+@media screen and (max-width:760px) {
+ html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) #content#content .tb36-modes {
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:4px!important;padding:4px!important;
+ }
+ html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) #content#content .tb36-modes>button {
+  flex-direction:row!important;align-items:center!important;gap:10px!important;padding:12px 10px!important;min-height:60px!important;
+ }
+ html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) #content#content .tb36-modes strong {font-size:14px!important;word-break:keep-all}
+ html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) #content#content .tb36-modes small {display:none!important}
+ html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) #content#content .tb36-mode-icon {width:20px;height:20px;flex:0 0 20px}
+ html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) #content#content .commission-intro {padding:22px}
+}
+/* Book editor: chapter-level steps above one short configuration question. */
+@media screen {
+html[data-design] body.working-body[data-page] #content#content .bf62-root{--bf-ink:#293e58;--bf-sub:#60728b;--bf-accent:#354258;--bf-on-dark:#334a65;--bf-on-dark-sub:#65758a}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-steps{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important;padding:0!important;margin:0 0 20px!important;border:0!important;background:transparent!important;box-shadow:none!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-steps li{min-width:0!important;margin:0!important;padding:0!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-steps li::before{content:none!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-steps button{box-sizing:border-box!important;min-height:56px!important;gap:9px!important;padding:10px 12px!important;border:1px solid #cbd5e1!important;border-radius:5px!important;background:#f4f6f9!important;color:#60728b!important;box-shadow:inset 0 1px #ffffffcc!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-steps button>span{font-size:13px!important;font-weight:600!important;line-height:1.45!important;word-break:keep-all!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-steps li.is-current button{background:#354258!important;border-color:#354258!important;color:#fff!important;box-shadow:inset 0 1px #ffffff22,0 2px 3px #19223514!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-steps li.is-done button{background:#e8eef6!important;color:#3e5676!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-steps b{width:23px!important;height:23px!important;min-width:23px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;border:1px solid #bfcbdc!important;background:#fff!important;color:#5b708d!important;font-size:11px!important;border-radius:50%!important;box-shadow:none!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-steps li.is-current b{background:#ffffff16!important;color:#fff!important;border-color:#ffffff45!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-steps li.is-done b{background:#354258!important;color:#fff!important;border-color:#354258!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-summary{background:#fff!important;border:1px solid #d3dce7!important;border-left:3px solid #8b9eb8!important;border-radius:4px!important;box-shadow:none!important;padding:14px 18px!important;color:#334a65!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-setup{grid-template-columns:340px minmax(0,1fr)!important;gap:28px!important;align-items:start!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root #bf62-form{box-sizing:border-box!important;min-width:0!important;padding:25px 24px!important;border:1px solid #cbd4df!important;border-radius:6px!important;background:#f4f6f9!important;box-shadow:0 2px 5px #263b5108!important;color:#334a65!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-question-progress{display:flex!important;flex-wrap:wrap!important;align-items:center!important;gap:7px!important;padding:0 0 14px!important;margin:0 0 21px!important;border-bottom:1px solid #d4dce7!important;font-size:12px!important;line-height:1.6!important;font-weight:500!important;color:#61758f!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-question-group[hidden]{display:none!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-question-group h2{font-size:19px!important;font-weight:650!important;line-height:1.5!important;letter-spacing:-.6px!important;margin:0 0 16px!important;color:#2f4561!important;word-break:keep-all!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-panel :is(.bf62-lead,.bf62-source,.bf62-small,.bf62-label,.bf62-empty,.bf62-choice small){font-size:12px!important;line-height:1.75!important;color:#61738b!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-panel :is(.bf62-choice>span,.bf62-part,.bf62-subject,.bf62-book){background:#fff!important;border:1px solid #cbd5e2!important;border-radius:5px!important;color:#425a78!important;box-shadow:none!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-panel .bf62-choice input:checked+span{background:#eaf0f7!important;border-color:#8198b5!important;color:#344e70!important;box-shadow:inset 0 0 0 1px #8198b5!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-panel .bf62-choice input:checked+span::before{border-color:#4c6586!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-panel :is(.bf62-chip span,.bf62-all,.bf62-segment span){border-radius:4px!important;font-size:12px!important;min-height:44px!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-panel :is(.bf62-chip input:checked+span,.bf62-all:has(input:checked),.bf62-segment input:checked+span){background:#e8eff7!important;color:#3d5575!important;border-color:#859cb7!important;box-shadow:inset 0 0 0 1px #859cb7!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-panel :is(input[type="text"],input[type="number"],select){font-size:13px!important;line-height:1.5!important;border-color:#bbc9da!important;min-height:44px!important;border-radius:4px!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-nav{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr)!important;align-items:start!important;gap:9px!important;border-top:1px solid #d3dce7!important;padding-top:20px!important;margin-top:24px!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-nav button{box-sizing:border-box!important;min-height:44px!important;padding:10px 9px!important;margin:0!important;border-radius:4px!important;font-size:12px!important;line-height:1.5!important;box-shadow:none!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-nav :is(.tb36-primary,[data-bf62-next]){order:2!important;grid-column:2!important;background:#354258!important;border:1px solid #354258!important;color:#fff!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-nav .bf62-back{order:1!important;grid-column:1!important;background:#fff!important;border:1px solid #bfcddd!important;color:#536b88!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-nav>p{order:3!important;grid-column:1/-1!important;margin:3px 0 0!important;font-size:12px!important;line-height:1.7!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root :is(button,a,input,select):focus-visible,html[data-design] body.working-body[data-page] #content#content .bf62-root label:has(input:focus-visible){outline:3px solid #4b91ae!important;outline-offset:3px!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-toolbar{background:#f8fafc!important;border-bottom:1px solid #d3dce7!important;box-shadow:none!important;color:#3d5775!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-tabs{padding:10px 14px!important;gap:6px!important;background:#fff!important;border-bottom:1px solid #d8e1ea!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-tabs button{min-height:40px!important;padding:8px 12px!important;border:1px solid #c5d0df!important;border-radius:4px!important;background:#fff!important;color:#556c88!important;font-size:12px!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-tabs button[aria-selected="true"]{background:#e8eff7!important;border-color:#8da2bb!important;color:#354e70!important}
+}
+@media screen and (max-width:1100px){html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-setup{grid-template-columns:310px minmax(0,1fr)!important;gap:22px!important}}
+@media screen and (max-width:760px){
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-steps{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;margin-bottom:17px!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-steps button{min-height:50px!important;padding:9px!important;gap:7px!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-steps button>span{font-size:12px!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-summary{position:static!important;padding:12px 14px!important;gap:13px!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-setup{display:flex!important;flex-direction:column!important;gap:22px!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root #bf62-form{order:0!important;width:100%!important;padding:23px 21px!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-preview{order:1!important;width:100%!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-question-group h2{font-size:18px!important}
+}
+@media screen {
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-subject-picker{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;margin:0 0 18px!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-subject-picker>button{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:5px!important;box-sizing:border-box!important;min-width:0!important;min-height:44px!important;margin:0!important;padding:9px 10px!important;border:1px solid #c5d1e0!important;border-radius:4px!important;background:#fff!important;color:#48607f!important;box-shadow:none!important;font-size:12px!important;font-weight:550!important;line-height:1.5!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-subject-picker>button[aria-pressed="true"]{background:#e8eff7!important;border-color:#8299b5!important;color:#344e70!important;box-shadow:inset 0 0 0 1px #8299b5!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-subject-picker>button small{flex:none!important;font-size:10px!important;color:#6c7e97!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root .bf62-question-group .tb36-section-title>b{display:none!important}
+html[data-design] body.working-body[data-page] #content#content .bf62-root #bf62-form .bf62-nav .bf62-back{background:#fff!important;border:1px solid #bfcddd!important;color:#536b88!important;text-decoration:none!important;box-shadow:none!important;font-size:12px!important;font-weight:600!important}
+}
+@media screen {
+html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) #content#content .tb36-modes>button{position:relative!important;isolation:isolate!important;overflow:hidden!important;background:linear-gradient(145deg,#ffffff24,#ffffff05)!important;border:1px solid #ffffff1a!important;box-shadow:inset 0 1px #ffffff2b,inset 0 -1px #1922350c,0 1px 2px #19223508!important}
+html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) #content#content .tb36-modes>button::after{content:""!important;display:block!important;position:absolute!important;inset:0!important;border-radius:inherit!important;background:url("assets/textures/teacher-key-surface-v50.svg") center/240px auto!important;opacity:.035!important;mix-blend-mode:luminosity!important;pointer-events:none!important;z-index:0!important}
+html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) #content#content .tb36-modes>button>*{position:relative!important;z-index:1!important}
+html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) #content#content .tb36-modes>button[aria-pressed="true"]{background:linear-gradient(145deg,#ffffff0c,#00000008),#354258!important;border-color:#2d3c53!important;box-shadow:inset 0 1px #ffffff27,inset 0 -1px #15213940,0 2px 3px #19223518!important}
+html[data-design] body.working-body:is([data-page="teacher"],[data-page="studio"]) #content#content .tb36-modes>button[aria-pressed="true"]::after{opacity:.085!important}
+}

@@ -61,7 +61,7 @@
     </div>`;
   }
 
-  function render({profile, draft = {}, step = 0, phase = 'survey', course, subjects = [], units = [], books = [], supplyPhase = 'idle', quickGuest = false}) {
+  function render({profile, draft = {}, step = 0, phase = 'survey', course, subjects = [], units = [], books = [], supplyPhase = 'idle'}) {
     if (phase === 'return') {
       return `<section class="ssp-plan" aria-label="학습 시작">
         <h3 class="ssp-plan-title" tabindex="-1">오늘은 어디서 시작할까요?</h3>
@@ -79,16 +79,6 @@
         <button type="button" data-plan-reselect>공부 선택 바꾸기</button>
       </section>`;
     }
-    if (quickGuest) {
-      const ready = units.some(unit => unit.id === draft.unit && !unit.disabled);
-      return `<section class="ssp-plan" aria-label="로그인 없이 공부하기">
-        <h3 class="ssp-plan-title" tabindex="-1">공부할 단원을 골라 주세요</h3>
-        ${chooseRange(draft, subjects, units)}
-        ${supplyPhase === 'error' ? '<p role="alert">공개 단원 목록을 불러오지 못했어요.</p><button type="button" data-plan-supply-retry>다시 불러오기</button>' : supplyPhase === 'loading' ? '<p role="status">단원을 불러오는 중이에요.</p>' : subjects.length ? '' : '<p>지금 선택할 수 있는 공개 단원이 없어요.</p>'}
-        <button type="button" class="ssp-plan-primary" data-plan-start${ready ? '' : ' disabled'}>공부 시작</button>
-        <button type="button" class="ssp-plan-link" data-plan-custom>난도·부교재 선택하기</button>
-      </section>`;
-    }
     const index = Number.isInteger(step) && step >= 0 && step < questions.length ? step : 0;
     let choices;
     if (index === 0) {
@@ -99,7 +89,7 @@
       choices = draft.need==='supplement' && !books.length ? '' : draft.need==='supplement' ? chooseBook(draft, books, units) : chooseRange(draft, subjects, units);
       if(supplyPhase==='error')choices+='<p role="status">무료 문항 목록을 확인하지 못했어요.</p><button type="button" data-plan-supply-retry>다시 확인</button>';
       else if(supplyPhase==='loading')choices+='<p role="status">무료로 풀 수 있는 교재와 단원을 확인하고 있어요.</p>';
-      else if(supplyPhase==='guest'&&draft.need==='supplement')choices+='<p>공개 연습 교재를 골라 주세요. <a href="#login">로그인하고 다른 교재 확인</a></p>';
+      else if(supplyPhase==='guest'&&draft.need==='supplement'&&!books.length)choices+='<p>현재 선택할 수 있는 공개 교재가 없어요.</p>';
       else if(draft.need==='supplement'&&!books.length)choices+='<p>지금 선택할 수 있는 교재가 없어요.</p>';
       else if(draft.need!=='supplement'&&!subjects.length)choices+='<p>이 학습에서 선택할 수 있는 과목이 아직 없어요. 이전 질문에서 다른 공부를 골라 주세요.</p>';
       else if(draft.subject&&(!units.length||units.every(u=>u.disabled)))choices+='<p>이 과목의 선택한 학습 문항을 준비하고 있어요. 다른 과목을 골라 주세요.</p>';
