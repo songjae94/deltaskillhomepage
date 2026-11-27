@@ -195,7 +195,7 @@ function displayedAnswer(q,value){
  return q.answerType==='choice'?String(Number(value)+1)+'번':String(value);
 }
 function renderPaper(ids,solution=false){
- return ids.map((id,i)=>{const q=known(id);return '<article class="dst-question"><b>'+String(i+1).padStart(2,'0')+'</b><div><small>'+escape(q.unit)+'</small><p>'+questionContent(q)+'</p>'+(solution?'<p><strong>정답 '+escape(q.answer==null?'채점 결과 확인 중':displayedAnswer(q,q.answer))+'</strong>　'+questionContent(q,true)+'</p>':'')+'</div></article>';}).join('');
+ return ids.map((id,i)=>{const q=known(id);return '<article class="dst-question"><b>'+String(i+1).padStart(2,'0')+'</b><div><small>'+escape(q.unit)+'</small>'+(solution?'<p><strong>정답 '+escape(q.answer==null?'채점 결과 확인 중':displayedAnswer(q,q.answer))+'</strong></p><div class="solbody">'+questionContent(q,true)+'</div>':'<div>'+questionContent(q)+'</div>')+'</div></article>';}).join('');
 }
 async function printPaper(ids,title,includeSolutions=true){
  const w=window.open('','_blank');if(!w){notice='인쇄 창을 허용해 주세요.';paint();return;}
@@ -205,14 +205,90 @@ async function printPaper(ids,title,includeSolutions=true){
   const styles=await Promise.all(['assets/vendor/katex-0.18.4/katex-embed.css','student-hub.css'].map(async name=>{const r=await fetch(new URL(name,document.baseURI));if(!r.ok)throw Error();return r.text();}));
   if(w.closed)return;
   const style=doc.createElement('style');style.textContent=styles.join('\n');doc.head.append(style);
+  const base=doc.createElement('base');base.href=document.baseURI;doc.head.prepend(base);
+  const printStyle=doc.createElement('style');printStyle.textContent=`
+   @font-face{font-family:'DS Timed Print Serif';src:url('${new URL('assets/fonts/NotoSerifKR-Medium.woff2',document.baseURI).href}') format('woff2');font-weight:500;font-style:normal;font-display:block}
+   @page{size:A4;margin:15mm}html,body{margin:0;padding:0;background:white;color:black}
+   .dst-paper .dst-solution-sheet{width:180mm;height:267mm;padding:0;break-after:page;overflow:visible}
+   .dst-solution-sheet>header{box-sizing:border-box;height:26mm;padding:2mm 0 3mm;border-bottom:.35mm solid #333;margin:0 0 4mm}
+   .dst-solution-sheet>header h1{font-size:16pt;margin:2mm 0;line-height:1.3}
+   .dst-solution-sheet>header small,.dst-solution-sheet>header p{font-size:9pt;line-height:1.4;margin:0}
+   .dst-solution-flow{height:228mm;column-count:2;column-gap:8mm;column-rule:.2mm solid #b9b9b9;column-fill:auto}
+   .dst-solution-item{break-inside:avoid-column;margin:0 0 6mm;padding:0;border:0;overflow-wrap:break-word}
+   .dst-solution-item>h2{font:700 11pt/1.5 'Apple SD Gothic Neo','Malgun Gothic',sans-serif;margin:0 0 2.5mm;padding:0 0 1.5mm;border-bottom:.2mm solid #aaa;break-after:avoid}
+   .dst-solution-item>h2 small{font-size:9pt;font-weight:400;margin-left:2mm}
+   .dst-solution-item .solbody{font:500 10.5pt/1.85 'DS Timed Print Serif','Noto Serif KR','Batang',serif;color:black;word-break:keep-all;orphans:2;widows:2}
+   .dst-solution-item .solbody p{margin:0 0 2.5mm;line-height:1.85}
+   .dst-solution-item .solbody .katex{font-size:1em}.dst-solution-item .katex-display{text-align:left;margin:2.5mm 0}
+   .dst-solution-item .katex-display>.katex{text-align:left}.dst-solution-item .solbody ol{padding-left:5mm}
+   .dst-solution-footer{height:8mm;box-sizing:border-box;padding-top:2mm;font:8pt/1.4 sans-serif;text-align:right;color:#555}
+   .dst-print-measure{position:absolute;left:-100000px;top:0;width:86mm;visibility:hidden}
+   .dst-paper>.dst-sheet:last-child{break-after:auto}
+  `;doc.head.append(printStyle);
   const main=doc.createElement('main');main.className='dst-paper';
   const groupSize=ids.some(id=>known(id).format==='sandbox-html'||verifiedFrame(known(id),false))?1:4;
-  for(const sol of (includeSolutions?[false,true]:[false]))for(let i=0;i<ids.length;i+=groupSize){
-   const chunk=ids.slice(i,i+groupSize), sheet=doc.createElement('section');sheet.className='dst-sheet';
-   sheet.innerHTML='<header><small>DELTASKILL　·　'+(sol?'정답과 해설':'학생용 문제지')+'</small><h1>'+escape(title)+'</h1><p>델타스킬　·　'+(i+1)+'–'+(i+chunk.length)+'번</p></header>'+renderPaper(chunk,sol);
+  for(let i=0;i<ids.length;i+=groupSize){
+   const chunk=ids.slice(i,i+groupSize),sheet=doc.createElement('section');sheet.className='dst-sheet';
+   sheet.innerHTML='<header><small>DELTASKILL　·　학생용 문제지</small><h1>'+escape(title)+'</h1><p>델타스킬　·　'+(i+1)+'–'+(i+chunk.length)+'번</p></header>'+renderPaper(chunk,false);
    sheet.querySelectorAll('.dst-question>b').forEach((el,j)=>el.textContent=String(i+j+1).padStart(2,'0'));main.append(sheet);
   }
-  doc.body.replaceChildren(main);await Promise.all([...main.querySelectorAll('iframe')].map(f=>f.matches('.ds-student-fragment')?window.DSStudentFragment.fit(f):sizeFrame(f)));await doc.fonts.ready;await new Promise(ok=>w.requestAnimationFrame(()=>w.requestAnimationFrame(ok)));if(!w.closed)w.print();
+  doc.body.replaceChildren(main);
+  await Promise.all([...main.querySelectorAll('iframe')].map(f=>f.matches('.ds-student-fragment')?window.DSStudentFragment.fit(f):sizeFrame(f)));
+  if(includeSolutions){
+   if(!window.DSSolutionPrint?.prepare){await new Promise((ok,fail)=>{const script=doc.createElement('script');script.src=new URL('solution-print-layout.js?v=4929016b71bd',document.baseURI).href;script.onload=ok;script.onerror=()=>fail(Error('solution_layout_unavailable'));doc.head.append(script);});}
+   const prepare=window.DSSolutionPrint?.prepare||w.DSSolutionPrint?.prepare;if(!prepare)throw Error('solution_layout_unavailable');
+   const measure=doc.createElement('div');measure.className='dst-print-measure';doc.body.append(measure);
+   const entries=[];
+   for(let index=0;index<ids.length;index++){
+    const q=known(ids[index]),entry=doc.createElement('article');entry.className='dst-solution-item';entry.dataset.questionNumber=String(index+1);
+    entry.innerHTML='<h2>'+String(index+1).padStart(2,'0')+' <small>정답 '+escape(q.answer==null?'채점 결과 확인 중':displayedAnswer(q,q.answer))+'</small></h2><div class="solbody">'+questionContent(q,true)+'</div>';
+    measure.append(entry);
+    for(const frame of [...entry.querySelectorAll('iframe')]){
+     if(frame.matches('.ds-student-fragment'))await window.DSStudentFragment.fit(frame);else await sizeFrame(frame);
+     const source=frame.contentDocument;if(!source?.body)throw Error('solution_unavailable');await source.fonts.ready;
+     const fragment=doc.createDocumentFragment();
+     for(const node of source.body.childNodes)fragment.append(doc.importNode(node,true));
+     fragment.querySelectorAll('script,style,link,meta,base,iframe,frame,frameset,object,embed,form,button,input,video,audio,foreignObject,animate,animateMotion,animateTransform,set').forEach(node=>node.remove());
+     for(const element of fragment.querySelectorAll('*')){
+      for(const attribute of [...element.attributes]){
+       const key=attribute.name.toLowerCase(),value=attribute.value;
+       if(key.startsWith('on')||['srcdoc','target','download','action','formaction','srcset','ping','autofocus','contenteditable'].includes(key)){element.removeAttribute(attribute.name);continue;}
+       if(['href','xlink:href','src'].includes(key)){
+        if(value.startsWith('#'))continue;
+        const image=/^(?:img|image)$/i.test(element.localName),data=/^data:image\/(?:png|jpeg|gif|webp|svg\+xml)[;,]/i.test(value);
+        let local='';try{const u=new URL(value,source.baseURI);if(u.origin===location.origin&&/^https?:$/.test(u.protocol))local=u.href;}catch{}
+        if(image&&(data||local))element.setAttribute(attribute.name,data?value:local);else element.removeAttribute(attribute.name);
+       }
+      }
+      for(const key of [...element.style]){
+       const value=element.style.getPropertyValue(key),urls=[...value.matchAll(/url\s*\(([^)]*)\)/gi)];
+       if(/expression\s*\(|@import|javascript:|-moz-binding|behavior/i.test(value)||urls.some(match=>!/^['"]?#[-\w:.]+['"]?$/.test(match[1].trim())))element.style.removeProperty(key);
+      }
+     }
+     frame.replaceWith(fragment);
+    }
+    if(!entry.querySelector('.solbody').textContent.trim()&&!entry.querySelector('.solbody img,.solbody svg'))throw Error('solution_unavailable');
+    entries.push(entry);entry.remove();
+   }
+   measure.remove();await doc.fonts.ready;
+   let flow;const pages=[];
+   const newPage=()=>{const sheet=doc.createElement('section');sheet.className='dst-sheet dst-solution-sheet';sheet.innerHTML='<header><small>DELTASKILL　·　정답과 해설</small><h1>'+escape(title)+'</h1><p>문제지의 문항 번호에 맞춰 확인하세요.</p></header><div class="dst-solution-flow"></div><footer class="dst-solution-footer"></footer>';main.append(sheet);pages.push(sheet);flow=sheet.querySelector('.dst-solution-flow');};
+   const fits=()=>{prepare(flow);return flow.scrollWidth<=flow.clientWidth+2&&[...flow.querySelectorAll('.solbody img,.solbody table')].every(el=>el.getBoundingClientRect().right<=flow.getBoundingClientRect().right+2);};
+   const blocks=body=>{const nodes=[...body.childNodes].filter(n=>n.nodeType===1||n.textContent.trim());if(nodes.length===1&&nodes[0].nodeType===1&&nodes[0].matches('div,article,section')&&nodes[0].children.length>1)return blocks(nodes[0]);return nodes;};
+   newPage();
+   for(const entry of entries){
+    flow.append(entry);if(fits())continue;
+    entry.remove();if(flow.children.length)newPage();flow.append(entry);if(fits())continue;
+    entry.remove();const parts=blocks(entry.querySelector('.solbody'));if(parts.length<2)throw Error('solution_block_too_tall');
+    let segment,body,continued=false;
+    const nextSegment=()=>{segment=entry.cloneNode(false);const heading=entry.querySelector('h2').cloneNode(true);if(continued)heading.append(doc.createTextNode(' · 계속'));body=doc.createElement('div');body.className='solbody';segment.append(heading,body);flow.append(segment);continued=true;};
+    nextSegment();
+    for(const part of parts){body.append(part);if(fits())continue;part.remove();if(!body.childNodes.length)segment.remove();newPage();nextSegment();body.append(part);if(!fits())throw Error('solution_block_too_tall');}
+   }
+   const lastFlow=pages.at(-1).querySelector('.dst-solution-flow');lastFlow.style.columnFill='balance';prepare(lastFlow);
+   pages.forEach((sheet,i)=>sheet.querySelector('footer').textContent='정답과 해설　'+(i+1)+' / '+pages.length);
+  }
+  await doc.fonts.ready;await new Promise(ok=>w.requestAnimationFrame(()=>w.requestAnimationFrame(ok)));if(!w.closed)w.print();
  }catch{if(!w.closed)doc.body.textContent='문제지 조판을 불러오지 못했습니다. 창을 닫고 다시 인쇄해 주세요.';}
 }
 function title(){

@@ -1,0 +1,28 @@
+/* Controls and viewport only. Printed page, iframe document and desk image are unchanged. */
+@media screen {
+ html[data-design] body:is([data-page="student"],[data-page="teacher"]) #content#content#content .dq-paper-styles [data-document-design] {
+  min-height:44px!important;position:relative;border:1px solid #b9c5cf!important;
+  background:#fff!important;color:#354b61!important;box-shadow:none!important;
+ }
+ html[data-design] body:is([data-page="student"],[data-page="teacher"]) #content#content#content .dq-paper-styles [data-document-design][aria-pressed="true"] {
+  border:2px solid #3d5d79!important;background:#e3ebf1!important;color:#253b50!important;
+  box-shadow:inset 3px 0 #3d5d79!important;font-weight:750!important;
+ }
+ html[data-design] body:is([data-page="student"],[data-page="teacher"]) #content#content#content .dq-paper-styles [data-document-design]:focus-visible {
+  outline:3px solid #315d91!important;outline-offset:3px!important;
+ }
+ html[data-design] body:is([data-page="student"],[data-page="teacher"]) #content#content#content .dq-paper-styles [data-document-design]:not([aria-pressed="true"]):hover {
+  background:#f1f5f8!important;border-color:#7890a5!important;
+ }
+ @media(min-width:1101px) {
+  html[data-design] body:is([data-page="student"],[data-page="teacher"]) #content#content#content .dq59-setup:has(.dq-paper-styles)>.dq59-stage {
+   position:sticky!important;top:var(--print-live-top,94px)!important;align-self:start!important;
+   max-height:calc(100dvh - var(--print-live-top,94px) - 16px)!important;
+   min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;
+   overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#a7b4c0 #edf1f5;
+  }
+ }
+ @media(forced-colors:active) {
+  html[data-design] body:is([data-page="student"],[data-page="teacher"]) #content#content#content .dq-paper-styles [data-document-design][aria-pressed="true"] {outline:2px solid Highlight!important;outline-offset:-3px!important}
+ }
+}

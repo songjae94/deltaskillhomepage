@@ -328,7 +328,7 @@
     if(expandCrowded(frame.contentDocument.body,drawn)) rerender();
   });
   // Runs inside the print document: site math renderer first, then fit each cell.
-  const fitScript = `(async()=>{try{const R=window.WebMathRendererV23;if(R){R.typeset(document.body);await R.prepareFonts();}await Promise.all(Array.from(document.images,async i=>{await i.decode();if(!i.naturalWidth||!i.naturalHeight)throw Error('image');}));await document.fonts.ready;if(!window.frameElement?.hasAttribute('data-dq-print-frame'))await new Promise(r=>{let done=false;const go=()=>{if(!done){done=true;r();}};requestAnimationFrame(()=>requestAnimationFrame(go));setTimeout(go,300);});for(const l of document.querySelectorAll('.dq59-choices[data-auto],.dq59-choices[data-fit="3"],.dq59-choices[data-fit="2"]')){if(!l.offsetWidth)continue;const o=['5','3','2','1'];let i=Math.max(0,o.indexOf(l.dataset.auto||l.dataset.fit));for(;i<o.length;i++){l.dataset.fit=o[i];if(Array.from(l.children).every(li=>{const w=li.style.whiteSpace;li.style.whiteSpace='nowrap';const ok=li.scrollWidth<=li.clientWidth+1;li.style.whiteSpace=w;return ok;}))break;}}for(const k of document.querySelectorAll('.qbody .katex')){if(k.parentElement.closest('.katex'))continue;const el=k.closest('.어절')||k;el.style.zoom='';const blk=(k.closest('.katex-display')||el).parentElement.closest('p,li,td,div');const room=blk?blk.clientWidth:0,w=el.getBoundingClientRect().width;if(room&&w>room+1)el.style.zoom=Math.max(.6,Math.floor(room/w*100)/100);}const wide=el=>el.scrollWidth>el.clientWidth+1;for(const box of document.querySelectorAll('.qbody')){const inner=box.firstElementChild;const edge=box.getBoundingClientRect();if([...inner.querySelectorAll('.katex-display')].some(wide)||inner.getBoundingClientRect().height>box.clientHeight+1||Array.from(inner.querySelectorAll('*')).some(el=>{if(el.closest('.katex')&&!el.classList.contains('katex-html'))return false;const r=el.getBoundingClientRect();return r.width>0&&(r.right>edge.right+1.5||r.bottom>edge.bottom+1.5||r.left<edge.left-1.5||r.top<edge.top-1.5);})){document.body.dataset.overflow='true';box.closest('.question').dataset.needsSpace='true';}}const flow=document.querySelector('.solflow');if(flow){for(const a of flow.querySelectorAll('.ans[data-tex]')){try{a.innerHTML=window.katex.renderToString(a.dataset.tex,{throwOnError:true,displayMode:false,trust:false,strict:'ignore'});}catch{}}let colCount=2;const gap=parseFloat(getComputedStyle(flow).columnGap)||0;let fb=flow.getBoundingClientRect(),colW=(fb.width-gap)/2,pitch=colW+gap;const clipped=(f=flow)=>{const fb=f.getBoundingClientRect();return Array.from(f.querySelectorAll('p,li,td,th,div')).filter(el=>!el.querySelector('p,li,td,th,div,table')).some(wide)||Array.from(f.querySelectorAll('*')).some(el=>{const inK=el.closest('.katex');if(inK&&(el.closest('.katex-mathml')||el.ownerSVGElement||el.localName==='svg'||/(^|\\s)(strut|pstrut|vlist-s)(\\s|$)/.test(String(el.className.baseVal??el.className))))return false;const blk=el.closest('p,li,td,th,div,article')||f;return Array.from(el.getClientRects()).some(r=>{if(!(r.width>0))return false;const cy=(r.top+r.bottom)/2,cx=(r.left+r.right)/2;let fr=null,best=Infinity;for(const q of blk.getClientRects()){if(cy<q.top-1||cy>q.bottom+1)continue;const gapx=cx<q.left?q.left-cx:cx>q.right?cx-q.right:0;if(gapx<best){best=gapx;fr=q;}}if(!fr)fr=r;const L=fb.left+Math.floor((fr.left-fb.left+1.5)/pitch)*pitch,side=r.width>colW+1.5||r.left<L-1.5||r.right>L+colW+1.5;return inK?side:(side||r.bottom>fb.bottom+1.5||r.top<fb.top-1.5);});});};if(clipped()){flow.style.columnCount='1';colCount=1;fb=flow.getBoundingClientRect();colW=fb.width;pitch=colW+gap;}window.dqSolClipped=clipped;if(clipped())document.body.dataset.overflow='true';document.body.dataset.solColumns=colCount;const cols=Math.max(1,Math.round((flow.scrollWidth+gap)/pitch)),n=Math.ceil(cols/colCount);document.body.dataset.solPages=n;const src=flow.closest('.paper'),only=document.body.dataset.solOnly;const list=only===undefined||only===''?Array.from({length:n},(_,i)=>i):[Math.min(n-1,Number(only))];for(const j of list){const pg=src.cloneNode(true);pg.classList.remove('solmeasure');pg.querySelector('.solflow').style.transform='translateX(-'+(j*colCount*pitch)+'px)';const no=pg.querySelector('.pgno');if(no&&no.dataset.base!=='')no.textContent=(Number(no.dataset.base)+j+1)+' / '+(Number(no.dataset.base)+n);document.body.insertBefore(pg,src);}src.remove();document.querySelectorAll('.pgq').forEach(e=>{e.textContent=e.dataset.i+' / '+(Number(e.dataset.q)+n);});}}catch{document.body.dataset.renderError='fit';}document.body.dataset.ready='true';if(window.frameElement?.hasAttribute('data-dq-print-frame'))window.frameElement.dispatchEvent(new Event('dq-print-ready'));if(window.frameElement?.matches('iframe.dq59-paper')&&document.body.dataset.overflow)window.frameElement.dispatchEvent(new Event('dq-paper-fit',{bubbles:true}));})();`;
+  const fitScript = `(async()=>{try{const R=window.WebMathRendererV23;if(R){R.typeset(document.body);await R.prepareFonts();}await Promise.all(Array.from(document.images,async i=>{await i.decode();if(!i.naturalWidth||!i.naturalHeight)throw Error('image');}));await document.fonts.ready;if(!window.frameElement?.hasAttribute('data-dq-print-frame'))await new Promise(r=>{let done=false;const go=()=>{if(!done){done=true;r();}};requestAnimationFrame(()=>requestAnimationFrame(go));setTimeout(go,300);});for(const l of document.querySelectorAll('.dq59-choices[data-auto],.dq59-choices[data-fit="3"],.dq59-choices[data-fit="2"]')){if(!l.offsetWidth)continue;const o=['5','3','2','1'];let i=Math.max(0,o.indexOf(l.dataset.auto||l.dataset.fit));for(;i<o.length;i++){l.dataset.fit=o[i];if(Array.from(l.children).every(li=>{const w=li.style.whiteSpace;li.style.whiteSpace='nowrap';const ok=li.scrollWidth<=li.clientWidth+1;li.style.whiteSpace=w;return ok;}))break;}}for(const k of document.querySelectorAll('.qbody .katex')){if(k.parentElement.closest('.katex'))continue;const el=k.closest('.어절')||k;el.style.zoom='';const blk=(k.closest('.katex-display')||el).parentElement.closest('p,li,td,div');const room=blk?blk.clientWidth:0,w=el.getBoundingClientRect().width;if(room&&w>room+1)el.style.zoom=Math.max(.6,Math.floor(room/w*100)/100);}const wide=el=>el.scrollWidth>el.clientWidth+1;for(const box of document.querySelectorAll('.qbody')){const inner=box.firstElementChild;const edge=box.getBoundingClientRect();if([...inner.querySelectorAll('.katex-display')].some(wide)||inner.getBoundingClientRect().height>box.clientHeight+1||Array.from(inner.querySelectorAll('*')).some(el=>{if(el.closest('.katex')&&!el.classList.contains('katex-html'))return false;const r=el.getBoundingClientRect();return r.width>0&&(r.right>edge.right+1.5||r.bottom>edge.bottom+1.5||r.left<edge.left-1.5||r.top<edge.top-1.5);})){document.body.dataset.overflow='true';box.closest('.question').dataset.needsSpace='true';}}const flow=document.querySelector('.solflow');if(flow){for(const a of flow.querySelectorAll('.ans[data-tex]')){try{a.innerHTML=window.katex.renderToString(a.dataset.tex,{throwOnError:true,displayMode:false,trust:false,strict:'ignore'});}catch{}}window.DSSolutionPrint.prepare(flow);const colCount=2;const gap=parseFloat(getComputedStyle(flow).columnGap)||0,fb=flow.getBoundingClientRect(),colW=(fb.width-gap)/2,pitch=colW+gap;const clipped=(f=flow)=>{const fb=f.getBoundingClientRect();return Array.from(f.querySelectorAll('p,li,td,th,div')).filter(el=>!el.querySelector('p,li,td,th,div,table')).some(wide)||Array.from(f.querySelectorAll('*')).some(el=>{const inK=el.closest('.katex');if(inK&&(el.closest('.katex-mathml')||el.ownerSVGElement||el.localName==='svg'||/(^|\\s)(strut|pstrut|vlist-s)(\\s|$)/.test(String(el.className.baseVal??el.className))))return false;const blk=el.closest('p,li,td,th,div,article')||f;return Array.from(el.getClientRects()).some(r=>{if(!(r.width>0))return false;const cy=(r.top+r.bottom)/2,cx=(r.left+r.right)/2;let fr=null,best=Infinity;for(const q of blk.getClientRects()){if(cy<q.top-1||cy>q.bottom+1)continue;const gapx=cx<q.left?q.left-cx:cx>q.right?cx-q.right:0;if(gapx<best){best=gapx;fr=q;}}if(!fr)fr=r;const L=fb.left+Math.floor((fr.left-fb.left+1.5)/pitch)*pitch,side=r.width>colW+1.5||r.left<L-1.5||r.right>L+colW+1.5;return inK?side:(side||r.bottom>fb.bottom+1.5||r.top<fb.top-1.5);});});};window.dqSolClipped=clipped;if(clipped())document.body.dataset.overflow='true';document.body.dataset.solColumns=colCount;const cols=Math.max(1,Math.round((flow.scrollWidth+gap)/pitch)),n=Math.ceil(cols/colCount);document.body.dataset.solPages=n;const src=flow.closest('.paper'),only=document.body.dataset.solOnly;const list=only===undefined||only===''?Array.from({length:n},(_,i)=>i):[Math.min(n-1,Number(only))];for(const j of list){const pg=src.cloneNode(true);pg.classList.remove('solmeasure');pg.querySelector('.solflow').style.transform='translateX(-'+(j*colCount*pitch)+'px)';const no=pg.querySelector('.pgno');if(no&&no.dataset.base!=='')no.textContent=(Number(no.dataset.base)+j+1)+' / '+(Number(no.dataset.base)+n);document.body.insertBefore(pg,src);}src.remove();document.querySelectorAll('.pgq').forEach(e=>{e.textContent=e.dataset.i+' / '+(Number(e.dataset.q)+n);});}}catch{document.body.dataset.renderError='fit';}document.body.dataset.ready='true';if(window.frameElement?.hasAttribute('data-dq-print-frame'))window.frameElement.dispatchEvent(new Event('dq-print-ready'));if(window.frameElement?.matches('iframe.dq59-paper')&&document.body.dataset.overflow)window.frameElement.dispatchEvent(new Event('dq-paper-fit',{bubbles:true}));})();`;
   const asset = path => safe(new URL(path, location.href).href);
   function documentHTML(only, sample) {
     const source = sample || drawn;
@@ -349,7 +349,7 @@
     const css = `:root{--question-type-size:13.5px}*{box-sizing:border-box}html,body{margin:0;padding:0;background:#fff;color:#191919;font-family:${face}}body{font-size:12px}.paper{width:210mm;height:297mm;padding:14mm 13mm;position:relative;break-after:page;overflow:hidden}.head{height:25mm;border-bottom:1px solid #353535;margin-bottom:7mm}.brand{display:flex;justify-content:space-between;font-size:9px;letter-spacing:.03em}.head h1{font-size:23px;letter-spacing:-.03em;margin:12px 0 5px;text-align:${s.titleAlign === 'center' ? 'center' : 'left'}}.student{float:right;font-size:10px}.body{height:225mm}.questions{display:grid;grid-template-columns:${n === 1 ? '1fr' : '1fr 1fr'};grid-template-rows:${n === 4 ? '1fr 1fr' : '1fr'};gap:7mm;height:100%}.question{min-width:0;min-height:0;display:flex;flex-direction:column;overflow:hidden}.qhead{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #cfcfcf;padding-bottom:4px;margin-bottom:9px}.qhead b{font-size:17px}.qhead small{font-size:8px;color:#777}.qbody{flex:1;min-height:0;overflow:hidden}.qbody>div{font-size:var(--question-type-size);line-height:1.75;word-break:keep-all;overflow-wrap:anywhere}.qbody p{margin:0 0 .7em}.qbody img{max-width:100%;height:auto}.qbody math{font-size:1em}.qbody .dq59-bogi{position:relative;margin:1.3em 0 .9em;padding:1.1em .9em .6em;border:1px solid #333}.qbody .dq59-cond,.solbody .dq59-cond{margin:.9em 0;padding:.6em .9em;border:1px solid #333}.dq59-cond-line{display:block}.dq59-cond-line+.dq59-cond-line{margin-top:.35em}.qbody .dq59-bogi-title{position:absolute;top:-.8em;left:50%;transform:translateX(-50%);padding:0 .7em;background:#fff;white-space:nowrap}.qbody .dq59-bogi-title:before{content:'〈 '}.qbody .dq59-bogi-title:after{content:' 〉'}.qbody table{border-collapse:collapse;margin:.5em 0}.qbody td,.qbody th{border:1px solid #555;padding:3px 8px;text-align:center}.qbody ol,.qbody ul{margin:.6em 0;padding-left:1.4em}.qbody .dq59-choices{list-style:none;padding:0;margin:1em 0 0;display:grid;gap:.55em 1em;grid-template-columns:repeat(var(--cols),minmax(0,1fr))}.qbody .dq59-choices[data-fit="5"]{--cols:5}.qbody .dq59-choices[data-fit="3"]{--cols:3}.qbody .dq59-choices[data-fit="2"]{--cols:2}.qbody .dq59-choices[data-fit="1"]{--cols:1}.qbody .dq59-choices li{position:relative;min-width:0;padding-left:1.6em}.qbody .dq59-choices li:not([data-mark]){padding-left:0}.qbody .dq59-choices li[data-mark]:before{content:attr(data-mark);position:absolute;left:0}.head small{font-size:10px}.solwin{height:225mm;overflow:hidden}.solflow{height:225mm;column-count:2;column-gap:7mm;column-fill:auto;font-size:var(--question-type-size);line-height:1.7;word-break:keep-all;overflow-wrap:anywhere}.sol{margin:0 0 5mm}.solhead{display:flex;gap:10px;align-items:baseline;border-bottom:1px solid #ddd;padding-bottom:3px;margin-bottom:6px;break-after:avoid}.solhead b{font-size:14px}.solhead>span{font-size:inherit;font-weight:700}.solbody p{margin:0 0 .6em}.solbody img{max-width:100%;height:auto}.solbody table{border-collapse:collapse;margin:.4em 0}.solbody td,.solbody th{border:1px solid #555;padding:2px 6px;text-align:center}.solnone{color:#777}.solmeasure{position:absolute;left:-9999px;top:0}.foot{position:absolute;bottom:10mm;left:13mm;right:13mm;display:flex;justify-content:space-between;font-size:9px;color:#666}@page{size:A4;margin:0}@media print{.paper:last-child{break-after:auto}}`;
     // Samples and generated/printed pages share the same math/font preparation.
     // Native MathML alone makes the sample's body fractions smaller than print.
-    const renderScripts = `<script src="${asset('assets/vendor/katex-0.18.4/katex.min.js')}"><\/script><script src="${asset('math-typeset-v66.js?v=66.1')}"><\/script><script src="${asset('math-render-v23.js?v=66.1')}"><\/script><script>${fitScript}<\/script>`;
+    const renderScripts = `<script src="${asset('assets/vendor/katex-0.18.4/katex.min.js')}"><\/script><script src="${asset('math-typeset-v66.js?v=66.1')}"><\/script><script src="${asset('math-render-v23.js?v=66.1')}"><\/script>${withSolutions?`<script src="${asset('solution-print-layout.js?v=4929016b71bd')}"><\/script>`:''}<script>${fitScript}<\/script>`;
     const html = `<!doctype html><html lang="ko"><meta charset="utf-8"><title>${heading}</title><link rel="stylesheet" href="${asset('assets/vendor/katex-0.18.4/katex-embed.css?v=24.3')}"><link rel="stylesheet" href="${asset('math-render-v23.css?v=66.1')}"><style>${css}
       ${s.font !== 'sans' ? examSerifFace : ''}
       .qbody .dq61-q {font-family:${s.font === 'sans' ? printSans : examSerif};font-weight:400}
@@ -575,14 +575,29 @@
     document.querySelector(focus)?.focus({preventScroll:true});
     return true;
   }
+  function markDesignButtons(design) {
+    document.querySelectorAll('#content .dq-paper-styles [data-document-design]').forEach(button=>{
+      button.setAttribute('aria-pressed',String(button.dataset.documentDesign===design));
+    });
+  }
+  function paintSampleDesign(frame) {
+    const doc=frame.contentDocument;
+    if(!doc?.body?.hasAttribute('data-document-design'))return;
+    doc.body.dataset.documentDesign=window.DSDocumentDesign.selected().id;
+    const number=doc.querySelector('.pgq');
+    if(number){
+      const pages=sheets(sampleData().items).length;
+      number.dataset.q=String(pages);
+      number.textContent='1 / '+pages;
+    }
+  }
   function chosenPrintUnits() {
     const scope=window.DSPrintScope;
     if (guestSettings() && !publicPrint() || !scope?.active()) return sel.unit ? [sel.unit] : [];
     return scope.unitLabels(scope.request().subunit_ids);
   }
   function idle() {
-    if (publicPrint()) return `<aside class="dq59-stage dq59-idle tb36-order-preview ds48-canvas dq61-desk"><div class="ds48-preview-toolbar"><strong>프린트 미리보기</strong></div><p class="dq59-saved" role="status">선택한 교재·단원의 문항을 구성하면 전체 지면이 여기에 표시됩니다.</p></aside>`;
-    if (savedTrialPreview()) return loadingCards();
+    if (!publicPrint() && savedTrialPreview()) return loadingCards();
     const list = guest() ? [] : savedList();
     const data = sampleData();
     if (!data) {
@@ -595,7 +610,7 @@
     const sheet = showSample && `<iframe class="dq61-sample-page" title="${data.labels.subject} ${data.labels.unit} 프린트 자료" tabindex="-1" scrolling="no" srcdoc="${safe(documentHTML(0,data))}"></iframe>`;
     const surface = showSample ? window.DSPrintSurfaceV48.scene(sheet) : '';
     const enlarge = showSample ? '<button type="button" class="dq61-sample-link" aria-haspopup="dialog" data-dq-large-sample>지면 예시 보기 ↗</button>' : '';
-    const toolbar = '<strong>'+safe(showSample?'지면 예시 · '+data.labels.unit:selectedUnits.join(' · '))+'</strong><span class="dq-paper-actions"><button type="button" data-dq-open-settings>구성 설정 ↓</button>'+enlarge+'</span>';
+    const toolbar = '<strong>'+safe(showSample?'지면 예시 · '+data.labels.unit:selectedUnits.join(' · '))+' · <span data-dq-preview-design>'+safe(window.DSDocumentDesign.selected().name)+'</span></strong><span class="dq-paper-actions"><button type="button" data-dq-open-settings>구성 설정 ↓</button>'+enlarge+'</span>';
     return `<aside class="dq59-stage dq59-idle tb36-order-preview ds48-canvas dq61-desk dq61-sample-desk" aria-busy="${Boolean(pending)}"><div class="ds48-preview-toolbar">${toolbar}</div><p class="dq59-saved">현재 설정 · ${safe(sel.subject||data.labels.subject)} ${safe(selectedUnits.join(' · ')||'전체 범위')} · 현재 지면은 델타스킬 자체 문항 예시입니다. 선택 범위의 문항은 구성한 뒤 표시됩니다.</p><div class="dq61-sample-window">${surface}</div>${list.length && !pending ? `<div class="dq59-saved"><h3>이 기기에 임시 보관한 구성</h3><ul>${list.map((x, i) => `<li><button type="button" data-dq-reopen="${i}"><strong>${safe(x.title)}</strong><small>${safe(label(x.labels))} · ${x.ids.length}문항 · ${safe(x.day)}</small></button><button type="button" data-dq-forget="${i}" aria-label="${safe(x.title)} 지우기">×</button></li>`).join('')}</ul></div>` : ''}</aside>`;
   }
   // The faint card in the next place once today's free questions are used: no question in it.
@@ -1116,12 +1131,67 @@
     };
     job.guest=true; run(job);
   }
+  function publicPageList() {
+    const specs=sheets().map((sheet,i)=>({key:(sheet.designRecord?'r':'q')+sheet.offset,only:i}));
+    if(solOn())for(let i=0;i<(drawn.solPages||1);i++)specs.push({key:'s'+i,only:'s'+i});
+    return specs;
+  }
+  function publicScene(spec,i) {
+    return window.DSPrintSurfaceV48.scene(`<iframe class="dq59-paper" data-paper-key="${spec.key}" title="${i+1}쪽 인쇄 지면" scrolling="no" style="width:793.7008px;height:1122.5197px" srcdoc="${safe(documentHTML(spec.only))}"></iframe>`);
+  }
   function publicFinish() {
     drawn.previewReady=false;
-    const questionPages=sheets().length;
-    const pages=questionPages+(solOn()?drawn.solPages||1:0);
-    const papers=Array.from({length:pages},(_,i)=>window.DSPrintSurfaceV48.scene(`<iframe class="dq59-paper" title="${i+1}쪽 인쇄 지면" scrolling="no" style="width:793.7008px;height:1122.5197px" srcdoc="${safe(documentHTML(i<questionPages?i:'s'+(i-questionPages)))}"></iframe>`)).join('');
-    return `<div class="tb36-workspace dq59-work"><aside class="tb36-finish-panel dq59-panel"><div class="tb36-section-title"><h2 data-public-print-heading>프린트 미리보기 준비</h2></div><p>${safe(label(drawn.labels))} · ${drawn.items.length}문항</p><label>제목<input data-dq-title maxlength="60" value="${safe(title)}"></label>${paperControls()}<label class="dq59-check"><input type="checkbox" data-dq-sol ${withSol?'checked':''}><span>정답·해설 포함</span></label>${drawn.publicSolFailed?'<button type="button" class="tb36-quiet" data-public-sol-retry>정답·해설 미리보기 다시 불러오기</button>':''}<p>최종 인쇄 시 로그인과 문항 이용 권한을 확인합니다.</p><button type="button" class="tb36-primary" data-dq-print disabled>${waitPrint?'인쇄 권한 확인 중':'인쇄 / PDF 저장'} ↗</button><button type="button" class="tb36-quiet" data-dq-back>조건 변경</button>${noteHTML()}<p role="status" aria-live="polite" data-public-print-progress>미리보기 지면을 준비하고 있습니다.</p><button type="button" class="tb36-quiet" data-public-preview-retry hidden style="display:none!important">지면 다시 배치</button></aside><div class="creator-canvas td34-canvas tb36-canvas ds48-canvas dq59-canvas"><div class="creator-canvas-toolbar"><strong>전체 인쇄 미리보기 · ${drawn.items.length}문항 · ${pages}쪽</strong></div><div class="creator-paper-stage" style="display:flex;flex-direction:column;gap:24px">${papers}</div><div class="creator-canvas-footer">A4 · 210 × 297 mm</div></div></div>`;
+    const specs=publicPageList(),pages=specs.length,papers=specs.map(publicScene).join('');
+    return `<div class="tb36-workspace dq59-work"><aside class="tb36-finish-panel dq59-panel"><div class="tb36-section-title"><h2 data-public-print-heading>프린트 미리보기 준비</h2></div><p>${safe(label(drawn.labels))} · ${drawn.items.length}문항</p><label>제목<input data-dq-title maxlength="60" value="${safe(title)}"></label>${paperControls()}<label class="dq59-check"><input type="checkbox" data-dq-sol ${withSol?'checked':''}><span>정답·해설 포함</span></label>${drawn.publicSolFailed?'<button type="button" class="tb36-quiet" data-public-sol-retry>정답·해설 미리보기 다시 불러오기</button>':''}<p>최종 인쇄 시 로그인과 문항 이용 권한을 확인합니다.</p><button type="button" class="tb36-primary" data-dq-print disabled>${waitPrint?'인쇄 권한 확인 중':'인쇄 / PDF 저장'} ↗</button><button type="button" class="tb36-quiet" data-dq-back>조건 변경</button>${noteHTML()}<p role="status" aria-live="polite" data-public-print-progress>미리보기 지면을 준비하고 있습니다.</p><button type="button" class="tb36-quiet" data-public-preview-retry hidden style="display:none!important">지면 다시 배치</button></aside><div class="creator-canvas td34-canvas tb36-canvas ds48-canvas dq59-canvas"><div class="creator-canvas-toolbar"><strong>전체 인쇄 미리보기 · <span data-dq-preview-design>${safe(window.DSDocumentDesign.selected().name)}</span> · ${drawn.items.length}문항 · <span data-dq-preview-pages>${pages}</span>쪽</strong></div><div class="creator-paper-stage" style="display:flex;flex-direction:column;gap:24px">${papers}</div><div class="creator-canvas-footer">A4 · 210 × 297 mm</div></div></div>`;
+  }
+  // Keep loaded problem sheets on the desk while the chosen design adds or removes
+  // its writing pages. Changing the cover lines or labels never draws new questions.
+  function paintPublicDesign(design) {
+    const stage=document.querySelector('#content .dq59-canvas .creator-paper-stage');
+    if(!stage)return false;
+    const previous=new Map([...stage.querySelectorAll('iframe[data-paper-key]')].map(f=>[f.dataset.paperKey,f]));
+    const specs=publicPageList(),needed=new Set(specs.map(s=>s.key));
+    const questionPages=specs.filter(s=>!s.key.startsWith('s')).length;
+    for(const [key,frame] of previous){
+      if(!needed.has(key))frame.closest('.ds48-paper-scene').remove();
+    }
+    let cursor=stage.firstElementChild;
+    for(const [i,spec] of specs.entries()){
+      const frame=previous.get(spec.key);
+      if(!frame){
+        const slot=document.createElement('template');
+        slot.innerHTML=publicScene(spec,i);
+        stage.insertBefore(slot.content,cursor);
+        continue;
+      }
+      const body=frame.contentDocument?.body;
+      frame.title=(i+1)+'쪽 인쇄 지면';
+      if(body?.dataset.documentDesign!==design){
+        if(body)body.dataset.documentDesign=design;
+        if(spec.key.startsWith('q') && body?.dataset.ready==='true'){
+          const number=body.querySelector('.pgq');
+          if(number){number.dataset.q=String(questionPages);number.textContent=(i+1)+' / '+specs.length;}
+          // Margin and sequence change the space available for math. Use the same
+          // fit checks as export, including the existing roomy-page fallback.
+          body.removeAttribute('data-ready');
+          body.removeAttribute('data-overflow');
+          body.querySelectorAll('[data-needs-space]').forEach(el=>el.removeAttribute('data-needs-space'));
+          const refit=frame.contentDocument.createElement('script');
+          refit.textContent=fitScript;body.append(refit);refit.remove();
+        }else {
+          // Writing pages contain design-specific instructions. Solution footers
+          // include the number of writing pages and are regenerated from the same set.
+          if(body)body.removeAttribute('data-ready');
+          frame.srcdoc=documentHTML(spec.only);
+        }
+      }
+      cursor=frame.closest('.ds48-paper-scene').nextElementSibling;
+    }
+    stage.closest('.dq59-canvas').querySelector('[data-dq-preview-pages]').textContent=specs.length;
+    drawn.previewReady=false;
+    window.DSPrintSurfaceV48.fit(stage);
+    watchPublicPreview(drawn);
+    return true;
   }
   function publicAnswer(row) {
     if(row.answerType==='choice'){
@@ -1705,9 +1775,10 @@
     if (e.target.hasAttribute?.('data-dq-note-placement')) { pageNote.placement=e.target.value; updateSampleText(); }
     if (e.target.hasAttribute?.('data-dq-divider')) {
       columnRule = e.target.value === 'on';
-      if (phase === 'setup' && e.target.closest('#dq59-form')) {
-        const frame = document.querySelector('#content .dq61-sample-page');
-        frame?.contentDocument?.querySelector('.questions')?.setAttribute('data-divider',e.target.value);
+      if ((phase === 'setup' && e.target.closest('#dq59-form')) || (phase === 'finish' && drawn?.publicWorkbook)) {
+        for (const frame of document.querySelectorAll('#content .dq61-sample-page,#content iframe.dq59-paper')) {
+          frame.contentDocument?.querySelector('.questions')?.setAttribute('data-divider',e.target.value);
+        }
       } else rerender('[data-dq-divider]:checked');
       return;
     }
@@ -1742,8 +1813,11 @@
     paper.querySelector('.foot span').textContent = [identity,(pageNote.placement==='footer' && pageNote.text) || settings.footerText || 'DELTASKILL · '+data.labels.unit].filter(Boolean).join(' · ');
   }
   document.addEventListener('load',e=>{
-    if (!e.target.matches?.('.dq61-sample-page')) return;
+    const isSample=e.target.matches?.('.dq61-sample-page');
+    if (!isSample && !(drawn?.publicWorkbook && e.target.matches?.('#content iframe.dq59-paper'))) return;
     e.target.contentDocument?.querySelector('.questions')?.setAttribute('data-divider',columnRule?'on':'off');
+    if(!isSample)return;
+    paintSampleDesign(e.target);
     updateSampleText();
   },true);
   document.addEventListener('input', e => {
@@ -1765,7 +1839,16 @@
   window.addEventListener('ds-document-design-change', () => { if (here() && printSurface()) {
     page = 0;
     const focus = `button[data-document-design="${window.DSDocumentDesign.selected().id}"]`;
-    if (!updateSetupPaper(focus)) rerender(focus);
+    const design=window.DSDocumentDesign.selected().id;
+    markDesignButtons(design);
+    const name=document.querySelector('#content [data-dq-preview-design]');
+    if(name)name.textContent=window.DSDocumentDesign.selected().name;
+    if(phase==='setup'){
+      const sample=document.querySelector('#content iframe.dq61-sample-page');
+      if(sample){paintSampleDesign(sample);return;}
+    }
+    if(phase==='finish'&&drawn?.publicWorkbook&&paintPublicDesign(design))return;
+    rerender(focus);
   } });
   window.addEventListener('pagehide', () => { clearTrial(); stop(); dropSolutions(); });
   window.DSDrawTeacherV59 = { suspendStudent(){clearTrial();closeOutput();stop();waitPrint=false;document.getElementById('dq61-gate')?.close();},renderStudent:()=>B.withPrintSurface?B.withPrintSurface(mine):mine(),mount, snapshot: () => ({ phase, pending: Boolean(pending), note: { ...note }, count: drawn?.items.length ?? 0, layout, guest: Boolean(drawn?.guest), trial: trialOn, seen: seenToday, sol: drawn?.solOp ? { done: drawn.solOp.done, total: drawn.solOp.total, ready: Boolean(drawn.solutions), failed: drawn.solOp.failed } : null }) };
