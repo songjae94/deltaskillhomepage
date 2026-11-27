@@ -53,7 +53,7 @@
   }
   function hideExtras(current) {
     const root=current.state.root, keep=[current.state.prompt];
-    root.querySelectorAll('.ssp-options,.ssp-integer-answer,.dte-entry input').forEach(node=>keep.push(node));
+    root.querySelectorAll('.ssp-options,.ssp-integer-answer,.dte-entry').forEach(node=>keep.push(node));
     const branches=new Set([root]);
     for(const node of keep) for(let ancestor=node;ancestor&&ancestor!==root;ancestor=ancestor.parentElement) branches.add(ancestor);
     for(const branch of branches) {
@@ -75,7 +75,9 @@
     backdrop.className='ds-qfs-backdrop'; backdrop.setAttribute('aria-hidden','true');
     closeButton.type='button';closeButton.className='ds-qfs-close';closeButton.title='전체화면 닫기';closeButton.setAttribute('aria-label',closeButton.title);
     closeButton.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4v5H4m5 0L3 3m12 17v-5h5m-5 0 6 6"/></svg>';
-    const current={state,closeButton,backdrop,styles:[],hidden:[],inert:[],attrs:[],scrollX,scrollY,focus:document.activeElement,mode:mode(),nativeRequested:false};
+    // Timed navigation replaces the paper, while the exam container stays mounted.
+    const nativeRoot=state.timed?root.closest('.ds-timed'):root;
+    const current={state,closeButton,backdrop,nativeRoot,styles:[],hidden:[],inert:[],attrs:[],scrollX,scrollY,focus:document.activeElement,mode:mode(),nativeRequested:document.fullscreenElement===nativeRoot};
     session=current;
     for(const name of ['role','aria-modal','aria-label','tabindex']) current.attrs.push([name,root.getAttribute(name)]);
     root.setAttribute('role','dialog');root.setAttribute('aria-modal','true');root.setAttribute('aria-label','문제와 보기 전체화면');root.tabIndex=-1;
@@ -92,13 +94,13 @@
     hideExtras(current); closeButton.addEventListener('click',()=>close());
     root.scrollTop=0;closeButton.focus({preventScroll:true});
     root.querySelectorAll('iframe').forEach(bindFrame);
-    if(gesture&&!mobile.matches&&document.fullscreenEnabled&&root.requestFullscreen){
+    if(gesture&&!mobile.matches&&document.fullscreenEnabled&&nativeRoot.requestFullscreen){
       current.nativeRequested=true;
-      root.requestFullscreen().then(()=>{if(session!==current&&document.fullscreenElement===root)document.exitFullscreen?.().catch(()=>{});}).catch(()=>{});
+      nativeRoot.requestFullscreen().then(()=>{if(session?.nativeRoot!==nativeRoot&&document.fullscreenElement===nativeRoot)document.exitFullscreen?.().catch(()=>{});}).catch(()=>{});
     }
     window.dispatchEvent(new Event('resize'));
   }
-  function close({restoreFocus=true,remember=true}={}) {
+  function close({restoreFocus=true,remember=true,keepNative=false}={}) {
     if(remember)suppressMode=mode();
     if(!session)return;
     const current=session;session=null;const root=current.state.root;
@@ -108,7 +110,7 @@
     for(const [node,name,value,priority] of current.styles.reverse()){if(value)node.style.setProperty(name,value,priority);else node.style.removeProperty(name);}
     for(const [node,value] of current.inert)if(node.isConnected)node.inert=value;
     for(const [name,value] of current.attrs){if(value===null)root.removeAttribute(name);else root.setAttribute(name,value);}
-    if(document.fullscreenElement===root)document.exitFullscreen?.().catch(()=>{});
+    if(!keepNative&&document.fullscreenElement===current.nativeRoot)document.exitFullscreen?.().catch(()=>{});
     window.scrollTo(current.scrollX,current.scrollY);
     if(restoreFocus){const focus=visible(current.focus)?current.focus:current.state.button;if(visible(focus))focus.focus({preventScroll:true});}
     window.dispatchEvent(new Event('resize'));
@@ -124,7 +126,7 @@
     return result;
   }
   function keydown(event) {
-    if(!session)return;
+    if(!session||document.querySelector('dialog:modal'))return;
     if(event.key==='Escape'){event.preventDefault();event.stopPropagation();close();return;}
     if(event.key!=='Tab')return;
     const controls=allControls(),first=controls[0],last=controls[controls.length-1];
@@ -135,6 +137,14 @@
   }
   function refresh() {
     queued=false;
+    if(session?.state.timed&&!session.state.root.isConnected&&mode()==='timed') {
+      const paper=session.nativeRoot.querySelector('.dst-sheet:has(.dst-prompt)');
+      const next=paper?.isConnected&&register(paper);
+      if(next&&!finished(next)&&visible(paper)) {
+        close({restoreFocus:false,remember:false,keepNative:true});
+        open(next,false);
+      }
+    }
     if(session&&(!session.state.root.isConnected||!mode()||session.mode!==mode()||session.state.root.closest('[hidden]')||finished(session.state)))close({restoreFocus:false,remember:finished(session.state)});
     if(!mode())return;
     for(const root of document.querySelectorAll(paperSelector)){
@@ -146,7 +156,7 @@
   function schedule(){if(!queued){queued=true;requestAnimationFrame(refresh);}}
   document.addEventListener('keydown',keydown,true);
   document.addEventListener('load',event=>{if(event.target?.matches?.('.ssp-prompt iframe,.dst-prompt iframe')){bindFrame(event.target);schedule();}},true);
-  document.addEventListener('fullscreenchange',()=>{if(session&&document.fullscreenElement!==session.state.root&&session.nativeRequested)close();});
+  document.addEventListener('fullscreenchange',()=>{if(session&&document.fullscreenElement!==session.nativeRoot&&session.nativeRequested)close();});
   document.addEventListener('click',event=>{
     if(event.target.closest('[data-hub-tab],[data-sample-action="next"],[data-ssp-next],[data-exam-forward],[data-time-index],[data-time-action],[data-ssp-start],[data-ssp-type],[data-ssp-retry],[data-ssp-remote-retry]')){suppressMode=null;schedule();}
   },true);
