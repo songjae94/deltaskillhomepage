@@ -113,7 +113,7 @@ window.addEventListener('ds-session-change',()=>{
  if(signed()&&submittingTicket&&loginTicket()?.id===submittingTicket){
   replaceTrialQuery('trialResult',submittingTicket);submittingTicket=null;
  }
- if(previousMember&&!signed())clearTrial();
+ if(previousMember&&!signed()){clearTrial();try{sessionStorage.removeItem('ds-member-timed-drafts-v1');}catch{}}
  previousMember=signed();accountChanged();
 });
 window.addEventListener('storage',event=>{
@@ -476,6 +476,26 @@ function known(id){return resources.get(id)||byId.get(id);}
 function fetchItem(publicQ,meta){
  return {...meta,grade:gradeNames.indexOf(meta.subject)>0?gradeNames.indexOf(meta.subject):grade,id:publicQ.id,unit:publicQ.unit,answer:publicQ.answer,prompt:'',solution:'',questionFrame:publicQ.questionFrame,solutionFrame:publicQ.solutionFrame,answerType:'choice'};
 }
+// Navigation may end the document before its debounced save starts.
+// Retain only unacknowledged answers, scoped to a one-way auth hash in this tab.
+const memberDraftKey='ds-member-timed-drafts-v1';
+function readMemberDrafts(){try{return JSON.parse(sessionStorage.getItem(memberDraftKey))||{};}catch{return {};}}
+function writeMemberDrafts(rows){try{if(Object.keys(rows).length)sessionStorage.setItem(memberDraftKey,JSON.stringify(rows));else sessionStorage.removeItem(memberDraftKey);}catch{}}
+function pendingMemberDraft(item){
+ const d=readMemberDrafts()[item.setId];
+ if(!item.draftOwner||!d||d.owner!==item.draftOwner||d.startedAt!==item.startedAt||!Array.isArray(d.ids)||!Array.isArray(d.versions)||d.ids.join('|')!==item.questionIds.join('|')||d.versions.join('|')!==(item.versions||[]).join('|')||!d.answers||Array.isArray(d.answers))return {};
+ return Object.fromEntries(Object.entries(d.answers).filter(([id,v])=>item.questionIds.includes(id)&&/^-?\d{1,9}$/.test(String(v))));
+}
+function saveMemberDraft(item){
+ if(item.kind!=='custom'||!item.draftOwner)return;
+ const rows=readMemberDrafts(),answers={...pendingMemberDraft(item),...item.pendingAnswers};
+ rows[item.setId]={owner:item.draftOwner,startedAt:item.startedAt,ids:item.questionIds,versions:item.versions,answers};writeMemberDrafts(rows);
+}
+function acknowledgeMemberDraft(item,ack){
+ const rows=readMemberDrafts(),d=rows[item.setId];if(!d||d.owner!==item.draftOwner)return;
+ for(const [id,value]of Object.entries(ack))if(String(d.answers[id])===String(value))delete d.answers[id];
+ if(!Object.keys(d.answers).length)delete rows[item.setId];writeMemberDrafts(rows);
+}
 async function accept(result){const s=result.set||result;const ids=s.questionIds||s.questions?.map(q=>q.id);if(!Array.isArray(ids)||!ids.length||!s.setId||!Number.isFinite(new Date(s.startedAt).getTime())||!(s.durationSeconds>0))throw Error('세트 정보를 확인할 수 없어요.');const observedEpoch=epoch,receivedAt=Date.now();
  // New servers prepare every problem before starting the server clock. Install only a complete matching
  // bundle; older servers omit it and keep using the existing authorised open path below.
@@ -509,7 +529,15 @@ async function accept(result){const s=result.set||result;const ids=s.questionIds
   if(epoch!==observedEpoch)return;
   await Promise.all(ids.slice(i,i+4).map((id,j)=>loadQuestion(id,i+j)));
  }
- if(epoch!==observedEpoch)return;if(active?.setId!==s.setId)exam.reset();lastId=s.setId;const now=Date.parse(result.serverNow||s.serverNow);active={...s,preparedQuestions:undefined,offset:Number.isFinite(now)?now-receivedAt:0,kind:'custom',questionIds:ids,responses:{...(s.responses||{})}};}
+ if(epoch!==observedEpoch)return;
+ let draftOwner='';const token=window.DSAuth?.get();
+ if(token&&crypto.subtle){const bytes=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('timed-draft:'+token));draftOwner=Array.from(new Uint8Array(bytes),n=>n.toString(16).padStart(2,'0')).join('');}
+ if(epoch!==observedEpoch||window.DSAuth?.get()!==token)return;
+ if(active?.setId!==s.setId)exam.reset();lastId=s.setId;const now=Date.parse(result.serverNow||s.serverNow);active={...s,preparedQuestions:undefined,offset:Number.isFinite(now)?now-receivedAt:0,kind:'custom',draftOwner,questionIds:ids,responses:{...(s.responses||{})}};
+ if(s.status==='running'){
+  const pending=pendingMemberDraft(active);if(Object.keys(pending).length){active.responses={...active.responses,...pending};active.pendingAnswers=pending;active.dirty=true;clearTimeout(draftTimer);const item=active;draftTimer=setTimeout(()=>flushDraft(item).catch(()=>{}),0);}
+ }else{const rows=readMemberDrafts();if(rows[s.setId]?.owner===draftOwner){delete rows[s.setId];writeMemberDrafts(rows);}}
+}
 let draftTimer=0,draftQueue=Promise.resolve();
 function numericAnswers(values){
  const answers={};for(const [id,value] of Object.entries(values)){const v=String(value??'').trim();if(!v){answers[id]=null;continue;}if(!/^-?\d{1,9}$/.test(v))throw Error('정수로 입력해 주세요.');answers[id]=Number(v);}return answers;
@@ -528,7 +556,7 @@ function flushDraft(item){
     saved=await service().saveResponses({...payload,responses:numericAnswers(merged),expectedVersion:remote.version,requestId:nextRequest()});
     if(epoch===ownerEpoch)item.responses={...merged,...item.pendingAnswers};
    }else throw err;}
-   if(epoch===ownerEpoch)item.version=(saved.set||saved).version;
+   if(epoch===ownerEpoch){item.version=(saved.set||saved).version;acknowledgeMemberDraft(item,draft);}
   }catch(err){if(ownerEpoch===epoch){item.pendingAnswers={...draft,...item.pendingAnswers};item.dirty=true;const msg=document.querySelector(scope+'>[role=status]');if(msg)msg.textContent='답 저장을 확인하지 못했어요. 세트를 닫기 전에 다시 시도해 주세요.';}throw err;}
  });return draftQueue;
 }
@@ -557,6 +585,7 @@ async function action(command){if(busy)return;const sessionEpoch=epoch;notice=''
   if(!csat&&guestWorkbook()){
    if(previous&&!confirmedReplacement){dialogMode='guest-replace';paint();return;}
    if(!remote||candidates().length<count){notice='선택 범위의 문항이 부족해요. 범위를 다시 확인해 주세요.';paint();return;}
+   const finishWait=window.DSWaitStatus?.begin('시험 문항을 불러오고 있어요.');
    busy=true;paint();const slow=setTimeout(()=>{if(epoch===sessionEpoch&&busy){notice='시험 문항을 불러오고 있어요. 잠시만 기다려 주세요.';paint();}},1000);
    try{
     const ids=candidates().map(q=>q.id);for(let i=ids.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[ids[i],ids[j]]=[ids[j],ids[i]];}
@@ -569,7 +598,7 @@ async function action(command){if(busy)return;const sessionEpoch=epoch;notice=''
     sessionStorage.setItem(fixedKey(grade),JSON.stringify(set));for(const g of [1,2,3,4])if(g!==grade)sessionStorage.removeItem(fixedKey(g));
     for(const q of publicQuestions)resources.set(q.id,q);setTicket(null);replaceTrialQuery();active=set;exam.reset();dialogMode='';notice='';
    }catch(e){if(epoch===sessionEpoch)notice=['rate_limited','trial_exhausted'].includes(e.code)?'공개 문항 이용 한도에 도달했어요. 안내된 시간 뒤에 다시 시도해 주세요.':'시험 문항을 불러오지 못했어요. 같은 조건으로 다시 시도해 주세요.';}
-   finally{clearTimeout(slow);if(epoch===sessionEpoch){busy=false;paint();if(active)showExamStart();}}
+   finally{clearTimeout(slow);finishWait?.();if(epoch===sessionEpoch){busy=false;paint();if(active)showExamStart();}}
    return;
   }
   const rows=csat?fixedQuestions(grade):guestSelection();
@@ -596,6 +625,8 @@ async function action(command){if(busy)return;const sessionEpoch=epoch;notice=''
  if(command==='print'){printPaper(active.questionIds,title(),['finished','expired'].includes(active.status));return;}
  if(command==='finish'&&active?.kind==='fixed'){if(!signed()){submitSchoolTrial(active);return;}active.timedOut=remaining()===0;active.status=active.timedOut?'expired':'finished';saveFixed();paint();return;}
  if(!signed()){dialogMode='';quote=null;if(!csat&&window.DSGuestFirstUse?.prompt){paint();window.DSGuestFirstUse.prompt('timed',{need:true});return;}if(csat){dialogMode='member-login';paint();return;}notice='로그인하고 이어서 이용해 주세요.';paint();return;}if(!service()){notice='로그인과 계정 연결을 확인해 주세요.';paint();return;}
+ const waitLabel={quote:'시험 조건을 확인하고 있어요.',start:'시험 문항을 불러오고 있어요.',resume:'시험을 이어 여는 중이에요.',finish:'답안을 채점하고 있어요.'}[command];
+ const finishWait=waitLabel?window.DSWaitStatus?.begin(waitLabel):null;
  busy=true;try{
  if(command==='quote'){
   if(!csat){notice='선택한 시험 문항과 포인트를 확인하고 있어요.';paint();}
@@ -644,7 +675,7 @@ async function action(command){if(busy)return;const sessionEpoch=epoch;notice=''
      else throw error;
    }
  }
- }catch(e){if(sessionEpoch===epoch&&command==='start')dialogMode='error';if(sessionEpoch===epoch&&command==='start'&&['quote_changed','price_changed'].includes(e.code||e.message)){quote=null;notice='조건이 달라졌어요. 시작 전에 포인트를 다시 확인해 주세요.';}else if(sessionEpoch===epoch)notice=command==='resume'?'최근 세트를 불러오지 못했어요. 계정의 시작 기록을 확인해 주세요.':e.code==='no_points'||e.code==='insufficient_points'?'포인트가 부족해요. 문항 수를 줄인 뒤 다시 확인해 주세요.':e.code==='bad_answer'||e.message==='정수로 입력해 주세요.'?'답은 정수로 입력해 주세요.':['source_unavailable','source_changed','not_ready','not_permitted'].includes(e.code||e.message)?'선택한 시험 문항의 원본을 확인하지 못했어요. 같은 범위에서 문항을 다시 골라 주세요.':(e.code||e.message)==='timeout'?'시험 문항 확인이 지연되고 있어요. 같은 조건으로 다시 시도해 주세요.':'계정에서 요청을 확인하지 못했어요. 같은 조건으로 다시 확인해 주세요.';}finally{if(sessionEpoch===epoch){busy=false;paint();if(active&&['start','resume'].includes(command))showExamStart();}}}
+ }catch(e){if(sessionEpoch===epoch&&command==='start')dialogMode='error';if(sessionEpoch===epoch&&command==='start'&&['quote_changed','price_changed'].includes(e.code||e.message)){quote=null;notice='조건이 달라졌어요. 시작 전에 포인트를 다시 확인해 주세요.';}else if(sessionEpoch===epoch)notice=command==='resume'?'최근 세트를 불러오지 못했어요. 계정의 시작 기록을 확인해 주세요.':e.code==='no_points'||e.code==='insufficient_points'?'포인트가 부족해요. 문항 수를 줄인 뒤 다시 확인해 주세요.':e.code==='bad_answer'||e.message==='정수로 입력해 주세요.'?'답은 정수로 입력해 주세요.':['source_unavailable','source_changed','not_ready','not_permitted'].includes(e.code||e.message)?'선택한 시험 문항의 원본을 확인하지 못했어요. 같은 범위에서 문항을 다시 골라 주세요.':(e.code||e.message)==='timeout'?'시험 문항 확인이 지연되고 있어요. 같은 조건으로 다시 시도해 주세요.':'계정에서 요청을 확인하지 못했어요. 같은 조건으로 다시 확인해 주세요.';}finally{finishWait?.();if(sessionEpoch===epoch){busy=false;paint();if(active&&['start','resume'].includes(command))showExamStart();}}}
 document.addEventListener('click',e=>{if(!csat&&e.target.closest(scope+' [data-time-login]'))window.DSLoginReturn='#student';const b=e.target.closest(scope+' button');if(!b||busy)return;if(active&&exam.click(b))return;if(b.dataset.timeAction)action(b.dataset.timeAction);});
 document.addEventListener('change',e=>{
  if(!e.target.matches('input[name="timed-warmup-answer"]')||!e.target.closest(scope)||active)return;
@@ -684,14 +715,16 @@ function recordAnswer(id,value){
  if(!item?.questionIds.includes(id)||item.status!=='running'||remaining()===0)return;
  item.responses[id]=String(value);
  if(item.kind==='fixed'){saveFixed();return;}
- item.pendingAnswers||={};item.pendingAnswers[id]=item.responses[id];item.dirty=true;
+ item.pendingAnswers||={};item.pendingAnswers[id]=item.responses[id];item.dirty=true;saveMemberDraft(item);
  clearTimeout(draftTimer);draftTimer=setTimeout(()=>flushDraft(item).catch(()=>{}),500);
 }
 document.addEventListener('input',e=>{if(active&&!busy&&e.target.closest(scope))exam.input(e.target);});
 setInterval(()=>{if(!busy)exam.tick();},250);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!busy)exam.tick();});
 async function loadSubmittedResult(){
- try{await restoreSchoolResult();}catch{gradeError=true;notice='제출한 답안을 채점하지 못했어요. 답안은 보관되어 있습니다. 다시 확인해 주세요.';paint();}
+ if(claiming)return;
+ const finishWait=window.DSWaitStatus?.begin('제출한 답안을 채점하고 있어요.');
+ try{await restoreSchoolResult();}catch{gradeError=true;notice='제출한 답안을 채점하지 못했어요. 답안은 보관되어 있습니다. 다시 확인해 주세요.';paint();}finally{finishWait?.();}
 }
 const mount=()=>{
  if(active)return;

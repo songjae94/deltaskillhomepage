@@ -19,9 +19,10 @@
     return draft;
   }
   function save(route, settings) {
-    if (!Object.hasOwn(roleMode, route)) return;
+    if (!Object.hasOwn(roleMode, route)) return false;
     fallback = {route, settings, at:Date.now()};
-    try { sessionStorage.setItem(key, JSON.stringify(fallback)); } catch {}
+    try { sessionStorage.setItem(key, JSON.stringify(fallback)); return true; }
+    catch { try { sessionStorage.removeItem(key); } catch {} return false; }
   }
   function take(route) {
     const draft = read();

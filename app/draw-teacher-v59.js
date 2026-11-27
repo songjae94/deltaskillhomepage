@@ -89,7 +89,7 @@
   const rows = prefix => listed().filter(r => FIELDS.every(([k]) => !(k in prefix) || r[k] === prefix[k]));
   const current = () => listed().find(r => FIELDS.every(([k]) => r[k] === sel[k]));
   const label = r => `${r.subject} · ${r.unit} · ${r.stage}단계 · ${r.difficulty}`;
-  const publicPrint = () => Boolean(sharedPrint() && !host()?.signedIn() && workbook()?.catalog && workbook()?.draw);
+  const publicPrint = () => Boolean(sharedPrint() && workbook()?.catalog && workbook()?.draw);
   const guestSettings = () => Boolean(!host()?.signedIn() && (host()?.trial || publicPrint()));
   const guest = () => { const h = host(); return Boolean(!h?.signedIn() && (publicPrint() || trialOn && h?.trial)); };
   const publicSubjects = () => [...new Set([
@@ -102,6 +102,7 @@
   // What one guest draw may hold: the set's size, the server's per-draw cap and what is left today.
   const guestCap = row => Math.min(row?.size ?? 0, limits?.max_items ?? 0, leftToday());
   function settle() {
+    if(publicPrint())return;
     if (!listed().length) return;
     // Keep the choice valid from left to right.
     const prefix = {};
@@ -154,7 +155,7 @@
     return '/auth/?mode=signup&next=' + encodeURIComponent(/^\/[A-Za-z0-9_\-./?#=&%]*$/.test(path) && !path.startsWith('//') ? path : location.pathname + target);
   }
   function keepPrintSettings() {
-    window.DSPrintLoginReturn?.save(studentSurface() ? '#student' : '#teacher', {
+    return window.DSPrintLoginReturn?.save(studentSurface() ? '#student' : '#teacher', {
       sel:{...sel}, scopeLevels:{...scopedLevels()}, count, layout, columnRule, draftTitle, pageNote:{...pageNote}, withSol,
       design:window.DSDocumentDesign?.selected().id, scope:window.DSPrintScope?.snapshot(),
       preview:drawn?.publicWorkbook ? {ticket:drawn.ticket,rows:drawn.publicRows,solutions:drawn.publicSolutionRows,solPages:drawn.solPages,labels:drawn.labels,title,expanded:[...(expandedSheets.get(drawn.items)?.indexes||[])]} : null,
@@ -377,6 +378,15 @@
     if (printing || pending || !drawn || drawn.guest || !host()?.signedIn()) return;
     printing = true;
     const target = drawn, origin = location.hash;
+    let outputHint=false,outputOpened=false;
+    const outputNotice=setTimeout(()=>{
+      if(drawn!==target||location.hash!==origin||!sharedPrint()||!printing)return;
+      outputHint=true;
+      note={kind:'loading',text:'인쇄할 지면을 준비하고 있습니다.'};
+      const status=document.querySelector('#content .dq59-note');
+      if(status){status.dataset.kind=note.kind;status.textContent=note.text;}
+      document.querySelector('#content [data-dq-print]')?.setAttribute('aria-busy','true');
+    },1000);
     const f = document.createElement('iframe');
     f.style.cssText = 'position:fixed;left:-10000px;top:0;width:794px;height:1123px;border:0';
     f.title = '인쇄용 지면';
@@ -411,9 +421,17 @@
       if (expandCrowded(body,target)) await loadPaper();
       if (target !== drawn || origin !== location.hash || !sharedPrint() || !host()?.signedIn() || target.guest) return;
       if (f.contentDocument.body.dataset.overflow) { toast('한 쪽의 너비나 높이를 넘는 수식이 있어 인쇄 전에 배치를 확인해야 합니다.'); return; }
-      f.contentWindow.focus(); f.contentWindow.print();
+      f.contentWindow.focus(); f.contentWindow.print();outputOpened=true;
     } catch { toast('지면을 완전히 불러오지 못했습니다. 인쇄하지 않고 구성을 유지합니다.'); }
-    finally { printing = false; setTimeout(() => { f.remove(); frames.delete(f); }, 60000); }
+    finally {
+      clearTimeout(outputNotice);printing=false;
+      if(outputHint&&drawn===target&&location.hash===origin&&sharedPrint()){
+        note={kind:outputOpened?'ok':'unavailable',text:outputOpened?'인쇄 창을 열었습니다.':'인쇄할 지면을 준비하지 못했습니다. 배치를 확인하고 다시 시도해 주세요.'};
+        const status=document.querySelector('#content .dq59-note');if(status){status.dataset.kind=note.kind;status.textContent=note.text;}
+      }
+      document.querySelector('#content [data-dq-print]')?.removeAttribute('aria-busy');
+      setTimeout(() => { f.remove(); frames.delete(f); }, 60000);
+    }
   }
   // v61: answer pages on and still arriving — say so, wait for the rest, then the same printNow().
   async function printWhenReady() {
@@ -598,7 +616,7 @@
     }
 
     const scope = window.DSPrintScope;
-    if (!guestSettings() && scope?.awaitingSupply(sel.subject)) sel.subject = readySubjects()[0]?.subject;
+    if (!publicPrint() && !guestSettings() && scope?.awaitingSupply(sel.subject)) sel.subject = readySubjects()[0]?.subject;
     const scopeHtml = guestSettings() && !publicPrint() ? '' : scope?.render({subject:sel.subject || window.DSPrintScopeData?.books?.[0]?.subject,
       stage:scopedLevels().stage, difficulty:scopedLevels().difficulty, count, host:host(), pending:Boolean(pending), menu,
       guest:guest(), publicAccess:publicPrint(), deferAccess:true, hasLegacySets:listed().length>0}) || '';
@@ -606,7 +624,7 @@
     const quantityField = countField();
     const choice = scope?.request();
     const basic = guestSettings() && !publicPrint() || choice?.mode === 'basic';
-    const awaitingSupply = !guestSettings() && scope?.awaitingSupply(sel.subject);
+    const awaitingSupply = !publicPrint() && !guestSettings() && scope?.awaitingSupply(sel.subject);
     const canQuote = publicPrint() ? scope?.status(host()).ready : guestSettings() ? Boolean(guest() && current()?.ready && guestCap(current())>0) : awaitingSupply ? false : basic ? Boolean(current()?.ready) : choice &&
       (scope.capacity() !== 0) && (choice.mode !== 'book' || choice.book_id) && (choice.type_mode !== 'specific' || choice.type_ids.length);
     const retry = approvedTrial && trialMatches(approvedTrial);
@@ -616,7 +634,7 @@
       ? safe(row.unit)+' 기본 '+previewCount+'문항 체험' : '로그인하고 더 구성';
     const trial = guest() && row && !awaitingSupply ? `<button type="button" class="tb36-quiet" data-dq-guest-preview ${pending || (retry && Date.now() < approvedTrial.retryAt) ? 'disabled' : ''}>${trialLabel}</button>` : '';
     const waiting = retry && Date.now() < approvedTrial.retryAt;
-    const button = `<button type="submit" class="tb36-primary" ${canQuote && !pending && !waiting ? '' : 'disabled'}>${pending?'문항 준비 중':retry?'남은 문항 이어 열기':guestSettings()?'문항 만들기':'출력 / PDF 저장'} <span>→</span></button>`;
+    const button = `<button type="submit" class="tb36-primary" ${canQuote && !pending && !waiting ? '' : 'disabled'}>${pending?'문항 준비 중':publicPrint()?'문항 만들기':retry?'남은 문항 이어 열기':guestSettings()?'문항 만들기':'출력 / PDF 저장'} <span>→</span></button>${publicPrint()&&host()?.signedIn()?`<button type="button" class="tb36-quiet" data-dq-member-output ${pending?'disabled':''}>받은 문항·포인트로 바로 출력</button>`:''}`;
     const scopeStatus=publicPrint()?scope?.status(host()):null;
     const scopeMessage=scopeStatus?.reason?`<p role="status" class="dq59-note">${safe(scopeStatus.reason)}</p>`:'';
     return `<div class="tb36-setup dq59-setup${guest() ? ' dq61-guest' : ''}"><form id="dq59-form" class="tb36-conditions"><div class="tb36-section-title"><b>01</b><h2>프린트 구성</h2></div>${basic ? meter() : ''}${fields}${scopeHtml}${scopeMessage}${awaitingSupply ? '' : quantityField+studentOutputSettings()}${paperControls()}${guestSettings()?'':trial}${button}${noteHTML()}</form>${idle()}</div>`;
@@ -851,7 +869,7 @@
       await Promise.race([h.ready, abort]);
       if (menuGuard !== guard) return;
       if (!here() || !printSurface()) { menuTried = false; return; }   // the screen changed while waiting
-      if (publicPrint()) {
+      if (publicPrint() && !h.signedIn()) {
         // The public workbook owns its own, exact scope checks. Never call a member gate as a guest.
         menu=[];trialOn=true;limits=null;owner='';
       } else if (h.trial && !h.signedIn()) {
@@ -957,7 +975,7 @@
   }
   function loadingCards() {
     if(publicPrint())return `<section class="dq59-stage dq61-cardstage" aria-label="문항 준비 중"><div class="ds48-preview-toolbar"><strong>프린트 구성 중</strong></div>${noteHTML()}</section>`;
-    return '<section class="dq59-stage dq61-cardstage" aria-label="문항 준비 중" data-dq-live-first>'+cardTypeStyle()+'<div class="ds48-preview-toolbar"><strong>문항 미리보기</strong><span data-dq-body-progress role="status">선택한 문항을 불러오고 있어요.</span></div><div class="dq59-cards" data-dq-live-cards></div></section>';
+    return '<section class="dq59-stage dq61-cardstage" aria-label="문항 준비 중" data-dq-live-first>'+cardTypeStyle()+'<div class="ds48-preview-toolbar"><strong>문항 미리보기</strong><span data-dq-body-progress role="status">선택한 문항을 불러오고 있어요.</span></div>'+noteHTML()+'<div class="dq59-cards" data-dq-live-cards></div></section>';
   }
   function savedTrialPreview() {
     const set = approvedTrial;
@@ -1103,7 +1121,7 @@
     const questionPages=sheets().length;
     const pages=questionPages+(solOn()?drawn.solPages||1:0);
     const papers=Array.from({length:pages},(_,i)=>window.DSPrintSurfaceV48.scene(`<iframe class="dq59-paper" title="${i+1}쪽 인쇄 지면" scrolling="no" style="width:793.7008px;height:1122.5197px" srcdoc="${safe(documentHTML(i<questionPages?i:'s'+(i-questionPages)))}"></iframe>`)).join('');
-    return `<div class="tb36-workspace dq59-work"><aside class="tb36-finish-panel dq59-panel"><div class="tb36-section-title"><h2 data-public-print-heading>프린트 미리보기 준비</h2></div><p>${safe(label(drawn.labels))} · ${drawn.items.length}문항</p><label>제목<input data-dq-title maxlength="60" value="${safe(title)}"></label>${paperControls()}<label class="dq59-check"><input type="checkbox" data-dq-sol ${withSol?'checked':''}><span>정답·해설 포함</span></label>${drawn.publicSolFailed?'<button type="button" class="tb36-quiet" data-public-sol-retry>정답·해설 미리보기 다시 불러오기</button>':''}<p>최종 인쇄 시 로그인과 문항 이용 권한을 확인합니다.</p><button type="button" class="tb36-primary" data-dq-print disabled>${waitPrint?'인쇄 권한 확인 중':'인쇄 / PDF 저장'} ↗</button><button type="button" class="tb36-quiet" data-dq-back>조건 변경</button>${noteHTML()}<p role="status" aria-live="polite" data-public-print-progress>미리보기 지면을 준비하고 있습니다.</p><button type="button" class="tb36-quiet" data-public-preview-retry hidden>지면 다시 배치</button></aside><div class="creator-canvas td34-canvas tb36-canvas ds48-canvas dq59-canvas"><div class="creator-canvas-toolbar"><strong>전체 인쇄 미리보기 · ${drawn.items.length}문항 · ${pages}쪽</strong></div><div class="creator-paper-stage" style="display:flex;flex-direction:column;gap:24px">${papers}</div><div class="creator-canvas-footer">A4 · 210 × 297 mm</div></div></div>`;
+    return `<div class="tb36-workspace dq59-work"><aside class="tb36-finish-panel dq59-panel"><div class="tb36-section-title"><h2 data-public-print-heading>프린트 미리보기 준비</h2></div><p>${safe(label(drawn.labels))} · ${drawn.items.length}문항</p><label>제목<input data-dq-title maxlength="60" value="${safe(title)}"></label>${paperControls()}<label class="dq59-check"><input type="checkbox" data-dq-sol ${withSol?'checked':''}><span>정답·해설 포함</span></label>${drawn.publicSolFailed?'<button type="button" class="tb36-quiet" data-public-sol-retry>정답·해설 미리보기 다시 불러오기</button>':''}<p>최종 인쇄 시 로그인과 문항 이용 권한을 확인합니다.</p><button type="button" class="tb36-primary" data-dq-print disabled>${waitPrint?'인쇄 권한 확인 중':'인쇄 / PDF 저장'} ↗</button><button type="button" class="tb36-quiet" data-dq-back>조건 변경</button>${noteHTML()}<p role="status" aria-live="polite" data-public-print-progress>미리보기 지면을 준비하고 있습니다.</p><button type="button" class="tb36-quiet" data-public-preview-retry hidden style="display:none!important">지면 다시 배치</button></aside><div class="creator-canvas td34-canvas tb36-canvas ds48-canvas dq59-canvas"><div class="creator-canvas-toolbar"><strong>전체 인쇄 미리보기 · ${drawn.items.length}문항 · ${pages}쪽</strong></div><div class="creator-paper-stage" style="display:flex;flex-direction:column;gap:24px">${papers}</div><div class="creator-canvas-footer">A4 · 210 × 297 mm</div></div></div>`;
   }
   function publicAnswer(row) {
     if(row.answerType==='choice'){
@@ -1126,6 +1144,8 @@
       if(drawn!==target||target.publicSolOp!==op)return;
       setPublicSolutions(target,data.questions);
       target.solPages=await measureSolutions(target);
+      target.publicSolFailed=false;
+      if(note.text.startsWith('정답·해설 미리보기를 불러오지 못했습니다.'))note={kind:'',text:''};
     }catch{if(drawn===target){target.publicSolFailed=true;note={kind:'unavailable',text:'정답·해설 미리보기를 불러오지 못했습니다. 선택한 문항은 유지됩니다.'};}}
     finally{if(target.publicSolOp===op)delete target.publicSolOp;if(drawn===target&&sharedPrint()&&phase==='finish')rerender();}
   }
@@ -1150,7 +1170,7 @@
         if(heading)heading.textContent='일부 지면 배치 확인 필요';
       }
       const retry=document.querySelector('[data-public-preview-retry]');
-      if(retry)retry.hidden=!(settled&&failed.length);
+      if(retry){retry.hidden=!(settled&&failed.length);if(retry.hidden)retry.style.setProperty('display','none','important');else retry.style.removeProperty('display');}
       const note=document.querySelector('#content .dq59-note');
       if(!target.previewReady&&note?.dataset.kind==='ok')note.textContent='';
       const button=document.querySelector('#content [data-dq-print]');
@@ -1161,7 +1181,10 @@
   }
   async function checkoutPublicPrint() {
     if(!drawn?.previewReady)return;
-    if(!host()?.signedIn()){keepPrintSettings();openGate('print');return;}
+    if(!host()?.signedIn()){
+      if(!keepPrintSettings()){note={kind:'savefail',text:'로그인 뒤 복원할 구성을 이 탭에 보관하지 못했습니다. 브라우저 저장 공간을 확인한 뒤 다시 시도해 주세요. 현재 미리보기는 유지됩니다.'};rerender();return;}
+      openGate('print');return;
+    }
     if(waitPrint)return;
     const target=drawn,origin=location.hash,includeSolutions=withSol;
     const current=()=>drawn===target&&location.hash===origin&&sharedPrint()&&host()?.signedIn()&&withSol===includeSolutions;
@@ -1172,6 +1195,8 @@
       if(!current())return;
       if(quote.status!=='ready'||!Number.isSafeInteger(quote.points)||quote.points<0||!quote.quoteToken)throw Error(quote.status||'unavailable');
       if(!window.confirm(`이 ${target.items.length}문항을 인쇄합니다. 필요한 포인트: ${quote.points.toLocaleString()}P${includeSolutions?' · 정답·해설 포함':''}\n확인하면 기존 이용 정책에 따라 인쇄 권한을 확인·처리합니다.`))return;
+      note={kind:'loading',text:'출력할 문항과 인쇄 권한을 확정하고 있습니다.'};
+      const status=document.querySelector('#content .dq59-note');if(status){status.dataset.kind=note.kind;status.textContent=note.text;}
       const result=await workbook().printConfirm({...args,quoteToken:quote.quoteToken,maxPoints:quote.points});
       if(!current())return;
       if(result.status!=='ready'||!Array.isArray(result.questions)||result.questions.length!==target.items.length||result.questions.some((q,i)=>q.id!==target.publicRows[i].id||q.version!==target.publicRows[i].version))throw Error(result.status||'changed');
@@ -1187,7 +1212,7 @@
       note={kind:'ok',text:'인쇄 권한을 확인했습니다.'};rerender();
       await printNow();
     } catch(error) {
-      if(current())note={kind:'unavailable',text:error.message==='insufficient'?'포인트가 부족합니다. 구성한 문항은 유지됩니다.':error.message==='changed'?'문항이나 이용 조건이 바뀌었습니다. 다시 확인해 주세요.':'이 구성의 인쇄 권한을 확인하지 못했습니다. 미리보기와 선택 조건은 유지됩니다.'};
+      if(current())note={kind:'unavailable',text:error.message==='issuance_paused'?'현재 인쇄 발급이 일시 중지되어 있습니다. 선택한 문항과 미리보기는 그대로 이용할 수 있습니다.':error.message==='insufficient'?'포인트가 부족합니다. 구성한 문항은 유지됩니다.':error.message==='changed'?'문항이나 이용 조건이 바뀌었습니다. 다시 확인해 주세요.':'이 구성의 인쇄 권한을 확인하지 못했습니다. 미리보기와 선택 조건은 유지됩니다.'};
     } finally {waitPrint=false;if(drawn===target&&sharedPrint())rerender();}
   }
   function guestDraw(previewOnly=false) {
@@ -1620,7 +1645,7 @@
     const entry = { columnRule, pageNote:{...pageNote}, documentDesign: window.DSDocumentDesign?.selected().id || 'DS-FOCUS-V2', title: (title || (studentSurface()?'모의시험지':'수업 프린트')).slice(0, 60), layout, key: drawn.key, labels: drawn.labels, ids: drawn.items.map(q => q.id), page: drawn.page, count: drawn.count, day };
     say(putSaved([entry, ...savedList().filter(x => x.key !== entry.key || x.ids.join() !== entry.ids.join())]) ? 'saved' : 'savefail'); rerender('[data-dq-save]');
   }
-  document.addEventListener('submit', e => { if (e.target.id === 'dq59-form' && here()) { e.preventDefault(); if (sharedPrint()) openOutput(); } });
+  document.addEventListener('submit', e => { if (e.target.id === 'dq59-form' && here()) { e.preventDefault(); if (sharedPrint()) {if(publicPrint())publicWorkbookDraw();else openOutput();} } });
   document.addEventListener('click', e => {
     if (e.target.closest?.('[data-dq-open-settings]')) {
       const form = document.getElementById('dq59-form');
@@ -1644,12 +1669,12 @@
     if (g && (here() || g.closest('#dq61-gate'))) {
       if (g.hasAttribute('data-dq61-gate-open')) { e.preventDefault(); openGate(g.dataset.dq61GateOpen); return; }
       const want = opened || 'more';
-      if (sharedPrint()) keepPrintSettings();
+      if (sharedPrint() && !keepPrintSettings() && drawn?.publicWorkbook) {e.preventDefault();document.getElementById('dq61-gate')?.close();note={kind:'savefail',text:TEXT.savefail};rerender();return;}
       if (drawn?.guest && (!sharedPrint() || ['print','save'].includes(want))) keepBack(want === 'limit' ? 'more' : want);
       if (g.hasAttribute('data-dq61-login')) { e.preventDefault(); document.getElementById('dq61-gate')?.close(); goLogin(); }
       return;                                    // the sign-up link goes on as a normal link
     }
-    const b = e.target.closest?.('[data-dq-back],[data-dq-finish],[data-dq-review],[data-dq-print],[data-dq-save],[data-dq-page],[data-dq-reopen],[data-dq-forget],[data-dq-menu],[data-dq-next],[data-dq-redraw],[data-dq-guest-preview],[data-dq61-solretry]');
+    const b = e.target.closest?.('[data-dq-back],[data-dq-finish],[data-dq-review],[data-dq-print],[data-dq-save],[data-dq-page],[data-dq-reopen],[data-dq-forget],[data-dq-menu],[data-dq-next],[data-dq-redraw],[data-dq-guest-preview],[data-dq61-solretry],[data-public-preview-retry],[data-public-sol-retry],[data-dq-member-output]');
     if (!b || !here()) return;
     if (b.hasAttribute('data-dq-back')) { stop(); if (!drawn?.guest) dropSolutions(); phase = 'setup'; note = { kind: '', text: '' }; rerender(); }
     else if (b.hasAttribute('data-dq-finish')) { if (pending) return; phase = 'finish'; page = 0; note = { kind: '', text: '' }; rerender(); }
@@ -1659,6 +1684,7 @@
     else if (b.hasAttribute('data-dq-redraw')) { clearTrial(); note = { kind: '', text: '' }; if (guest()) guestDraw(); else openOutput(); }
     else if (b.hasAttribute('data-dq61-solretry')) { if (drawn && !drawn.guest) { dropSolutions(); note = { kind: '', text: '' }; prefetch(drawn); rerender(); } }
     else if (b.hasAttribute('data-dq-next')) { if (sharedPrint()) { phase='setup'; rerender(); openOutput(); return; } if (drawn && !pending && !drawn.guest) draw({ page: (drawn.page + 2) * drawn.count <= 50 ? drawn.page + 1 : 0 }); }
+    else if (b.hasAttribute('data-dq-member-output')&&host()?.signedIn()) openOutput();
     else if (b.hasAttribute('data-public-preview-retry')&&drawn?.publicWorkbook) rerender();
     else if (b.hasAttribute('data-public-sol-retry')&&drawn?.publicWorkbook) {drawn.publicSolFailed=false;void loadPublicSolutions(drawn);rerender();}
     else if (b.hasAttribute('data-dq-print')) printWhenReady();

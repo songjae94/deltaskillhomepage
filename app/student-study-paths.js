@@ -933,6 +933,10 @@ function guestMathStyle(){
  if(!guestStylePromise)guestStylePromise=readGuestMathStyle().catch(error=>{guestStylePromise=null;throw error;});
  return guestStylePromise;
 }
+async function waitForStudy(label,request){
+ const done=window.DSWaitStatus?.begin(label);
+ try{return await request();}finally{done?.();}
+}
 function bind(container,options={}){
  if(!container||typeof container.querySelector!=='function')throw Error('study_container_required');controllers.get(container)?.destroy();
  if(!container.querySelector('.ssp'))container.innerHTML=render(options);
@@ -1136,7 +1140,9 @@ function bind(container,options={}){
   if(fresh||actionsHTML!==printedGuestActions){actions.innerHTML=actionsHTML;printedGuestActions=actionsHTML;}
  }
 
- async function loadSupply(){
+ let supplyTask=null;
+ function loadSupply(){supplyTask=readSupply();return supplyTask;}
+ async function readSupply(){
   const generation=epoch;
   unitMenus.clear();
   supplyByBook=new Map();supplyBooks=[];supplyPhase=signed()?'loading':'guest';
@@ -1287,7 +1293,7 @@ function bind(container,options={}){
    planPhase=planProfile?'return':'survey';draw(false);return;
   }
   try{
-   const saved=await window.DSStudyPlanStore.load(activeOwner);
+   const saved=await waitForStudy('저장된 학습 계획을 불러오고 있어요.',()=>window.DSStudyPlanStore.load(activeOwner));
    if(closed||generation!==epoch)return;
    planProfile=saved;planPhase=saved?'return':'survey';
   }catch{
@@ -1325,7 +1331,21 @@ function bind(container,options={}){
  }
  function continuePlan(){
   planPhase='active';
-  if(supplyPhase==='loading'){planMessage='무료 학습 범위를 확인하고 있어요.';planPhase='return';draw(false);return;}
+  const guestCatalog=guestTrial&&guestWorkbook?.phase(planProfile.subject);
+  const pending=guestCatalog?.busy?guestCatalog.task:guestCatalog?.error?guestWorkbook.catalog(planProfile.subject,true):
+   supplyPhase==='loading'?supplyTask:supplyPhase==='error'?loadSupply():null;
+  if(pending){
+   const generation=epoch,profile=planProfile;
+   planBusy=true;planPhase='return';planMessage='이어서 풀 단원과 문항을 확인하고 있어요.';draw(false);
+   void waitForStudy(planMessage,()=>pending).then(()=>{
+    if(closed||epoch!==generation||planProfile!==profile)return;
+    planBusy=false;
+    if(supplyPhase==='error'||guestTrial&&guestWorkbook?.phase(profile.subject)?.error){
+     planMessage='학습 범위를 불러오지 못했어요. 이어서 공부하기를 눌러 다시 확인해 주세요.';draw(false);return;
+    }
+    planMessage='';continuePlan();
+   });return;
+  }
   const range=planUnits(planProfile.subject,planProfile.need).find(u=>u.id===planProfile.unit);
   if(guestTrial&&(range?.guestCell||range?.query)){startRange(planProfile,range);return;}
   externalRange=Boolean(range?.book&&!range.originalBook);planSourceRows=range?.rows||null;
@@ -1371,13 +1391,15 @@ function bind(container,options={}){
    try{sessionStorage.setItem(trialKey+':plan',JSON.stringify(profile));}catch{}
    startRange(profile,range);return;
   }
-  planBusy=true;startRange(profile,range);
+  const done=window.DSWaitStatus?.begin('선택한 학습 계획을 저장하고 있어요.');
+  planBusy=true;
   try{
+   startRange(profile,range);
    const saved=await window.DSStudyPlanStore.save(activeOwner,profile);
    if(closed||generation!==epoch)return;
    if(saved.storage==='device')planMessage='';
   }catch{if(!closed&&generation===epoch)planMessage='문제는 계속 풀 수 있어요. 학습 선택을 저장하려면 다시 선택해 주세요.';}
-  finally{if(!closed&&generation===epoch){planBusy=false;draw(false);}}
+  finally{done?.();if(!closed&&generation===epoch){planBusy=false;draw(false);}}
  }
  async function reviewPlan(){
   if(planBusy)return;
@@ -1390,7 +1412,7 @@ function bind(container,options={}){
    const seen=new Set();
    let before;
    do{
-    const page=await window.DSStudentServices.history({kind:'free',limit:20,...(before?{before}:{})});
+    const page=await waitForStudy('다시 풀 문항을 학습 기록에서 찾고 있어요.',()=>window.DSStudentServices.history({kind:'free',limit:20,...(before?{before}:{})}));
     if(closed||generation!==epoch)return;
     if(page.ownerKey!==activeOwner||!Array.isArray(page.records))throw Error('invalid_history');
     for(const r of page.records){
@@ -1578,7 +1600,7 @@ function bind(container,options={}){
  let remoteTimer=0,remoteDirty=false;
  function scheduleRemote(){remoteDirty=true;clearTimeout(remoteTimer);remoteTimer=setTimeout(()=>{remoteTimer=0;flushRemote();},1200);}
  function flushRemote(keepalive=false){clearTimeout(remoteTimer);remoteTimer=0;if(!remoteDirty)return;remoteDirty=false;if(signed()&&activeOwner&&typeof options.onProgress==='function')sendRemote(null,keepalive);}
- function sendRemote(record,keepalive=false){clearTimeout(remoteTimer);remoteTimer=0;remoteDirty=false;{const generation=epoch,ownerAtSave=activeOwner,payload=JSON.parse(JSON.stringify(typeof options.onProgress==='function'?state:record));saveQueue=saveQueue.catch(()=>{}).then(async()=>{if(!signed()||ownerAtSave!==owner())return;try{const handler=typeof options.onProgress==='function'?options.onProgress:options.onRecord;const result=await handler(payload,{ownerKey:ownerAtSave,namespace:'student-paths-v1',keepalive});if(closed||generation!==epoch)return;if(result?.state)state=mergeProgress(result.state,state);storageMessage=result?.saved===true?(result.localOnly?.records||result.localOnly?.pending?'계정에 연결된 학습 기록을 저장했어요. 이전 연습 기록은 이 기기에 유지돼요.':'계정에 학습 기록을 저장했어요.'):'계정 저장을 확인하지 못했어요. 기기 기록은 유지돼요.';}catch{if(closed||generation!==epoch)return;storageMessage='계정 저장에 실패했어요. 기기 기록은 유지돼요.';}draw(false);emit();});}}
+ function sendRemote(record,keepalive=false){clearTimeout(remoteTimer);remoteTimer=0;remoteDirty=false;{const generation=epoch,ownerAtSave=activeOwner,payload=JSON.parse(JSON.stringify(typeof options.onProgress==='function'?state:record));saveQueue=saveQueue.catch(()=>{}).then(async()=>{if(!signed()||ownerAtSave!==owner())return;try{const handler=typeof options.onProgress==='function'?options.onProgress:options.onRecord;const request=()=>handler(payload,{ownerKey:ownerAtSave,namespace:'student-paths-v1',keepalive});const result=await (keepalive?request():waitForStudy(record?'계정에 풀이 기록을 저장하고 있어요.':'이어서 풀 위치를 저장하고 있어요.',request));if(closed||generation!==epoch)return;if(result?.state)state=mergeProgress(result.state,state);storageMessage=result?.saved===true?(result.localOnly?.records||result.localOnly?.pending?'계정에 연결된 학습 기록을 저장했어요. 이전 연습 기록은 이 기기에 유지돼요.':'계정에 학습 기록을 저장했어요.'):'계정 저장을 확인하지 못했어요. 기기 기록은 유지돼요.';}catch{if(closed||generation!==epoch)return;storageMessage='계정 저장에 실패했어요. 기기 기록은 유지돼요.';}draw(false);emit();});}}
  function qlist(){if(state.course==='supplement')return BANK.filter(q=>q.book===state.book);if(state.course==='advanced')return BANK.filter(q=>q.course==='advanced'&&q.level===tier(state,planProfile?.goal));return BANK.filter(q=>q.course===state.course);}
  function resetQuestion(q){
   if(guestTrial&&!isTrialQuestion(q)){current=null;feedback=null;view='home';return;}
@@ -1638,7 +1660,7 @@ function bind(container,options={}){
  function remoteList(){if(sourcePhase==='loading')return '<p role="status">회원에게 허용된 기존 자료를 확인하고 있어요.</p>';if(sourcePhase==='error')return `<p role="alert">${esc(sourceError)}</p><button data-ssp-query>다시 확인</button>`;if(sourcePhase!=='ready')return '<p>현재 계정에 허용된 기존 문항 수를 서버에서 확인해 주세요.</p><button data-ssp-query>이 범위의 무료 문제 확인</button>';const rows=sourceRows();return `<p><strong>이 계정에서 무료로 열 수 있는 문항 ${rows.length}개</strong></p><p>${rows.length>=desiredCount?'원하는 '+desiredCount+'문항 이상이 있어요. 정확히 선택한 범위에서 풀 수 있어요.':desiredCount+'문항을 공부하려면 '+Math.max(0,desiredCount-rows.length)+'문항이 부족해요.'}</p>${rows.length?`<ul class="ssp-existing-list">${rows.map(q=>`<li><div><strong>${esc(q.title||q.typeLabel||q.unit||'기존 문항')}</strong><span>${esc(sourceName(q))} · ${esc(q.unit||'')}</span></div><button data-ssp-remote="${esc(q.questionId||q.id)}">이 문제 풀기</button></li>`).join('')}</ul>`:'<p>확인한 이 범위에서 학생 무료로 허용된 문항이 없어요. 범위를 넓힐지는 직접 선택할 수 있어요.</p>'}`;}
  async function openRemote(id,draft,revisit=false){
   if(heldExam(id)){notice='이 기출 원문의 화면 제공 범위를 확인하고 있어요.';draw(false);return;}
-  const metadata=draft||sourceRows().find(q=>(q.questionId||q.id)===id)||remoteHistory.records.find(q=>q.questionId===id);if(!metadata||typeof window.DSStudentServices?.open!=='function'){notice='문항을 여는 연결을 확인하지 못했어요.';draw(false);return;}const generation=++sourceGeneration,sessionAtOpen=epoch;lastOpen={id,draft,revisit};sourcePhase='opening';if(!DSStudentServices.ready?.({questionId:id,purpose:'study_free'})){notice='허용된 문항을 불러오고 있어요.';draw(false);}try{const result=await DSStudentServices.open({questionId:id,purpose:'study_free'});if(closed||generation!==sourceGeneration||sessionAtOpen!==epoch||!signed())return;const q=result.question;if(!q||(q.questionId||q.id)!==id||(metadata.version&&q.version!==metadata.version)||typeof q.version!=='string')throw Error('version_changed');if(!['existing_print','supplement'].includes(q.sourceKind))throw Error('unsupported_source');if(q.answer!==undefined||q.solution!==undefined||q.solutionFrame!==undefined||q.solutionHTML!==undefined)throw Error('active_answer_exposure');if(q.format==='sandbox-html'){q._safeFragment=fragmentContent(q.questionHTML,'기존 자료 문제');}else if(q.format==='text-latex'){mathContent(q.prompt);if(q.options)q.options.forEach(mathContent);}else throw Error('unsupported_format');q.answerType=q.answerType||metadata.answerType;remoteQuestion=q;remoteMetadata=metadata;remoteChoice=draft?.choice??null;remoteUnknown=false;remoteHelp=false;remoteConfidence=draft?.confidence||'sure';remoteFeedback=null;remoteOpenedAt=Date.now();
+  const metadata=draft||sourceRows().find(q=>(q.questionId||q.id)===id)||remoteHistory.records.find(q=>q.questionId===id);if(!metadata||typeof window.DSStudentServices?.open!=='function'){notice='문항을 여는 연결을 확인하지 못했어요.';draw(false);return;}const generation=++sourceGeneration,sessionAtOpen=epoch;lastOpen={id,draft,revisit};sourcePhase='opening';if(!DSStudentServices.ready?.({questionId:id,purpose:'study_free'})){notice='허용된 문항을 불러오고 있어요.';draw(false);}try{const result=await waitForStudy('선택한 문항을 불러오고 있어요.',()=>DSStudentServices.open({questionId:id,purpose:'study_free'}));if(closed||generation!==sourceGeneration||sessionAtOpen!==epoch||!signed())return;const q=result.question;if(!q||(q.questionId||q.id)!==id||(metadata.version&&q.version!==metadata.version)||typeof q.version!=='string')throw Error('version_changed');if(!['existing_print','supplement'].includes(q.sourceKind))throw Error('unsupported_source');if(q.answer!==undefined||q.solution!==undefined||q.solutionFrame!==undefined||q.solutionHTML!==undefined)throw Error('active_answer_exposure');if(q.format==='sandbox-html'){q._safeFragment=fragmentContent(q.questionHTML,'기존 자료 문제');}else if(q.format==='text-latex'){mathContent(q.prompt);if(q.options)q.options.forEach(mathContent);}else throw Error('unsupported_format');q.answerType=q.answerType||metadata.answerType;remoteQuestion=q;remoteMetadata=metadata;remoteChoice=draft?.choice??null;remoteUnknown=false;remoteHelp=false;remoteConfidence=draft?.confidence||'sure';remoteFeedback=null;remoteOpenedAt=Date.now();
  const saved=revisit&&remoteDrafts.get(id);if(saved?.version===q.version){remoteChoice=saved.choice;remoteConfidence=saved.confidence;remoteFeedback=saved.feedback;remoteOpenedAt=saved.openedAt;}
  view='source-question';notice='';sourcePhase='ready';if(!draft&&!remoteFeedback)save();draw();prefetchAround(id);}catch(error){if(closed||generation!==sourceGeneration||sessionAtOpen!==epoch)return;sourcePhase='error';view='home';notice=openFailure(error);sourceError=notice;draw(false);}}
  function openFailure(error){const code=error?.code||error?.message||'';if(code==='timeout')return '문항 응답이 늦어요. 다시 불러오기를 눌러 주세요.';if(code==='connection_failed'||error?.status===0)return '연결이 끊겨 문항을 받지 못했어요. 연결을 확인하고 다시 불러와 주세요.';if(error?.status===401||code==='unauthorized'||code==='session_changed')return '로그인이 만료되었어요. 다시 로그인한 뒤 열어 주세요.';if(error?.status===429||['rate_limited','too_many'].includes(code))return '요청이 잠시 많아요. 조금 뒤 다시 불러와 주세요.';return '문항의 판이나 열람 형식을 확인하지 못했어요. 다시 불러오거나 범위를 다시 확인해 주세요.';}
@@ -1673,7 +1695,7 @@ function bind(container,options={}){
     return;
    }
   }
-  if(remoteChoice===null&&!remoteUnknown){notice='답을 입력하거나 ‘해설 보고 복습에 담기’를 선택해 주세요.';draw(false);return;}operation={questionId:id,version:remoteQuestion.version,answer:remoteChoice,requestId:crypto.randomUUID(),course:state.course,confidence:remoteConfidence,help:remoteHelp,seconds:Math.min(86400,Math.max(0,Math.round((Date.now()-remoteOpenedAt)/1000)))};remoteOperations.set(id,operation);}const generation=epoch;remoteBusy=true;notice='답안을 확인하고 있어요.';draw(false);try{const result=await DSStudentServices.submit(operation);if(closed||generation!==epoch||!signed())return;if(!result?.record||result.record.questionId!==id||result.record.version!==operation.version||typeof result.record.correct!=='boolean')throw Error('invalid_grade');if(result.solutionHTML){try{result._safeSolutionFragment=fragmentContent(result.solutionHTML,'제출 후 해설');}catch{result.solutionUnavailable=true;}}if(result.solution){try{(Array.isArray(result.solution)?result.solution:[result.solution]).forEach(mathContent);}catch{result.solution=null;result.solutionUnavailable=true;}}remoteFeedback=result;remoteOperations.delete(id);state.sourcePending[state.course]={cleared:true,updatedAt:Date.now()};save();notice='계정에 풀이 결과를 저장했어요.';remoteHistory.phase='idle';window.dispatchEvent(new CustomEvent('ds-student-free-record',{detail:{record:result.record}}));}catch(error){if(closed||generation!==epoch)return;if([400,403,404,409,422].includes(error?.status)){remoteOperations.delete(id);notice='답안의 형식이나 문항 이용 상태가 바뀌었어요. 범위와 문항을 다시 확인해 주세요.';return;}notice='제출 결과를 확인하지 못했어요. 같은 답안으로 다시 확인해 주세요. 중복으로 새 풀이를 만들지 않아요.';}finally{if(generation===epoch){remoteBusy=false;draw(false);}}}
+  if(remoteChoice===null&&!remoteUnknown){notice='답을 입력하거나 ‘해설 보고 복습에 담기’를 선택해 주세요.';draw(false);return;}operation={questionId:id,version:remoteQuestion.version,answer:remoteChoice,requestId:crypto.randomUUID(),course:state.course,confidence:remoteConfidence,help:remoteHelp,seconds:Math.min(86400,Math.max(0,Math.round((Date.now()-remoteOpenedAt)/1000)))};remoteOperations.set(id,operation);}const generation=epoch;remoteBusy=true;notice='답안을 확인하고 있어요.';draw(false);try{const result=await waitForStudy('답안을 채점하고 풀이 기록을 저장하고 있어요.',()=>DSStudentServices.submit(operation));if(closed||generation!==epoch||!signed())return;if(!result?.record||result.record.questionId!==id||result.record.version!==operation.version||typeof result.record.correct!=='boolean')throw Error('invalid_grade');if(result.solutionHTML){try{result._safeSolutionFragment=fragmentContent(result.solutionHTML,'제출 후 해설');}catch{result.solutionUnavailable=true;}}if(result.solution){try{(Array.isArray(result.solution)?result.solution:[result.solution]).forEach(mathContent);}catch{result.solution=null;result.solutionUnavailable=true;}}remoteFeedback=result;remoteOperations.delete(id);state.sourcePending[state.course]={cleared:true,updatedAt:Date.now()};save();notice='계정에 풀이 결과를 저장했어요.';remoteHistory.phase='idle';window.dispatchEvent(new CustomEvent('ds-student-free-record',{detail:{record:result.record}}));}catch(error){if(closed||generation!==epoch)return;if([400,403,404,409,422].includes(error?.status)){remoteOperations.delete(id);notice='답안의 형식이나 문항 이용 상태가 바뀌었어요. 범위와 문항을 다시 확인해 주세요.';return;}notice='제출 결과를 확인하지 못했어요. 같은 답안으로 다시 확인해 주세요. 중복으로 새 풀이를 만들지 않아요.';}finally{if(generation===epoch){remoteBusy=false;draw(false);}}}
  function afterRemoteQuestion(id){
   if(!desk||options.view==='history')return '';
   const rows=sourceRows(),at=rows.findIndex(row=>(row.questionId||row.id)===id);
@@ -1741,7 +1763,7 @@ function bind(container,options={}){
   remoteHistory.phase='loading';draw(false);
   try{
    const before=more?remoteHistory.nextBefore:null;
-   const page=await DSStudentServices.history({kind:'free',limit:50,...(before?{before}:{})});
+   const page=await waitForStudy('계정의 풀이 기록을 불러오고 있어요.',()=>DSStudentServices.history({kind:'free',limit:50,...(before?{before}:{})}));
    if(closed||generation!==epoch||!signed())return;
    if(page.ownerKey!==activeOwner||!Array.isArray(page.records)||!page.records.every(r=>typeof r.recordId==='string'&&
       typeof r.questionId==='string'&&typeof r.correct==='boolean'&&Number.isFinite(Date.parse(r.at)))||
@@ -2113,7 +2135,7 @@ function bind(container,options={}){
  if(e.target.matches('[data-ssp-target]')){desiredCount=Number(e.target.value);draw(false);return;}if(e.target.name==='ssp-remote-choice'){remoteChoice=Number(e.target.value);remoteUnknown=false;save();return;}if(e.target.matches('[data-ssp-remote-integer]')){remoteUnknown=false;remoteChoice=readIntegerAnswer(e.target);save();return;}if(e.target.matches('[data-ssp-free-unit]')){if(Object.hasOwn(FREE_CONCEPTS,e.target.value))freeUnit=e.target.value;draw();return;}if(e.target.matches('[data-ssp-scope-book]')){selectedScopeBook=e.target.value;widen='type';invalidateSource();draw();querySource();return;}if(e.target.matches('[data-ssp-scope-unit]')){selectedScopeUnit=e.target.value;widen='type';invalidateSource();draw();querySource();return;}if(e.target.matches('[data-ssp-scope-type]')){selectedScopeType=e.target.value;widen='type';invalidateSource();draw();querySource();return;}if(e.target.name==='ssp-answer'){choice=Number(e.target.value);const button=container.querySelector('[data-ssp-check]');if(button)button.disabled=false;save();}else if(e.target.name==='ssp-confidence'){confidence=e.target.value;save();}else if(e.target.matches('[data-ssp-grade]')){state.grade=Number(e.target.value);save();draw();}else if(e.target.matches('[data-ssp-reason]')&&feedback){feedback.reason=e.target.value;save(feedback);}}
  function sessionChange(){guestWorkbook?.cancel();variantSlots.clear();variantLoadFailed=false;unshownGuest=null;clearTimeout(remoteTimer);remoteTimer=0;remoteDirty=false;lastOpen=null;guestRequest++;guestBusy=false;guestRange=null;guestQuestion='';localDrafts.clear();remoteDrafts.clear();epoch++;invalidateSource();remoteQuestion=null;remoteFeedback=null;remoteOperations.clear();remoteHistory={phase:'idle',records:[],hasMore:false,nextBefore:null};activeOwner=owner();current=null;pool=[];feedback=null;view='home';read();if(desk){void loadSupply();void loadPlan();}notice='로그인 상태가 바뀌어 현재 계정의 기록을 다시 확인했어요.';draw();}
  if(desk)guestWorkbook=window.DSGuestWorkbookStudy?.create({books:metadataWorkbookChoices,
-  renderFrame:fragmentContent,mathStyle:guestMathStyle,redraw:()=>draw(false),signed,owner,live:()=>!closed,
+  renderFrame:fragmentContent,mathStyle:guestMathStyle,wait:waitForStudy,redraw:()=>draw(false),signed,owner,live:()=>!closed,
   catalogChanged:()=>{unitMenus.clear();subjectMenuCache.clear();draw(false);}});
  read();if(desk){void loadSupply();void loadPlan();}container.addEventListener('click',click);container.addEventListener('change',change);container.addEventListener('keydown',integerKeydown);window.addEventListener('ds-session-change',sessionChange);const leave=()=>{if(document.visibilityState==='hidden')flushRemote(true);},pageLeave=()=>flushRemote(true);document.addEventListener('visibilitychange',leave);window.addEventListener('pagehide',pageLeave);if(options.resume&&typeof options.onReady!=='function')resume();draw(false);
  if(signed()&&activeOwner&&typeof options.loadProgress==='function'){const generation=epoch;Promise.resolve().then(()=>options.loadProgress({namespace:'student-paths-v1',ownerKey:activeOwner})).then(raw=>{if(closed||generation!==epoch)return;const remote=clean(raw);let cached=false;try{cached=Boolean(key()&&localStorage.getItem(key()));}catch{}const local=cached?state:remote;state=mergeProgress(remote,local);const comparable=x=>JSON.stringify({...x,records:[...x.records].sort((a,b)=>a.id.localeCompare(b.id))});if(comparable(state)!==comparable(remote)&&(!desk||cached))save();else{try{if(key())localStorage.setItem(key(),JSON.stringify(state));}catch{}emit();}draw(false);notifyReady();}).catch(()=>{if(closed||generation!==epoch)return;storageMessage='계정 기록을 불러오지 못했어요. 현재 기기의 기록을 보여드려요.';draw(false);notifyReady();});}else notifyReady();

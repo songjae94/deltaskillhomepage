@@ -96,7 +96,14 @@ function mount(){
   controller=window.DSStudentStudyPaths.bind(el,{view:'desk',guestTrial:true,signedIn:false});
   return;
  }
- if(!accountData&&!loading&&window.DSStudentServices){const epoch=sessionEpoch;loading=Promise.resolve().then(()=>DSStudentServices.getProgress('student-paths-v1')).then(x=>{if(epoch===sessionEpoch)accountData=x;}).catch(()=>{if(epoch===sessionEpoch)accountData={};}).finally(()=>{if(epoch===sessionEpoch){loading=null;mount();}});return;}
+ if(!accountData&&!loading&&window.DSStudentServices){
+  const epoch=sessionEpoch,done=window.DSWaitStatus?.begin('계정의 학습 기록을 불러오고 있어요.');
+  loading=Promise.resolve().then(()=>DSStudentServices.getProgress('student-paths-v1')).then(x=>{
+   if(epoch===sessionEpoch)accountData=x;
+  }).catch(()=>{if(epoch===sessionEpoch)accountData={};}).finally(()=>{
+   done?.();if(epoch===sessionEpoch){loading=null;mount();}
+  });return;
+ }
  if(!loading)bindCourse(el,account);
 }
 document.addEventListener('click',e=>{

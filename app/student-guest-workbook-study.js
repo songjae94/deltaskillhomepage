@@ -8,7 +8,7 @@
   const shape = q => q?.id && q.version && ['choice','integer'].includes(q.answerType);
   const validAnswer = (value, type) => Number.isSafeInteger(value) && (type === 'choice' ? value >= 0 && value <= 4 : Math.abs(value) <= 1e9);
   const papers = () => window.DSGuestWorkbook;
-  function create({books, renderFrame, mathStyle, redraw, signed, owner, live, catalogChanged}) {
+  function create({books, renderFrame, mathStyle, redraw, signed, owner, live, catalogChanged, wait}) {
     const catalogs = new Map(), typeCounts = new Map();
     let serial = 0, baseRange, range, history = [], at = -1, busy = false, message = '', end = false;
     let prepared = null;
@@ -26,7 +26,7 @@
       if (cached && !(retry && cached.error)) return cached.task;
       const entry = {busy:true, rows:[]};
       catalogs.set(subject,entry);
-      entry.task = Promise.resolve().then(() => papers().catalog({purpose:'study',subject})).then(value => {
+      entry.task = wait('선택한 과목의 교재와 단원을 확인하고 있어요.',()=>papers().catalog({purpose:'study',subject})).then(value => {
         if (!Array.isArray(value?.questions)) throw Error('invalid_catalog');
         entry.rows = value.questions.filter(q => shape(q) && q.subject === subject && q.bookId);
       }).catch(() => {entry.error=true;}).finally(() => {entry.busy=false; if(live())catalogChanged();});
@@ -38,7 +38,7 @@
       let entry=typeCounts.get(key);
       if(entry && !(retry&&entry.error))return entry;
       entry={busy:true};typeCounts.set(key,entry);
-      papers().catalog(query).then(data=>{
+      wait('선택한 유형의 문항 수를 확인하고 있어요.',()=>papers().catalog(query)).then(data=>{
         if(!Array.isArray(data?.questions))throw Error('invalid_catalog');
         entry.size=data.questions.length;
       }).catch(()=>{entry.error=true;}).finally(()=>{entry.busy=false;if(live())redraw();});
@@ -147,7 +147,8 @@
           const task=requestNext(range.query,history.map(row=>row.q.id),target).then(q=>({q}),error=>({error}));
           prepared={task};
         }else prepareNext();
-        const [result,style] = await Promise.all([prepared.task,mathStyle()]);
+        const label=target?'비슷한 문제를 불러오고 있어요.':at>=0?'다음 문항을 불러오고 있어요.':'선택한 단원의 첫 문항을 불러오고 있어요.';
+        const [result,style] = await wait(label,()=>Promise.all([prepared.task,mathStyle()]));
         if (!live() || generation!==serial || signed()) return;
         if(result.error){prepared=null;throw result.error;}
         const q=result.q;
@@ -183,8 +184,8 @@
       const id=owner(), value=review;
       saving=true;reviewError='';redraw();
       try {
-        const res=await window.DSStudentServices.submit({questionId:value.id,version:value.version,purpose:'study_free',
-          answer:value.answer,course:value.course,confidence:value.answer===null?'unsure':'sure',help:value.help,seconds:value.seconds,requestId:value.rid});
+        const res=await wait('이 계정에 풀이 기록을 저장하고 있어요.',()=>window.DSStudentServices.submit({questionId:value.id,version:value.version,purpose:'study_free',
+          answer:value.answer,course:value.course,confidence:value.answer===null?'unsure':'sure',help:value.help,seconds:value.seconds,requestId:value.rid}));
         if(!live()||owner()!==id||review!==value)return;
         if(res?.record?.questionId!==value.id||res.record.version!==value.version)throw Error('invalid_record');
         saved=true;sessionStorage.removeItem(intentKey);
