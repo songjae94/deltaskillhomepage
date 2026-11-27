@@ -215,7 +215,7 @@ async function printPaper(ids,title,includeSolutions=true){
    .dst-solution-sheet>header small,.dst-solution-sheet>header p{font-size:9pt;line-height:1.4;margin:0}
    .dst-solution-flow{height:228mm;column-count:2;column-gap:8mm;column-rule:.2mm solid #b9b9b9;column-fill:auto}
    .dst-solution-item{break-inside:avoid-column;margin:0 0 6mm;padding:0;border:0;overflow-wrap:break-word}
-   .dst-solution-item>h2{font:700 11pt/1.5 'Apple SD Gothic Neo','Malgun Gothic',sans-serif;margin:0 0 2.5mm;padding:0 0 1.5mm;border-bottom:.2mm solid #aaa;break-after:avoid}
+   .dst-solution-item>h2{font:700 11pt/1.5 'Apple SD Gothic Neo','Malgun Gothic',sans-serif;margin:0 0 2.5mm;padding:0 0 1.5mm;break-after:avoid}
    .dst-solution-item>h2 small{font-size:9pt;font-weight:400;margin-left:2mm}
    .dst-solution-item .solbody{font:500 10.5pt/1.85 'DS Timed Print Serif','Noto Serif KR','Batang',serif;color:black;word-break:keep-all;orphans:2;widows:2}
    .dst-solution-item .solbody p{margin:0 0 2.5mm;line-height:1.85}
@@ -235,7 +235,7 @@ async function printPaper(ids,title,includeSolutions=true){
   doc.body.replaceChildren(main);
   await Promise.all([...main.querySelectorAll('iframe')].map(f=>f.matches('.ds-student-fragment')?window.DSStudentFragment.fit(f):sizeFrame(f)));
   if(includeSolutions){
-   if(!window.DSSolutionPrint?.prepare){await new Promise((ok,fail)=>{const script=doc.createElement('script');script.src=new URL('solution-print-layout.js?v=4929016b71bd',document.baseURI).href;script.onload=ok;script.onerror=()=>fail(Error('solution_layout_unavailable'));doc.head.append(script);});}
+   if(!window.DSSolutionPrint?.prepare){await new Promise((ok,fail)=>{const script=doc.createElement('script');script.src=new URL('solution-print-layout.js?v=797cea5c9678',document.baseURI).href;script.onload=ok;script.onerror=()=>fail(Error('solution_layout_unavailable'));doc.head.append(script);});}
    const prepare=window.DSSolutionPrint?.prepare||w.DSSolutionPrint?.prepare;if(!prepare)throw Error('solution_layout_unavailable');
    const measure=doc.createElement('div');measure.className='dst-print-measure';doc.body.append(measure);
    const entries=[];

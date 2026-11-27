@@ -113,6 +113,19 @@
         if(first)first.style.marginInlineStart=offset+'px';
       }
     }
+    // A formula can fit the column while its attached Korean ending does not.
+    // Allow one break before that ending, leaving the math and shorter words untouched.
+    for(const word of flow.querySelectorAll('.solbody .어절')){
+      if(word.getBoundingClientRect().width<=available(word)+1)continue;
+      const math=word.querySelector('.katex');
+      if(!math || word.querySelectorAll('.katex').length!==1)continue;
+      let tail=math;
+      while(tail.parentElement!==word && !tail.nextSibling)tail=tail.parentElement;
+      const suffix=tail.nextSibling;
+      if(!suffix || !/^[가-힣]/u.test(suffix.textContent.trimStart()))continue;
+      word.classList.add('sol-wrap-parent');
+      tail.after(doc.createElement('wbr'));
+    }
   }
   window.DSSolutionPrint=Object.freeze({prepare});
 })();
