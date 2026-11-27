@@ -1,10 +1,5 @@
 (() => {
   const url = new URL(location.href);
-  if (url.searchParams.has('audience') || url.searchParams.has('exam') || (url.hash && url.hash !== '#entrance')) {
-    url.pathname = url.pathname.replace(/(?:index\.html)?$/, 'home.html');
-    location.replace(url.href);
-    return;
-  }
   const passage = document.querySelector('.passage');
   const status = document.querySelector('#gateStatus');
   let entering = false;

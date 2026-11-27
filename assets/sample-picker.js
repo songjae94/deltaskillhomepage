@@ -14,6 +14,6 @@
   const context = new URLSearchParams();
   for (const key of ['exam', 'audience', 'palette']) if (query.has(key)) context.set(key, query.get(key));
   const home = document.querySelector('#sample-home');
-  if (home) home.href = '/home.html?' + context;
+  if (home) home.href = '/';
   document.querySelector('#sample-materials').href = '/materials/?' + context;
 })();

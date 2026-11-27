@@ -9,7 +9,7 @@
   const audience = ['teacher', 'academy'].includes(query.get('audience')) ? query.get('audience') : 'student';
   const exam = query.get('exam') === 'csat' ? 'csat' : 'school';
   const context = new URLSearchParams({audience, exam});
-  document.querySelector('#composer-home').href = '/home.html?' + context + (handout ? '#library' : '#lesson-studio');
+  document.querySelector('#composer-home').href = '/';
   const materials = document.querySelector('#composer-materials');
   if (materials) materials.href = '/materials/?' + context;
   document.querySelector('#composer-sample').href = '/assets/sample-picker.html?' + context;

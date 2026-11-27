@@ -33,8 +33,8 @@
     teacher: ['teacher.html' + suffix, '수학 교실로 →'],
     guide: ['../guide/index.html' + suffix, '이용 안내로 →']
   };
-  const studio = ['../home.html' + suffix + '#lesson-studio', '홈의 교재 소개로 →'];
-  const home = ['../home.html' + suffix + '#technology', '홈의 학습 기술로 →'];
+  const studio = ['/naesin/', '내신 교재 보기 →'];
+  const home = ['/app/#technology', '학습 기술 소개로 →'];
   const [href, label] = Object.hasOwn(destinations, origin) ? destinations[origin] : fromStudio ? studio : home;
   if (back) { back.href = href; back.textContent = label; }
   const compose = document.querySelector('#case-compose');

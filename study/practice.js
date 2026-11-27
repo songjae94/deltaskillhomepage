@@ -4,7 +4,7 @@ const embedded = parameters.get('embed') === '1';
 if (embedded) document.documentElement.classList.add('tablet');
 const exam = parameters.get('exam') === 'csat' ? 'csat' : 'school';
 const examName = exam === 'csat' ? '수능' : '내신';
-const home = '../index.html?audience=student&exam=' + exam;
+const home = '/';
 document.querySelectorAll('a[href="../index.html"]').forEach(link=>link.href=home);
 const materials = '../materials/index.html?exam=' + exam + '&audience=student';
 document.getElementById('materials-top').href = materials;
