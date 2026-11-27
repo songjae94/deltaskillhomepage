@@ -918,10 +918,12 @@ function render(options={}){
  if(options.view==='history')return '<section class="ssp ssp-account-history" aria-label="내 공부 기록"><div class="ssp-live" aria-live="polite" role="status"></div><div class="ssp-body"></div></section>';
  return options.view==='desk'?deskShell():shell(options);
 }
-// Each sandboxed question needs the self-contained font data, also when the main page
-// uses the lighter screen stylesheet. Only this public, versioned asset is shared.
+// Reuse the host math layout and fonts. The self-contained version also works
+// when the browser cannot share its stylesheet or font faces with a frame.
 let guestStylePromise=null;
 async function readGuestMathStyle(){
+ const screen=window.DSStudentFragment.screenMathStyle?.();
+ if(screen)return screen;
  const css=await window.DSStudentFragment.mathEmbed();
  if(!css.includes('KaTeX_Main')||!css.includes('data:'))throw Error('math_style');
  const style='<style>'+css+'</style>';

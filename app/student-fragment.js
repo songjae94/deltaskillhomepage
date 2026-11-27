@@ -266,8 +266,44 @@
     return mathEmbedRequest;
   }
   function withMath(html) {
-    if (/KaTeX_Main/.test(html) || !/class="katex/.test(html)) return html;
+    if (/KaTeX_Main|<style data-ds-screen-math/.test(html) || !/class="katex/.test(html)) return html;
     return '<style data-ds-frame-math></style>' + html;
+  }
+  // The host already owns the canonical layout rules and the versioned KaTeX
+  // faces. A sandboxed frame may share those FontFace objects without links
+  // or external URLs in its content. Older engines use the self-contained CSS.
+  let frameMath;
+  function screenMathStyle() {
+    if (frameMath) return frameMath.markup;
+    try {
+      const sheet = document.querySelector('link[data-ds-katex-version]')?.sheet;
+      if (!sheet || !/\/katex-0\.18\.4\/katex-screen\.css$/.test(new URL(sheet.href).pathname)) return '';
+      const rules = Array.from(sheet.cssRules);
+      const fontRules = rules.filter(rule => rule.type === CSSRule.FONT_FACE_RULE);
+      const faces = Array.from(document.fonts).filter(face => fontRules.some(rule =>
+        rule.style.fontFamily === face.family && rule.style.fontStyle === face.style && rule.style.fontWeight === face.weight));
+      if (faces.length !== 20 || fontRules.length !== 20) return '';
+      const layout = rules.filter(rule => rule.type !== CSSRule.FONT_FACE_RULE).map(rule => rule.cssText).join('\n');
+      if (!layout.includes('.katex')) return '';
+      frameMath = {faces, markup:'<style data-ds-screen-math>' + layout + '</style>'};
+      return frameMath.markup;
+    } catch { return ''; }
+  }
+  async function shareScreenMath(doc, style) {
+    try {
+      for (const face of frameMath.faces) {
+        doc.fonts.add(face);
+        if (!doc.fonts.has(face)) throw Error('shared math face unavailable');
+      }
+      doc.body.getBoundingClientRect();
+      const used = frameMath.faces.filter(face => face.status === 'loading' || face.status === 'error');
+      await Promise.all(used.map(face => face.loaded));
+    } catch {
+      for (const face of frameMath?.faces || []) {
+        try { doc.fonts.delete(face); } catch {}
+      }
+      style.textContent = await mathEmbed();
+    }
   }
   const lastHeight = new Map();
   const observers = new WeakMap();
@@ -283,6 +319,8 @@
       }
       const doc = frame.contentDocument;
       if (!doc?.body) throw Error('문항 지면 없음');
+      const screenStyle = doc.querySelector('style[data-ds-screen-math]');
+      if (screenStyle && frameMath) await shareScreenMath(doc, screenStyle);
       const mathStyle = doc.querySelector('style[data-ds-frame-math]');
       if (mathStyle) {
         mathStyle.textContent = await mathEmbed();
@@ -312,5 +350,5 @@
     finally { frame.setAttribute('data-ds-typeset', ''); }
   }
   document.addEventListener('load',event => { if (event.target?.matches?.('.ds-student-fragment')) fit(event.target).catch(() => {}); },true);
-  window.DSStudentFragment = Object.freeze({render,fit,applyTypography,compact,renderRules,examFont,mathEmbed});
+  window.DSStudentFragment = Object.freeze({render,fit,applyTypography,compact,renderRules,examFont,mathEmbed,screenMathStyle});
 })();
