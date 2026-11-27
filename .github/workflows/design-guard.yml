@@ -12,5 +12,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - run: npm ci --ignore-scripts
       - run: npm run check:design
       - run: python3 scripts/build-app-runtime.py && git diff --exit-code -- app/index.html app/runtime-before-core.js app/runtime-after-core.js

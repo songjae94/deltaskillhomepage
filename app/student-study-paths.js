@@ -1897,10 +1897,36 @@ function bind(container,options={}){
   return;
  }
  paintBody(body,view==='source-question'?remoteQuestionHTML():view==='question'?question():view==='history'?history():view==='result'?result():home());openingState(root);const problemFirst=Boolean(body.querySelector('.ssp-paper'));root.classList.toggle('ssp-problem-first',problemFirst);if(problemFirst)root.insertBefore(body,root.firstChild);else root.appendChild(body);if(focus){const el=root.querySelector('.ssp-body h2');if(el){el.tabIndex=-1;el.focus({preventScroll:true});}}}
+ // Only upgrade the requested buttons. Replacing the whole paper would reset its iframe and focus.
+ const variantSlots=new Map();
+ let variantRequest=null,variantLoadFailed=false;
+ const variantRetry='<button type="button" data-ssp-variant-reload>비슷한 문제 연결 다시 확인</button>';
+ function loadVariantSlots(){
+  if(variantRequest)return;
+  variantLoadFailed=false;
+  const variants=window.DSStudentReviewVariants;
+  variantRequest=variants.loadRegistered().then(()=>{
+   if(closed)return;
+   for(const slot of container.querySelectorAll('[data-ssp-variant-slot]')){
+    const make=variantSlots.get(slot.dataset.sspVariantSlot);
+    if(make)slot.outerHTML=make();
+   }
+   variantSlots.clear();
+  }).catch(()=>{
+   if(closed)return;
+   variantLoadFailed=true;
+   for(const slot of container.querySelectorAll('[data-ssp-variant-slot]'))slot.innerHTML=variantRetry;
+  }).finally(()=>{variantRequest=null;});
+ }
  function variantButton(record,records){
   if(!record)return '';
+  const variants=window.DSStudentReviewVariants;
   const activeIds=view==='question'?pool:view==='source-question'?sourceRows().map(q=>q.questionId||q.id):[];
-  return window.DSStudentReviewVariants?.button(record,records,activeIds)||'';
+  if(!variants?.needsRegistered?.(record))return variants?.button(record,records,activeIds)||'';
+  const key=JSON.stringify([view,record.recordId||'',record.questionId||record.id,record.version]);
+  variantSlots.set(key,()=>variants.button(record,records,activeIds));
+  if(!variantLoadFailed)loadVariantSlots();
+  return '<span data-ssp-variant-slot="'+esc(key)+'">'+(variantLoadFailed?variantRetry:'비슷한 문제 확인 중…')+'</span>';
  }
  function openOriginal(id,keepPool=false){
   const q=byId.get(id);if(!q)return;
@@ -1920,6 +1946,7 @@ function bind(container,options={}){
   e.preventDefault();if(view!=='history')trialReturnView=view;view='history';draw();container.querySelector('.ssp-body')?.scrollIntoView?.({block:'start'});return;
  }
  const b=e.target.closest('button');if(!b||!container.contains(b)||b.disabled)return;notice='';
+ if(b.hasAttribute('data-ssp-variant-reload')){loadVariantSlots();return;}
  if(b.hasAttribute('data-sample-action')){handleSample(b);return;}
  if(b.hasAttribute('data-ssp-after-solution'))container.querySelector('.ssp-paper')?.scrollIntoView({block:'start'});
  if(b.hasAttribute('data-ssp-choose-range')){
@@ -2047,7 +2074,7 @@ function bind(container,options={}){
   }
  }
  if(e.target.matches('[data-ssp-target]')){desiredCount=Number(e.target.value);draw(false);return;}if(e.target.name==='ssp-remote-choice'){remoteChoice=Number(e.target.value);remoteUnknown=false;save();return;}if(e.target.matches('[data-ssp-remote-integer]')){remoteUnknown=false;remoteChoice=readIntegerAnswer(e.target);save();return;}if(e.target.matches('[data-ssp-free-unit]')){if(Object.hasOwn(FREE_CONCEPTS,e.target.value))freeUnit=e.target.value;draw();return;}if(e.target.matches('[data-ssp-scope-book]')){selectedScopeBook=e.target.value;widen='type';invalidateSource();draw();querySource();return;}if(e.target.matches('[data-ssp-scope-unit]')){selectedScopeUnit=e.target.value;widen='type';invalidateSource();draw();querySource();return;}if(e.target.matches('[data-ssp-scope-type]')){selectedScopeType=e.target.value;widen='type';invalidateSource();draw();querySource();return;}if(e.target.name==='ssp-answer'){choice=Number(e.target.value);const button=container.querySelector('[data-ssp-check]');if(button)button.disabled=false;save();}else if(e.target.name==='ssp-confidence'){confidence=e.target.value;save();}else if(e.target.matches('[data-ssp-grade]')){state.grade=Number(e.target.value);save();draw();}else if(e.target.matches('[data-ssp-reason]')&&feedback){feedback.reason=e.target.value;save(feedback);}}
- function sessionChange(){unshownGuest=null;clearTimeout(remoteTimer);remoteTimer=0;remoteDirty=false;lastOpen=null;guestRequest++;guestBusy=false;guestRange=null;guestQuestion='';localDrafts.clear();remoteDrafts.clear();epoch++;invalidateSource();remoteQuestion=null;remoteFeedback=null;remoteOperations.clear();remoteHistory={phase:'idle',records:[],hasMore:false,nextBefore:null};activeOwner=owner();current=null;pool=[];feedback=null;view='home';read();if(desk){void loadSupply();void loadPlan();}notice='로그인 상태가 바뀌어 현재 계정의 기록을 다시 확인했어요.';draw();}
+ function sessionChange(){variantSlots.clear();variantLoadFailed=false;unshownGuest=null;clearTimeout(remoteTimer);remoteTimer=0;remoteDirty=false;lastOpen=null;guestRequest++;guestBusy=false;guestRange=null;guestQuestion='';localDrafts.clear();remoteDrafts.clear();epoch++;invalidateSource();remoteQuestion=null;remoteFeedback=null;remoteOperations.clear();remoteHistory={phase:'idle',records:[],hasMore:false,nextBefore:null};activeOwner=owner();current=null;pool=[];feedback=null;view='home';read();if(desk){void loadSupply();void loadPlan();}notice='로그인 상태가 바뀌어 현재 계정의 기록을 다시 확인했어요.';draw();}
  read();if(desk){void loadSupply();void loadPlan();}container.addEventListener('click',click);container.addEventListener('change',change);container.addEventListener('keydown',integerKeydown);window.addEventListener('ds-session-change',sessionChange);const leave=()=>{if(document.visibilityState==='hidden')flushRemote(true);},pageLeave=()=>flushRemote(true);document.addEventListener('visibilitychange',leave);window.addEventListener('pagehide',pageLeave);if(options.resume&&typeof options.onReady!=='function')resume();draw(false);
  if(signed()&&activeOwner&&typeof options.loadProgress==='function'){const generation=epoch;Promise.resolve().then(()=>options.loadProgress({namespace:'student-paths-v1',ownerKey:activeOwner})).then(raw=>{if(closed||generation!==epoch)return;const remote=clean(raw);let cached=false;try{cached=Boolean(key()&&localStorage.getItem(key()));}catch{}const local=cached?state:remote;state=mergeProgress(remote,local);const comparable=x=>JSON.stringify({...x,records:[...x.records].sort((a,b)=>a.id.localeCompare(b.id))});if(comparable(state)!==comparable(remote)&&(!desk||cached))save();else{try{if(key())localStorage.setItem(key(),JSON.stringify(state));}catch{}emit();}draw(false);notifyReady();}).catch(()=>{if(closed||generation!==epoch)return;storageMessage='계정 기록을 불러오지 못했어요. 현재 기기의 기록을 보여드려요.';draw(false);notifyReady();});}else notifyReady();
  const controller={snapshot:()=>JSON.parse(JSON.stringify({...state,summary:summary(state),tier:tier(state),storage:storageMessage})),showHistory:()=>{view='history';draw();},resume:()=>{const ok=resume();if(ok)draw();return ok;},destroy:()=>{flushRemote();document.removeEventListener('visibilitychange',leave);window.removeEventListener('pagehide',pageLeave);closed=true;epoch++;if(typeof releaseChoiceLayout==='function')releaseChoiceLayout();container.removeEventListener('click',click);container.removeEventListener('change',change);container.removeEventListener('keydown',integerKeydown);window.removeEventListener('ds-session-change',sessionChange);controllers.delete(container);if(lastController===controller)lastController=null;}};controllers.set(container,controller);lastController=controller;return controller.destroy;

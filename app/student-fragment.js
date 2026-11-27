@@ -89,6 +89,17 @@
   // Split unicode ranges do not preserve every conjoining-Jamo shaping cluster.
   // Keep the source text intact and use the original font for those rare inputs.
   const needsFullFont = text => /[\u1100-\u11FF\uA960-\uA97F\uD7B0-\uD7FF]/.test(text);
+  // Only typeset visible content owns exam glyphs. A wrapper can also contain
+  // menu labels, style rules, or a hidden TeX annotation.
+  function examText(node) {
+    if (node.nodeType === Node.TEXT_NODE) return node.parentElement?.closest('style,script,annotation') ? '' : node.data;
+    const walker = node.ownerDocument.createTreeWalker(node, NodeFilter.SHOW_TEXT);
+    const parts = [];
+    while (walker.nextNode()) {
+      if (!walker.currentNode.parentElement?.closest('style,script,annotation')) parts.push(walker.currentNode.data);
+    }
+    return parts.join('');
+  }
   function fontRequirement(text) {
     if (needsFullFont(text)) return 4;
     if (needsExtension(text)) return 3;
@@ -124,7 +135,7 @@
     };
     return (mediumReady & required) === required ? task() : pendingFont(500, task);
   }
-  const fontScreens = '.ds-timed, .ssp-prompt, .ssp-solution, .ssp-hint, .ssil-main';
+  const fontScreens = '.dst-prompt, .ssp-prompt, .ssp-options, .ssp-solution, .ssp-hint';
   let fontMountQueued = false, fontMountBusy = false, fontMountRequired = 0;
   let fontMountRequested = 0, fontMountAttempt = -Infinity;
   function mountFonts() {
@@ -146,10 +157,12 @@
       const inside = (record.target.nodeType === 1 ? record.target : record.target.parentElement)?.closest(fontScreens);
       const nodes = record.type === 'characterData' ? [record.target] : record.addedNodes;
       for (const node of nodes) {
-        if (!inside && !node.matches?.(fontScreens) && !node.querySelector?.(fontScreens)) continue;
-        relevant = true;
-        const text = node.textContent || '';
-        fontMountRequired |= fontRequirement(text);
+        if (!node.isConnected) continue;
+        const screens = inside || node.matches?.(fontScreens) ? [node] : node.querySelectorAll?.(fontScreens) || [];
+        for (const screen of screens) {
+          relevant = true;
+          fontMountRequired |= fontRequirement(examText(screen));
+        }
       }
     }
     if (!relevant) return;
@@ -329,14 +342,7 @@
       const resize = () => { syncTypography(frame,doc); const box = doc.body.getBoundingClientRect(); const bottom = parseFloat(doc.defaultView.getComputedStyle(doc.body).marginBottom)||0; const height = Math.max(box.bottom+doc.defaultView.scrollY,box.top+doc.body.scrollHeight)+Math.max(0,bottom); if (height>0) { frame.style.height = Math.ceil(height+2)+'px'; if (frame.title) lastHeight.set(frame.title, frame.style.height); } };
       resize();
       if (frame.closest('.ds-timed, .ssp-prompt, .ssp-solution, .ssp-hint')) {
-        // Styles in srcdoc contain Korean selector names and comments. Only the
-        // question text needs exam glyphs, even while the frame is still hidden.
-        const walker = doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT);
-        const text = [];
-        while (walker.nextNode()) {
-          if (!walker.currentNode.parentElement?.closest('style,script')) text.push(walker.currentNode.data);
-        }
-        const faces = await ensureExamFaces(text.join(''));
+        const faces = await ensureExamFaces(examText(doc.body));
         if (!frame.isConnected || frame.contentDocument !== doc) return;
         // Load in the parent first: the srcdoc CSP only permits data: fonts.
         for (const face of faces) doc.fonts.add(face);
