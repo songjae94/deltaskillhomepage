@@ -58,10 +58,14 @@
     endNavigation?.();
     endNavigation = begin('화면을 열고 있습니다.');
     const finish = endNavigation;
-    setTimeout(finish, 15000);
+    queueMicrotask(() => { if (event.defaultPrevented) finish(); });
   });
   addEventListener('pageshow', () => endNavigation?.());
   addEventListener('pagehide', () => endNavigation?.());
+  window.navigation?.addEventListener('navigateerror', () => endNavigation?.());
+  window.navigation?.addEventListener('navigatesuccess', () => endNavigation?.());
+  addEventListener('keydown', event => { if (event.key === 'Escape') endNavigation?.(); });
+
 
   // Native fetch still owns the request, retry, abort and response body. Exclude
   // prefetches and telemetry so a background request cannot hold the page status.
