@@ -96,7 +96,7 @@
     try { path = new URL(href, location.href).pathname; } catch { return originalFetch.apply(this, arguments); }
     const action = performance.now() - recentAction < 1800 || document.readyState !== 'complete';
     const operation = typeof init?.body === 'string' ? /"action"\s*:\s*"([\w-]+)"/.exec(init.body)?.[1] : '';
-    const foreground = action && (/\/functions\/v1\//.test(path) || /\.json$/.test(path)) &&
+    const foreground = action && init?.priority !== 'low' && (/\/functions\/v1\//.test(path) || /\.json$/.test(path)) &&
       operation !== 'revision' && !/analytics|telemetry|log-event|metrics|welcome-points/.test(path);
     if (!foreground) return originalFetch.apply(this, arguments);
     const accountAction = path.includes('/api/') && path.split('/').pop();

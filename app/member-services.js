@@ -8,9 +8,9 @@
  let signedIn=false,csrf='',legacyPassword=false,authEpoch=0;
  const accountLinks=mode=>ORIGIN+'/auth/?'+(mode?'mode='+encodeURIComponent(mode)+'&':'')+'next=%2Fapp%2F%23account';
  function session(){return memberPreview?signedIn:isLiveOrigin&&Boolean(auth?.get())}
- async function local(path,body){
+ async function local(path,body,opts={}){
   const generation=authEpoch;
-  const r=await fetch('/__ds'+path,{method:body?'POST':'GET',headers:body?{'Content-Type':'application/json','X-DS-CSRF':csrf}:{},credentials:'same-origin',cache:'no-store',body:body?JSON.stringify(body):undefined});
+  const r=await fetch('/__ds'+path,{method:body?'POST':'GET',headers:body?{'Content-Type':'application/json','X-DS-CSRF':csrf}:{},credentials:'same-origin',cache:'no-store',priority:opts.priority,body:body?JSON.stringify(body):undefined});
   const d=await r.json().catch(()=>null);
   if(generation!==authEpoch)throw new Error('session_changed');
   if(r.status===401){signedIn=false;window.dispatchEvent(new Event('ds-session-change'))}
@@ -53,7 +53,7 @@
  }
  async function request(path,body,needsAuth=true,opts={}){
   const generation=authEpoch;
-  if(memberPreview){await ready;if(path.startsWith('/student-learning'))return local('/study',body===undefined?{action:'load',query:path.split('?')[1]||''}:body);return local('/request',{path,...(body===undefined?{}:{body})})}
+  if(memberPreview){await ready;if(path.startsWith('/student-learning'))return local('/study',body===undefined?{action:'load',query:path.split('?')[1]||''}:body,opts);return local('/request',{path,...(body===undefined?{}:{body})},opts)}
   if(!isLiveOrigin)throw new Error('preview_origin');
   const headers={'Content-Type':'application/json'};
   const token=needsAuth?auth?.get():null;
@@ -66,7 +66,7 @@
   const timer=ctrl?setTimeout(()=>ctrl.abort(),opts.timeout||30000):0;
   let r,d;
   try{
-   r=await fetch(EDGE+path,{method:body?'POST':'GET',headers,credentials:'omit',body:payload,keepalive,signal:ctrl?.signal});
+   r=await fetch(EDGE+path,{method:body?'POST':'GET',headers,credentials:'omit',body:payload,keepalive,priority:opts.priority,signal:ctrl?.signal});
    d=await r.json().catch(()=>null);
   }catch(error){throw Object.assign(new Error(ctrl?.signal.aborted?'timeout':'connection_failed'),{status:0});}
   finally{clearTimeout(timer);}

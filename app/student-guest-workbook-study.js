@@ -83,18 +83,18 @@
       serial++; busy=false; prepared=null; baseRange=range=null; history=[]; at=-1; message=''; end=false;
       frameHost=null;frameItem=null;answerBox=null;answerState='';explanation=null;
     }
-    async function requestNext(query,seen,target) {
+    async function requestNext(query,seen,target,options) {
       const args={...query,count:1};
       if(target)args.questionIds=[target.id];
       else if (seen.length<=300) args.excludeIds=seen;
       else {
-        const catalog=await papers().catalog(query);
+        const catalog=await papers().catalog(query,options);
         const used=new Set(seen),rest=catalog.questions.filter(q=>!used.has(q.id));
         if(!rest.length)return null;
         args.questionIds=[rest[Math.floor(Math.random()*rest.length)].id];
       }
       try {
-        const value=await papers().draw(args);
+        const value=await papers().draw(args,options);
         if(!Array.isArray(value?.questions))throw Error('invalid_draw');
         const q=value.questions[0];
         if(!q)return null;
@@ -106,12 +106,12 @@
         throw error;
       }
     }
-    function prepareNext() {
+    function prepareNext(options) {
       if(!range || end || at+1<history.length || signed() || prepared)return;
       const seen=history.map(row=>row.q.id);
       // This public draw is explicitly non-metered. An early answer/solution view starts
       // one next question while the student reads. A navigation consumes that same promise.
-      const task=requestNext(range.query,seen).then(q=>({q}),error=>({error}));
+      const task=requestNext(range.query,seen,null,options).then(q=>({q}),error=>({error}));
       prepared={task};
     }
     async function related(item) {
@@ -169,7 +169,7 @@
       }
       if(!skip && item.choice===null){message='답을 먼저 선택해 주세요.';redraw();return;}
       if(skip)item.choice=null;
-      item.checked=true;item.revealed=skip;message='';redraw();void related(item);if(at+1<range.size)prepareNext();
+      item.checked=true;item.revealed=skip;message='';redraw();void related(item);if(at+1<range.size)prepareNext({priority:'low'});
     }
     function login(item) {
       const q=item.q, rid=crypto.randomUUID(), next='/app/?studentMode=study&workbookReview='+rid+'#student';
