@@ -223,22 +223,23 @@
       if(validAnswer(answer,'choice')){item.choice=answer;message='';redraw();}
       return true;
     }
-    const shell='<article class="ssp-paper"><div class="ssp-paper-top"><span data-wb-scope></span><span data-wb-number></span></div><h2 tabindex="-1">교재 문제 풀기</h2><p data-wb-status role="status"></p><div class="ssp-prompt" data-wb-prompt></div><div data-wb-answer></div><div data-wb-feedback hidden></div><section class="ssp-solution" data-wb-solution hidden></section><nav class="ssp-actions" data-wb-nav aria-label="문항 이동"></nav></article>';
+    const shell='<article class="ssp-paper study-answer-sheet"><div class="ssp-paper-top"><span data-wb-scope></span><span data-wb-number></span></div><h2 tabindex="-1">교재 문제 풀기</h2><p data-wb-status role="status"></p><div class="ssp-prompt" data-wb-prompt></div><div data-wb-answer></div><div data-wb-feedback hidden></div><section class="ssp-solution" data-wb-solution hidden></section><div data-wb-nav></div></article>';
     function syncFrameChoices(frame,item,box) {
       if(item!==history[at]||!frame.isConnected||item.q.answerType!=='choice')return;
       const doc=frame.contentDocument;
-      if(doc?.URL!=='about:srcdoc'||!doc.body||!window.DSTimedExam?.prepareChoices)return;
+      if(doc?.URL!=='about:srcdoc'||!doc.body?.childElementCount)return;
       if(!doc.querySelector('.dte-source-choices')&&!doc.body.hasAttribute('data-study-choices-checked')){
         doc.body.setAttribute('data-study-choices-checked','');
-        window.DSTimedExam.prepareChoices({root:doc.body,id:item.q.id,value:item.choice,choose:button=>{
+        window.DSTimedExam?.prepareChoices?.({root:doc.body,studySheet:true,id:item.q.id,value:item.choice,choose:button=>{
           if(!live()||history[at]!==item||item.checked||busy)return;
           const answer=Number(button.dataset.examChoice);
           if(validAnswer(answer,'choice')){item.choice=answer;message='';redraw();}
         }});
       }
       const buttons=doc.querySelectorAll('[data-exam-choice]');
+      const group=box.querySelector('.study-answer-sheet__choices');
+      if(group)group.hidden=buttons.length===5;
       if(buttons.length===5) {
-        const group=box.querySelector('.ssp-options');if(group)group.hidden=true;
         for(const button of buttons){button.disabled=item.checked||busy;button.setAttribute('aria-pressed',String(item.choice===Number(button.dataset.examChoice)));}
       }else doc.querySelector('.dte-choice-issue')?.remove(); // The accessible numbered answer group remains available.
     }
@@ -257,8 +258,8 @@
         const draft=box.querySelector('[data-workbook-integer]')?.value;
         const same=answerBox===box&&answerState && JSON.parse(answerState)[0]===q?.id;
         answerState=state;answerBox=box;
-        box.innerHTML=!item?'':`<fieldset class="${q.answerType==='choice'?'ssp-options':'ssp-integer-answer'}" aria-label="답안" ${item.checked||busy?'disabled':''}>${q.answerType==='choice'?[...numbers].map((n,i)=>`<label><input type="radio" name="workbook-study-choice" value="${i}" ${item.choice===i?'checked':''}><span class="ssp-option-no">${n}</span></label>`).join(''):'<label>정수 답안 <input data-workbook-integer type="text" enterkeyhint="done" autocomplete="off" aria-label="정수 답안"></label>'}</fieldset>
-        ${!item.checked?`<div class="ssp-actions"><button class="ssp-primary" data-workbook-action="check">답 제출</button><button data-workbook-action="hint">첫 힌트 ${item.hint?'접기':'보기'}</button><button data-workbook-action="skip">모르겠어요 · 해설 보기</button></div>`:''}
+        box.innerHTML=!item?'':`<fieldset class="${q.answerType==='choice'?'ssp-options study-answer-sheet__choices':'ssp-integer-answer'}" aria-label="답안" ${q.answerType==='choice'?'data-choice-content="numbers" hidden':''} ${item.checked||busy?'disabled':''}>${q.answerType==='choice'?'<legend>답 선택</legend>'+[...numbers].map((n,i)=>`<label><input type="radio" name="workbook-study-choice" value="${i}" ${item.choice===i?'checked':''}><span class="ssp-option-no">${n}</span></label>`).join(''):'<label>정수 답안 <input data-workbook-integer type="text" enterkeyhint="done" autocomplete="off" aria-label="정수 답안"></label>'}</fieldset>
+        ${!item.checked?`<div class="ssp-actions study-answer-sheet__actions"><button class="ssp-primary study-answer-sheet__primary" data-workbook-action="check">답 제출</button><button class="study-answer-sheet__hint" data-workbook-action="hint" aria-expanded="${item.hint}">첫 힌트 ${item.hint?'접기':'보기'}</button><button class="study-answer-sheet__solution" data-workbook-action="skip">모르겠어요 · 해설 보기</button></div>`:''}
         ${item.hint?'<p class="ssp-note">주어진 조건과 구할 값을 표시하고, 둘을 연결하는 식을 세워 보세요.</p>':''}`;
         const field=box.querySelector('[data-workbook-integer]');
         if(field)field.value=item.choice??(same?draft:'')??'';
@@ -270,7 +271,7 @@
       }
       const feedback=node('feedback');feedback.hidden=!item?.checked;feedback.classList.toggle('ssp-feedback',Boolean(item?.checked));
       const response=item?.checked?`<h3 tabindex="-1">${item.choice===null?'함께 풀이를 확인해 봐요.':item.choice===q.answer?'맞았어요.':'답을 다시 살펴볼까요?'}</h3><p>정답은 ${q.answerType==='choice'?numbers[q.answer]+'번':q.answer}이에요.</p>
-        <div class="ssp-actions"><button data-workbook-action="solution" aria-expanded="${item.revealed}">해설 ${item.revealed?'접기':'보기'}</button><button data-workbook-action="retry">다시 풀기</button>${item.related?'<button data-workbook-action="related">비슷한 문제 풀기</button>':item.relatedError?'<button data-workbook-action="related-retry">비슷한 문제 다시 확인</button>':''}<button data-workbook-action="save">로그인하고 풀이 저장</button></div>`:'';
+        <div class="ssp-actions study-answer-sheet__actions"><button class="study-answer-sheet__solution" data-workbook-action="solution" aria-expanded="${item.revealed}">해설 ${item.revealed?'접기':'보기'}</button><button data-workbook-action="retry">다시 풀기</button>${item.related?'<button data-workbook-action="related">비슷한 문제 풀기</button>':item.relatedError?'<button data-workbook-action="related-retry">비슷한 문제 다시 확인</button>':''}<button data-workbook-action="save">로그인하고 풀이 저장</button></div>`:'';
       if(feedback.dataset.paint!==response){feedback.innerHTML=response;feedback.dataset.paint=response;}
       const solution=node('solution');solution.hidden=!item?.revealed;
       if(item?.revealed&&explanation!==item){solution.innerHTML=renderFrame(item.style+q.solutionHTML,'교재 해설');explanation=item;}
@@ -278,8 +279,17 @@
       const index=types.findIndex(t=>t.id===(range.query.typeIds?.[0]||q?.typeId));
       const typeStep=(offset,label)=>{const t=types[index+offset];return '<button data-workbook-action="type" data-workbook-type="'+esc(t?.id)+'" '+(!t||busy?'disabled':'')+'>'+label+'</button>';};
       const typeNav=course==='types'&&types.length>1&&index>=0?typeStep(-1,'← 이전 유형')+typeStep(1,'다음 유형 →'):'';
-      const nav=node('nav'),actions=`${at>0?'<button data-workbook-action="previous">이전 문항</button>':''}${!busy&&(!end||at+1<history.length)?`<button data-workbook-action="next">${message?'다시 불러오기':'다음 문항'}</button>`:''}${typeNav}<button data-ssp-choose-range>다른 단원 고르기</button>`;
-      if(nav.dataset.paint!==actions){nav.innerHTML=actions;nav.dataset.paint=actions;}
+      const next=!busy && (!end||at+1<history.length);
+      const nextLabel=message&&!item?'다시 불러오기':'다음 문항';
+      const mainNext=next&&(item?.checked||!item);
+      const nextButton=next?`<button ${mainNext?'class="ssp-primary study-answer-sheet__primary"':''} data-workbook-action="next">${nextLabel}</button>`:'';
+      const otherSteps=(at>0?'<button data-workbook-action="previous">이전 문항</button>':'')+
+        (mainNext?'':nextButton)+typeNav+'<button data-ssp-choose-range>다른 단원 고르기</button>';
+      const nav=node('nav');
+      const actions=(mainNext?nextButton:'')+'<details class="study-answer-sheet__navigation"><summary>학습 이동</summary><div class="study-answer-sheet__nav-items">'+otherSteps+'</div></details>';
+      if(nav.dataset.paint!==actions){
+        nav.innerHTML=actions;nav.dataset.paint=actions;
+      }
     }
     function reviewHTML(){
       return `<article class="ssp-paper"><h2>로그인 전에 푼 문항</h2><p>${esc(review.scope)}</p><p>내 답안 · ${review.answer===null?'모르겠어요':review.answerType==='choice'?numbers[review.answer]+'번':esc(review.answer)}</p><p role="status">${saved?'계정에 풀이를 저장했어요.':esc(reviewError)}</p><div class="ssp-actions">${saved?'':`<button class="ssp-primary" data-workbook-action="confirm" ${saving||!owner()?'disabled':''}>${saving?'저장하는 중…':'이 계정에 풀이 저장'}</button>`}<button data-workbook-action="dismiss" ${saving?'disabled':''}>공부로 돌아가기</button></div></article>`;

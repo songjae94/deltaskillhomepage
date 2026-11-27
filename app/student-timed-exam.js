@@ -2,7 +2,7 @@
 (() => {
   'use strict';
 
-  function prepareChoices({root,id,value,options=[],math,choose}) {
+  function prepareChoices({root,id,value,options=[],math,choose,studySheet=false}) {
       const doc=root.ownerDocument;
       window.DSStudentFragment?.applyTypography(doc);
       const optionCount=options.length||5;
@@ -35,6 +35,7 @@
         root.append(list);
       }
       if (!rows.length) {
+        if (studySheet) return;
         if (!root.querySelector('.dte-choice-issue')) {
           const note=doc.createElement('p');note.className='dte-choice-issue';
           note.setAttribute('role','status');
@@ -65,6 +66,7 @@
         if (table && !table.textContent.trim() && !table.querySelector('img,svg,math')) table.remove();
       }
       list.classList.add('dte-source-choices');
+      if(studySheet)list.classList.add('dte-study-sheet');
       rows.forEach((row,index)=>{
         const button=doc.createElement('button');
         button.type='button';button.className='dte-inline-choice';
@@ -82,6 +84,15 @@
           break;
         }
         body.append(...Array.from(row.childNodes));button.append(marker,body);row.append(button);
+        // A plain numeric choice can arrive with a text hyphen instead of a math minus.
+        if (/^-\s*\d+(?:[.,]\d+)?$/.test(body.textContent.trim()) && !body.querySelector('math,.katex,svg,img')) {
+          const text=doc.createTreeWalker(body,4);
+          for(let node=text.nextNode();node;node=text.nextNode()) {
+            if(!node.data.trim())continue;
+            node.data=node.data.replace('-', '−');
+            break;
+          }
+        }
         const spoken=body.cloneNode(true);
         for(const formula of spoken.querySelectorAll('.katex')){
           const tex=formula.querySelector('annotation[encoding="application/x-tex"]')?.textContent;
@@ -108,6 +119,10 @@
       .dte-choice-content{min-width:0;max-width:100%;display:block;white-space:normal;overflow-wrap:anywhere;overflow:visible}
       .dte-source-choices:is([data-choice-columns="3"],[data-choice-columns="5"]) .dte-choice-content{white-space:nowrap;overflow-wrap:normal}
       @media(max-width:480px){.dte-inline-choice{gap:3px;padding-inline:4px}}
+      .dte-study-sheet .dte-inline-choice{border-color:transparent;background:transparent;box-shadow:none;color:inherit}
+      @media(hover:hover){.dte-study-sheet .dte-inline-choice:not(:disabled):hover{background:#f0f3f6;border-color:#cbd3db}}
+      .dte-study-sheet .dte-inline-choice[aria-pressed=true]{border-color:#354258;background:#e5ebf1;box-shadow:inset 0 0 0 1px #354258}
+      .dte-study-sheet .dte-inline-choice:focus-visible{outline:2px solid #354258;outline-offset:-2px}
       @media(max-width:340px){.dte-source-choices{column-gap:2px!important}.dte-inline-choice{gap:2px;padding-inline:1px}.dte-source-choices .dte-choice-no{font-size:.9em}}
     `;
   function create(api) {

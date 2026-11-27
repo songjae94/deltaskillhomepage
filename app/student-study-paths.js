@@ -1712,7 +1712,27 @@ function bind(container,options={}){
   if(label.includes('대칭이동'))return '대칭시키는 기준을 하나씩 적고, 각 점에서 바뀌는 좌표를 표시해 보세요.';
   return '구해야 할 값을 먼저 표시하세요. 주어진 조건 하나를 식이나 그림으로 옮긴 뒤 그 값과 연결해 보세요.';
  }
- function remoteQuestionHTML(){const q=remoteQuestion,id=q.questionId||q.id;const pending=remoteOperations.has(id);let content=q.format==='sandbox-html'?'<div class="ssp-prompt">'+q._safeFragment+'</div><p class="ssp-note">긴 수식은 좌우로 밀어서 확인할 수 있어요.</p>':`<div class="ssp-prompt">${mathContent(q.prompt)}</div>`;const choices=q.answerType==='choice'?(Array.isArray(q.options)&&q.options.length===5?q.options:Array(5).fill('')):null;return `<article class="ssp-paper"><div class="ssp-paper-top"><span>${esc(sourceName(remoteMetadata))}</span><span>${esc(q.unit||remoteMetadata.unit||'')}</span></div><h2 tabindex="-1">${desk&&state.course==='types'?'대표 유형 문제':'기존 자료 풀기'}</h2>${desk?itemPager(Math.max(0,sourceRows().findIndex(row=>(row.questionId||row.id)===id)),sourceRows().some(row=>(row.questionId||row.id)===id)?sourceRows().length:1):''}${remoteTypeNavigation()}${content}${q.format==='sandbox-html' && choices ? '' : `<fieldset class="${choices?'ssp-options':'ssp-integer-answer'}" aria-label="답안" ${remoteFeedback||remoteBusy||pending?'disabled':''}>${choices?choices.map((text,i)=>`<label><input type="radio" name="ssp-remote-choice" value="${i}" ${remoteChoice===i?'checked':''}><span class="ssp-option-no">${"①②③④⑤"[i]}</span><span>${mathContent(text)}</span></label>`).join(''):`<label>정수 답안 <input type="text" enterkeyhint="done" autocomplete="off" spellcheck="false" data-ssp-remote-integer="${esc(id)}" ${Number.isSafeInteger(remoteChoice)?`value="${remoteChoice}"`:''} aria-label="정수 답안"></label>`}</fieldset>`}${!remoteFeedback?`<div class="ssp-actions"><button class="ssp-primary" data-ssp-remote-submit ${remoteBusy?'disabled':''}>${pending?'같은 답안으로 결과 다시 확인':'답 제출'}</button><button data-ssp-remote-hint ${remoteBusy||pending?'disabled':''}>첫 힌트 보기</button><button data-ssp-remote-unknown ${remoteBusy||pending?'disabled':''}>해설 보고 복습에 담기</button></div>${remoteHelp?'<p class="ssp-note" role="status">'+esc(remoteFirstHint())+'</p>':''}`:`<section class="ssp-feedback"><h3 tabindex="-1">${remoteFeedback.record.correct?'맞았어요.':'조건과 풀이를 다시 확인해 봐요.'}</h3>${variantButton(remoteFeedback.record,remoteHistory.records)}<button data-ssp-remote-retry>같은 문제 다시 풀기</button>${remoteFeedback.answer!==undefined?`<p>정답 ${esc(choices?Number(remoteFeedback.answer)+1+'번':remoteFeedback.answer)}</p>`:''}${remoteFeedback._safeSolutionFragment?`<section class="ssp-solution">${remoteFeedback._safeSolutionFragment}<p class="ssp-note">긴 수식은 좌우로 밀어서 확인할 수 있어요.</p></section>`:''}${remoteFeedback.solutionUnavailable?'<p>해설 표시 형식을 확인하지 못했어요. 채점 결과는 계정에 저장했어요.</p>':''}${remoteFeedback.solution?`<div class="ssp-solution">${(Array.isArray(remoteFeedback.solution)?remoteFeedback.solution:[remoteFeedback.solution]).map(line=>`<p>${mathContent(line)}</p>`).join('')}</div>`:''}</section>`}${remoteFeedback?afterRemoteQuestion(id):''}<footer class="ssp-paper-foot"><span>계정에 허용된 기존 자료</span>${options.view==='history'?'<button data-ssp-history>내 공부 기록으로</button>':!desk?'<button data-ssp-home>코스로 돌아가기</button>':''}</footer></article>`;}
+ function remoteQuestionHTML(){
+  const q=remoteQuestion,id=q.questionId||q.id;
+  const paper=q.format==='sandbox-html',pending=remoteOperations.has(id),locked=remoteFeedback||remoteBusy||pending;
+  const choices=q.answerType==='choice'?(Array.isArray(q.options)&&q.options.length===5?q.options:Array(5).fill('')):null;
+  const content=paper?'<div class="ssp-prompt">'+q._safeFragment+'</div>':`<div class="ssp-prompt">${mathContent(q.prompt)}</div>`;
+  const rows=desk?sourceRows():[],index=rows.findIndex(row=>(row.questionId||row.id)===id);
+  const navigation=(desk?itemPager(Math.max(0,index),index<0?1:rows.length):'')+remoteTypeNavigation();
+  let answer;
+  if(choices){
+   const optionRows=choices.map((text,i)=>`<label><input type="radio" name="ssp-remote-choice" value="${i}" ${paper?`aria-label="${i+1}번"`: ''} ${remoteChoice===i?'checked':''}><span class="ssp-option-no">${"①②③④⑤"[i]}</span>${paper?'':'<span>'+mathContent(text)+'</span>'}</label>`).join('');
+   answer=`<fieldset class="ssp-options${paper?' study-answer-sheet__choices':''}" ${paper?'data-choice-content="numbers"':''} aria-label="답 선택" ${locked?'disabled':''}>${paper?'<legend>답 선택</legend>':''}${optionRows}</fieldset>`;
+   // Keep the compact answer row out of the accessibility tree while the original choices mount.
+   if(paper)answer='<div data-ssp-choice-fallback hidden>'+answer+'</div>';
+  }else{
+   answer=`<fieldset class="ssp-integer-answer" aria-label="답안" ${locked?'disabled':''}><label>정수 답안 <input type="text" enterkeyhint="done" autocomplete="off" spellcheck="false" data-ssp-remote-integer="${esc(id)}" ${Number.isSafeInteger(remoteChoice)?`value="${remoteChoice}"`:''} aria-label="정수 답안"></label></fieldset>`;
+  }
+  const actions=`<div class="ssp-actions${paper?' study-answer-sheet__actions':''}"><button class="ssp-primary${paper?' study-answer-sheet__primary':''}" data-ssp-remote-submit ${remoteBusy?'disabled':''}>${pending?'같은 답안으로 결과 다시 확인':'답 제출'}</button><button class="${paper?'study-answer-sheet__hint':''}" data-ssp-remote-hint ${remoteBusy||pending?'disabled':''}>첫 힌트 보기</button><button class="${paper?'study-answer-sheet__solution':''}" data-ssp-remote-unknown ${remoteBusy||pending?'disabled':''}>해설 보고 복습에 담기</button></div>${remoteHelp?'<p class="ssp-note" role="status">'+esc(remoteFirstHint())+'</p>':''}`;
+  const result=remoteFeedback?`<section class="ssp-feedback"><h3 tabindex="-1">${remoteFeedback.record.correct?'맞았어요.':'조건과 풀이를 다시 확인해 봐요.'}</h3>${variantButton(remoteFeedback.record,remoteHistory.records)}<button data-ssp-remote-retry>같은 문제 다시 풀기</button>${remoteFeedback.answer!==undefined?`<p>정답 ${esc(choices?Number(remoteFeedback.answer)+1+'번':remoteFeedback.answer)}</p>`:''}${remoteFeedback._safeSolutionFragment?`<section class="ssp-solution">${remoteFeedback._safeSolutionFragment}<p class="ssp-note">긴 수식은 좌우로 밀어서 확인할 수 있어요.</p></section>`:''}${remoteFeedback.solutionUnavailable?'<p>해설 표시 형식을 확인하지 못했어요. 채점 결과는 계정에 저장했어요.</p>':''}${remoteFeedback.solution?`<div class="ssp-solution">${(Array.isArray(remoteFeedback.solution)?remoteFeedback.solution:[remoteFeedback.solution]).map(line=>`<p>${mathContent(line)}</p>`).join('')}</div>`:''}</section>`:'';
+  const foldedNavigation=paper&&navigation?`<details class="study-answer-sheet__navigation"><summary>학습 이동</summary><div class="study-answer-sheet__nav-items">${navigation}</div></details>`:'';
+  return `<article class="ssp-paper${paper?' study-answer-sheet':''}"><div class="ssp-paper-top"><span>${esc(sourceName(remoteMetadata))}</span><span>${esc(q.unit||remoteMetadata.unit||'')}</span></div><h2 tabindex="-1">${desk&&state.course==='types'?'대표 유형 문제':'기존 자료 풀기'}</h2>${paper?'':navigation}${content}${answer}${remoteFeedback?result+afterRemoteQuestion(id):actions}${foldedNavigation}<footer class="ssp-paper-foot"><span>계정에 허용된 기존 자료</span>${options.view==='history'?'<button data-ssp-history>내 공부 기록으로</button>':!desk?'<button data-ssp-home>코스로 돌아가기</button>':''}</footer></article>`;
+ }
  function sourcePanel(){
   const units=Object.keys(FREE_CONCEPTS);
   const freeConcept=FREE_CONCEPTS[freeUnit];
@@ -1839,19 +1859,34 @@ function bind(container,options={}){
  function mountChoices(body){
   if (view==='source-question' && remoteQuestion?.format==='sandbox-html' && remoteQuestion.answerType==='choice') {
     const q=remoteQuestion, id=q.questionId||q.id, frame=body.querySelector('.ssp-paper iframe.ds-student-fragment');
+    const fallback=body.querySelector('[data-ssp-choice-fallback]');
     const bind=()=>{
-      const doc=frame?.contentDocument;
-      if (!frame?.isConnected || doc?.URL!=='about:srcdoc' || !doc.body || remoteQuestion!==q || doc.querySelector('.dte-source-choices')) return;
+      if(!frame?.isConnected || remoteQuestion!==q)return;
+      const doc=frame.contentDocument;
+      if(doc?.URL!=='about:srcdoc' || !doc.body){if(fallback)fallback.hidden=false;return;}
       const locked=()=>closed || !frame.isConnected || remoteQuestion!==q || remoteFeedback || remoteBusy || remoteOperations.has(id);
-      window.DSTimedExam.prepareChoices({root:doc.body,id,value:remoteChoice,options:q.options||[],math:mathContent,choose:button=>{
-        if (locked()) return;
-        remoteChoice=Number(button.dataset.examChoice); remoteUnknown=false;
-        for (const option of doc.querySelectorAll('[data-exam-choice]')) option.setAttribute('aria-pressed',String(option===button));
-        save();
-      }});
-      if (locked()) for (const button of doc.querySelectorAll('[data-exam-choice]')) button.disabled=true;
+      if(!doc.querySelector('.dte-source-choices')){
+        const completeOptions=Array.isArray(q.options)&&q.options.length===5&&q.options.every(option=>
+          (typeof option==='string'&&option.trim()!=='')||Number.isFinite(option));
+        try{
+          window.DSTimedExam?.prepareChoices({root:doc.body,id,value:remoteChoice,studySheet:true,options:completeOptions?q.options:[],math:mathContent,choose:button=>{
+            if(locked())return;
+            remoteChoice=Number(button.dataset.examChoice);remoteUnknown=false;
+            for(const option of doc.querySelectorAll('[data-exam-choice]'))option.setAttribute('aria-pressed',String(option===button));
+            save();
+          }});
+        }catch{ /* Older source markup can still use the numbered answer row. */ }
+      }
+      const buttons=[...doc.querySelectorAll('button[data-exam-choice]')];
+      const recognized=buttons.length===5&&buttons.every((button,i)=>button.dataset.examChoice===String(i));
+      if(fallback)fallback.hidden=recognized;
+      for(const button of buttons)button.disabled=!recognized||Boolean(locked());
     };
-    if(frame){frame.addEventListener('load',bind,{once:true}); if(frame.contentDocument?.readyState==='complete')bind();}
+    if(frame){
+      frame.addEventListener('load',bind,{once:true});
+      frame.addEventListener('error',()=>{if(fallback)fallback.hidden=false;},{once:true});
+      if(frame.contentDocument?.URL==='about:srcdoc'&&frame.contentDocument.readyState==='complete')bind();
+    }else if(fallback)fallback.hidden=false;
     return;
   }
   const group=body.querySelector('.ssp-options:has(input[type="radio"])');
