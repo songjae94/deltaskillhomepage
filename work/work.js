@@ -238,6 +238,14 @@ function prodCalc(b, assign) {
   const necks = stages.filter(s => s.neck).map(s => s.c);
   return {st, z, gauges, gone, cross, cur, wk, stages, necks, mostAt: stages.filter(s => s.most).map(s => s.c), days};
 }
+// Unknown item counts stay unknown; only a verified complete list can be compared.
+function bundleCountSummary(rows, expected, label) {
+  const count = rows.length ? total(rows.map(r => r['문항'])) : 0;
+  if (!has(count)) return '목록 문항 합 ' + UNK + ' · 수량 미확인 항목이 있어 대조 보류';
+  if (!has(expected)) return '목록 문항 합 ' + num(count);
+  return expected === count ? '목록 문항 합 ' + num(count) + ' · ' + esc(label) + '과 맞음'
+    : '<span class="wk-bad">목록 합 어긋남: 목록 ' + num(count) + ' ↔ ' + esc(label) + ' ' + num(expected) + '</span>';
+}
 const bundleTitle = r => r['제목'] ? esc(r['제목']) : (r['교재'] || r['단원']) ? [r['과목'], r['교재'], r['단원'], r['변형단계']].filter(Boolean).map(esc).join(' · ')
   : '<span class="wk-unk">제목 미확인</span>' + (r['과목'] ? ' · ' + esc(r['과목']) : '');
 function independenceBroken(r) { // 지은 이(C2) ≠ 검증(C3) · 확인(C4) — 엔진 규칙을 화면이 다시 봄
@@ -286,11 +294,10 @@ async function prod() {
   // 4 꾸러미 목록 (단계 또는 작업자를 눌렀을 때)
   let list = '';
   if (fs || fw) {
-    const rows = bundles.filter(r => fs ? r['공정'] === fs : r['담당'] === fw), sumQ = total(rows.map(r => r['문항'])) || 0, stQ = fs ? k.st[fs]?.['문항'] : undefined;
+    const rows = bundles.filter(r => fs ? r['공정'] === fs : r['담당'] === fw), stQ = fs ? k.st[fs]?.['문항'] : undefined;
     const wDone = fw ? k.wk.get(fw) : null;
     const title = fs ? esc(fs) + ' ' + esc(STAGE_NAME[fs] || '') : esc(fw) + ' 의 꾸러미';
-    const check = fs && has(stQ) ? (stQ === sumQ ? '목록 문항 합 ' + num(sumQ) + ' · 공정 칸과 맞음' : '<span class="wk-bad">목록 합 어긋남: 목록 ' + num(sumQ) + ' ↔ 공정 칸 ' + num(stQ) + '</span>')
-      : fw && has(wDone?.['문항']) ? (wDone['문항'] === sumQ ? '목록 문항 합 ' + num(sumQ) + ' · 작업자 칸과 맞음' : '<span class="wk-bad">목록 합 어긋남: 목록 ' + num(sumQ) + ' ↔ 작업자 칸 ' + num(wDone['문항']) + '</span>') : '목록 문항 합 ' + num(sumQ);
+    const check = bundleCountSummary(rows, fs ? stQ : wDone?.['문항'], fs ? '공정 칸' : '작업자 칸');
     const last = r => { const h = (r['넘김'] || []).at(-1); return h ? stamp(h['시각']) + ' · ' + esc(h['단계']) + (h['받은이'] ? ' → ' + esc(h['받은이']) : '') : UNK; };
     list = '<section class="jb-card wk-bundles" id="wk-bundles"><div class="jb-head"><div><h2>' + title + ' — 꾸러미 ' + num(rows.length) + '</h2><p class="jb-help">' + check + '</p></div>' +
       '<a class="jb-link" href="#">닫기</a></div>' + (rows.length ? '<table class="wk-table"><thead><tr><th>꾸러미</th><th>변형 단계</th><th>공정</th><th>문항</th><th>끝</th><th>담당</th><th>상태</th><th>들어온 날</th><th>넘어간 시각</th></tr></thead><tbody>' +
