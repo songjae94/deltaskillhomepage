@@ -94,7 +94,7 @@ function workerRows(board, channel, day) {
 async function home() {
   main.innerHTML = '<div class="jb-head"><div><p class="jb-kicker">관리자</p><h1>무엇을 볼까요</h1></div></div><div class="wk-tiles">' +
     tile('judge', '/work/judge/', '문항 눈판정', '문항을 보고 넷 중 하나로 판정합니다.') +
-    tile('prod', '/work/prod/', '문항 생산관리', '작업자 · 묶음별 문항 생산 진도입니다.') +
+    tile('prod', '/work/prod/', '문항 생산관리', '공정 단계마다 쌓인 꾸러미 · 남은 것 · 병목입니다.') +
     tile('board', '/work/board/', '작업자별 상황판', '작업자마다 오늘 일 · 상태 · 마지막 통로 글입니다.') + '</div>';
   const set = (k, line, at) => { const el = document.querySelector('[data-tile="' + k + '"]'); el.querySelector('.wk-num').innerHTML = line; el.querySelector('.wk-at').textContent = at; };
   const fail = k => e => { if (e.status !== 401) set(k, '<span class="wk-bad">못 읽음</span>', '잠시 뒤 다시 엽니다'); };
@@ -106,7 +106,10 @@ async function home() {
   call('work-board', 'prod').then(d => {
     const p = d.prod;
     if (!p) return set('prod', '<span class="wk-muted">아직 올라온 판 없음</span>', '센터1128 이 올리면 나옵니다');
-    set('prod', '오늘 생산 <b>' + num(p.body['요약']['오늘_생산']) + '</b>', '기준 ' + stamp(p.body['기준시각']) + ' · 올림 ' + stamp(p.at));
+    if (p.body['계약'] !== PROD_R2) return set('prod', '<span class="wk-muted">지난 꼴 판 — r2 로 다시</span>', '올림 ' + stamp(p.at));
+    const k = prodCalc(p.body, d.assign);
+    set('prod', '나온 <b>' + N(k.z['나온']) + '</b> / 넣은 ' + N(k.z['넣은']) + ' · 단계에 ' + N(k.z['단계에']),
+      (k.necks.length ? '병목 ' + k.necks.join(' · ') : k.mostAt.length ? '가장 많이 쌓임 ' + k.mostAt.join(' · ') : '병목 미확인') + ' · 기준 ' + stamp(p.body['기준시각']));
   }).catch(fail('prod'));
   call('work-board', 'board').then(d => {
     if (!d.board) return set('board', '<span class="wk-muted">아직 올라온 판 없음</span>', '본부가 올리면 나옵니다');
@@ -150,38 +153,135 @@ function workerCard(w, week) {
       '</tbody></table></details>' : '') + '</article>';
 }
 
-// ---- 문항 생산관리 ----
+// ---- 문항 생산관리 (계약 생산관리-1128@r2 · 지시서 §0 · §2-2 · §2-3) ----
+// 공장 계기판: 넣은 = 나온 + 단계에 + 반송 + 버림. 셈은 센터1128 몫 · 화면은 맞대기만. 없는 값은 「미확인」(0 으로 꾸미지 않음).
+const PROD_R2 = '생산관리-1128@r2';
+const STAGES = [['C1', '입력'], ['C2', '변형'], ['C3', '검증 · 해설 · 코드'], ['C4', '재확인 · 렌더'], ['등재', '대기'], ['C5', '최종'], ['C9', '반송']];
+const STAGE_NAME = Object.fromEntries(STAGES);
+const FLOW = ['C1', 'C2', 'C3', 'C4', '등재'];
+const has = v => typeof v === 'number' && Number.isFinite(v);
+const UNK = '<span class="wk-unk">미확인</span>';
+const N = v => has(v) ? num(v) : UNK;
+const minus = (a, b) => has(a) && has(b) ? a - b : undefined;
+const total = list => list.length && list.every(has) ? list.reduce((x, y) => x + y, 0) : undefined;
+const pct = (a, b) => has(a) && has(b) && b > 0 ? Math.max(0, Math.min(100, Math.round(a / b * 100))) : null;
+const meter = p => '<span class="wk-meter' + (p === null ? ' unk' : '') + '" role="img" aria-label="' + (p === null ? '진행 미확인' : '진행 ' + p + '%') + '"><i style="width:' + (p || 0) + '%"></i></span>';
+const wkOrder = n => { const i = WORKERS.indexOf(n); return i < 0 ? 100 : i; };
+const byWorker = (a, b) => wkOrder(a) - wkOrder(b) || String(a).localeCompare(String(b), 'ko');
+const B_STATE = {'대기': 'unk', '진행': 'run', '끝': 'done', '막힘': 'stop', '반송': 'stop', '쉼': 'unk', '미확인': 'unk'};
+
+function assignNow(assign, at) { // 배치표: 언제부터 ≤ 지금 가운데 가장 늦은 줄이 지금 배치
+  const cur = new Map();
+  for (const r of assign?.body?.rows || []) {
+    const t = Date.parse(r['언제부터']); if (isNaN(t) || t > at) continue;
+    const o = cur.get(r['작업자']); if (!o || Date.parse(o['언제부터']) <= t) cur.set(r['작업자'], r);
+  }
+  return cur;
+}
+function prodCalc(b, assign) {
+  const st = Object.fromEntries((b['공정'] || []).map(r => [r['단계'], r]));
+  const z = b['잣대'] || {}, days = has(b['병목_날']) ? b['병목_날'] : 1;
+  const gone = ['넣은', '나온', '단계에', '반송', '버림'].every(k => has(z[k])) ? z['넣은'] - z['나온'] - z['단계에'] - z['반송'] - z['버림'] : undefined;
+  const cross = [['단계에', total(FLOW.map(c => st[c]?.['문항']))], ['나온', st.C5?.['문항']], ['반송', st.C9?.['문항']]]
+    .filter(([k, v]) => has(z[k]) && has(v) && z[k] !== v);
+  const cur = assignNow(assign, Date.now()), wk = new Map((b['작업자'] || []).map(w => [w['작업자'], w]));
+  const stages = STAGES.map(([c, name]) => {
+    const r = st[c] || {}, leftB = minus(r['꾸러미'], r['끝_꾸러미']), leftQ = minus(r['문항'], r['끝_문항']), rate = r['하루_처리_꾸러미'];
+    const flow = FLOW.includes(c), eta = flow && has(leftB) && has(rate) && rate > 0 ? Math.ceil(leftB / rate) : undefined;
+    const crew = [...cur.values()].filter(a => a['단계'] === c).map(a => a['작업자']).sort(byWorker);
+    return {c, name, r, leftB, leftQ, rate, flow, eta, neck: flow && has(leftB) && has(rate) && leftB > rate * days, crew};
+  });
+  const most = Math.max(0, ...stages.filter(s => s.flow && has(s.leftB)).map(s => s.leftB));
+  for (const s of stages) s.most = s.flow && most > 0 && s.leftB === most;
+  const necks = stages.filter(s => s.neck).map(s => s.c);
+  return {st, z, gone, cross, cur, wk, stages, necks, mostAt: stages.filter(s => s.most).map(s => s.c), days};
+}
+const bundleTitle = r => r['제목'] ? esc(r['제목']) : (r['교재'] || r['단원']) ? [r['과목'], r['교재'], r['단원'], r['변형단계']].filter(Boolean).map(esc).join(' · ')
+  : '<span class="wk-unk">제목 미확인</span>' + (r['과목'] ? ' · ' + esc(r['과목']) : '');
+function independenceBroken(r) { // 지은 이(C2) ≠ 검증(C3) · 확인(C4) — 엔진 규칙을 화면이 다시 봄
+  const who = {}; for (const h of r['넘김'] || []) if (h['받은이']) (who[h['단계']] ||= new Set()).add(h['받은이']);
+  if (r['담당']) (who[r['공정']] ||= new Set()).add(r['담당']);
+  return [...(who.C2 || [])].some(n => who.C3?.has(n) || who.C4?.has(n));
+}
+
 async function prod() {
   let d;
   try { d = await call('work-board', 'prod'); }
   catch (e) { if (e.status !== 401) main.innerHTML = '<p class="wk-bad">생산관리 판을 읽지 못했습니다(' + esc(e.status || '연결') + ').</p>'; return; }
-  const p = d.prod;
-  if (!p) { main.innerHTML = '<div class="jb-head"><div><p class="jb-kicker">문항 생산관리</p><h1>아직 올라온 판이 없습니다</h1><p class="jb-help">센터1128 이 계약 r1 꼴로 올리면 여기에 나옵니다.</p></div></div>'; return; }
-  const b = p.body, s = b['요약'], stages = b['단계'] || [];
-  const q = new URLSearchParams(location.hash.slice(1)), fw = q.get('w') || '', fs = q.get('s') || '';
-  const bundles = (b['묶음'] || []).filter(r => (!fw || r['작업자'] === fw) && (!fs || r['단계'] === fs));
-  const who = [...new Set((b['묶음'] || []).map(r => r['작업자']).filter(Boolean))];
-  const max = Math.max(1, ...(b['날별'] || []).flatMap(r => Object.values(r['값'] || {})));
-  const opt = (k, list, cur, all) => '<select data-q="' + k + '"><option value="">' + all + '</option>' + list.map(v => '<option' + (v === cur ? ' selected' : '') + '>' + esc(v) + '</option>').join('') + '</select>';
-  main.innerHTML = '<div class="jb-head"><div><p class="jb-kicker">문항 생산관리</p><h1>기준 ' + stamp(b['기준시각']) + '</h1>' +
-    '<p class="jb-help">지은이 ' + esc(b['지은이']) + ' · 올림 ' + stamp(p.at) + ' · 원문 · 정답 · 분류 코드는 싣지 않습니다</p></div></div>' +
-    '<div class="wk-sum">' + [['오늘_생산', '오늘 생산'], ['이번주_생산', '이번 주 생산'], ['검수_대기', '검수 대기'], ['등재', '등재'], ['막힘', '막힘']].map(([k, n]) =>
-      '<div class="jb-card"><p class="jb-kicker">' + n + '</p><p class="wk-big">' + num(s[k]) + '</p></div>').join('') + '</div>' +
-    ((b['날별'] || []).length ? '<section class="jb-card"><h2>날별</h2><table class="wk-table"><thead><tr><th>날짜</th>' + stages.map(x => '<th>' + esc(x) + '</th>').join('') + '</tr></thead><tbody>' +
-      b['날별'].map(r => '<tr><td>' + esc(r['날짜']) + '</td>' + stages.map(x => { const v = r['값']?.[x] || 0; return '<td><span class="wk-bar" style="width:' + Math.round(v / max * 100) + '%"></span>' + num(v) + '</td>'; }).join('') + '</tr>').join('') +
-      '</tbody></table></section>' : '') +
-    ((b['작업자'] || []).length ? '<section class="jb-card"><h2>작업자</h2><table class="wk-table"><thead><tr><th>작업자</th><th>상태</th><th>오늘</th><th>이번 주</th><th>진행</th><th>마지막</th><th>메모</th></tr></thead><tbody>' +
-      b['작업자'].map(r => '<tr><td>' + esc(r['작업자']) + '</td><td><span class="wk-badge ' + (BADGE[r['상태']] || 'unk') + '">' + esc(r['상태']) + '</span></td><td>' + num(r['오늘']) + '</td><td>' + num(r['이번주']) +
-        '</td><td>' + esc(r['진행']) + '</td><td>' + stamp(r['마지막']) + '</td><td>' + esc(r['메모']) + '</td></tr>').join('') + '</tbody></table></section>' : '') +
-    ((b['묶음'] || []).length ? '<section class="jb-card"><div class="jb-head"><h2>묶음 ' + num(bundles.length) + ' / ' + num(b['묶음'].length) + '</h2><div class="jb-tools">' +
-      opt('w', who, fw, '작업자 전체') + opt('s', stages, fs, '단계 전체') + '</div></div><table class="wk-table"><thead><tr><th>묶음</th><th>작업자</th><th>교재</th><th>단원</th><th>단계</th><th>수</th><th>끝</th><th>막힘</th><th>갱신</th><th>근거</th></tr></thead><tbody>' +
-      bundles.map(r => '<tr><td>' + esc(r['묶음']) + '</td><td>' + esc(r['작업자']) + '</td><td>' + esc(r['교재']) + '</td><td>' + esc(r['단원']) + '</td><td>' + esc(r['단계']) + '</td><td>' + num(r['수']) +
-        '</td><td>' + num(r['끝']) + '</td><td>' + num(r['막힘']) + '</td><td>' + stamp(r['갱신']) + '</td><td class="wk-src">' + esc(r['근거']) + '</td></tr>').join('') + '</tbody></table></section>' : '') +
-    (b['표'] || []).map(t => '<section class="jb-card"><h2>' + esc(t['제목']) + '</h2><table class="wk-table"><thead><tr>' + t['머리'].map(h => '<th>' + esc(h) + '</th>').join('') + '</tr></thead><tbody>' +
-      t['줄'].map(r => '<tr>' + r.map(v => '<td>' + esc(v) + '</td>').join('') + '</tr>').join('') + '</tbody></table></section>').join('');
-  main.querySelectorAll('select[data-q]').forEach(el => el.addEventListener('change', () => {
-    const n = new URLSearchParams(location.hash.slice(1)); if (el.value) n.set(el.dataset.q, el.value); else n.delete(el.dataset.q); location.hash = n.toString();
-  }));
+  const p = d.prod, head = (h, help) => '<div class="jb-head"><div><p class="jb-kicker">문항 생산관리 · 변형문항 생성공장</p><h1>' + h + '</h1><p class="jb-help">' + help + '</p></div></div>';
+  if (!p) { main.innerHTML = head('아직 올라온 판이 없습니다', '센터1128 이 계약 r2 꼴로 올리면 여기에 나옵니다.'); return; }
+  const b = p.body;
+  if (b['계약'] !== PROD_R2) { main.innerHTML = head('지난 꼴(' + esc(b['계약']) + ') 판입니다', '센터1128 이 계약 r2 꼴로 다시 올리면 공정 칸이 나옵니다 · 올림 ' + stamp(p.at)); return; }
+  const k = prodCalc(b, d.assign), z = k.z, q = new URLSearchParams(location.hash.slice(1)), fs = q.get('s'), fw = q.get('w');
+  const bundles = b['묶음'] || [], workers = [...(b['작업자'] || [])].sort((x, y) => byWorker(x['작업자'], y['작업자']));
+
+  // 1 맨 위 잣대
+  const gState = !has(k.gone) ? 'unk' : k.gone === 0 && !k.cross.length ? 'ok' : 'bad';
+  const gauge = '<section class="wk-gauge ' + gState + '" aria-label="잣대"><p class="wk-eq"><span>넣은 <b>' + N(z['넣은']) + '</b></span><i>=</i><span>나온 <b>' + N(z['나온']) + '</b></span><i>+</i>' +
+    '<span>단계에 <b>' + N(z['단계에']) + '</b></span><i>+</i><span>반송 <b>' + N(z['반송']) + '</b></span><i>+</i><span>버림 <b>' + N(z['버림']) + '</b></span></p>' +
+    '<p class="wk-gone">' + (gState === 'unk' ? '빠진 것 ' + UNK + ' — 잣대 칸이 모자라 셀 수 없음' : k.gone === 0 ? '빠진 것 <b>0</b> · 맞음' : '빠진 것 <b>' + num(k.gone) + '</b> · 맞지 않음') +
+    (k.cross.length ? ' · <span class="wk-bad">공정 칸과 어긋남: ' + k.cross.map(([n, v]) => esc(n) + ' ' + num(z[n]) + ' ↔ 공정 ' + num(v)).join(' / ') + '</span>' : '') + '</p></section>';
+  // 2 합계 한 줄
+  const sums = [['꾸러미 전체', total(STAGES.map(([c]) => k.st[c]?.['꾸러미']))], ['문항 전체', z['넣은']], ['진행한 것', z['나온']], ['남은 것', total([z['단계에'], z['반송']])]];
+  const sumLine = '<div class="wk-sum4">' + sums.map(([n, v]) => '<div><p class="jb-kicker">' + n + '</p><p class="wk-big">' + N(v) + '</p></div>').join('') + '</div>';
+  // 3 공정 칸 (1순위)
+  const crewLine = s => !s.crew.length ? '<span class="wk-unk">배치 미확인</span>' : s.crew.map(n => { const w = k.wk.get(n);
+    return '<span class="wk-hand">' + esc(n) + (w?.['지금_꾸러미'] ? ' · ' + esc(w['지금_꾸러미']) : w?.['상태'] === '쉼' ? ' · 쉬는 중' : '') + '</span>'; }).join('');
+  const stageCard = s => { const r = s.r, cls = ['wk-stage', s.c === 'C9' ? 'side' : '', s.neck ? 'neck' : s.most ? 'most' : '', fs === s.c ? 'on' : ''].filter(Boolean).join(' ');
+    return '<a class="' + cls + '" href="#s=' + encodeURIComponent(s.c) + '" data-stage="' + esc(s.c) + '"' + (fs === s.c ? ' aria-current="true"' : '') + '>' +
+      '<p class="wk-st-name"><b>' + esc(s.c) + '</b> ' + esc(s.name) + '</p>' +
+      '<p class="wk-st-big"><b>' + N(r['꾸러미']) + '</b><small>꾸러미</small></p><p class="wk-st-q">문항 ' + N(r['문항']) + '</p>' +
+      '<p class="wk-st-line">끝 ' + N(r['끝_꾸러미']) + ' · 남음 <b>' + N(s.leftB) + '</b> <small>꾸러미</small></p>' +
+      '<p class="wk-st-line small">끝 ' + N(r['끝_문항']) + ' · 남음 ' + N(s.leftQ) + ' <small>문항</small></p>' + meter(pct(r['끝_문항'], r['문항'])) +
+      (s.flow ? '<p class="wk-st-flag">' + (s.neck ? '<b>병목</b> · ' : s.most ? '<b>가장 많이 쌓임</b> · ' : '') +
+        (has(s.eta) ? '이 속도면 ' + num(s.eta) + '일' : s.rate === 0 ? '하루 처리 0 · 끝나는 날 없음' : '하루 처리 ' + UNK) + '</p>' : s.c === 'C5' ? '<p class="wk-st-flag">나온 곳</p>' : '<p class="wk-st-flag">지은 이에게 되돌림</p>') +
+      '<p class="wk-st-crew">' + crewLine(s) + '</p></a>'; };
+  const flowRow = '<section class="wk-flow" aria-label="공정 단계">' + k.stages.filter(s => s.c !== 'C9').map(stageCard).join('<span class="wk-arrow" aria-hidden="true">→</span>') +
+    '<span class="wk-arrow side" aria-hidden="true">↩</span>' + stageCard(k.stages.find(s => s.c === 'C9')) + '</section>' +
+    '<p class="wk-note">병목 = 남은 꾸러미가 하루 처리 × ' + num(k.days) + '일보다 많음 · 등재 · C5 는 자동 넘김 밖(등재 게이트 창 집행) · 단계를 누르면 꾸러미 목록</p>';
+  // 4 꾸러미 목록 (단계 또는 작업자를 눌렀을 때)
+  let list = '';
+  if (fs || fw) {
+    const rows = bundles.filter(r => fs ? r['공정'] === fs : r['담당'] === fw), sumQ = total(rows.map(r => r['문항'])) || 0, stQ = fs ? k.st[fs]?.['문항'] : undefined;
+    const wDone = fw ? k.wk.get(fw) : null;
+    const title = fs ? esc(fs) + ' ' + esc(STAGE_NAME[fs] || '') : esc(fw) + ' 의 꾸러미';
+    const check = fs && has(stQ) ? (stQ === sumQ ? '목록 문항 합 ' + num(sumQ) + ' · 공정 칸과 맞음' : '<span class="wk-bad">목록 합 어긋남: 목록 ' + num(sumQ) + ' ↔ 공정 칸 ' + num(stQ) + '</span>')
+      : fw && has(wDone?.['문항']) ? (wDone['문항'] === sumQ ? '목록 문항 합 ' + num(sumQ) + ' · 작업자 칸과 맞음' : '<span class="wk-bad">목록 합 어긋남: 목록 ' + num(sumQ) + ' ↔ 작업자 칸 ' + num(wDone['문항']) + '</span>') : '목록 문항 합 ' + num(sumQ);
+    const last = r => { const h = (r['넘김'] || []).at(-1); return h ? stamp(h['시각']) + ' · ' + esc(h['단계']) + (h['받은이'] ? ' → ' + esc(h['받은이']) : '') : UNK; };
+    list = '<section class="jb-card wk-bundles" id="wk-bundles"><div class="jb-head"><div><h2>' + title + ' — 꾸러미 ' + num(rows.length) + '</h2><p class="jb-help">' + check + '</p></div>' +
+      '<a class="jb-link" href="#">닫기</a></div>' + (rows.length ? '<table class="wk-table"><thead><tr><th>꾸러미</th><th>변형 단계</th><th>공정</th><th>문항</th><th>끝</th><th>담당</th><th>상태</th><th>들어온 날</th><th>넘어간 시각</th></tr></thead><tbody>' +
+      rows.map(r => '<tr><td>' + bundleTitle(r) + ' <small class="wk-key">' + esc(r['묶음']) + '</small>' + (independenceBroken(r) ? ' <span class="wk-badge stop">독립 어긋남</span>' : '') + '</td>' +
+        '<td>' + (r['변형단계'] ? esc(r['변형단계']) : UNK) + '</td><td>' + esc(r['공정']) + '</td><td>' + N(r['문항']) + '</td><td>' + N(r['끝']) + (r['막힘'] ? ' <span class="wk-badge stop">막힘 ' + num(r['막힘']) + '</span>' : '') + '</td>' +
+        '<td>' + (r['담당'] ? esc(r['담당']) : UNK) + '</td><td><span class="wk-badge ' + (B_STATE[r['상태']] || 'unk') + '">' + esc(r['상태'] || '미확인') + '</span></td>' +
+        '<td>' + (r['들어온날'] ? esc(r['들어온날']) : UNK) + '</td><td>' + last(r) +
+        ((r['넘김'] || []).length > 1 ? '<details><summary>넘김 ' + r['넘김'].length + '</summary>' + r['넘김'].map(h => stamp(h['시각']) + ' · ' + esc(h['단계']) + (h['받은이'] ? ' → ' + esc(h['받은이']) : '')).join('<br>') + '</details>' : '') + '</td></tr>').join('') +
+      '</tbody></table>' : '<p class="wk-muted">이 자리에 올라온 꾸러미 줄이 없습니다.</p>') + '</section>';
+  }
+  // 5 작업자 카드 (둘째) · 쉬는 손
+  const wCard = w => { const n = w['작업자'], a = k.cur.get(n), leftB = minus(w['꾸러미'], w['끝_꾸러미']), leftQ = minus(w['문항'], w['끝_문항']);
+    return '<a class="wk-wcard ' + (BADGE[w['상태']] || 'unk') + (fw === n ? ' on' : '') + '" href="#w=' + encodeURIComponent(n) + '">' +
+      '<header><h3>' + esc(n) + '</h3><span class="wk-badge ' + (BADGE[w['상태']] || 'unk') + '">' + esc(w['상태']) + '</span></header>' +
+      '<p class="wk-w-big"><b>' + N(w['꾸러미']) + '</b><small>꾸러미</small> <b>' + N(w['문항']) + '</b><small>문항</small></p>' +
+      '<p class="wk-w-line">진행한 것 ' + N(w['끝_꾸러미']) + ' / ' + N(w['끝_문항']) + ' · 남은 것 <b>' + N(leftB) + '</b> / ' + N(leftQ) + '</p>' + meter(pct(w['끝_문항'], w['문항'])) +
+      '<p class="wk-w-line small">지금 ' + (w['지금_꾸러미'] ? esc(w['지금_꾸러미']) : '<span class="wk-muted">없음</span>') + ' · 배치 ' + (a ? esc(a['단계']) : UNK) + ' · 마지막 ' + stamp(w['마지막']) + '</p>' +
+      ((w['막힘'] || w['반송']) ? '<p class="wk-w-line">' + (w['막힘'] ? '<span class="wk-badge stop">막힘 ' + num(w['막힘']) + '</span> ' : '') + (w['반송'] ? '<span class="wk-badge stop">반송 ' + num(w['반송']) + '</span>' : '') + '</p>' : '') + '</a>'; };
+  const resting = [...new Set([...[...k.cur.values()].filter(a => a['단계'] === '쉼').map(a => a['작업자']), ...workers.filter(w => w['상태'] === '쉼').map(w => w['작업자'])])].sort(byWorker);
+  const unplaced = workers.map(w => w['작업자']).filter(n => !k.cur.has(n));
+  const at = d.assign ? '배치표 ' + esc(d.assign.body['파일'] || '') + ' · ' + num((d.assign.body.rows || []).length) + '줄 · 올림 ' + stamp(d.assign.at) : '배치표 아직 올라오지 않음 — 배치 미확인';
+  const hands = '<section class="wk-rest"><p><b>쉬는 손</b> ' + (resting.length ? resting.map(n => '<span class="wk-hand">' + esc(n) + '</span>').join('') : d.assign ? '<span class="wk-muted">없음</span>' : UNK) + '</p>' +
+    (unplaced.length && d.assign ? '<p class="small"><b>배치표에 없는 작업자</b> ' + unplaced.map(n => '<span class="wk-hand unk">' + esc(n) + '</span>').join('') + '</p>' : '') + '<p class="wk-note">' + at + ' · 배치 고침은 본부 · 센터 · 형 말로(화면은 읽기만)</p></section>';
+  const crew = '<section><h2 class="wk-h2">작업자</h2>' + (workers.length ? '<div class="wk-wcards">' + workers.map(wCard).join('') + '</div>' : '<p class="wk-muted">작업자 줄 ' + UNK + '</p>') + hands + '</section>';
+  // 6 날별 · 표 (접어 둠)
+  const daily = b['날별'] || [], dmax = Math.max(1, ...daily.flatMap(r => Object.values(r['값'] || {})));
+  const folded = (daily.length ? '<details class="jb-card wk-fold"><summary>날별 끝낸 문항 ' + daily.length + '일</summary><table class="wk-table"><thead><tr><th>날짜</th>' + STAGES.map(([c]) => '<th>' + esc(c) + '</th>').join('') + '</tr></thead><tbody>' +
+      daily.map(r => '<tr><td>' + esc(r['날짜']) + '</td>' + STAGES.map(([c]) => { const v = r['값']?.[c]; return '<td>' + (has(v) ? '<span class="wk-bar" style="width:' + Math.round(v / dmax * 100) + '%"></span>' + num(v) : UNK) + '</td>'; }).join('') + '</tr>').join('') +
+      '</tbody></table></details>' : '') +
+    (b['표'] || []).map(t => '<details class="jb-card wk-fold"><summary>' + esc(t['제목']) + '</summary><table class="wk-table"><thead><tr>' + t['머리'].map(h => '<th>' + esc(h) + '</th>').join('') + '</tr></thead><tbody>' +
+      t['줄'].map(r => '<tr>' + r.map(v => '<td>' + esc(v) + '</td>').join('') + '</tr>').join('') + '</tbody></table></details>').join('');
+
+  main.innerHTML = head('기준 ' + stamp(b['기준시각']), '지은이 ' + esc(b['지은이']) + ' · 올림 ' + stamp(p.at) + ' · 원문 · 정답 · 분류 코드는 싣지 않습니다') +
+    gauge + sumLine + flowRow + list + crew + folded;
+  if (fs || fw) document.getElementById('wk-bundles')?.scrollIntoView({block: 'nearest'});
 }
 
 const VIEWS = {home, board, prod};
