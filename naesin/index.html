@@ -1002,7 +1002,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     if(q.p==="free" && b && comp("C0") && freeSets(b).length){v="confirm";node=vConfirm(q,s,b,comp("C0"));}
     else if(!products().length){
       v="subject";node=el("section","card");node.appendChild(el("h1","","내신 자료"));
-      node.appendChild(el("p","lede","문항 재검토로 기존 파일 판매를 중단했습니다."));
+      node.appendChild(el("p","lede","점검중입니다. 12월 1일 오픈 예정입니다."));
       var owned=el("a","btn","내가 받은 파일 보기");owned.href="/my/";node.appendChild(owned);
       CAT.subjects.forEach(function(subject){(subject.textbooks||[]).forEach(function(book){
         if(freeSets(book).length)node.appendChild(link("btn",{s:subject.code,b:book.id,p:"free"},book.name+" 무료 자료"));

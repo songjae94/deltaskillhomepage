@@ -102,7 +102,7 @@
   function formats(card) {
     const p=card.main, fmt=card.fmt;
     if (!enabled(p,fmt)) return '';
-    if (!p.formats[fmt]?.reviewed) return '<p class="ms-pick">재검토 중 · 판매 중단</p>';
+    if (!p.formats[fmt]?.reviewed) return '<details class="ms-sale-notice"><summary class="ms-pick">구매 안내 <span aria-hidden="true">▾</span></summary><p>점검중입니다. 12월 1일 오픈 예정입니다.</p></details>';
     const id=key(p,fmt);
     const row=`<div class="ms-pick" aria-label="${formatLabel(fmt)} ${cost(p,fmt)}${cart.includes(id) ? ' 담김' : ''}"><span>${formatLabel(fmt)}</span><b>${cost(p,fmt)}</b>${cart.includes(id) ? '<small>담김</small>' : ''}</div>`;
     return `<div class="ms-choice" aria-label="판매 형식과 가격">${row}</div><div class="ms-acts">${actionButtons(card,{p,fmt})}</div>`;
@@ -237,7 +237,7 @@
     const canOrder = products.some(p => Object.values(p.formats).some(f => f.reviewed));
     const cartButton = !canOrder ? '<a href="/my/">내가 받은 파일</a>' : `<button class="ms-cart-button" type="button" data-ms-cart aria-label="장바구니 ${count}개"><i aria-hidden="true"></i>장바구니 <b>${count}</b></button>`;
     const notice = status === 'error' ? '<p role="alert">교재 목록을 불러오지 못했습니다.</p><button data-ms-retry>다시 불러오기</button>' : '<p role="status">교재 목록을 불러오는 중입니다.</p>';
-    const top = `<div class="ms-top"><h1>${audience==='student'?'자료받기':'내신 자료'}</h1><span>${status === 'ready' && !canOrder ? '문항 재검토로 기존 파일 판매를 중단했습니다.' : '시험 범위 교재 고르기'}</span>${cartButton}</div>`;
+    const top = `<div class="ms-top"><h1>${audience==='student'?'자료받기':'내신 자료'}</h1><span>${status === 'ready' && !canOrder ? '점검중입니다. 12월 1일 오픈 예정입니다.' : '시험 범위 교재 고르기'}</span>${cartButton}</div>`;
     return `${top}${status === 'ready' ? '<div class="ms-student-find">' + picker() + '</div>' + items() : notice}`;
   }
 
@@ -252,7 +252,7 @@
     if (!panel || panel.querySelector('dialog[open]')) return;
     for (const tile of panel.querySelectorAll('[data-ms-card]')) {
       const card=cardIndex.get(tile.dataset.msCard);
-      if (card) {
+      if (card && card.main.formats[card.fmt]?.reviewed) {
         const offers=tile.querySelector('.ms-formats');
         const updated=formats(card);
         if (offers.innerHTML!==updated) {

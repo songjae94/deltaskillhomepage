@@ -111,7 +111,7 @@
     const on = item.sku === state.sku;
     const cells = Object.keys(FORMATS).filter(f => f === 'pdf' || state.hasHwp).map(f => {
       const v = item.formats[f];
-      return `<span class="dl63-cell dl63-cell-${f}">${v ? `<small>${FORMATS[f]}</small><b>${v.reviewed ? shownPrice(item,f) : '판매 중단'}</b>` : '<small>—</small>'}</span>`;
+      return `<span class="dl63-cell dl63-cell-${f}">${v ? `<small>${FORMATS[f]}</small><b>${v.reviewed ? shownPrice(item,f) : '점검중입니다'}</b>` : '<small>—</small>'}</span>`;
     }).join('');
     return `<li><button type="button" class="dl63-row" data-dl63-pick="${h(item.sku)}" aria-pressed="${on}">
       ${item.thumb ? `<img class="dl63-thumb" src="${h(item.thumb)}" alt="" width="804" height="1137" loading="lazy">` : '<span class="dl63-thumb dl63-thumb-none" aria-hidden="true"></span>'}
@@ -123,7 +123,7 @@
   function receipt(item) {
     if (!item) return '<div class="dl63-receipt"><p class="dl63-empty">왼쪽 목록에서 자료를 고르세요.</p></div>';
     const f = fmtOf(item), v = item.formats[f];
-    if (!v.reviewed) return `<div class="dl63-receipt"><h3>${h(item.name)}</h3><p>문항 재검토로 기존 파일 판매를 중단했습니다.</p><div class="dl63-sub">${item.sample ? `<a href="${h(item.sample)}">무료 미리보기</a>` : ''}<a href="/my/">내가 받은 파일 보기</a></div></div>`;
+    if (!v.reviewed) return `<div class="dl63-receipt"><h3>${h(item.name)}</h3><p>점검중입니다. 12월 1일 오픈 예정입니다.</p><div class="dl63-sub">${item.sample ? `<a href="${h(item.sample)}">무료 미리보기</a>` : ''}<a href="/my/">내가 받은 파일 보기</a></div></div>`;
     const fmts = Object.keys(item.formats).filter(k => item.formats[k].reviewed).map(k => `<button type="button" class="dl63-fmt" data-dl63-fmt="${k}" aria-pressed="${k === f}"><span>${FORMATS[k]}</span><b>${shownPrice(item,k)}</b></button>`).join('');
     const lay = v.files.filter(x => x.layout).map(x => `<li><span>${h(x.layout)}</span><b>${x.pages ? x.pages + '쪽' : ''}</b></li>`).join('');
     const quote = pointQuote(item, f), pointId = item.sku + '.' + f;
