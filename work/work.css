@@ -66,3 +66,15 @@ main>section.jb-card{margin-bottom:14px;overflow-x:auto}
 @media (max-width:820px){.wk-flow{grid-template-columns:repeat(2,minmax(0,1fr))}.wk-sum4{grid-template-columns:1fr 1fr}}
 .wk-gline+.wk-gline{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}.wk-gline .wk-eq em{font-style:normal;font-size:.74rem;color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:0 6px}
 .wk-gline.bad .wk-gone b{color:var(--v4)}.wk-gline.ok .wk-gone b{color:var(--v1)}
+/* r3 · 첫 화면 두 구역(변형문항 생산 · 그 밖의 일) · 상황판 두 묶음 · 통로 기준 줄 · 줄 없는 명의 */
+.wk-zones{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:16px}
+.wk-zone{display:flex;flex-direction:column;gap:10px;min-width:0}
+.wk-zone-head h2{margin:0;font-size:1.05rem}.wk-zone-head .jb-help{margin:2px 0 0;font-size:.82rem}
+.wk-zone[data-zone="prod"] .wk-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.wk-zone[data-zone="other"] .wk-tiles{grid-template-columns:1fr}
+.wk-zone .wk-tiles{flex:1}
+.wk-chline{margin:0 0 10px;font-size:.86rem;color:var(--muted)}
+.wk-group{margin-bottom:18px}.wk-group .wk-note{margin:-4px 0 10px}
+.wk-loose{display:flex;flex-wrap:wrap;gap:4px;align-items:center;font-size:.84rem;margin:4px 0 14px}
+.wk-toprod{font-size:.84rem;font-weight:650;align-self:flex-start;margin-top:2px}
+@media (max-width:820px){.wk-zones{grid-template-columns:1fr}}
+@media (max-width:520px){.wk-zone[data-zone="prod"] .wk-tiles{grid-template-columns:1fr}}
