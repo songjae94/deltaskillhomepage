@@ -73,13 +73,15 @@ const stateOf = s => s === '끝' ? '끝' : s === '막힘' ? '막힘' : ['진행'
 const dayOf = d => String(d || '').split(' ')[0];
 function days(rows) { const out = []; for (const r of rows) { const k = dayOf(r['날짜']); if (k && !out.includes(k)) out.push(k); } return out; }
 function pickDay(rows) { const list = days(rows), t = todayKey(); return list.includes(t) ? t : list.at(-1) || null; }
+// r3: 고른 주에 줄이 있는 작업자만 칸 · 통로 글만 있는 명의는 loose(「줄 없는 명의」 한 줄)
 function workerRows(board, channel, day) {
-  const rows = board?.body?.rows || [], names = new Map();
+  const rows = board?.body?.rows || [], names = new Map(), loose = [];
   const add = n => { if (!names.has(n)) names.set(n, {name: n, today: [], week: [], channel: null}); return names.get(n); };
   for (const r of rows) { const w = add(workerOf(r['작업자'])); w.week.push(r); if (dayOf(r['날짜']) === day) w.today.push(r); }
-  for (const c of channel?.body?.workers || []) add(workerOf(c['명의'])).channel = c;
+  for (const c of channel?.body?.workers || []) { const n = workerOf(c['명의']); if (names.has(n)) names.get(n).channel = c; else loose.push({name: n, channel: c}); }
   const order = n => { const i = WORKERS.indexOf(n); return i < 0 ? 100 : i; };
   const list = [...names.values()].sort((a, b) => order(a.name) - order(b.name) || a.name.localeCompare(b.name, 'ko'));
+  list.loose = loose.sort((a, b) => order(a.name) - order(b.name) || a.name.localeCompare(b.name, 'ko'));
   const dayList = days(rows), di = dayList.indexOf(day);
   for (const w of list) {
     const st = w.today.map(r => stateOf(r['상태']));
@@ -90,13 +92,27 @@ function workerRows(board, channel, day) {
   return list;
 }
 
-// ---- 첫 화면 ----
+// r3: 통로 자료 기준 시각 · 30분 넘게 묵으면 「통로 시각 묵음」 · 「없음」 단정 금지
+const STALE_MS = 30 * 60e3;
+const chInfo = ch => { const at = ch?.body?.['올린시각'] || ch?.at || null, t = Date.parse(at);
+  return {has: !!ch, at, stale: !!ch && (isNaN(t) || Date.now() - t > STALE_MS)}; };
+const chHead = ch => { const i = chInfo(ch);
+  return !i.has ? '<span class="wk-unk">통로 자료 아직 없음</span>' : '통로 #' + esc(ch.body['이슈']) + ' 기준 ' + stamp(i.at) +
+    (i.stale ? ' <span class="wk-badge stop">통로 시각 묵음</span>' : ''); };
+// 생산 줄 이름(자료로 받음 · 화면은 셈만): 작업자 + 앞으로 가운데 부터 ≤ 지금
+function lineNames(line) { const g = line?.['생산줄']; if (!g || !Array.isArray(g['작업자'])) return null;
+  return new Set([...g['작업자'], ...(g['앞으로'] || []).filter(a => Date.parse(a['부터']) <= Date.now()).map(a => a['작업자'])].map(workerOf)); }
+
+// ---- 첫 화면 (r3: 두 구역 — 변형문항 생산 · 그 밖의 일) ----
 async function home() {
-  main.innerHTML = '<div class="jb-head"><div><p class="jb-kicker">관리자</p><h1>무엇을 볼까요</h1></div></div><div class="wk-tiles">' +
-    tile('judge', '/work/judge/', '문항 눈판정', '문항을 보고 넷 중 하나로 판정합니다.') +
-    tile('prod', '/work/prod/', '문항 생산관리', '공정 단계마다 쌓인 꾸러미 · 남은 것 · 병목입니다.') +
-    tile('board', '/work/board/', '작업자별 상황판', '작업자마다 오늘 일 · 상태 · 마지막 통로 글입니다.') + '</div>';
+  const zone = (k, title, owner, tiles) => '<section class="wk-zone" data-zone="' + k + '" aria-label="' + title + '"><div class="wk-zone-head"><h2>' + title + '</h2>' +
+    '<p class="jb-help">임자 <b>' + owner + '</b> · <span class="wk-zone-at">읽는 중…</span></p></div><div class="wk-tiles">' + tiles + '</div></section>';
+  main.innerHTML = '<div class="jb-head"><div><p class="jb-kicker">관리자</p><h1>무엇을 볼까요</h1></div></div><div class="wk-zones">' +
+    zone('prod', '변형문항 생산', '맥GPT 창', tile('prod', '/work/prod/', '문항 생산관리', '공정 단계마다 쌓인 꾸러미 · 남은 것 · 병목 · 배치표입니다.') +
+      tile('judge', '/work/judge/', '문항 눈판정', '문항을 보고 넷 중 하나로 판정합니다.')) +
+    zone('other', '그 밖의 일', '본부', tile('board', '/work/board/', '작업자별 상황판', '작업자마다 오늘 일 · 상태 · 마지막 통로 글입니다.')) + '</div>';
   const set = (k, line, at) => { const el = document.querySelector('[data-tile="' + k + '"]'); el.querySelector('.wk-num').innerHTML = line; el.querySelector('.wk-at').textContent = at; };
+  const zoneAt = (k, html) => { document.querySelector('[data-zone="' + k + '"] .wk-zone-at').innerHTML = html; };
   const fail = k => e => { if (e.status !== 401) set(k, '<span class="wk-bad">못 읽음</span>', '잠시 뒤 다시 엽니다'); };
   call('item-judge', 'menu').then(d => {
     let judged = 0, total = 0;
@@ -105,17 +121,20 @@ async function home() {
   }).catch(fail('judge'));
   call('work-board', 'prod').then(d => {
     const p = d.prod;
+    zoneAt('prod', '생산 판 기준 ' + (p?.body?.['기준시각'] ? stamp(p.body['기준시각']) : UNK) + ' · 배치표 ' +
+      (d.assign ? num((d.assign.body.rows || []).length) + '줄 · 올림 ' + stamp(d.assign.at) : UNK));
     if (!p) return set('prod', '<span class="wk-muted">아직 올라온 판 없음</span>', '센터1128 이 올리면 나옵니다');
     if (p.body['계약'] !== PROD_R2) return set('prod', '<span class="wk-muted">지난 꼴 판 — r2 로 다시</span>', '올림 ' + stamp(p.at));
     const k = prodCalc(p.body, d.assign);
     set('prod', '나온 <b>' + N(k.z['나온']) + '</b> / 넣은 ' + N(k.z['넣은']) + ' · 단계에 ' + N(k.z['단계에']),
       (k.necks.length ? '병목 ' + k.necks.join(' · ') : k.mostAt.length ? '가장 많이 쌓임 ' + k.mostAt.join(' · ') : '병목 미확인') + ' · 기준 ' + stamp(p.body['기준시각']));
-  }).catch(fail('prod'));
+  }).catch(e => { fail('prod')(e); if (e.status !== 401) zoneAt('prod', '<span class="wk-bad">못 읽음</span>'); });
   call('work-board', 'board').then(d => {
+    zoneAt('other', '상황판 ' + (d.board ? '올림 ' + stamp(d.board.at) : UNK) + ' · ' + chHead(d.channel));
     if (!d.board) return set('board', '<span class="wk-muted">아직 올라온 판 없음</span>', '본부가 올리면 나옵니다');
     const day = pickDay(d.board.body.rows), list = workerRows(d.board, d.channel, day);
     set('board', '막힌 작업자 <b>' + list.filter(w => w.state === '막힘').length + '</b>명', esc(day || '') + ' 기준 · 올림 ' + stamp(d.board.at));
-  }).catch(fail('board'));
+  }).catch(e => { fail('board')(e); if (e.status !== 401) zoneAt('other', '<span class="wk-bad">못 읽음</span>'); });
 }
 const tile = (k, href, title, help) => '<a class="wk-tile" data-tile="' + k + '" href="' + href + '"><h2>' + title + '</h2><p class="jb-help">' + help + '</p>' +
   '<p class="wk-num"><span class="wk-muted">읽는 중…</span></p><p class="wk-at"></p><span class="wk-go">열기 →</span></a>';
@@ -134,23 +153,34 @@ async function board() {
     esc(w.label) + (w.current ? ' (지금)' : '') + '</option>').join('') + '</select></label>';
   const daySel = '<div class="jb-chips" role="group" aria-label="날">' + dayList.map(k => '<a class="jb-chip" href="#week=' + encodeURIComponent(d.week) + '&day=' + encodeURIComponent(k) + '"' +
     (k === day ? ' aria-current="true"' : '') + '>' + esc(k) + '</a>').join('') + '</div>';
-  const ch = d.channel ? '통로 #' + esc(d.channel.body['이슈']) + ' 마지막 글 기준 ' + stamp(d.channel.body['올린시각']) : '통로 글 시각 없음';
+  const ch = chInfo(d.channel), names = lineNames(d.line);
+  const prodSet = names || new Set(), other = list.filter(w => !prodSet.has(w.name)), inLine = list.filter(w => prodSet.has(w.name));
+  const group = (k, title, help, ws) => '<section class="wk-group" data-group="' + k + '"><h2 class="wk-h2">' + title + ' <small class="wk-muted">' + ws.length + '명</small></h2>' +
+    (help ? '<p class="wk-note">' + help + '</p>' : '') + (ws.length ? '<div class="wk-workers">' + ws.map(w => workerCard(w, ch, k === 'line')).join('') + '</div>' : '<p class="wk-muted">이 주에 줄이 있는 작업자 없음</p>') + '</section>';
+  const lineAt = d.line ? '배치표 ' + esc(d.line['파일'] || '') + ' 올림 ' + stamp(d.line.at) : '';
+  const groups = names
+    ? group('other', '그 밖', '임자 본부 · 상황판 CSV', other) + group('line', '생산 줄', '배치표에 이름이 있는 작업자 · ' + lineAt + ' · 생산 일은 생산관리 쪽에서', inLine)
+    : group('all', '작업자', '생산 줄 나눔 ' + UNK + ' — ' + (d.line ? lineAt + ' 판에 생산줄 칸이 없음 · 배치표를 다시 올리면 나뉨' : '배치표 아직 올라오지 않음'), list);
+  const loose = list.loose.length ? '<p class="wk-loose"><b>줄 없는 명의</b> <small class="wk-muted">이 주 상황판에 줄 없음 · 통로 글만</small> ' +
+    list.loose.map(x => '<span class="wk-hand">' + esc(x.name) + ' ' + stamp(x.channel.at) + '</span>').join('') + '</p>' : '';
   main.innerHTML = '<div class="jb-head"><div><p class="jb-kicker">작업자별 상황판</p><h1>' + esc(d.board.body['이름표']) + '</h1>' +
-    '<p class="jb-help">' + esc(day) + ' 기준 · 상황판 ' + esc(d.board.body.csv) + ' 올림 ' + stamp(d.board.at) + ' · ' + ch + '</p></div><div class="jb-tools">' + weekSel + '</div></div>' + daySel +
+    '<p class="jb-help">' + esc(day) + ' 기준 · 상황판 ' + esc(d.board.body.csv) + ' 올림 ' + stamp(d.board.at) + '</p></div><div class="jb-tools">' + weekSel + '</div></div>' + daySel +
     '<div class="wk-counts">' + ['진행', '끝', '막힘', '미확인'].map(s => '<span class="wk-badge ' + BADGE[s] + '">' + s + ' ' + list.filter(w => w.state === s).length + '</span>').join('') + '</div>' +
-    '<div class="wk-workers">' + list.map(w => workerCard(w, d.week)).join('') + '</div>';
+    '<p class="wk-chline">' + chHead(d.channel) + (ch.has ? ' · 7일 안 글만 셈' : '') + '</p>' + groups + loose;
   document.getElementById('wk-week').addEventListener('change', e => { location.hash = 'week=' + encodeURIComponent(e.target.value); });
 }
-function workerCard(w, week) {
+function workerCard(w, ch, inLine) {
   const c = w.channel, line = r => '<li><span class="wk-badge ' + BADGE[stateOf(r['상태'])] + '">' + esc(r['상태'] || '미확인') + '</span> ' + esc(r['할일']) + '</li>';
-  return '<article class="wk-worker ' + BADGE[w.state] + '"><header><h2>' + esc(w.name) + '</h2><span class="wk-badge ' + BADGE[w.state] + '">' + w.state + '</span></header>' +
-    '<p class="wk-meta">통로 마지막 글 ' + (c ? stamp(c.at) + (c['갈래'] ? ' · ' + esc(c['갈래']) : '') : '<span class="wk-muted">7일 안 없음</span>') + '</p>' +
+  const none = !ch.has ? '<span class="wk-unk">통로 자료 없음</span>' : '<span class="wk-muted">7일 안 글 없음(기준 ' + stamp(ch.at) + ')</span>' + (ch.stale ? ' <span class="wk-badge stop">묵음</span>' : '');
+  return '<article class="wk-worker ' + BADGE[w.state] + '" data-worker="' + esc(w.name) + '"><header><h2>' + esc(w.name) + '</h2><span class="wk-badge ' + BADGE[w.state] + '">' + w.state + '</span></header>' +
+    '<p class="wk-meta">통로 마지막 글 ' + (c ? stamp(c.at) + (c['갈래'] ? ' · ' + esc(c['갈래']) : '') : none) + '</p>' +
     (w.today.length ? '<ul class="wk-list">' + w.today.map(line).join('') + '</ul>' : '<p class="wk-muted">이 날 적힌 일 없음</p>') +
     (w.blocked.length ? '<p class="wk-why"><b>막힘 까닭</b> ' + w.blocked.map(r => esc(r['근거'] || '적힌 까닭 없음')).join(' / ') + '</p>' : '') +
     '<p class="wk-next"><b>다음 일</b> ' + (w.next ? esc(w.next['날짜']) + ' · ' + esc(w.next['할일']) : '<span class="wk-muted">적힌 것 없음</span>') + '</p>' +
     (w.week.length ? '<details><summary>이 주 전체 ' + w.week.length + '줄</summary><table class="wk-table"><thead><tr><th>날</th><th>할 일</th><th>상태</th><th>표시</th><th>근거</th></tr></thead><tbody>' +
       w.week.map(r => '<tr><td>' + esc(r['날짜']) + '</td><td>' + esc(r['할일']) + '</td><td>' + esc(r['상태']) + '</td><td>' + esc(r['표시시각']) + '</td><td class="wk-src">' + esc(r['근거']) + '</td></tr>').join('') +
-      '</tbody></table></details>' : '') + '</article>';
+      '</tbody></table></details>' : '') +
+    (inLine ? '<a class="jb-link wk-toprod" href="/work/prod/#w=' + encodeURIComponent(w.name) + '">생산관리에서 보기 →</a>' : '') + '</article>';
 }
 
 // ---- 문항 생산관리 (계약 생산관리-1128@r2 · 지시서 §0 · §2-2 · §2-3) ----
