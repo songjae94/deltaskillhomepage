@@ -107,13 +107,14 @@ function lineNames(line) { const g = line?.['생산줄']; if (!g || !Array.isArr
 async function home() {
   const zone = (k, title, owner, tiles) => '<section class="wk-zone" data-zone="' + k + '" aria-label="' + title + '"><div class="wk-zone-head"><h2>' + title + '</h2>' +
     '<p class="jb-help">임자 <b>' + owner + '</b> · <span class="wk-zone-at">읽는 중…</span></p></div><div class="wk-tiles">' + tiles + '</div></section>';
-  main.innerHTML = '<div class="jb-head"><div><p class="jb-kicker">관리자</p><h1>무엇을 볼까요</h1></div></div><div class="wk-zones">' +
+  main.innerHTML = '<div class="jb-head"><div><p class="jb-kicker">관리자</p><h1>무엇을 볼까요</h1></div></div>' + coZone() + '<div class="wk-zones">' +
     zone('prod', '변형문항 생산', '맥GPT 창', tile('prod', '/work/prod/', '문항 생산관리', '공정 단계마다 쌓인 꾸러미 · 남은 것 · 병목 · 배치표입니다.') +
       tile('judge', '/work/judge/', '문항 눈판정', '문항을 보고 넷 중 하나로 판정합니다.')) +
     zone('other', '그 밖의 일', '본부', tile('board', '/work/board/', '작업자별 상황판', '작업자마다 오늘 일 · 상태 · 마지막 통로 글입니다.')) + '</div>';
   const set = (k, line, at) => { const el = document.querySelector('[data-tile="' + k + '"]'); el.querySelector('.wk-num').innerHTML = line; el.querySelector('.wk-at').textContent = at; };
   const zoneAt = (k, html) => { document.querySelector('[data-zone="' + k + '"] .wk-zone-at').innerHTML = html; };
   const fail = k => e => { if (e.status !== 401) set(k, '<span class="wk-bad">못 읽음</span>', '잠시 뒤 다시 엽니다'); };
+  coHome();
   call('item-judge', 'menu').then(d => {
     let judged = 0, total = 0;
     for (const s of d.subjects || []) for (const b of s.books || []) { judged += b.judged || 0; total += b.total || 0; }
@@ -319,7 +320,160 @@ async function prod() {
   if (fs || fw) document.getElementById('wk-bundles')?.scrollIntoView({block: 'nearest'});
 }
 
-const VIEWS = {home, board, prod};
+// ---- r4 · 회사 전체 할 일 (계약 회사할일-1128@r1 · 첫 화면 맨 위 구역 · /work/all/) ----
+// 자료 = 본부의 회사할일_총괄.csv 를 --총괄 로 올린 판(kind board · name company). 화면은 세고 거를 뿐 · 글은 글로만.
+const CO_R1 = '회사할일-1128@r1';
+const CO_GROUPS = ['지금 제공하는 서비스', '다음에 추가할 서비스', '강사용 서비스', '교재 만들기', '홍보 · 마케팅', '내부 관리', '회계 관리'];
+const DIR_R1 = '회사방향-1128@r1', RULE_R1 = '회사원칙-1128@r1';
+const LAYERS = ['방향', '중점', '지금 집중', '다음'], RULE_STATES = ['있음', '고침 필요', '없음'], RULE_BADGE = {'있음': 'done', '고침 필요': 'run', '없음': 'stop'};
+const CO_OUT = '갈래 밖';
+const CO_STATES = ['운영', '진행', '준비', '멈춤', '미정', '끝'];
+const CO_CLS = {'운영': 'op', '진행': 'run', '준비': 'prep', '멈춤': 'stop', '미정': 'und', '끝': 'done'};
+const CO_BADGE = {'운영': 'done', '진행': 'run', '준비': 'run', '멈춤': 'stop', '미정': 'unk', '끝': 'done'};
+const coKey = g => String(g || '').replace(/\s+/g, '');
+const kstToday = () => { const t = new Date().toLocaleString('sv-SE', {timeZone: 'Asia/Seoul'}).slice(0, 10).split('-').map(Number); return Date.UTC(t[0], t[1] - 1, t[2]); };
+// MM-DD 에는 해가 없음: 오늘에서 반년 안쪽 해로 읽음(12-30 ↔ 01-02 넘어가는 때도 맞음)
+function coDate(mmdd, today = kstToday()) {
+  const m = /^(\d{2})-(\d{2})$/.exec(mmdd || ''); if (!m) return null;
+  const y = new Date(today).getUTCFullYear(), half = 183 * 864e5;
+  let d = Date.UTC(y, m[1] - 1, m[2]); if (d - today > half) d = Date.UTC(y - 1, m[1] - 1, m[2]); else if (today - d > half) d = Date.UTC(y + 1, m[1] - 1, m[2]);
+  return d;
+}
+function coRows(body) {
+  const today = kstToday(), gi = Object.fromEntries(CO_GROUPS.map(g => [coKey(g), g]));
+  return (body?.rows || []).map(r => { const due = coDate(r['기한'], today);
+    return {...r, g: gi[coKey(r['갈래'])] || CO_OUT, late: due !== null && due < today && r['상태'] !== '끝' && r['상태'] !== '운영', unk: r['임자'] === '미상', und: r['상태'] === '미정'}; });
+}
+const coGroups = rows => [...CO_GROUPS, ...(rows.some(r => r.g === CO_OUT) ? [CO_OUT] : [])];
+const coCount = (rows, st) => rows.filter(r => r['상태'] === st).length;
+const coSvc = rows => [...new Set(rows.map(r => r['서비스']))];
+const coLatest = rows => { let best = null, at = null; for (const r of rows) { const d = coDate(r['고친날']); if (d !== null && (at === null || d > at)) { at = d; best = r['고친날']; } } return best; };
+const coBand = rows => '<span class="wk-band" role="img" aria-label="' + CO_STATES.map(s => s + ' ' + coCount(rows, s)).join(' · ') + '">' +
+  CO_STATES.map(s => { const n = coCount(rows, s); return n ? '<i class="s-' + CO_CLS[s] + '" style="flex:' + n + '"></i>' : ''; }).join('') + '</span>';
+const coHeadAt = c => '목록 ' + esc(c.body['파일'] || '') + ' · 줄 ' + num((c.body.rows || []).length) + ' · 최근 고친날 ' + (coLatest(c.body.rows || []) ? esc(coLatest(c.body.rows || [])) : UNK) + ' · 올림 ' + stamp(c.at);
+const coFail = e => e.status === 400 ? '총괄 자료 길 아직 없음 — work-board 판 4 배포 뒤 나옵니다' : '못 읽음 — 잠시 뒤 다시 엽니다';
+
+function coZone() {
+  return '<section class="wk-co" aria-label="회사 전체 할 일"><div class="wk-co-head"><div><h2>회사 전체 할 일</h2><p class="jb-help">임자 <b>본부</b> · <span class="wk-co-at">읽는 중…</span></p></div>' +
+    '<a class="wk-toprod" href="/work/all/">모두 보기 →</a></div><p class="wk-co-focus"><b>지금 집중</b> <span class="wk-muted">읽는 중…</span></p><div class="wk-co-cells">' +
+    CO_GROUPS.map((g, i) => '<a class="wk-co-cell" data-co="' + i + '" href="/work/all/#g=' + i + '"><h3>' + esc(g) + '</h3><p class="wk-co-num"><span class="wk-muted">읽는 중…</span></p><p class="wk-co-line"></p></a>').join('') +
+    '</div><p class="wk-co-flags"></p></section>';
+}
+function coHome() {
+  const at = html => { const el = document.querySelector('.wk-co-at'); if (el) el.innerHTML = html; };
+  const cells = (num1, line) => document.querySelectorAll('.wk-co-cell').forEach(el => { el.querySelector('.wk-co-num').innerHTML = num1; el.querySelector('.wk-co-line').innerHTML = line; });
+  call('work-board', 'company').then(d => {
+    const c = d.company;
+    if (!c) { at(UNK); document.querySelector('.wk-co-focus').innerHTML = '<b>지금 집중</b> ' + coFocus(d.dir); return cells('<span class="wk-muted">아직 올라온 목록 없음</span>', '본부가 올리면 나옵니다'); }
+    if (c.body['계약'] !== CO_R1) { at('올림 ' + stamp(c.at)); return cells('<span class="wk-muted">지난 꼴 목록</span>', esc(CO_R1) + ' 로 다시'); }
+    const rows = coRows(c.body);
+    at(coHeadAt(c));
+    document.querySelector('.wk-co-focus').innerHTML = '<b>지금 집중</b> ' + coFocus(d.dir);
+    document.querySelectorAll('.wk-co-cell').forEach(el => {
+      const rs = rows.filter(r => r.g === CO_GROUPS[Number(el.dataset.co)]), stop = coCount(rs, '멈춤');
+      el.querySelector('.wk-co-num').innerHTML = '서비스 <b>' + num(coSvc(rs).length) + '</b>';
+      el.querySelector('.wk-co-line').innerHTML = '진행 <b>' + num(coCount(rs, '진행')) + '</b> · 멈춤 <b' + (stop ? ' class="stop"' : '') + '>' + num(stop) + '</b> · 미정 <b>' + num(coCount(rs, '미정')) + '</b>';
+    });
+    const out = rows.filter(r => r.g === CO_OUT).length;
+    document.querySelector('.wk-co-flags').innerHTML = '<a class="wk-badge stop" href="/work/all/#v=late">기한 지난 줄 ' + num(rows.filter(r => r.late).length) + '</a>' +
+      '<a class="wk-badge unk" href="/work/all/#v=unk">임자 미상 ' + num(rows.filter(r => r.unk).length) + '</a><a class="wk-badge unk" href="/work/all/#v=und">미정 ' + num(rows.filter(r => r.und).length) + '</a>' +
+      (out ? '<a class="wk-badge stop" href="/work/all/#g=' + CO_GROUPS.length + '">갈래 밖 ' + num(out) + '</a>' : '');
+  }).catch(e => { if (e.status !== 401) { at('<span class="wk-bad">' + coFail(e) + '</span>'); cells('<span class="wk-bad">못 읽음</span>', ''); document.querySelector('.wk-co-focus').innerHTML = '<b>지금 집중</b> ' + UNK; } });
+}
+
+const okDoc = (doc, ver) => doc && doc.body?.['계약'] === ver;
+const dirRows = dir => okDoc(dir, DIR_R1) ? (dir.body.rows || []) : [];
+function coFocus(dir) {
+  if (!dir) return UNK + ' <span class="wk-muted">— 방향 목록이 올라오면 나옵니다</span>';
+  if (!okDoc(dir, DIR_R1)) return '<span class="wk-muted">지난 꼴 방향 목록 — ' + esc(DIR_R1) + ' 로 다시</span>';
+  const f = dirRows(dir).filter(r => r['층'] === '지금 집중');
+  return f.length ? f.map(r => '<span class="wk-hand">' + esc(r['제목']) + '</span>').join(' ') : UNK + ' <span class="wk-muted">— 지금 집중 줄 없음</span>';
+}
+const ruleRows = rule => okDoc(rule, RULE_R1) ? (rule.body.rows || []) : [];
+
+async function all() {
+  const q = new URLSearchParams(location.hash.slice(1));
+  let d;
+  try { d = await call('work-board', 'company'); }
+  catch (e) { if (e.status !== 401) main.innerHTML = '<p class="wk-bad">회사 할 일 목록을 읽지 못했습니다 — ' + (e.status === 400 ? coFail(e) : esc(e.status || '연결')) + '</p>'; return; }
+  const c = d.company;
+  if (!c) { main.innerHTML = '<p class="jb-wait">아직 올라온 회사 할 일 목록이 없습니다. 본부가 올리면 나옵니다.</p>'; return; }
+  if (c.body['계약'] !== CO_R1) { main.innerHTML = '<p class="wk-bad">지난 꼴 목록(올림 ' + stamp(c.at) + ') — ' + esc(CO_R1) + ' 로 다시 올려야 보입니다.</p>'; return; }
+  const rows = coRows(c.body), groups = coGroups(rows), dirs = dirRows(d.dir), rules = ruleRows(d.rule);
+  const gOf = g => { const k = coKey(g); return CO_GROUPS.find(x => coKey(x) === k) || (k === '전체' ? '전체' : CO_OUT); };
+  const owners = [...new Set(rows.map(r => r['임자']))].sort(byWorker);
+  const f = {p: q.get('p') || '', dp: q.get('dp') || '', g: q.get('g') || '', o: q.get('o') || '', s: q.get('s') || '', v: q.get('v') || '', rs: q.get('rs') || ''};
+  if (f.p !== 'rule') f.p = ''; if (!['big', 'plan'].includes(f.dp)) f.dp = '';
+  if (!/^\d+$/.test(f.g) || Number(f.g) >= groups.length) f.g = ''; if (!owners.includes(f.o)) f.o = ''; if (!CO_STATES.includes(f.s)) f.s = ''; if (!['late', 'unk', 'und'].includes(f.v)) f.v = ''; if (!RULE_STATES.includes(f.rs)) f.rs = '';
+  const href = patch => '#' + new URLSearchParams(Object.entries({...f, ...patch}).filter(([, x]) => x !== '')).toString();
+  const sel = (id, label, cur, opts) => '<label class="wk-pick">' + label + ' <select id="' + id + '"><option value="">전체</option>' +
+    opts.map(([v, t]) => '<option value="' + esc(v) + '"' + (String(v) === String(cur) ? ' selected' : '') + '>' + esc(t) + '</option>').join('') + '</select></label>';
+  const chipRow = (label, list, cur, key) => '<div class="jb-chips" role="group" aria-label="' + label + '">' + list.map(([v, t]) => '<a class="jb-chip" data-' + key + '="' + (v || 'all') + '" href="' + href({[key]: v}) + '"' +
+    (cur === v ? ' aria-current="true"' : '') + '>' + t + '</a>').join('') + '</div>';
+  // 큰 그림 띠(방향 → 중점 → 지금 집중 → 다음) · 옆에 없는 매뉴얼 수
+  const noRule = rules.filter(r => r['상태'] === '없음').length, fixRule = rules.filter(r => r['상태'] === '고침 필요').length;
+  const dirItem = r => '<li><b>' + esc(r['제목']) + '</b>' + (r['갈래'] && r['갈래'] !== '전체' ? ' <small class="wk-muted">' + esc(r['갈래']) + '</small>' : '') +
+    (r['기간'] ? ' <small class="wk-muted">' + esc(r['기간']) + '</small>' : '') + ' <span class="wk-badge ' + (CO_BADGE[r['상태']] || 'unk') + '">' + esc(r['상태']) + '</span>' +
+    (r['내용'] ? '<br><small>' + esc(r['내용']) + '</small>' : '') + '</li>';
+  const big = '<section class="wk-big-band" aria-label="큰 그림"><div class="wk-layers">' + LAYERS.map((L, i) => { const rs = dirs.filter(r => r['층'] === L);
+      return '<div class="wk-layer" data-layer="' + esc(L) + '"><p class="jb-kicker">' + (i ? '→ ' : '') + esc(L) + '</p>' + (rs.length ? '<ul>' + rs.map(dirItem).join('') + '</ul>' : '<p class="wk-muted">' + UNK + ' — 형 말이 적힌 줄 없음</p>') + '</div>'; }).join('') + '</div>' +
+    '<aside class="wk-rule-sum"><p class="jb-kicker">원칙 · 매뉴얼</p>' + (d.rule && okDoc(d.rule, RULE_R1) ? '<a class="wk-big-n" href="' + href({p: 'rule', rs: '없음'}) + '">없는 매뉴얼 <b>' + num(noRule) + '</b></a><p class="wk-muted">고침 필요 ' + num(fixRule) + ' · 전체 ' + num(rules.length) + '</p>' : '<p>' + UNK + '</p>') +
+    '</aside><p class="wk-note">' + (d.dir ? '방향 ' + esc(d.dir.body?.['파일'] || '') + ' · 올림 ' + stamp(d.dir.at) + (okDoc(d.dir, DIR_R1) ? '' : ' · <span class="wk-bad">지난 꼴</span>') : '방향 목록 아직 올라오지 않음') +
+    (d.rule ? ' · 원칙 ' + esc(d.rule.body?.['파일'] || '') + ' · 올림 ' + stamp(d.rule.at) + (okDoc(d.rule, RULE_R1) ? '' : ' · <span class="wk-bad">지난 꼴</span>') : ' · 원칙 목록 아직 올라오지 않음') + '</p></section>';
+  const modes = chipRow('보기', [['', '할 일'], ['rule', '원칙 · 매뉴얼']], f.p, 'p');
+  const headTxt = '<div class="jb-head"><div><p class="jb-kicker">관리자 · 임자 본부</p><h1>회사 전체 할 일</h1><p class="jb-help">' + coHeadAt(c) +
+    '<br>원문 · 정답 · 학생 정보 · 금액 숫자 · 문서 본문은 싣지 않습니다 · 고침은 본부가 목록 CSV 로(화면은 읽기만)</p></div>';
+  if (f.p === 'rule') return allRules();
+  // 할 일 보기 — 깊이: 큰 그림만 / 갈래별 세부계획 / 할 일 줄까지
+  const depth = chipRow('보는 깊이', [['big', '큰 그림만'], ['plan', '갈래별 세부계획'], ['', '할 일 줄까지']], f.dp, 'dp');
+  const keep = r => (!f.o || r['임자'] === f.o) && (!f.s || r['상태'] === f.s) && (!f.v || r[f.v]);
+  const narrowed = !!(f.o || f.s || f.v);
+  const tools = '<div class="jb-tools wk-co-tools">' + sel('co-g', '갈래', f.g, groups.map((g, i) => [i, g])) + (f.dp ? '' : sel('co-o', '임자', f.o, owners.map(o => [o, o])) + sel('co-s', '상태', f.s, CO_STATES.map(s => [s, s]))) + '</div>';
+  const pool = rows.filter(r => f.g === '' || r.g === groups[f.g]);
+  const views = [['', '모두 ' + num(pool.length)], ['late', '기한 지난 줄 ' + num(pool.filter(r => r.late).length)], ['unk', '임자 미상 ' + num(pool.filter(r => r.unk).length)], ['und', '미정 ' + num(pool.filter(r => r.und).length)]];
+  const shownAll = pool.filter(keep);
+  const counts = '<div class="wk-counts">' + CO_STATES.map(s => '<a class="wk-badge ' + CO_BADGE[s] + '" href="' + href({s: f.s === s ? '' : s}) + '"' + (f.s === s ? ' aria-current="true"' : '') + '>' + s + ' ' + num(coCount(shownAll, s)) + '</a>').join('') +
+    '<span class="wk-co-shown">맞는 줄 <b>' + num(shownAll.length) + '</b> / ' + num(rows.length) + '</span></div>';
+  const row = r => '<tr data-id="' + esc(r.id) + '"' + (r.late ? ' class="late"' : '') + '><td>' + esc(r['할일']) + '</td><td>' + (r.unk ? '<span class="wk-unk">미상</span>' : esc(r['임자'])) + '</td>' +
+    '<td><span class="wk-badge ' + (CO_BADGE[r['상태']] || 'unk') + '">' + esc(r['상태']) + '</span></td><td>' + (r['다음걸음'] ? esc(r['다음걸음']) : '<span class="wk-muted">—</span>') + '</td>' +
+    '<td>' + (r['기한'] ? esc(r['기한']) : '<span class="wk-muted">—</span>') + (r.late ? ' <span class="wk-badge stop">기한 지남</span>' : '') + '</td><td class="wk-src">' + esc(r['근거']) + '</td></tr>';
+  const svcBlock = (svc, shown, allOf) => '<details class="wk-svc" data-svc="' + esc(svc) + '" open><summary><b>' + esc(svc) + '</b>' + coBand(allOf) +
+    '<small class="wk-muted">' + CO_STATES.filter(s => coCount(allOf, s)).map(s => s + ' ' + coCount(allOf, s)).join(' · ') + (narrowed ? ' · 맞는 줄 ' + shown.length + ' / ' + allOf.length : '') + '</small></summary>' +
+    '<table class="wk-table"><thead><tr><th>할일</th><th>임자</th><th>상태</th><th>다음걸음</th><th>기한</th><th>근거</th></tr></thead><tbody>' + shown.map(row).join('') + '</tbody></table></details>';
+  const plans = g => { const ps = dirs.filter(r => r['층'] === '세부계획' && gOf(r['갈래']) === g);
+    return '<div class="wk-plans"><p class="jb-kicker">세부계획</p>' + (ps.length ? '<ul>' + ps.map(dirItem).join('') + '</ul>' : '<p class="wk-muted">세부계획 줄 없음</p>') + '</div>'; };
+  const cats = f.dp === 'big' ? '' : groups.map((g, gi) => {
+    if (f.g !== '' && Number(f.g) !== gi) return '';
+    const rs = rows.filter(r => r.g === g), shown = rs.filter(keep);
+    if (narrowed && !shown.length) return '';
+    return '<details class="jb-card wk-cat" data-cat="' + gi + '" open><summary><span class="wk-cat-name">' + esc(g) + '</span>' + coBand(rs) + '<small class="wk-muted">서비스 ' + coSvc(rs).length + ' · 줄 ' + rs.length +
+      ' · 진행 ' + coCount(rs, '진행') + ' · 멈춤 ' + coCount(rs, '멈춤') + ' · 미정 ' + coCount(rs, '미정') + '</small></summary>' + plans(g) +
+      (f.dp === 'plan' ? '' : shown.length ? coSvc(shown).map(svc => svcBlock(svc, shown.filter(r => r['서비스'] === svc), rs.filter(r => r['서비스'] === svc))).join('') : '<p class="wk-muted">이 갈래에 줄 없음</p>') + '</details>';
+  }).join('');
+  main.innerHTML = headTxt + tools + '</div>' + modes + big + depth + (f.dp ? '' : chipRow('모아 보기', views, f.v, 'v') + counts) +
+    (f.dp === 'big' ? '' : '<p class="wk-co-fold"><button type="button" class="jb-link" data-fold="close">모두 접기</button> · <button type="button" class="jb-link" data-fold="open">모두 펴기</button></p>' + (cats || '<p class="wk-muted">맞는 줄 없음</p>'));
+  for (const [id, k] of [['co-g', 'g'], ['co-o', 'o'], ['co-s', 's']]) document.getElementById(id)?.addEventListener('change', e => { location.hash = href({[k]: e.target.value}).slice(1); });
+  main.querySelectorAll('[data-fold]').forEach(b => b.addEventListener('click', () => main.querySelectorAll('details.wk-cat, details.wk-svc').forEach(x => { x.open = b.dataset.fold === 'open'; })));
+
+  function allRules() { // 원칙 · 매뉴얼 보기: 이름 · 한 줄 · 자리 글자만(본문 0)
+    const rg = [...CO_GROUPS, ...(rules.some(r => gOf(r['갈래']) === CO_OUT) ? [CO_OUT] : [])];
+    if (Number(f.g) >= rg.length) f.g = '';
+    const pick = rules.filter(r => (f.g === '' || gOf(r['갈래']) === rg[f.g]));
+    const shown = pick.filter(r => !f.rs || r['상태'] === f.rs);
+    const tools2 = '<div class="jb-tools wk-co-tools">' + sel('co-g', '갈래', f.g, rg.map((g, i) => [i, g])) + sel('co-rs', '상태', f.rs, RULE_STATES.map(s => [s, s])) + '</div>';
+    const rchips = chipRow('모아 보기', [['', '모두 ' + num(pick.length)], ...RULE_STATES.map(s => [s, s + ' ' + num(pick.filter(r => r['상태'] === s).length)])], f.rs, 'rs');
+    const body = !d.rule ? '<p class="jb-wait">아직 올라온 원칙 · 매뉴얼 목록이 없습니다. 본부가 올리면 나옵니다.</p>' : !okDoc(d.rule, RULE_R1) ? '<p class="wk-bad">지난 꼴 원칙 목록 — ' + esc(RULE_R1) + ' 로 다시 올려야 보입니다.</p>' :
+      rg.map((g, gi) => { if (f.g !== '' && Number(f.g) !== gi) return ''; const all = rules.filter(r => gOf(r['갈래']) === g), rs = all.filter(r => !f.rs || r['상태'] === f.rs);
+        if (f.rs && !rs.length) return '';
+        return '<details class="jb-card wk-cat" data-cat="' + gi + '" open><summary><span class="wk-cat-name">' + esc(g) + '</span><small class="wk-muted">' + RULE_STATES.map(s => s + ' ' + all.filter(r => r['상태'] === s).length).join(' · ') + '</small></summary>' +
+          (rs.length ? '<table class="wk-table wk-rules"><thead><tr><th>이름</th><th>한 줄</th><th>상태</th><th>자리</th><th>임자</th><th>고친날</th></tr></thead><tbody>' + rs.map(r => '<tr data-id="' + esc(r.id) + '"' + (r['상태'] === '없음' ? ' class="late"' : '') + '><td>' + esc(r['이름']) + '</td><td>' + esc(r['한줄']) + '</td><td><span class="wk-badge ' + (RULE_BADGE[r['상태']] || 'unk') + '">' + esc(r['상태']) + '</span>' + (r['상태'] === '없음' ? ' <small class="wk-muted">지어야 함</small>' : '') + '</td><td class="wk-src">' + (r['자리'] ? esc(r['자리']) : '<span class="wk-muted">—</span>') + '</td><td>' + (r['임자'] ? esc(r['임자']) : '<span class="wk-muted">—</span>') + '</td><td>' + esc(r['고친날']) + '</td></tr>').join('') + '</tbody></table>'
+            : '<p class="wk-muted">이 갈래 원칙 · 매뉴얼 줄 없음</p>') + '</details>'; }).join('') || '<p class="wk-muted">맞는 줄 없음</p>';
+    main.innerHTML = headTxt + tools2 + '</div>' + modes + big + rchips + '<p class="wk-co-shown">맞는 줄 <b>' + num(shown.length) + '</b> / ' + num(rules.length) + '</p>' + body;
+    for (const [id, k] of [['co-g', 'g'], ['co-rs', 'rs']]) document.getElementById(id)?.addEventListener('change', e => { location.hash = href({[k]: e.target.value}).slice(1); });
+  }
+}
+
+const VIEWS = {home, board, prod, all};
 function start() {
   if (!session()) return showLogin();
   showNav();
