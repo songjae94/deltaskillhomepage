@@ -181,9 +181,10 @@ function assignNow(assign, at) { // 배치표: 언제부터 ≤ 지금 가운데
 function prodCalc(b, assign) {
   const st = Object.fromEntries((b['공정'] || []).map(r => [r['단계'], r]));
   const z = b['잣대'] || {}, days = has(b['병목_날']) ? b['병목_날'] : 1;
-  const gone = ['넣은', '나온', '단계에', '반송', '버림'].every(k => has(z[k])) ? z['넣은'] - z['나온'] - z['단계에'] - z['반송'] - z['버림'] : undefined;
-  const cross = [['단계에', total(FLOW.map(c => st[c]?.['문항']))], ['나온', st.C5?.['문항']], ['반송', st.C9?.['문항']]]
-    .filter(([k, v]) => has(z[k]) && has(v) && z[k] !== v);
+  const gauges = [['문항', z], ...(b['잣대_꾸러미'] ? [['꾸러미', b['잣대_꾸러미']]] : [])].map(([unit, g]) => ({unit, g,
+    gone: ['넣은', '나온', '단계에', '반송', '버림'].every(x => has(g[x])) ? g['넣은'] - g['나온'] - g['단계에'] - g['반송'] - g['버림'] : undefined,
+    cross: [['단계에', total(FLOW.map(c => st[c]?.[unit]))], ['나온', st.C5?.[unit]], ['반송', st.C9?.[unit]]].filter(([x, v]) => has(g[x]) && has(v) && g[x] !== v)}));
+  const gone = gauges[0].gone, cross = gauges[0].cross;
   const cur = assignNow(assign, Date.now()), wk = new Map((b['작업자'] || []).map(w => [w['작업자'], w]));
   const stages = STAGES.map(([c, name]) => {
     const r = st[c] || {}, leftB = minus(r['꾸러미'], r['끝_꾸러미']), leftQ = minus(r['문항'], r['끝_문항']), rate = r['하루_처리_꾸러미'];
@@ -194,7 +195,7 @@ function prodCalc(b, assign) {
   const most = Math.max(0, ...stages.filter(s => s.flow && has(s.leftB)).map(s => s.leftB));
   for (const s of stages) s.most = s.flow && most > 0 && s.leftB === most;
   const necks = stages.filter(s => s.neck).map(s => s.c);
-  return {st, z, gone, cross, cur, wk, stages, necks, mostAt: stages.filter(s => s.most).map(s => s.c), days};
+  return {st, z, gauges, gone, cross, cur, wk, stages, necks, mostAt: stages.filter(s => s.most).map(s => s.c), days};
 }
 const bundleTitle = r => r['제목'] ? esc(r['제목']) : (r['교재'] || r['단원']) ? [r['과목'], r['교재'], r['단원'], r['변형단계']].filter(Boolean).map(esc).join(' · ')
   : '<span class="wk-unk">제목 미확인</span>' + (r['과목'] ? ' · ' + esc(r['과목']) : '');
@@ -215,12 +216,14 @@ async function prod() {
   const k = prodCalc(b, d.assign), z = k.z, q = new URLSearchParams(location.hash.slice(1)), fs = q.get('s'), fw = q.get('w');
   const bundles = b['묶음'] || [], workers = [...(b['작업자'] || [])].sort((x, y) => byWorker(x['작업자'], y['작업자']));
 
-  // 1 맨 위 잣대
-  const gState = !has(k.gone) ? 'unk' : k.gone === 0 && !k.cross.length ? 'ok' : 'bad';
-  const gauge = '<section class="wk-gauge ' + gState + '" aria-label="잣대"><p class="wk-eq"><span>넣은 <b>' + N(z['넣은']) + '</b></span><i>=</i><span>나온 <b>' + N(z['나온']) + '</b></span><i>+</i>' +
-    '<span>단계에 <b>' + N(z['단계에']) + '</b></span><i>+</i><span>반송 <b>' + N(z['반송']) + '</b></span><i>+</i><span>버림 <b>' + N(z['버림']) + '</b></span></p>' +
-    '<p class="wk-gone">' + (gState === 'unk' ? '빠진 것 ' + UNK + ' — 잣대 칸이 모자라 셀 수 없음' : k.gone === 0 ? '빠진 것 <b>0</b> · 맞음' : '빠진 것 <b>' + num(k.gone) + '</b> · 맞지 않음') +
-    (k.cross.length ? ' · <span class="wk-bad">공정 칸과 어긋남: ' + k.cross.map(([n, v]) => esc(n) + ' ' + num(z[n]) + ' ↔ 공정 ' + num(v)).join(' / ') + '</span>' : '') + '</p></section>';
+  // 1 맨 위 잣대 (문항 · 있으면 꾸러미 한 줄 더)
+  const gaugeOf = ({unit, g, gone, cross}) => { const gs = !has(gone) ? 'unk' : gone === 0 && !cross.length ? 'ok' : 'bad';
+    return {gs, html: '<div class="wk-gline ' + gs + '"><p class="wk-eq"><em>' + unit + '</em><span>넣은 <b>' + N(g['넣은']) + '</b></span><i>=</i><span>나온 <b>' + N(g['나온']) + '</b></span><i>+</i>' +
+      '<span>단계에 <b>' + N(g['단계에']) + '</b></span><i>+</i><span>반송 <b>' + N(g['반송']) + '</b></span><i>+</i><span>버림 <b>' + N(g['버림']) + '</b></span></p>' +
+      '<p class="wk-gone">' + (gs === 'unk' ? '빠진 것 ' + UNK + ' — 잣대 칸이 모자라 셀 수 없음' : gone === 0 ? '빠진 것 <b>0</b> · 맞음' : '빠진 것 <b>' + num(gone) + '</b> · 맞지 않음') +
+      (cross.length ? ' · <span class="wk-bad">공정 칸과 어긋남: ' + cross.map(([n, v]) => esc(n) + ' ' + num(g[n]) + ' ↔ 공정 ' + num(v)).join(' / ') + '</span>' : '') + '</p></div>'}; };
+  const gl = k.gauges.map(gaugeOf), gState = gl.some(x => x.gs === 'bad') ? 'bad' : gl.every(x => x.gs === 'ok') ? 'ok' : gl[0].gs === 'ok' ? 'ok' : 'unk';
+  const gauge = '<section class="wk-gauge ' + gState + '" aria-label="잣대">' + gl.map(x => x.html).join('') + '</section>';
   // 2 합계 한 줄
   const sums = [['꾸러미 전체', total(STAGES.map(([c]) => k.st[c]?.['꾸러미']))], ['문항 전체', z['넣은']], ['진행한 것', z['나온']], ['남은 것', total([z['단계에'], z['반송']])]];
   const sumLine = '<div class="wk-sum4">' + sums.map(([n, v]) => '<div><p class="jb-kicker">' + n + '</p><p class="wk-big">' + N(v) + '</p></div>').join('') + '</div>';
@@ -279,7 +282,9 @@ async function prod() {
     (b['표'] || []).map(t => '<details class="jb-card wk-fold"><summary>' + esc(t['제목']) + '</summary><table class="wk-table"><thead><tr>' + t['머리'].map(h => '<th>' + esc(h) + '</th>').join('') + '</tr></thead><tbody>' +
       t['줄'].map(r => '<tr>' + r.map(v => '<td>' + esc(v) + '</td>').join('') + '</tr>').join('') + '</tbody></table></details>').join('');
 
-  main.innerHTML = head('기준 ' + stamp(b['기준시각']), '지은이 ' + esc(b['지은이']) + ' · 올림 ' + stamp(p.at) + ' · 원문 · 정답 · 분류 코드는 싣지 않습니다') +
+  const rg = b['범위'] || {};
+  main.innerHTML = head('기준 ' + stamp(b['기준시각']), '자료 시각 ' + (rg['자료시각'] ? stamp(rg['자료시각']) : UNK) + ' · 범위 ' + (rg['자리'] ? esc(rg['자리']) : UNK) + ' · ' +
+      (rg['부터'] ? esc(rg['부터']) : '처음') + ' ~ ' + stamp(rg['까지']) + '<br>지은이 ' + esc(b['지은이']) + ' · 올림 ' + stamp(p.at) + ' · 원문 · 정답 · 분류 코드는 싣지 않습니다') +
     gauge + sumLine + flowRow + list + crew + folded;
   if (fs || fw) document.getElementById('wk-bundles')?.scrollIntoView({block: 'nearest'});
 }
