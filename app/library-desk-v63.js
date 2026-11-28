@@ -105,13 +105,13 @@
   const normalizeSearch = value => value.normalize('NFKC').replace(/\s+/g,'').toLowerCase();
   const visible = () => state.items.filter(item => (!state.subject || item.subject === state.subject) &&
     normalizeSearch([item.subject,item.unit,item.name,item.edition,item.major].filter(Boolean).join(' ')).includes(normalizeSearch(state.search)));
-  const fmtOf = item => item.formats[state.fmt] ? state.fmt : Object.keys(item.formats)[0];
+  const fmtOf = item => item.formats[state.fmt]?.reviewed ? state.fmt : Object.keys(item.formats).find(f => item.formats[f].reviewed) || Object.keys(item.formats)[0];
 
   function row(item) {
     const on = item.sku === state.sku;
     const cells = Object.keys(FORMATS).filter(f => f === 'pdf' || state.hasHwp).map(f => {
       const v = item.formats[f];
-      return `<span class="dl63-cell dl63-cell-${f}">${v ? `<small>${FORMATS[f]}</small><b>${shownPrice(item,f)}</b>` : '<small>—</small>'}</span>`;
+      return `<span class="dl63-cell dl63-cell-${f}">${v ? `<small>${FORMATS[f]}</small><b>${v.reviewed ? shownPrice(item,f) : '판매 중단'}</b>` : '<small>—</small>'}</span>`;
     }).join('');
     return `<li><button type="button" class="dl63-row" data-dl63-pick="${h(item.sku)}" aria-pressed="${on}">
       ${item.thumb ? `<img class="dl63-thumb" src="${h(item.thumb)}" alt="" width="804" height="1137" loading="lazy">` : '<span class="dl63-thumb dl63-thumb-none" aria-hidden="true"></span>'}
@@ -124,7 +124,7 @@
     if (!item) return '<div class="dl63-receipt"><p class="dl63-empty">왼쪽 목록에서 자료를 고르세요.</p></div>';
     const f = fmtOf(item), v = item.formats[f];
     if (!v.reviewed) return `<div class="dl63-receipt"><h3>${h(item.name)}</h3><p>문항 재검토로 기존 파일 판매를 중단했습니다.</p><div class="dl63-sub">${item.sample ? `<a href="${h(item.sample)}">무료 미리보기</a>` : ''}<a href="/my/">내가 받은 파일 보기</a></div></div>`;
-    const fmts = Object.keys(item.formats).map(k => `<button type="button" class="dl63-fmt" data-dl63-fmt="${k}" aria-pressed="${k === f}"><span>${FORMATS[k]}</span><b>${shownPrice(item,k)}</b></button>`).join('');
+    const fmts = Object.keys(item.formats).filter(k => item.formats[k].reviewed).map(k => `<button type="button" class="dl63-fmt" data-dl63-fmt="${k}" aria-pressed="${k === f}"><span>${FORMATS[k]}</span><b>${shownPrice(item,k)}</b></button>`).join('');
     const lay = v.files.filter(x => x.layout).map(x => `<li><span>${h(x.layout)}</span><b>${x.pages ? x.pages + '쪽' : ''}</b></li>`).join('');
     const quote = pointQuote(item, f), pointId = item.sku + '.' + f;
     const point = POINT_PDF && quote && typeof window.DSPointService?.redeemPdf === 'function'
@@ -150,9 +150,9 @@
 
 
   function shopBody() {
-    if (state.load === 'error') return `<div class="dl63-state" role="status"><p>판매 목록을 불러오지 못했습니다.</p><button type="button" class="dl63-quiet" data-dl63-retry>다시 불러오기</button>${outLink('/naesin/', '내신 자료 구매 쪽에서 보기', 'dl63-quiet')}</div>`;
+    if (state.load === 'error') return `<div class="dl63-state" role="status"><p>판매 목록을 불러오지 못했습니다.</p><button type="button" class="dl63-quiet" data-dl63-retry>다시 불러오기</button>${outLink('/naesin/', '내신 자료 안내에서 보기', 'dl63-quiet')}</div>`;
     if (state.load !== 'ready') return `<div class="dl63-state dl63-loading" role="status"><span></span><span></span><span></span><p>판매 목록을 불러오는 중</p></div>`;
-    if (!state.items.length) return `<div class="dl63-state" role="status"><p>지금 판매 중인 자료가 없습니다.</p>${outLink('/naesin/', '내신 자료 구매 쪽 보기', 'dl63-quiet')}</div>`;
+    if (!state.items.length) return `<div class="dl63-state" role="status"><p>지금 판매 중인 자료가 없습니다.</p>${outLink('/naesin/', '내신 자료 안내 보기', 'dl63-quiet')}</div>`;
     const subjects = [...new Map(state.items.map(item => [item.subject, item.grade])).entries()];
     const chips = [['', '전체', state.items.length], ...subjects.map(([s, g]) => [s, `${g} ${s}`, state.items.filter(item => item.subject === s).length])]
       .map(([v, label, n]) => `<button type="button" class="dl63-chip" data-dl63-subject="${h(v)}" aria-pressed="${state.subject === v}">${h(label)} <b>${n}</b></button>`).join('');
@@ -160,7 +160,7 @@
     const head = `<div class="dl63-list-head" aria-hidden="true"><span>자료</span><span class="dl63-cells"><span class="dl63-cell">PDF</span>${state.hasHwp ? '<span class="dl63-cell">한글</span>' : ''}</span></div>`;
     return `<div class="dl63-chips" role="group" aria-label="과목으로 좁히기">${chips}</div>
       <div class="dl63-grid">
-        <div class="dl63-list-wrap"><p role="status">판매 자료 ${rows.length}건</p>${head}<ol class="dl63-list" aria-label="판매 자료 ${rows.length}건">${rows.map(row).join('')}</ol></div>
+        <div class="dl63-list-wrap"><p role="status">교재 ${rows.length}건</p>${head}<ol class="dl63-list" aria-label="교재 ${rows.length}건">${rows.map(row).join('')}</ol></div>
         <aside class="dl63-desk" aria-label="고른 자료" aria-live="polite" data-dl63-receipt>${rows.length?receipt(current()):'<p>검색어를 줄이거나 과목을 바꿔 보세요.</p>'}</aside>
       </div>`;
   }
@@ -168,10 +168,10 @@
   function shop() {
     return `<section class="dl63 dl63-shop" aria-labelledby="dl63-shop-title">
       <header class="dl63-head">
-        <div><span class="dl63-kicker">판매 자료</span><h2 id="dl63-shop-title">시험 범위 자료 고르기</h2><p>단원 문제집을 고르고, 받을 꼴과 값을 확인한 뒤 구매합니다.</p></div>
+        <div><span class="dl63-kicker">내신 자료</span><h2 id="dl63-shop-title">시험 범위 자료 고르기</h2><p>교재를 선택하면 파일 형식과 판매 상태를 확인할 수 있습니다.</p></div>
         <p class="dl63-book-note">${BOOK_NOTE}</p>
       </header>
-      <label>판매 자료 검색 <input type="search" data-sale-search value="${h(state.search)}" placeholder="과목·단원·자료명"></label>
+      <label>교재 검색 <input type="search" data-sale-search value="${h(state.search)}" placeholder="과목·단원·자료명"></label>
       <div class="dl63-shop-body" data-dl63-shop>${shopBody()}</div>
     </section>`;
   }

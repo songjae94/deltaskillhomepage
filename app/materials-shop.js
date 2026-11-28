@@ -130,7 +130,7 @@
       ? p.sourceId===scope.bookId && (!scope.unitId || p.no===scope.unitId)
       : p.subject===scope.subject && p.unit===scope.unit)
       : selected ? products.filter(p => p.source === selected) : products;
-    const heading = scope ? bookLabel(scope.label) : selected ? '단원별 교재' : audience==='student' ? '문제집 변형문항' : '판매 교재';
+    const heading = scope ? bookLabel(scope.label) : selected ? '단원별 교재' : audience==='student' ? '문제집 변형문항' : '교재 목록';
     const reset = scope || selected ? '<button type="button" class="ms-clear" data-ms-clear>전체 교재 보기</button>' : '';
     const shelves = new Map();
     for (const book of list) {

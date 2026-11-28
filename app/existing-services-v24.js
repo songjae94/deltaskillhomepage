@@ -90,7 +90,7 @@
       let sku;
       try { sku = decodeURIComponent(page.slice('material/'.length)); } catch { return; }
       if (/^NS-[A-Z0-9]+-\d+$/.test(sku)) {
-        place('purchase', '기존 상품 구매', [[`/naesin/?x=${encodeURIComponent(sku)}`, '이 자료 구매 안내']], main.querySelector('.detail-actions'), 'after');
+        place('purchase', '판매 상태', [[`/naesin/?x=${encodeURIComponent(sku)}`, '이 자료 판매 상태 확인']], main.querySelector('.detail-actions'), 'after');
       }
     } else if (page === 'account') {
       if (!window.DSService?.session()) return;
