@@ -1,12 +1,17 @@
-/* 관리자 페이지 /work/ (2026-11-28). 첫 화면 · 문항 생산관리 · 작업자별 상황판.
-   Holds no password, item text, answer or code: one login through item-judge (same token as the judge board,
-   localStorage dsj.token), then the work-board server function hands out the board and production data.
+/* 관리자 페이지 /work/ (2026-11-28 · r5 등급). 첫 화면 · 문항 생산관리 · 작업자별 상황판 · 회사 전체 할 일 · 접속 기록.
+   r5: who = the homepage member login (localStorage ds_tk, sent as is to work-board). The server checks the member and the
+   grade table on every request and answers only what that grade may see; the menu and tiles are drawn from the page list the
+   server returns (`me`), so names of pages a grade cannot open never reach that screen. Holds no password, item text, answer,
+   code, grade table or person name. The judge-board token (localStorage dsj.token) is handed out by work-board `me`.
    Everything from the server is drawn as text (escaped), never as HTML. */
 (() => {
 'use strict';
 const LOCAL = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
 const FN = LOCAL ? '/functions/v1/' : 'https://cvlrphtupjmaefahodgz.supabase.co/functions/v1/';
-const K = {token: 'dsj.token', last: 'dsj.last'};
+const K = {token: 'dsj.token'};
+const memberToken = () => { try { return (window.DSAuth ? window.DSAuth.get() : localStorage.getItem('ds_tk')) || ''; } catch { return ''; } };
+const PAGE_KEY = {home: 'home', board: 'board', prod: 'prod', all: 'company', log: 'log'};
+let ME = null; // 서버가 준 나: 표시 이름 · 등급 · 허락된 쪽
 const PAGE = document.body.dataset.page;
 const WORKERS = ['본부', '센터', '맥GPT', 'dot1', 'dot2', 'dot3', 'dot4', 's1', 's1c', 's2', 's2gpt', '승열', '상요', '등재'];
 const main = document.getElementById('wk-main'), sync = document.getElementById('wk-sync');
@@ -23,48 +28,48 @@ const todayKey = () => { const p = new Intl.DateTimeFormat('en-US', {timeZone: '
   return p.find(x => x.type === 'month').value + '/' + p.find(x => x.type === 'day').value; };
 const num = n => Number(n || 0).toLocaleString('ko-KR');
 
-// ---- session (same token as /review-d7q4m2/) ----
+// ---- session: member token → work-board (등급 가름은 서버) · judge token → item-judge ----
 function session() { const s = store.get(K.token); if (s && s.exp > Date.now() && s.token) return s; store.del(K.token); return null; }
-class ApiError extends Error { constructor(status, body) { super(body?.error || 'unavailable'); this.status = status; this.body = body; } }
+class ApiError extends Error { constructor(status, body, handled = false) { super(body?.error || 'unavailable'); this.status = status; this.body = body; this.handled = handled; } }
 async function call(fn, action, body = {}) {
-  const s = session();
+  const t = fn === 'work-board' ? memberToken() : session()?.token;
   const r = await fetch(FN + fn, {method: 'POST', credentials: 'omit', cache: 'no-store',
-    headers: {'Content-Type': 'application/json', ...(s ? {Authorization: 'Bearer ' + s.token} : {})}, body: JSON.stringify({action, ...body})});
+    headers: {'Content-Type': 'application/json', ...(t ? {Authorization: 'Bearer ' + t} : {})}, body: JSON.stringify({action, ...body})});
   let data = null; try { data = await r.json(); } catch {}
-  if (r.status === 401 && action !== 'login') { store.del(K.token); showLogin(); throw new ApiError(401, data); }
+  if (r.status === 401) { if (fn === 'item-judge') store.del(K.token); else { ME = null; store.del(K.token); showLogin(); } throw new ApiError(401, data, fn === 'work-board'); }
+  if (r.status === 403 && fn === 'work-board') { if (action === 'me') { ME = null; store.del(K.token); } showDenied(action === 'me'); throw new ApiError(403, data, true); }
+  if (r.status === 429 && fn === 'work-board') { showDenied(false, true); throw new ApiError(429, data, true); }
   if (!r.ok) throw new ApiError(r.status, data);
   return data;
 }
+const NAV_SHORT = {home: '첫 화면', judge: '눈판정', prod: '생산관리', board: '상황판', company: '총괄', log: '기록'};
+const allowed = page => !!ME && ME.pages.some(p => p.page === page);
 
 function showNav() {
-  const s = session(), nav = document.querySelector('.jb-nav');
-  nav.hidden = !s;
-  document.getElementById('wk-who').textContent = s ? s.reviewer : '';
+  const nav = document.querySelector('.jb-nav'), who = document.getElementById('wk-who');
+  nav.querySelectorAll('a').forEach(a => a.remove());
+  nav.hidden = !ME;
+  if (!ME) { who.textContent = ''; return; }
+  for (const p of ME.pages) if (p.href) { const a = document.createElement('a'); a.href = p.href; a.textContent = NAV_SHORT[p.page] || p.title; nav.insertBefore(a, who); }
+  who.textContent = ME.label + ' · ' + ME.grade;
 }
-document.getElementById('wk-out').addEventListener('click', () => { store.del(K.token); showLogin(); });
+document.getElementById('wk-out').addEventListener('click', () => {
+  ME = null; store.del(K.token);
+  if (!LOCAL && window.DSAuth?.logout) window.DSAuth.logout(); else { try { localStorage.removeItem('ds_tk'); } catch {} showLogin(); }
+});
+const loginHref = () => '/auth/?next=' + encodeURIComponent(location.pathname + location.search + location.hash);
+function showDenied(account, locked = false) {
+  showNav();
+  main.innerHTML = '<section class="jb-card jb-login" data-denied="' + (locked ? 'locked' : account ? 'account' : 'page') + '"><p class="jb-kicker">델타스킬 관리자</p><h1>관리자 페이지</h1><p class="jb-help">' +
+    (locked ? '요청이 여러 번 거부되어 잠시 막혔습니다. 15분 뒤 다시 여세요.' : account ? '이 계정은 관리자 등급 표에 없습니다. 등급이 필요하면 관리자에게 알려 주세요.' : '이 쪽을 볼 등급이 아닙니다.') +
+    '</p>' + (account || locked ? '' : '<p><a class="jb-primary" href="/work/">관리자 첫 화면</a></p>') + '</section>';
+}
 
 function showLogin() {
-  showNav();
-  main.innerHTML = '<section class="jb-card jb-login"><p class="jb-kicker">델타스킬 작업자 전용</p><h1>관리자 페이지</h1>' +
-    '<p class="jb-help">들어가면 문항 눈판정 · 문항 생산관리 · 작업자별 상황판을 다시 묻지 않고 오갑니다.</p>' +
-    '<form id="wk-login"><label>비밀번호<input id="wk-pw" type="password" autocomplete="current-password" required></label>' +
-    '<label>이름<input id="wk-name" required maxlength="20" value="' + esc(store.get(K.last, {}).reviewer || '') + '"></label>' +
-    '<button class="jb-primary" type="submit">들어가기</button><p class="jb-msg" id="wk-msg" role="alert"></p></form></section>';
-  const f = document.getElementById('wk-login'), msg = document.getElementById('wk-msg');
-  f.addEventListener('submit', async e => {
-    e.preventDefault(); msg.textContent = '';
-    const btn = f.querySelector('button'); btn.disabled = true;
-    try {
-      const d = await call('item-judge', 'login', {password: document.getElementById('wk-pw').value, reviewer: document.getElementById('wk-name').value});
-      store.set(K.token, {token: d.token, reviewer: d.reviewer, exp: Date.now() + d.hours * 3600e3 - 60e3});
-      store.set(K.last, {reviewer: d.reviewer});
-      start();
-    } catch (err) {
-      msg.textContent = err.status === 401 ? '비밀번호가 맞지 않습니다.' : err.status === 429 ? '여러 번 틀려 잠시 막혔습니다. 15분 뒤 다시 하세요.' :
-        err.status === 400 ? '이름을 1~20자로 적어 주세요.' : '지금 들어갈 수 없습니다. 잠시 뒤 다시 하세요.';
-    } finally { btn.disabled = false; }
-  });
-  document.getElementById(store.get(K.last) ? 'wk-pw' : 'wk-name').focus();
+  ME = null; showNav();
+  main.innerHTML = '<section class="jb-card jb-login"><p class="jb-kicker">델타스킬 관리자</p><h1>관리자 페이지</h1>' +
+    '<p class="jb-help">홈페이지 회원으로 로그인하면 등급에 맞는 쪽이 열립니다.</p>' +
+    '<p><a class="jb-primary" id="wk-member-login" href="' + esc(loginHref()) + '">홈페이지 회원 로그인</a></p></section>';
 }
 
 // ---- 상황판 셈 (첫 화면 · 상황판 쪽 같은 규칙) ----
@@ -107,20 +112,25 @@ function lineNames(line) { const g = line?.['생산줄']; if (!g || !Array.isArr
 async function home() {
   const zone = (k, title, owner, tiles) => '<section class="wk-zone" data-zone="' + k + '" aria-label="' + title + '"><div class="wk-zone-head"><h2>' + title + '</h2>' +
     '<p class="jb-help">임자 <b>' + owner + '</b> · <span class="wk-zone-at">읽는 중…</span></p></div><div class="wk-tiles">' + tiles + '</div></section>';
-  main.innerHTML = '<div class="jb-head"><div><p class="jb-kicker">관리자</p><h1>무엇을 볼까요</h1></div></div>' + coZone() + '<div class="wk-zones">' +
-    zone('prod', '변형문항 생산', '맥GPT 창', tile('prod', '/work/prod/', '문항 생산관리', '공정 단계마다 쌓인 꾸러미 · 남은 것 · 병목 · 배치표입니다.') +
-      tile('judge', '/work/judge/', '문항 눈판정', '문항을 보고 넷 중 하나로 판정합니다.')) +
-    zone('other', '그 밖의 일', '본부', tile('board', '/work/board/', '작업자별 상황판', '작업자마다 오늘 일 · 상태 · 마지막 통로 글입니다.')) + '</div>';
+  const pg = k => ME.pages.find(p => p.page === k), t = k => pg(k) ? tile(k, pg(k).href, pg(k).title, pg(k).help) : '';
+  const prodTiles = t('prod') + t('judge'), otherTiles = t('board') + t('log');
+  main.innerHTML = '<div class="jb-head"><div><p class="jb-kicker">관리자 · ' + esc(ME.grade) + '</p><h1>무엇을 볼까요</h1></div></div>' + (allowed('company') ? coZone() : '') + '<div class="wk-zones">' +
+    (prodTiles ? zone('prod', allowed('prod') ? '변형문항 생산' : '내 일', '맥GPT 창', prodTiles) : '') +
+    (otherTiles ? zone('other', '그 밖의 일', '본부', otherTiles) : '') + '</div>' +
+    (allowed('mine') ? '<section class="jb-card wk-mine" data-mine><h2 class="wk-h2">내 몫</h2><p class="jb-help">들어온 이름 <b>' + esc(ME.label) + '</b> · 등급 <b>' + esc(ME.grade) +
+      '</b> · 눈판정에 남기는 판정은 이 이름으로 적힙니다.</p></section>' : '');
   const set = (k, line, at) => { const el = document.querySelector('[data-tile="' + k + '"]'); el.querySelector('.wk-num').innerHTML = line; el.querySelector('.wk-at').textContent = at; };
   const zoneAt = (k, html) => { document.querySelector('[data-zone="' + k + '"] .wk-zone-at').innerHTML = html; };
-  const fail = k => e => { if (e.status !== 401) set(k, '<span class="wk-bad">못 읽음</span>', '잠시 뒤 다시 엽니다'); };
-  coHome();
-  call('item-judge', 'menu').then(d => {
+  const fail = k => e => { if (!e.handled && e.status !== 401) set(k, '<span class="wk-bad">못 읽음</span>', '잠시 뒤 다시 엽니다'); };
+  if (!allowed('prod')) document.querySelector('[data-zone="prod"] .jb-help')?.remove(); // 검토자: 임자 · 생산 기준 줄 없이 눈판정 칸만
+  if (allowed('log')) set('log', '<span class="wk-muted">기록 보기</span>', '경영진만 · 열면 최근 200줄');
+  if (allowed('company')) coHome();
+  if (allowed('judge')) call('item-judge', 'menu').then(d => {
     let judged = 0, total = 0;
     for (const s of d.subjects || []) for (const b of s.books || []) { judged += b.judged || 0; total += b.total || 0; }
     set('judge', '판정 <b>' + num(judged) + '</b> / ' + num(total), '기준 ' + stamp(Date.now()) + ' 지금');
   }).catch(fail('judge'));
-  call('work-board', 'prod').then(d => {
+  if (allowed('prod')) call('work-board', 'prod').then(d => {
     const p = d.prod;
     zoneAt('prod', '생산 판 기준 ' + (p?.body?.['기준시각'] ? stamp(p.body['기준시각']) : UNK) + ' · 배치표 ' +
       (d.assign ? num((d.assign.body.rows || []).length) + '줄 · 올림 ' + stamp(d.assign.at) : UNK));
@@ -129,13 +139,13 @@ async function home() {
     const k = prodCalc(p.body, d.assign);
     set('prod', '나온 <b>' + N(k.z['나온']) + '</b> / 넣은 ' + N(k.z['넣은']) + ' · 단계에 ' + N(k.z['단계에']),
       (k.necks.length ? '병목 ' + k.necks.join(' · ') : k.mostAt.length ? '가장 많이 쌓임 ' + k.mostAt.join(' · ') : '병목 미확인') + ' · 기준 ' + stamp(p.body['기준시각']));
-  }).catch(e => { fail('prod')(e); if (e.status !== 401) zoneAt('prod', '<span class="wk-bad">못 읽음</span>'); });
-  call('work-board', 'board').then(d => {
+  }).catch(e => { fail('prod')(e); if (!e.handled) zoneAt('prod', '<span class="wk-bad">못 읽음</span>'); });
+  if (allowed('board')) call('work-board', 'board').then(d => {
     zoneAt('other', '상황판 ' + (d.board ? '올림 ' + stamp(d.board.at) : UNK) + ' · ' + chHead(d.channel));
     if (!d.board) return set('board', '<span class="wk-muted">아직 올라온 판 없음</span>', '본부가 올리면 나옵니다');
     const day = pickDay(d.board.body.rows), list = workerRows(d.board, d.channel, day);
     set('board', '막힌 작업자 <b>' + list.filter(w => w.state === '막힘').length + '</b>명', esc(day || '') + ' 기준 · 올림 ' + stamp(d.board.at));
-  }).catch(e => { fail('board')(e); if (e.status !== 401) zoneAt('other', '<span class="wk-bad">못 읽음</span>'); });
+  }).catch(e => { fail('board')(e); if (!e.handled) zoneAt('other', '<span class="wk-bad">못 읽음</span>'); });
 }
 const tile = (k, href, title, help) => '<a class="wk-tile" data-tile="' + k + '" href="' + href + '"><h2>' + title + '</h2><p class="jb-help">' + help + '</p>' +
   '<p class="wk-num"><span class="wk-muted">읽는 중…</span></p><p class="wk-at"></p><span class="wk-go">열기 →</span></a>';
@@ -146,7 +156,7 @@ async function board() {
   const q = new URLSearchParams(location.hash.slice(1));
   let d;
   try { d = await call('work-board', 'board', q.get('week') ? {week: q.get('week')} : {}); }
-  catch (e) { if (e.status !== 401) main.innerHTML = '<p class="wk-bad">상황판을 읽지 못했습니다(' + esc(e.status || '연결') + ').</p>'; return; }
+  catch (e) { if (!e.handled) main.innerHTML = '<p class="wk-bad">상황판을 읽지 못했습니다(' + esc(e.status || '연결') + ').</p>'; return; }
   if (!d.board) { main.innerHTML = '<p class="jb-wait">아직 올라온 상황판이 없습니다.</p>'; return; }
   const rows = d.board.body.rows, dayList = days(rows), day = dayList.includes(q.get('day')) ? q.get('day') : pickDay(rows);
   const list = workerRows(d.board, d.channel, day);
@@ -239,7 +249,7 @@ function independenceBroken(r) { // 지은 이(C2) ≠ 검증(C3) · 확인(C4) 
 async function prod() {
   let d;
   try { d = await call('work-board', 'prod'); }
-  catch (e) { if (e.status !== 401) main.innerHTML = '<p class="wk-bad">생산관리 판을 읽지 못했습니다(' + esc(e.status || '연결') + ').</p>'; return; }
+  catch (e) { if (!e.handled) main.innerHTML = '<p class="wk-bad">생산관리 판을 읽지 못했습니다(' + esc(e.status || '연결') + ').</p>'; return; }
   const p = d.prod, head = (h, help) => '<div class="jb-head"><div><p class="jb-kicker">문항 생산관리 · 변형문항 생성공장</p><h1>' + h + '</h1><p class="jb-help">' + help + '</p></div></div>';
   if (!p) { main.innerHTML = head('아직 올라온 판이 없습니다', '센터1128 이 계약 r2 꼴로 올리면 여기에 나옵니다.'); return; }
   const b = p.body;
@@ -323,10 +333,11 @@ async function prod() {
 // ---- r4 · 회사 전체 할 일 (계약 회사할일-1128@r1 · 첫 화면 맨 위 구역 · /work/all/) ----
 // 자료 = 본부의 회사할일_총괄.csv 를 --총괄 로 올린 판(kind board · name company). 화면은 세고 거를 뿐 · 글은 글로만.
 const CO_R1 = '회사할일-1128@r1';
-const CO_GROUPS = ['지금 제공하는 서비스', '다음에 추가할 서비스', '강사용 서비스', '교재 만들기', '홍보 · 마케팅', '내부 관리', '회계 관리'];
+const CO_ALL = ['지금 제공하는 서비스', '다음에 추가할 서비스', '강사용 서비스', '교재 만들기', '홍보 · 마케팅', '내부 관리', '회계 관리'];
 const DIR_R1 = '회사방향-1128@r1', RULE_R1 = '회사원칙-1128@r1';
 const LAYERS = ['방향', '중점', '지금 집중', '다음'], RULE_STATES = ['있음', '고침 필요', '없음'], RULE_BADGE = {'있음': 'done', '고침 필요': 'run', '없음': 'stop'};
 const CO_OUT = '갈래 밖';
+let CO_GROUPS = CO_ALL; // r5: 「회계 관리」 갈래는 accounting 쪽이 허락된 등급만(자료는 서버가 이미 걸러 냄)
 const CO_STATES = ['운영', '진행', '준비', '멈춤', '미정', '끝'];
 const CO_CLS = {'운영': 'op', '진행': 'run', '준비': 'prep', '멈춤': 'stop', '미정': 'und', '끝': 'done'};
 const CO_BADGE = {'운영': 'done', '진행': 'run', '준비': 'run', '멈춤': 'stop', '미정': 'unk', '끝': 'done'};
@@ -378,7 +389,7 @@ function coHome() {
     document.querySelector('.wk-co-flags').innerHTML = '<a class="wk-badge stop" href="/work/all/#v=late">기한 지난 줄 ' + num(rows.filter(r => r.late).length) + '</a>' +
       '<a class="wk-badge unk" href="/work/all/#v=unk">임자 미상 ' + num(rows.filter(r => r.unk).length) + '</a><a class="wk-badge unk" href="/work/all/#v=und">미정 ' + num(rows.filter(r => r.und).length) + '</a>' +
       (out ? '<a class="wk-badge stop" href="/work/all/#g=' + CO_GROUPS.length + '">갈래 밖 ' + num(out) + '</a>' : '');
-  }).catch(e => { if (e.status !== 401) { at('<span class="wk-bad">' + coFail(e) + '</span>'); cells('<span class="wk-bad">못 읽음</span>', ''); document.querySelector('.wk-co-focus').innerHTML = '<b>지금 집중</b> ' + UNK; } });
+  }).catch(e => { if (!e.handled) { at('<span class="wk-bad">' + coFail(e) + '</span>'); cells('<span class="wk-bad">못 읽음</span>', ''); document.querySelector('.wk-co-focus').innerHTML = '<b>지금 집중</b> ' + UNK; } });
 }
 
 const okDoc = (doc, ver) => doc && doc.body?.['계약'] === ver;
@@ -395,7 +406,7 @@ async function all() {
   const q = new URLSearchParams(location.hash.slice(1));
   let d;
   try { d = await call('work-board', 'company'); }
-  catch (e) { if (e.status !== 401) main.innerHTML = '<p class="wk-bad">회사 할 일 목록을 읽지 못했습니다 — ' + (e.status === 400 ? coFail(e) : esc(e.status || '연결')) + '</p>'; return; }
+  catch (e) { if (!e.handled) main.innerHTML = '<p class="wk-bad">회사 할 일 목록을 읽지 못했습니다 — ' + (e.status === 400 ? coFail(e) : esc(e.status || '연결')) + '</p>'; return; }
   const c = d.company;
   if (!c) { main.innerHTML = '<p class="jb-wait">아직 올라온 회사 할 일 목록이 없습니다. 본부가 올리면 나옵니다.</p>'; return; }
   if (c.body['계약'] !== CO_R1) { main.innerHTML = '<p class="wk-bad">지난 꼴 목록(올림 ' + stamp(c.at) + ') — ' + esc(CO_R1) + ' 로 다시 올려야 보입니다.</p>'; return; }
@@ -473,12 +484,40 @@ async function all() {
   }
 }
 
-const VIEWS = {home, board, prod, all};
-function start() {
-  if (!session()) return showLogin();
+// ---- r5 접속 기록 · 등급 표 (경영진 · 서버가 log 쪽을 허락할 때만 자료가 옴) ----
+const OUTCOME = {ok: ['열림', 'done'], token: ['로그인 틀림', 'stop'], grade: ['등급 거부', 'stop']};
+async function log() {
+  let d;
+  try { d = await call('work-board', 'log'); }
+  catch (e) { if (!e.handled) main.innerHTML = '<p class="wk-bad">접속 기록을 읽지 못했습니다(' + esc(e.status || '연결') + ').</p>'; return; }
+  const rows = d.log || [], denied = rows.filter(r => r.outcome !== 'ok').length;
+  main.innerHTML = '<div class="jb-head"><div><p class="jb-kicker">접속 기록</p><h1>누가 언제 열었나</h1><p class="jb-help">최근 ' + num(rows.length) + '줄 · 거부 ' + num(denied) +
+    ' · 기준 ' + stamp(Date.now()) + ' 지금 · IP 는 남기지 않고 가린 값만</p></div></div>' +
+    '<section class="jb-card"><h2 class="wk-h2">등급 표 <small class="wk-muted">' + num((d.grants || []).length) + '명</small></h2>' +
+    ((d.grants || []).length ? '<table class="wk-table wk-grants"><thead><tr><th>이름</th><th>등급</th><th>켬</th><th>고친 때</th></tr></thead><tbody>' +
+      d.grants.map(g => '<tr><td>' + esc(g.label) + '</td><td>' + esc(g.grade) + '</td><td>' + (g.active ? '켬' : '<span class="wk-muted">꺼짐</span>') + '</td><td>' + stamp(g.at) + '</td></tr>').join('') + '</tbody></table>'
+      : '<p class="wk-muted">등급 표에 아직 사람이 없습니다.</p>') + '</section>' +
+    '<section class="jb-card"><h2 class="wk-h2">요청</h2>' + (rows.length ? '<table class="wk-table wk-log"><thead><tr><th>때</th><th>이름</th><th>등급</th><th>쪽</th><th>요청</th><th>결과</th></tr></thead><tbody>' +
+      rows.map(r => '<tr data-outcome="' + esc(r.outcome) + '"><td>' + stamp(r.at) + '</td><td>' + (r.label ? esc(r.label) : '<span class="wk-muted">로그인 없음</span>') + '</td><td>' + esc(r.grade || '—') + '</td><td>' + esc(r.page) +
+        '</td><td>' + esc(r.action) + '</td><td><span class="wk-badge ' + (OUTCOME[r.outcome]?.[1] || 'unk') + '">' + esc(OUTCOME[r.outcome]?.[0] || r.outcome) + '</span></td></tr>').join('') + '</tbody></table>'
+      : '<p class="wk-muted">기록 없음</p>') + '</section>';
+}
+
+const VIEWS = {home, board, prod, all, log};
+async function start() {
+  if (!memberToken()) return showLogin();
+  if (!ME) {
+    main.innerHTML = '<p class="jb-wait">등급 확인 중…</p>';
+    try { ME = await call('work-board', 'me'); } catch (e) { if (!e.handled) main.innerHTML = '<p class="wk-bad">지금 들어갈 수 없습니다(' + esc(e.status || '연결') + '). 잠시 뒤 다시 여세요.</p>'; return; }
+    if (ME.judge?.token) store.set(K.token, {token: ME.judge.token, reviewer: ME.label, exp: Date.now() + ME.judge.hours * 3600e3 - 60e3}); else store.del(K.token);
+    CO_GROUPS = allowed('accounting') ? CO_ALL : CO_ALL.filter(g => coKey(g) !== '회계관리');
+  }
   showNav();
+  if (!allowed(PAGE_KEY[PAGE] || 'home')) return showDenied(false);
+  const pg = ME.pages.find(p => p.page === PAGE_KEY[PAGE]);
+  if (pg && PAGE !== 'home') { document.title = pg.title + ' · 델타스킬'; document.querySelector('.jb-brand em').textContent = pg.title; }
   (VIEWS[PAGE] || home)();
 }
-window.addEventListener('hashchange', () => { if (session() && PAGE !== 'home') start(); });
+window.addEventListener('hashchange', () => { if (ME && PAGE !== 'home') start(); });
 start();
 })();
