@@ -66,7 +66,7 @@
     cat.subjects.slice().sort((a, b) => a.grade < b.grade ? -1 : a.grade > b.grade ? 1 : 0).forEach(s => {
       (s.units || []).forEach(u => {
         const formats = {};
-        for (const f of Object.keys(FORMATS)) if (open(u, f, now)) formats[f] = { price: u.price[f], files: filesOf(u, f) };
+        for (const f of Object.keys(FORMATS)) if (open(u, f, now)) formats[f] = { reviewed: !!window.DSOnSale?.reviewed(u,f), price: u.price[f], files: filesOf(u, f) };
         if (!Object.keys(formats).length || !/^NS-[A-Z0-9]+-\d+$/.test(u.sku || '')) return;
         const book = (s.textbooks || [])[0];
         const app = thumbs.get(u.sku);
@@ -123,6 +123,7 @@
   function receipt(item) {
     if (!item) return '<div class="dl63-receipt"><p class="dl63-empty">왼쪽 목록에서 자료를 고르세요.</p></div>';
     const f = fmtOf(item), v = item.formats[f];
+    if (!v.reviewed) return `<div class="dl63-receipt"><h3>${h(item.name)}</h3><p>문항 재검토로 기존 파일 판매를 중단했습니다.</p><div class="dl63-sub">${item.sample ? `<a href="${h(item.sample)}">무료 미리보기</a>` : ''}<a href="/my/">내가 받은 파일 보기</a></div></div>`;
     const fmts = Object.keys(item.formats).map(k => `<button type="button" class="dl63-fmt" data-dl63-fmt="${k}" aria-pressed="${k === f}"><span>${FORMATS[k]}</span><b>${shownPrice(item,k)}</b></button>`).join('');
     const lay = v.files.filter(x => x.layout).map(x => `<li><span>${h(x.layout)}</span><b>${x.pages ? x.pages + '쪽' : ''}</b></li>`).join('');
     const quote = pointQuote(item, f), pointId = item.sku + '.' + f;

@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="ko" data-theme="light" data-purchase="b">
-<head>
+<head><script defer src="/naesin/on-sale.js?v=sale-review-1128"></script>
 <meta charset="utf-8"><script async src="/assets/wait-status.js?v=1b06e0f0187b"></script>
 <script>(function(){try{var t=localStorage.getItem('ds_theme');if(t!=='light'&&t!=='dark'){t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}document.documentElement.dataset.theme=t}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -468,7 +468,7 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
     return null;
   }
   function sellable(u,f,now){
-    if(!u||!priceAt(u,f)||!u.taxFreeAmount||u.taxFreeAmount[f]==null||!u.saleFrom||(!u.sample&&u.releaseVerified!==true)||!filesAt(u,f).length)return false; /* 맛보기(sample) 또는 검증 판(releaseVerified · 11-24 늘린 책) — checkout · 자료실과 같은 잣대(11-25 44) */
+    if(!u||!window.DSOnSale?.reviewed(u,f)||!priceAt(u,f)||!u.taxFreeAmount||u.taxFreeAmount[f]==null||!u.saleFrom||(!u.sample&&u.releaseVerified!==true)||!filesAt(u,f).length)return false; /* 맛보기(sample) 또는 검증 판(releaseVerified · 11-24 늘린 책) — checkout · 자료실과 같은 잣대(11-25 44) */
     if(now<Date.parse(u.saleFrom))return false;
     return !(u.saleTo&&now>=Date.parse(u.saleTo));
   }
@@ -999,7 +999,16 @@ footer.sitefoot{display:block;margin:0;padding:0;border:0;background:#05060f}
   var TITLES={subject:"내신 자료",book:"부교재 고르기",path:"구성 고르기",basic:"기본형",detail:"상세선택",confirm:"받을 내용 확인"};
   function draw(focus){
     var q=readQ(),s=subj(q),b=s?book(s,q):null,v,node,c=comp(q.c);
-    if(!s||!b||!products(s.code).length){v="subject";node=vPick(q);} /* 목록 → 한 화면 고르기 · 상세(받을 내용 확인)는 그대로 */ /* 파는 상품이 없는 과목 · 없는 과목 주소는 목록으로 · 과목 칩(?s= 만)은 그 과목으로 거른다 */
+    if(q.p==="free" && b && comp("C0") && freeSets(b).length){v="confirm";node=vConfirm(q,s,b,comp("C0"));}
+    else if(!products().length){
+      v="subject";node=el("section","card");node.appendChild(el("h1","","내신 자료"));
+      node.appendChild(el("p","lede","문항 재검토로 기존 파일 판매를 중단했습니다."));
+      var owned=el("a","btn","내가 받은 파일 보기");owned.href="/my/";node.appendChild(owned);
+      CAT.subjects.forEach(function(subject){(subject.textbooks||[]).forEach(function(book){
+        if(freeSets(book).length)node.appendChild(link("btn",{s:subject.code,b:book.id,p:"free"},book.name+" 무료 자료"));
+      });});
+    }
+    else if(!s||!b||!products(s.code).length){v="subject";node=vPick(q);} /* 목록 → 한 화면 고르기 · 상세(받을 내용 확인)는 그대로 */ /* 파는 상품이 없는 과목 · 없는 과목 주소는 목록으로 · 과목 칩(?s= 만)은 그 과목으로 거른다 */
     else if(q.p==="free"){if(comp("C0")&&freeSets(b).length){v="confirm";node=vConfirm(q,s,b,comp("C0"));}else{v="subject";node=vPick({});}}
     else if(q.p==="basic"&&!c){v="basic";node=vBasic(q,s,b);}
     else if(q.p==="detail"||q.p==="basic"){

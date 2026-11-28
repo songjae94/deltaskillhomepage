@@ -82,7 +82,7 @@
   });
   const toneStyle = id => { const t = shelfTones[id]; return t ? ` style="--ms-tone:${t[0]};--ms-deep:${t[1]}"` : ''; };
   const cost = (p,fmt) => pointable(p,fmt) ? money(price(p,fmt)) + ' P' : fmt === 'hwpx' && cashReady(p) ? '카드 ' + money(p.formats.hwpx.price) + '원' : '';
-  const picked = () => products.flatMap(p => ['pdf','hwpx'].filter(fmt => cart.includes(key(p,fmt)) && enabled(p,fmt)).map(fmt => ({p,fmt})));
+  const picked = () => products.flatMap(p => ['pdf','hwpx'].filter(fmt => cart.includes(key(p,fmt)) && p.formats[fmt]?.reviewed && enabled(p,fmt)).map(fmt => ({p,fmt})));
   function options(query='') {
     const list = grouped().filter(name => [name,displayBook(name)].some(label => normalize(label).includes(normalize(query))));
     return list.map(name => `<button type="button" data-ms-book="${escape(name)}">${escape(displayBook(name))}<small>상품 ${cardsOf(products.filter(p=>p.source===name)).length}개</small></button>`).join('') || '<p role="status">검색 결과가 없습니다.</p>';
@@ -102,6 +102,7 @@
   function formats(card) {
     const p=card.main, fmt=card.fmt;
     if (!enabled(p,fmt)) return '';
+    if (!p.formats[fmt]?.reviewed) return '<p class="ms-pick">재검토 중 · 판매 중단</p>';
     const id=key(p,fmt);
     const row=`<div class="ms-pick" aria-label="${formatLabel(fmt)} ${cost(p,fmt)}${cart.includes(id) ? ' 담김' : ''}"><span>${formatLabel(fmt)}</span><b>${cost(p,fmt)}</b>${cart.includes(id) ? '<small>담김</small>' : ''}</div>`;
     return `<div class="ms-choice" aria-label="판매 형식과 가격">${row}</div><div class="ms-acts">${actionButtons(card,{p,fmt})}</div>`;
@@ -182,7 +183,7 @@
   }
   function reviewOrder(panel, only) {
     const entries = only || picked();
-    if (!entries.length) return;
+    if (!entries.length || entries.some(({p,fmt}) => !p.formats[fmt]?.reviewed)) return;
     const dialog = document.createElement('dialog');
     dialog.className = 'ms-order dl63-receipt';
     dialog.setAttribute('aria-labelledby','ms-order-title');
@@ -233,14 +234,16 @@
   const offerOf = id => { for (const p of products) for (const fmt of ['pdf','hwpx']) if (key(p,fmt) === id && enabled(p,fmt)) return {p, fmt}; return null; };
   function body() {
     const count = picked().length;
-    const cartButton = `<button class="ms-cart-button" type="button" data-ms-cart aria-label="장바구니 ${count}개"><i aria-hidden="true"></i>장바구니 <b>${count}</b></button>`;
+    const canOrder = products.some(p => Object.values(p.formats).some(f => f.reviewed));
+    const cartButton = !canOrder ? '<a href="/my/">내가 받은 파일</a>' : `<button class="ms-cart-button" type="button" data-ms-cart aria-label="장바구니 ${count}개"><i aria-hidden="true"></i>장바구니 <b>${count}</b></button>`;
     const notice = status === 'error' ? '<p role="alert">교재 목록을 불러오지 못했습니다.</p><button data-ms-retry>다시 불러오기</button>' : '<p role="status">교재 목록을 불러오는 중입니다.</p>';
-    const top = `<div class="ms-top"><h1>${audience==='student'?'자료받기':'내신 자료'}</h1><span>시험 범위 교재 고르기</span>${cartButton}</div>`;
+    const top = `<div class="ms-top"><h1>${audience==='student'?'자료받기':'내신 자료'}</h1><span>${status === 'ready' && !canOrder ? '문항 재검토로 기존 파일 판매를 중단했습니다.' : '시험 범위 교재 고르기'}</span>${cartButton}</div>`;
     return `${top}${status === 'ready' ? '<div class="ms-student-find">' + picker() + '</div>' + items() : notice}`;
   }
 
   function updateCartCount(panel) {
     const opener=panel.querySelector('[data-ms-cart]'), count=picked().length;
+    if (!opener) return;
     opener.setAttribute('aria-label',`장바구니 ${count}개`);
     opener.querySelector('b').textContent=count;
   }

@@ -4,9 +4,20 @@
   "use strict";
   function get(u){return fetch(u,{cache:"no-store"}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});}
   function files(u,f){return ((u&&u.files)||[]).filter(function(x){return x.fmt===f;});}
+  // A release approves a complete format bundle. Replacing, adding or removing any file requires a new review.
+  function reviewed(unit, format) {
+    const approval = unit?.salesReview?.[format];
+    const bundle = files(unit, format);
+    if (!approval?.reviewId || !bundle.length || !approval.files) return false;
+    const ids = new Set(bundle.map(file => file.id));
+    if (ids.size !== bundle.length || Object.keys(approval.files).length !== bundle.length) return false;
+    return bundle.every(file => typeof file.id === 'string' && file.id.length > 0 &&
+      /^[a-f0-9]{64}$/.test(file.sha256 || '') && Object.hasOwn(approval.files, file.id) &&
+      approval.files[file.id] === file.sha256);
+  }
   function open(u,f,now){
     var pr=u&&u.price&&u.price[f];
-    if(!pr||!u.taxFreeAmount||u.taxFreeAmount[f]==null||!u.saleFrom||(!u.sample&&u.releaseVerified!==true)||!files(u,f).length)return false; /* checkout · 자료실과 같은 잣대(11-25 44) */
+    if(!reviewed(u,f)||!pr||!u.taxFreeAmount||u.taxFreeAmount[f]==null||!u.saleFrom||(!u.sample&&u.releaseVerified!==true)||!files(u,f).length)return false; /* checkout · 자료실과 같은 잣대(11-25 44) */
     if(now<Date.parse(u.saleFrom))return false;
     return !(u.saleTo&&now>=Date.parse(u.saleTo));
   }
@@ -26,5 +37,5 @@
   }
   function won(n){return Number(n).toLocaleString("ko-KR")+"원";}
   function meta(p){return (p.count?p.count+"문항 · ":"")+(p.fmt==="hwpx"?"한글(HWPX)":"PDF")+" "+p.nfiles+"파일 · "+(p.fmt==="pdf"?"포인트 자료실에서 가격 확인":won(p.price));}
-  window.DSOnSale={load:function(){return Promise.all([get("/naesin/catalog.json"),get("/pay-config.json")]).then(function(v){return list(v[0],v[1]);});},meta:meta};
+  window.DSOnSale={reviewed:reviewed,load:function(){return Promise.all([get("/naesin/catalog.json"),get("/pay-config.json")]).then(function(v){return list(v[0],v[1]);});},meta:meta};
 })();
